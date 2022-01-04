@@ -1,4 +1,4 @@
-# OCRBench - Benchmark Framework for Oracle Database Drivers.
+# OCRBench - Benchmark Framework for OCR Engines.
 
 ![Travis (.org)](https://img.shields.io/travis/KonnexionsGmbH/ocr_bench.svg?branch=master)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/ocr_bench.svg)
@@ -17,10 +17,9 @@
 
 ## <a name="introduction"></a> 1. Introduction
 
-**`OraBench`** can be used to determine the performance of different Oracle database drivers under identical conditions. The framework parameters for a
-benchmark run are stored in a central configuration file.
+**`OCRBench`** can be used to determine the performance of different OCR engines under identical conditions.
 
-The currently supported OCR systems are:
+The currently supported OCR engines are:
 
 | Product                                                     | Company                   | Remarks            |
 |:------------------------------------------------------------|:--------------------------|:-------------------|
