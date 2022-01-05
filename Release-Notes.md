@@ -17,9 +17,14 @@ Release Date: dd.mm.2021
 
 ### Applied Software
 
-| Software              | Type        | Version           | Remark  |
-| ---                   |-------------| ---               |---------|
-| C++ (gcc)             | Language    | 10.3.0            |         |
+| Software          | Version | Remark   |
+|:------------------|:--------|:---------|
+| C++ (gcc)         | base    |          |
+| GNU Autoconf      | base    |          |
+| GNU Automake      | base    |          |
+| GNU make          | base    |          |
+| Leptonica Library | 1.82.0  |          |
+| Tesseract OCR     | 5.0.0   |          |
 
 ### Open issues
 
