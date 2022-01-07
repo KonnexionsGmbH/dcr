@@ -83,3 +83,16 @@ We argue the case for abstract document structure as a separate descriptive leve
 The purpose of this representation is to mediate between the message of a text (i.e., its discourse structure) and its physical presentation (i.e., its organization into graphical constituents like sections, paragraphs, sentences, bulleted lists, figures, and footnotes). 
 Abstract document structure can be seen as an extension of Nunberg's “text-grammar” it is also closely related to “logical” markup in languages like HTML and LaTEX. 
 We show that by using this intermediate representation, several subtasks in language generation and language understanding can be defined more cleanly.
+
+#### Rahman, M., Finin, T. (2019). Unfolding the Structure of a Document using Deep Learning.
+arXiv [Online]
+Available at [https://arxiv.org/abs/1910.03678](https://arxiv.org/abs/1910.03678)
+(Accessed 07 January 2022).
+
+Understanding and extracting of information from large documents, such as business opportunities, academic articles, medical documents and technical reports, poses challenges not present in short documents. 
+Such large documents may be multi-themed, complex, noisy and cover diverse topics. 
+We describe a framework that can analyze large documents and help people and computer systems locate desired information in them. 
+We aim to automatically identify and classify different sections of documents and understand their purpose within the document. 
+A key contribution of our research is modeling and extracting the logical and semantic structure of electronic documents using deep learning techniques. 
+We evaluate the effectiveness and robustness of our framework through extensive experiments on two collections: more than one million scholarly articles from arXiv and a collection of requests for proposal documents from government sources. 
+
