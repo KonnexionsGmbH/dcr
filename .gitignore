@@ -1,7 +1,4 @@
 /.idea/
-/data/doc/riverus/
-/data/jpg/riverus/
-/data/pdf/riverus/
-/data/rtf/riverus/
-/data/tif/riverus/
-/data/xls/riverus/
+/data/accepted/
+/data/inbox/
+/data/rejected/
