@@ -10,7 +10,7 @@
 ### Table of Contents
 
 **[1. Introduction](#introduction)**<br>
-**[2. Resources](#resources)**<br>
+**[2. Requirements](#requirements)**<br>
 
 ----
 
@@ -29,4 +29,4 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ![](docs/images/dcr_Overview.png)
 
-## <a name="resources"></a> 2. Resources
+## <a name="requirements"></a> 2. Requirements
