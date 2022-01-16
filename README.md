@@ -16,16 +16,17 @@
 
 ## <a name="introduction"></a> 1. Introduction
 
-**`OCRBench`** can be used to determine the performance of different OCR engines under identical conditions.
+Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](research/README.md#Rahman)), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
+Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org). 
+Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to PDF format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) software. 
+This process applies to all image format files e.g. jpeg, tiff etc., as well as scanned images in PDF format.  
 
-The currently supported OCR engines are:
+### High level system architecture from the paper:
 
-| Product                                                     | Company                   | Remarks            |
-|:------------------------------------------------------------|:--------------------------|:-------------------|
-| [Document AI](https://cloud.google.com/document-ai)         | Google Cloud              | Cloud, ML          |
-| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) | Ray Smith                 | Local, Open Source |
-| [Textract](https://aws.amazon.com/textract)                 | Amazon Web services, Inc. | Cloud, ML          |
+![](docs/images/Screen-Shot-2020-06-03-at-1.45.33-PM.png)
 
-----
+### High level dcr architecture:
+
+![](docs/images/dcr_Overview.png)
 
 ## <a name="resources"></a> 2. Resources
