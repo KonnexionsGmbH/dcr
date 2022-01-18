@@ -11,6 +11,9 @@
 
 **[1. Introduction](#introduction)**<br>
 **[2. Requirements](#requirements)**<br>
+**[3. Installation](#installation)**<br>
+**[4. Operation](#operation)**<br>
+**[5. API Documentation](#api_documentation)**<br>
 
 ----
 
@@ -30,3 +33,16 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 ![](docs/images/dcr_Overview.png)
 
 ## <a name="requirements"></a> 2. Requirements
+
+## <a name="installation"></a> 3. Installation
+
+## <a name="operation"></a> 4. Operation
+
+## <a name="api_documentation"></a> 5. API Documentation
+
+### Modules
+
+**[db.schema](#docs/api/schema.md)**<br>
+**[dcr](#introduction)**<br>
+**[inbox.document](#requirements)**<br>
+**[utils.environ](#installation)**<br>
