@@ -1,5 +1,4 @@
 *.log
 /.idea/
-/data/accepted/
-/data/inbox/
-/data/rejected/
+/data/
+/.vscode/
