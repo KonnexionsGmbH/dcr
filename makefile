@@ -1,23 +1,14 @@
 .DEFAULT_GOAL := dev
 
-dev: inst_dev qual api_doc
-prod: inst_prod compile
+dev: inst_dev qual pdoc3
+prod: inst_prod compileall
 
-inst_dev: pip pipenv install_dev
-inst_prod: pip pipenv install_prod
+inst_dev: pip pipenv pipenv_dev
+inst_prod: pip pipenv pipenv_prod
 
-qual: isort black bandit mypy pycodestyle pyflakes pylint pydocstyle mccabe radon
+qual: isort black bandit mypy pycodestyle pyflakes pylint pydocstyle mccabe radon pytest
 
 export PYTHONPATH=src/dcr
-
-# https://pdoc3.github.io/pdoc/
-api_doc:
-	@echo "Info **********  Start: Create API Documentation ********************"
-	pdoc3 -o docs/api --force --skip-errors src/dcr/dcr.py
-	pdoc3 -o docs/api --force --skip-errors src/dcr/db/schema.py
-	pdoc3 -o docs/api --force --skip-errors src/dcr/inbox/document.py
-	pdoc3 -o docs/api --force --skip-errors src/dcr/utils/environ.py
-	@echo "Info **********  End:   Create API Documentation ********************"
 
 # https://github.com/PyCQA/bandit
 bandit:
@@ -28,26 +19,14 @@ bandit:
 # https://github.com/psf/black
 black:
 	@echo "Info **********  Start: black ***************************************"
-	black --line-length 79 src
+	black src
 	@echo "Info **********  End:   black ***************************************"
 
 # https://docs.python.org/3/library/compileall.html
-compile:
+compileall:
 	@echo "Info **********  Start: Compile All Python Scripts ******************"
 	python -m compileall
 	@echo "Info **********  End:   Compile All Python Scripts ******************"
-
-# https://pipenv.pypa.io/en/latest/
-install_dev:
-	@echo "Info **********  Start: Installation of Development Packages ********"
-	pipenv install --dev
-	@echo "Info **********  End:   Installation of Development Packages ********"
-
-# https://pipenv.pypa.io/en/latest/
-install_prod:
-	@echo "Info **********  Start: Installation of Production Packages *********"
-	pipenv install
-	@echo "Info **********  End:   Installation of Production Packages *********"
 
 # https://github.com/PyCQA/isort
 isort:
@@ -64,8 +43,17 @@ mccabe:
 # http://mypy-lang.org
 mypy:
 	@echo "Info **********  Start: MyPy ****************************************"
-	mypy --ignore-missing-imports --install-types src/*/*
+	mypy  src/*/*
 	@echo "Info **********  End:   MyPy ****************************************"
+
+# https://pdoc3.github.io/pdoc/
+pdoc3:
+	@echo "Info **********  Start: Create API Documentation ********************"
+	pdoc -o docs/api --force --skip-errors src/dcr/dcr.py
+	pdoc -o docs/api --force --skip-errors src/dcr/db/schema.py
+	pdoc -o docs/api --force --skip-errors src/dcr/inbox/document.py
+	pdoc -o docs/api --force --skip-errors src/dcr/utils/environ.py
+	@echo "Info **********  End:   Create API Documentation ********************"
 
 # https://pypi.org/project/pip/
 pip:
@@ -79,11 +67,19 @@ pipenv:
 	python -m pip install pipenv
 	python -m pip install --upgrade pipenv
 	@echo "Info **********  End:   Install and Upgrde pipenv *******************"
+pipenv_dev:
+	@echo "Info **********  Start: Installation of Development Packages ********"
+	pipenv install --dev
+	@echo "Info **********  End:   Installation of Development Packages ********"
+pipenv_prod:
+	@echo "Info **********  Start: Installation of Production Packages *********"
+	pipenv install
+	@echo "Info **********  End:   Installation of Production Packages *********"
 
 # https://github.com/PyCQA/pycodestyle
 pycodestyle:
 	@echo "Info **********  Start: pycodestyle *********************************"
-	pycodestyle --show-pep8 --show-source src/*/*
+	pycodestyle src/*/*
 	@echo "Info **********  End:   pycodestyle *********************************"
 
 # https://github.com/PyCQA/pydocstyle
@@ -104,6 +100,12 @@ pylint:
 	@echo PYTHONPATH=${PYTHONPATH}
 	pylint src/*/*
 	@echo "Info **********  End:   Pylint **************************************"
+
+# https://docs.pytest.org/en/6.2.x/
+pytest:
+	@echo "Info **********  Start: pytest **************************************"
+	pytest
+	@echo "Info **********  End:   pytest **************************************"
 
 # https://radon.readthedocs.io/en/latest/
 radon:

@@ -129,7 +129,7 @@ def initialise_logger():
     Returns:
         Logger: Default logger.
     """
-    with open("resources/logging.yaml", "r", encoding="utf-8") as file:
+    with open("logging_cfg.yaml", "r", encoding="utf-8") as file:
         log_config = yaml.safe_load(file.read())
 
     logging.config.dictConfig(log_config)
