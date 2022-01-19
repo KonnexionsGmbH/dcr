@@ -42,7 +42,7 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ### Modules
 
-**[db.schema](docs/api/schema.md)**<br>
 **[dcr](docs/api/dcr.md)**<br>
+**[db.schema](docs/api/schema.md)**<br>
 **[inbox.document](docs/api/document.md)**<br>
 **[utils.environ](docs/api/environ.md)**<br>

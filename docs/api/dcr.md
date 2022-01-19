@@ -1,5 +1,6 @@
 Module dcr
 ==========
+Entry point functionality.
 
 Functions
 ---------

@@ -1,12 +1,13 @@
 Module schema
 =============
+Database Schema Management.
 
 Functions
 ---------
 
     
 `check_schema_existence(logger, config, engine)`
-:   Checks the existence of the database schema.
+:   Check the existence of the database schema.
     
     Args:
         logger (Logger): Default logger.
@@ -15,7 +16,7 @@ Functions
 
     
 `check_schema_upgrade(logger, _config, _engine)`
-:   Checks if the current database schema needs to be upgraded.
+:   Check if the current database schema needs to be upgraded.
     
     Args:
         logger (Logger): Default logger.
@@ -33,7 +34,7 @@ Functions
 
     
 `create_table_document(metadata, table)`
-:   Initialises the database table document.
+:   Initialise the database table document.
     
     If the database table is not yet included in the database schema, then the
     database table is created.
@@ -44,10 +45,11 @@ Functions
 
     
 `create_table_version(metadata, table)`
-:   Initialises the database table version.
+:   Initialise the database table version.
     
     If the database table is not yet included in the database schema, then the
-    database table is created and the current version number of dcr is inserted.
+    database table is created and the current version number of dcr is
+    inserted.
     
     Args:
         metadata (MetaData): Database schema.
@@ -58,7 +60,7 @@ Functions
 
     
 `get_engine(logger, config)`
-:   Initialises the database.
+:   Initialise the database.
     
     Args:
         logger (Logger): Default logger.
@@ -69,10 +71,11 @@ Functions
 
     
 `insert_version_number(logger, config, engine, version)`
-:   Initialises the database table version.
+:   Initialise the database table version.
     
     If the database table is not yet included in the database schema, then the
-    database table is created and the current version number of dcr is inserted.
+    database table is created and the current version number of dcr is
+    inserted.
     
     Args:
         logger  (Logger):           Default logger.

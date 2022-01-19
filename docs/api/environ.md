@@ -1,12 +1,16 @@
 Module environ
 ==============
+Auxiliary routines for the environment data..
+
+Support of command line arguments, configuration parameters and
+logging functionality.
 
 Functions
 ---------
 
     
 `get_args(logger)`
-:   Loading the command line arguments into memory.
+:   Load the command line arguments into memory.
     
     Args:
         logger (Logger): Default logger.
@@ -16,7 +20,7 @@ Functions
 
     
 `get_config(logger)`
-:   Loading the configuration parameters into memory.
+:   Load the configuration parameters into memory.
     
     Args:
         logger (Logger): Default logger.
@@ -26,7 +30,7 @@ Functions
 
     
 `initialise_logger()`
-:   Initialising the logging functionality.
+:   Initialise the logging functionality.
     
     Returns:
         Logger: Default logger.
