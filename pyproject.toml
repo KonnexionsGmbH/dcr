@@ -7,8 +7,29 @@ line-length = 79
 force_grid_wrap = 0
 include_trailing_comma = true
 line_length = 79
-multi_line_output = 3
+multi_line_output = 1
+overwrite_in_place = true
 use_parentheses = true
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_any_decorated = true
+disallow_any_explicit = true
+disallow_any_expr = false
+disallow_any_generics = true
+disallow_any_unimported = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+follow_imports = "skip"
+namespace_packages = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_ignores = true
 
 [tool.pycodestyle]
 benchmark = true
@@ -24,7 +45,7 @@ statistics = true
 [tool.pylint]
 
 [tool.pytest.ini_options]
-console_output_style = "count
+console_output_style = "count"
 log_auto_indent = true
 log_cli = true
 log_level = "DEBUG"

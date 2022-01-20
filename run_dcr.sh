@@ -8,15 +8,16 @@ set -e
 #
 # ----------------------------------------------------------------------------------
 
-export DCR_CHOICE_ACTION_DEFAULT=c_d
+export DCR_CHOICE_ACTION_DEFAULT=m_d_e
 
 rm -f dcr.log.log
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
-    echo "c_d             - Compile the development version of dcr"
-    echo "c_p             - Compile the productive version of dcr"
-    echo "new             - Complete processing of all new documents"
+    echo "m_d_e           - Run the development ecosystem"
+    echo "m_d_i           - Run the installation of the necessary 3rd party packages for development"
+    echo "m_p             - Run the installation of the necessary 3rd party packages for development and compile all packages and modules"
+    echo "new             - Run the complete processing of all new documents"
     echo "p_i             - Process input folder"
     echo "p_i_o           - Process input folder OCR"
     echo "------------------------------------------------------------------------------"
@@ -49,12 +50,20 @@ date +"DATE TIME : %d.%m.%Y %H:%M:%S"
 echo "=============================================================================="
 
 case "${DCR_CHOICE_ACTION}" in
-  c_d)
-    if ! ( make dev ); then
+  m_d_e)
+    # Development ecosystem
+    if ! ( make eco_dev ); then
+        exit 255
+    fi
+    ;;
+  m_d_i)
+    # Development install packages
+    if ! ( make inst_dev ); then
         exit 255
     fi
     ;;
   c_p)
+    # Production install packages and compile all dcr packages and modules
     if ! ( make prod ); then
         exit 255
     fi

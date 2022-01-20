@@ -1,13 +1,13 @@
 .DEFAULT_GOAL := dev
 
-dev: inst_dev qual pdoc3
-prod: inst_prod compileall
+eco_dev: isort black bandit mypy pycodestyle pyflakes pylint pydocstyle mccabe radon pytest pdoc3
 
-inst_dev: pip pipenv pipenv_dev
+inst_dev:  pip pipenv pipenv_dev
 inst_prod: pip pipenv pipenv_prod
 
-qual: isort black bandit mypy pycodestyle pyflakes pylint pydocstyle mccabe radon pytest
+prod: inst_prod compileall
 
+export MYPYPATH=src/dcr
 export PYTHONPATH=src/dcr
 
 # https://github.com/PyCQA/bandit
@@ -31,7 +31,7 @@ compileall:
 # https://github.com/PyCQA/isort
 isort:
 	@echo "Info **********  Start: isort ***************************************"
-	isort src/*/*
+	isort src/*/*.py src/*/*/*.py
 	@echo "Info **********  End:   isort ***************************************"
 
 # https://github.com/PyCQA/mccabe
@@ -43,7 +43,8 @@ mccabe:
 # http://mypy-lang.org
 mypy:
 	@echo "Info **********  Start: MyPy ****************************************"
-	mypy  src/*/*
+	@echo MYPYPATH=${MYPYPATH}
+	mypy  src
 	@echo "Info **********  End:   MyPy ****************************************"
 
 # https://pdoc3.github.io/pdoc/
@@ -57,16 +58,16 @@ pdoc3:
 
 # https://pypi.org/project/pip/
 pip:
-	@echo "Info **********  Start: Install and / or Upgrde pip *****************"
+	@echo "Info **********  Start: Install and / or Upgrade pip ****************"
 	python -m pip install --upgrade pip
-	@echo "Info **********  End:   Install and / or Upgrde pip *****************"
+	@echo "Info **********  End:   Install and / or Upgrade pip ****************"
 
 # https://pipenv.pypa.io/en/latest/
 pipenv:
-	@echo "Info **********  Start: Install and Upgrde pipenv *******************"
+	@echo "Info **********  Start: Install and Upgrade pipenv ******************"
 	python -m pip install pipenv
 	python -m pip install --upgrade pipenv
-	@echo "Info **********  End:   Install and Upgrde pipenv *******************"
+	@echo "Info **********  End:   Install and Upgrade pipenv ******************"
 pipenv_dev:
 	@echo "Info **********  Start: Installation of Development Packages ********"
 	pipenv install --dev

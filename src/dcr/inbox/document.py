@@ -13,13 +13,19 @@ import pathlib
 import shutil
 from datetime import datetime
 
+import sqlalchemy
+
 
 # ----------------------------------------------------------------------------------
 # Convert the files in the inbox.
 # ----------------------------------------------------------------------------------
 
 
-def process_inbox(logger, config, _engine):
+def process_inbox(
+    logger: logging.Logger,
+    config: dict[str, str],
+    _engine: sqlalchemy.engine.base.Engine,
+) -> None:
     """Process the files in the inbox.
 
     Documents of type doc, docx or txt are converted to pdf format and
@@ -32,9 +38,9 @@ def process_inbox(logger, config, _engine):
     For each document an entry is created in the database table document.
 
     Args:
-        logger (Logger): Default logger.
-        config (dict):   Configuration parameters.
-        _engine (Engine): Database state.
+        logger (logging.Logger):       Default logger.
+        config (dict[str, str]):       Configuration parameters.
+        _engine (sqlalchemy.engine.base.Engine): Database state.
     """
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug("Start")
@@ -74,7 +80,7 @@ def process_inbox(logger, config, _engine):
                 )
 
     print(
-        "Progress update + datetime.now() + "
+        "Progress update "
         + str(datetime.now())
         + " : The documents in the inbox file directory are checked and "
         "prepared for further processing."

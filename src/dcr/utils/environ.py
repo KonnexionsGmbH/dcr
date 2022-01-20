@@ -10,6 +10,7 @@ import logging
 import logging.config
 import sys
 from datetime import datetime
+from typing import Union
 
 import yaml
 
@@ -19,7 +20,7 @@ import yaml
 # ----------------------------------------------------------------------------------
 
 
-def get_args(logger):
+def get_args(logger: logging.Logger) -> dict[str, bool]:
     """Load the command line arguments into memory.
 
     Args:
@@ -55,7 +56,7 @@ def get_args(logger):
             sys.exit(1)
 
     print(
-        "Progress update + datetime.now() + "
+        "Progress update "
         + str(datetime.now())
         + " : The command line arguments are validated and loaded."
     )
@@ -71,14 +72,14 @@ def get_args(logger):
 # ----------------------------------------------------------------------------------
 
 
-def get_config(logger):
+def get_config(logger: logging.Logger) -> dict[str, Union[str, str]]:
     """Load the configuration parameters into memory.
 
     Args:
-        logger (Logger): Default logger.
+        logger (logging.Logger): Default logger.
 
     Returns:
-        dict: Configuration parameters.
+        dict[str, Union[str, PathLike[str]]]: Configuration parameters.
     """
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug("Start")
@@ -106,7 +107,7 @@ def get_config(logger):
     }
 
     print(
-        "Progress update + datetime.now() + "
+        "Progress update "
         + str(datetime.now())
         + " : The configuration parameters are checked and loaded."
     )
@@ -122,7 +123,7 @@ def get_config(logger):
 # ----------------------------------------------------------------------------------
 
 
-def initialise_logger():
+def initialise_logger() -> logging.Logger:
     """
     Initialise the logging functionality.
 
@@ -137,7 +138,7 @@ def initialise_logger():
     logger.setLevel(logging.DEBUG)
 
     print(
-        "Progress update + datetime.now() + "
+        "Progress update "
         + str(datetime.now())
         + " : The logger is configured and ready."
     )

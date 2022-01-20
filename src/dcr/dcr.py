@@ -14,7 +14,7 @@ import utils.environ
 # ----------------------------------------------------------------------------------
 
 
-def main():
+def main() -> None:
     """Entry point."""
     # Initialise the logging functionality.
     logger = utils.environ.initialise_logger()
