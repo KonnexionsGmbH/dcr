@@ -1,4 +1,4 @@
-# dcr - Document Content Recognition
+# dcr_root - Document Content Recognition
 
 ![Travis (.org)](https://img.shields.io/travis/KonnexionsGmbH/dcr.svg?branch=master)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
@@ -28,7 +28,7 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ![](docs/images/Screen-Shot-2020-06-03-at-1.45.33-PM.png)
 
-### High level dcr architecture:
+### High level dcr_root architecture:
 
 ![](docs/images/dcr_Overview.png)
 
@@ -42,7 +42,7 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ### Modules
 
-**[dcr](docs/api/dcr.md)**<br>
+**[dcr_root](docs/api/dcr.md)**<br>
 **[db.schema](docs/api/schema.md)**<br>
 **[inbox.document](docs/api/document.md)**<br>
 **[utils.environ](docs/api/environ.md)**<br>

@@ -69,7 +69,7 @@ case "${DCR_CHOICE_ACTION}" in
     fi
     ;;
   p_i|p_i_o)
-    if ! ( python src/dcr/dcr.py "${DCR_CHOICE_ACTION}" ); then
+    if ! ( python src/dcr/app.py "${DCR_CHOICE_ACTION}" ); then
         exit 255
     fi
     ;;

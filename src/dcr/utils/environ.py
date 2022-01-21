@@ -5,14 +5,21 @@ Support of command line arguments, configuration parameters and
 logging functionality.
 """
 
-import configparser
 import logging
 import logging.config
 import sys
 from datetime import datetime
 from typing import Union
 
+import tomli
 import yaml
+from utils.constant import ACTION_NEW_COMPLETE
+from utils.constant import ACTION_PROCESS_INBOX
+from utils.constant import ACTION_PROCESS_INBOX_OCR
+from utils.constant import DCR_CFG_FILE
+from utils.constant import LOGGER_END
+from utils.constant import LOGGER_PROGRESS_UPDATE
+from utils.constant import LOGGER_START
 
 
 # ----------------------------------------------------------------------------------
@@ -30,7 +37,7 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
         dict: Edited command line arguments.
     """
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("Start")
+        logger.debug(LOGGER_START)
 
     num = len(sys.argv)
 
@@ -38,14 +45,20 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
         logger.critical("fatal error: command line arguments missing")
         sys.exit(1)
 
-    args = {"p_i": False, "p_i_o": False}
+    args = {
+        ACTION_PROCESS_INBOX: False,
+        ACTION_PROCESS_INBOX_OCR: False,
+    }
 
     for i in range(1, num):
         arg = sys.argv[i].lower()
-        if arg == "new":
+        if arg == ACTION_NEW_COMPLETE:
             for key in args:
                 args[key] = True
-        elif arg in ("p_i", "p_i_o"):
+        elif arg in (
+            ACTION_PROCESS_INBOX,
+            ACTION_PROCESS_INBOX_OCR,
+        ):
             args[arg] = True
         else:
             logger.critical(
@@ -56,13 +69,13 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
             sys.exit(1)
 
     print(
-        "Progress update "
+        LOGGER_PROGRESS_UPDATE
         + str(datetime.now())
         + " : The command line arguments are validated and loaded."
     )
 
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("End")
+        logger.debug(LOGGER_END)
 
     return args
 
@@ -82,38 +95,22 @@ def get_config(logger: logging.Logger) -> dict[str, Union[str, str]]:
         dict[str, Union[str, PathLike[str]]]: Configuration parameters.
     """
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("Start")
+        logger.debug(LOGGER_START)
 
-    config_parser = configparser.ConfigParser()
-    config_parser.read("resources/dcr.properties")
+    with open(DCR_CFG_FILE, "rb", encoding="utf-8") as file:
+        config: dict[str, str] = tomli.load(file)
 
-    config = {
-        "database.url": config_parser["DEFAULT"]["database.url"],
-        "dcr.version": config_parser["DEFAULT"]["dcr.version"],
-        "directory.inbox": config_parser["DEFAULT"]["directory.inbox"],
-        "directory.inbox.accepted": config_parser["DEFAULT"][
-            "directory.inbox.accepted"
-        ],
-        "directory.inbox.ocr": config_parser["DEFAULT"]["directory.inbox.ocr"],
-        "directory.inbox.ocr.accepted": config_parser["DEFAULT"][
-            "directory.inbox.ocr.accepted"
-        ],
-        "directory.inbox.ocr.rejected": config_parser["DEFAULT"][
-            "directory.inbox.ocr.rejected"
-        ],
-        "directory.inbox.rejected": config_parser["DEFAULT"][
-            "directory.inbox.rejected"
-        ],
-    }
+    for entry in config:
+        print(entry)
 
     print(
-        "Progress update "
+        LOGGER_PROGRESS_UPDATE
         + str(datetime.now())
         + " : The configuration parameters are checked and loaded."
     )
 
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("End")
+        logger.debug(LOGGER_END)
 
     return config
 
@@ -134,11 +131,11 @@ def initialise_logger() -> logging.Logger:
         log_config = yaml.safe_load(file.read())
 
     logging.config.dictConfig(log_config)
-    logger = logging.getLogger("dcr.py")
+    logger = logging.getLogger("app.py")
     logger.setLevel(logging.DEBUG)
 
     print(
-        "Progress update "
+        LOGGER_PROGRESS_UPDATE
         + str(datetime.now())
         + " : The logger is configured and ready."
     )

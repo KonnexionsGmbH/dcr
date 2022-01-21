@@ -6,7 +6,11 @@ import logging.config
 
 import sqlalchemy
 import sqlalchemy.orm
+from sqlalchemy import ForeignKey
 from sqlalchemy import insert
+from utils.constant import LOGGER_END
+from utils.constant import LOGGER_PROGRESS_UPDATE
+from utils.constant import LOGGER_START
 
 
 # ----------------------------------------------------------------------------------
@@ -27,7 +31,7 @@ def check_schema_existence(
         engine (sqlalchemy.engine.base.Engine): Database state.
     """
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("Start")
+        logger.debug(LOGGER_START)
 
     if not sqlalchemy.inspect(engine).has_table("version"):
         create_schema(logger, config, engine)
@@ -35,7 +39,7 @@ def check_schema_existence(
         check_schema_upgrade(logger, config, engine)
 
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("End")
+        logger.debug(LOGGER_END)
 
 
 # ----------------------------------------------------------------------------------
@@ -56,12 +60,12 @@ def check_schema_upgrade(
         _engine (sqlalchemy.engine.base.Engine): Database state.
     """
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("Start")
+        logger.debug(LOGGER_START)
 
     # TBD: Database upgrade
 
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("End")
+        logger.debug(LOGGER_END)
 
 
 # ----------------------------------------------------------------------------------
@@ -82,7 +86,7 @@ def create_schema(
         engine (sqlalchemy.engine.base.Engine): Database state.
     """
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("Start")
+        logger.debug(LOGGER_START)
 
     metadata = sqlalchemy.MetaData(engine)
 
@@ -90,19 +94,21 @@ def create_schema(
 
     create_table_document(metadata)
 
+    create_table_journal(metadata)
+
     # Implement the database schema
     metadata.create_all(engine)
 
     insert_version_number(logger, config, engine, version)
 
     print(
-        "Progress update "
+        LOGGER_PROGRESS_UPDATE
         + str(datetime.datetime.now())
         + " : The database schema has been created."
     )
 
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("End")
+        logger.debug(LOGGER_END)
 
 
 # ----------------------------------------------------------------------------------
@@ -112,7 +118,7 @@ def create_schema(
 
 def create_table_document(
     metadata: sqlalchemy.schema.MetaData,
-) -> sqlalchemy.Table:
+) -> None:
     """Initialise the database table document.
 
     If the database table is not yet included in the database schema, then the
@@ -120,13 +126,10 @@ def create_table_document(
 
     Args:
         metadata (sqlalchemy.schema.MetaData): Database schema.
-
-    Return:
-        sqlalchemy.Table: Schema of database table document.
     """
     table_name = "document"
 
-    return sqlalchemy.Table(
+    sqlalchemy.Table(
         table_name,
         metadata,
         sqlalchemy.Column(
@@ -145,6 +148,50 @@ def create_table_document(
         sqlalchemy.Column(
             "status", sqlalchemy.String, nullable=False, unique=True
         ),
+    )
+
+
+# ----------------------------------------------------------------------------------
+# Initialise the database table journal.
+# ----------------------------------------------------------------------------------
+
+
+def create_table_journal(
+    metadata: sqlalchemy.schema.MetaData,
+) -> None:
+    """Initialise the database table journal.
+
+    If the database table is not yet included in the database schema, then the
+    database table is created.
+
+    Args:
+        metadata (sqlalchemy.schema.MetaData): Database schema.
+    """
+    table_name = "journal"
+
+    sqlalchemy.Table(
+        table_name,
+        metadata,
+        sqlalchemy.Column(
+            "id",
+            sqlalchemy.Integer,
+            autoincrement=True,
+            nullable=False,
+            primary_key=True,
+        ),
+        sqlalchemy.Column(
+            "created_at", sqlalchemy.DateTime, default=datetime.datetime.now
+        ),
+        sqlalchemy.Column("action", sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            "document_id",
+            sqlalchemy.Integer,
+            ForeignKey("document.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
+        sqlalchemy.Column("function", sqlalchemy.String, nullable=False),
+        sqlalchemy.Column("module", sqlalchemy.String, nullable=False),
+        sqlalchemy.Column("package", sqlalchemy.String, nullable=False),
     )
 
 
@@ -210,22 +257,22 @@ def get_engine(
         sqlalchemy.engine.base.Engine: Database state.
     """
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("Start")
+        logger.debug(LOGGER_START)
 
-    engine = sqlalchemy.create_engine(config["database.url"])
+    engine = sqlalchemy.create_engine(config["database_url"])
 
     check_schema_existence(logger, config, engine)
 
     print(
-        "Progress update "
+        LOGGER_PROGRESS_UPDATE
         + str(datetime.datetime.now())
         + " : The database is ready with version "
-        + config["dcr.version"]
+        + config["dcr_version"]
         + "."
     )
 
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("End")
+        logger.debug(LOGGER_END)
 
     return engine
 
@@ -255,11 +302,11 @@ def insert_version_number(
                                                  version.
     """
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("Start")
+        logger.debug(LOGGER_START)
 
     with engine.connect() as conn:
-        conn.execute(insert(version), [{"version": config["dcr.version"]}])
+        conn.execute(insert(version), [{"version": config["dcr_version"]}])
         conn.commit()
 
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("End")
+        logger.debug(LOGGER_END)

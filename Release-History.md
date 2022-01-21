@@ -1,4 +1,4 @@
-# dcr - Release History
+# dcr_root - Release History
 
 ![Travis (.org)](https://img.shields.io/travis/KonnexionsGmbH/dcr.svg?branch=master)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)

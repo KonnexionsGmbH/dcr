@@ -14,6 +14,9 @@ import shutil
 from datetime import datetime
 
 import sqlalchemy
+from utils.constant import LOGGER_END
+from utils.constant import LOGGER_PROGRESS_UPDATE
+from utils.constant import LOGGER_START
 
 
 # ----------------------------------------------------------------------------------
@@ -43,17 +46,17 @@ def process_inbox(
         _engine (sqlalchemy.engine.base.Engine): Database state.
     """
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("Start")
+        logger.debug(LOGGER_START)
 
-    accepted = pathlib.Path(config["directory.inbox.accepted"])
+    accepted = pathlib.Path(config["directory_inbox_accepted"])
     try:
         os.mkdir(accepted)
     except OSError:
         pass
 
-    inbox = pathlib.Path(config["directory.inbox"])
+    inbox = pathlib.Path(config["directory_inbox"])
 
-    rejected = pathlib.Path(config["directory.inbox.rejected"])
+    rejected = pathlib.Path(config["directory_inbox_rejected"])
     try:
         os.mkdir(rejected)
     except OSError:
@@ -80,11 +83,11 @@ def process_inbox(
                 )
 
     print(
-        "Progress update "
+        LOGGER_PROGRESS_UPDATE
         + str(datetime.now())
         + " : The documents in the inbox file directory are checked and "
         "prepared for further processing."
     )
 
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("End")
+        logger.debug(LOGGER_END)
