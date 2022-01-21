@@ -1,4 +1,8 @@
-"""Database Schema Management."""
+"""
+### Database Schema Management.
+
+Database schema-related processing routines.
+"""
 
 import datetime
 import logging
@@ -13,9 +17,9 @@ from utils.constant import LOGGER_PROGRESS_UPDATE
 from utils.constant import LOGGER_START
 
 
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Check the existence of the database schema.
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 def check_schema_existence(
@@ -23,12 +27,13 @@ def check_schema_existence(
     config: dict[str, str],
     engine: sqlalchemy.engine.base.Engine,
 ) -> None:
-    """Check the existence of the database schema.
+    """
+    **Check the existence of the database schema**.
 
-    Args:
-        logger (logging.Logger):                Default logger.
-        config (dict[str, str]):                Configuration parameters.
-        engine (sqlalchemy.engine.base.Engine): Database state.
+    **Args**:
+    - **logger (logging.Logger)**:                Current logger.
+    - **config (dict[str, str])**:                Configuration parameters.
+    - **engine (sqlalchemy.engine.base.Engine)**: Database state.
     """
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)
@@ -42,9 +47,9 @@ def check_schema_existence(
         logger.debug(LOGGER_END)
 
 
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Check if the current database schema needs to be upgraded...
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 def check_schema_upgrade(
@@ -52,12 +57,13 @@ def check_schema_upgrade(
     _config: dict[str, str],
     _engine: sqlalchemy.engine.base.Engine,
 ) -> None:
-    """Check if the current database schema needs to be upgraded.
+    """
+    **Check if the current database schema needs to be upgraded**.
 
-    Args:
-        logger (logging.Logger):                 Default logger.
-        _config (dict[str, str]):                Configuration parameters.
-        _engine (sqlalchemy.engine.base.Engine): Database state.
+    **Args**:
+    - **logger (logging.Logger)**:                 Current logger.
+    - **_config (dict[str, str])**:                Configuration parameters.
+    - **_engine (sqlalchemy.engine.base.Engine)**: Database state.
     """
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)
@@ -68,9 +74,9 @@ def check_schema_upgrade(
         logger.debug(LOGGER_END)
 
 
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Create the database schema.
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 def create_schema(
@@ -78,12 +84,13 @@ def create_schema(
     config: dict[str, str],
     engine: sqlalchemy.engine.base.Engine,
 ) -> None:
-    """Create the database schema.
+    """
+    **Create the database schema**.
 
-    Args:
-        logger (logging.Logger):                Default logger.
-        config (dict[str, str]):                Configuration parameters.
-        engine (sqlalchemy.engine.base.Engine): Database state.
+    **Args**:
+    - **logger (logging.Logger)**:                Current logger.
+    - **config (dict[str, str])**:                Configuration parameters.
+    - **engine (sqlalchemy.engine.base.Engine)**: Database state.
     """
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)
@@ -111,21 +118,22 @@ def create_schema(
         logger.debug(LOGGER_END)
 
 
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Initialise the database table document.
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 def create_table_document(
     metadata: sqlalchemy.schema.MetaData,
 ) -> None:
-    """Initialise the database table document.
+    """
+    **Initialise the database table `document`**.
 
     If the database table is not yet included in the database schema, then the
     database table is created.
 
-    Args:
-        metadata (sqlalchemy.schema.MetaData): Database schema.
+    **Args**:
+    - **metadata (sqlalchemy.schema.MetaData)**: Database schema.
     """
     table_name = "document"
 
@@ -151,21 +159,22 @@ def create_table_document(
     )
 
 
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Initialise the database table journal.
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 def create_table_journal(
     metadata: sqlalchemy.schema.MetaData,
 ) -> None:
-    """Initialise the database table journal.
+    """
+    **Initialise the database table `journal`**.
 
     If the database table is not yet included in the database schema, then the
     database table is created.
 
-    Args:
-        metadata (sqlalchemy.schema.MetaData): Database schema.
+    **Args**:
+    - **metadata (sqlalchemy.schema.MetaData)**: Database schema.
     """
     table_name = "journal"
 
@@ -195,25 +204,26 @@ def create_table_journal(
     )
 
 
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Initialise the database table version.
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 def create_table_version(
     metadata: sqlalchemy.schema.MetaData,
 ) -> sqlalchemy.Table:
-    """Initialise the database table version.
+    """
+    **Initialise the database table `version`**.
 
     If the database table is not yet included in the database schema, then the
     database table is created and the current version number of dcr is
     inserted.
 
-    Args:
-        metadata (sqlalchemy.schema.MetaData): Database schema.
+    **Args**:
+    - **metadata (sqlalchemy.schema.MetaData)**: Database schema.
 
     Return:
-        sqlalchemy.Table: Schema of database table version.
+    - **sqlalchemy.Table**: Schema of database table `version`.
     """
     table_name = "version"
 
@@ -239,22 +249,23 @@ def create_table_version(
     )
 
 
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Initialise the database.
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 def get_engine(
     logger: logging.Logger, config: dict[str, str]
 ) -> sqlalchemy.engine.base.Engine:
-    """Initialise the database.
+    """
+    **Initialise the database**.
 
-    Args:
-        logger (logging.Logger): Default logger.
-        config (dict[str, str]): Configuration parameters.
+    **Args**:
+    - **logger (logging.Logger)**: Current logger.
+    - **config (dict[str, str])**: Configuration parameters.
 
     Returns:
-        sqlalchemy.engine.base.Engine: Database state.
+    - **sqlalchemy.engine.base.Engine**: Database state.
     """
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)
@@ -277,9 +288,9 @@ def get_engine(
     return engine
 
 
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Inserts the current version number in the version table.
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 def insert_version_number(
@@ -288,18 +299,19 @@ def insert_version_number(
     engine: sqlalchemy.engine.base.Engine,
     version: sqlalchemy.Table,
 ) -> None:
-    """Initialise the database table version.
+    """
+    **Initialise the database table version**.
 
     If the database table is not yet included in the database schema, then the
     database table is created and the current version number of dcr is
     inserted.
 
-    Args:
-        logger  (logging.Logger):                Default logger.
-        config  (dict[str, str]):                Configuration parameters.
-        engine  (sqlalchemy.engine.base.Engine): Database state.
-        version (sqlalchemy.Table):              Schema of database table
-                                                 version.
+    **Args**:
+    - **logger  (logging.Logger):**   Current logger.
+    - **config  (dict[str, str]):**   Configuration parameters.
+    - **engine  (sqlalchemy.engine.base.Engine)**:
+                                      Database state.
+    - **version (sqlalchemy.Table):** Schema of database table `version`.
     """
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)

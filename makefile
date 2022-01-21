@@ -10,7 +10,7 @@ prod: inst_prod compileall
 ifeq ($(OS),Windows_NT)
     export DCR_PDOC_OUT=docs\\api
     export DCR_PDOC_OUT_DEL=if exist ${DCR_PDOC_OUT} rmdir /s /q ${DCR_PDOC_OUT}
-    export DCR_SOURCE_PATH=src\\dcr\\*.py src\\dcr\\*\\*.py
+    export DCR_SOURCE_PATH=$(dir src\\dcr\\*.py src\\dcr\\*\\*.py)
     export MYPYPATH=src\\dcr
     export PYTHONPATH=src\\dcr
 else
@@ -79,8 +79,9 @@ mypy:
 pdoc:
 	@echo "Info **********  Start: Create API Documentation ********************"
 	@echo DCR_PDOC_OUT_DEL=${DCR_PDOC_OUT_DEL}
+	@echo DCR_SOURCE_PATH=${DCR_SOURCE_PATH}
 	${DCR_PDOC_OUT_DEL}
-	python -m pdoc -d google -o ${DCR_PDOC_OUT} ${DCR_SOURCE_PATH}
+	python -m pdoc -o ${DCR_PDOC_OUT} ${DCR_SOURCE_PATH}
 	@echo "Info **********  End:   Create API Documentation ********************"
 
 # pip is the package installer for Python.

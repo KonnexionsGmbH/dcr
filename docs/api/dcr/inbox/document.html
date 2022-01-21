@@ -51,7 +51,7 @@
                     <h1 class="modulename">
 dcr<wbr>.inbox<wbr>.document    </h1>
 
-                        <div class="docstring"><p>Check and distribute incoming documents.</p>
+                        <div class="docstring"><h3 id="check-and-distribute-incoming-documents"><strong>Check and distribute incoming documents</strong>.</h3>
 
 <p>New documents are made available in one of the two file directories
 input or input_ocr. These are then checked and moved to the accepted or
@@ -61,7 +61,7 @@ rejected file directories depending on the result of the check.</p>
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Check and distribute incoming documents.</span>
+<span class="sd">### **Check and distribute incoming documents**.</span>
 
 <span class="sd">New documents are made available in one of the two file directories</span>
 <span class="sd">input or input_ocr. These are then checked and moved to the accepted or</span>
@@ -80,9 +80,13 @@ rejected file directories depending on the result of the check.</p>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_PROGRESS_UPDATE</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_START</span>
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Convert the files in the inbox.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kn">from</span> <span class="nn">dcr.utils.constant</span> <span class="kn">import</span> <span class="n">DCR_CFG_DIRECTORY_INBOX</span>
+<span class="kn">from</span> <span class="nn">dcr.utils.constant</span> <span class="kn">import</span> <span class="n">DCR_CFG_DIRECTORY_INBOX_ACCEPTED</span>
+<span class="kn">from</span> <span class="nn">dcr.utils.constant</span> <span class="kn">import</span> <span class="n">DCR_CFG_DIRECTORY_INBOX_REJECTED</span>
+<span class="kn">from</span> <span class="nn">dcr.utils.constant</span> <span class="kn">import</span> <span class="n">FILE_EXTENSION_PDF</span>
 
 
 <span class="k">def</span> <span class="nf">process_inbox</span><span class="p">(</span>
@@ -90,34 +94,37 @@ rejected file directories depending on the result of the check.</p>
     <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">_engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Process the files in the inbox.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Process the files in the inbox**.</span>
 
-<span class="sd">    Documents of type doc, docx or txt are converted to pdf format and</span>
-<span class="sd">    copied to the inbox_accepted directory.</span>
-<span class="sd">    Documents of type pdf that do not consist only of a scanned image are</span>
-<span class="sd">    copied unchanged to the inbox_accepted directory.</span>
-<span class="sd">    Documents of type pdf consisting only of a scanned image are copied</span>
-<span class="sd">    unchanged to the inbox_ocr directory.</span>
-<span class="sd">    All other documents are copied to the inbox_rejected directory.</span>
-<span class="sd">    For each document an entry is created in the database table document.</span>
+<span class="sd">    1. Documents of type `doc`, `docx` or `txt` are converted to `pdf` format</span>
+<span class="sd">       and copied to the `inbox_accepted` directory.</span>
+<span class="sd">    2. Documents of type `pdf` that do not consist only of a scanned image are</span>
+<span class="sd">       copied unchanged to the `inbox_accepted` directory.</span>
+<span class="sd">    3. Documents of type `pdf` consisting only of a scanned image are copied</span>
+<span class="sd">       unchanged to the `inbox_ocr` directory.</span>
+<span class="sd">    4. All other documents are copied to the `inbox_rejected` directory.</span>
+<span class="sd">    5. For each document an new entry is created in the database table</span>
+<span class="sd">       `document`.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger):       Default logger.</span>
-<span class="sd">        config (dict[str, str]):       Configuration parameters.</span>
-<span class="sd">        _engine (sqlalchemy.engine.base.Engine): Database state.</span>
+<span class="sd">    **Args:**</span>
+<span class="sd">    - **logger (logging.Logger)**: Current logger.</span>
+<span class="sd">    - **config (dict[str, str])**: Configuration parameters.</span>
+<span class="sd">    - **_engine (sqlalchemy.engine.base.Engine)**:</span>
+<span class="sd">                                 Database state.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
 
-    <span class="n">accepted</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;directory_inbox_accepted&quot;</span><span class="p">])</span>
+    <span class="n">accepted</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="n">DCR_CFG_DIRECTORY_INBOX_ACCEPTED</span><span class="p">])</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">accepted</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
         <span class="k">pass</span>
 
-    <span class="n">inbox</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;directory_inbox&quot;</span><span class="p">])</span>
+    <span class="n">inbox</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="n">DCR_CFG_DIRECTORY_INBOX</span><span class="p">])</span>
 
-    <span class="n">rejected</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;directory_inbox_rejected&quot;</span><span class="p">])</span>
+    <span class="n">rejected</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="n">DCR_CFG_DIRECTORY_INBOX_REJECTED</span><span class="p">])</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">rejected</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
@@ -127,7 +134,7 @@ rejected file directories depending on the result of the check.</p>
     <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="n">extension</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;.pdf&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="n">FILE_EXTENSION_PDF</span><span class="p">:</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span>
                     <span class="nb">str</span><span class="p">(</span><span class="n">inbox</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                     <span class="nb">str</span><span class="p">(</span><span class="n">accepted</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -176,34 +183,37 @@ rejected file directories depending on the result of the check.</p>
     <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">_engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Process the files in the inbox.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Process the files in the inbox**.</span>
 
-<span class="sd">    Documents of type doc, docx or txt are converted to pdf format and</span>
-<span class="sd">    copied to the inbox_accepted directory.</span>
-<span class="sd">    Documents of type pdf that do not consist only of a scanned image are</span>
-<span class="sd">    copied unchanged to the inbox_accepted directory.</span>
-<span class="sd">    Documents of type pdf consisting only of a scanned image are copied</span>
-<span class="sd">    unchanged to the inbox_ocr directory.</span>
-<span class="sd">    All other documents are copied to the inbox_rejected directory.</span>
-<span class="sd">    For each document an entry is created in the database table document.</span>
+<span class="sd">    1. Documents of type `doc`, `docx` or `txt` are converted to `pdf` format</span>
+<span class="sd">       and copied to the `inbox_accepted` directory.</span>
+<span class="sd">    2. Documents of type `pdf` that do not consist only of a scanned image are</span>
+<span class="sd">       copied unchanged to the `inbox_accepted` directory.</span>
+<span class="sd">    3. Documents of type `pdf` consisting only of a scanned image are copied</span>
+<span class="sd">       unchanged to the `inbox_ocr` directory.</span>
+<span class="sd">    4. All other documents are copied to the `inbox_rejected` directory.</span>
+<span class="sd">    5. For each document an new entry is created in the database table</span>
+<span class="sd">       `document`.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger):       Default logger.</span>
-<span class="sd">        config (dict[str, str]):       Configuration parameters.</span>
-<span class="sd">        _engine (sqlalchemy.engine.base.Engine): Database state.</span>
+<span class="sd">    **Args:**</span>
+<span class="sd">    - **logger (logging.Logger)**: Current logger.</span>
+<span class="sd">    - **config (dict[str, str])**: Configuration parameters.</span>
+<span class="sd">    - **_engine (sqlalchemy.engine.base.Engine)**:</span>
+<span class="sd">                                 Database state.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
 
-    <span class="n">accepted</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;directory_inbox_accepted&quot;</span><span class="p">])</span>
+    <span class="n">accepted</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="n">DCR_CFG_DIRECTORY_INBOX_ACCEPTED</span><span class="p">])</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">accepted</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
         <span class="k">pass</span>
 
-    <span class="n">inbox</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;directory_inbox&quot;</span><span class="p">])</span>
+    <span class="n">inbox</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="n">DCR_CFG_DIRECTORY_INBOX</span><span class="p">])</span>
 
-    <span class="n">rejected</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;directory_inbox_rejected&quot;</span><span class="p">])</span>
+    <span class="n">rejected</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="n">DCR_CFG_DIRECTORY_INBOX_REJECTED</span><span class="p">])</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">rejected</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
@@ -213,7 +223,7 @@ rejected file directories depending on the result of the check.</p>
     <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="n">extension</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;.pdf&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="n">FILE_EXTENSION_PDF</span><span class="p">:</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span>
                     <span class="nb">str</span><span class="p">(</span><span class="n">inbox</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                     <span class="nb">str</span><span class="p">(</span><span class="n">accepted</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -242,23 +252,27 @@ rejected file directories depending on the result of the check.</p>
 
         </details>
 
-            <div class="docstring"><p>Process the files in the inbox.</p>
+            <div class="docstring"><p><strong>Process the files in the inbox</strong>.</p>
 
-<p>Documents of type doc, docx or txt are converted to pdf format and
-copied to the inbox_accepted directory.
-Documents of type pdf that do not consist only of a scanned image are
-copied unchanged to the inbox_accepted directory.
-Documents of type pdf consisting only of a scanned image are copied
-unchanged to the inbox_ocr directory.
-All other documents are copied to the inbox_rejected directory.
-For each document an entry is created in the database table document.</p>
+<ol>
+<li>Documents of type <code>doc</code>, <code>docx</code> or <code>txt</code> are converted to <code>pdf</code> format
+and copied to the <code>inbox_accepted</code> directory.</li>
+<li>Documents of type <code>pdf</code> that do not consist only of a scanned image are
+copied unchanged to the <code>inbox_accepted</code> directory.</li>
+<li>Documents of type <code>pdf</code> consisting only of a scanned image are copied
+unchanged to the <code>inbox_ocr</code> directory.</li>
+<li>All other documents are copied to the <code>inbox_rejected</code> directory.</li>
+<li>For each document an new entry is created in the database table
+<code>document</code>.</li>
+</ol>
 
-<h6 id="args">Args</h6>
+<p><strong>Args:</strong></p>
 
 <ul>
-<li><strong>logger (logging.Logger):</strong>        Default logger.</li>
-<li><strong>config (dict[str, str]):</strong>        Configuration parameters.</li>
-<li><strong>_engine (sqlalchemy.engine.base.Engine):</strong>  Database state.</li>
+<li><strong>logger (logging.Logger)</strong>: Current logger.</li>
+<li><strong>config (dict[str, str])</strong>: Configuration parameters.</li>
+<li><strong>_engine (sqlalchemy.engine.base.Engine)</strong>:
+                         Database state.</li>
 </ul>
 </div>
 

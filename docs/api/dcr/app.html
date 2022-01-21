@@ -51,12 +51,18 @@
                     <h1 class="modulename">
 dcr<wbr>.app    </h1>
 
-                        <div class="docstring"><p>Entry point functionality.</p>
+                        <div class="docstring"><h3 id="entry-point-functionality"><strong>Entry point functionality</strong>.</h3>
+
+<p>This is the entry point to the application <code>dcr</code>.</p>
 </div>
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Entry point functionality.&quot;&quot;&quot;</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">### **Entry point functionality**.</span>
+
+<span class="sd">This is the entry point to the application `dcr`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">locale</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -71,13 +77,17 @@ dcr<wbr>.app    </h1>
 <span class="kn">from</span> <span class="nn">utils.environ</span> <span class="kn">import</span> <span class="n">get_config</span>
 <span class="kn">from</span> <span class="nn">utils.environ</span> <span class="kn">import</span> <span class="n">initialise_logger</span>
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Entry point.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Entry point.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Entry point**.</span>
+
+<span class="sd">    The processes to be carried out are selected via command line arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Initialise the logging functionality.</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">initialise_logger</span><span class="p">()</span>
 
@@ -108,9 +118,9 @@ dcr<wbr>.app    </h1>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_END</span><span class="p">)</span>
 
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Program start.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
@@ -130,7 +140,11 @@ dcr<wbr>.app    </h1>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Entry point.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Entry point**.</span>
+
+<span class="sd">    The processes to be carried out are selected via command line arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Initialise the logging functionality.</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">initialise_logger</span><span class="p">()</span>
 
@@ -163,7 +177,9 @@ dcr<wbr>.app    </h1>
 
         </details>
 
-            <div class="docstring"><p>Entry point.</p>
+            <div class="docstring"><p><strong>Entry point</strong>.</p>
+
+<p>The processes to be carried out are selected via command line arguments.</p>
 </div>
 
 

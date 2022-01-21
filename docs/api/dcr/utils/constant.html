@@ -51,13 +51,46 @@
                     <a class="variable" href="#DBT_VERSION">DBT_VERSION</a>
             </li>
             <li>
-                    <a class="variable" href="#DCR_CFG_DICTIONARY">DCR_CFG_DICTIONARY</a>
+                    <a class="variable" href="#DCR_CFG_DATABASE_URL">DCR_CFG_DATABASE_URL</a>
+            </li>
+            <li>
+                    <a class="variable" href="#DCR_CFG_DCR_VERSION">DCR_CFG_DCR_VERSION</a>
+            </li>
+            <li>
+                    <a class="variable" href="#DCR_CFG_DIRECTORY_INBOX">DCR_CFG_DIRECTORY_INBOX</a>
+            </li>
+            <li>
+                    <a class="variable" href="#DCR_CFG_DIRECTORY_INBOX_ACCEPTED">DCR_CFG_DIRECTORY_INBOX_ACCEPTED</a>
+            </li>
+            <li>
+                    <a class="variable" href="#DCR_CFG_DIRECTORY_INBOX_OCR">DCR_CFG_DIRECTORY_INBOX_OCR</a>
+            </li>
+            <li>
+                    <a class="variable" href="#DCR_CFG_DIRECTORY_INBOX_OCR_ACCEPTED">DCR_CFG_DIRECTORY_INBOX_OCR_ACCEPTED</a>
+            </li>
+            <li>
+                    <a class="variable" href="#DCR_CFG_DIRECTORY_INBOX_OCR_REJECTED">DCR_CFG_DIRECTORY_INBOX_OCR_REJECTED</a>
+            </li>
+            <li>
+                    <a class="variable" href="#DCR_CFG_DIRECTORY_INBOX_REJECTED">DCR_CFG_DIRECTORY_INBOX_REJECTED</a>
             </li>
             <li>
                     <a class="variable" href="#DCR_CFG_FILE">DCR_CFG_FILE</a>
             </li>
             <li>
+                    <a class="variable" href="#DCR_CFG_SECTION">DCR_CFG_SECTION</a>
+            </li>
+            <li>
+                    <a class="variable" href="#FILE_ENCODING_DEFAULT">FILE_ENCODING_DEFAULT</a>
+            </li>
+            <li>
+                    <a class="variable" href="#FILE_EXTENSION_PDF">FILE_EXTENSION_PDF</a>
+            </li>
+            <li>
                     <a class="variable" href="#LOCALE">LOCALE</a>
+            </li>
+            <li>
+                    <a class="variable" href="#LOGGER_CFG_FILE">LOGGER_CFG_FILE</a>
             </li>
             <li>
                     <a class="variable" href="#LOGGER_END">LOGGER_END</a>
@@ -100,11 +133,23 @@ dcr<wbr>.utils<wbr>.constant    </h1>
 <span class="n">DBT_JOURNAL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;journal&quot;</span>
 <span class="n">DBT_VERSION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;version&quot;</span>
 
-<span class="n">DCR_CFG_DICTIONARY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dcr&quot;</span>
-<span class="n">DCR_CFG_FILE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pyproject.toml&quot;</span>
+<span class="n">DCR_CFG_DATABASE_URL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;database_url&quot;</span>
+<span class="n">DCR_CFG_DCR_VERSION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dcr_version&quot;</span>
+<span class="n">DCR_CFG_DIRECTORY_INBOX</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;directory_inbox&quot;</span>
+<span class="n">DCR_CFG_DIRECTORY_INBOX_ACCEPTED</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;directory_inbox_accepted&quot;</span>
+<span class="n">DCR_CFG_DIRECTORY_INBOX_OCR</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;directory_inbox_ocr&quot;</span>
+<span class="n">DCR_CFG_DIRECTORY_INBOX_OCR_ACCEPTED</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;directory_inbox_ocr_accepted&quot;</span>
+<span class="n">DCR_CFG_DIRECTORY_INBOX_OCR_REJECTED</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;directory_inbox_ocr_rejected&quot;</span>
+<span class="n">DCR_CFG_DIRECTORY_INBOX_REJECTED</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;directory_inbox_rejected&quot;</span>
+<span class="n">DCR_CFG_FILE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;setup.cfg&quot;</span>
+<span class="n">DCR_CFG_SECTION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dcr&quot;</span>
+
+<span class="n">FILE_ENCODING_DEFAULT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span>
+<span class="n">FILE_EXTENSION_PDF</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.pdf&quot;</span>
 
 <span class="n">LOCALE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;de_CH.utf8&quot;</span>
 
+<span class="n">LOGGER_CFG_FILE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;logging_cfg.yaml&quot;</span>
 <span class="n">LOGGER_END</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;End&quot;</span>
 <span class="n">LOGGER_PROGRESS_UPDATE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Progress update &quot;</span>
 <span class="n">LOGGER_START</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Start&quot;</span>
@@ -167,10 +212,73 @@ dcr<wbr>.utils<wbr>.constant    </h1>
     
 
                 </section>
-                <section id="DCR_CFG_DICTIONARY">
-                                <div class="attr variable"><a class="headerlink" href="#DCR_CFG_DICTIONARY">#&nbsp;&nbsp</a>
+                <section id="DCR_CFG_DATABASE_URL">
+                                <div class="attr variable"><a class="headerlink" href="#DCR_CFG_DATABASE_URL">#&nbsp;&nbsp</a>
 
-        <span class="name">DCR_CFG_DICTIONARY</span><span class="annotation">: str</span><span class="default_value"> = &#39;dcr&#39;</span>
+        <span class="name">DCR_CFG_DATABASE_URL</span><span class="annotation">: str</span><span class="default_value"> = &#39;database_url&#39;</span>
+    </div>
+
+    
+
+                </section>
+                <section id="DCR_CFG_DCR_VERSION">
+                                <div class="attr variable"><a class="headerlink" href="#DCR_CFG_DCR_VERSION">#&nbsp;&nbsp</a>
+
+        <span class="name">DCR_CFG_DCR_VERSION</span><span class="annotation">: str</span><span class="default_value"> = &#39;dcr_version&#39;</span>
+    </div>
+
+    
+
+                </section>
+                <section id="DCR_CFG_DIRECTORY_INBOX">
+                                <div class="attr variable"><a class="headerlink" href="#DCR_CFG_DIRECTORY_INBOX">#&nbsp;&nbsp</a>
+
+        <span class="name">DCR_CFG_DIRECTORY_INBOX</span><span class="annotation">: str</span><span class="default_value"> = &#39;directory_inbox&#39;</span>
+    </div>
+
+    
+
+                </section>
+                <section id="DCR_CFG_DIRECTORY_INBOX_ACCEPTED">
+                                <div class="attr variable"><a class="headerlink" href="#DCR_CFG_DIRECTORY_INBOX_ACCEPTED">#&nbsp;&nbsp</a>
+
+        <span class="name">DCR_CFG_DIRECTORY_INBOX_ACCEPTED</span><span class="annotation">: str</span><span class="default_value"> = &#39;directory_inbox_accepted&#39;</span>
+    </div>
+
+    
+
+                </section>
+                <section id="DCR_CFG_DIRECTORY_INBOX_OCR">
+                                <div class="attr variable"><a class="headerlink" href="#DCR_CFG_DIRECTORY_INBOX_OCR">#&nbsp;&nbsp</a>
+
+        <span class="name">DCR_CFG_DIRECTORY_INBOX_OCR</span><span class="annotation">: str</span><span class="default_value"> = &#39;directory_inbox_ocr&#39;</span>
+    </div>
+
+    
+
+                </section>
+                <section id="DCR_CFG_DIRECTORY_INBOX_OCR_ACCEPTED">
+                                <div class="attr variable"><a class="headerlink" href="#DCR_CFG_DIRECTORY_INBOX_OCR_ACCEPTED">#&nbsp;&nbsp</a>
+
+        <span class="name">DCR_CFG_DIRECTORY_INBOX_OCR_ACCEPTED</span><span class="annotation">: str</span><span class="default_value"> = &#39;directory_inbox_ocr_accepted&#39;</span>
+    </div>
+
+    
+
+                </section>
+                <section id="DCR_CFG_DIRECTORY_INBOX_OCR_REJECTED">
+                                <div class="attr variable"><a class="headerlink" href="#DCR_CFG_DIRECTORY_INBOX_OCR_REJECTED">#&nbsp;&nbsp</a>
+
+        <span class="name">DCR_CFG_DIRECTORY_INBOX_OCR_REJECTED</span><span class="annotation">: str</span><span class="default_value"> = &#39;directory_inbox_ocr_rejected&#39;</span>
+    </div>
+
+    
+
+                </section>
+                <section id="DCR_CFG_DIRECTORY_INBOX_REJECTED">
+                                <div class="attr variable"><a class="headerlink" href="#DCR_CFG_DIRECTORY_INBOX_REJECTED">#&nbsp;&nbsp</a>
+
+        <span class="name">DCR_CFG_DIRECTORY_INBOX_REJECTED</span><span class="annotation">: str</span><span class="default_value"> = &#39;directory_inbox_rejected&#39;</span>
     </div>
 
     
@@ -179,7 +287,34 @@ dcr<wbr>.utils<wbr>.constant    </h1>
                 <section id="DCR_CFG_FILE">
                                 <div class="attr variable"><a class="headerlink" href="#DCR_CFG_FILE">#&nbsp;&nbsp</a>
 
-        <span class="name">DCR_CFG_FILE</span><span class="annotation">: str</span><span class="default_value"> = &#39;pyproject.toml&#39;</span>
+        <span class="name">DCR_CFG_FILE</span><span class="annotation">: str</span><span class="default_value"> = &#39;setup.cfg&#39;</span>
+    </div>
+
+    
+
+                </section>
+                <section id="DCR_CFG_SECTION">
+                                <div class="attr variable"><a class="headerlink" href="#DCR_CFG_SECTION">#&nbsp;&nbsp</a>
+
+        <span class="name">DCR_CFG_SECTION</span><span class="annotation">: str</span><span class="default_value"> = &#39;dcr&#39;</span>
+    </div>
+
+    
+
+                </section>
+                <section id="FILE_ENCODING_DEFAULT">
+                                <div class="attr variable"><a class="headerlink" href="#FILE_ENCODING_DEFAULT">#&nbsp;&nbsp</a>
+
+        <span class="name">FILE_ENCODING_DEFAULT</span><span class="annotation">: str</span><span class="default_value"> = &#39;utf-8&#39;</span>
+    </div>
+
+    
+
+                </section>
+                <section id="FILE_EXTENSION_PDF">
+                                <div class="attr variable"><a class="headerlink" href="#FILE_EXTENSION_PDF">#&nbsp;&nbsp</a>
+
+        <span class="name">FILE_EXTENSION_PDF</span><span class="annotation">: str</span><span class="default_value"> = &#39;.pdf&#39;</span>
     </div>
 
     
@@ -189,6 +324,15 @@ dcr<wbr>.utils<wbr>.constant    </h1>
                                 <div class="attr variable"><a class="headerlink" href="#LOCALE">#&nbsp;&nbsp</a>
 
         <span class="name">LOCALE</span><span class="annotation">: str</span><span class="default_value"> = &#39;de_CH.utf8&#39;</span>
+    </div>
+
+    
+
+                </section>
+                <section id="LOGGER_CFG_FILE">
+                                <div class="attr variable"><a class="headerlink" href="#LOGGER_CFG_FILE">#&nbsp;&nbsp</a>
+
+        <span class="name">LOGGER_CFG_FILE</span><span class="annotation">: str</span><span class="default_value"> = &#39;logging_cfg.yaml&#39;</span>
     </div>
 
     

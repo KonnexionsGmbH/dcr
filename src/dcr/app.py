@@ -1,4 +1,8 @@
-"""Entry point functionality."""
+"""
+### **Entry point functionality**.
+
+This is the entry point to the application `dcr`.
+"""
 
 import locale
 import logging
@@ -14,13 +18,17 @@ from utils.environ import get_config
 from utils.environ import initialise_logger
 
 
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Entry point.
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 def main() -> None:
-    """Entry point."""
+    """
+    **Entry point**.
+
+    The processes to be carried out are selected via command line arguments.
+    """
     # Initialise the logging functionality.
     logger = initialise_logger()
 
@@ -51,9 +59,9 @@ def main() -> None:
         logger.debug(LOGGER_END)
 
 
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Program start.
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,6 @@
 *.log
+/.history/
 /.idea/
-/data/
 /.vscode/
+/data/
+/src/dcr/__pycache__/

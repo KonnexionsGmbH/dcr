@@ -1,5 +1,5 @@
 """
-Check and distribute incoming documents.
+### **Check and distribute incoming documents**.
 
 New documents are made available in one of the two file directories
 input or input_ocr. These are then checked and moved to the accepted or
@@ -18,10 +18,13 @@ from utils.constant import LOGGER_END
 from utils.constant import LOGGER_PROGRESS_UPDATE
 from utils.constant import LOGGER_START
 
-
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Convert the files in the inbox.
-# ----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+from dcr.utils.constant import DCR_CFG_DIRECTORY_INBOX
+from dcr.utils.constant import DCR_CFG_DIRECTORY_INBOX_ACCEPTED
+from dcr.utils.constant import DCR_CFG_DIRECTORY_INBOX_REJECTED
+from dcr.utils.constant import FILE_EXTENSION_PDF
 
 
 def process_inbox(
@@ -29,34 +32,37 @@ def process_inbox(
     config: dict[str, str],
     _engine: sqlalchemy.engine.base.Engine,
 ) -> None:
-    """Process the files in the inbox.
+    """
+    **Process the files in the inbox**.
 
-    Documents of type doc, docx or txt are converted to pdf format and
-    copied to the inbox_accepted directory.
-    Documents of type pdf that do not consist only of a scanned image are
-    copied unchanged to the inbox_accepted directory.
-    Documents of type pdf consisting only of a scanned image are copied
-    unchanged to the inbox_ocr directory.
-    All other documents are copied to the inbox_rejected directory.
-    For each document an entry is created in the database table document.
+    1. Documents of type `doc`, `docx` or `txt` are converted to `pdf` format
+       and copied to the `inbox_accepted` directory.
+    2. Documents of type `pdf` that do not consist only of a scanned image are
+       copied unchanged to the `inbox_accepted` directory.
+    3. Documents of type `pdf` consisting only of a scanned image are copied
+       unchanged to the `inbox_ocr` directory.
+    4. All other documents are copied to the `inbox_rejected` directory.
+    5. For each document an new entry is created in the database table
+       `document`.
 
-    Args:
-        logger (logging.Logger):       Default logger.
-        config (dict[str, str]):       Configuration parameters.
-        _engine (sqlalchemy.engine.base.Engine): Database state.
+    **Args**:
+    - **logger (logging.Logger)**: Current logger.
+    - **config (dict[str, str])**: Configuration parameters.
+    - **_engine (sqlalchemy.engine.base.Engine)**:
+                                 Database state.
     """
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)
 
-    accepted = pathlib.Path(config["directory_inbox_accepted"])
+    accepted = pathlib.Path(config[DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
     try:
         os.mkdir(accepted)
     except OSError:
         pass
 
-    inbox = pathlib.Path(config["directory_inbox"])
+    inbox = pathlib.Path(config[DCR_CFG_DIRECTORY_INBOX])
 
-    rejected = pathlib.Path(config["directory_inbox_rejected"])
+    rejected = pathlib.Path(config[DCR_CFG_DIRECTORY_INBOX_REJECTED])
     try:
         os.mkdir(rejected)
     except OSError:
@@ -66,7 +72,7 @@ def process_inbox(
     for file in files.iterdir():
         if file.is_file():
             extension = file.suffix.lower()
-            if extension == ".pdf":
+            if extension == FILE_EXTENSION_PDF:
                 shutil.move(
                     str(inbox) + "/" + file.name,
                     str(accepted) + "/" + file.name,

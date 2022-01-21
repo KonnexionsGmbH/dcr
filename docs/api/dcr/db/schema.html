@@ -72,12 +72,18 @@
                     <h1 class="modulename">
 dcr<wbr>.db<wbr>.schema    </h1>
 
-                        <div class="docstring"><p>Database Schema Management.</p>
+                        <div class="docstring"><h3 id="database-schema-management">Database Schema Management.</h3>
+
+<p>Database schema-related processing routines.</p>
 </div>
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Database Schema Management.&quot;&quot;&quot;</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">### Database Schema Management.</span>
+
+<span class="sd">Database schema-related processing routines.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -91,9 +97,9 @@ dcr<wbr>.db<wbr>.schema    </h1>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_PROGRESS_UPDATE</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_START</span>
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Check the existence of the database schema.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
 <span class="k">def</span> <span class="nf">check_schema_existence</span><span class="p">(</span>
@@ -101,12 +107,13 @@ dcr<wbr>.db<wbr>.schema    </h1>
     <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check the existence of the database schema.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Check the existence of the database schema**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger):                Default logger.</span>
-<span class="sd">        config (dict[str, str]):                Configuration parameters.</span>
-<span class="sd">        engine (sqlalchemy.engine.base.Engine): Database state.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**:                Current logger.</span>
+<span class="sd">    - **config (dict[str, str])**:                Configuration parameters.</span>
+<span class="sd">    - **engine (sqlalchemy.engine.base.Engine)**: Database state.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -120,9 +127,9 @@ dcr<wbr>.db<wbr>.schema    </h1>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_END</span><span class="p">)</span>
 
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Check if the current database schema needs to be upgraded...</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
 <span class="k">def</span> <span class="nf">check_schema_upgrade</span><span class="p">(</span>
@@ -130,12 +137,13 @@ dcr<wbr>.db<wbr>.schema    </h1>
     <span class="n">_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">_engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if the current database schema needs to be upgraded.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Check if the current database schema needs to be upgraded**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger):                 Default logger.</span>
-<span class="sd">        _config (dict[str, str]):                Configuration parameters.</span>
-<span class="sd">        _engine (sqlalchemy.engine.base.Engine): Database state.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**:                 Current logger.</span>
+<span class="sd">    - **_config (dict[str, str])**:                Configuration parameters.</span>
+<span class="sd">    - **_engine (sqlalchemy.engine.base.Engine)**: Database state.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -146,9 +154,9 @@ dcr<wbr>.db<wbr>.schema    </h1>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_END</span><span class="p">)</span>
 
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Create the database schema.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
 <span class="k">def</span> <span class="nf">create_schema</span><span class="p">(</span>
@@ -156,12 +164,13 @@ dcr<wbr>.db<wbr>.schema    </h1>
     <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Create the database schema.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Create the database schema**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger):                Default logger.</span>
-<span class="sd">        config (dict[str, str]):                Configuration parameters.</span>
-<span class="sd">        engine (sqlalchemy.engine.base.Engine): Database state.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**:                Current logger.</span>
+<span class="sd">    - **config (dict[str, str])**:                Configuration parameters.</span>
+<span class="sd">    - **engine (sqlalchemy.engine.base.Engine)**: Database state.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -189,21 +198,22 @@ dcr<wbr>.db<wbr>.schema    </h1>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_END</span><span class="p">)</span>
 
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Initialise the database table document.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
 <span class="k">def</span> <span class="nf">create_table_document</span><span class="p">(</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">MetaData</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialise the database table document.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Initialise the database table `document`**.</span>
 
 <span class="sd">    If the database table is not yet included in the database schema, then the</span>
 <span class="sd">    database table is created.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        metadata (sqlalchemy.schema.MetaData): Database schema.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **metadata (sqlalchemy.schema.MetaData)**: Database schema.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">table_name</span> <span class="o">=</span> <span class="s2">&quot;document&quot;</span>
 
@@ -229,21 +239,22 @@ dcr<wbr>.db<wbr>.schema    </h1>
     <span class="p">)</span>
 
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Initialise the database table journal.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
 <span class="k">def</span> <span class="nf">create_table_journal</span><span class="p">(</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">MetaData</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialise the database table journal.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Initialise the database table `journal`**.</span>
 
 <span class="sd">    If the database table is not yet included in the database schema, then the</span>
 <span class="sd">    database table is created.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        metadata (sqlalchemy.schema.MetaData): Database schema.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **metadata (sqlalchemy.schema.MetaData)**: Database schema.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">table_name</span> <span class="o">=</span> <span class="s2">&quot;journal&quot;</span>
 
@@ -273,25 +284,26 @@ dcr<wbr>.db<wbr>.schema    </h1>
     <span class="p">)</span>
 
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Initialise the database table version.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
 <span class="k">def</span> <span class="nf">create_table_version</span><span class="p">(</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">MetaData</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialise the database table version.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Initialise the database table `version`**.</span>
 
 <span class="sd">    If the database table is not yet included in the database schema, then the</span>
 <span class="sd">    database table is created and the current version number of dcr is</span>
 <span class="sd">    inserted.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        metadata (sqlalchemy.schema.MetaData): Database schema.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **metadata (sqlalchemy.schema.MetaData)**: Database schema.</span>
 
 <span class="sd">    Return:</span>
-<span class="sd">        sqlalchemy.Table: Schema of database table version.</span>
+<span class="sd">    - **sqlalchemy.Table**: Schema of database table `version`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">table_name</span> <span class="o">=</span> <span class="s2">&quot;version&quot;</span>
 
@@ -317,22 +329,23 @@ dcr<wbr>.db<wbr>.schema    </h1>
     <span class="p">)</span>
 
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Initialise the database.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
 <span class="k">def</span> <span class="nf">get_engine</span><span class="p">(</span>
     <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialise the database.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Initialise the database**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger): Default logger.</span>
-<span class="sd">        config (dict[str, str]): Configuration parameters.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**: Current logger.</span>
+<span class="sd">    - **config (dict[str, str])**: Configuration parameters.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        sqlalchemy.engine.base.Engine: Database state.</span>
+<span class="sd">    - **sqlalchemy.engine.base.Engine**: Database state.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -355,9 +368,9 @@ dcr<wbr>.db<wbr>.schema    </h1>
     <span class="k">return</span> <span class="n">engine</span>
 
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Inserts the current version number in the version table.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
 <span class="k">def</span> <span class="nf">insert_version_number</span><span class="p">(</span>
@@ -366,18 +379,19 @@ dcr<wbr>.db<wbr>.schema    </h1>
     <span class="n">engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
     <span class="n">version</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Table</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialise the database table version.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Initialise the database table version**.</span>
 
 <span class="sd">    If the database table is not yet included in the database schema, then the</span>
 <span class="sd">    database table is created and the current version number of dcr is</span>
 <span class="sd">    inserted.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger  (logging.Logger):                Default logger.</span>
-<span class="sd">        config  (dict[str, str]):                Configuration parameters.</span>
-<span class="sd">        engine  (sqlalchemy.engine.base.Engine): Database state.</span>
-<span class="sd">        version (sqlalchemy.Table):              Schema of database table</span>
-<span class="sd">                                                 version.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger  (logging.Logger):**   Current logger.</span>
+<span class="sd">    - **config  (dict[str, str]):**   Configuration parameters.</span>
+<span class="sd">    - **engine  (sqlalchemy.engine.base.Engine)**:</span>
+<span class="sd">                                      Database state.</span>
+<span class="sd">    - **version (sqlalchemy.Table):** Schema of database table `version`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -412,12 +426,13 @@ dcr<wbr>.db<wbr>.schema    </h1>
     <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check the existence of the database schema.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Check the existence of the database schema**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger):                Default logger.</span>
-<span class="sd">        config (dict[str, str]):                Configuration parameters.</span>
-<span class="sd">        engine (sqlalchemy.engine.base.Engine): Database state.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**:                Current logger.</span>
+<span class="sd">    - **config (dict[str, str])**:                Configuration parameters.</span>
+<span class="sd">    - **engine (sqlalchemy.engine.base.Engine)**: Database state.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -433,14 +448,14 @@ dcr<wbr>.db<wbr>.schema    </h1>
 
         </details>
 
-            <div class="docstring"><p>Check the existence of the database schema.</p>
+            <div class="docstring"><p><strong>Check the existence of the database schema</strong>.</p>
 
-<h6 id="args">Args</h6>
+<p><strong>Args</strong>:</p>
 
 <ul>
-<li><strong>logger (logging.Logger):</strong>                 Default logger.</li>
-<li><strong>config (dict[str, str]):</strong>                 Configuration parameters.</li>
-<li><strong>engine (sqlalchemy.engine.base.Engine):</strong>  Database state.</li>
+<li><strong>logger (logging.Logger)</strong>:                Current logger.</li>
+<li><strong>config (dict[str, str])</strong>:                Configuration parameters.</li>
+<li><strong>engine (sqlalchemy.engine.base.Engine)</strong>: Database state.</li>
 </ul>
 </div>
 
@@ -465,12 +480,13 @@ dcr<wbr>.db<wbr>.schema    </h1>
     <span class="n">_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">_engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if the current database schema needs to be upgraded.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Check if the current database schema needs to be upgraded**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger):                 Default logger.</span>
-<span class="sd">        _config (dict[str, str]):                Configuration parameters.</span>
-<span class="sd">        _engine (sqlalchemy.engine.base.Engine): Database state.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**:                 Current logger.</span>
+<span class="sd">    - **_config (dict[str, str])**:                Configuration parameters.</span>
+<span class="sd">    - **_engine (sqlalchemy.engine.base.Engine)**: Database state.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -483,14 +499,14 @@ dcr<wbr>.db<wbr>.schema    </h1>
 
         </details>
 
-            <div class="docstring"><p>Check if the current database schema needs to be upgraded.</p>
+            <div class="docstring"><p><strong>Check if the current database schema needs to be upgraded</strong>.</p>
 
-<h6 id="args">Args</h6>
+<p><strong>Args</strong>:</p>
 
 <ul>
-<li><strong>logger (logging.Logger):</strong>                  Default logger.</li>
-<li><strong>_config (dict[str, str]):</strong>                 Configuration parameters.</li>
-<li><strong>_engine (sqlalchemy.engine.base.Engine):</strong>  Database state.</li>
+<li><strong>logger (logging.Logger)</strong>:                 Current logger.</li>
+<li><strong>_config (dict[str, str])</strong>:                Configuration parameters.</li>
+<li><strong>_engine (sqlalchemy.engine.base.Engine)</strong>: Database state.</li>
 </ul>
 </div>
 
@@ -515,12 +531,13 @@ dcr<wbr>.db<wbr>.schema    </h1>
     <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Create the database schema.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Create the database schema**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger):                Default logger.</span>
-<span class="sd">        config (dict[str, str]):                Configuration parameters.</span>
-<span class="sd">        engine (sqlalchemy.engine.base.Engine): Database state.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**:                Current logger.</span>
+<span class="sd">    - **config (dict[str, str])**:                Configuration parameters.</span>
+<span class="sd">    - **engine (sqlalchemy.engine.base.Engine)**: Database state.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -550,14 +567,14 @@ dcr<wbr>.db<wbr>.schema    </h1>
 
         </details>
 
-            <div class="docstring"><p>Create the database schema.</p>
+            <div class="docstring"><p><strong>Create the database schema</strong>.</p>
 
-<h6 id="args">Args</h6>
+<p><strong>Args</strong>:</p>
 
 <ul>
-<li><strong>logger (logging.Logger):</strong>                 Default logger.</li>
-<li><strong>config (dict[str, str]):</strong>                 Configuration parameters.</li>
-<li><strong>engine (sqlalchemy.engine.base.Engine):</strong>  Database state.</li>
+<li><strong>logger (logging.Logger)</strong>:                Current logger.</li>
+<li><strong>config (dict[str, str])</strong>:                Configuration parameters.</li>
+<li><strong>engine (sqlalchemy.engine.base.Engine)</strong>: Database state.</li>
 </ul>
 </div>
 
@@ -576,13 +593,14 @@ dcr<wbr>.db<wbr>.schema    </h1>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">create_table_document</span><span class="p">(</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">MetaData</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialise the database table document.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Initialise the database table `document`**.</span>
 
 <span class="sd">    If the database table is not yet included in the database schema, then the</span>
 <span class="sd">    database table is created.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        metadata (sqlalchemy.schema.MetaData): Database schema.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **metadata (sqlalchemy.schema.MetaData)**: Database schema.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">table_name</span> <span class="o">=</span> <span class="s2">&quot;document&quot;</span>
 
@@ -610,15 +628,15 @@ dcr<wbr>.db<wbr>.schema    </h1>
 
         </details>
 
-            <div class="docstring"><p>Initialise the database table document.</p>
+            <div class="docstring"><p><strong>Initialise the database table <code>document</code></strong>.</p>
 
 <p>If the database table is not yet included in the database schema, then the
 database table is created.</p>
 
-<h6 id="args">Args</h6>
+<p><strong>Args</strong>:</p>
 
 <ul>
-<li><strong>metadata (sqlalchemy.schema.MetaData):</strong>  Database schema.</li>
+<li><strong>metadata (sqlalchemy.schema.MetaData)</strong>: Database schema.</li>
 </ul>
 </div>
 
@@ -637,13 +655,14 @@ database table is created.</p>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">create_table_journal</span><span class="p">(</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">MetaData</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialise the database table journal.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Initialise the database table `journal`**.</span>
 
 <span class="sd">    If the database table is not yet included in the database schema, then the</span>
 <span class="sd">    database table is created.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        metadata (sqlalchemy.schema.MetaData): Database schema.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **metadata (sqlalchemy.schema.MetaData)**: Database schema.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">table_name</span> <span class="o">=</span> <span class="s2">&quot;journal&quot;</span>
 
@@ -675,15 +694,15 @@ database table is created.</p>
 
         </details>
 
-            <div class="docstring"><p>Initialise the database table journal.</p>
+            <div class="docstring"><p><strong>Initialise the database table <code>journal</code></strong>.</p>
 
 <p>If the database table is not yet included in the database schema, then the
 database table is created.</p>
 
-<h6 id="args">Args</h6>
+<p><strong>Args</strong>:</p>
 
 <ul>
-<li><strong>metadata (sqlalchemy.schema.MetaData):</strong>  Database schema.</li>
+<li><strong>metadata (sqlalchemy.schema.MetaData)</strong>: Database schema.</li>
 </ul>
 </div>
 
@@ -704,17 +723,18 @@ database table is created.</p>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">create_table_version</span><span class="p">(</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">MetaData</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialise the database table version.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Initialise the database table `version`**.</span>
 
 <span class="sd">    If the database table is not yet included in the database schema, then the</span>
 <span class="sd">    database table is created and the current version number of dcr is</span>
 <span class="sd">    inserted.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        metadata (sqlalchemy.schema.MetaData): Database schema.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **metadata (sqlalchemy.schema.MetaData)**: Database schema.</span>
 
 <span class="sd">    Return:</span>
-<span class="sd">        sqlalchemy.Table: Schema of database table version.</span>
+<span class="sd">    - **sqlalchemy.Table**: Schema of database table `version`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">table_name</span> <span class="o">=</span> <span class="s2">&quot;version&quot;</span>
 
@@ -742,23 +762,23 @@ database table is created.</p>
 
         </details>
 
-            <div class="docstring"><p>Initialise the database table version.</p>
+            <div class="docstring"><p><strong>Initialise the database table <code>version</code></strong>.</p>
 
 <p>If the database table is not yet included in the database schema, then the
 database table is created and the current version number of dcr is
 inserted.</p>
 
-<h6 id="args">Args</h6>
+<p><strong>Args</strong>:</p>
 
 <ul>
-<li><strong>metadata (sqlalchemy.schema.MetaData):</strong>  Database schema.</li>
+<li><strong>metadata (sqlalchemy.schema.MetaData)</strong>: Database schema.</li>
 </ul>
 
-<h6 id="return">Return</h6>
+<p>Return:</p>
 
-<blockquote>
-  <p>sqlalchemy.Table: Schema of database table version.</p>
-</blockquote>
+<ul>
+<li><strong>sqlalchemy.Table</strong>: Schema of database table <code>version</code>.</li>
+</ul>
 </div>
 
 
@@ -779,14 +799,15 @@ inserted.</p>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_engine</span><span class="p">(</span>
     <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialise the database.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Initialise the database**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger): Default logger.</span>
-<span class="sd">        config (dict[str, str]): Configuration parameters.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**: Current logger.</span>
+<span class="sd">    - **config (dict[str, str])**: Configuration parameters.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        sqlalchemy.engine.base.Engine: Database state.</span>
+<span class="sd">    - **sqlalchemy.engine.base.Engine**: Database state.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -811,20 +832,20 @@ inserted.</p>
 
         </details>
 
-            <div class="docstring"><p>Initialise the database.</p>
+            <div class="docstring"><p><strong>Initialise the database</strong>.</p>
 
-<h6 id="args">Args</h6>
+<p><strong>Args</strong>:</p>
 
 <ul>
-<li><strong>logger (logging.Logger):</strong>  Default logger.</li>
-<li><strong>config (dict[str, str]):</strong>  Configuration parameters.</li>
+<li><strong>logger (logging.Logger)</strong>: Current logger.</li>
+<li><strong>config (dict[str, str])</strong>: Configuration parameters.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<p>Returns:</p>
 
-<blockquote>
-  <p>sqlalchemy.engine.base.Engine: Database state.</p>
-</blockquote>
+<ul>
+<li><strong>sqlalchemy.engine.base.Engine</strong>: Database state.</li>
+</ul>
 </div>
 
 
@@ -850,18 +871,19 @@ inserted.</p>
     <span class="n">engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
     <span class="n">version</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Table</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialise the database table version.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Initialise the database table version**.</span>
 
 <span class="sd">    If the database table is not yet included in the database schema, then the</span>
 <span class="sd">    database table is created and the current version number of dcr is</span>
 <span class="sd">    inserted.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger  (logging.Logger):                Default logger.</span>
-<span class="sd">        config  (dict[str, str]):                Configuration parameters.</span>
-<span class="sd">        engine  (sqlalchemy.engine.base.Engine): Database state.</span>
-<span class="sd">        version (sqlalchemy.Table):              Schema of database table</span>
-<span class="sd">                                                 version.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger  (logging.Logger):**   Current logger.</span>
+<span class="sd">    - **config  (dict[str, str]):**   Configuration parameters.</span>
+<span class="sd">    - **engine  (sqlalchemy.engine.base.Engine)**:</span>
+<span class="sd">                                      Database state.</span>
+<span class="sd">    - **version (sqlalchemy.Table):** Schema of database table `version`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -876,20 +898,20 @@ inserted.</p>
 
         </details>
 
-            <div class="docstring"><p>Initialise the database table version.</p>
+            <div class="docstring"><p><strong>Initialise the database table version</strong>.</p>
 
 <p>If the database table is not yet included in the database schema, then the
 database table is created and the current version number of dcr is
 inserted.</p>
 
-<h6 id="args">Args</h6>
+<p><strong>Args</strong>:</p>
 
 <ul>
-<li><strong>logger  (logging.Logger):</strong>                 Default logger.</li>
-<li><strong>config  (dict[str, str]):</strong>                 Configuration parameters.</li>
-<li><strong>engine  (sqlalchemy.engine.base.Engine):</strong>  Database state.</li>
-<li><strong>version (sqlalchemy.Table):</strong>               Schema of database table
-version.</li>
+<li><strong>logger  (logging.Logger):</strong>   Current logger.</li>
+<li><strong>config  (dict[str, str]):</strong>   Configuration parameters.</li>
+<li><strong>engine  (sqlalchemy.engine.base.Engine)</strong>:
+                              Database state.</li>
+<li><strong>version (sqlalchemy.Table):</strong> Schema of database table <code>version</code>.</li>
 </ul>
 </div>
 

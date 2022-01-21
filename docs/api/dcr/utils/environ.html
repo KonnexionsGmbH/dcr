@@ -57,7 +57,7 @@
                     <h1 class="modulename">
 dcr<wbr>.utils<wbr>.environ    </h1>
 
-                        <div class="docstring"><p>Auxiliary routines for the environment data..</p>
+                        <div class="docstring"><h3 id="auxiliary-routines-for-the-environment-data"><strong>Auxiliary routines for the environment data</strong>.</h3>
 
 <p>Support of command line arguments, configuration parameters and
 logging functionality.</p>
@@ -66,41 +66,62 @@ logging functionality.</p>
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Auxiliary routines for the environment data..</span>
+<span class="sd">### **Auxiliary routines for the environment data**.</span>
 
 <span class="sd">Support of command line arguments, configuration parameters and</span>
 <span class="sd">logging functionality.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">configparser</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">logging.config</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">tomli</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">ACTION_NEW_COMPLETE</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">ACTION_PROCESS_INBOX</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">ACTION_PROCESS_INBOX_OCR</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">DCR_CFG_FILE</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">DCR_CFG_SECTION</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">FILE_ENCODING_DEFAULT</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_CFG_FILE</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_END</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_PROGRESS_UPDATE</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_START</span>
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Load the command line arguments into memory.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
 <span class="k">def</span> <span class="nf">get_args</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Load the command line arguments into memory.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Load the command line arguments into memory**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (Logger): Default logger.</span>
+<span class="sd">    The command line arguments define the process steps to be executed.</span>
+<span class="sd">    The available options are:</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        dict: Edited command line arguments.</span>
+<span class="sd">        m_d_e - Run the development ecosystem.</span>
+<span class="sd">        m_d_i - Run the installation of the necessary 3rd party packages</span>
+<span class="sd">                for development.</span>
+<span class="sd">        m_p   - Run the installation of the necessary 3rd party packages</span>
+<span class="sd">                for development and compile all packages and modules.</span>
+<span class="sd">        new   - Run the complete processing of all new documents.</span>
+<span class="sd">        p_i   - Process input folder.</span>
+<span class="sd">        p_i_o - Process input folder OCR.</span>
+
+<span class="sd">    With the option `new`, the following process steps are executed</span>
+<span class="sd">    in the specified order:</span>
+
+<span class="sd">        1. p_i</span>
+<span class="sd">        2. p_i_o</span>
+
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**: Current logger.</span>
+
+<span class="sd">    **Returns**:</span>
+<span class="sd">    - **dict[str, bool]**: The command line arguments found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -146,28 +167,36 @@ logging functionality.</p>
     <span class="k">return</span> <span class="n">args</span>
 
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Load the configuration parameters into memory.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
-<span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Load the configuration parameters into memory.</span>
+<span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Load the configuration parameters into memory**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger): Default logger.</span>
+<span class="sd">    Loads the configuration parameters from the `setup.cfg` file under</span>
+<span class="sd">    the `dcr` section into memory.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        dict[str, Union[str, PathLike[str]]]: Configuration parameters.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**: Current logger.</span>
+
+<span class="sd">    **Returns**:</span>
+<span class="sd">    - **dict[str, str]**: Configuration parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">DCR_CFG_FILE</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-        <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">tomli</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">config_parser</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">DCR_CFG_FILE</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+    <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">section</span> <span class="o">==</span> <span class="n">DCR_CFG_SECTION</span><span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">section</span><span class="p">):</span>
+                <span class="n">config</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nb">print</span><span class="p">(</span>
         <span class="n">LOGGER_PROGRESS_UPDATE</span>
@@ -181,23 +210,23 @@ logging functionality.</p>
     <span class="k">return</span> <span class="n">config</span>
 
 
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Initialising the logging functionality.</span>
-<span class="c1"># ----------------------------------------------------------------------------------</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
 
 
 <span class="k">def</span> <span class="nf">initialise_logger</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Initialise the logging functionality.</span>
+<span class="sd">    **Initialise the root logging functionality**.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        Logger: Default logger.</span>
+<span class="sd">    **Returns**:</span>
+<span class="sd">    - **logging.Logger**: Root logger.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;logging_cfg.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">LOGGER_CFG_FILE</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">FILE_ENCODING_DEFAULT</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="n">log_config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
     <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">(</span><span class="n">log_config</span><span class="p">)</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;app.py&quot;</span><span class="p">)</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span>
@@ -223,13 +252,32 @@ logging functionality.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_args</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Load the command line arguments into memory.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Load the command line arguments into memory**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (Logger): Default logger.</span>
+<span class="sd">    The command line arguments define the process steps to be executed.</span>
+<span class="sd">    The available options are:</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        dict: Edited command line arguments.</span>
+<span class="sd">        m_d_e - Run the development ecosystem.</span>
+<span class="sd">        m_d_i - Run the installation of the necessary 3rd party packages</span>
+<span class="sd">                for development.</span>
+<span class="sd">        m_p   - Run the installation of the necessary 3rd party packages</span>
+<span class="sd">                for development and compile all packages and modules.</span>
+<span class="sd">        new   - Run the complete processing of all new documents.</span>
+<span class="sd">        p_i   - Process input folder.</span>
+<span class="sd">        p_i_o - Process input folder OCR.</span>
+
+<span class="sd">    With the option `new`, the following process steps are executed</span>
+<span class="sd">    in the specified order:</span>
+
+<span class="sd">        1. p_i</span>
+<span class="sd">        2. p_i_o</span>
+
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**: Current logger.</span>
+
+<span class="sd">    **Returns**:</span>
+<span class="sd">    - **dict[str, bool]**: The command line arguments found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
@@ -277,19 +325,39 @@ logging functionality.</p>
 
         </details>
 
-            <div class="docstring"><p>Load the command line arguments into memory.</p>
+            <div class="docstring"><p><strong>Load the command line arguments into memory</strong>.</p>
 
-<h6 id="args">Args</h6>
+<p>The command line arguments define the process steps to be executed.
+The available options are:</p>
+
+<pre><code>m_d_e - Run the development ecosystem.
+m_d_i - Run the installation of the necessary 3rd party packages
+        for development.
+m_p   - Run the installation of the necessary 3rd party packages
+        for development and compile all packages and modules.
+new   - Run the complete processing of all new documents.
+p_i   - Process input folder.
+p_i_o - Process input folder OCR.
+</code></pre>
+
+<p>With the option <code>new</code>, the following process steps are executed
+in the specified order:</p>
+
+<pre><code>1. p_i
+2. p_i_o
+</code></pre>
+
+<p><strong>Args</strong>:</p>
 
 <ul>
-<li><strong>logger (Logger):</strong>  Default logger.</li>
+<li><strong>logger (logging.Logger)</strong>: Current logger.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<p><strong>Returns</strong>:</p>
 
-<blockquote>
-  <p>dict: Edited command line arguments.</p>
-</blockquote>
+<ul>
+<li><strong>dict[str, bool]</strong>: The command line arguments found.</li>
+</ul>
 </div>
 
 
@@ -304,23 +372,31 @@ logging functionality.</p>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Load the configuration parameters into memory.</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Load the configuration parameters into memory**.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        logger (logging.Logger): Default logger.</span>
+<span class="sd">    Loads the configuration parameters from the `setup.cfg` file under</span>
+<span class="sd">    the `dcr` section into memory.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        dict[str, Union[str, PathLike[str]]]: Configuration parameters.</span>
+<span class="sd">    **Args**:</span>
+<span class="sd">    - **logger (logging.Logger)**: Current logger.</span>
+
+<span class="sd">    **Returns**:</span>
+<span class="sd">    - **dict[str, str]**: Configuration parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">LOGGER_START</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">DCR_CFG_FILE</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-        <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">tomli</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">config_parser</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">DCR_CFG_FILE</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+    <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">section</span> <span class="o">==</span> <span class="n">DCR_CFG_SECTION</span><span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">section</span><span class="p">):</span>
+                <span class="n">config</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nb">print</span><span class="p">(</span>
         <span class="n">LOGGER_PROGRESS_UPDATE</span>
@@ -336,19 +412,22 @@ logging functionality.</p>
 
         </details>
 
-            <div class="docstring"><p>Load the configuration parameters into memory.</p>
+            <div class="docstring"><p><strong>Load the configuration parameters into memory</strong>.</p>
 
-<h6 id="args">Args</h6>
+<p>Loads the configuration parameters from the <code>setup.cfg</code> file under
+the <code>dcr</code> section into memory.</p>
+
+<p><strong>Args</strong>:</p>
 
 <ul>
-<li><strong>logger (logging.Logger):</strong>  Default logger.</li>
+<li><strong>logger (logging.Logger)</strong>: Current logger.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<p><strong>Returns</strong>:</p>
 
-<blockquote>
-  <p>dict[str, Union[str, PathLike[str]]]: Configuration parameters.</p>
-</blockquote>
+<ul>
+<li><strong>dict[str, str]</strong>: Configuration parameters.</li>
+</ul>
 </div>
 
 
@@ -365,16 +444,16 @@ logging functionality.</p>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">initialise_logger</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Initialise the logging functionality.</span>
+<span class="sd">    **Initialise the root logging functionality**.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        Logger: Default logger.</span>
+<span class="sd">    **Returns**:</span>
+<span class="sd">    - **logging.Logger**: Root logger.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;logging_cfg.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">LOGGER_CFG_FILE</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">FILE_ENCODING_DEFAULT</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="n">log_config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
     <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">(</span><span class="n">log_config</span><span class="p">)</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;app.py&quot;</span><span class="p">)</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span>
@@ -388,13 +467,13 @@ logging functionality.</p>
 
         </details>
 
-            <div class="docstring"><p>Initialise the logging functionality.</p>
+            <div class="docstring"><p><strong>Initialise the root logging functionality</strong>.</p>
 
-<h6 id="returns">Returns</h6>
+<p><strong>Returns</strong>:</p>
 
-<blockquote>
-  <p>Logger: Default logger.</p>
-</blockquote>
+<ul>
+<li><strong>logging.Logger</strong>: Root logger.</li>
+</ul>
 </div>
 
 
