@@ -14,17 +14,16 @@ import shutil
 from datetime import datetime
 
 import sqlalchemy
-from utils.constant import LOGGER_END
-from utils.constant import LOGGER_PROGRESS_UPDATE
-from utils.constant import LOGGER_START
-
 # -----------------------------------------------------------------------------
 # Convert the files in the inbox.
 # -----------------------------------------------------------------------------
-from dcr.utils.constant import DCR_CFG_DIRECTORY_INBOX
-from dcr.utils.constant import DCR_CFG_DIRECTORY_INBOX_ACCEPTED
-from dcr.utils.constant import DCR_CFG_DIRECTORY_INBOX_REJECTED
-from dcr.utils.constant import FILE_EXTENSION_PDF
+from utils.constant import DCR_CFG_DIRECTORY_INBOX
+from utils.constant import DCR_CFG_DIRECTORY_INBOX_ACCEPTED
+from utils.constant import DCR_CFG_DIRECTORY_INBOX_REJECTED
+from utils.constant import FILE_EXTENSION_PDF
+from utils.constant import LOGGER_END
+from utils.constant import LOGGER_PROGRESS_UPDATE
+from utils.constant import LOGGER_START
 
 
 def process_inbox(

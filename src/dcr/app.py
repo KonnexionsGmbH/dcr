@@ -8,11 +8,11 @@ import locale
 import logging
 import logging.config
 
-from db.schema import get_engine
 from inbox.document import process_inbox
 from utils.constant import LOCALE
 from utils.constant import LOGGER_END
 from utils.constant import LOGGER_START
+from utils.db import get_engine
 from utils.environ import get_args
 from utils.environ import get_config
 from utils.environ import initialise_logger

@@ -8,15 +8,16 @@ set -e
 #
 # ----------------------------------------------------------------------------------
 
-export DCR_CHOICE_ACTION_DEFAULT=m_d_e
+export DCR_CHOICE_ACTION_DEFAULT=d_c_u
 
 rm -f dcr.log.log
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
+    echo "d_c_u           - Create or upgrade the database"
     echo "m_d_e           - Run the development ecosystem"
     echo "m_d_i           - Run the installation of the necessary 3rd party packages for development"
-    echo "m_p             - Run the installation of the necessary 3rd party packages for development and compile all packages and modules"
+    echo "m_p             - Run the installation of the necessary 3rd party packages for production and compile all packages and modules"
     echo "new             - Run the complete processing of all new documents"
     echo "p_i             - Process input folder"
     echo "p_i_o           - Process input folder OCR"
@@ -68,13 +69,13 @@ case "${DCR_CHOICE_ACTION}" in
         exit 255
     fi
     ;;
-  p_i|p_i_o)
+  d_c_u|p_i|p_i_o)
     if ! ( python src/dcr/app.py "${DCR_CHOICE_ACTION}" ); then
         exit 255
     fi
     ;;
   *)
-    echo "Usage: ./run_dcr.sh c_d | c_p | new | p_i | p_i_o"
+    echo "Usage: ./run_dcr.sh d_c_u | m_d_e | m_d_i | m_p | new | p_i | p_i_o"
     ;;
 esac
 

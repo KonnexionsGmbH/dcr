@@ -1,7 +1,7 @@
 """
-### Database Schema Management.
+### Database Definition Management.
 
-Database schema-related processing routines.
+Data definition related processing routines.
 """
 
 import datetime
@@ -10,8 +10,8 @@ import logging.config
 
 import sqlalchemy
 import sqlalchemy.orm
+from db.dml import insert_version_number
 from sqlalchemy import ForeignKey
-from sqlalchemy import insert
 from utils.constant import LOGGER_END
 from utils.constant import LOGGER_PROGRESS_UPDATE
 from utils.constant import LOGGER_START
@@ -247,78 +247,3 @@ def create_table_version(
             "version", sqlalchemy.String, nullable=False, unique=True
         ),
     )
-
-
-# -----------------------------------------------------------------------------
-# Initialise the database.
-# -----------------------------------------------------------------------------
-
-
-def get_engine(
-    logger: logging.Logger, config: dict[str, str]
-) -> sqlalchemy.engine.base.Engine:
-    """
-    **Initialise the database**.
-
-    **Args**:
-    - **logger (logging.Logger)**: Current logger.
-    - **config (dict[str, str])**: Configuration parameters.
-
-    Returns:
-    - **sqlalchemy.engine.base.Engine**: Database state.
-    """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
-
-    engine = sqlalchemy.create_engine(config["database_url"])
-
-    check_schema_existence(logger, config, engine)
-
-    print(
-        LOGGER_PROGRESS_UPDATE
-        + str(datetime.datetime.now())
-        + " : The database is ready with version "
-        + config["dcr_version"]
-        + "."
-    )
-
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
-
-    return engine
-
-
-# -----------------------------------------------------------------------------
-# Inserts the current version number in the version table.
-# -----------------------------------------------------------------------------
-
-
-def insert_version_number(
-    logger: logging.Logger,
-    config: dict[str, str],
-    engine: sqlalchemy.engine.base.Engine,
-    version: sqlalchemy.Table,
-) -> None:
-    """
-    **Initialise the database table version**.
-
-    If the database table is not yet included in the database schema, then the
-    database table is created and the current version number of dcr is
-    inserted.
-
-    **Args**:
-    - **logger  (logging.Logger):**   Current logger.
-    - **config  (dict[str, str]):**   Configuration parameters.
-    - **engine  (sqlalchemy.engine.base.Engine)**:
-                                      Database state.
-    - **version (sqlalchemy.Table):** Schema of database table `version`.
-    """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
-
-    with engine.connect() as conn:
-        conn.execute(insert(version), [{"version": config["dcr_version"]}])
-        conn.commit()
-
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
