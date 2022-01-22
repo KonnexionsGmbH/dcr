@@ -1,6 +1,7 @@
-"""Definition of the Global Constants."""
+"""### Module: **Definition of the Global Constants**."""
 
 
+ACTION_DB_CREATE_OR_UPDATE: str = "d_c_u"
 ACTION_NEW_COMPLETE: str = "new"
 ACTION_PROCESS_INBOX: str = "p_i"
 ACTION_PROCESS_INBOX_OCR: str = "p_i_o"

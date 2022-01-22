@@ -1,5 +1,5 @@
 """
-### **Check and distribute incoming documents**.
+### Module: **Check and distribute incoming documents**.
 
 New documents are made available in one of the two file directories
 input or input_ocr. These are then checked and moved to the accepted or
@@ -32,7 +32,7 @@ def process_inbox(
     _engine: sqlalchemy.engine.base.Engine,
 ) -> None:
     """
-    **Process the files in the inbox**.
+    #### Function: **Process the files in the inbox**.
 
     1. Documents of type `doc`, `docx` or `txt` are converted to `pdf` format
        and copied to the `inbox_accepted` directory.

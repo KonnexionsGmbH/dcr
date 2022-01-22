@@ -1,5 +1,5 @@
 """
-### Database Schema Management.
+### Module: **Database Schema Management**.
 
 Database schema-related processing routines.
 """
@@ -25,7 +25,7 @@ def get_engine(
     logger: logging.Logger, config: dict[str, str]
 ) -> sqlalchemy.engine.base.Engine:
     """
-    **Initialise the database**.
+    #### Function: **Initialise the database**.
 
     **Args**:
     - **logger (logging.Logger)**: Current logger.

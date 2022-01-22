@@ -24,6 +24,7 @@
                             Module Index
                         </a>
 
+                        <img src="https://static.wixstatic.com/media/e445eb_1bbfda150fdd4a2fabb42a8439f19d2a~mv2.jpg/v1/fill/w_273,h_115,al_c,q_80,usm_0.66_1.00_0.01/Logo_edited_edited.webp" class="logo" alt="project logo"/>
 
                         <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                                pattern=".+" required>
@@ -51,7 +52,7 @@
                     <h1 class="modulename">
 dcr<wbr>.inbox<wbr>.document    </h1>
 
-                        <div class="docstring"><h3 id="check-and-distribute-incoming-documents"><strong>Check and distribute incoming documents</strong>.</h3>
+                        <div class="docstring"><h3 id="module-check-and-distribute-incoming-documents">Module: <strong>Check and distribute incoming documents</strong>.</h3>
 
 <p>New documents are made available in one of the two file directories
 input or input_ocr. These are then checked and moved to the accepted or
@@ -61,7 +62,7 @@ rejected file directories depending on the result of the check.</p>
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">### **Check and distribute incoming documents**.</span>
+<span class="sd">### Module: **Check and distribute incoming documents**.</span>
 
 <span class="sd">New documents are made available in one of the two file directories</span>
 <span class="sd">input or input_ocr. These are then checked and moved to the accepted or</span>
@@ -76,17 +77,17 @@ rejected file directories depending on the result of the check.</p>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="kn">import</span> <span class="nn">sqlalchemy</span>
-<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_END</span>
-<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_PROGRESS_UPDATE</span>
-<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_START</span>
 
 <span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># Convert the files in the inbox.</span>
 <span class="c1"># -----------------------------------------------------------------------------</span>
-<span class="kn">from</span> <span class="nn">dcr.utils.constant</span> <span class="kn">import</span> <span class="n">DCR_CFG_DIRECTORY_INBOX</span>
-<span class="kn">from</span> <span class="nn">dcr.utils.constant</span> <span class="kn">import</span> <span class="n">DCR_CFG_DIRECTORY_INBOX_ACCEPTED</span>
-<span class="kn">from</span> <span class="nn">dcr.utils.constant</span> <span class="kn">import</span> <span class="n">DCR_CFG_DIRECTORY_INBOX_REJECTED</span>
-<span class="kn">from</span> <span class="nn">dcr.utils.constant</span> <span class="kn">import</span> <span class="n">FILE_EXTENSION_PDF</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">DCR_CFG_DIRECTORY_INBOX</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">DCR_CFG_DIRECTORY_INBOX_ACCEPTED</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">DCR_CFG_DIRECTORY_INBOX_REJECTED</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">FILE_EXTENSION_PDF</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_END</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_PROGRESS_UPDATE</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_START</span>
 
 
 <span class="k">def</span> <span class="nf">process_inbox</span><span class="p">(</span>
@@ -95,7 +96,7 @@ rejected file directories depending on the result of the check.</p>
     <span class="n">_engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    **Process the files in the inbox**.</span>
+<span class="sd">    #### Function: **Process the files in the inbox**.</span>
 
 <span class="sd">    1. Documents of type `doc`, `docx` or `txt` are converted to `pdf` format</span>
 <span class="sd">       and copied to the `inbox_accepted` directory.</span>
@@ -107,7 +108,7 @@ rejected file directories depending on the result of the check.</p>
 <span class="sd">    5. For each document an new entry is created in the database table</span>
 <span class="sd">       `document`.</span>
 
-<span class="sd">    **Args:**</span>
+<span class="sd">    **Args**:</span>
 <span class="sd">    - **logger (logging.Logger)**: Current logger.</span>
 <span class="sd">    - **config (dict[str, str])**: Configuration parameters.</span>
 <span class="sd">    - **_engine (sqlalchemy.engine.base.Engine)**:</span>
@@ -184,7 +185,7 @@ rejected file directories depending on the result of the check.</p>
     <span class="n">_engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Engine</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    **Process the files in the inbox**.</span>
+<span class="sd">    #### Function: **Process the files in the inbox**.</span>
 
 <span class="sd">    1. Documents of type `doc`, `docx` or `txt` are converted to `pdf` format</span>
 <span class="sd">       and copied to the `inbox_accepted` directory.</span>
@@ -196,7 +197,7 @@ rejected file directories depending on the result of the check.</p>
 <span class="sd">    5. For each document an new entry is created in the database table</span>
 <span class="sd">       `document`.</span>
 
-<span class="sd">    **Args:**</span>
+<span class="sd">    **Args**:</span>
 <span class="sd">    - **logger (logging.Logger)**: Current logger.</span>
 <span class="sd">    - **config (dict[str, str])**: Configuration parameters.</span>
 <span class="sd">    - **_engine (sqlalchemy.engine.base.Engine)**:</span>
@@ -252,7 +253,7 @@ rejected file directories depending on the result of the check.</p>
 
         </details>
 
-            <div class="docstring"><p><strong>Process the files in the inbox</strong>.</p>
+            <div class="docstring"><h4 id="function-process-the-files-in-the-inbox">Function: <strong>Process the files in the inbox</strong>.</h4>
 
 <ol>
 <li>Documents of type <code>doc</code>, <code>docx</code> or <code>txt</code> are converted to <code>pdf</code> format
@@ -266,7 +267,7 @@ unchanged to the <code>inbox_ocr</code> directory.</li>
 <code>document</code>.</li>
 </ol>
 
-<p><strong>Args:</strong></p>
+<p><strong>Args</strong>:</p>
 
 <ul>
 <li><strong>logger (logging.Logger)</strong>: Current logger.</li>

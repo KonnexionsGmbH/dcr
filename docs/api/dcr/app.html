@@ -24,6 +24,7 @@
                             Module Index
                         </a>
 
+                        <img src="https://static.wixstatic.com/media/e445eb_1bbfda150fdd4a2fabb42a8439f19d2a~mv2.jpg/v1/fill/w_273,h_115,al_c,q_80,usm_0.66_1.00_0.01/Logo_edited_edited.webp" class="logo" alt="project logo"/>
 
                         <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                                pattern=".+" required>
@@ -51,7 +52,7 @@
                     <h1 class="modulename">
 dcr<wbr>.app    </h1>
 
-                        <div class="docstring"><h3 id="entry-point-functionality"><strong>Entry point functionality</strong>.</h3>
+                        <div class="docstring"><h3 id="module-entry-point-functionality">Module: <strong>Entry point functionality</strong>.</h3>
 
 <p>This is the entry point to the application <code>dcr</code>.</p>
 </div>
@@ -59,7 +60,7 @@ dcr<wbr>.app    </h1>
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">### **Entry point functionality**.</span>
+<span class="sd">### Module: **Entry point functionality**.</span>
 
 <span class="sd">This is the entry point to the application `dcr`.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -68,11 +69,13 @@ dcr<wbr>.app    </h1>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">logging.config</span>
 
-<span class="kn">from</span> <span class="nn">db.schema</span> <span class="kn">import</span> <span class="n">get_engine</span>
 <span class="kn">from</span> <span class="nn">inbox.document</span> <span class="kn">import</span> <span class="n">process_inbox</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">ACTION_DB_CREATE_OR_UPDATE</span>
+<span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">ACTION_PROCESS_INBOX</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOCALE</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_END</span>
 <span class="kn">from</span> <span class="nn">utils.constant</span> <span class="kn">import</span> <span class="n">LOGGER_START</span>
+<span class="kn">from</span> <span class="nn">utils.db</span> <span class="kn">import</span> <span class="n">get_engine</span>
 <span class="kn">from</span> <span class="nn">utils.environ</span> <span class="kn">import</span> <span class="n">get_args</span>
 <span class="kn">from</span> <span class="nn">utils.environ</span> <span class="kn">import</span> <span class="n">get_config</span>
 <span class="kn">from</span> <span class="nn">utils.environ</span> <span class="kn">import</span> <span class="n">initialise_logger</span>
@@ -84,7 +87,7 @@ dcr<wbr>.app    </h1>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    **Entry point**.</span>
+<span class="sd">    #### Function: **Entry point**.</span>
 
 <span class="sd">    The processes to be carried out are selected via command line arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -108,7 +111,11 @@ dcr<wbr>.app    </h1>
     <span class="c1"># Setting up the database.</span>
     <span class="n">engine</span> <span class="o">=</span> <span class="n">get_engine</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;p_i&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="n">ACTION_DB_CREATE_OR_UPDATE</span><span class="p">]:</span>
+        <span class="c1"># Create or upgrade the database.</span>
+        <span class="n">process_inbox</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="n">ACTION_PROCESS_INBOX</span><span class="p">]:</span>
         <span class="c1"># Processing the inbox directory.</span>
         <span class="n">process_inbox</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
 
@@ -141,7 +148,7 @@ dcr<wbr>.app    </h1>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    **Entry point**.</span>
+<span class="sd">    #### Function: **Entry point**.</span>
 
 <span class="sd">    The processes to be carried out are selected via command line arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -165,7 +172,11 @@ dcr<wbr>.app    </h1>
     <span class="c1"># Setting up the database.</span>
     <span class="n">engine</span> <span class="o">=</span> <span class="n">get_engine</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;p_i&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="n">ACTION_DB_CREATE_OR_UPDATE</span><span class="p">]:</span>
+        <span class="c1"># Create or upgrade the database.</span>
+        <span class="n">process_inbox</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="n">ACTION_PROCESS_INBOX</span><span class="p">]:</span>
         <span class="c1"># Processing the inbox directory.</span>
         <span class="n">process_inbox</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
 
@@ -177,7 +188,7 @@ dcr<wbr>.app    </h1>
 
         </details>
 
-            <div class="docstring"><p><strong>Entry point</strong>.</p>
+            <div class="docstring"><h4 id="function-entry-point">Function: <strong>Entry point</strong>.</h4>
 
 <p>The processes to be carried out are selected via command line arguments.</p>
 </div>

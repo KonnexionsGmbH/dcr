@@ -1,5 +1,5 @@
 """
-### **Auxiliary routines for the environment data**.
+### Module: **Auxiliary routines for the environment data**.
 
 Support of command line arguments, configuration parameters and
 logging functionality.
@@ -12,6 +12,7 @@ import sys
 from datetime import datetime
 
 import yaml
+from utils.constant import ACTION_DB_CREATE_OR_UPDATE
 from utils.constant import ACTION_NEW_COMPLETE
 from utils.constant import ACTION_PROCESS_INBOX
 from utils.constant import ACTION_PROCESS_INBOX_OCR
@@ -31,25 +32,22 @@ from utils.constant import LOGGER_START
 
 def get_args(logger: logging.Logger) -> dict[str, bool]:
     """
-    **Load the command line arguments into memory**.
+    #### Function: **Load the command line arguments into memory**.
 
     The command line arguments define the process steps to be executed.
-    The available options are:
+    The valid arguments are:
 
-        m_d_e - Run the development ecosystem.
-        m_d_i - Run the installation of the necessary 3rd party packages
-                for development.
-        m_p   - Run the installation of the necessary 3rd party packages
-                for development and compile all packages and modules.
+        d_c_u - Create or upgrade the database.
         new   - Run the complete processing of all new documents.
         p_i   - Process input folder.
         p_i_o - Process input folder OCR.
 
     With the option `new`, the following process steps are executed
-    in the specified order:
+    in this order:
 
-        1. p_i
-        2. p_i_o
+        1. d_c_u
+        2. p_i
+        3. p_i_o
 
     **Args**:
     - **logger (logging.Logger)**: Current logger.
@@ -67,6 +65,7 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
         sys.exit(1)
 
     args = {
+        ACTION_DB_CREATE_OR_UPDATE: False,
         ACTION_PROCESS_INBOX: False,
         ACTION_PROCESS_INBOX_OCR: False,
     }
@@ -77,6 +76,7 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
             for key in args:
                 args[key] = True
         elif arg in (
+            ACTION_DB_CREATE_OR_UPDATE,
             ACTION_PROCESS_INBOX,
             ACTION_PROCESS_INBOX_OCR,
         ):
@@ -108,7 +108,7 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
 
 def get_config(logger: logging.Logger) -> dict[str, str]:
     """
-    **Load the configuration parameters into memory**.
+    #### Function: **Load the configuration parameters into memory**.
 
     Loads the configuration parameters from the `setup.cfg` file under
     the `dcr` section into memory.
@@ -151,7 +151,7 @@ def get_config(logger: logging.Logger) -> dict[str, str]:
 
 def initialise_logger() -> logging.Logger:
     """
-    **Initialise the root logging functionality**.
+    #### Function: **Initialise the root logging functionality**.
 
     **Returns**:
     - **logging.Logger**: Root logger.

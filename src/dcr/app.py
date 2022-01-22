@@ -1,5 +1,5 @@
 """
-### **Entry point functionality**.
+### Module: **Entry point functionality**.
 
 This is the entry point to the application `dcr`.
 """
@@ -9,6 +9,8 @@ import logging
 import logging.config
 
 from inbox.document import process_inbox
+from utils.constant import ACTION_DB_CREATE_OR_UPDATE
+from utils.constant import ACTION_PROCESS_INBOX
 from utils.constant import LOCALE
 from utils.constant import LOGGER_END
 from utils.constant import LOGGER_START
@@ -25,7 +27,7 @@ from utils.environ import initialise_logger
 
 def main() -> None:
     """
-    **Entry point**.
+    #### Function: **Entry point**.
 
     The processes to be carried out are selected via command line arguments.
     """
@@ -49,7 +51,11 @@ def main() -> None:
     # Setting up the database.
     engine = get_engine(logger, config)
 
-    if args["p_i"]:
+    if args[ACTION_DB_CREATE_OR_UPDATE]:
+        # Create or upgrade the database.
+        process_inbox(logger, config, engine)
+
+    if args[ACTION_PROCESS_INBOX]:
         # Processing the inbox directory.
         process_inbox(logger, config, engine)
 

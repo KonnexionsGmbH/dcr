@@ -1,5 +1,5 @@
 """
-### Database Definition Management.
+### Module: **Database Definition Management**.
 
 Data definition related processing routines.
 """
@@ -28,7 +28,7 @@ def check_schema_existence(
     engine: sqlalchemy.engine.base.Engine,
 ) -> None:
     """
-    **Check the existence of the database schema**.
+    #### Function: **Check the existence of the database schema**.
 
     **Args**:
     - **logger (logging.Logger)**:                Current logger.
@@ -58,7 +58,7 @@ def check_schema_upgrade(
     _engine: sqlalchemy.engine.base.Engine,
 ) -> None:
     """
-    **Check if the current database schema needs to be upgraded**.
+    #### Function: **Check if the current database schema needs to be upgraded**.
 
     **Args**:
     - **logger (logging.Logger)**:                 Current logger.
@@ -85,7 +85,7 @@ def create_schema(
     engine: sqlalchemy.engine.base.Engine,
 ) -> None:
     """
-    **Create the database schema**.
+    #### Function: **Create the database schema**.
 
     **Args**:
     - **logger (logging.Logger)**:                Current logger.
@@ -127,7 +127,7 @@ def create_table_document(
     metadata: sqlalchemy.schema.MetaData,
 ) -> None:
     """
-    **Initialise the database table `document`**.
+    #### Function: **Initialise the database table `document`**.
 
     If the database table is not yet included in the database schema, then the
     database table is created.
@@ -168,7 +168,7 @@ def create_table_journal(
     metadata: sqlalchemy.schema.MetaData,
 ) -> None:
     """
-    **Initialise the database table `journal`**.
+    #### Function: **Initialise the database table `journal`**.
 
     If the database table is not yet included in the database schema, then the
     database table is created.
@@ -213,7 +213,7 @@ def create_table_version(
     metadata: sqlalchemy.schema.MetaData,
 ) -> sqlalchemy.Table:
     """
-    **Initialise the database table `version`**.
+    #### Function: **Initialise the database table `version`**.
 
     If the database table is not yet included in the database schema, then the
     database table is created and the current version number of dcr is

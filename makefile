@@ -81,7 +81,7 @@ pdoc:
 	@echo DCR_PDOC_OUT_DEL=${DCR_PDOC_OUT_DEL}
 	@echo DCR_SOURCE_PATH=${DCR_SOURCE_PATH}
 	${DCR_PDOC_OUT_DEL}
-	python -m pdoc -o ${DCR_PDOC_OUT} ${DCR_SOURCE_PATH}
+	python -m pdoc --logo "https://static.wixstatic.com/media/e445eb_1bbfda150fdd4a2fabb42a8439f19d2a~mv2.jpg/v1/fill/w_273,h_115,al_c,q_80,usm_0.66_1.00_0.01/Logo_edited_edited.webp" -o ${DCR_PDOC_OUT} ${DCR_SOURCE_PATH}
 	@echo "Info **********  End:   Create API Documentation ********************"
 
 # pip is the package installer for Python.

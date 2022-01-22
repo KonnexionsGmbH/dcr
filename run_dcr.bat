@@ -12,13 +12,13 @@ set DCR_CHOICE_ACTION_DEFAULT=d_c_u
 
 if ["%1"] EQU [""] (
     echo =========================================================
-    echo d_c_u           - Create or upgrade the database
-    echo m_d_e           - Run the development ecosystem
-    echo m_d_i           - Run the installation of the necessary 3rd party packages for development
-    echo m_p             - Run the installation of the necessary 3rd party packages for production and compile all packages and modules
-    echo new             - Run the complete processing of all new documents
-    echo p_i             - Process input folder
-    echo p_i_o           - Process input folder OCR
+    echo d_c_u - Create or upgrade the database
+    echo m_d_e - Run the development ecosystem
+    echo m_d_i - Run the installation of the necessary 3rd party packages for development
+    echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules
+    echo new   - Run the complete processing of all new documents
+    echo p_i   - Process input folder
+    echo p_i_o - Process input folder OCR
     echo ---------------------------------------------------------
     set /P DCR_CHOICE_ACTION="Enter the desired action [default: %DCR_CHOICE_ACTION_DEFAULT%] "
 
