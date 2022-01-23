@@ -9,6 +9,7 @@ set -e
 # ----------------------------------------------------------------------------------
 
 export DCR_CHOICE_ACTION_DEFAULT=d_c_u
+export PYTHONPATH=src/dcr
 
 rm -f dcr.log.log
 

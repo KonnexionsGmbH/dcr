@@ -10,9 +10,13 @@ import logging
 import logging.config
 import sys
 from datetime import datetime
+from os import PathLike
+from typing import Union
 
 import yaml
-from utils.constant import ACTION_DB_CREATE_OR_UPDATE
+from sqlalchemy.engine import Engine
+
+from utils.constant import ACTION_DB_CREATE_OR_UPGRADE
 from utils.constant import ACTION_NEW_COMPLETE
 from utils.constant import ACTION_PROCESS_INBOX
 from utils.constant import ACTION_PROCESS_INBOX_OCR
@@ -65,7 +69,7 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
         sys.exit(1)
 
     args = {
-        ACTION_DB_CREATE_OR_UPDATE: False,
+        ACTION_DB_CREATE_OR_UPGRADE: False,
         ACTION_PROCESS_INBOX: False,
         ACTION_PROCESS_INBOX_OCR: False,
     }
@@ -76,7 +80,7 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
             for key in args:
                 args[key] = True
         elif arg in (
-            ACTION_DB_CREATE_OR_UPDATE,
+            ACTION_DB_CREATE_OR_UPGRADE,
             ACTION_PROCESS_INBOX,
             ACTION_PROCESS_INBOX_OCR,
         ):
@@ -106,7 +110,9 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
 # -----------------------------------------------------------------------------
 
 
-def get_config(logger: logging.Logger) -> dict[str, str]:
+def get_config(
+    logger: logging.Logger,
+) -> dict[str, Union[Engine, PathLike[str], str]]:
     """
     #### Function: **Load the configuration parameters into memory**.
 
@@ -117,7 +123,8 @@ def get_config(logger: logging.Logger) -> dict[str, str]:
     - **logger (logging.Logger)**: Current logger.
 
     **Returns**:
-    - **dict[str, str]**: Configuration parameters.
+    - **dict[str, Union[Engine, PathLike[str], str]]**: Configuration
+                                                        parameters.
     """
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)
@@ -125,7 +132,7 @@ def get_config(logger: logging.Logger) -> dict[str, str]:
     config_parser = configparser.ConfigParser()
     config_parser.read(DCR_CFG_FILE)
 
-    config: dict[str, str] = {}
+    config: dict[str, Union[Engine, PathLike[str], str]] = {}
 
     for section in config_parser.sections():
         if section == DCR_CFG_SECTION:

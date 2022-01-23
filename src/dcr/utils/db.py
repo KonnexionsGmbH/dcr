@@ -3,53 +3,65 @@
 
 Database schema-related processing routines.
 """
-
-import datetime
-import logging
-import logging.config
+from typing import Union
 
 import sqlalchemy
 import sqlalchemy.orm
-from db.ddl import check_schema_existence
-from utils.constant import LOGGER_END
-from utils.constant import LOGGER_PROGRESS_UPDATE
-from utils.constant import LOGGER_START
+from sqlalchemy import MetaData
+from sqlalchemy.engine import Engine
+
+from utils.constant import DB_ENGINE
+from utils.constant import DB_METADATA
+from utils.constant import DCR_CFG_DATABASE_URL
 
 
 # -----------------------------------------------------------------------------
-# Initialise the database.
+# Get the database state.
 # -----------------------------------------------------------------------------
 
 
 def get_engine(
-    logger: logging.Logger, config: dict[str, str]
-) -> sqlalchemy.engine.base.Engine:
+    config: dict[str, Union[Engine, MetaData]],
+) -> Union[Engine, MetaData]:
     """
-    #### Function: **Initialise the database**.
+    #### Function: **Get the database state**.
 
     **Args**:
-    - **logger (logging.Logger)**: Current logger.
-    - **config (dict[str, str])**: Configuration parameters.
+    - **config (dict[str, Union[Engine,MetaData]])**: Configuration parameters.
 
     Returns:
-    - **sqlalchemy.engine.base.Engine**: Database state.
+    - **Union[Engine, MetaData]**: Database state.
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
-
-    engine = sqlalchemy.create_engine(config["database_url"])
-
-    check_schema_existence(logger, config, engine)
-
-    print(
-        LOGGER_PROGRESS_UPDATE
-        + str(datetime.datetime.now())
-        + " : The database is ready with version "
-        + config["dcr_version"]
-        + "."
-    )
-
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    if DB_ENGINE in config:
+        engine = config[DB_ENGINE]
+    else:
+        engine = sqlalchemy.create_engine(config[DCR_CFG_DATABASE_URL])
+        config[DB_ENGINE] = engine
 
     return engine
+
+
+# -----------------------------------------------------------------------------
+# Get a metadata object.
+# -----------------------------------------------------------------------------
+
+
+def get_metadata(
+    config: dict[str, Union[Engine, MetaData]],
+) -> Union[Engine, MetaData]:
+    """
+    #### Function: **Get a metadata object.**.
+
+    **Args**:
+    - **config (dict[str, Union[Engine,MetaData])**: Configuration parameters.
+
+    Returns:
+    - **Union[Engine, MetaData]**: Metadata object.
+    """
+    if DB_METADATA in config:
+        metadata = config[DB_METADATA]
+    else:
+        metadata = sqlalchemy.MetaData()
+        config[DB_METADATA] = metadata
+
+    return metadata

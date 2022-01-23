@@ -8,8 +8,9 @@ import locale
 import logging
 import logging.config
 
+from db.ddl import create_or_upgrade_database
 from inbox.document import process_inbox
-from utils.constant import ACTION_DB_CREATE_OR_UPDATE
+from utils.constant import ACTION_DB_CREATE_OR_UPGRADE
 from utils.constant import ACTION_PROCESS_INBOX
 from utils.constant import LOCALE
 from utils.constant import LOGGER_END
@@ -48,16 +49,16 @@ def main() -> None:
     # `file.configuration.name ...`)
     config = get_config(logger)
 
-    # Setting up the database.
-    engine = get_engine(logger, config)
-
-    if args[ACTION_DB_CREATE_OR_UPDATE]:
+    if args[ACTION_DB_CREATE_OR_UPGRADE]:
         # Create or upgrade the database.
-        process_inbox(logger, config, engine)
+        create_or_upgrade_database(logger, config)
+
+    # Setting up the database.
+    get_engine(config)
 
     if args[ACTION_PROCESS_INBOX]:
         # Processing the inbox directory.
-        process_inbox(logger, config, engine)
+        process_inbox(logger, config)
 
     print("End   app.py")
 

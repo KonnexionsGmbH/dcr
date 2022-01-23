@@ -12,11 +12,8 @@ import os
 import pathlib
 import shutil
 from datetime import datetime
+from typing import Union
 
-import sqlalchemy
-# -----------------------------------------------------------------------------
-# Convert the files in the inbox.
-# -----------------------------------------------------------------------------
 from utils.constant import DCR_CFG_DIRECTORY_INBOX
 from utils.constant import DCR_CFG_DIRECTORY_INBOX_ACCEPTED
 from utils.constant import DCR_CFG_DIRECTORY_INBOX_REJECTED
@@ -26,10 +23,13 @@ from utils.constant import LOGGER_PROGRESS_UPDATE
 from utils.constant import LOGGER_START
 
 
+# -----------------------------------------------------------------------------
+# Convert the files in the inbox.
+# -----------------------------------------------------------------------------
+
+
 def process_inbox(
-    logger: logging.Logger,
-    config: dict[str, str],
-    _engine: sqlalchemy.engine.base.Engine,
+    logger: logging.Logger, config: dict[str, Union[os.PathLike[str], str]]
 ) -> None:
     """
     #### Function: **Process the files in the inbox**.
@@ -45,10 +45,9 @@ def process_inbox(
        `document`.
 
     **Args**:
-    - **logger (logging.Logger)**: Current logger.
-    - **config (dict[str, str])**: Configuration parameters.
-    - **_engine (sqlalchemy.engine.base.Engine)**:
-                                 Database state.
+    - **logger (logging.Logger)**:                 Current logger.
+    - **config (dict[str, Union[PathLike[str], str]])**:
+                                                   Configuration parameters.
     """
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)
