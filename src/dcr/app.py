@@ -29,11 +29,10 @@ from globals import LOGGER_CFG_FILE
 from globals import LOGGER_END
 from globals import LOGGER_PROGRESS_UPDATE
 from globals import LOGGER_START
-
-
 # -----------------------------------------------------------------------------
 # Load the command line arguments into memory.
 # -----------------------------------------------------------------------------
+from utils import terminate_fatal
 
 
 def get_args(logger: logging.Logger) -> dict[str, bool]:
@@ -67,8 +66,7 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
     num = len(sys.argv)
 
     if num == 1:
-        logger.critical("fatal error: command line arguments missing")
-        sys.exit(1)
+        terminate_fatal(logger, "Command line arguments are missing")
 
     args = {
         ACTION_DB_CREATE_OR_UPGRADE: False,
@@ -88,10 +86,9 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
         ):
             args[arg] = True
         else:
-            logger.critical(
-                "fatal error: unknown command line argument='%s'", sys.argv[i]
+            terminate_fatal(
+                logger, "Unknown command line argument='" + sys.argv[i] + "'"
             )
-            sys.exit(1)
 
     print(
         LOGGER_PROGRESS_UPDATE,

@@ -27,5 +27,7 @@ LOCALE: str = "de_CH.utf8"
 
 LOGGER_CFG_FILE: str = "logging_cfg.yaml"
 LOGGER_END: str = "End"
+LOGGER_FATAL_HEAD: str = "FATAL ERROR: program abort =====> "
+LOGGER_FATAL_TAIL: str = " <====="
 LOGGER_PROGRESS_UPDATE: str = "Progress update "
 LOGGER_START: str = "Start"

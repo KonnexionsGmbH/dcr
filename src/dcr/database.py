@@ -7,7 +7,6 @@ Data definition related processing routines.
 import datetime
 import logging
 import logging.config
-import sys
 from os import PathLike
 from typing import Dict
 from typing import TypeAlias
@@ -22,14 +21,15 @@ from sqlalchemy import Table
 from sqlalchemy.engine import Engine
 
 from globals import CONFIG
+from globals import DCR_CFG_DATABASE_URL
 from globals import DCR_CFG_DCR_VERSION
 from globals import LOGGER_END
 from globals import LOGGER_PROGRESS_UPDATE
 from globals import LOGGER_START
-
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
+from utils import terminate_fatal
 
 Columns: TypeAlias = list[Dict[str, Union[PathLike[str], str]]]
 
@@ -76,20 +76,20 @@ def check_database_version(logger: logging.Logger) -> None:
     current_version = select_version_unique(logger)
 
     if CONFIG[DCR_CFG_DCR_VERSION] != current_version:
-        logger.error(
-            "fatal error: program abort =====> %s %s %s %s %s",
-            "database version is ",
-            current_version,
-            "- expected version is ",
-            str(CONFIG[DCR_CFG_DCR_VERSION]),
-            "<=====",
+        terminate_fatal(
+            logger,
+            "Current database version is "
+            + current_version
+            + " - but expected version is "
+            + str(CONFIG[DCR_CFG_DCR_VERSION]),
         )
-        sys.exit(1)
 
     print(
         LOGGER_PROGRESS_UPDATE,
         str(datetime.datetime.now()),
-        " : The current database version is ",
+        " : The current version of database "
+        + str(CONFIG[DCR_CFG_DATABASE_URL])
+        + " is ",
         current_version,
         ".",
     )
@@ -129,7 +129,9 @@ def create_database(logger: logging.Logger) -> None:
     print(
         LOGGER_PROGRESS_UPDATE,
         str(datetime.datetime.now()),
-        " : The database has been created.",
+        " : The database "
+        + str(CONFIG[DCR_CFG_DATABASE_URL])
+        + " has been successfully created.",
     )
 
     if logger.isEnabledFor(logging.DEBUG):
@@ -166,7 +168,9 @@ def create_or_upgrade_database(logger: logging.Logger) -> None:
         print(
             LOGGER_PROGRESS_UPDATE,
             str(datetime.datetime.now()),
-            " : The database is already up to date.",
+            " : The database "
+            + str(CONFIG[DCR_CFG_DATABASE_URL])
+            + " is already up to date.",
         )
 
     if logger.isEnabledFor(logging.DEBUG):
@@ -331,12 +335,9 @@ def select_version_unique(logger: logging.Logger) -> str:
     current_version: str = ""
 
     if current_version == "":
-        logger.error(
-            "fatal error: program abort =====> %s %s",
-            "current version in database table version is missing",
-            "<=====",
+        terminate_fatal(
+            logger, "Column version in database table version not found"
         )
-        sys.exit(1)
 
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_END)

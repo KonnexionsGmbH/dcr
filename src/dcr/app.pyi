@@ -1,4 +1,5 @@
 """Library stub."""
+
 import logging
 
 

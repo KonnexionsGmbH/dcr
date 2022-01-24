@@ -1,0 +1,3 @@
+"""Library stub."""
+
+def terminate_fatal(logger: logging.Logger, error_msg: str) -> None: ...
