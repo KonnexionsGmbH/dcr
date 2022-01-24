@@ -94,6 +94,7 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
         LOGGER_PROGRESS_UPDATE,
         str(datetime.datetime.now()),
         " : The command line arguments are validated and loaded.",
+        sep="",
     )
 
     if logger.isEnabledFor(logging.DEBUG):
@@ -132,6 +133,7 @@ def get_config(logger: logging.Logger) -> None:
         LOGGER_PROGRESS_UPDATE,
         str(datetime.datetime.now()),
         " : The configuration parameters are checked and loaded.",
+        sep="",
     )
 
     if logger.isEnabledFor(logging.DEBUG):
@@ -161,6 +163,7 @@ def initialise_logger() -> logging.Logger:
         LOGGER_PROGRESS_UPDATE,
         str(datetime.datetime.now()),
         " : The logger is configured and ready.",
+        sep="",
     )
     print("")
 

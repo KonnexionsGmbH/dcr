@@ -17,6 +17,7 @@ import sqlalchemy.orm
 from sqlalchemy import ForeignKey
 from sqlalchemy import insert
 from sqlalchemy import MetaData
+from sqlalchemy import select
 from sqlalchemy import Table
 from sqlalchemy.engine import Engine
 
@@ -92,6 +93,7 @@ def check_database_version(logger: logging.Logger) -> None:
         + " is ",
         current_version,
         ".",
+        sep="",
     )
 
     if logger.isEnabledFor(logging.DEBUG):
@@ -132,6 +134,7 @@ def create_database(logger: logging.Logger) -> None:
         " : The database "
         + str(CONFIG[DCR_CFG_DATABASE_URL])
         + " has been successfully created.",
+        sep="",
     )
 
     if logger.isEnabledFor(logging.DEBUG):
@@ -171,6 +174,7 @@ def create_or_upgrade_database(logger: logging.Logger) -> None:
             " : The database "
             + str(CONFIG[DCR_CFG_DATABASE_URL])
             + " is already up to date.",
+            sep="",
         )
 
     if logger.isEnabledFor(logging.DEBUG):
@@ -332,7 +336,19 @@ def select_version_unique(logger: logging.Logger) -> str:
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)
 
+    dbt = Table(DBT_VERSION, METADATA, autoload_with=ENGINE)
+
     current_version: str = ""
+
+    with ENGINE.connect() as conn:
+        for row in conn.execute(select(dbt.c.version)):
+            if current_version == "":
+                current_version = row.version
+            else:
+                terminate_fatal(
+                    logger,
+                    "Column version in database table version not unique",
+                )
 
     if current_version == "":
         terminate_fatal(

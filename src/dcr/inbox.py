@@ -82,6 +82,7 @@ def process_inbox(logger: logging.Logger) -> None:
         str(datetime.datetime.now()),
         " : The documents in the inbox file directory are checked and ",
         "prepared for further processing",
+        sep="",
     )
 
     if logger.isEnabledFor(logging.DEBUG):
