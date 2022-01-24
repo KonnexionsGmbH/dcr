@@ -10,15 +10,15 @@ prod: inst_prod compileall
 ifeq ($(OS),Windows_NT)
     export DCR_PDOC_OUT=docs\\api
     export DCR_PDOC_OUT_DEL=if exist ${DCR_PDOC_OUT} rmdir /s /q ${DCR_PDOC_OUT}
-    export DCR_SOURCE_PATH=$(dir src\\dcr\\*.py src\\dcr\\*\\*.py)
+    export DCR_SOURCE_PATH=src\\dcr\\*.py
     export MYPYPATH=src\\dcr
-    export PYTHONPATH=src\\dcr
+    export PYTHONPATH=src\\dcr\\*.py
 else
     export DCR_PDOC_OUT=docs/api
     export DCR_PDOC_OUT_DEL=rm -rf ${DCR_PDOC_OUT}
-    export DCR_SOURCE_PATH=src/dcr/*.py src/dcr/*/*.py
+    export DCR_SOURCE_PATH=src/dcr/*.py
     export MYPYPATH=src/dcr
-    export PYTHONPATH=src/dcr
+    export PYTHONPATH=src/dcr/*.py
 endif
 
 # Bandit is a tool designed to find common security issues in Python code.
@@ -26,7 +26,7 @@ endif
 # Configuration file: none
 bandit:
 	@echo "Info **********  Start: Bandit **************************************"
-	python -m bandit -r src
+	python -m bandit -r ${PYTHONPATH}
 	@echo "Info **********  End:   Bandit **************************************"
 
 # The Uncompromising Code Formatter
@@ -34,7 +34,7 @@ bandit:
 # Configuration file: pyproject.toml
 black:
 	@echo "Info **********  Start: black ***************************************"
-	python -m black src
+	python -m black ${PYTHONPATH}
 	@echo "Info **********  End:   black ***************************************"
 
 # Byte-compile Python libraries
@@ -53,7 +53,7 @@ compileall:
 # Configuration file: setup.cfg
 flake8:
 	@echo "Info **********  Start: Flake8 **************************************"
-	python -m flake8 src
+	python -m flake8 ${PYTHONPATH}
 	@echo "Info **********  End:   Flake8 **************************************"
 
 # isort your imports, so you don't have to.
@@ -61,7 +61,7 @@ flake8:
 # Configuration file: pyproject.toml
 isort:
 	@echo "Info **********  Start: isort ***************************************"
-	python -m isort src
+	python -m isort ${PYTHONPATH}
 	@echo "Info **********  End:   isort ***************************************"
 
 # Mypy: Static Typing for Python
@@ -70,7 +70,7 @@ isort:
 mypy:
 	@echo "Info **********  Start: MyPy ****************************************"
 	@echo MYPYPATH=${MYPYPATH}
-	python -m mypy src
+	python -m mypy ${PYTHONPATH}
 	@echo "Info **********  End:   MyPy ****************************************"
 
 # Auto-generate API documentation for Python projects.
@@ -114,7 +114,7 @@ pipenv_prod:
 # Configuration file: pyproject.toml
 pydocstyle:
 	@echo "Info **********  Start: pydocstyle **********************************"
-	python -m pydocstyle --count src
+	python -m pydocstyle --count ${PYTHONPATH}
 	@echo "Info **********  End:   pydocstyle **********************************"
 
 # Pylint is a tool that checks for errors in Python code.
@@ -123,7 +123,7 @@ pydocstyle:
 pylint:
 	@echo "Info **********  Start: Pylint **************************************"
 	@echo PYTHONPATH=${PYTHONPATH}
-	python -m pylint src
+	python -m pylint ${PYTHONPATH}
 	@echo "Info **********  End:   Pylint **************************************"
 
 # pytest: helps you write better programs.
@@ -139,5 +139,5 @@ pytest:
 # Configuration file: setup.cfg
 radon:
 	@echo "Info **********  Start: Radon ***************************************"
-	python -m radon cc src
+	python -m radon cc ${PYTHONPATH}
 	@echo "Info **********  End:   Radon ***************************************"

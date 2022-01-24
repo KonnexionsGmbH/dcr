@@ -33,6 +33,7 @@ echo.
 echo Script %0 is now running
 
 set LOG_FILE=run_dcr.log
+if exist run_dcr.log del /f /q run_dcr.log
 
 echo.
 echo You can find the run log in the file %LOG_FILE%

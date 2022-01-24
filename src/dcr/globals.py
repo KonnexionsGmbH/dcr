@@ -1,29 +1,14 @@
-"""### Module: **Definition of the Global Constants**."""
-
+"""### Module: **Definition of the Global Constants and Types**."""
+import logging
+from os import PathLike
+from typing import Dict
 
 ACTION_DB_CREATE_OR_UPGRADE: str = "d_c_u"
 ACTION_NEW_COMPLETE: str = "new"
 ACTION_PROCESS_INBOX: str = "p_i"
 ACTION_PROCESS_INBOX_OCR: str = "p_i_o"
 
-DB_ENGINE: str = "engine"
-DB_METADATA: str = "metadata"
-DB_REFLECT: str = "reflect"
-
-DBC_ACTION: str = "action"
-DBC_CREATED_AT: str = "created_at"
-DBC_DOCUMENT_ID: str = "document_id"
-DBC_FUNCTION: str = "function"
-DBC_ID: str = "id"
-DBC_MODIFIED_AT: str = "modified_at"
-DBC_MODULE: str = "module"
-DBC_PACKAGE: str = "package"
-DBC_STATUS: str = "status"
-DBC_VERSION: str = "version"
-
-DBT_DOCUMENT: str = "document"
-DBT_JOURNAL: str = "journal"
-DBT_VERSION: str = "version"
+CONFIG: Dict[str, PathLike[str] | str] = {}
 
 DCR_CFG_DATABASE_URL: str = "database_url"
 DCR_CFG_DCR_VERSION: str = "dcr_version"
@@ -41,6 +26,7 @@ FILE_EXTENSION_PDF: str = ".pdf"
 
 LOCALE: str = "de_CH.utf8"
 
+LOGGER: logging.Logger = logging.getLogger()
 LOGGER_CFG_FILE: str = "logging_cfg.yaml"
 LOGGER_END: str = "End"
 LOGGER_PROGRESS_UPDATE: str = "Progress update "

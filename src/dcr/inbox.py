@@ -6,31 +6,34 @@ input or input_ocr. These are then checked and moved to the accepted or
 rejected file directories depending on the result of the check.
 """
 
+import datetime
 import logging
 import logging.config
 import os
 import pathlib
 import shutil
-from datetime import datetime
-from typing import Union
 
-from utils.constant import DCR_CFG_DIRECTORY_INBOX
-from utils.constant import DCR_CFG_DIRECTORY_INBOX_ACCEPTED
-from utils.constant import DCR_CFG_DIRECTORY_INBOX_REJECTED
-from utils.constant import FILE_EXTENSION_PDF
-from utils.constant import LOGGER_END
-from utils.constant import LOGGER_PROGRESS_UPDATE
-from utils.constant import LOGGER_START
+from globals import CONFIG
+from globals import DCR_CFG_DIRECTORY_INBOX
+from globals import DCR_CFG_DIRECTORY_INBOX_ACCEPTED
+from globals import DCR_CFG_DIRECTORY_INBOX_REJECTED
+from globals import FILE_EXTENSION_PDF
+from globals import LOGGER
+from globals import LOGGER_END
+from globals import LOGGER_PROGRESS_UPDATE
+from globals import LOGGER_START
 
+
+# -----------------------------------------------------------------------------
+# Constants & Globals.
+# -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
 # Convert the files in the inbox.
 # -----------------------------------------------------------------------------
 
 
-def process_inbox(
-    logger: logging.Logger, config: dict[str, Union[os.PathLike[str], str]]
-) -> None:
+def process_inbox() -> None:
     """
     #### Function: **Process the files in the inbox**.
 
@@ -43,24 +46,19 @@ def process_inbox(
     4. All other documents are copied to the `inbox_rejected` directory.
     5. For each document an new entry is created in the database table
        `document`.
-
-    **Args**:
-    - **logger (logging.Logger)**:                 Current logger.
-    - **config (dict[str, Union[PathLike[str], str]])**:
-                                                   Configuration parameters.
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
+    if LOGGER.isEnabledFor(logging.DEBUG):
+        LOGGER.debug(LOGGER_START)
 
-    accepted = pathlib.Path(config[DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
+    accepted = CONFIG[DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
     try:
         os.mkdir(accepted)
     except OSError:
         pass
 
-    inbox = pathlib.Path(config[DCR_CFG_DIRECTORY_INBOX])
+    inbox = CONFIG[DCR_CFG_DIRECTORY_INBOX]
 
-    rejected = pathlib.Path(config[DCR_CFG_DIRECTORY_INBOX_REJECTED])
+    rejected = CONFIG[DCR_CFG_DIRECTORY_INBOX_REJECTED]
     try:
         os.mkdir(rejected)
     except OSError:
@@ -76,10 +74,8 @@ def process_inbox(
                     str(accepted) + "/" + file.name,
                 )
             else:
-                logger.info(
-                    "files_2_pdfs(): unsupported file type: '"
-                    + file.name
-                    + "'"
+                LOGGER.info(
+                    "files_2_pdfs(): unsupported file type: '%s'", file.name
                 )
                 shutil.move(
                     str(inbox) + "/" + file.name,
@@ -87,11 +83,11 @@ def process_inbox(
                 )
 
     print(
-        LOGGER_PROGRESS_UPDATE
-        + str(datetime.now())
-        + " : The documents in the inbox file directory are checked and "
-        "prepared for further processing."
+        LOGGER_PROGRESS_UPDATE,
+        str(datetime.datetime.now()),
+        " : The documents in the inbox file directory are checked and ",
+        "prepared for further processing",
     )
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    if LOGGER.isEnabledFor(logging.DEBUG):
+        LOGGER.debug(LOGGER_END)
