@@ -11,8 +11,6 @@ set -e
 export DCR_CHOICE_ACTION_DEFAULT=d_c_u
 export PYTHONPATH=src/dcr
 
-rm -f dcr.log.log
-
 if [ -z "$1" ]; then
     echo "=============================================================================="
     echo "d_c_u - Create or upgrade the database"
@@ -34,6 +32,7 @@ echo "Script $0 is now running"
 
 export LOG_FILE=run_dcr.log
 rm -f run_dcr.log
+rm -f run_dcr_debug.log
 
 echo ""
 echo "You can find the run log in the file $LOG_FILE"

@@ -18,22 +18,17 @@ from globals import DCR_CFG_DIRECTORY_INBOX
 from globals import DCR_CFG_DIRECTORY_INBOX_ACCEPTED
 from globals import DCR_CFG_DIRECTORY_INBOX_REJECTED
 from globals import FILE_EXTENSION_PDF
-from globals import LOGGER
 from globals import LOGGER_END
 from globals import LOGGER_PROGRESS_UPDATE
 from globals import LOGGER_START
 
 
 # -----------------------------------------------------------------------------
-# Constants & Globals.
-# -----------------------------------------------------------------------------
-
-# -----------------------------------------------------------------------------
 # Convert the files in the inbox.
 # -----------------------------------------------------------------------------
 
 
-def process_inbox() -> None:
+def process_inbox(logger: logging.Logger) -> None:
     """
     #### Function: **Process the files in the inbox**.
 
@@ -47,8 +42,8 @@ def process_inbox() -> None:
     5. For each document an new entry is created in the database table
        `document`.
     """
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_START)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_START)
 
     accepted = CONFIG[DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
     try:
@@ -74,7 +69,7 @@ def process_inbox() -> None:
                     str(accepted) + "/" + file.name,
                 )
             else:
-                LOGGER.info(
+                logger.info(
                     "files_2_pdfs(): unsupported file type: '%s'", file.name
                 )
                 shutil.move(
@@ -89,5 +84,5 @@ def process_inbox() -> None:
         "prepared for further processing",
     )
 
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_END)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_END)

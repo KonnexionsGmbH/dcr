@@ -1,5 +1,4 @@
 """### Module: **Definition of the Global Constants and Types**."""
-import logging
 from os import PathLike
 from typing import Dict
 
@@ -26,7 +25,6 @@ FILE_EXTENSION_PDF: str = ".pdf"
 
 LOCALE: str = "de_CH.utf8"
 
-LOGGER: logging.Logger = logging.getLogger()
 LOGGER_CFG_FILE: str = "logging_cfg.yaml"
 LOGGER_END: str = "End"
 LOGGER_PROGRESS_UPDATE: str = "Progress update "

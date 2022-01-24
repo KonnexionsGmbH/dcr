@@ -23,7 +23,6 @@ from sqlalchemy.engine import Engine
 
 from globals import CONFIG
 from globals import DCR_CFG_DCR_VERSION
-from globals import LOGGER
 from globals import LOGGER_END
 from globals import LOGGER_PROGRESS_UPDATE
 from globals import LOGGER_START
@@ -64,16 +63,23 @@ METADATA: MetaData = MetaData()
 # -----------------------------------------------------------------------------
 
 
-def check_database_version() -> None:
-    """#### Function: **Check the existence of the database schema**."""
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_START)
+def check_database_version(logger: logging.Logger) -> None:
+    """
+    #### Function: **Check the existence of the database schema**.
 
-    if CONFIG[DCR_CFG_DCR_VERSION] != select_version_unique():
-        LOGGER.error(
+    **Args**:
+    - **logger (logging.Logger)**: Current logger.
+    """
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_START)
+
+    current_version = select_version_unique(logger)
+
+    if CONFIG[DCR_CFG_DCR_VERSION] != current_version:
+        logger.error(
             "fatal error: program abort =====> %s %s %s %s %s",
             "database version is ",
-            select_version_unique(),
+            current_version,
             "- expected version is ",
             str(CONFIG[DCR_CFG_DCR_VERSION]),
             "<=====",
@@ -84,12 +90,12 @@ def check_database_version() -> None:
         LOGGER_PROGRESS_UPDATE,
         str(datetime.datetime.now()),
         " : The current database version is ",
-        CONFIG[DCR_CFG_DCR_VERSION],
+        current_version,
         ".",
     )
 
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_END)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -97,10 +103,15 @@ def check_database_version() -> None:
 # -----------------------------------------------------------------------------
 
 
-def create_database() -> None:
-    """#### Function: **Create the database schema**."""
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_START)
+def create_database(logger: logging.Logger) -> None:
+    """
+    #### Function: **Create the database schema**.
+
+    **Args**:
+    - **logger (logging.Logger)**: Current logger.
+    """
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_START)
 
     create_table_version()
 
@@ -111,7 +122,9 @@ def create_database() -> None:
     # Implement the database schema
     METADATA.create_all(ENGINE)
 
-    insert_table(DBT_VERSION, [{DBC_VERSION: CONFIG[DCR_CFG_DCR_VERSION]}])
+    insert_table(
+        logger, DBT_VERSION, [{DBC_VERSION: CONFIG[DCR_CFG_DCR_VERSION]}]
+    )
 
     print(
         LOGGER_PROGRESS_UPDATE,
@@ -119,8 +132,8 @@ def create_database() -> None:
         " : The database has been created.",
     )
 
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_END)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -128,16 +141,21 @@ def create_database() -> None:
 # -----------------------------------------------------------------------------
 
 
-def create_or_upgrade_database() -> None:
-    """#### Function: **Create or upgrade the database**."""
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_START)
+def create_or_upgrade_database(logger: logging.Logger) -> None:
+    """
+    #### Function: **Create or upgrade the database**.
+
+    **Args**:
+    - **logger (logging.Logger)**: Current logger.
+    """
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_START)
 
     is_new: bool = False
     is_upgrade: bool = False
 
     if not sqlalchemy.inspect(ENGINE).has_table(DBT_VERSION):
-        create_database()
+        create_database(logger)
         is_new = True
 
     # TBD
@@ -151,8 +169,8 @@ def create_or_upgrade_database() -> None:
             " : The database is already up to date.",
         )
 
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_END)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -161,7 +179,12 @@ def create_or_upgrade_database() -> None:
 
 
 def create_table_document() -> None:
-    """#### Function: **Initialise the database table `document`**."""
+    """
+    #### Function: **Initialise the database table `document`**.
+
+    **Args**:
+    - **logger (logging.Logger)**: Current logger.
+    """
     sqlalchemy.Table(
         DBT_DOCUMENT,
         METADATA,
@@ -264,24 +287,25 @@ def create_table_version() -> sqlalchemy.Table:
 # -----------------------------------------------------------------------------
 
 
-def insert_table(table: str, columns: Columns) -> None:
+def insert_table(logger: logging.Logger, table: str, columns: Columns) -> None:
     """
     #### Function: **Insert a new row into a database table**.
 
     **Args**:
+    - **logger (logging.Logger)**: Current logger.
     - **table (str)**:       Table name.
     - **columns (Columns)**: Column name and value pairs.
     """
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_START)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_START)
 
     dbt = Table(table, METADATA, autoload_with=ENGINE)
 
     with ENGINE.connect() as conn:
         conn.execute(insert(dbt).values(columns))
 
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_END)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -289,30 +313,33 @@ def insert_table(table: str, columns: Columns) -> None:
 # -----------------------------------------------------------------------------
 
 
-def select_version_unique() -> str:
+def select_version_unique(logger: logging.Logger) -> str:
     """
     #### Function: **Get the version number**.
 
     Get the version number from the database table `version`.
 
+    **Args**:
+    - **logger (logging.Logger)**: Current logger.
+
     **Returns**:
     - **str**: The version number found.
     """
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_START)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_START)
 
     current_version: str = ""
 
     if current_version == "":
-        LOGGER.error(
+        logger.error(
             "fatal error: program abort =====> %s %s",
             "current version in database table version is missing",
             "<=====",
         )
         sys.exit(1)
 
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_END)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_END)
 
     return current_version
 
@@ -322,17 +349,20 @@ def select_version_unique() -> str:
 # -----------------------------------------------------------------------------
 
 
-def upgrade_database() -> None:
+def upgrade_database(logger: logging.Logger) -> None:
     """
     #### Function: **Upgrade the current database schema**.
 
     Check if the current database schema needs to be upgraded and perform the
     necessary steps.
+
+    **Args**:
+    - **logger (logging.Logger)**: Current logger.
     """
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_START)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_START)
 
     # TBD: Database upgrade
 
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_END)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_END)

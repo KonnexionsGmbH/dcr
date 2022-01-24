@@ -25,7 +25,6 @@ from globals import DCR_CFG_FILE
 from globals import DCR_CFG_SECTION
 from globals import FILE_ENCODING_DEFAULT
 from globals import LOCALE
-from globals import LOGGER
 from globals import LOGGER_CFG_FILE
 from globals import LOGGER_END
 from globals import LOGGER_PROGRESS_UPDATE
@@ -37,7 +36,7 @@ from globals import LOGGER_START
 # -----------------------------------------------------------------------------
 
 
-def get_args() -> dict[str, bool]:
+def get_args(logger: logging.Logger) -> dict[str, bool]:
     """
     #### Function: **Load the command line arguments into memory**.
 
@@ -56,16 +55,19 @@ def get_args() -> dict[str, bool]:
         2. p_i
         3. p_i_o
 
+    **Args**:
+    - **logger (logging.Logger)**: Current logger.
+
     **Returns**:
     - **dict[str, bool]**: The command line arguments found.
     """
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_START)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_START)
 
     num = len(sys.argv)
 
     if num == 1:
-        LOGGER.critical("fatal error: command line arguments missing")
+        logger.critical("fatal error: command line arguments missing")
         sys.exit(1)
 
     args = {
@@ -86,7 +88,7 @@ def get_args() -> dict[str, bool]:
         ):
             args[arg] = True
         else:
-            LOGGER.critical(
+            logger.critical(
                 "fatal error: unknown command line argument='%s'", sys.argv[i]
             )
             sys.exit(1)
@@ -97,8 +99,8 @@ def get_args() -> dict[str, bool]:
         " : The command line arguments are validated and loaded.",
     )
 
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_END)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_END)
 
     return args
 
@@ -108,15 +110,18 @@ def get_args() -> dict[str, bool]:
 # -----------------------------------------------------------------------------
 
 
-def get_config() -> None:
+def get_config(logger: logging.Logger) -> None:
     """
     #### Function: **Load the configuration parameters into memory**.
 
     Loads the configuration parameters from the `setup.cfg` file under
     the `dcr` section into memory.
+
+    **Args**:
+    - **logger (logging.Logger)**: Current logger.
     """
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_START)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_START)
 
     config_parser = configparser.ConfigParser()
     config_parser.read(DCR_CFG_FILE)
@@ -132,8 +137,8 @@ def get_config() -> None:
         " : The configuration parameters are checked and loaded.",
     )
 
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_END)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -141,19 +146,28 @@ def get_config() -> None:
 # -----------------------------------------------------------------------------
 
 
-def initialise_logger() -> None:
-    """#### Function: **Initialise the root logging functionality**."""
+def initialise_logger() -> logging.Logger:
+    """
+    #### Function: **Initialise the root logging functionality**.
+
+    **Returns**:
+    - **logging.LOGGER**: Root logger.
+    """
     with open(LOGGER_CFG_FILE, "r", encoding=FILE_ENCODING_DEFAULT) as file:
         log_config = yaml.safe_load(file.read())
 
     logging.config.dictConfig(log_config)
-    LOGGER.setLevel(logging.DEBUG)
+    logger = logging.getLogger("dcr.py")
+    logger.setLevel(logging.DEBUG)
 
     print(
         LOGGER_PROGRESS_UPDATE,
         str(datetime.datetime.now()),
         " : The logger is configured and ready.",
     )
+    print("")
+
+    return logger
 
 
 # -----------------------------------------------------------------------------
@@ -168,37 +182,37 @@ def main() -> None:
     The processes to be carried out are selected via command line arguments.
     """
     # Initialise the logging functionality.
-    initialise_logger()
+    logger = initialise_logger()
 
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_START)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_START)
 
     print("Start app.py")
 
     locale.setlocale(locale.LC_ALL, LOCALE)
 
     # Load the command line arguments into the memory (pdf ...`)
-    args = get_args()
+    args = get_args(logger)
 
     # Load the configuration parameters into the memory (CONFIG params
     # `file.configuration.name ...`)
-    get_config()
+    get_config(logger)
 
     if args[ACTION_DB_CREATE_OR_UPGRADE]:
         # Create or upgrade the database.
-        create_or_upgrade_database()
+        create_or_upgrade_database(logger)
 
     # Setting up the database.
-    check_database_version()
+    check_database_version(logger)
 
     if args[ACTION_PROCESS_INBOX]:
         # Processing the inbox directory.
-        inbox.process_inbox()
+        inbox.process_inbox(logger)
 
     print("End   app.py")
 
-    if LOGGER.isEnabledFor(logging.DEBUG):
-        LOGGER.debug(LOGGER_END)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------

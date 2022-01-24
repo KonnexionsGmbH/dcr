@@ -1,7 +1,7 @@
 """Library stub."""
-import logging
 from os import PathLike
 from typing import Dict
+
 
 ACTION_DB_CREATE_OR_UPGRADE: str
 ACTION_NEW_COMPLETE: str
@@ -26,7 +26,6 @@ FILE_EXTENSION_PDF: str
 
 LOCALE: str
 
-LOGGER: logging.Logger = logging.getLogger()
 LOGGER_CFG_FILE: str
 LOGGER_END: str
 LOGGER_PROGRESS_UPDATE: str
