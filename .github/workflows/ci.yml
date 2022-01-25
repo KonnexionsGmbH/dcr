@@ -42,10 +42,11 @@ jobs:
 #        run: |
 #          pipenv run pip freeze | grep mypy
 #          make mypy
-      - name: "Run PyLint for checking for errors in Python code"
-        run: |
-          pipenv run pip freeze | grep pylint
-          make pylint
+# TBD
+#      - name: "Run PyLint for checking for errors in Python code"
+#        run: |
+#          pipenv run pip freeze | grep pylint
+#          make pylint
       - name: "Run pydocstyle for docstring style enforcement"
         run: |
           pipenv run pip freeze | grep pydocstyle
