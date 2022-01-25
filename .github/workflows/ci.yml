@@ -30,5 +30,6 @@ jobs:
           pipenv run pip freeze | grep "bandit"
           make bandit
       - name: "Run Flake8 for style guide enforcement"
+        run: |
           pipenv run pip flake8 | grep "flake8"
           make flake8

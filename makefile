@@ -26,7 +26,7 @@ endif
 # Configuration file: none
 bandit:
 	@echo "Info **********  Start: Bandit **************************************"
-	python -m bandit -r ${PYTHONPATH}
+	pipenv run bandit -r ${PYTHONPATH}
 	@echo "Info **********  End:   Bandit **************************************"
 
 # The Uncompromising Code Formatter
@@ -34,7 +34,7 @@ bandit:
 # Configuration file: pyproject.toml
 black:
 	@echo "Info **********  Start: black ***************************************"
-	python -m black ${PYTHONPATH}
+	pipenv run black ${PYTHONPATH}
 	@echo "Info **********  End:   black ***************************************"
 
 # Byte-compile Python libraries
@@ -42,7 +42,7 @@ black:
 # Configuration file: none
 compileall:
 	@echo "Info **********  Start: Compile All Python Scripts ******************"
-	python -m compileall
+	pipenv run compileall
 	@echo "Info **********  End:   Compile All Python Scripts ******************"
 
 # Flake8: Your Tool For Style Guide Enforcement.
@@ -53,7 +53,7 @@ compileall:
 # Configuration file: setup.cfg
 flake8:
 	@echo "Info **********  Start: Flake8 **************************************"
-	python -m flake8 ${PYTHONPATH}
+	pipenv run flake8 ${PYTHONPATH}
 	@echo "Info **********  End:   Flake8 **************************************"
 
 # isort your imports, so you don't have to.
@@ -61,7 +61,7 @@ flake8:
 # Configuration file: pyproject.toml
 isort:
 	@echo "Info **********  Start: isort ***************************************"
-	python -m isort ${PYTHONPATH}
+	pipenv run isort ${PYTHONPATH}
 	@echo "Info **********  End:   isort ***************************************"
 
 # Mypy: Static Typing for Python
@@ -70,7 +70,7 @@ isort:
 mypy:
 	@echo "Info **********  Start: MyPy ****************************************"
 	@echo MYPYPATH=${MYPYPATH}
-	python -m mypy ${PYTHONPATH}
+	pipenv run mypy ${PYTHONPATH}
 	@echo "Info **********  End:   MyPy ****************************************"
 
 # Auto-generate API documentation for Python projects.
@@ -81,7 +81,7 @@ pdoc:
 	@echo DCR_PDOC_OUT_DEL=${DCR_PDOC_OUT_DEL}
 	@echo DCR_SOURCE_PATH=${DCR_SOURCE_PATH}
 	${DCR_PDOC_OUT_DEL}
-	python -m pdoc --logo "https://static.wixstatic.com/media/e445eb_1bbfda150fdd4a2fabb42a8439f19d2a~mv2.jpg/v1/fill/w_273,h_115,al_c,q_80,usm_0.66_1.00_0.01/Logo_edited_edited.webp" -o ${DCR_PDOC_OUT} ${DCR_SOURCE_PATH}
+	pipenv run pdoc --logo "https://static.wixstatic.com/media/e445eb_1bbfda150fdd4a2fabb42a8439f19d2a~mv2.jpg/v1/fill/w_273,h_115,al_c,q_80,usm_0.66_1.00_0.01/Logo_edited_edited.webp" -o ${DCR_PDOC_OUT} ${DCR_SOURCE_PATH}
 	@echo "Info **********  End:   Create API Documentation ********************"
 
 # pip is the package installer for Python.
@@ -114,7 +114,7 @@ pipenv_prod:
 # Configuration file: pyproject.toml
 pydocstyle:
 	@echo "Info **********  Start: pydocstyle **********************************"
-	python -m pydocstyle --count ${PYTHONPATH}
+	pipenv run pydocstyle --count ${PYTHONPATH}
 	@echo "Info **********  End:   pydocstyle **********************************"
 
 # Pylint is a tool that checks for errors in Python code.
@@ -123,7 +123,7 @@ pydocstyle:
 pylint:
 	@echo "Info **********  Start: Pylint **************************************"
 	@echo PYTHONPATH=${PYTHONPATH}
-	python -m pylint ${PYTHONPATH}
+	pipenv run pylint ${PYTHONPATH}
 	@echo "Info **********  End:   Pylint **************************************"
 
 # pytest: helps you write better programs.
@@ -131,7 +131,7 @@ pylint:
 # Configuration file: pyproject.toml
 pytest:
 	@echo "Info **********  Start: pytest **************************************"
-	python -m pytest
+	pipenv run pytest
 	@echo "Info **********  End:   pytest **************************************"
 
 # Radon is a Python tool which computes various code metrics.
@@ -139,5 +139,5 @@ pytest:
 # Configuration file: setup.cfg
 radon:
 	@echo "Info **********  Start: Radon ***************************************"
-	python -m radon cc ${PYTHONPATH}
+	pipenv run radon cc ${PYTHONPATH}
 	@echo "Info **********  End:   Radon ***************************************"
