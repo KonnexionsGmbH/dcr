@@ -1,6 +1,7 @@
 """### Module: **Definition of the Global Constants and Types**."""
-from os import PathLike
 from typing import Dict
+
+from mypy.typeshed.stdlib.os import PathLike
 
 ACTION_DB_CREATE_OR_UPGRADE: str = "d_c_u"
 ACTION_NEW_COMPLETE: str = "new"
