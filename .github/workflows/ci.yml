@@ -11,8 +11,6 @@ jobs:
     name: "Python ${{ matrix.python-version }}"
     runs-on: ubuntu-latest
     env:
-      MYPYPATH: "=src/dcr"
-      PYTHONPATH: "src/dcr/*.py"
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10"]
@@ -28,6 +26,6 @@ jobs:
       - name: "Install dcr dependencies"
         run: "make pipenv_dev"
       - name: "Run Bandit to find common security issues"
-        run: "pipenv run bandit -r ${PYTHONPATH}"
+        run: "make bandit"
       - name: "Run Flake8 for style guide enforcement"
-        run: "pipenv run flake8 ${PYTHONPATH}"
+        run: "make flake8"
