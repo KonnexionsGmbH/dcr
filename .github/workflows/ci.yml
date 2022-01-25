@@ -26,6 +26,9 @@ jobs:
       - name: "Install dcr dependencies"
         run: "make pipenv_dev"
       - name: "Run Bandit to find common security issues"
-        run: "make bandit"
+        run: |
+          pipenv run pip freeze | grep "bandit"
+          make bandit
       - name: "Run Flake8 for style guide enforcement"
-        run: "make flake8"
+          pipenv run pip flake8 | grep "flake8"
+          make flake8
