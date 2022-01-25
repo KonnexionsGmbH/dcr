@@ -8,7 +8,7 @@ on:
 
 jobs:
   development:
-    name: "Python ${{ matrix.python-version }} - Development"
+    name: "OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development"
     runs-on: "${{ matrix.os }}"
 #   env:
     strategy:
@@ -21,7 +21,6 @@ jobs:
         python-version: ["3.10"]
     steps:
       - uses: "actions/checkout@v2"
-#     - uses: "actions/setup-python@v2"
         with:
           python-version: "${{ matrix.python-version }}"
       - name: "Install pip"
@@ -60,3 +59,28 @@ jobs:
 #        run: |
 #          pipenv run pip freeze | grep pytest
 #          make pytest
+
+  production:
+    name: "OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production"
+    runs-on: "${{ matrix.os }}"
+    #   env:
+    strategy:
+      matrix:
+        # TBD
+        #       os: ["ubuntu-20.04", "ubuntu-latest", "windows-latest", "macos-latest"]
+        os: ["ubuntu-20.04"]
+        # TBD
+        #       python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.10"]
+    steps:
+      - uses: "actions/checkout@v2"
+        with:
+          python-version: "${{ matrix.python-version }}"
+      - name: "Install pip"
+        run: "make pip"
+      - name: "Install pipenv"
+        run: "make pipenv"
+      - name: "Install dcr dependencies"
+        run: "make pipenv_prod"
+      - name: "Compile the Python code"
+        run: "make compileall"

@@ -19,18 +19,18 @@
 
 ## <a name="introduction"></a> 1. Introduction
 
-Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](docs/research/README.md#Rahman)), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
+Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](research/README.md#Rahman)), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
 Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org). 
 Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to PDF format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) software. 
 This process applies to all image format files e.g. jpeg, tiff etc., as well as scanned images in PDF format.  
 
 ### High level system architecture from the paper:
 
-![](docs/img/Screen-Shot-2020-06-03-at-1.45.33-PM.png)
+![](img/Screen-Shot-2020-06-03-at-1.45.33-PM.png)
 
 ### High level dcr architecture:
 
-![](docs/img/dcr_Overview.png)
+![](img/dcr_Overview.png)
 
 ## <a name="requirements"></a> 2. Requirements
 

@@ -13,28 +13,28 @@ import sys
 
 import yaml
 
-import inbox
-from database import check_database_version
-from database import create_or_upgrade_database
-from globals import ACTION_DB_CREATE_OR_UPGRADE
-from globals import ACTION_NEW_COMPLETE
-from globals import ACTION_PROCESS_INBOX
-from globals import ACTION_PROCESS_INBOX_OCR
-from globals import CONFIG
-from globals import DCR_CFG_FILE
-from globals import DCR_CFG_SECTION
-from globals import FILE_ENCODING_DEFAULT
-from globals import LOCALE
-from globals import LOGGER_CFG_FILE
-from globals import LOGGER_END
-from globals import LOGGER_PROGRESS_UPDATE
-from globals import LOGGER_START
+from libs import inbox
+from libs.database import check_database_version
+from libs.database import create_or_upgrade_database
+from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
+from libs.globals import ACTION_NEW_COMPLETE
+from libs.globals import ACTION_PROCESS_INBOX
+from libs.globals import ACTION_PROCESS_INBOX_OCR
+from libs.globals import CONFIG
+from libs.globals import DCR_CFG_FILE
+from libs.globals import DCR_CFG_SECTION
+from libs.globals import FILE_ENCODING_DEFAULT
+from libs.globals import LOCALE
+from libs.globals import LOGGER_CFG_FILE
+from libs.globals import LOGGER_END
+from libs.globals import LOGGER_PROGRESS_UPDATE
+from libs.globals import LOGGER_START
+from libs.utils import terminate_fatal
+
+
 # -----------------------------------------------------------------------------
 # Load the command line arguments into memory.
 # -----------------------------------------------------------------------------
-from utils import terminate_fatal
-
-
 def get_args(logger: logging.Logger) -> dict[str, bool]:
     """
     #### Function: **Load the command line arguments into memory**.
@@ -106,8 +106,6 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
 # -----------------------------------------------------------------------------
 # Load the configuration parameters into memory.
 # -----------------------------------------------------------------------------
-
-
 def get_config(logger: logging.Logger) -> None:
     """
     #### Function: **Load the configuration parameters into memory**.
@@ -143,8 +141,6 @@ def get_config(logger: logging.Logger) -> None:
 # -----------------------------------------------------------------------------
 # Initialising the logging functionality.
 # -----------------------------------------------------------------------------
-
-
 def initialise_logger() -> logging.Logger:
     """
     #### Function: **Initialise the root logging functionality**.
@@ -173,8 +169,6 @@ def initialise_logger() -> logging.Logger:
 # -----------------------------------------------------------------------------
 # Entry point.
 # -----------------------------------------------------------------------------
-
-
 def main() -> None:
     """
     #### Function: **Entry point**.
@@ -218,6 +212,5 @@ def main() -> None:
 # -----------------------------------------------------------------------------
 # Program start.
 # -----------------------------------------------------------------------------
-
 if __name__ == "__main__":
     main()

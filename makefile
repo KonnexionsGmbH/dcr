@@ -1,6 +1,8 @@
 .DEFAULT_GOAL := dev
 
-eco_dev: isort black bandit flake8 mypy pylint pydocstyle radon pytest pdoc
+# TBD
+# eco_dev: isort black bandit flake8 mypy pylint pydocstyle radon pytest pdoc3
+eco_dev: isort black bandit flake8 pydocstyle radon
 
 inst_dev:  pip pipenv pipenv_dev
 inst_prod: pip pipenv pipenv_prod
@@ -10,15 +12,16 @@ prod: inst_prod compileall
 ifeq ($(OS),Windows_NT)
     export DCR_PDOC_OUT=docs\\api
     export DCR_PDOC_OUT_DEL=if exist ${DCR_PDOC_OUT} rmdir /s /q ${DCR_PDOC_OUT}
-    export DCR_SOURCE_PATH=src\\dcr\\*.py
+    export DCR_SOURCE_PATH=src\\dcr\\app.py src\\dcr\\libs\\*.py
     export MYPYPATH=src\\dcr
-    export PYTHONPATH=src\\dcr\\*.py
+    export PYTHONPATH=src\\dcr
 else
     export DCR_PDOC_OUT=docs/api
     export DCR_PDOC_OUT_DEL=rm -rf ${DCR_PDOC_OUT}
-    export DCR_SOURCE_PATH=src/dcr/*.py
+#   export DCR_SOURCE_PATH=src/dcr/app.py src/dcr/libs/database.py src/dcr/libs/globals.py src/dcr/libs/inbox.py src/dcr/libs/utils.py
+    export DCR_SOURCE_PATH=src/dcr/*.py src/dcr/libs/*.py
     export MYPYPATH=src/dcr
-    export PYTHONPATH=src/dcr/*.py
+    export PYTHONPATH=src/dcr
 endif
 
 # Bandit is a tool designed to find common security issues in Python code.
@@ -64,6 +67,17 @@ isort:
 	pipenv run isort ${PYTHONPATH}
 	@echo "Info **********  End:   isort ***************************************"
 
+# Project documentation with Markdown.
+# https://github.com/mkdocs/mkdocs/
+# Configuration file: none
+mkdocs:
+	@echo "Info **********  Start: MkDocs **************************************"
+	@echo DCR_PDOC_OUT_DEL=${DCR_PDOC_OUT_DEL}
+	@echo DCR_SOURCE_PATH=${DCR_SOURCE_PATH}
+	${DCR_PDOC_OUT_DEL}
+	pipenv run pdoc --html -o ${DCR_PDOC_OUT} --skip-errors ${DCR_SOURCE_PATH}
+	@echo "Info **********  End:   MkDocs **************************************"
+
 # Mypy: Static Typing for Python
 # https://github.com/python/mypy
 # Configuration file: pyproject.toml
@@ -72,17 +86,6 @@ mypy:
 	@echo MYPYPATH=${MYPYPATH}
 	pipenv run mypy ${PYTHONPATH}
 	@echo "Info **********  End:   MyPy ****************************************"
-
-# Auto-generate API documentation for Python projects.
-# https://github.com/mitmproxy/pdoc
-# Configuration file: none
-pdoc:
-	@echo "Info **********  Start: Create API Documentation ********************"
-	@echo DCR_PDOC_OUT_DEL=${DCR_PDOC_OUT_DEL}
-	@echo DCR_SOURCE_PATH=${DCR_SOURCE_PATH}
-	${DCR_PDOC_OUT_DEL}
-	pipenv run pdoc --logo "https://static.wixstatic.com/media/e445eb_1bbfda150fdd4a2fabb42a8439f19d2a~mv2.jpg/v1/fill/w_273,h_115,al_c,q_80,usm_0.66_1.00_0.01/Logo_edited_edited.webp" -o ${DCR_PDOC_OUT} ${DCR_SOURCE_PATH}
-	@echo "Info **********  End:   Create API Documentation ********************"
 
 # pip is the package installer for Python.
 # https://pypi.org/project/pip/
