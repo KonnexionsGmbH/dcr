@@ -2,8 +2,6 @@
 from os import PathLike
 from typing import Dict
 
-# from mypy.typeshed.stdlib.os import PathLike
-
 ACTION_DB_CREATE_OR_UPGRADE: str
 ACTION_NEW_COMPLETE: str
 ACTION_PROCESS_INBOX: str
