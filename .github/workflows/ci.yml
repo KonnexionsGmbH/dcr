@@ -26,9 +26,7 @@ jobs:
       - name: "Install pipenv"
         run: "make pipenv"
       - name: "Install dcr dependencies"
-        run: |
-          make pipenv_dev
-          pipenv shell
+        run: "make pipenv_dev"
       - name: "Run Bandit to find common security issues"
         run: "pipenv run bandit -r ${PYTHONPATH}"
       - name: "Run Flake8 for style guide enforcement"
