@@ -19,37 +19,39 @@ jobs:
       - uses: "actions/setup-python@v2"
         with:
           python-version: "${{ matrix.python-version }}"
-      - name: "Install pip."
+      - name: "Install pip"
         run: "make pip"
-      - name: "Install pipenv."
+      - name: "Install pipenv"
         run: "make pipenv"
-      - name: "Install dcr dependencies."
+      - name: "Install dcr dependencies"
         run: "make pipenv_dev"
-      - name: "Run Bandit for finding common security issues."
+      - name: "Run Bandit for finding common security issues"
         run: |
           pipenv run pip freeze | grep bandit
           make bandit
-      - name: "Run Flake8 for style guide enforcement."
+      - name: "Run Flake8 for style guide enforcement"
         run: |
           pipenv run pip freeze | grep flake8
           make flake8
-      - name: "Run MyPy for static typing."
-        run: |
-          pipenv run pip freeze | grep mypy
-          make mypy
-      - name: "Run PyLint for checking for errors in Python code."
+# TBD
+#      - name: "Run MyPy for static typing"
+#        run: |
+#          pipenv run pip freeze | grep mypy
+#          make mypy
+      - name: "Run PyLint for checking for errors in Python code"
         run: |
           pipenv run pip freeze | grep pylint
           make pylint
-      - name: "Run pydocstyle for docstring style enforcement."
+      - name: "Run pydocstyle for docstring style enforcement"
         run: |
           pipenv run pip freeze | grep pydocstyle
           make pydocstyle
-      - name: "Run Radon for computing various code metrics."
+      - name: "Run Radon for computing various code metrics"
         run: |
           pipenv run pip freeze | grep radon
           make radon
-      - name: "Run pytest for writing better program."
-        run: |
-          pipenv run pip freeze | grep pytest
-          make pytest
+# TBD
+#      - name: "Run pytest for writing better program"
+#        run: |
+#          pipenv run pip freeze | grep pytest
+#          make pytest
