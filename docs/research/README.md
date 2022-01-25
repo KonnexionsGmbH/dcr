@@ -1,4 +1,4 @@
-# OCRBench - Research.
+# dcr - Research
 
 ## Papers
 

@@ -7,17 +7,7 @@
 
 ----
 
-### Table of Contents
-
-**[1. Introduction](#introduction)**<br>
-**[2. Requirements](#requirements)**<br>
-**[3. Installation](#installation)**<br>
-**[4. Operation](#operation)**<br>
-**[5. API Documentation](#api_documentation)**<br>
-
-----
-
-## <a name="introduction"></a> 1. Introduction
+## 1. Introduction
 
 Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](research/README.md#Rahman)), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
 Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org). 
@@ -32,13 +22,13 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ![](img/dcr_Overview.png)
 
-## <a name="requirements"></a> 2. Requirements
+## 2. Requirements
 
-## <a name="installation"></a> 3. Installation
+## 3. Installation
 
-## <a name="operation"></a> 4. Operation
+## 4. Operation
 
-## <a name="api_documentation"></a> 5. API Documentation
+## 5. API Documentation
 
 ### Modules
 

@@ -45,7 +45,7 @@ black:
 # Configuration file: none
 compileall:
 	@echo "Info **********  Start: Compile All Python Scripts ******************"
-	pipenv run compileall
+	python -m compileall
 	@echo "Info **********  End:   Compile All Python Scripts ******************"
 
 # Flake8: Your Tool For Style Guide Enforcement.

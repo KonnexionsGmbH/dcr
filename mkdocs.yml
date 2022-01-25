@@ -3,8 +3,8 @@ site_url: https://www.konnexions.ch
 repo_url: https://github.com/KonnexionsGmbH/dcr/
 nav:
   - Home: README.md
-  - Releease Notes: Release-Notes.md
-  - Releease History: Release-History.md
+  - Research: research/README.md
+  - Release Notes: Release-Notes.md
   - Contributing: CONTRIBUTING.md
   - Code of Conduct: CODE_OF_CONDUCT.md
 theme: readthedocs
