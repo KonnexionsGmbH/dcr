@@ -2,13 +2,14 @@
 import logging
 from os import PathLike
 from typing import Dict
+from typing import TypeAlias
 from typing import Union
 
 import sqlalchemy.orm
 from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine
 
-Columns: list[Dict[str, Union[PathLike[str], str]]]
+Columns: TypeAlias = list[Dict[str, Union[PathLike[str], str]]]
 
 DB_ENGINE: str
 DB_METADATA: str

@@ -21,5 +21,5 @@ def terminate_fatal(logger: logging.Logger, error_msg: str) -> None:
     print(LOGGER_FATAL_HEAD)
     print(LOGGER_FATAL_HEAD, error_msg, LOGGER_FATAL_TAIL, sep="")
     print(LOGGER_FATAL_HEAD)
-    logger.error(LOGGER_FATAL_HEAD + error_msg + LOGGER_FATAL_TAIL)
+    logger.critical(LOGGER_FATAL_HEAD + error_msg + LOGGER_FATAL_TAIL)
     sys.exit(1)

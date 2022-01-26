@@ -41,7 +41,6 @@ warn_unused_ignores = true
 [tool.pydocstyle]
 
 [tool.pylint]
-disable = ["C0330", "C0326"]
 
 [tool.pytest.ini_options]
 console_output_style = "count"

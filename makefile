@@ -1,8 +1,6 @@
 .DEFAULT_GOAL := dev
 
-# TBD
-# eco_dev: isort black bandit flake8 mypy pylint pydocstyle radon pytest pdoc3
-eco_dev: isort black bandit flake8 pydocstyle radon
+dev: isort black compileall mkdocs bandit flake8 mypy pylint radon pydocstyle pytest
 
 inst_dev:  pip pipenv pipenv_dev
 inst_prod: pip pipenv pipenv_prod
@@ -10,16 +8,9 @@ inst_prod: pip pipenv pipenv_prod
 prod: inst_prod compileall
 
 ifeq ($(OS),Windows_NT)
-    export DCR_PDOC_OUT=docs\\api
-    export DCR_PDOC_OUT_DEL=if exist ${DCR_PDOC_OUT} rmdir /s /q ${DCR_PDOC_OUT}
-    export DCR_SOURCE_PATH=src\\dcr\\app.py src\\dcr\\libs\\*.py
     export MYPYPATH=src\\dcr
     export PYTHONPATH=src\\dcr
 else
-    export DCR_PDOC_OUT=docs/api
-    export DCR_PDOC_OUT_DEL=rm -rf ${DCR_PDOC_OUT}
-#   export DCR_SOURCE_PATH=src/dcr/app.py src/dcr/libs/database.py src/dcr/libs/globals.py src/dcr/libs/inbox.py src/dcr/libs/utils.py
-    export DCR_SOURCE_PATH=src/dcr/*.py src/dcr/libs/*.py
     export MYPYPATH=src/dcr
     export PYTHONPATH=src/dcr
 endif
@@ -72,10 +63,9 @@ isort:
 # Configuration file: none
 mkdocs:
 	@echo "Info **********  Start: MkDocs **************************************"
-	@echo DCR_PDOC_OUT_DEL=${DCR_PDOC_OUT_DEL}
-	@echo DCR_SOURCE_PATH=${DCR_SOURCE_PATH}
 	${DCR_PDOC_OUT_DEL}
-	pipenv run pdoc --html -o ${DCR_PDOC_OUT} --skip-errors ${DCR_SOURCE_PATH}
+	pipenv run mkdocs build
+	pipenv run mkdocs gh-deploy
 	@echo "Info **********  End:   MkDocs **************************************"
 
 # Mypy: Static Typing for Python
