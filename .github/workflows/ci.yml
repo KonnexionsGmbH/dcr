@@ -17,9 +17,6 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10"]
     steps:
       - uses: "actions/checkout@v2"
-# TBD
-#        with:
-#          python-version: "${{ matrix.python-version }}"
       - name: "Install pip"
         run: "make pip"
       - name: "Install pipenv"
@@ -34,11 +31,10 @@ jobs:
         run: |
           pipenv run pip freeze | grep flake8
           make flake8
-# TBD
-#      - name: "Run MyPy for static typing"
-#        run: |
-#          pipenv run pip freeze | grep mypy
-#          make mypy
+      - name: "Run MyPy for static typing"
+        run: |
+          pipenv run pip freeze | grep mypy
+          make mypy
 # TBD
 #      - name: "Run PyLint for checking for errors in Python code"
 #        run: |
@@ -64,9 +60,6 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10"]
     steps:
       - uses: "actions/checkout@v2"
-# TBD
-#        with:
-#          python-version: "${{ matrix.python-version }}"
       - name: "Install pip"
         run: "make pip"
       - name: "Install pipenv"
