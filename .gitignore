@@ -3,5 +3,6 @@
 /.idea/
 /.vscode/
 /data/
+/site/
 /src/dcr/*/__pycache__/
 /src/dcr/__pycache__/

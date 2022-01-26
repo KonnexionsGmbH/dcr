@@ -1,11 +1,27 @@
-site_name: dcr Documentation
-site_url: https://www.konnexions.ch
-repo_url: https://github.com/KonnexionsGmbH/dcr/
-nav:
-  - Home: README.md
-  - Research: research/README.md
-  - Release Notes: Release-Notes.md
-  - Contributing: CONTRIBUTING.md
-  - Code of Conduct: CODE_OF_CONDUCT.md
-theme: readthedocs
+site_name: dcr
+site_url: https://www.konnexions.ch/
+site_description: Document Content Recognition
+site_author: Konnexions GmbH Team
 
+repo_url: https://github.com/KonnexionsGmbH/dcr/
+edit_uri: ""
+
+theme:
+  name: mkdocs
+
+nav:
+  - Home: index.md
+  - Research: research.md
+  - Release Notes: release_notes.md
+  - Contributing: contributing.md
+  - Code of Conduct: code_of_conduct.md
+
+markdown_extensions:
+  - toc:
+      baselevel: 0
+      permalink: 
+
+copyright: Copyright &copy;2021-2022, Konnexions GmbH.
+
+plugins:
+  - search
