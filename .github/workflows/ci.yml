@@ -48,10 +48,6 @@ jobs:
         run: |
           pipenv run pip freeze | grep pydocstyle
           make pydocstyle
-      - name: "Run Radon for computing various code metrics"
-        run: |
-          pipenv run pip freeze | grep radon
-          make radon
 # TBD
 #      - name: "Run pytest for writing better program"
 #        run: |
