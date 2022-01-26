@@ -42,10 +42,11 @@ jobs:
 #        run: |
 #          pipenv run pip freeze | grep mypy
 #          make mypy
-      - name: "Run PyLint for checking for errors in Python code"
-        run: |
-          pipenv run pip freeze | grep pylint
-          make pylint
+# TBD
+#      - name: "Run PyLint for checking for errors in Python code"
+#        run: |
+#          pipenv run pip freeze | grep pylint
+#          make pylint
       - name: "Run pydocstyle for docstring style enforcement"
         run: |
           pipenv run pip freeze | grep pydocstyle
@@ -66,12 +67,8 @@ jobs:
     #   env:
     strategy:
       matrix:
-        # TBD
-        #       os: ["ubuntu-20.04", "ubuntu-latest", "windows-latest", "macos-latest"]
-        os: ["ubuntu-20.04"]
-        # TBD
-        #       python-version: ["3.7", "3.8", "3.9", "3.10"]
-        python-version: ["3.10"]
+        os: ["ubuntu-20.04", "ubuntu-latest", "windows-latest", "macos-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
     steps:
       - uses: "actions/checkout@v2"
         with:

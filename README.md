@@ -20,7 +20,7 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr/)** for an
 
 ## Support
 
-If you need help with dcr, do not hesitate to get in contact with us!
+If you need help with **dcr**, do not hesitate to get in contact with us!
 
 - For questions and high-level discussions, use **[Discussions](https://github.com/KonnexionsGmbH/dcr/discussions)** on GitHub.
 - To report a bug or make a feature request, open an **[Issue](https://github.com/KonnexionsGmbH/dcr/issues)** on GitHub.
@@ -39,13 +39,13 @@ Make sure to stick around to answer some questions as well!
 
 ## Contributing to dcr
 
-The dcr project welcomes, and depends on, contributions from developers and
+The **dcr** project welcomes, and depends on, contributions from developers and
 users in the open source community. Please see the **[Contributing Guide](docs/contributing.md)** for
 information on how you can help.
 
 ## Code of Conduct
 
-Everyone interacting in the dcr project's codebases, issue trackers, and
+Everyone interacting in the **dcr** project's codebases, issue trackers, and
 discussion forums is expected to follow the **[Code of Conduct](docs/code_of_conduct.md)**.
 
 ## License
