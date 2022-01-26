@@ -37,10 +37,11 @@ jobs:
         run: |
           pipenv run pip freeze | grep flake8
           make flake8
-      - name: "Run MyPy for static typing"
-        run: |
-          pipenv run pip freeze | grep mypy
-          make mypy
+# TBD
+#      - name: "Run MyPy for static typing"
+#        run: |
+#          pipenv run pip freeze | grep mypy
+#          make mypy
       - name: "Run PyLint for checking for errors in Python code"
         run: |
           pipenv run pip freeze | grep pylint

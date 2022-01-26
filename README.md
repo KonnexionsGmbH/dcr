@@ -26,9 +26,8 @@ If you need help with dcr, do not hesitate to get in contact with us!
 - To report a bug or make a feature request, open an **[Issue](https://github.com/KonnexionsGmbH/dcr/issues)** on GitHub.
 
 Please note that we may only provide support for problems/questions regarding core features of dcr. 
-Any questions or bug reports about features of third-party themes, plugins,
-extensions or similar should be made to their respective projects.  
-But, such questions are *not* banned from the **[Discussions](https://github.com/KonnexionsGmbH/dcr/discussions).
+Any questions or bug reports about features of third-party themes, plugins, extensions or similar should be made to their respective projects. 
+But, such questions are *not* banned from the **[Discussions](https://github.com/KonnexionsGmbH/dcr/discussions)**.
 
 Make sure to stick around to answer some questions as well!
 
@@ -51,4 +50,4 @@ discussion forums is expected to follow the **[Code of Conduct](docs/code_of_con
 
 ## License
 
-**[Konnexions Public License (KX-PL)](https://github.com/KonnexionsGmbH/mkdocs/blob/master/LICENSE)**
+**[Konnexions Public License (KX-PL)](https://github.com/KonnexionsGmbH/dcr/blob/master/LICENSE)**
