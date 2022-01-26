@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := dev
 
-dev: isort black compileall mkdocs bandit flake8 mypy pylint radon pydocstyle pytest
+dev: isort black compileall mkdocs bandit flake8 mypy pylint pydocstyle pytest
 
 inst_dev:  pip pipenv pipenv_dev
 inst_prod: pip pipenv pipenv_prod
@@ -20,6 +20,7 @@ endif
 # Configuration file: none
 bandit:
 	@echo "Info **********  Start: Bandit **************************************"
+	pipenv run bandit --version
 	pipenv run bandit -r ${PYTHONPATH}
 	@echo "Info **********  End:   Bandit **************************************"
 
@@ -28,6 +29,7 @@ bandit:
 # Configuration file: pyproject.toml
 black:
 	@echo "Info **********  Start: black ***************************************"
+	pipenv run black --version
 	pipenv run black ${PYTHONPATH}
 	@echo "Info **********  End:   black ***************************************"
 
@@ -36,6 +38,7 @@ black:
 # Configuration file: none
 compileall:
 	@echo "Info **********  Start: Compile All Python Scripts ******************"
+	python --version
 	python -m compileall
 	@echo "Info **********  End:   Compile All Python Scripts ******************"
 
@@ -43,10 +46,12 @@ compileall:
 # includes McCabe:      https://github.com/PyCQA/mccabe
 # includes pycodestyle: https://github.com/PyCQA/pycodestyle
 # includes Pyflakes:    https://github.com/PyCQA/pyflakes
+# includes Radon:       # https://github.com/rubik/radon
 # https://github.com/pycqa/flake8
 # Configuration file: setup.cfg
 flake8:
 	@echo "Info **********  Start: Flake8 **************************************"
+	pipenv run flake8 --version
 	pipenv run flake8 ${PYTHONPATH}
 	@echo "Info **********  End:   Flake8 **************************************"
 
@@ -55,6 +60,7 @@ flake8:
 # Configuration file: pyproject.toml
 isort:
 	@echo "Info **********  Start: isort ***************************************"
+	pipenv run isort --version
 	pipenv run isort ${PYTHONPATH}
 	@echo "Info **********  End:   isort ***************************************"
 
@@ -63,8 +69,7 @@ isort:
 # Configuration file: none
 mkdocs:
 	@echo "Info **********  Start: MkDocs **************************************"
-	${DCR_PDOC_OUT_DEL}
-	pipenv run mkdocs build
+	pipenv run mkdocs --version
 	pipenv run mkdocs gh-deploy
 	@echo "Info **********  End:   MkDocs **************************************"
 
@@ -74,6 +79,7 @@ mkdocs:
 mypy:
 	@echo "Info **********  Start: MyPy ****************************************"
 	@echo MYPYPATH=${MYPYPATH}
+	pipenv run mypy --version
 	pipenv run mypy ${PYTHONPATH}
 	@echo "Info **********  End:   MyPy ****************************************"
 
@@ -83,6 +89,7 @@ mypy:
 pip:
 	@echo "Info **********  Start: Install and / or Upgrade pip ****************"
 	python -m pip install --upgrade pip
+	python -m pip --version
 	@echo "Info **********  End:   Install and / or Upgrade pip ****************"
 
 # Pipenv: Python Development Workflow for Humans.
@@ -92,6 +99,7 @@ pipenv:
 	@echo "Info **********  Start: Install and Upgrade pipenv ******************"
 	python -m pip install pipenv
 	python -m pip install --upgrade pipenv
+	python -m pipenv --version
 	@echo "Info **********  End:   Install and Upgrade pipenv ******************"
 pipenv_dev:
 	@echo "Info **********  Start: Installation of Development Packages ********"
@@ -107,6 +115,7 @@ pipenv_prod:
 # Configuration file: pyproject.toml
 pydocstyle:
 	@echo "Info **********  Start: pydocstyle **********************************"
+	pipenv run pydocstyle --version
 	pipenv run pydocstyle --count ${PYTHONPATH}
 	@echo "Info **********  End:   pydocstyle **********************************"
 
@@ -116,6 +125,7 @@ pydocstyle:
 pylint:
 	@echo "Info **********  Start: Pylint **************************************"
 	@echo PYTHONPATH=${PYTHONPATH}
+	pipenv run pylint --version
 	pipenv run pylint ${PYTHONPATH}
 	@echo "Info **********  End:   Pylint **************************************"
 
@@ -124,13 +134,6 @@ pylint:
 # Configuration file: pyproject.toml
 pytest:
 	@echo "Info **********  Start: pytest **************************************"
+	pipenv run pytest --version
 	pipenv run pytest
 	@echo "Info **********  End:   pytest **************************************"
-
-# Radon is a Python tool which computes various code metrics.
-# https://github.com/rubik/radon
-# Configuration file: setup.cfg
-radon:
-	@echo "Info **********  Start: Radon ***************************************"
-	pipenv run radon cc ${PYTHONPATH}
-	@echo "Info **********  End:   Radon ***************************************"
