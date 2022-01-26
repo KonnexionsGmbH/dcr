@@ -13,7 +13,7 @@ nav:
   - Home: index.md
   - Research: research.md
   - Release Notes: release_notes.md
-  - Contributing: contributing.md
+  - Contributin Guide: contributing.md
   - Code of Conduct: code_of_conduct.md
 
 markdown_extensions:

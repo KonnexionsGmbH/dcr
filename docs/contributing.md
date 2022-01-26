@@ -1,4 +1,4 @@
-# dcr - Contributing
+# dcr - Contributing Guide
 
 In case of software changes we strongly recommend you to respect the license terms.
 
