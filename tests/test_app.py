@@ -137,6 +137,7 @@ def test_main_p_i_missing() -> None:
     assert expt.type == SystemExit
     assert expt.value.code == 1
 
+
 def test_main_d_c_u() -> None:
     """Test: ACTION_DB_CREATE_OR_UPGRADE."""
     get_config(LOGGER)
