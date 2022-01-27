@@ -1,4 +1,4 @@
-# dcr - Release Notes
+# DCR - Release Notes
 
 ## Current Version
 

@@ -1,4 +1,4 @@
-# dcr - Document Content Recognition
+# DCR - Document Content Recognition
 
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
@@ -17,9 +17,9 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ![](img/Screen-Shot-2020-06-03-at-1.45.33-PM.png)
 
-### 1.2 dcr Architecture
+### 1.2 DCR Architecture
 
-![](img/dcr_Overview.png)
+![](img/DCR_Overview.png)
 
 ## 2. Requirements
 

@@ -1,4 +1,4 @@
-# dcr - Research
+# DCR - Research
 
 ## Papers
 

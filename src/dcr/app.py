@@ -1,7 +1,7 @@
 """
 ### Module: **Entry point functionality**.
 
-This is the entry point to the application `dcr`.
+This is the entry point to the application `DCR`.
 """
 
 import configparser
@@ -111,7 +111,7 @@ def get_config(logger: logging.Logger) -> None:
     #### Function: **Load the configuration parameters into memory**.
 
     Loads the configuration parameters from the `setup.cfg` file under
-    the `dcr` section into memory.
+    the `DCR` section into memory.
 
     **Args**:
     - **logger (logging.Logger)**: Current logger.

@@ -248,7 +248,7 @@ def create_table_version() -> sqlalchemy.Table:
     #### Function: **Initialise the database table `version`**.
 
     If the database table is not yet included in the database schema, then the
-    database table is created and the current version number of dcr is
+    database table is created and the current version number of DCR is
     inserted.
 
     **Returns**:

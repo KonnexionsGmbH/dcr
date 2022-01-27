@@ -20,9 +20,8 @@ endif
 # Configuration file: none
 bandit:
 	@echo "Info **********  Start: Bandit **************************************"
-	pipenv run pip freeze | grep bandit
 	pipenv run bandit --version
-	pipenv run bandit -r ${PYTHONPATH}
+	pipenv run bandit -r src
 	@echo "Info **********  End:   Bandit **************************************"
 
 # The Uncompromising Code Formatter
@@ -31,7 +30,7 @@ bandit:
 black:
 	@echo "Info **********  Start: black ***************************************"
 	pipenv run black --version
-	pipenv run black ${PYTHONPATH}
+	pipenv run black src tests
 	@echo "Info **********  End:   black ***************************************"
 
 # Byte-compile Python libraries
@@ -53,7 +52,7 @@ compileall:
 flake8:
 	@echo "Info **********  Start: Flake8 **************************************"
 	pipenv run flake8 --version
-	pipenv run flake8 ${PYTHONPATH}
+	pipenv run flake8 src tests
 	@echo "Info **********  End:   Flake8 **************************************"
 
 # isort your imports, so you don't have to.
@@ -62,7 +61,7 @@ flake8:
 isort:
 	@echo "Info **********  Start: isort ***************************************"
 	pipenv run isort --version
-	pipenv run isort ${PYTHONPATH}
+	pipenv run isort src tests
 	@echo "Info **********  End:   isort ***************************************"
 
 # Project documentation with Markdown.
@@ -82,7 +81,7 @@ mypy:
 	@echo MYPYPATH=${MYPYPATH}
 	pipenv run pip freeze | grep mypy
 	pipenv run mypy --version
-	pipenv run mypy ${PYTHONPATH}
+	pipenv run mypy src
 	@echo "Info **********  End:   MyPy ****************************************"
 
 # pip is the package installer for Python.
@@ -118,7 +117,7 @@ pipenv_prod:
 pydocstyle:
 	@echo "Info **********  Start: pydocstyle **********************************"
 	pipenv run pydocstyle --version
-	pipenv run pydocstyle --count ${PYTHONPATH}
+	pipenv run pydocstyle --count src tests
 	@echo "Info **********  End:   pydocstyle **********************************"
 
 # Pylint is a tool that checks for errors in Python code.
@@ -126,9 +125,8 @@ pydocstyle:
 # Configuration file: pyproject.toml
 pylint:
 	@echo "Info **********  Start: Pylint **************************************"
-	@echo PYTHONPATH=${PYTHONPATH}
 	pipenv run pylint --version
-	pipenv run pylint ${PYTHONPATH}
+	pipenv run pylint src tests
 	@echo "Info **********  End:   Pylint **************************************"
 
 # pytest: helps you write better programs.
@@ -137,5 +135,5 @@ pylint:
 pytest:
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
-	pipenv run pytest
+	pipenv run pytest --cov=src tests
 	@echo "Info **********  End:   pytest **************************************"
