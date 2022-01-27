@@ -25,29 +25,24 @@ jobs:
         run: "make pipenv_dev"
       - name: "Run Bandit for finding common security issues"
         run: |
-          pipenv run pip freeze | grep bandit
           make bandit
       - name: "Run Flake8 for style guide enforcement"
         run: |
-          pipenv run pip freeze | grep flake8
           make flake8
-      - name: "Run MyPy for static typing"
-        run: |
-          pipenv run pip freeze | grep mypy
-          make mypy
+# TBD
+#      - name: "Run MyPy for static typing"
+#        run: |
+#          make mypy
 # TBD
 #      - name: "Run PyLint for checking for errors in Python code"
 #        run: |
-#          pipenv run pip freeze | grep pylint
 #          make pylint
       - name: "Run pydocstyle for docstring style enforcement"
         run: |
-          pipenv run pip freeze | grep pydocstyle
           make pydocstyle
 # TBD
 #      - name: "Run pytest for writing better program"
 #        run: |
-#          pipenv run pip freeze | grep pytest
 #          make pytest
 
   production:

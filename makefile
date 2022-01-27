@@ -20,6 +20,7 @@ endif
 # Configuration file: none
 bandit:
 	@echo "Info **********  Start: Bandit **************************************"
+	pipenv run pip freeze | grep bandit
 	pipenv run bandit --version
 	pipenv run bandit -r ${PYTHONPATH}
 	@echo "Info **********  End:   Bandit **************************************"
@@ -79,6 +80,7 @@ mkdocs:
 mypy:
 	@echo "Info **********  Start: MyPy ****************************************"
 	@echo MYPYPATH=${MYPYPATH}
+	pipenv run pip freeze | grep mypy
 	pipenv run mypy --version
 	pipenv run mypy ${PYTHONPATH}
 	@echo "Info **********  End:   MyPy ****************************************"
