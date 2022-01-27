@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   development:
     name: "OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development"
@@ -45,10 +48,8 @@ jobs:
         run: |
           make pytest
       - name: Publish to coveralls.io
-        uses: "coverallsapp/github-action@master"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path--to-lcov: "coverage.xml"
+        run: |
+          coveralls --service=github
 
   production:
     name: "OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production"

@@ -11,6 +11,7 @@ SQLAlchemy = "*"
 [dev-packages]
 bandit = "*"
 black = "*"
+coveralls = "*"
 flake8 = "*"
 isort = "*"
 mccabe = "*"
