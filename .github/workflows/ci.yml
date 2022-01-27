@@ -43,7 +43,7 @@ jobs:
           make pydocstyle
       - name: "Run pytest for writing better program"
         run: |
-          make pytest --cov-report xml
+          make pytest
       - name: Publish to coveralls.io
         uses: "coverallsapp/github-action@master"
         with:
