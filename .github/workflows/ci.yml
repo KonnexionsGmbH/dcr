@@ -17,8 +17,8 @@ jobs:
 #   env:
     strategy:
       matrix:
-        os: "[${OS}]"
-        python-version: "[${PYTHON}]"
+        os: "${OS}"
+        python-version: "${PYTHON}"
     steps:
       - uses: "actions/checkout@v2"
       - uses: "actions/setup-python@v2"
