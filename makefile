@@ -90,6 +90,7 @@ mypy:
 pip:
 	@echo "Info **********  Start: Install and / or Upgrade pip ****************"
 	python -m pip install --upgrade pip
+	python --version
 	python -m pip --version
 	@echo "Info **********  End:   Install and / or Upgrade pip ****************"
 
