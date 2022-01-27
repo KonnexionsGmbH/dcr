@@ -8,14 +8,14 @@ on:
 
 jobs:
   development:
-    name: "OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development"
+    name: "OS ${{ matrix.os }} - Python ${{ matrix.python }} - Development"
     runs-on: "${{ matrix.os }}"
 #   env:
     strategy:
       matrix:
         os: ["ubuntu-20.04", "windows-2019", "windows-2022"]
-#       python-version: ["3.7", "3.8", "3.9", "3.10"]
-        python-version: ["3.10"]
+#       python: ["3.7", "3.8", "3.9", "3.10"]
+        python: ["3.10"]
     steps:
       - uses: "actions/checkout@v2"
       - name: "Install pip"
@@ -45,16 +45,20 @@ jobs:
           make pytest
 
   production:
-    name: "OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production"
+    name: "OS ${{ matrix.os }} - Python ${{ matrix.python }} - Production"
     runs-on: "${{ matrix.os }}"
     #   env:
     strategy:
       matrix:
         os: ["ubuntu-20.04", "windows-2019", "windows-2022"]
-#       python-version: ["3.7", "3.8", "3.9", "3.10"]
-        python-version: ["3.10"]
+#       python: ["3.7", "3.8", "3.9", "3.10"]
+        python: ["3.10"]
     steps:
       - uses: "actions/checkout@v2"
+      - name: "Install python version"
+        uses: gabrielfalcao/pyenv-action@v5
+        with:
+          default: "${{ matrix.python }}"
       - name: "Install pip"
         run: "make pip"
       - name: "Install pipenv"
