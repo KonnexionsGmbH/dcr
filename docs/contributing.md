@@ -1,6 +1,10 @@
 # DCR - Contributing Guide
 
+## 1. License
+
 In case of software changes we strongly recommend you to respect the license terms.
+
+## 2. Process
 
 1. fork it
 1. create your feature branch (`git checkout -b my-new-feature`)
@@ -10,3 +14,7 @@ In case of software changes we strongly recommend you to respect the license ter
 1. Action points to be considered when adding a new database driver and / or a new programming language:
     - README.md
     - Release-Notes.md
+
+## 3. Notes on the Software Development Process
+
+[See here](development.md)

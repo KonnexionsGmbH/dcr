@@ -1,6 +1,6 @@
 # DCR - Release Notes
 
-## Current Version
+## 1. Current Version
 
 ### 1.0.0
 
@@ -27,7 +27,7 @@ Release Date: dd.mm.2021
 
 ----
 
-## Detailed Open Issues
+## 2. Detailed Open Issues
 
 ### <a name="issues_tbd"></a> TBD
 
@@ -35,7 +35,7 @@ Release Date: dd.mm.2021
 
 TBD
 
-## Version History
+## 3. Version History
 
 ### 1.0.0
 

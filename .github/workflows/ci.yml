@@ -33,17 +33,15 @@ jobs:
 #      - name: "Run MyPy for static typing"
 #        run: |
 #          make mypy
-# TBD
-#      - name: "Run PyLint for checking for errors in Python code"
-#        run: |
-#          make pylint
+      - name: "Run PyLint for checking for errors in Python code"
+        run: |
+          make pylint
       - name: "Run pydocstyle for docstring style enforcement"
         run: |
           make pydocstyle
-# TBD
-#      - name: "Run pytest for writing better program"
-#        run: |
-#          make pytest
+      - name: "Run pytest for writing better program"
+        run: |
+          make pytest
 
   production:
     name: "OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production"

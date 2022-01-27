@@ -1,6 +1,4 @@
-# DCR
-
-> *Document Content Recognition*
+# DCR Document Content Recognition
 
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
@@ -11,7 +9,7 @@ Documents not in PDF format are converted to PDF format using **[Pandoc](https:/
 Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to PDF format using the **[Tesseract OCR](https://github.com/tesseract-ocr/tesseract)** software.
 This process applies to all image format files e.g. jpeg, tiff etc., as well as scanned images in PDF format.
 
-Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr/)** for an introductory tutorial and a full user guide.
+Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr/)** for more detailed information.
 
 ## Features
 
@@ -25,7 +23,7 @@ If you need help with **DCR**, do not hesitate to get in contact with us!
 - For questions and high-level discussions, use **[Discussions](https://github.com/KonnexionsGmbH/dcr/discussions)** on GitHub.
 - To report a bug or make a feature request, open an **[Issue](https://github.com/KonnexionsGmbH/dcr/issues)** on GitHub.
 
-Please note that we may only provide support for problems/questions regarding core features of DCR. 
+Please note that we may only provide support for problems/questions regarding core features of **DCR** 
 Any questions or bug reports about features of third-party themes, plugins, extensions or similar should be made to their respective projects. 
 But, such questions are *not* banned from the **[Discussions](https://github.com/KonnexionsGmbH/dcr/discussions)**.
 
@@ -34,7 +32,7 @@ Make sure to stick around to answer some questions as well!
 ## Links
 
 - **[Official Documentation](https://konnexionsgmbh.github.io/dcr/)**
-- **[Latest Release Notes](docs/release_notes.md)**
+- **[Release Notes](docs/release_notes.md)**
 - **[Discussions](https://github.com/KonnexionsGmbH/dcr/discussions)** (Third-party themes, recipes, plugins and more)
 
 ## Contributing to DCR

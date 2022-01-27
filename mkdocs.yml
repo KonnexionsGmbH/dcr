@@ -15,6 +15,7 @@ nav:
   - Release Notes: release_notes.md
   - Contributin Guide: contributing.md
   - Code of Conduct: code_of_conduct.md
+  - Development : development.md
 
 markdown_extensions:
   - toc:
