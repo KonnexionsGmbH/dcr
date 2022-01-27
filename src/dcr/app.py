@@ -10,6 +10,7 @@ import locale
 import logging
 import logging.config
 import sys
+from typing import List
 
 import yaml
 
@@ -35,7 +36,7 @@ from libs.utils import terminate_fatal
 # -----------------------------------------------------------------------------
 # Load the command line arguments into memory.
 # -----------------------------------------------------------------------------
-def get_args(logger: logging.Logger, argv: sys.argv) -> dict[str, bool]:
+def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
     """
     #### Function: **Load the command line arguments into memory**.
 
@@ -56,7 +57,7 @@ def get_args(logger: logging.Logger, argv: sys.argv) -> dict[str, bool]:
 
     **Args**:
     - **logger (logging.Logger)**: Current logger.
-    - **argv (sys.args)**:         Command line arguments.
+    - **argv (List[str])**:         Command line arguments.
 
     **Returns**:
     - **dict[str, bool]**: The command line arguments found.
@@ -175,11 +176,14 @@ def initialise_logger() -> logging.Logger:
 # -----------------------------------------------------------------------------
 # Entry point.
 # -----------------------------------------------------------------------------
-def main(argv: list) -> None:
+def main(argv: List[str]) -> None:
     """
     #### Function: **Entry point**.
 
     The processes to be carried out are selected via command line arguments.
+
+    **Args**:
+    - **argv (List[str])**: Command line arguments.
     """
     # Initialise the logging functionality.
     logger = initialise_logger()

@@ -3,10 +3,10 @@ import logging
 
 import pytest
 
-from app import get_args, \
-    main
+from app import get_args
 from app import get_config
 from app import initialise_logger
+from app import main
 from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
 from libs.globals import ACTION_NEW_COMPLETE
 from libs.globals import ACTION_PROCESS_INBOX
@@ -104,14 +104,14 @@ def test_get_config() -> None:
 
     assert len(CONFIG) == 8
 
-    assert (DCR_CFG_DATABASE_URL in CONFIG) == True
-    assert (DCR_CFG_DCR_VERSION in CONFIG) == True
-    assert (DCR_CFG_DIRECTORY_INBOX in CONFIG) == True
-    assert (DCR_CFG_DIRECTORY_INBOX_ACCEPTED in CONFIG) == True
-    assert (DCR_CFG_DIRECTORY_INBOX_OCR in CONFIG) == True
-    assert (DCR_CFG_DIRECTORY_INBOX_OCR_ACCEPTED in CONFIG) == True
-    assert (DCR_CFG_DIRECTORY_INBOX_OCR_REJECTED in CONFIG) == True
-    assert (DCR_CFG_DIRECTORY_INBOX_REJECTED in CONFIG) == True
+    assert (DCR_CFG_DATABASE_URL in CONFIG) is True
+    assert (DCR_CFG_DCR_VERSION in CONFIG) is True
+    assert (DCR_CFG_DIRECTORY_INBOX in CONFIG) is True
+    assert (DCR_CFG_DIRECTORY_INBOX_ACCEPTED in CONFIG) is True
+    assert (DCR_CFG_DIRECTORY_INBOX_OCR in CONFIG) is True
+    assert (DCR_CFG_DIRECTORY_INBOX_OCR_ACCEPTED in CONFIG) is True
+    assert (DCR_CFG_DIRECTORY_INBOX_OCR_REJECTED in CONFIG) is True
+    assert (DCR_CFG_DIRECTORY_INBOX_REJECTED in CONFIG) is True
 
 
 # -----------------------------------------------------------------------------
@@ -119,7 +119,7 @@ def test_get_config() -> None:
 # -----------------------------------------------------------------------------
 def test_initialise_logger() -> None:
     """Test: Functionality."""
-    assert type(initialise_logger()) is logging.Logger
+    assert isinstance(initialise_logger(), logging.Logger) is True
 
 
 # -----------------------------------------------------------------------------

@@ -127,7 +127,9 @@ pydocstyle:
 pylint:
 	@echo "Info **********  Start: Pylint **************************************"
 	pipenv run pylint --version
-	pipenv run pylint src tests
+# TBD
+#	pipenv run pylint src tests
+	pipenv run pylint src
 	@echo "Info **********  End:   Pylint **************************************"
 
 # pytest: helps you write better programs.
