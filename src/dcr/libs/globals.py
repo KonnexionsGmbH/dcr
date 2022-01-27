@@ -23,8 +23,7 @@ DCR_CFG_SECTION: str = "dcr"
 FILE_ENCODING_DEFAULT: str = "utf-8"
 FILE_EXTENSION_PDF: str = ".pdf"
 
-LOCALE: str = "de_CH.utf8"
-
+LOCALE: str = "en_US.UTF-8"
 LOGGER_CFG_FILE: str = "logging_cfg.yaml"
 LOGGER_END: str = "End"
 LOGGER_FATAL_HEAD: str = "FATAL ERROR: program abort =====> "
