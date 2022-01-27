@@ -1,16 +1,18 @@
 """Testing Module `app`."""
-import logging
+import os
 
 import pytest
 
 from app import get_args
 from app import get_config
 from app import initialise_logger
+from app import main
 from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
 from libs.globals import ACTION_NEW_COMPLETE
 from libs.globals import ACTION_PROCESS_INBOX
 from libs.globals import ACTION_PROCESS_INBOX_OCR
 from libs.globals import CONFIG
+from libs.globals import DCR_CFG_DATABASE_FILE
 from libs.globals import DCR_CFG_DATABASE_URL
 from libs.globals import DCR_CFG_DCR_VERSION
 from libs.globals import DCR_CFG_DIRECTORY_INBOX
@@ -78,7 +80,8 @@ def test_get_args_valid_1_duplicate() -> None:
 def test_get_args_valid_2() -> None:
     """Test: Two valid arguments."""
     assert get_args(
-        LOGGER, ["n/a", ACTION_DB_CREATE_OR_UPGRADE, ACTION_PROCESS_INBOX_OCR]
+        LOGGER,
+        ["n/a", ACTION_DB_CREATE_OR_UPGRADE, ACTION_PROCESS_INBOX_OCR],
     ) == {
         ACTION_DB_CREATE_OR_UPGRADE: True,
         ACTION_PROCESS_INBOX: False,
@@ -100,10 +103,12 @@ def test_get_args_valid_new() -> None:
 # -----------------------------------------------------------------------------
 def test_get_config() -> None:
     """Test: Completeness."""
+
     get_config(LOGGER)
 
-    assert len(CONFIG) == 8
+    assert len(CONFIG) == 9
 
+    assert (DCR_CFG_DATABASE_FILE in CONFIG) is True
     assert (DCR_CFG_DATABASE_URL in CONFIG) is True
     assert (DCR_CFG_DCR_VERSION in CONFIG) is True
     assert (DCR_CFG_DIRECTORY_INBOX in CONFIG) is True
@@ -115,14 +120,6 @@ def test_get_config() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Test Function - initialise_logger().
-# -----------------------------------------------------------------------------
-def test_initialise_logger() -> None:
-    """Test: Pure functionality."""
-    assert isinstance(initialise_logger(), logging.Logger) is True
-
-
-# -----------------------------------------------------------------------------
 # Test Function - main().
 # -----------------------------------------------------------------------------
 def test_main_new() -> None:
@@ -130,11 +127,9 @@ def test_main_new() -> None:
     get_config(LOGGER)
 
     if not os.path.exists(CONFIG[DCR_CFG_DIRECTORY_INBOX]):
-        try:
-            os.mkdir(CONFIG[DCR_CFG_DIRECTORY_INBOX])
-        except OSError as error:
-            terminate_fatal(
-                LOGGER, "Error creating the inbox directory='" + error + "'"
-            )
+        os.mkdir(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+
+    if os.path.exists(CONFIG[DCR_CFG_DATABASE_FILE]):
+        os.remove(CONFIG[DCR_CFG_DATABASE_FILE])
 
     main(["pytest", ACTION_PROCESS_INBOX])

@@ -22,6 +22,7 @@ from sqlalchemy import Table
 from sqlalchemy.engine import Engine
 
 from libs.globals import CONFIG
+from libs.globals import DCR_CFG_DATABASE_FILE
 from libs.globals import DCR_CFG_DATABASE_URL
 from libs.globals import DCR_CFG_DCR_VERSION
 from libs.globals import LOGGER_END
@@ -88,6 +89,7 @@ def check_database_version(logger: logging.Logger) -> None:
         str(datetime.datetime.now()),
         " : The current version of database "
         + str(CONFIG[DCR_CFG_DATABASE_URL])
+        + str(CONFIG[DCR_CFG_DATABASE_FILE])
         + " is ",
         current_version,
         ".",
@@ -129,6 +131,7 @@ def create_database(logger: logging.Logger) -> None:
         str(datetime.datetime.now()),
         " : The database "
         + str(CONFIG[DCR_CFG_DATABASE_URL])
+        + str(CONFIG[DCR_CFG_DATABASE_FILE])
         + " has been successfully created.",
         sep="",
     )
@@ -167,6 +170,7 @@ def create_or_upgrade_database(logger: logging.Logger) -> None:
             str(datetime.datetime.now()),
             " : The database "
             + str(CONFIG[DCR_CFG_DATABASE_URL])
+            + str(CONFIG[DCR_CFG_DATABASE_FILE])
             + " is already up to date.",
             sep="",
         )

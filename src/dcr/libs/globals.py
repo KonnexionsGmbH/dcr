@@ -9,6 +9,7 @@ ACTION_PROCESS_INBOX_OCR: str = "p_i_o"
 
 CONFIG: Dict[str, PathLike[str] | str] = {}
 
+DCR_CFG_DATABASE_FILE: str = "database_file"
 DCR_CFG_DATABASE_URL: str = "database_url"
 DCR_CFG_DCR_VERSION: str = "dcr_version"
 DCR_CFG_DIRECTORY_INBOX: str = "directory_inbox"

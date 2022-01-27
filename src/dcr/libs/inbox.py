@@ -21,11 +21,54 @@ from libs.globals import FILE_EXTENSION_PDF
 from libs.globals import LOGGER_END
 from libs.globals import LOGGER_PROGRESS_UPDATE
 from libs.globals import LOGGER_START
+from libs.utils import terminate_fatal
+
+
+# -----------------------------------------------------------------------------
+# Create a new file directory if it does not already exist..
+# -----------------------------------------------------------------------------
+
+
+def create_directory(
+    logger: logging.Logger, directory_type: str, directory_name: str
+) -> None:
+    """
+    **Create a new file directory if it does not already exist**.
+
+    **Args**:
+    - **logger (logging.Logger)**: Current logger.
+    - **directory_type (str)**:    Directory type.
+    - **directory_name (str)**:    Directory name - may include a path.
+    """
+    if not os.path.exists(directory_name):
+        try:
+            os.mkdir(directory_name)
+            print(
+                LOGGER_PROGRESS_UPDATE,
+                str(datetime.datetime.now()),
+                " : The file directory for " + directory_type + " was ",
+                "newly created under the name ",
+                directory_name,
+                sep="",
+            )
+        except OSError:
+            terminate_fatal(
+                logger,
+                " : The file directory for "
+                + directory_type
+                + " can "
+                + "not be created under the name "
+                + directory_name
+                + " - error="
+                + str(OSError),
+            )
 
 
 # -----------------------------------------------------------------------------
 # Convert the files in the inbox.
 # -----------------------------------------------------------------------------
+
+
 def process_inbox(logger: logging.Logger) -> None:
     """
     #### Function: **Process the files in the inbox**.
@@ -43,19 +86,21 @@ def process_inbox(logger: logging.Logger) -> None:
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)
 
-    accepted = CONFIG[DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    try:
-        os.mkdir(accepted)
-    except OSError:
-        pass
-
     inbox = CONFIG[DCR_CFG_DIRECTORY_INBOX]
+    if not os.path.exists(inbox):
+        terminate_fatal(
+            logger,
+            "The input directory with the name "
+            + inbox
+            + " does not exist - error="
+            + str(OSError),
+        )
+
+    accepted = CONFIG[DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
+    create_directory(logger, "the accepted documents", accepted)
 
     rejected = CONFIG[DCR_CFG_DIRECTORY_INBOX_REJECTED]
-    try:
-        os.mkdir(rejected)
-    except OSError:
-        pass
+    create_directory(logger, "the rejected documents", rejected)
 
     files = pathlib.Path(inbox)
     for file in files.iterdir():

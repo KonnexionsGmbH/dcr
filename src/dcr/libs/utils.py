@@ -1,4 +1,4 @@
-"""### Module: **Help functions**."""
+"""### Module: **Helper functions**."""
 import logging
 import sys
 
