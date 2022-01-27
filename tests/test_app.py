@@ -122,8 +122,8 @@ def test_get_config() -> None:
 # -----------------------------------------------------------------------------
 # Test Function - main().
 # -----------------------------------------------------------------------------
-def test_main_p_i_missing() -> None:
-    """Test: ACTION_PROCESS_INBOX - no DB existing."""
+def test_main_p_i_missing_db() -> None:
+    """Test: ACTION_PROCESS_INBOX - DB missing."""
     get_config(LOGGER)
 
     if not os.path.exists(CONFIG[DCR_CFG_DIRECTORY_INBOX]):
