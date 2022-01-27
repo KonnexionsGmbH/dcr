@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  OS: "ubuntu-20.04", "windows-2019", "windows-2022"
+  PYTHON: "3.10"
+
 jobs:
   development:
     name: "OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development"
@@ -14,8 +18,7 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-20.04", "windows-2019", "windows-2022"]
-#       python-version: ["3.7", "3.8", "3.9", "3.10"]
-        python-version: ["3.9", "3.10"]
+        python-version: ["3.10"]
     steps:
       - uses: "actions/checkout@v2"
       - uses: "actions/setup-python@v2"
@@ -33,10 +36,9 @@ jobs:
       - name: "Run Flake8 for style guide enforcement"
         run: |
           make flake8
-# TBD
-#      - name: "Run MyPy for static typing"
-#        run: |
-#          make mypy
+      - name: "Run MyPy for static typing"
+        run: |
+          make mypy
       - name: "Run PyLint for checking for errors in Python code"
         run: |
           make pylint
@@ -54,8 +56,7 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-20.04", "windows-2019", "windows-2022"]
-#       python-version: ["3.7", "3.8", "3.9", "3.10"]
-        python-version: ["3.9", "3.10"]
+        python-version: ["3.10"]
     steps:
       - uses: "actions/checkout@v2"
       - uses: "actions/setup-python@v2"
