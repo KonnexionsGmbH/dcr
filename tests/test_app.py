@@ -122,8 +122,8 @@ def test_get_config() -> None:
 # -----------------------------------------------------------------------------
 # Test Function - main().
 # -----------------------------------------------------------------------------
-def test_main_new() -> None:
-    """Test: ACTION_PROCESS_INBOX."""
+def test_main_p_i_missing() -> None:
+    """Test: ACTION_PROCESS_INBOX - no DB existing."""
     get_config(LOGGER)
 
     if not os.path.exists(CONFIG[DCR_CFG_DIRECTORY_INBOX]):
@@ -131,5 +131,21 @@ def test_main_new() -> None:
 
     if os.path.exists(CONFIG[DCR_CFG_DATABASE_FILE]):
         os.remove(CONFIG[DCR_CFG_DATABASE_FILE])
+
+    with pytest.raises(SystemExit) as expt:
+        main(["pytest", ACTION_PROCESS_INBOX])
+    assert expt.type == SystemExit
+    assert expt.value.code == 1
+
+def test_main_d_c_u() -> None:
+    """Test: ACTION_DB_CREATE_OR_UPGRADE."""
+    get_config(LOGGER)
+
+    main(["pytest", ACTION_DB_CREATE_OR_UPGRADE])
+
+
+def test_main_p_i() -> None:
+    """Test: ACTION_PROCESS_INBOX."""
+    get_config(LOGGER)
 
     main(["pytest", ACTION_PROCESS_INBOX])

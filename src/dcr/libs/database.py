@@ -73,6 +73,14 @@ def check_database_version(logger: logging.Logger) -> None:
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)
 
+
+    if not sqlalchemy.inspect(ENGINE).has_table(DBT_VERSION):
+        terminate_fatal(
+                logger,
+                "The database "+CONFIG[DCR_CFG_DATABASE_FILE]+" does not yet exist."
+                )
+
+
     current_version = select_version_unique(logger)
 
     if CONFIG[DCR_CFG_DCR_VERSION] != current_version:
