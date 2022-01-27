@@ -1,13 +1,11 @@
 """Testing Module `app`."""
 import logging
-import os
 
 import pytest
 
 from app import get_args
 from app import get_config
 from app import initialise_logger
-from app import main
 from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
 from libs.globals import ACTION_NEW_COMPLETE
 from libs.globals import ACTION_PROCESS_INBOX
@@ -21,10 +19,10 @@ from libs.globals import DCR_CFG_DIRECTORY_INBOX_OCR
 from libs.globals import DCR_CFG_DIRECTORY_INBOX_OCR_ACCEPTED
 from libs.globals import DCR_CFG_DIRECTORY_INBOX_OCR_REJECTED
 from libs.globals import DCR_CFG_DIRECTORY_INBOX_REJECTED
+
 # -----------------------------------------------------------------------------
 # Constants, Fixtures & Globals.
 # -----------------------------------------------------------------------------
-from libs.utils import terminate_fatal
 
 LOGGER = initialise_logger()
 
@@ -127,16 +125,16 @@ def test_initialise_logger() -> None:
 # -----------------------------------------------------------------------------
 # Test Function - main().
 # -----------------------------------------------------------------------------
-def test_main_new() -> None:
-    """Test: ACTION_PROCESS_INBOX."""
-    get_config(LOGGER)
-
-    if not os.path.exists(CONFIG[DCR_CFG_DIRECTORY_INBOX]):
-        try:
-            os.mkdir(CONFIG[DCR_CFG_DIRECTORY_INBOX])
-        except OSError as error:
-            terminate_fatal(
-                LOGGER, "Error creating the inbox directory='" + error + "'"
-            )
-
-    main(["pytest", ACTION_PROCESS_INBOX])
+# def test_main_new() -> None:
+#     """Test: ACTION_PROCESS_INBOX."""
+#     get_config(LOGGER)
+#
+#     if not os.path.exists(CONFIG[DCR_CFG_DIRECTORY_INBOX]):
+#         try:
+#             os.mkdir(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+#         except OSError as error:
+#             terminate_fatal(
+#                 LOGGER, "Error creating the inbox directory='" + error + "'"
+#             )
+#
+#     main(["pytest", ACTION_PROCESS_INBOX])
