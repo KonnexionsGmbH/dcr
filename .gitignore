@@ -7,3 +7,4 @@
 /site/
 /src/dcr/*/__pycache__/
 /src/dcr/__pycache__/
+/tests/__pycache__/

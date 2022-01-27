@@ -43,11 +43,12 @@ jobs:
           make pydocstyle
       - name: "Run pytest for writing better program"
         run: |
-          make pytest
+          make pytest --cov-report xml
       - name: Publish to coveralls.io
-        uses: coverallsapp/github-action@v1.1.2
+        uses: "coverallsapp/github-action@master"
         with:
-          github-token: ${{ github.token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path--to-lcov: "coverage.xml"
 
   production:
     name: "OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production"

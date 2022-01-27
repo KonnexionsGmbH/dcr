@@ -64,7 +64,7 @@ def test_get_args_valid_1() -> None:
 
 
 def test_get_args_valid_1_duplicate() -> None:
-    """Test: One valid argument."""
+    """Test: Duplicate argument."""
     assert get_args(
         LOGGER,
         ["n/a", ACTION_DB_CREATE_OR_UPGRADE, ACTION_DB_CREATE_OR_UPGRADE],
@@ -76,7 +76,7 @@ def test_get_args_valid_1_duplicate() -> None:
 
 
 def test_get_args_valid_2() -> None:
-    """Test: One valid argument."""
+    """Test: Two valid arguments."""
     assert get_args(
         LOGGER, ["n/a", ACTION_DB_CREATE_OR_UPGRADE, ACTION_PROCESS_INBOX_OCR]
     ) == {
@@ -86,8 +86,8 @@ def test_get_args_valid_2() -> None:
     }
 
 
-def test_get_args_valid_complete() -> None:
-    """Test: One valid argument."""
+def test_get_args_valid_new() -> None:
+    """Test: Special argument `new`."""
     assert get_args(LOGGER, ["n/a", ACTION_NEW_COMPLETE]) == {
         ACTION_DB_CREATE_OR_UPGRADE: True,
         ACTION_PROCESS_INBOX: True,
@@ -99,7 +99,7 @@ def test_get_args_valid_complete() -> None:
 # Test Function - get_config().
 # -----------------------------------------------------------------------------
 def test_get_config() -> None:
-    """Test: Functionality."""
+    """Test: Completeness."""
     get_config(LOGGER)
 
     assert len(CONFIG) == 8
@@ -118,23 +118,23 @@ def test_get_config() -> None:
 # Test Function - initialise_logger().
 # -----------------------------------------------------------------------------
 def test_initialise_logger() -> None:
-    """Test: Functionality."""
+    """Test: Pure functionality."""
     assert isinstance(initialise_logger(), logging.Logger) is True
 
 
 # -----------------------------------------------------------------------------
 # Test Function - main().
 # -----------------------------------------------------------------------------
-# def test_main_new() -> None:
-#     """Test: ACTION_PROCESS_INBOX."""
-#     get_config(LOGGER)
-#
-#     if not os.path.exists(CONFIG[DCR_CFG_DIRECTORY_INBOX]):
-#         try:
-#             os.mkdir(CONFIG[DCR_CFG_DIRECTORY_INBOX])
-#         except OSError as error:
-#             terminate_fatal(
-#                 LOGGER, "Error creating the inbox directory='" + error + "'"
-#             )
-#
-#     main(["pytest", ACTION_PROCESS_INBOX])
+def test_main_new() -> None:
+    """Test: ACTION_PROCESS_INBOX."""
+    get_config(LOGGER)
+
+    if not os.path.exists(CONFIG[DCR_CFG_DIRECTORY_INBOX]):
+        try:
+            os.mkdir(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+        except OSError as error:
+            terminate_fatal(
+                LOGGER, "Error creating the inbox directory='" + error + "'"
+            )
+
+    main(["pytest", ACTION_PROCESS_INBOX])

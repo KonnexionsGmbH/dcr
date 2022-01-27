@@ -15,7 +15,7 @@ LOGGER = initialise_logger()
 # Test Function - test_terminate_fatal().
 # -----------------------------------------------------------------------------
 def test_terminate_fatal() -> None:
-    """Test Function."""
+    """Test: Pure functionality."""
     with pytest.raises(SystemExit) as expt:
         terminate_fatal(LOGGER, "test error message")
     assert expt.type == SystemExit
