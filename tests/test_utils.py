@@ -1,4 +1,4 @@
-"""Test Module."""
+"""Testing Module `utils`."""
 
 import pytest
 
@@ -12,7 +12,7 @@ LOGGER = initialise_logger()
 
 
 # -----------------------------------------------------------------------------
-# Terminate the application immediately.
+# Test Function - test_terminate_fatal().
 # -----------------------------------------------------------------------------
 def test_terminate_fatal() -> None:
     """Test Function."""

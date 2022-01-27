@@ -35,7 +35,7 @@ from libs.utils import terminate_fatal
 # -----------------------------------------------------------------------------
 # Load the command line arguments into memory.
 # -----------------------------------------------------------------------------
-def get_args(logger: logging.Logger) -> dict[str, bool]:
+def get_args(logger: logging.Logger, argv: sys.argv) -> dict[str, bool]:
     """
     #### Function: **Load the command line arguments into memory**.
 
@@ -56,6 +56,7 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
 
     **Args**:
     - **logger (logging.Logger)**: Current logger.
+    - **argv (sys.args)**:         Command line arguments.
 
     **Returns**:
     - **dict[str, bool]**: The command line arguments found.
@@ -63,10 +64,15 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(LOGGER_START)
 
-    num = len(sys.argv)
+    num = len(argv)
+
+    if num == 0:
+        terminate_fatal(logger, "No command line arguments found")
 
     if num == 1:
-        terminate_fatal(logger, "Command line arguments are missing")
+        terminate_fatal(
+            logger, "The specific command line arguments are missing"
+        )
 
     args = {
         ACTION_DB_CREATE_OR_UPGRADE: False,
@@ -75,7 +81,7 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
     }
 
     for i in range(1, num):
-        arg = sys.argv[i].lower()
+        arg = argv[i].lower()
         if arg == ACTION_NEW_COMPLETE:
             for key in args:
                 args[key] = True
@@ -87,7 +93,7 @@ def get_args(logger: logging.Logger) -> dict[str, bool]:
             args[arg] = True
         else:
             terminate_fatal(
-                logger, "Unknown command line argument='" + sys.argv[i] + "'"
+                logger, "Unknown command line argument='" + argv[i] + "'"
             )
 
     print(
@@ -169,7 +175,7 @@ def initialise_logger() -> logging.Logger:
 # -----------------------------------------------------------------------------
 # Entry point.
 # -----------------------------------------------------------------------------
-def main() -> None:
+def main(argv: list) -> None:
     """
     #### Function: **Entry point**.
 
@@ -186,7 +192,7 @@ def main() -> None:
     locale.setlocale(locale.LC_ALL, LOCALE)
 
     # Load the command line arguments into the memory (pdf ...`)
-    args = get_args(logger)
+    args = get_args(logger, argv)
 
     # Load the configuration parameters into the memory (CONFIG params
     # `file.configuration.name ...`)
@@ -213,4 +219,4 @@ def main() -> None:
 # Program start.
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":
-    main()
+    main(sys.argv)
