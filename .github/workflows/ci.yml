@@ -45,10 +45,7 @@ jobs:
       - name: Run pytest for writing better program
         run: make pytest
       - name: Publish to coveralls.io
-        run: |
-          pip freeze | grep coveralls
-          coverage run --source=src -m pytest tests/
-          coveralls --service=github
+        run: make python-coveralls
 
   production:
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production

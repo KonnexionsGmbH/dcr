@@ -140,3 +140,13 @@ pytest:
 	pipenv run pytest --version
 	pipenv run pytest  --cov-report xml --cov=src tests
 	@echo "Info **********  End:   pytest **************************************"
+
+# Python interface to coveralls.io API
+# https://github.com/z4r/python-coveralls
+# Configuration file: none
+python-coveralls:
+	@echo "Info **********  Start: python-coveralls ****************************"
+	pipenv run pip freeze | grep coveralls
+	coverage run --source=src -m pytest tests/
+	coveralls --service=github
+	@echo "Info **********  End:   python-coveralls ****************************"
