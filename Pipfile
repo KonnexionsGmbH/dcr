@@ -11,7 +11,7 @@ SQLAlchemy = "*"
 [dev-packages]
 bandit = "*"
 black = "*"
-coverage = "*"
+coverage = "==6.1.2"
 flake8 = "*"
 isort = "*"
 mccabe = "*"
