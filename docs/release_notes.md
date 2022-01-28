@@ -12,28 +12,27 @@ Release Date: dd.mm.2021
 
 #### Applied Software
 
-| Software       | Version        | Remark       |
-|:---------------|:---------------|:-------------|
-| asdf           | v0.9.0-b7dd291 | base version |
-| cURL           | 7.6.80         | base version |
-| DBeaver        | 21.3.2         |              |
-| Docker Compose | 1.29.2         |              |
-| Docker Desktop | 20.10.12       | base version             |
-| dos2unix       | 7.4.0          | base version             |
-| GCC & G++      | 10.3.0         | base version             |
-| Git            | 2.25.1         | base version             |
-| GNU Autoconf   | 2.69           | base version             |
-| GNU Automake   | 1.16.1         | base version             |
-| GNU make       | 4.2.1          | base version             |
-| htop           | 3.1.2          |              |
-| OpenSSL        | 1.1.1f         | base version             |
-| procps-ng      | 3.3.16         | base version             |
-| Python3        | 3.10.2         |              |
-| Python3 - pip  | 21.3.1         |              |
-| tmux           | 3.2a           |              |
-| Ubuntu         | 20.04.3 LTS    | base version             |
-| Vim            | 8.1            | base version             |
-| Wget           | 1.20.3         |              |
+| Software         | Version        | Remark         |
+|:-----------------|:---------------|:---------------|
+| asdf             | v0.9.0-2a538fe | base version   |
+| cURL             | 7.6.80         | base version   |
+| DBeaver          | 21.3.3         |                |
+| dos2unix         | 7.4.0          | base version   |
+| GCC & G++        | 10.3.0         | base version   |
+| Git              | 2.25.1         | base version   |
+| GNU Autoconf     | 2.69           | base version   |
+| GNU Automake     | 1.16.1         | base version   |
+| GNU make         | 4.2.1          | base version   |
+| htop             | 3.1.2          |                |
+| OpenSSL          | 1.1.1f         | base version   |
+| procps-ng        | 3.3.16         | base version   |
+| Python3          | 3.10.2         |                |
+| Python3 - pip    | 21.3.1         |                |
+| Python3 - pipenv | 2022.1.8       |                |
+| tmux             | 3.2a           |                |
+| Ubuntu           | 20.04.3 LTS    | base version   |
+| Vim              | 8.1.2018       | base version   |
+| Wget             | 1.20.3         |                |
 
 
 #### Open issues

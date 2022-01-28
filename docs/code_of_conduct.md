@@ -1,4 +1,4 @@
-# DCR - Contributor Covenant Code of Conduct
+# DCR - Code of Conduct
 
 ## Our Pledge
 

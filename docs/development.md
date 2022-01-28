@@ -1,4 +1,4 @@
-# DCR - Notes on the Software Development Process
+# DCR - Development
 
 ## 1. System Environment
 
@@ -38,7 +38,7 @@ They can be executed individually with `make black` and `make isort`, whereby `s
 
 ## 4. Static Code Analysis
 
-The tools `Bandit`, `Flake8`, `Mypy` and `Pylint` are used for formatting the programme code:
+The tools `Bandit`, `Flake8`, `Mypy` and `Pylint` are used for static code analysis:
 
 - [`Bandit`](https://bandit.readthedocs.io/en/latest/) - Bandit is a tool designed to find common security issues in Python code.
 - [`Flake8`](https://flake8.pycqa.org/en/latest/index.html#quickstart) - A python tool that glues together pycodestyle, pyflakes, mccabe, and third-party plugins to check the style and quality of some python code.
@@ -53,7 +53,7 @@ They can be executed individually with `make bandit`, `make flake8`, `make mypy`
 - [`McCabe`](https://github.com/PyCQA/mccabe) - McCabe complexity checker for Python.
 - [`pycodestyle`](https://github.com/PyCQA/pycodestyle) - Simple Python style checker in one Python file.
 - [`Pyflakes`](https://github.com/PyCQA/pyflakes) - A simple program which checks Python source files for errors.
-- [`Radon`](https://radon.readthedocs.io/en/latest/) - https://github.com/PyCQA/pyflakes.
+- [`Radon`](https://radon.readthedocs.io/en/latest/) - Various code metrics for Python code.
 
 ## 5. Software Documentation
 
@@ -73,19 +73,22 @@ They can be executed individually with `make bandit`, `make flake8`, `make mypy`
 - error handling - highly defensive
 - testing - verify os operatioons (rm, rmdir, mkdir, etc.)
 - continuous delivery: running isort, black and mkdocs 
+- ...
 
 ### Prio 2 
 
 - docs
-  - development.md
-  - index.md
-  - release_notes.md
-  - API Documentation
-  - beautify MkDocs documentation
+- - development.md
+- - index.md
+- - release_notes.md
+- - API Documentation
+- - beautify MkDocs documentation
 - Tesseract OCR
-  - Installation  
+- - Installation  
+- ...
 
 ### Prio 3 
 
 - tools.py - verify the content of the inbox directories
- 
+- ...
+

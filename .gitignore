@@ -3,6 +3,7 @@
 /.history/
 /.idea/
 /.vscode/
+/coverage.xml
 /data/
 /site/
 /src/dcr/*/__pycache__/
