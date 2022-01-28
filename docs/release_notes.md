@@ -12,32 +12,45 @@ Release Date: dd.mm.2021
 
 #### Applied Software
 
-| Software          | Version | Remark   |
-|:------------------|:--------|:---------|
-| C++ (gcc)         | base    |          |
-| GNU Autoconf      | base    |          |
-| GNU Automake      | base    |          |
-| GNU make          | base    |          |
-| Leptonica Library | 1.82.0  |          |
-| Tesseract OCR     | 5.0.0   |          |
+| Software       | Version        | Remark       |
+|:---------------|:---------------|:-------------|
+| asdf           | v0.9.0-b7dd291 | base version |
+| cURL           | 7.6.80         | base version |
+| DBeaver        | 21.3.2         |              |
+| Docker Compose | 1.29.2         |              |
+| Docker Desktop | 20.10.12       | base version             |
+| dos2unix       | 7.4.0          | base version             |
+| GCC & G++      | 10.3.0         | base version             |
+| Git            | 2.25.1         | base version             |
+| GNU Autoconf   | 2.69           | base version             |
+| GNU Automake   | 1.16.1         | base version             |
+| GNU make       | 4.2.1          | base version             |
+| htop           | 3.1.2          |              |
+| OpenSSL        | 1.1.1f         | base version             |
+| procps-ng      | 3.3.16         | base version             |
+| Python3        | 3.10.2         |              |
+| Python3 - pip  | 21.3.1         |              |
+| tmux           | 3.2a           |              |
+| Ubuntu         | 20.04.3 LTS    | base version             |
+| Vim            | 8.1            | base version             |
+| Wget           | 1.20.3         |              |
+
 
 #### Open issues
 
-- TBD: (see [here](#issues_tbd))
+- coveralls-python: (see [here](#issues_coveralls-python))
 
 ----
 
 ## 2. Detailed Open Issues
 
-### <a name="issues_tbd"></a> TBD
+### <a name="issues_coveralls-python"></a> coveralls-python
 
-#### Issue: TBD
-
-TBD
+- Issue: ImportError: cannot import name 'Reporter' from 'coverage.report' (see [here](https://github.com/TheKevJames/coveralls-python/issues/341)).
 
 ## 3. Version History
 
-### 1.0.0
+### TBD
 
 Release Date: dd.mm.2021
 
@@ -47,16 +60,9 @@ Release Date: dd.mm.2021
 
 #### Applied Software
 
-| Software          | Version | Remark   |
-|:------------------|:--------|:---------|
-| C++ (gcc)         | base    |          |
-| GNU Autoconf      | base    |          |
-| GNU Automake      | base    |          |
-| GNU make          | base    |          |
-| Leptonica Library | 1.82.0  |          |
-| Tesseract OCR     | 5.0.0   |          |
+- TBD
 
 #### Open issues
 
-- TBD: (see [here](#issues_tbd))
+- TBD
 

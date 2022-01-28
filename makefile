@@ -148,8 +148,7 @@ pytest:
 # Configuration file: none
 python-coveralls:
 	@echo "Info **********  Start: python-coveralls ****************************"
-	pipenv run pip freeze | grep coverage
-	pipenv run pip freeze | grep coveralls
+	pipenv run pip freeze | grep -e coverage -e coveralls -e pytest
 	pipenv run coverage run --source=src -m pytest tests
 	pipenv run coveralls --service=github
 	@echo "Info **********  End:   python-coveralls ****************************"

@@ -8,6 +8,8 @@ edit_uri: ""
 
 theme:
   name: mkdocs
+  locale: en
+  highlightjs: true
 
 nav:
   - Home: index.md
@@ -16,6 +18,9 @@ nav:
   - Contributin Guide: contributing.md
   - Code of Conduct: code_of_conduct.md
   - Development : development.md
+
+extra_css:
+  - css/extra.css
 
 markdown_extensions:
   - toc:
