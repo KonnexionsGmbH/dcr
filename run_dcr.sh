@@ -44,7 +44,7 @@ sleep .1
 echo "=============================================================================="
 echo "Start $0"
 echo "------------------------------------------------------------------------------"
-echo "dcr - Document Content Recognition."
+echo "DCR - Document Content Recognition."
 echo "------------------------------------------------------------------------------"
 echo "CHOICE_ACTION : ${DCR_CHOICE_ACTION}"
 echo "------------------------------------------------------------------------------"
@@ -65,7 +65,7 @@ case "${DCR_CHOICE_ACTION}" in
     fi
     ;;
   c_p)
-    # Production install packages and compile all dcr packages and modules
+    # Production install packages and compile all DCR packages and modules
     if ! ( make prod ); then
         exit 255
     fi

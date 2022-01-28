@@ -106,10 +106,12 @@ pipenv:
 pipenv_dev:
 	@echo "Info **********  Start: Installation of Development Packages ********"
 	python -m pipenv install --dev
+	pipenv run pip freeze
 	@echo "Info **********  End:   Installation of Development Packages ********"
 pipenv_prod:
 	@echo "Info **********  Start: Installation of Production Packages *********"
 	python -m pipenv install
+	pipenv run pip freeze
 	@echo "Info **********  End:   Installation of Production Packages *********"
 
 # pydocstyle - docstring style checker.
@@ -146,6 +148,7 @@ pytest:
 # Configuration file: none
 python-coveralls:
 	@echo "Info **********  Start: python-coveralls ****************************"
+	pipenv run pip freeze | grep coverage
 	pipenv run pip freeze | grep coveralls
 	coverage run --source=src -m pytest tests/
 	coveralls --service=github
