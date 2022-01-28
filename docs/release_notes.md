@@ -39,14 +39,19 @@ Release Date: dd.mm.2021
 #### Open issues
 
 - coveralls-python: (see [here](#issues_coveralls-python))
+- Pydoc-Markdown: (see [here](#issues_pydoc_markdown))
 
 ----
 
 ## 2. Detailed Open Issues
 
-### <a name="issues_coveralls-python"></a> coveralls-python
+### <a name="issues_coveralls_python"></a> coveralls-python
 
 - Issue: ImportError: cannot import name 'Reporter' from 'coverage.report' (see [here](https://github.com/TheKevJames/coveralls-python/issues/341)).
+
+### <a name="issues_pydoc_markdown"></a> Pydoc-Markdown
+
+- Issue: Please help me with combined Pydoc-Markdown and MKDocs (see [here](https://github.com/NiklasRosenstein/pydoc-markdown/discussions/243)).
 
 ## 3. Version History
 
