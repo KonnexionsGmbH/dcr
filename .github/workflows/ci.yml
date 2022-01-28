@@ -46,7 +46,7 @@ jobs:
         run: make pytest
       - name: Publish to coveralls.io
         run: |
-          coveralls --version
+          pip freeze | grep coveralls
           coverage run --source=src -m pytest tests/
           coveralls --service=github
 
