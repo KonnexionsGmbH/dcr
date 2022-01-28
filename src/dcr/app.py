@@ -15,7 +15,7 @@ from typing import List
 import yaml
 
 from libs import inbox
-from libs.database import check_database_version
+from libs.database import check_db_up_to_date
 from libs.database import create_or_upgrade_database
 from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
 from libs.globals import ACTION_NEW_COMPLETE
@@ -62,8 +62,7 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
     **Returns**:
     - **dict[str, bool]**: The command line arguments found.
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
+    logger.debug(LOGGER_START)
 
     num = len(argv)
 
@@ -104,8 +103,7 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
         sep="",
     )
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    logger.debug(LOGGER_END)
 
     return args
 
@@ -123,8 +121,7 @@ def get_config(logger: logging.Logger) -> None:
     **Args**:
     - **logger (logging.Logger)**: Current logger.
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
+    logger.debug(LOGGER_START)
 
     config_parser = configparser.ConfigParser()
     config_parser.read(DCR_CFG_FILE)
@@ -141,8 +138,7 @@ def get_config(logger: logging.Logger) -> None:
         sep="",
     )
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -188,8 +184,7 @@ def main(argv: List[str]) -> None:
     # Initialise the logging functionality.
     logger = initialise_logger()
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
+    logger.debug(LOGGER_START)
 
     print("Start app.py")
 
@@ -207,7 +202,7 @@ def main(argv: List[str]) -> None:
         create_or_upgrade_database(logger)
 
     # Setting up the database.
-    check_database_version(logger)
+    check_db_up_to_date(logger)
 
     if args[ACTION_PROCESS_INBOX]:
         # Processing the inbox directory.
@@ -215,8 +210,7 @@ def main(argv: List[str]) -> None:
 
     print("End   app.py")
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------

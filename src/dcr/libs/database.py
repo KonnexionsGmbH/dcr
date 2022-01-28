@@ -5,7 +5,6 @@ Data definition related processing routines.
 """
 
 import datetime
-import logging
 import logging.config
 from os import PathLike
 from typing import Dict
@@ -61,17 +60,16 @@ METADATA: MetaData = MetaData()
 
 
 # -----------------------------------------------------------------------------
-# Check the existence of the database schema.
+# Check that the database version is up to date.
 # -----------------------------------------------------------------------------
-def check_database_version(logger: logging.Logger) -> None:
+def check_db_up_to_date(logger: logging.Logger) -> None:
     """
-    #### Function: **Check the existence of the database schema**.
+    #### Function: **Check that the database version is up to date**.
 
     **Args**:
     - **logger (logging.Logger)**: Current logger.
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
+    logger.debug(LOGGER_START)
 
     if not sqlalchemy.inspect(ENGINE).has_table(DBT_VERSION):
         terminate_fatal(
@@ -104,8 +102,7 @@ def check_database_version(logger: logging.Logger) -> None:
         sep="",
     )
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -118,8 +115,7 @@ def create_database(logger: logging.Logger) -> None:
     **Args**:
     - **logger (logging.Logger)**: Current logger.
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
+    logger.debug(LOGGER_START)
 
     create_table_version()
 
@@ -144,8 +140,7 @@ def create_database(logger: logging.Logger) -> None:
         sep="",
     )
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -158,8 +153,7 @@ def create_or_upgrade_database(logger: logging.Logger) -> None:
     **Args**:
     - **logger (logging.Logger)**: Current logger.
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
+    logger.debug(LOGGER_START)
 
     is_new: bool = False
     is_upgrade: bool = False
@@ -183,8 +177,7 @@ def create_or_upgrade_database(logger: logging.Logger) -> None:
             sep="",
         )
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -302,16 +295,14 @@ def insert_table(logger: logging.Logger, table: str, columns: Columns) -> None:
     - **table (str)**:       Table name.
     - **columns (Columns)**: Column name and value pairs.
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
+    logger.debug(LOGGER_START)
 
     dbt = Table(table, METADATA, autoload_with=ENGINE)
 
     with ENGINE.connect() as conn:
         conn.execute(insert(dbt).values(columns))
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    logger.debug(LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -329,8 +320,7 @@ def select_version_unique(logger: logging.Logger) -> str:
     **Returns**:
     - **str**: The version number found.
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
+    logger.debug(LOGGER_START)
 
     dbt = Table(DBT_VERSION, METADATA, autoload_with=ENGINE)
 
@@ -351,8 +341,7 @@ def select_version_unique(logger: logging.Logger) -> str:
             logger, "Column version in database table version not found"
         )
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    logger.debug(LOGGER_END)
 
     return current_version
 
@@ -370,10 +359,8 @@ def upgrade_database(logger: logging.Logger) -> None:
     **Args**:
     - **logger (logging.Logger)**: Current logger.
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
+    logger.debug(LOGGER_START)
 
     # TBD: Database upgrade
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    logger.debug(LOGGER_END)

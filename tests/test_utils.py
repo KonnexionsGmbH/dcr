@@ -18,5 +18,6 @@ def test_terminate_fatal() -> None:
     """Test: Pure functionality."""
     with pytest.raises(SystemExit) as expt:
         terminate_fatal(LOGGER, "test error message")
+
     assert expt.type == SystemExit
     assert expt.value.code == 1

@@ -92,7 +92,7 @@ REM > %LOG_FILE% 2>&1 (
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_i_o"] set _CHOICE=%DCR_CHOICE_ACTION%
 
     if ["%_CHOICE%"] EQU ["%DCR_CHOICE_ACTION%"] (
-        python src\dcr\app.py %DCR_CHOICE_ACTION%
+        pipenv run python src\dcr\app.py %DCR_CHOICE_ACTION%
         if %ERRORLEVEL% neq 0 (
             echo Processing of the script: %0 - step: 'python src\dcr\app.py %DCR_CHOICE_ACTION%' was aborted, error code=%ERRORLEVEL%
             exit -1073741510

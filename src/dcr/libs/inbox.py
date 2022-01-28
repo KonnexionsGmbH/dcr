@@ -7,7 +7,6 @@ rejected file directories depending on the result of the check.
 """
 
 import datetime
-import logging
 import logging.config
 import os
 import pathlib
@@ -40,7 +39,7 @@ def create_directory(
     - **directory_type (str)**:    Directory type.
     - **directory_name (str)**:    Directory name - may include a path.
     """
-    if not os.path.exists(directory_name):
+    if not os.path.isdir(directory_name):
         try:
             os.mkdir(directory_name)
             print(
@@ -59,8 +58,10 @@ def create_directory(
                 + " can "
                 + "not be created under the name "
                 + directory_name
-                + " - error="
-                + str(OSError),
+                + " - error code="
+                + OSError.errno
+                + " message="
+                + OSError.strerror,
             )
 
 
@@ -83,11 +84,10 @@ def process_inbox(logger: logging.Logger) -> None:
     5. For each document an new entry is created in the database table
        `document`.
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_START)
+    logger.debug(LOGGER_START)
 
     inbox = CONFIG[DCR_CFG_DIRECTORY_INBOX]
-    if not os.path.exists(inbox):
+    if not os.path.isdir(inbox):
         terminate_fatal(
             logger,
             "The input directory with the name "
@@ -128,5 +128,4 @@ def process_inbox(logger: logging.Logger) -> None:
         sep="",
     )
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(LOGGER_END)
+    logger.debug(LOGGER_END)
