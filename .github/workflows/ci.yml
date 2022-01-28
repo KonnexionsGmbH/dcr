@@ -11,64 +11,66 @@ env:
 
 jobs:
   development:
-    name: "OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development"
-    runs-on: "${{ matrix.os }}"
-#   env:
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development
+    runs-on: ${{ matrix.os }}
     strategy:
+      max-parallel: 3
       matrix:
         os: ["ubuntu-20.04", "windows-2019", "windows-2022"]
         python-version: ["3.10"]
     steps:
-      - uses: "actions/checkout@v2"
-      - uses: "actions/setup-python@v2"
+      - uses: actions/checkout@v2
         with:
-          python-version: "${{ matrix.python-version }}"
-      - name: "Install pip"
-        run: "make pip"
-      - name: "Install pipenv"
-        run: "make pipenv"
-      - name: "Install dcr dependencies"
-        run: "make pipenv_dev"
-      - name: "Run Bandit for finding common security issues"
-        run: |
-          make bandit
-      - name: "Run Flake8 for style guide enforcement"
-        run: |
-          make flake8
-      - name: "Run MyPy for static typing"
-        run: |
-          make mypy
-      - name: "Run PyLint for checking for errors in Python code"
-        run: |
-          make pylint
-      - name: "Run pydocstyle for docstring style enforcement"
-        run: |
-          make pydocstyle
-      - name: "Run pytest for writing better program"
-        run: |
-          make pytest
+          fetch-depth: 1  # no history, just HEAD
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pip
+        run: make pip
+      - name: Install pipenv
+        run: make pipenv
+      - name: Install dcr dependencies
+        run: make pipenv_dev
+      - name: Run Bandit for finding common security issues
+        run: make bandit
+      - name: Run Flake8 for style guide enforcement
+        run: make flake8
+      - name: Run MyPy for static typing
+        run: make mypy
+      - name: Run PyLint for checking for errors in Python code
+        run: make pylint
+      - name: Run pydocstyle for docstring style enforcement
+        run: make pydocstyle
+      - name: Run pytest for writing better program
+        run: make pytest
       - name: Publish to coveralls.io
         run: |
+          coveralls --version
+          coverage run --source=src -m pytest tests/
           coveralls --service=github
 
   production:
-    name: "OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production"
-    runs-on: "${{ matrix.os }}"
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production
+    runs-on: ${{ matrix.os }}
     #   env:
     strategy:
+      max-parallel: 3
       matrix:
         os: ["ubuntu-20.04", "windows-2019", "windows-2022"]
         python-version: ["3.10"]
     steps:
-      - uses: "actions/checkout@v2"
-      - uses: "actions/setup-python@v2"
+      - uses: actions/checkout@v2
         with:
-          python-version: "${{ matrix.python-version }}"
-      - name: "Install pip"
-        run: "make pip"
-      - name: "Install pipenv"
-        run: "make pipenv"
-      - name: "Install dcr dependencies"
-        run: "make pipenv_prod"
-      - name: "Compile the Python code"
-        run: "make compileall"
+          fetch-depth: 1  # no history, just HEAD
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pip
+        run: make pip
+      - name: Install pipenv
+        run: make pipenv
+      - name: Install dcr dependencies
+        run: make pipenv_prod
+      - name: Compile the Python code
+        run: make compileall
