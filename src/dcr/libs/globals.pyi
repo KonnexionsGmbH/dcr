@@ -2,8 +2,8 @@
 from os import PathLike
 from typing import Dict
 
+ACTION_ALL_COMPLETE: str
 ACTION_DB_CREATE_OR_UPGRADE: str
-ACTION_NEW_COMPLETE: str
 ACTION_PROCESS_INBOX: str
 ACTION_PROCESS_INBOX_OCR: str
 

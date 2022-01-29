@@ -51,4 +51,5 @@ console_output_style = "count"
 log_auto_indent = true
 log_cli = true
 log_level = "DEBUG"
+markers = ["issue"]
 testpaths = "tests"

@@ -12,11 +12,11 @@ set DCR_CHOICE_ACTION_DEFAULT=d_c_u
 
 if ["%1"] EQU [""] (
     echo =========================================================
+    echo all   - Run the complete processing of all new documents
     echo d_c_u - Create or upgrade the database
     echo m_d_e - Run the development ecosystem
     echo m_d_i - Run the installation of the necessary 3rd party packages for development
     echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules
-    echo new   - Run the complete processing of all new documents
     echo p_i   - Process input folder
     echo p_i_o - Process input folder OCR
     echo ---------------------------------------------------------
@@ -85,7 +85,7 @@ REM > %LOG_FILE% 2>&1 (
         goto normal_exit
     )
 
-    if ["%DCR_CHOICE_ACTION%"] EQU ["new"]   set _CHOICE=%DCR_CHOICE_ACTION%
+    if ["%DCR_CHOICE_ACTION%"] EQU ["all"]   set _CHOICE=%DCR_CHOICE_ACTION%
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"]   set _CHOICE=%DCR_CHOICE_ACTION%
 
@@ -100,7 +100,7 @@ REM > %LOG_FILE% 2>&1 (
         goto normal_exit
     )
 
-    echo Usage: "./run_dcr.sh d_c_u | m_d_e | m_d_i | m_p | new | p_i | p_i_o"
+    echo Usage: "./run_dcr.sh all | d_c_u | m_d_e | m_d_i | m_p | p_i | p_i_o"
     exit -1073741510
 
     :normal_exit

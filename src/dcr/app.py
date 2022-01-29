@@ -17,8 +17,8 @@ import yaml
 from libs import inbox
 from libs.database import check_db_up_to_date
 from libs.database import create_or_upgrade_database
+from libs.globals import ACTION_ALL_COMPLETE
 from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
-from libs.globals import ACTION_NEW_COMPLETE
 from libs.globals import ACTION_PROCESS_INBOX
 from libs.globals import ACTION_PROCESS_INBOX_OCR
 from libs.globals import CONFIG
@@ -43,12 +43,12 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
     The command line arguments define the process steps to be executed.
     The valid arguments are:
 
+        all   - Run the complete processing of all new documents.
         d_c_u - Create or upgrade the database.
-        new   - Run the complete processing of all new documents.
         p_i   - Process input folder.
         p_i_o - Process input folder OCR.
 
-    With the option `new`, the following process steps are executed
+    With the option `all`, the following process steps are executed
     in this order:
 
         1. d_c_u
@@ -82,7 +82,7 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
 
     for i in range(1, num):
         arg = argv[i].lower()
-        if arg == ACTION_NEW_COMPLETE:
+        if arg == ACTION_ALL_COMPLETE:
             for key in args:
                 args[key] = True
         elif arg in (

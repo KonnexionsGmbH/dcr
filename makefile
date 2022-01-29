@@ -52,7 +52,8 @@ compileall:
 flake8:
 	@echo "Info **********  Start: Flake8 **************************************"
 	pipenv run flake8 --version
-	pipenv run flake8 src tests
+	pipenv run flake8 src
+	pipenv run flake8 tests
 	@echo "Info **********  End:   Flake8 **************************************"
 
 # isort your imports, so you don't have to.
@@ -129,9 +130,12 @@ pydocstyle:
 pylint:
 	@echo "Info **********  Start: Pylint **************************************"
 	pipenv run pylint --version
-# TBD
-#	pipenv run pylint src tests
 	pipenv run pylint src
+	@echo "Info **********  End:   Pylint **************************************"
+pylint_tests:
+	@echo "Info **********  Start: Pylint **************************************"
+	pipenv run pylint --version
+	pipenv run pylint tests
 	@echo "Info **********  End:   Pylint **************************************"
 
 # pytest: helps you write better programs.
@@ -141,6 +145,11 @@ pytest:
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
 	pipenv run pytest --cov-report term-missing:skip-covered --cov=src tests
+	@echo "Info **********  End:   pytest **************************************"
+pytest_issue:
+	@echo "Info **********  Start: pytest **************************************"
+	pipenv run pytest --version
+	pipenv run pytest --cov-report term-missing:skip-covered --cov=src -m issue tests
 	@echo "Info **********  End:   pytest **************************************"
 
 # Python interface to coveralls.io API

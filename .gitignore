@@ -2,6 +2,7 @@
 /.coverage
 /.history/
 /.idea/
+/.vs/
 /.vscode/
 /coverage.xml
 /data/
