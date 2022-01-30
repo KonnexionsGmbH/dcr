@@ -5,6 +5,7 @@ This is the entry point to the application DCR.
 Returns:
     [type]: None.
 """
+
 import configparser
 import datetime
 import locale

@@ -24,8 +24,6 @@ from libs.utils import terminate_fatal
 # -----------------------------------------------------------------------------
 # Create a new file directory if it does not already exist..
 # -----------------------------------------------------------------------------
-
-
 def create_directory(
     logger: logging.Logger, directory_type: str, directory_name: str
 ) -> None:
@@ -65,8 +63,6 @@ def create_directory(
 # -----------------------------------------------------------------------------
 # Convert the files in the inbox.
 # -----------------------------------------------------------------------------
-
-
 def process_inbox(logger: logging.Logger) -> None:
     """Process the files in the inbox.
 
