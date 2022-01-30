@@ -52,9 +52,9 @@ def test_file_ops(
     # The file does not yet exist.
     fxtr_remove_opt(file_name)
     # The file will be created.
-    (file_name).touch()
+    file_name.touch()
     fxtr_remove(file_name)
     # The file will be created.
-    (file_name).touch()
+    file_name.touch()
     fxtr_remove_opt(file_name)
     fxtr_remove_opt(file_name)

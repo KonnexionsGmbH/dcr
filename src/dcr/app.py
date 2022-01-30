@@ -13,7 +13,6 @@ import sys
 from typing import List
 
 import yaml
-
 from libs import inbox
 from libs.database import check_db_up_to_date
 from libs.database import create_or_upgrade_database
@@ -22,6 +21,9 @@ from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
 from libs.globals import ACTION_PROCESS_INBOX
 from libs.globals import ACTION_PROCESS_INBOX_OCR
 from libs.globals import CONFIG
+from libs.globals import DCR_CFG_DATABASE
+from libs.globals import DCR_CFG_DATABASE_FILE
+from libs.globals import DCR_CFG_DATABASE_URL
 from libs.globals import DCR_CFG_FILE
 from libs.globals import DCR_CFG_SECTION
 from libs.globals import FILE_ENCODING_DEFAULT
@@ -130,6 +132,10 @@ def get_config(logger: logging.Logger) -> None:
         if section == DCR_CFG_SECTION:
             for (key, value) in config_parser.items(section):
                 CONFIG[key] = value
+
+    CONFIG[DCR_CFG_DATABASE] = (
+        CONFIG[DCR_CFG_DATABASE_URL] + CONFIG[DCR_CFG_DATABASE_FILE]
+    )
 
     print(
         LOGGER_PROGRESS_UPDATE,

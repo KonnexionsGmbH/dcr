@@ -144,12 +144,13 @@ pylint_tests:
 pytest:
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
-	pipenv run pytest --cov-report term-missing:skip-covered --cov=src tests
+	pipenv run pytest --dead-fixtures tests
+	pipenv run pytest --cov-report term-missing:skip-covered --cov=src --random-order tests
 	@echo "Info **********  End:   pytest **************************************"
 pytest_issue:
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
-	pipenv run pytest --cov-report term-missing:skip-covered --cov=src -m issue tests
+	pipenv run pytest -m issue -s -x tests
 	@echo "Info **********  End:   pytest **************************************"
 
 # Python interface to coveralls.io API

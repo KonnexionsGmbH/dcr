@@ -13,13 +13,6 @@ from typing import Union
 
 import sqlalchemy
 import sqlalchemy.orm
-from sqlalchemy import ForeignKey
-from sqlalchemy import insert
-from sqlalchemy import MetaData
-from sqlalchemy import select
-from sqlalchemy import Table
-from sqlalchemy.engine import Engine
-
 from libs.globals import CONFIG
 from libs.globals import DCR_CFG_DATABASE_FILE
 from libs.globals import DCR_CFG_DATABASE_URL
@@ -28,6 +21,12 @@ from libs.globals import LOGGER_END
 from libs.globals import LOGGER_PROGRESS_UPDATE
 from libs.globals import LOGGER_START
 from libs.utils import terminate_fatal
+from sqlalchemy import ForeignKey
+from sqlalchemy import MetaData
+from sqlalchemy import Table
+from sqlalchemy import insert
+from sqlalchemy import select
+from sqlalchemy.engine import Engine
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -52,6 +51,7 @@ DBC_VERSION: str = "version"
 DBT_DOCUMENT: str = "document"
 DBT_JOURNAL: str = "journal"
 DBT_VERSION: str = "version"
+
 
 # ENGINE: Engine = sqlalchemy.create_engine(CONFIG[DCR_CFG_DATABASE_URL])
 ENGINE: Engine = sqlalchemy.create_engine("sqlite:///data/dcr.db")

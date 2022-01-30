@@ -1,14 +1,13 @@
 """Testing Module `app`."""
 
 import os
-from typing import Callable
 
 import pytest
-
 from app import get_args
 from app import get_config
 from app import initialise_logger
 from app import main
+from conftest import DCR_ARGV_0
 from libs.globals import ACTION_ALL_COMPLETE
 from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
 from libs.globals import ACTION_PROCESS_INBOX
@@ -126,35 +125,38 @@ def test_get_config():
 # -----------------------------------------------------------------------------
 # Test Function - main().
 # -----------------------------------------------------------------------------
-def test_main_p_i_missing_db(
-    fxtr_mkdir_opt: Callable[[str], None],
-    fxtr_remove_opt: Callable[[str], None],
-):
+def test_main_p_i_missing_db(fxtr_remove_opt):
     """Test: ACTION_PROCESS_INBOX - DB missing."""
     get_config(LOGGER)
-
-    fxtr_mkdir_opt(CONFIG[DCR_CFG_DIRECTORY_INBOX])
 
     fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
 
     with pytest.raises(SystemExit) as expt:
-        main(["pytest", ACTION_PROCESS_INBOX])
+        main([DCR_ARGV_0, ACTION_PROCESS_INBOX])
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
 
 
-def test_main_d_c_u():
+@pytest.mark.issue
+def test_main_d_c_u(fxtr_create_new_db, fxtr_remove_opt):
     """Test: ACTION_DB_CREATE_OR_UPGRADE."""
-    get_config(LOGGER)
+    fxtr_create_new_db
 
-    main(["pytest", ACTION_DB_CREATE_OR_UPGRADE])
+    main([DCR_ARGV_0, ACTION_DB_CREATE_OR_UPGRADE])
 
     assert os.path.isfile(CONFIG[DCR_CFG_DATABASE_FILE]) is True
 
+    fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
 
-def test_main_p_i():
+
+@pytest.mark.issue
+def test_main_p_i(fxtr_create_new_db, fxtr_mkdir_opt, fxtr_remove_opt):
     """Test: ACTION_PROCESS_INBOX."""
-    get_config(LOGGER)
+    fxtr_create_new_db
 
-    main(["pytest", ACTION_PROCESS_INBOX])
+    fxtr_mkdir_opt(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+
+    main([DCR_ARGV_0, ACTION_PROCESS_INBOX])
+
+    fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])

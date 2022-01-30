@@ -8,17 +8,20 @@ import os
 import shutil
 
 import pytest
-
 from app import get_config
 from app import initialise_logger
 from app import main
 from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
 from libs.globals import CONFIG
 from libs.globals import DCR_CFG_DATABASE_FILE
+from libs.utils import print_fixture_end
+from libs.utils import print_fixture_start
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
+DCR_ARGV_0 = "src/dcr/app.py"
+
 LOGGER = initialise_logger()
 
 
@@ -28,13 +31,15 @@ LOGGER = initialise_logger()
 @pytest.fixture()
 def fxtr_create_new_db(fxtr_remove_opt):
     """#### Fixture: **Create a new database**."""
+    print_fixture_start("fxtr_create_new_db")
+
     get_config(LOGGER)
 
     fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
 
-    main(["pytest", ACTION_DB_CREATE_OR_UPGRADE])
+    main([DCR_ARGV_0, ACTION_DB_CREATE_OR_UPGRADE])
 
-    assert os.path.isfile(CONFIG[DCR_CFG_DATABASE_FILE]) is True
+    print_fixture_end("fxtr_create_new_db")
 
 
 # -----------------------------------------------------------------------------
@@ -51,9 +56,9 @@ def fxtr_mkdir():
         **Args**:
         - **directory_name (str)**: Directory name including path.
         """
+        print_fixture_start("fxtr_mkdir")
         os.mkdir(directory_name)
-
-        assert os.path.isdir(directory_name) is True
+        print_fixture_end("fxtr_mkdir")
 
     return _fxtr_mkdir
 
@@ -72,10 +77,10 @@ def fxtr_mkdir_opt(fxtr_mkdir):
         **Args**:
         - **directory_name (str)**: Directory name including path.
         """
+        print_fixture_start("fxtr_mkdir_opt")
         if not os.path.isdir(directory_name):
             fxtr_mkdir(directory_name)
-
-        assert os.path.isdir(directory_name) is True
+        print_fixture_end("fxtr_mkdir_opt")
 
     return _fxtr_mkdir_opt
 
@@ -94,9 +99,9 @@ def fxtr_remove():
         **Args**:
         - **file_name (str)**: File name including path.
         """
+        print_fixture_start("fxtr_remove")
         os.remove(file_name)
-
-        assert os.path.isfile(file_name) is False
+        print_fixture_end("fxtr_remove")
 
     return _fxtr_remove
 
@@ -115,10 +120,10 @@ def fxtr_remove_opt(fxtr_remove):
         **Args**:
         - **file_name (str)**: File name including path.
         """
+        print_fixture_start("fxtr_remove_opt")
         if os.path.isfile(file_name):
             fxtr_remove(file_name)
-
-        assert os.path.isfile(file_name) is False
+        print_fixture_end("fxtr_remove_opt")
 
     return _fxtr_remove_opt
 
@@ -137,9 +142,9 @@ def fxtr_rmdir():
         **Args**:
         - **directory_name (str)**: Directory name including path.
         """
+        print_fixture_start("fxtr_rmdir")
         shutil.rmtree(directory_name)
-
-        assert os.path.isdir(directory_name) is False
+        print_fixture_end("fxtr_rmdir")
 
     return _fxtr_rmdir
 
@@ -158,9 +163,9 @@ def fxtr_rmdir_opt(fxtr_rmdir):
         **Args**:
         - **directory_name (str)**: Directory name including path.
         """
+        print_fixture_start("fxtr_rmdir_opt")
         if os.path.isdir(directory_name):
             fxtr_rmdir(directory_name)
-
-        assert os.path.isdir(directory_name) is False
+        print_fixture_end("fxtr_rmdir_opt")
 
     return _fxtr_rmdir_opt

@@ -22,7 +22,6 @@ from libs.globals import LOGGER_PROGRESS_UPDATE
 from libs.globals import LOGGER_START
 from libs.utils import terminate_fatal
 
-
 # -----------------------------------------------------------------------------
 # Create a new file directory if it does not already exist..
 # -----------------------------------------------------------------------------
