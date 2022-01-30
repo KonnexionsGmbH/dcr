@@ -42,7 +42,6 @@ from libs.utils import terminate_fatal
 def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
     """Load the command line arguments into memory.
 
-
     The command line arguments define the process steps to be executed.
     The valid arguments are:
 
@@ -185,7 +184,6 @@ def main(argv: List[str]) -> None:
     Args:
         argv (List[str]): Command line arguments.
     """
-
     # Initialise the logging functionality.
     logger = initialise_logger()
 
