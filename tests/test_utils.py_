@@ -1,4 +1,4 @@
-"""Testing Module `utils`."""
+"""Testing Module utils."""
 
 import pytest
 from app import initialise_logger

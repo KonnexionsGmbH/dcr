@@ -1,7 +1,9 @@
-"""
-### Module: **Test Configuration and Fixtures**.
+"""Test Configuration and Fixtures.
 
 Setup test configurations and store fixtures.
+
+Returns:
+    [type]: None.
 """
 
 import os

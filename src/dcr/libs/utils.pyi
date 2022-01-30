@@ -1,4 +1,5 @@
 """Library stub."""
+
 import logging
 
 def print_fixture_end(fixture_name: str) -> None: ...

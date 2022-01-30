@@ -1,4 +1,4 @@
-"""Testing Module `app`."""
+"""Testing Module app."""
 
 import os
 

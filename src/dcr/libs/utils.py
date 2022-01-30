@@ -1,4 +1,5 @@
-"""### Module: **Helper functions**."""
+"""Helper functions."""
+
 import datetime
 import logging
 import sys
@@ -59,7 +60,7 @@ def terminate_fatal(logger: logging.Logger, error_msg: str) -> None:
 
     Args:
         logger (logging.Logger): Current logger.
-        error_msg (str): Error message
+        error_msg (str): Error message.
     """
     print("")
     print(LOGGER_FATAL_HEAD)

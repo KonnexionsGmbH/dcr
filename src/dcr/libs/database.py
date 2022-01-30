@@ -1,7 +1,9 @@
-"""
-### Module: **Database Definition Management**.
+"""Database Definition Management.
 
 Data definition related processing routines.
+
+Returns:
+    [type]: None.
 """
 
 import datetime
@@ -63,11 +65,10 @@ METADATA: MetaData = MetaData()
 # Check that the database version is up to date.
 # -----------------------------------------------------------------------------
 def check_db_up_to_date(logger: logging.Logger) -> None:
-    """
-    #### Function: **Check that the database version is up to date**.
+    """Check that the database version is up to date.
 
-    **Args**:
-    - **logger (logging.Logger)**: Current logger.
+    Args:
+        logger (logging.Logger): Current logger.
     """
     logger.debug(LOGGER_START)
 
@@ -109,11 +110,10 @@ def check_db_up_to_date(logger: logging.Logger) -> None:
 # Create the database schema.
 # -----------------------------------------------------------------------------
 def create_database(logger: logging.Logger) -> None:
-    """
-    #### Function: **Create the database schema**.
+    """Create the database schema.
 
-    **Args**:
-    - **logger (logging.Logger)**: Current logger.
+    Args:
+        logger (logging.Logger): Current logger.
     """
     logger.debug(LOGGER_START)
 
@@ -147,11 +147,10 @@ def create_database(logger: logging.Logger) -> None:
 # Create or upgrade the database.
 # -----------------------------------------------------------------------------
 def create_or_upgrade_database(logger: logging.Logger) -> None:
-    """
-    #### Function: **Create or upgrade the database**.
+    """Create or upgrade the database.
 
-    **Args**:
-    - **logger (logging.Logger)**: Current logger.
+    Args:
+        logger (logging.Logger): Current logger.
     """
     logger.debug(LOGGER_START)
 
@@ -184,12 +183,7 @@ def create_or_upgrade_database(logger: logging.Logger) -> None:
 # Initialise the database table document.
 # -----------------------------------------------------------------------------
 def create_table_document() -> None:
-    """
-    #### Function: **Initialise the database table `document`**.
-
-    **Args**:
-    - **logger (logging.Logger)**: Current logger.
-    """
+    """Initialise the database table document."""
     sqlalchemy.Table(
         DBT_DOCUMENT,
         METADATA,
@@ -218,7 +212,7 @@ def create_table_document() -> None:
 # Initialise the database table journal.
 # -----------------------------------------------------------------------------
 def create_table_journal() -> None:
-    """#### Function: **Initialise the database table `journal`**."""
+    """Initialise the database table journal."""
     sqlalchemy.Table(
         DBT_JOURNAL,
         METADATA,
@@ -249,15 +243,14 @@ def create_table_journal() -> None:
 # Initialise the database table version.
 # -----------------------------------------------------------------------------
 def create_table_version() -> sqlalchemy.Table:
-    """
-    #### Function: **Initialise the database table `version`**.
+    """Initialise the database table version.
 
     If the database table is not yet included in the database schema, then the
     database table is created and the current version number of DCR is
     inserted.
 
-    **Returns**:
-    - **sqlalchemy.Table**: Schema of database table `version`.
+    Returns:
+        sqlalchemy.Table: Schema of database table `version`.
     """
     return sqlalchemy.Table(
         DBT_VERSION,
@@ -287,13 +280,12 @@ def create_table_version() -> sqlalchemy.Table:
 # Insert a new row into a database table.
 # -----------------------------------------------------------------------------
 def insert_table(logger: logging.Logger, table: str, columns: Columns) -> None:
-    """
-    #### Function: **Insert a new row into a database table**.
+    """Insert a new row into a database table.
 
-    **Args**:
-    - **logger (logging.Logger)**: Current logger.
-    - **table (str)**:       Table name.
-    - **columns (Columns)**: Column name and value pairs.
+    Args:
+        logger (logging.Logger): Current logger.
+        table (str): Table name.
+        columns (Columns): Pairs of column name and value.
     """
     logger.debug(LOGGER_START)
 
@@ -309,16 +301,15 @@ def insert_table(logger: logging.Logger, table: str, columns: Columns) -> None:
 # Get the version number from the database table version.
 # -----------------------------------------------------------------------------
 def select_version_unique(logger: logging.Logger) -> str:
-    """
-    #### Function: **Get the version number**.
+    """Get the version number.
 
     Get the version number from the database table `version`.
 
-    **Args**:
-    - **logger (logging.Logger)**: Current logger.
+    Args:
+        logger (logging.Logger): Current logger.
 
-    **Returns**:
-    - **str**: The version number found.
+    Returns:
+        str: The version number found.
     """
     logger.debug(LOGGER_START)
 
@@ -350,14 +341,13 @@ def select_version_unique(logger: logging.Logger) -> str:
 # Upgrade the current database schema..
 # -----------------------------------------------------------------------------
 def upgrade_database(logger: logging.Logger) -> None:
-    """
-    #### Function: **Upgrade the current database schema**.
+    """Upgrade the current database schema.
 
     Check if the current database schema needs to be upgraded and perform the
     necessary steps.
 
-    **Args**:
-    - **logger (logging.Logger)**: Current logger.
+    Args:
+        logger (logging.Logger): Current logger.
     """
     logger.debug(LOGGER_START)
 

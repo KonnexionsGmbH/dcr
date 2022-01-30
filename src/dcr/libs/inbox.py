@@ -1,5 +1,4 @@
-"""
-### Module: **Check and distribute incoming documents**.
+"""Check and distribute incoming documents.
 
 New documents are made available in one of the two file directories
 input or input_ocr. These are then checked and moved to the accepted or
@@ -30,13 +29,12 @@ from libs.utils import terminate_fatal
 def create_directory(
     logger: logging.Logger, directory_type: str, directory_name: str
 ) -> None:
-    """
-    **Create a new file directory if it does not already exist**.
+    """Create a new file directory if it does not already exist.
 
-    **Args**:
-    - **logger (logging.Logger)**: Current logger.
-    - **directory_type (str)**:    Directory type.
-    - **directory_name (str)**:    Directory name - may include a path.
+    Args:
+        logger (logging.Logger): Current logger.
+        directory_type (str): Directory type.
+        directory_name (str): Directory name - may include a path.
     """
     if not os.path.isdir(directory_name):
         try:
@@ -70,18 +68,20 @@ def create_directory(
 
 
 def process_inbox(logger: logging.Logger) -> None:
-    """
-    #### Function: **Process the files in the inbox**.
+    """Process the files in the inbox.
 
-    1. Documents of type `doc`, `docx` or `txt` are converted to `pdf` format
-       and copied to the `inbox_accepted` directory.
-    2. Documents of type `pdf` that do not consist only of a scanned image are
-       copied unchanged to the `inbox_accepted` directory.
-    3. Documents of type `pdf` consisting only of a scanned image are copied
-       unchanged to the `inbox_ocr` directory.
-    4. All other documents are copied to the `inbox_rejected` directory.
+    1. Documents of type doc, docx or txt are converted to pdf format
+       and copied to the inbox_accepted directory.
+    2. Documents of type pdf that do not consist only of a scanned image are
+       copied unchanged to the inbox_accepted directory.
+    3. Documents of type pdf consisting only of a scanned image are copied
+       unchanged to the inbox_ocr directory.
+    4. All other documents are copied to the inbox_rejected directory.
     5. For each document an new entry is created in the database table
-       `document`.
+       document.
+
+    Args:
+        logger (logging.Logger): Current logger.
     """
     logger.debug(LOGGER_START)
 

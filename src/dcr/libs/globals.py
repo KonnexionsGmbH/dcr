@@ -1,4 +1,4 @@
-"""### Module: **Definition of the Global Constants and Types**."""
+"""Definition of the Global Constants and Types."""
 
 from os import PathLike
 from typing import Dict

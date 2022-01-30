@@ -1,4 +1,4 @@
-"""Testing Module `database`."""
+"""Testing Module database."""
 
 import pytest
 from app import get_config

@@ -1,1 +1,1 @@
-"""### Package: **DCR libraries**."""
+"""Package: DCR libraries."""

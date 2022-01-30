@@ -1,9 +1,10 @@
-"""
-### Module: **Entry point functionality**.
+"""Entry point functionality.
 
-This is the entry point to the application `DCR`.
-"""
+This is the entry point to the application DCR.
 
+Returns:
+    [type]: None.
+"""
 import configparser
 import datetime
 import locale
@@ -39,8 +40,8 @@ from libs.utils import terminate_fatal
 # Load the command line arguments into memory.
 # -----------------------------------------------------------------------------
 def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
-    """
-    #### Function: **Load the command line arguments into memory**.
+    """Load the command line arguments into memory.
+
 
     The command line arguments define the process steps to be executed.
     The valid arguments are:
@@ -50,19 +51,19 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
         p_i   - Process input folder.
         p_i_o - Process input folder OCR.
 
-    With the option `all`, the following process steps are executed
+    With the option all, the following process steps are executed
     in this order:
 
         1. d_c_u
         2. p_i
         3. p_i_o
 
-    **Args**:
-    - **logger (logging.Logger)**: Current logger.
-    - **argv (List[str])**:         Command line arguments.
+    Args:
+        logger (logging.Logger): Current logger.
+        argv (List[str]): Command line arguments.
 
-    **Returns**:
-    - **dict[str, bool]**: The command line arguments found.
+    Returns:
+        dict[str, bool]: The command line arguments found.
     """
     logger.debug(LOGGER_START)
 
@@ -114,14 +115,13 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
 # Load the configuration parameters into memory.
 # -----------------------------------------------------------------------------
 def get_config(logger: logging.Logger) -> None:
-    """
-    #### Function: **Load the configuration parameters into memory**.
+    """Load the configuration parameters into memory.
 
     Loads the configuration parameters from the `setup.cfg` file under
     the `DCR` section into memory.
 
-    **Args**:
-    - **logger (logging.Logger)**: Current logger.
+    Args:
+        logger (logging.Logger): Current logger.
     """
     logger.debug(LOGGER_START)
 
@@ -151,11 +151,10 @@ def get_config(logger: logging.Logger) -> None:
 # Initialising the logging functionality.
 # -----------------------------------------------------------------------------
 def initialise_logger() -> logging.Logger:
-    """
-    #### Function: **Initialise the root logging functionality**.
+    """Initialise the root logging functionality.
 
-    **Returns**:
-    - **logging.LOGGER**: Root logger.
+    Returns:
+        logging.Logger: Root loggger.
     """
     with open(LOGGER_CFG_FILE, "r", encoding=FILE_ENCODING_DEFAULT) as file:
         log_config = yaml.safe_load(file.read())
@@ -179,14 +178,14 @@ def initialise_logger() -> logging.Logger:
 # Entry point.
 # -----------------------------------------------------------------------------
 def main(argv: List[str]) -> None:
-    """
-    #### Function: **Entry point**.
+    """Entry point.
 
     The processes to be carried out are selected via command line arguments.
 
-    **Args**:
-    - **argv (List[str])**: Command line arguments.
+    Args:
+        argv (List[str]): Command line arguments.
     """
+
     # Initialise the logging functionality.
     logger = initialise_logger()
 

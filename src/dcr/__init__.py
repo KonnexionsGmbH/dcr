@@ -1,1 +1,1 @@
-"""### Package: **DCR root**."""
+"""DCR root."""

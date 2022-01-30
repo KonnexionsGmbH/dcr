@@ -1,4 +1,5 @@
 """Library stub."""
+
 import logging
 from os import PathLike
 from typing import Dict
