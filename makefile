@@ -71,7 +71,7 @@ isort:
 mkdocs:
 	@echo "Info **********  Start: MkDocs **************************************"
 	pipenv run mkdocs --version
-	pipenv run mkdocs gh-deploy
+	pipenv run mkdocs gh-deploy --force
 	@echo "Info **********  End:   MkDocs **************************************"
 
 # Mypy: Static Typing for Python

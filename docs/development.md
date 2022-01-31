@@ -143,6 +143,40 @@ Finally, the tool [python-coveralls](https://github.com/z4r/python-coveralls) is
 
 ## 7. Continuous Delivery
 
+The GitHub Actions are used to enforce the following good practices of the software engineering process in the CI/CD process:
+
+- uniform formatting of all source code,
+- static source code analysis,
+- execution of the software testing framework, and
+- creation of up-to-date user documentation.
+
+The development branch in the GitHub Actions guarantees compliance with the required standards and the production branch ensures error-free compilation for production use.
+Both branches must be able to run error-free on operating systems **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`2022`** and with Python version **`3.10`**.
+
+The individual steps to be carried out 
+
+- in the development branch are:
+
+  - set up Python, pip and pipenv
+  - install the development specific packages with pipenv
+  - compile the Python code
+  - run isort for sorting your imports
+  - run Black for formatting your code
+  - run Bandit for finding common security issues
+  - run Flake8 for style guide enforcement
+  - run MyPy for static typing
+  - run PyLint for checking for errors in Python code
+  - run pydocstyle for docstring style enforcement
+  - run pytest for writing better program
+  - run MkDocs for creating project documentation with markdown.
+  - publish the code coverage results to coveralls.io
+
+- and in the production branch:
+
+  - set up Python, pip and pipenv
+  - install the production specific packages with pipenv
+  - compile the Python code
+
 ## 8. Development Environment
 
 ## 9. Planning

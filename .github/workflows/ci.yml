@@ -32,6 +32,8 @@ jobs:
         run: make pipenv
       - name: Install dcr dependencies
         run: make pipenv_dev
+      - name: Compile the Python code
+        run: make compileall
       - name: Run isort for sorting your imports
         run: make isort
       - name: Run Black for formatting your code
@@ -50,7 +52,7 @@ jobs:
         run: make pytest
       - name: Run MkDocs for creating project documentation with markdown.
         run: make mkdocs
-#      - name: Publish to coveralls.io
+#      - name: Publish the code coverage to coveralls.io
 #        run: make python-coveralls
 
   production:
