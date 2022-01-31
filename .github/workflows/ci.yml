@@ -49,7 +49,7 @@ jobs:
       - name: Run pytest for writing better program
         run: make pytest
       - name: Run MkDocs for creating project documentation with markdown.
-        run: make pytest
+        run: make mkdocs
 #      - name: Publish to coveralls.io
 #        run: make python-coveralls
 
