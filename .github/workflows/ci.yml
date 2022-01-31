@@ -50,8 +50,8 @@ jobs:
         run: make pytest
       - name: Run MkDocs for creating project documentation with markdown.
         run: make pytest
-      - name: Publish to coveralls.io
-        run: make python-coveralls
+#      - name: Publish to coveralls.io
+#        run: make python-coveralls
 
   production:
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production
