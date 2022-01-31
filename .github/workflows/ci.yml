@@ -50,10 +50,33 @@ jobs:
         run: make pydocstyle
       - name: Run pytest for writing better program
         run: make pytest
-      - name: Run MkDocs for creating project documentation with markdown.
-        run: make mkdocs
 #      - name: Publish the code coverage to coveralls.io
 #        run: make python-coveralls
+
+  documentation:
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 1
+      matrix:
+        os: ["ubuntu-20.04"]
+        python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1  # no history, just HEAD
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pip
+        run: make pip
+      - name: Install pipenv
+        run: make pipenv
+      - name: Install dcr dependencies
+        run: make pipenv_dev
+      - name: Run MkDocs for creating project documentation with markdown.
+        run: make mkdocs
 
   production:
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production

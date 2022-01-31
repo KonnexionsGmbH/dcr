@@ -157,25 +157,25 @@ The individual steps to be carried out
 
 - in the development branch are:
 
-  - set up Python, pip and pipenv
-  - install the development specific packages with pipenv
-  - compile the Python code
-  - run isort for sorting your imports
-  - run Black for formatting your code
-  - run Bandit for finding common security issues
-  - run Flake8 for style guide enforcement
-  - run MyPy for static typing
-  - run PyLint for checking for errors in Python code
-  - run pydocstyle for docstring style enforcement
-  - run pytest for writing better program
-  - run MkDocs for creating project documentation with markdown.
-  - publish the code coverage results to coveralls.io
+- - set up Python, pip and pipenv
+- - install the development specific packages with pipenv
+- - compile the Python code
+- - run isort for sorting your imports
+- - run Black for formatting your code
+- - run Bandit for finding common security issues
+- - run Flake8 for style guide enforcement
+- - run MyPy for static typing
+- - run PyLint for checking for errors in Python code
+- - run pydocstyle for docstring style enforcement
+- - run pytest for writing better program
+- - run MkDocs for creating project documentation with markdown.
+- - publish the code coverage results to coveralls.io
 
 - and in the production branch:
 
-  - set up Python, pip and pipenv
-  - install the production specific packages with pipenv
-  - compile the Python code
+- - set up Python, pip and pipenv
+- - install the production specific packages with pipenv
+- - compile the Python code
 
 ## 8. Development Environment
 
