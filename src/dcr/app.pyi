@@ -3,10 +3,6 @@
 import logging
 from typing import List
 
-from sqlalchemy.engine import Engine
-
-ENGINE: Engine
-
 def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]: ...
 def get_config(logger: logging.Logger) -> None: ...
 def initialise_logger() -> logging.Logger: ...

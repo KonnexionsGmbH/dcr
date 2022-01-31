@@ -19,7 +19,6 @@ if [ -z "$1" ]; then
     echo "m_d_i - Run the installation of the necessary 3rd party packages for development"
     echo "m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules"
     echo "p_i   - Process input folder"
-    echo "p_i_o - Process input folder OCR"
     echo "------------------------------------------------------------------------------"
     read -rp "Enter the desired action [default: ${DCR_CHOICE_ACTION_DEFAULT}] " DCR_CHOICE_ACTION
     export DCR_CHOICE_ACTION=${DCR_CHOICE_ACTION:-$DCR_CHOICE_ACTION_DEFAULT}
@@ -70,13 +69,13 @@ case "${DCR_CHOICE_ACTION}" in
         exit 255
     fi
     ;;
-  all|d_c_u|p_i|p_i_o)
+  all|d_c_u|p_i)
     if ! ( pipenv run python src/dcr/app.py "${DCR_CHOICE_ACTION}" ); then
         exit 255
     fi
     ;;
   *)
-    echo "Usage: ./run_dcr.sh all | d_c_u | m_d_e | m_d_i | m_p | p_i | p_i_o"
+    echo "Usage: ./run_dcr.sh all | d_c_u | m_d_e | m_d_i | m_p | p_i"
     ;;
 esac
 

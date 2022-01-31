@@ -150,7 +150,7 @@ pytest:
 pytest_issue:
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
-	pipenv run pytest -m issue -s -x tests
+	pipenv run pytest --cov-report term-missing:skip-covered --cov=src -m issue --setup-show tests
 	@echo "Info **********  End:   pytest **************************************"
 
 # Python interface to coveralls.io API

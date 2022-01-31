@@ -13,11 +13,11 @@ import pytest
 from app import get_config
 from app import initialise_logger
 from app import main
+from libs.database import METADATA
 from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
 from libs.globals import CONFIG
 from libs.globals import DCR_CFG_DATABASE_FILE
-from libs.utils import print_fixture_end
-from libs.utils import print_fixture_start
+from libs.globals import DCR_CFG_DIRECTORY_INBOX
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -26,22 +26,7 @@ DCR_ARGV_0 = "src/dcr/app.py"
 
 LOGGER = initialise_logger()
 
-
-# -----------------------------------------------------------------------------
-# Fixture - Create new database.
-# -----------------------------------------------------------------------------
-@pytest.fixture()
-def fxtr_create_new_db(fxtr_remove_opt):
-    """#### Fixture: **Create a new database**."""
-    print_fixture_start("fxtr_create_new_db")
-
-    get_config(LOGGER)
-
-    fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
-
-    main([DCR_ARGV_0, ACTION_DB_CREATE_OR_UPGRADE])
-
-    print_fixture_end("fxtr_create_new_db")
+# @pytest.mark.issue
 
 
 # -----------------------------------------------------------------------------
@@ -49,18 +34,16 @@ def fxtr_create_new_db(fxtr_remove_opt):
 # -----------------------------------------------------------------------------
 @pytest.fixture()
 def fxtr_mkdir():
-    """#### Fixture Factory: **Create a new directory**."""
+    """Fixture Factory: Create a new directory."""
 
     def _fxtr_mkdir(directory_name: str):
         """
-        #### Fixture: **Create a new directory**.
+        Fixture: Create a new directory.
 
-        **Args**:
-        - **directory_name (str)**: Directory name including path.
+        Args:
+            directory_name (str): Directory name including path.
         """
-        print_fixture_start("fxtr_mkdir")
         os.mkdir(directory_name)
-        print_fixture_end("fxtr_mkdir")
 
     return _fxtr_mkdir
 
@@ -70,21 +53,82 @@ def fxtr_mkdir():
 # -----------------------------------------------------------------------------
 @pytest.fixture()
 def fxtr_mkdir_opt(fxtr_mkdir):
-    """#### Fixture Factory: **Create a new directory if not existing**."""
+    """Fixture Factory: Create a new directory if not existing."""
 
     def _fxtr_mkdir_opt(directory_name: str):
         """
-        #### Fixture: **Create a new directory if not existing**.
+        Fixture: Create a new directory if not existing.
 
-        **Args**:
-        - **directory_name (str)**: Directory name including path.
+        Args:
+            directory_name (str): Directory name including path.
         """
-        print_fixture_start("fxtr_mkdir_opt")
         if not os.path.isdir(directory_name):
             fxtr_mkdir(directory_name)
-        print_fixture_end("fxtr_mkdir_opt")
 
     return _fxtr_mkdir_opt
+
+
+# -----------------------------------------------------------------------------
+# Fixture - New empty database and empty inbox.
+# -----------------------------------------------------------------------------
+@pytest.fixture()
+def fxtr_new_db_empty_inbox(
+    fxtr_mkdir, fxtr_remove, fxtr_remove_opt, fxtr_rmdir, fxtr_rmdir_opt
+):
+    """Fixture: New empty database, but no inbox directory."""
+    get_config(LOGGER)
+
+    fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
+
+    fxtr_rmdir_opt(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+
+    fxtr_mkdir(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+
+    METADATA.clear()
+
+    main([DCR_ARGV_0, ACTION_DB_CREATE_OR_UPGRADE])
+
+    yield
+
+    fxtr_rmdir(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+
+    fxtr_remove(CONFIG[DCR_CFG_DATABASE_FILE])
+
+
+# -----------------------------------------------------------------------------
+# Fixture - New empty database, but no inbox directory.
+# -----------------------------------------------------------------------------
+@pytest.fixture()
+def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
+    """Fixture: New empty database, but no inbox directory."""
+    get_config(LOGGER)
+
+    fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
+
+    fxtr_rmdir_opt(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+
+    METADATA.clear()
+
+    main([DCR_ARGV_0, ACTION_DB_CREATE_OR_UPGRADE])
+
+    yield
+
+    fxtr_remove(CONFIG[DCR_CFG_DATABASE_FILE])
+
+
+# -----------------------------------------------------------------------------
+# Fixture - No database available.
+# -----------------------------------------------------------------------------
+@pytest.fixture()
+def fxtr_no_db(fxtr_remove_opt):
+    """Fixture: No database available."""
+    get_config(LOGGER)
+
+    fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
+
+    yield
+
+    fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
 
 
 # -----------------------------------------------------------------------------
@@ -92,18 +136,16 @@ def fxtr_mkdir_opt(fxtr_mkdir):
 # -----------------------------------------------------------------------------
 @pytest.fixture()
 def fxtr_remove():
-    """#### Fixture Factory: **Delete a file**."""
+    """Fixture Factory: Delete a file."""
 
     def _fxtr_remove(file_name: str):
         """
-        #### Fixture: **Delete a file**.
+        Fixture: Delete a file.
 
-        **Args**:
-        - **file_name (str)**: File name including path.
+        Args:
+            file_name (str): File name including path.
         """
-        print_fixture_start("fxtr_remove")
         os.remove(file_name)
-        print_fixture_end("fxtr_remove")
 
     return _fxtr_remove
 
@@ -113,19 +155,17 @@ def fxtr_remove():
 # -----------------------------------------------------------------------------
 @pytest.fixture()
 def fxtr_remove_opt(fxtr_remove):
-    """#### Fixture Factory: **Delete a file if existing**."""
+    """Fixture Factory: Delete a file if existing."""
 
     def _fxtr_remove_opt(file_name: str):
         """
-        #### Fixture: **Delete a file if existing**.
+        Fixture: Delete a file if existing.
 
-        **Args**:
-        - **file_name (str)**: File name including path.
+        Args:
+            file_name (str): File name including path.
         """
-        print_fixture_start("fxtr_remove_opt")
         if os.path.isfile(file_name):
             fxtr_remove(file_name)
-        print_fixture_end("fxtr_remove_opt")
 
     return _fxtr_remove_opt
 
@@ -135,18 +175,16 @@ def fxtr_remove_opt(fxtr_remove):
 # -----------------------------------------------------------------------------
 @pytest.fixture()
 def fxtr_rmdir():
-    """#### Fixture Factory: **Delete a directory**."""
+    """Fixture Factory: Delete a directory."""
 
     def _fxtr_rmdir(directory_name: str):
         """
-        #### Fixture: **Delete a directory**.
+        Fixture: Delete a directory.
 
-        **Args**:
-        - **directory_name (str)**: Directory name including path.
+        Args:
+            directory_name (str): Directory name including path.
         """
-        print_fixture_start("fxtr_rmdir")
         shutil.rmtree(directory_name)
-        print_fixture_end("fxtr_rmdir")
 
     return _fxtr_rmdir
 
@@ -156,18 +194,16 @@ def fxtr_rmdir():
 # -----------------------------------------------------------------------------
 @pytest.fixture()
 def fxtr_rmdir_opt(fxtr_rmdir):
-    """#### Fixture Factory: **Delete a directory if existing**."""
+    """Fixture Factory: Delete a directory if existing."""
 
     def _fxtr_rmdir_opt(directory_name: str):
         """
-        #### Fixture: **Delete a directory if existing**.
+        Fixture: Delete a directory if existing.
 
-        **Args**:
-        - **directory_name (str)**: Directory name including path.
+        Args:
+            directory_name (str): Directory name including path.
         """
-        print_fixture_start("fxtr_rmdir_opt")
         if os.path.isdir(directory_name):
             fxtr_rmdir(directory_name)
-        print_fixture_end("fxtr_rmdir_opt")
 
     return _fxtr_rmdir_opt

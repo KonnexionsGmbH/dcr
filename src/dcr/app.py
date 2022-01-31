@@ -49,14 +49,12 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
         all   - Run the complete processing of all new documents.
         d_c_u - Create or upgrade the database.
         p_i   - Process input folder.
-        p_i_o - Process input folder OCR.
 
     With the option all, the following process steps are executed
     in this order:
 
         1. d_c_u
         2. p_i
-        3. p_i_o
 
     Args:
         logger (logging.Logger): Current logger.
