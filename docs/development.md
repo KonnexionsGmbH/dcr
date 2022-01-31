@@ -7,13 +7,13 @@ Ubuntu is used here via the **`VM Workstation Player 16`**.
 
 The GitHub actions for continuous integration run on **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`2022`**.
 
-Version **`3.10`** is used for the Python programming language.
+Version **`3.10`** is used for the **Python** programming language.
 
 ## 2. Coding Standards
 
 ### 2.1 Python
 
-- The [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide for Python code is strictly applied and enforced with static analysis tools.
+- The [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide for **Python** code is strictly applied and enforced with static analysis tools.
 - All program code must be commented with type hinting instructions.
 - All functions, modules and packages must be commented with **`Docstring`**.
 - The program code must be covered as far as possible with appropriate tests - the aim is always 100 % test coverage.
@@ -30,8 +30,8 @@ Version **`3.10`** is used for the Python programming language.
 
 The two tools **`isort`** and **`Black`** are used for formatting the programme code:
 
-- [Black](https://black.readthedocs.io/en/stable/) - The uncompromising Python code formatter.
-- [isort](https://pycqa.github.io/isort/) - A Python utility / library to sort imports.
+- [Black](https://black.readthedocs.io/en/stable/) - The uncompromising **Python** code formatter.
+- [isort](https://pycqa.github.io/isort/) - A **Python** utility / library to sort imports.
 
 Both tools are included in the call **`make dev`**. 
 They can be executed individually with **`make black`** and **`make isort`**, whereby **`sort`** should run first and **`black`** afterwards.
@@ -40,8 +40,8 @@ They can be executed individually with **`make black`** and **`make isort`**, wh
 
 The tools **`Bandit`**, **`Flake8`**, **`Mypy`** and **`Pylint`** are used for static code analysis:
 
-- [Bandit](https://bandit.readthedocs.io/en/latest/) - **`Bandit`** is a tool designed to find common security issues in Python code.
-- [Flake8](https://flake8.pycqa.org/en/latest/index.html#quickstart) - A python tool that glues together **`pycodestyle`**, **`Pyflakes`**, **`McCabe`**, and third-party plugins to check the style and quality of some python code.
+- [Bandit](https://bandit.readthedocs.io/en/latest/) - **`Bandit`** is a tool designed to find common security issues in **Python** code.
+- [Flake8](https://flake8.pycqa.org/en/latest/index.html#quickstart) - A **Python** tool that glues together **`pycodestyle`**, **`Pyflakes`**, **`McCabe`**, and third-party plugins to check the style and quality of some **Python** code.
 - [Mypy](https://mypy.readthedocs.io/en/stable/introduction.html) - Optional static typing for Python.
 - [Pylint](https://pylint.pycqa.org/en/latest/) - It's not just a linter that annoys you!
 
@@ -51,9 +51,9 @@ They can be executed individually with **`make bandit`**, **`make flake8`**, **`
 **`Flake8`** includes the following tools:
 
 - [McCabe](https://github.com/PyCQA/mccabe) - McCabe complexity checker for Python.
-- [pycodestyle](https://github.com/PyCQA/pycodestyle) - Simple Python style checker in one Python file.
-- [Pyflakes](https://github.com/PyCQA/pyflakes) - A simple program which checks Python source files for errors.
-- [Radon](https://radon.readthedocs.io/en/latest/) - Various code metrics for Python code.
+- [pycodestyle](https://github.com/PyCQA/pycodestyle) - Simple **Python** style checker in one **Python** file.
+- [Pyflakes](https://github.com/PyCQA/pyflakes) - A simple program which checks **Python** source files for errors.
+- [Radon](https://radon.readthedocs.io/en/latest/) - Various code metrics for **Python** code.
 
 ## 5. Software Documentation
 
@@ -150,32 +150,38 @@ The GitHub Actions are used to enforce the following good practices of the softw
 - execution of the software testing framework, and
 - creation of up-to-date user documentation.
 
-The development branch in the GitHub Actions guarantees compliance with the required standards and the production branch ensures error-free compilation for production use.
-Both branches must be able to run error-free on operating systems **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`2022`** and with Python version **`3.10`**.
+The branch **`Development Standards`** in the GitHub Actions guarantees compliance with the required standards, the branch **`Production`** ensures error-free compilation for production use and the branch **`Test Framework`** runs the testsd against various operating system and **Python** versions.
+The branches **`Production`** and **`Test Framework`** must be able to run error-free on operating systems **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`2022`** and with **Python** version **`3.10`**, the branch **`Development Standards`** is only required error-free for the latest versions of **Ubuntu** and Python.
 
 The individual steps to be carried out 
 
-- in the development branch are:
+- in the branch **`Development Standards`** branch are:
 
-- - set up Python, pip and pipenv
-- - install the development specific packages with pipenv
-- - compile the Python code
-- - run isort for sorting your imports
-- - run Black for formatting your code
-- - run Bandit for finding common security issues
-- - run Flake8 for style guide enforcement
-- - run MyPy for static typing
-- - run PyLint for checking for errors in Python code
-- - run pydocstyle for docstring style enforcement
-- - run pytest for writing better program
-- - run MkDocs for creating project documentation with markdown.
-- - publish the code coverage results to coveralls.io
+1. set up Python, pip and pipenv
+1. install the development specific packages with pipenv
+1. compile the **Python** code
+1. run isort for sorting your imports
+1. run Black for formatting your code
+1. run Bandit for finding common security issues
+1. run Flake8 for style guide enforcement
+1. run MyPy for static typing
+1. run PyLint for checking for errors in **Python** code
+1. run pydocstyle for docstring style enforcement
+1. run MkDocs for creating project documentation with markdown.
 
-- and in the production branch:
+- and in the branch **`Production`** are:
 
-- - set up Python, pip and pipenv
-- - install the production specific packages with pipenv
-- - compile the Python code
+1. set up Python, pip and pipenv
+1. install the production specific packages with pipenv
+1. compile the **Python** code
+
+- in the branch **`Test Framework`** branch are:
+
+1. set up Python, pip and pipenv
+1. install the development specific packages with pipenv
+1. compile the **Python** code
+1. run pytest for writing better program
+1. publish the code coverage results to coveralls.io
 
 ## 8. Development Environment
 

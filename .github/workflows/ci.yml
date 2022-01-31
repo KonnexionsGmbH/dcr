@@ -10,51 +10,8 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  development:
-    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development
-    runs-on: ${{ matrix.os }}
-    strategy:
-      max-parallel: 3
-      matrix:
-        os: ["ubuntu-20.04", "windows-2019", "windows-2022"]
-        python-version: ["3.10"]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1  # no history, just HEAD
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install pip
-        run: make pip
-      - name: Install pipenv
-        run: make pipenv
-      - name: Install dcr dependencies
-        run: make pipenv_dev
-      - name: Compile the Python code
-        run: make compileall
-      - name: Run isort for sorting your imports
-        run: make isort
-      - name: Run Black for formatting your code
-        run: make black
-      - name: Run Bandit for finding common security issues
-        run: make bandit
-      - name: Run Flake8 for style guide enforcement
-        run: make flake8
-      - name: Run MyPy for static typing
-        run: make mypy
-      - name: Run PyLint for checking for errors in Python code
-        run: make pylint
-      - name: Run pydocstyle for docstring style enforcement
-        run: make pydocstyle
-      - name: Run pytest for writing better program
-        run: make pytest
-#      - name: Publish the code coverage to coveralls.io
-#        run: make python-coveralls
-
-  documentation:
-    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development
+  development_standards:
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development Standards
     runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 1
@@ -75,6 +32,20 @@ jobs:
         run: make pipenv
       - name: Install dcr dependencies
         run: make pipenv_dev
+      - name: Run isort for sorting your imports
+        run: make isort
+      - name: Run Black for formatting your code
+        run: make black
+      - name: Run Bandit for finding common security issues
+        run: make bandit
+      - name: Run Flake8 for style guide enforcement
+        run: make flake8
+      - name: Run MyPy for static typing
+        run: make mypy
+      - name: Run PyLint for checking for errors in Python code
+        run: make pylint
+      - name: Run pydocstyle for docstring style enforcement
+        run: make pydocstyle
       - name: Run MkDocs for creating project documentation with markdown.
         run: make mkdocs
 
@@ -102,3 +73,33 @@ jobs:
         run: make pipenv_prod
       - name: Compile the Python code
         run: make compileall
+
+  test_framework:
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Test Framework
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 3
+      matrix:
+        os: ["ubuntu-20.04", "windows-2019", "windows-2022"]
+        python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1  # no history, just HEAD
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pip
+        run: make pip
+      - name: Install pipenv
+        run: make pipenv
+      - name: Install dcr dependencies
+        run: make pipenv_dev
+      - name: Compile the Python code
+        run: make compileall
+      - name: Run pytest for writing better program
+        run: make pytest
+#      - name: Publish the code coverage to coveralls.io
+#        run: make python-coveralls
+
