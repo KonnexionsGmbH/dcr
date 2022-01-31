@@ -1,4 +1,4 @@
-# DCR - Contributing Guide
+# DCR - ~~Contributing Guide~~
 
 ## 1. License
 

@@ -1,33 +1,46 @@
+copyright: Copyright &copy;2021-2022, Konnexions GmbH.
+
+edit_uri: ""
+
+extra:
+  generator: false
+
+nav:
+  - Home: index.md
+  - Research: research.md
+  - Development : development.md
+  - About:
+    - Release Notes: release_notes.md
+    - Code of Conduct: code_of_conduct.md
+    - Contributing Guide: contributing.md
+    - License: license
+
+plugins:
+  - search
+
+repo_url: https://github.com/KonnexionsGmbH/dcr/
+
 site_name: DCR
 site_url: https://www.konnexions.ch/
 site_description: Document Content Recognition
 site_author: Konnexions GmbH Team
 
-repo_url: https://github.com/KonnexionsGmbH/dcr/
-edit_uri: ""
-
 theme:
-  name: mkdocs
-  locale: en
-  highlightjs: true
+  favicon: img/Icon.png
+  features:
+    - header.autohide
+    - navigation.expand
+    - navigation.instant
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - toc.integrate
+  language: en
+  logo: img/Logo.png
+  name: material
+  palette:
+    primary: light-blue
+    accent: red
 
-nav:
-  - Home: index.md
-  - Research: research.md
-  - Release Notes: release_notes.md
-  - Contributin Guide: contributing.md
-  - Code of Conduct: code_of_conduct.md
-  - Development : development.md
-
-extra_css:
-  - css/extra.css
-
-markdown_extensions:
-  - toc:
-      baselevel: 0
-      permalink: 
-
-copyright: Copyright &copy;2021-2022, Konnexions GmbH.
-
-plugins:
-  - search
