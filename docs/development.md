@@ -2,12 +2,12 @@
 
 ## 1. System Environment
 
-DCR is developed on the operating systems **`Ubuntu 20.04 LTS`** and **`Microsoft Windows 10`**.
-Ubuntu is used here via the **`VM Workstation Player 16`**.
+DCR is developed on the operating systems `Ubuntu 20.04 LTS` and `Microsoft Windows 10`.
+Ubuntu is used here via the `VM Workstation Player 16`.
 
-The GitHub actions for continuous integration run on **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`2022`**.
+The GitHub actions for continuous integration run on `Ubuntu 20.04`, `Micrsoft Windows Server 2019` and `2022`.
 
-Version **`3.10`** is used for the Python programming language.
+Version `3.10` is used for the Python programming language.
 
 ## 2. Coding Standards
 
@@ -30,8 +30,8 @@ Version **`3.10`** is used for the Python programming language.
 
 The two tools `isort` and `Black` are used for formatting the programme code:
 
-- [`Black`](https://black.readthedocs.io/en/stable/) - The uncompromising Python code formatter.
-- [`isort`](https://pycqa.github.io/isort/) - A Python utility / library to sort imports.
+- [Black](https://black.readthedocs.io/en/stable/) - The uncompromising Python code formatter.
+- [isort](https://pycqa.github.io/isort/) - A Python utility / library to sort imports.
 
 Both tools are included in the call `make dev`. 
 They can be executed individually with `make black` and `make isort`, whereby `sort` should run first and `black` afterwards.
@@ -40,26 +40,106 @@ They can be executed individually with `make black` and `make isort`, whereby `s
 
 The tools `Bandit`, `Flake8`, `Mypy` and `Pylint` are used for static code analysis:
 
-- [`Bandit`](https://bandit.readthedocs.io/en/latest/) - Bandit is a tool designed to find common security issues in Python code.
-- [`Flake8`](https://flake8.pycqa.org/en/latest/index.html#quickstart) - A python tool that glues together pycodestyle, pyflakes, mccabe, and third-party plugins to check the style and quality of some python code.
-- [`Mypy`](https://mypy.readthedocs.io/en/stable/introduction.html) - Optional static typing for Python.
-- [`Pylint`](https://pylint.pycqa.org/en/latest/) - It's not just a linter that annoys you!
+- [Bandit](https://bandit.readthedocs.io/en/latest/) - `Bandit` is a tool designed to find common security issues in Python code.
+- [Flake8](https://flake8.pycqa.org/en/latest/index.html#quickstart) - A python tool that glues together `pycodestyle`, `Pyflakes`, `McCabe`, and third-party plugins to check the style and quality of some python code.
+- [Mypy](https://mypy.readthedocs.io/en/stable/introduction.html) - Optional static typing for Python.
+- [Pylint](https://pylint.pycqa.org/en/latest/) - It's not just a linter that annoys you!
 
 All tools are included in the call `make dev`.
 They can be executed individually with `make bandit`, `make flake8`, `make mypy` and `make pylint`.
 
 `Flake8` includes the following tools:
 
-- [`McCabe`](https://github.com/PyCQA/mccabe) - McCabe complexity checker for Python.
-- [`pycodestyle`](https://github.com/PyCQA/pycodestyle) - Simple Python style checker in one Python file.
-- [`Pyflakes`](https://github.com/PyCQA/pyflakes) - A simple program which checks Python source files for errors.
-- [`Radon`](https://radon.readthedocs.io/en/latest/) - Various code metrics for Python code.
+- [McCabe](https://github.com/PyCQA/mccabe) - McCabe complexity checker for Python.
+- [pycodestyle](https://github.com/PyCQA/pycodestyle) - Simple Python style checker in one Python file.
+- [Pyflakes](https://github.com/PyCQA/pyflakes) - A simple program which checks Python source files for errors.
+- [Radon](https://radon.readthedocs.io/en/latest/) - Various code metrics for Python code.
 
 ## 5. Software Documentation
 
 ### 5.1 API Documentation
 
+The creation of API documentation for functions, modules and packages is mandatory and enforced with the static analysis tool [pydocstyle](https://github.com/PyCQA/pydocstyle).
+`pydocstyle` is a static analysis tool for checking compliance with Python `Docstring` conventions.
+`pydocstyle` can be executed individually with `make pydocstyle` and is also included in the call `make dev`.
+
+The `Docstring` format used in DCR is that of type Google. 
+For Visual Studio Code, the extension [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring) can be used when creating API documentation.  
+With the [Pydoc-Markdown](https://github.com/NiklasRosenstein/pydoc-markdown) tool, the API documentation is extracted from the source files and put into Markdown format. 
+In this format, the API documentation can then be integrated into the user documentation.
+
+Examples for the format of the API documentation:
+
+**Package Documentation**:
+
+    Package: DCR libraries.
+
+**Module Dokumentation**:
+
+    Check and distribute incoming documents.
+  
+    New documents are made available in the file directory inbox.
+    These are then checked and moved to the accepted or
+    rejected file directories depending on the result of the check.
+    Depending on the file format, the accepted documents are then
+    converted into the pdf file format either with the help of Pandoc
+    or with the help of Tesseract OCR.
+
+**Function  Documentation**:
+
+    Load the command line arguments into memory.
+    
+    The command line arguments define the process steps to be executed.
+    The valid arguments are:
+    
+        all   - Run the complete processing of all new documents.
+        d_c_u - Create or upgrade the database.
+        p_i   - Process input folder.
+    
+    With the option all, the following process steps are executed
+    in this order:
+    
+        1. d_c_u
+        2. p_i
+    
+    Args:
+    logger (logging.Logger): Current logger.
+    argv (List[str]): Command line arguments.
+    
+    Returns:
+    dict[str, bool]: The command line arguments found.
+
+In Visual Studio Code, the [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring) tool can be used to create a framework for API documentation.
+
+### 5.2 User Documention
+
+The remaining documents for the user documentation can be found in the file directory `docs` in Markdown format:
+
+| File               | Headline                     | Remarks                                   |
+|--------------------|------------------------------|-------------------------------------------|
+| code_of_conduct.md | Code of Conduct              |                                           |
+| contributing.md    | Contributing Guide           |                                           |
+| development.md     | Development                  | Notes on the software development process |
+| index.md           | Document Content Recognition | Background, installation and user guide   |
+| release_notes.md   | Release Notes                |                                           |
+| research.md        | Research                     | Reference to the relevant research papers |
+
+The [MkDocs](https://github.com/mkdocs/mkdocs/) tool is used to create the user documentation. 
+With the command `make mkdocs` the user documentation is created by MkDocs and uploaded to the GitHub pages of the repository.
+The command `make mkdocs` is also included in the call `make dev`.
+
 ## 6. Software Testing
+
+[pytest](https://github.com/pytest-dev/pytest/) is used as a software testing framework with the following plugins::
+
+- [pytest-cov](https://github.com/pytest-dev/pytest-cov/) for coverage reporting,
+- [pytest-deadfixture](https://github.com/jllorencetti/pytest-deadfixtures) to list unused or duplicate fixtures, and
+- [pytest-random-order](https://github.com/jbasko/pytest-random-order) to randomise the order of the tests.
+
+On the one hand, the tests must be as complete as possible, i.e. a test coverage of 100% is aimed for, but on the other hand, the scope of the test code should be minimal, i.e. unnecessary repetitions must be strictly avoided. 
+The best strategy for this is to first create a test case for the normal case and then add special tests for the special cases not yet covered.
+
+Finally, the tool [python-coveralls](https://github.com/z4r/python-coveralls) is used to enable a connection to [Coveralls](https://coveralls.io).
 
 ## 7. Continuous Delivery
 
@@ -67,15 +147,14 @@ They can be executed individually with `make bandit`, `make flake8`, `make mypy`
 
 ## 9. Planning
 
-### Prio 1 
+### 9.1 Prio 1 
 
 - inbox.py - process_inbox() - processing ocr & non-ocr in the same method
 - error handling - highly defensive
-- testing - verify os operatioons (rm, rmdir, mkdir, etc.)
 - continuous delivery: running isort, black and mkdocs 
 - ...
 
-### Prio 2 
+### 9.2 Prio 2 
 
 - docs
 - - development.md
@@ -87,7 +166,7 @@ They can be executed individually with `make bandit`, `make flake8`, `make mypy`
 - - Installation  
 - ...
 
-### Prio 3 
+### 9.3 Prio 3 
 
 - tools.py - verify the content of the inbox directories
 - ...

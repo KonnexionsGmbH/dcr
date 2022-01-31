@@ -19,16 +19,10 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ### 1.2 DCR Architecture
 
-![](img/DCR_Overview.png)
+![](img/dcr_Overview.png)
 
 ## 2. Requirements
 
 ## 3. Installation
 
 ## 4. Operation
-
-## 5. API Documentation
-
-### Modules
-
-TBD

@@ -32,6 +32,10 @@ jobs:
         run: make pipenv
       - name: Install dcr dependencies
         run: make pipenv_dev
+      - name: Run isort for sorting your imports
+        run: make isort
+      - name: Run Black for formatting your code
+        run: make black
       - name: Run Bandit for finding common security issues
         run: make bandit
       - name: Run Flake8 for style guide enforcement
@@ -43,6 +47,8 @@ jobs:
       - name: Run pydocstyle for docstring style enforcement
         run: make pydocstyle
       - name: Run pytest for writing better program
+        run: make pytest
+      - name: Run MkDocs for creating project documentation with markdown.
         run: make pytest
       - name: Publish to coveralls.io
         run: make python-coveralls

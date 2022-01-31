@@ -1,8 +1,11 @@
 """Check and distribute incoming documents.
 
-New documents are made available in one of the two file directories
-input or input_ocr. These are then checked and moved to the accepted or
+New documents are made available in the file directory inbox.
+These are then checked and moved to the accepted or
 rejected file directories depending on the result of the check.
+Depending on the file format, the accepted documents are then 
+converted into the pdf file format either with the help of Pandoc
+ or with the help of Tesseract OCR.
 """
 
 import datetime
