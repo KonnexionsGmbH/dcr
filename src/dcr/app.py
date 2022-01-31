@@ -14,7 +14,6 @@ import logging.config
 import sys
 from typing import List
 
-import pytest
 import yaml
 from libs import inbox
 from libs.database import check_db_up_to_date
