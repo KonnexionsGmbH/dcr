@@ -103,4 +103,4 @@ jobs:
       - name: Publish the code coverage to coveralls.io
         uses: coverallsapp/github-action@v1.1.2
         with:
-          github-token: ${{ GITHUB_TOKEN }}
+          github-token: ${{ github.token }}
