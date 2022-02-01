@@ -55,7 +55,7 @@ coveralls:
 # includes McCabe:      https://github.com/PyCQA/mccabe
 # includes pycodestyle: https://github.com/PyCQA/pycodestyle
 # includes Pyflakes:    https://github.com/PyCQA/pyflakes
-# includes Radon:       # https://github.com/rubik/radon
+# includes Radon:       https://github.com/rubik/radon
 # https://github.com/pycqa/flake8
 # Configuration file: setup.cfg
 flake8:

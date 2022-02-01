@@ -139,7 +139,7 @@ The command **`make mkdocs`** is also included in the call **`make dev`**.
 On the one hand, the tests must be as complete as possible, i.e. a test coverage of 100% is aimed for, but on the other hand, the scope of the test code should be minimal, i.e. unnecessary repetitions must be strictly avoided. 
 The best strategy for this is to first create a test case for the normal case and then add special tests for the special cases not yet covered.
 
-Finally, the tool [python-coveralls](https://github.com/z4r/python-coveralls) is used to enable a connection to [Coveralls](https://coveralls.io).
+Finally, the tool [Coveralls for Python](https://github.com/TheKevJames/coveralls-python) is used to enable a connection to [Coveralls](https://coveralls.io/github/KonnexionsGmbH/dcr).
 
 ## 7. Continuous Delivery
 
@@ -167,6 +167,7 @@ The individual steps to be carried out
     1. run PyLint for checking for errors in **`Python`** code
     1. run pydocstyle for docstring style enforcement
     1. run MkDocs for creating project documentation with markdown.
+   1. publish the code coverage results to **`coveralls.io`**
 
 1. in the branch **`Production`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
@@ -178,7 +179,6 @@ The individual steps to be carried out
     1. install the development specific packages with **`pipenv`**
     1. compile the **`Python`** code
     1. run pytest for writing better program
-    1. publish the code coverage results to **`coveralls.io`**
 
 ## 8. Development Environment
 

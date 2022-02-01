@@ -23,6 +23,8 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ## 2. Requirements
 
+
+
 ## 3. Installation
 
 ## 4. Operation
