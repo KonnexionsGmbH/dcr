@@ -47,7 +47,7 @@ compileall:
 # Configuration file: none
 coveralls:
 	@echo "Info **********  Start: coveralls ***********************************"
-	pipenv run pytest --cov=src --cov-report=xml term-missing:skip-covered tests
+	pipenv run pytest --cov=src --cov-report=xml tests
 	pipenv run coveralls --service=github
 	@echo "Info **********  End:   coveralls ***********************************"
 
