@@ -5,6 +5,10 @@ edit_uri: ""
 extra:
   generator: false
 
+markdown_extensions:
+  - toc:
+      permalink: true
+      
 nav:
   - Home: index.md
   - Research: research.md

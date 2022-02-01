@@ -23,7 +23,9 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ## 2. Requirements
 
+### 2.1 Operating System
 
+### 2.2 Python
 
 ## 3. Installation
 
