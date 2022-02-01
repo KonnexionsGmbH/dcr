@@ -39,14 +39,14 @@ Make sure to stick around to answer some questions as well!
 ## Contributing to DCR
 
 The **DCR** project welcomes, and depends on, contributions from developers and
-users in the open source community. Please see the **[Contributing Guide](docs/contributing.md)** for
+users in the open source community. Please see the **[Contributing Guide](https://konnexionsgmbh.github.io/dcr/contributing/)** for
 information on how you can help.
 
 ## Code of Conduct
 
 Everyone interacting in the **DCR** project's codebases, issue trackers, and
-discussion forums is expected to follow the **[Code of Conduct](docs/code_of_conduct.md)**.
+discussion forums is expected to follow the **[Code of Conduct](https://konnexionsgmbh.github.io/dcr/code_of_conduct/)**.
 
 ## License
 
-**[Konnexions Public License (KX-PL)](https://github.com/KonnexionsGmbH/dcr/blob/master/LICENSE)**
+**[Konnexions Public License (KX-PL)](https://konnexionsgmbh.github.io/dcr/license/)**

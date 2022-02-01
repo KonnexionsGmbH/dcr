@@ -9,7 +9,7 @@
 
 ## 1. System Environment
 
-DCR is developed on the operating systems **`Ubuntu 20.04 LTS`** and **`Microsoft Windows 10`**.
+**`DCR`** is developed on the operating systems **`Ubuntu 20.04 LTS`** and **`Microsoft Windows 10`**.
 Ubuntu is used here via the **`VM Workstation Player 16`**.
 **`Ubuntu`** can also be used in conjunction with the **`Windows Subsystem for Linux (WSL2)`**.
 
@@ -71,7 +71,7 @@ The creation of API documentation for functions, modules and packages is mandato
 **`pydocstyle`** is a static analysis tool for checking compliance with **`Python`** **`Docstring`** conventions.
 **`pydocstyle`** can be executed individually with **`make pydocstyle`** and is also included in the call **`make dev`**.
 
-The **`Docstring`** format used in DCR is that of type Google. 
+The **`Docstring`** format used in **`DCR`** is that of type Google. 
 For Visual Studio Code, the extension [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring){:target="_blank"} can be used when creating API documentation.  
 With the [Pydoc-Markdown](https://github.com/NiklasRosenstein/pydoc-markdown){:target="_blank"} tool, the API documentation is extracted from the source files and put into Markdown format. 
 In this format, the API documentation can then be integrated into the user documentation.
@@ -223,23 +223,22 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 ## 10. Next Development Steps
 
-### 1st Priority 
+**1st Priority:**
 
-- docs
-   - API Documentation
+- API Documentation
 - error handling - highly defensive
 - inbox.py - process_inbox() - processing ocr & non-ocr in the same method
 - tools.py - verify the content of the inbox directories
 
-### 2nd Priority 
+**2nd Priority:** 
 
 - Tesseract OCR
     - Installation  
 
-### 3rd Priority
+**3rd Priority**
 
-- TBD
+- n/a
 
-### No Priority
+**No Priority (yet)**
 
-- TBD
+- n/a

@@ -81,7 +81,7 @@ The customisable entries are:
 
 ## 4. Operation
 
-DCR should be operated via the script **`run_dcr`**. 
+**`DCR`** should be operated via the script **`run_dcr`**. 
 The following actions are available:
 
 | Action      | Process                                                                                                           |
