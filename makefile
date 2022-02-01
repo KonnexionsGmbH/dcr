@@ -162,3 +162,13 @@ pytest_issue:
 	pipenv run pytest --version
 	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -m issue --setup-show tests
 	@echo "Info **********  End:   pytest **************************************"
+pytest_prod:
+	@echo "Info **********  Start: pytest **************************************"
+	pipenv install pytest
+	pipenv install pytest-cov
+	pipenv install pytest-deadfixtures
+	pipenv install pytest-random-order
+	pipenv run pytest --version
+	pipenv run pytest --dead-fixtures tests
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order tests
+	@echo "Info **********  End:   pytest **************************************"
