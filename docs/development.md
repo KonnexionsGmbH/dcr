@@ -1,5 +1,12 @@
 # DCR - Development
 
+![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
+![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
+![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/1.0.0.svg)
+
+----
+
 ## 1. System Environment
 
 DCR is developed on the operating systems **`Ubuntu 20.04 LTS`** and **`Microsoft Windows 10`**.
@@ -151,7 +158,7 @@ The GitHub Actions are used to enforce the following good practices of the softw
 - creation of up-to-date user documentation.
 
 The branch **`Development Standards`** in the GitHub Actions guarantees compliance with the required standards, the branch **`Production`** ensures error-free compilation for production use and the branch **`Test Framework`** runs the testsd against various operating system and **`Python`** versions.
-The branches **`Production`** and **`Test Framework`** must be able to run error-free on operating systems **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`2022`** and with **`Python`** version **`3.10`**, the branch **`Development Standards`** is only required error-free for the latest versions of **Ubuntu** and **`Python`**.
+The branches **`Production`** and **`Test Framework`** must be able to run error-free on operating systems **`Ubuntu 18.04`**, **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`2022`** and with **`Python`** version **`3.10`**, the branch **`Development Standards`** is only required error-free for the latest versions of **Ubuntu** and **`Python`**.
 
 The individual steps to be carried out 
 
@@ -184,18 +191,14 @@ The individual steps to be carried out
 
 [DockerHub](https://hub.docker.com)
 
-
 [dcr_dev - Document Content Recognition Development Image](https://hub.docker.com/repository/docker/konnexionsgmbh/dcr_dev)
 
 The whole software environment for the operation and further development of DCR can be created most easily by using a Docker container (version 1.0.0 from [here](https://hub.docker.com/repository/docker/konnexionsgmbh/dcr_dev)).
 
-Alternatively, in an Ubuntu 20.04 based environment, e.g.: in a virtual machine, the two following scripts can be used to install the necessary software:
+Alternatively, in an **`Ubuntu`** based environment, e.g.: in a virtual machine or  the Windows Subsystem for Linux (WSL), the two following scripts can be used to install the necessary software:
 
 - `scripts/run_install_4-vm_wsl2_1.sh`
 - `scripts/run_install_4-vm_wsl2_2.sh`
-
-- If the Windows Subsystem for Linux (WSL) is to be used, then the `WSL INTEGRATION` for Ubuntu must be activated in Docker
-
 
 
 ## 9. Next Development Steps

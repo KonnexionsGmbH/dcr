@@ -1,5 +1,12 @@
 # DCR - Release Notes
 
+![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
+![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
+![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/1.0.0.svg)
+
+----
+
 ## 1. Current Version
 
 ### 1.0.0

@@ -1,5 +1,12 @@
 # DCR - Code of Conduct
 
+![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
+![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
+![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/1.0.0.svg)
+
+----
+
 ## Our Pledge
 
 In the interest of fostering an open and welcoming environment, we as
