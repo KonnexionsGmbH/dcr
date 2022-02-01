@@ -182,30 +182,45 @@ The individual steps to be carried out
 
 ## 8. Development Environment
 
+[DockerHub](https://hub.docker.com)
 
 
-## 9. Planning
+[dcr_dev - Document Content Recognition Development Image](https://hub.docker.com/repository/docker/konnexionsgmbh/dcr_dev)
 
-### 9.1 Prio 1 
+The whole software environment for the operation and further development of DCR can be created most easily by using a Docker container (version 1.0.0 from [here](https://hub.docker.com/repository/docker/konnexionsgmbh/dcr_dev)).
+
+Alternatively, in an Ubuntu 20.04 based environment, e.g.: in a virtual machine, the two following scripts can be used to install the necessary software:
+
+- `scripts/run_install_4-vm_wsl2_1.sh`
+- `scripts/run_install_4-vm_wsl2_2.sh`
+
+- If the Windows Subsystem for Linux (WSL) is to be used, then the `WSL INTEGRATION` for Ubuntu must be activated in Docker
+
+
+
+## 9. Next Development Steps
+
+### 1st Priority 
 
 - inbox.py - process_inbox() - processing ocr & non-ocr in the same method
 - error handling - highly defensive
 - ...
 
-### 9.2 Prio 2 
+### 2nd Priority 
 
 - docs
     - development.md
     - index.md
     - API Documentation
-    - beautify MkDocs documentation
 
 - Tesseract OCR
     - Installation  
-    - ...
 
-#### 9.3 Prio 3 
+### 3rd Priority 
 
 - tools.py - verify the content of the inbox directories
-- ...
+
+### No Priority
+
+- tools.py - verify the content of the inbox directories
 

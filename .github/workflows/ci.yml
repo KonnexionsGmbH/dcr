@@ -100,6 +100,5 @@ jobs:
         run: make compileall
       - name: Run pytest for writing better program
         run: make pytest
-#      - name: Publish the code coverage to coveralls.io
-#        run: make python-coveralls
-
+      - name: Publish the code coverage to coveralls.io
+      - uses: coverallsapp/github-action@v1.1.2
