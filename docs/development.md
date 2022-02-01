@@ -11,8 +11,9 @@
 
 DCR is developed on the operating systems **`Ubuntu 20.04 LTS`** and **`Microsoft Windows 10`**.
 Ubuntu is used here via the **`VM Workstation Player 16`**.
+**`Ubuntu`** can also be used in conjunction with the **`Windows Subsystem for Linux (WSL2)`**.
 
-The GitHub actions for continuous integration run on **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`2022`**.
+The GitHub actions for continuous integration run on **`Ubuntu 18.04`**, **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`Micrsoft Windows Server 2022`**.
 
 Version **`3.10`** is used for the **`Python`** programming language.
 
@@ -122,8 +123,8 @@ In Visual Studio Code, the [VSCode Python Docstring Generator](https://github.co
 
 The remaining documents for the user documentation can be found in the file directory **`docs`** in Markdown format:
 
-| File               | Headline                     | Remarks                                   |
-|--------------------|------------------------------|-------------------------------------------|
+| File                     | Headline                     | Remarks                                   |
+|--------------------------|------------------------------|-------------------------------------------|
 | **`code_of_conduct.md`** | Code of Conduct              |                                           |
 | **`contributing.md`**    | Contributing Guide           |                                           |
 | **`development.md`**     | Development                  | Notes on the software development process |
@@ -189,45 +190,28 @@ The individual steps to be carried out
 
 ## 8. Development Environment
 
-[DockerHub](https://hub.docker.com){:target="_blank"}
+To set up a suitable development environment under **`Ubuntu 20.04 LTS`**, on the one hand a suitable ready-made Docker image is provided and on the other hand two scripts to create the development system in a standalone system, a virtual environment or the **`Windows Subsystem for Linux (WSL2)`** are available.
+
+### 8.1 Docker Image
+
+The ready-made Docker images are available on [DockerHub](https://hub.docker.com){:target="_blank"} under the following link:
 
 [dcr_dev - Document Content Recognition Development Image](https://hub.docker.com/repository/docker/konnexionsgmbh/dcr_dev){:target="_blank"}
 
-The whole software environment for the operation and further development of DCR can be created most easily by using a Docker container (version 1.0.0 from [here](https://hub.docker.com/repository/docker/konnexionsgmbh/dcr_dev){:target="_blank"}).
+When selecting the Docker image, care must be taken to select the appropriate version of the Docker image.
 
-Alternatively, in an **`Ubuntu`** based environment, e.g.: in a virtual machine or  the Windows Subsystem for Linux (WSL), the two following scripts can be used to install the necessary software:
+### 8.2 Script-based Solution
+
+Alternatively, for a **`Ubuntu 20.04 LTS`** environment that is as unspoiled as possible, the following two scripts are available in the **`scripts`** file directory:
 
 - **`scripts/run_install_4-vm_wsl2_1.sh`**
 - **`scripts/run_install_4-vm_wsl2_2.sh`**
 
+After a **`cd scripts`** command in a terminal window, the script **`run_install_4-vm_wsl2_1.sh`** must first be executed. 
+Administration rights (**`sudo`**) are required for this. 
+Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed in a new terminal window.
 
-## 9. Next Development Steps
-
-### 1st Priority 
-
-- inbox.py - process_inbox() - processing ocr & non-ocr in the same method
-- error handling - highly defensive
-- ...
-
-### 2nd Priority 
-
-- docs
-    - development.md
-    - index.md
-    - API Documentation
-
-- Tesseract OCR
-    - Installation  
-
-### 3rd Priority 
-
-- tools.py - verify the content of the inbox directories
-
-### No Priority
-
-- tools.py - verify the content of the inbox directories
-
-### Version Planning
+## 9. Version Planning
 
 | Version | Feature(s)               |
 |---------|--------------------------|
@@ -236,3 +220,26 @@ Alternatively, in an **`Ubuntu`** based environment, e.g.: in a virtual machine 
 | 0.7.0   | Tesseract OCR processing |
 | 0.8.0   | PDFlib TET processing    |
 | 0.9.0   | Parser                   |
+
+## 10. Next Development Steps
+
+### 1st Priority 
+
+- docs
+   - API Documentation
+- error handling - highly defensive
+- inbox.py - process_inbox() - processing ocr & non-ocr in the same method
+- tools.py - verify the content of the inbox directories
+
+### 2nd Priority 
+
+- Tesseract OCR
+    - Installation  
+
+### 3rd Priority
+
+- TBD
+
+### No Priority
+
+- TBD
