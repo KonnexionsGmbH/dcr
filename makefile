@@ -42,6 +42,15 @@ compileall:
 	python -m compileall
 	@echo "Info **********  End:   Compile All Python Scripts ******************"
 
+# Python interface to coveralls.io API
+# https://github.com/TheKevJames/coveralls-python
+# Configuration file: none
+coveralls:
+	@echo "Info **********  Start: coveralls ***********************************"
+	pipenv run pytest --cov=src --cov-report=xml term-missing:skip-covered tests
+	pipenv run coveralls --service=github
+	@echo "Info **********  End:   coveralls ***********************************"
+
 # Flake8: Your Tool For Style Guide Enforcement.
 # includes McCabe:      https://github.com/PyCQA/mccabe
 # includes pycodestyle: https://github.com/PyCQA/pycodestyle
@@ -145,20 +154,10 @@ pytest:
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
 	pipenv run pytest --dead-fixtures tests
-	pipenv run pytest --cov-report term-missing:skip-covered --cov=src --random-order tests
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order tests
 	@echo "Info **********  End:   pytest **************************************"
 pytest_issue:
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
-	pipenv run pytest --cov-report term-missing:skip-covered --cov=src -m issue --setup-show tests
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -m issue --setup-show tests
 	@echo "Info **********  End:   pytest **************************************"
-
-# Python interface to coveralls.io API
-# https://github.com/z4r/python-coveralls
-# Configuration file: none
-python-coveralls:
-	@echo "Info **********  Start: python-coveralls ****************************"
-	pipenv run pip freeze | grep -e coverage -e coveralls -e pytest
-	pipenv run coverage run --source=src -m pytest tests
-	pipenv run coveralls --service=github
-	@echo "Info **********  End:   python-coveralls ****************************"

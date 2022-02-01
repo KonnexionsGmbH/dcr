@@ -48,6 +48,8 @@ jobs:
         run: make pydocstyle
       - name: Run MkDocs for creating project documentation with markdown.
         run: make mkdocs
+      - name: Publish the code coverage to coveralls.io
+        run: make coveralls
 
   production:
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production
@@ -100,7 +102,3 @@ jobs:
         run: make compileall
       - name: Run pytest for writing better program
         run: make pytest
-      - name: Publish the code coverage to coveralls.io
-        uses: coverallsapp/github-action@v1.1.2
-        with:
-          github-token: ${{ github.token }}
