@@ -53,13 +53,19 @@ echo "==========================================================================
 case "${DCR_CHOICE_ACTION}" in
   m_d_e)
     # Development ecosystem
-    if ! ( make eco_dev ); then
+    if ! ( make dev_ext ); then
         exit 255
     fi
     ;;
   m_d_i)
     # Development install packages
     if ! ( make inst_dev ); then
+        exit 255
+    fi
+    ;;
+  m_p)
+    # Development install packages
+    if ! ( make inst_prod ); then
         exit 255
     fi
     ;;

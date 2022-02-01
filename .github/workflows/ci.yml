@@ -75,6 +75,13 @@ jobs:
         run: make pipenv_prod
       - name: Compile the Python code
         run: make compileall
+      - name: Run pytest for writing better program
+        run |
+          pipenv install pytest
+          pipenv run pytest --version
+          pipenv run pytest --dead-fixtures tests
+          pipenv run pytest --cov=src --cov-report term-missing:skip-covered tests
+          make pytest
 
   test_framework:
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Test Framework

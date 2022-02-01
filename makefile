@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := dev
 
-dev: isort black compileall mkdocs bandit flake8 mypy pylint pydocstyle pytest
+dev_ext: isort black compileall        bandit flake8 mypy pylint pydocstyle pytest
+dev_int: isort black compileall mkdocs bandit flake8 mypy pylint pydocstyle pytest
 
 inst_dev:  pip pipenv pipenv_dev
 inst_prod: pip pipenv pipenv_prod

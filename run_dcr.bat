@@ -58,7 +58,7 @@ REM > %LOG_FILE% 2>&1 (
     if ["%DCR_CHOICE_ACTION%"] EQU ["d_c_u"] set _CHOICE=%DCR_CHOICE_ACTION%
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["m_d_e"] (
-        make eco_dev
+        make dev_ext
         if %ERRORLEVEL% neq 0 (
             echo Processing of the script: %0 - step: 'make eco_dev' was aborted, error code=%ERRORLEVEL%
             exit -1073741510

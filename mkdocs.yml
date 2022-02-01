@@ -28,15 +28,9 @@ site_author: Konnexions GmbH Team
 theme:
   favicon: img/Icon.png
   features:
-    - header.autohide
-    - navigation.expand
-    - navigation.instant
-    - navigation.sections
     - navigation.tabs
-    - navigation.top
     - search.highlight
     - search.suggest
-    - toc.integrate
   language: en
   logo: img/Logo.png
   name: material
