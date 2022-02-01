@@ -3,7 +3,7 @@
 ![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/1.0.0.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
 
 ----
 
@@ -74,10 +74,7 @@ members of the project's leadership.
 
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
-available at https://www.contributor-covenant.org/version/1/4/code-of-conduct.html
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org){:target="_blank"}, version 1.4,
+available [here](https://www.contributor-covenant.org/version/1/4/code-of-conduct.html){:target="_blank"}.
 
-[homepage]: https://www.contributor-covenant.org
-
-For answers to common questions about this code of conduct, see
-https://www.contributor-covenant.org/faq
+For answers to common questions about this code of conduct, see [here](https://www.contributor-covenant.org/faq){:target="_blank"}

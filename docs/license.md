@@ -3,13 +3,13 @@
 ![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/1.0.0.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
 
 ----
 
                            Konnexions Public License (KX-PL)
                                Version 2020.05, May 2020
-[pdf Version](https://github.com/KonnexionsGmbH/shared_resources/blob/master/License/KX-PL-2020.05.pdf)
+[pdf Version](https://github.com/KonnexionsGmbH/shared_resources/blob/master/License/KX-PL-2020.05.pdf){:target="_blank"}
 
    This license governs use of the accompanying software. If you use the software, you 
    accept this license. If you do not accept the license, do not use the software.

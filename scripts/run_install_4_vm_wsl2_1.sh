@@ -14,12 +14,9 @@ export HOST_ENVIRONMENT_DEFAULT=vm
 
 export CURRENT_PATH=$(pwd)
 
-export VERSION_DCR_DEV=1.0.0
+export VERSION_DCR_DEV=0.5.0
 
 export VERSION_DBEAVER=21.3.3
-# wwe
-#export VERSION_DOCKER_COMPOSE=1.29.2
-export VERSION_GCC=10
 export VERSION_HTOP=3.1.2
 export VERSION_PYTHON3=3.10.2
 export VERSION_TMUX=3.2a
@@ -39,17 +36,10 @@ else
     export HOST_ENVIRONMENT=$1
 fi
 
-if [ "${HOST_ENVIRONMENT}" = "vm" ]; then
-    cp -r ../../../config_data/config_dbeaver/dbeaver.desktop ${HOME}/.local/share/applications/dbeaver.desktop
-fi
-
 mkdir -p ${HOME}/kxn_install
 rm -rf ${HOME}/kxn_install/*
 
 cp -r ../../../scripts/run_version_check.sh ${HOME}/kxn_install
-if [ "${HOST_ENVIRONMENT}" = "vm" ]; then
-    cp -r config_dbeaver ${HOME}/kxn_install
-fi
 
 cd ${HOME}
 
@@ -99,23 +89,14 @@ echo "--------------------------------------------------------------------------
 sudo apt-get clean -qy
 
 sudo apt-get update -qy
-sudo apt-get install -qy gnupg \
-                         software-properties-common
-
-sudo apt-key adv --fetch-keys http://repos.codelite.org/CodeLite.asc
-sudo apt-add-repository 'deb http://repos.codelite.org/wx3.0.5/ubuntu/ focal universe'
+sudo apt-get install -qy gnupg
 
 sudo apt-get update -qy
 sudo apt-get upgrade -qy
 
-sudo apt-get install -qy autoconf \
-                         automake \
-                         build-essential \
-                         byacc \
+sudo apt-get install -qy byacc \
                          curl \
                          dos2unix \
-                         g++-${VERSION_GCC} \
-                         gcc-${VERSION_GCC} \
                          git \
                          libbz2-dev \
                          libffi-dev \
@@ -129,12 +110,13 @@ sudo apt-get install -qy autoconf \
                          libxml2-dev \
                          libxmlsec1-dev \
                          llvm \
-                         make \
-                         openssl \
+                         locales \
+                         lsb-release \
                          pkg-config \
                          procps \
-                         software-properties-common \
                          tk-dev \
+                         tzdata \
+                         unzip \
                          vim \
                          wget \
                          xz-utils \
@@ -181,9 +163,6 @@ echo '' >> ${HOME}/.bashrc
 if [ "${HOST_ENVIRONMENT}" = "vm" ]; then
     eval echo 'export VERSION_DBEAVER=${VERSION_DBEAVER}' >> ${HOME}/.bashrc
 fi
-# wwe
-#eval echo 'export VERSION_DOCKER_COMPOSE=${VERSION_DOCKER_COMPOSE}' >> ${HOME}/.bashrc
-eval echo 'export VERSION_GCC=${VERSION_GCC}' >> ${HOME}/.bashrc
 eval echo 'export VERSION_HTOP=${VERSION_HTOP}' >> ${HOME}/.bashrc
 eval echo 'export VERSION_PYTHON3=${VERSION_PYTHON3}' >> ${HOME}/.bashrc
 eval echo 'export VERSION_TMUX=${VERSION_TMUX}' >> ${HOME}/.bashrc
@@ -209,11 +188,6 @@ eval echo 'export PATH_ORIG=${PATH_ORIG}' >> ${HOME}/.bashrc
 echo '' >> ${HOME}/.bashrc
 eval echo '. ${HOME}/.asdf/asdf.sh' >> ${HOME}/.bashrc
 eval echo '. ${HOME}/.asdf/completions/asdf.bash' >> ${HOME}/.bashrc
-# from Docker Desktop --------------------------------------------------------------
-if [ "${HOST_ENVIRONMENT}" = "vm" ]; then
-    echo '' >> ${HOME}/.bashrc
-    echo 'if [ `id -gn` != "docker" ]; then ( newgrp docker ) fi' >> ${HOME}/.bashrc
-fi
 
 echo '' >> ${HOME}/.bashrc
 echo '# ----------------------------------------------------------------------------' >> ${HOME}/.bashrc
@@ -228,56 +202,6 @@ echo "Step: Install asdf - part 1"
 echo "------------------------------------------------------------------------------"
 sudo rm -rf ${HOME}/.asdf
 git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf
-echo "=============================================================================="
-
-# wwe
-#echo "------------------------------------------------------------------------------"
-#echo "Step: Install Docker Compose - Version ${VERSION_DOCKER_COMPOSE}"
-#echo "------------------------------------------------------------------------------"
-#sudo curl -L "https://github.com/docker/compose/releases/download/${VERSION_DOCKER_COMPOSE}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-#sudo chmod +x /usr/local/bin/docker-compose
-#echo " "
-#echo "=============================================================================> Version  Docker Compose: "
-#echo " "
-#echo "Current version of Docker Compose: $(docker-compose version)"
-#echo " "
-#echo "=============================================================================="
-#
-#if [ "${HOST_ENVIRONMENT}" = "vm" ]; then
-#    echo "------------------------------------------------------------------------------"
-#    echo "Step: Install Docker Desktop"
-#    echo "------------------------------------------------------------------------------"
-#    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-#    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" --yes
-#    sudo apt-key fingerprint 0EBFCD88
-#    sudo apt-get install -qy docker-ce \
-#                             docker-ce-cli \
-#                             containerd.io
-#    sudo chmod 666 /var/run/docker.sock
-#    if ! [ $(getent group docker | grep -q "\b$USER\b") ]; then
-#        sudo usermod -aG docker $USER
-#    fi
-#    docker ps     | grep "portainer"           && docker stop portainer
-#    docker ps -a  | grep "portainer"           && docker rm --force portainer
-#    docker images | grep "portainer/portainer" && docker rmi -f portainer/portainer
-#    docker run -d --name portainer -p 8000:8000 -p 9000:9000 -v "//var/run/docker.sock/":/var/run/docker.sock -v "/Home/portainer/":/data portainer/portainer
-#    echo " "
-#    echo "=============================================================================> Version  Docker Desktop: "
-#    echo " "
-#    echo "Current version of Docker Desktop: $(docker version)"
-#    echo " "
-#    echo "=============================================================================="
-#fi
-
-echo "------------------------------------------------------------------------------"
-echo "Step: Install G++ & GCC - Version ${VERSION_GCC}"
-echo "------------------------------------------------------------------------------"
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${VERSION_GCC} 100 --slave /usr/bin/g++ g++ /usr/bin/g++-${VERSION_GCC} --slave /usr/bin/gcov gcov /usr/bin/gcov-${VERSION_GCC}
-echo "=============================================================================> Version  G++ & GCC: "
-echo " "
-echo "Current version of GCC: $(gcc --version)"
-echo "Current version of G++: $(g++ --version)"
-echo " "
 echo "=============================================================================="
 
 echo "------------------------------------------------------------------------------"

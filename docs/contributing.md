@@ -3,7 +3,7 @@
 ![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/1.0.0.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
 
 ----
 
@@ -24,4 +24,4 @@ In case of software changes we strongly recommend you to respect the license ter
 
 ## 3. Notes on the Software Development Process
 
-[See here](development.md)
+[See here](development.md){:target="_blank"}

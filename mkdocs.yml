@@ -5,6 +5,9 @@ edit_uri: ""
 extra:
   generator: false
 
+markdown_extensions:
+  - attr_list
+
 nav:
   - Home: index.md
   - Research: research.md
@@ -20,7 +23,7 @@ plugins:
 
 repo_url: https://github.com/KonnexionsGmbH/dcr/
 
-site_name: DCR
+site_name: DCR - Document Content Recognition
 site_url: https://www.konnexions.ch/
 site_description: Document Content Recognition
 site_author: Konnexions GmbH Team
@@ -28,7 +31,6 @@ site_author: Konnexions GmbH Team
 theme:
   favicon: img/Icon.png
   features:
-    - navigation.tabs
     - search.highlight
     - search.suggest
   language: en

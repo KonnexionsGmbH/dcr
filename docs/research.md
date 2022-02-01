@@ -3,7 +3,7 @@
 ![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/1.0.0.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
 
 ----
 
@@ -12,7 +12,7 @@
 #### Hegghammer, T. (2021)
 **OCR with Tesseract, Amazon Textract, and Google Document AI: a benchmarking experiment.**
 Journal of Computational Social Science, 2021, pp. 2432-2725 [Online]
-Available at [https://doi.org/10.1007/s42001-021-00149-1](https://doi.org/10.1007/s42001-021-00149-1)
+Available at [https://doi.org/10.1007/s42001-021-00149-1](https://doi.org/10.1007/s42001-021-00149-1){:target="_blank"}
 (Accessed 04 January 2022).
 
 Optical Character Recognition (OCR) can open up understudied historical documents to computational analysis, but the accuracy of OCR software varies.
@@ -26,7 +26,7 @@ The test materials have been preserved in the openly available “Noisy OCR Data
 #### Minaee, S. et al. (2021)
 **Deep Learning Based Text Classification: A Comprehensive Review.**
 arXiv [Online]
-Available at [https://arxiv.org/abs/2004.03705](https://arxiv.org/abs/2004.03705)
+Available at [https://arxiv.org/abs/2004.03705](https://arxiv.org/abs/2004.03705){:target="_blank"}
 (Accessed 04 January 2022).
 
 Deep learning based models have surpassed classical machine learning based approaches in various text classification tasks, including sentiment analysis, news categorization, question answering, and natural language inference. 
@@ -39,7 +39,7 @@ Finally, we provide a quantitative analysis of the performance of different deep
 In: Mehler A., Kühnberger KU., Lobin H., Lüngen H., Storrer A., Witt A. (eds) Modeling, Learning, and Processing of Text Technological Data Structures. 
 Studies in Computational Intelligence, vol 370. 
 Springer Verlag GmbH, Heidelberg, Germany. 
-Available at [https://www.researchgate.net/publication/265487498_Machine_Learning_for_Document_Structure_Recognition](https://www.researchgate.net/publication/265487498_Machine_Learning_for_Document_Structure_Recognition)
+Available at [https://www.researchgate.net/publication/265487498_Machine_Learning_for_Document_Structure_Recognition](https://www.researchgate.net/publication/265487498_Machine_Learning_for_Document_Structure_Recognition){:target="_blank"}
 (Accessed 04 January 2022).
 
 The backbone of the information age is digital information which may be searched, accessed, and transferred instantaneously. 
@@ -56,7 +56,7 @@ These advanced models require far more computational resources but show a better
 **Document Structure.**
 Computational Linguistics, 2003, Volume 29, Issue 2, pp. 211-260 [Online]
 The MIT Press, Cambridge, USA.
-Available at [https://direct.mit.edu/coli/article/29/2/211/1803/Document-Structure](https://direct.mit.edu/coli/article/29/2/211/1803/Document-Structure)
+Available at [https://direct.mit.edu/coli/article/29/2/211/1803/Document-Structure](https://direct.mit.edu/coli/article/29/2/211/1803/Document-Structure){:target="_blank"}
 (Accessed 05 January 2022).
 
 We argue the case for abstract document structure as a separate descriptive level in the analysis and generation of written texts. 
@@ -67,7 +67,7 @@ We show that by using this intermediate representation, several subtasks in lang
 #### Rahman, M., Finin, T. (2019)
 _Unfolding the Structure of a Document using Deep Learning._
 arXiv [Online]
-Available at [https://arxiv.org/abs/1910.03678](https://arxiv.org/abs/1910.03678)
+Available at [https://arxiv.org/abs/1910.03678](https://arxiv.org/abs/1910.03678){:target="_blank"}
 (Accessed 07 January 2022).
 
 Understanding and extracting of information from large documents, such as business opportunities, academic articles, medical documents and technical reports, poses challenges not present in short documents. 

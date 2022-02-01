@@ -3,7 +3,7 @@
 ![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/1.0.0.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
 
 ----
 
@@ -20,7 +20,7 @@ Version **`3.10`** is used for the **`Python`** programming language.
 
 ### 2.1 **`Python`**
 
-- The [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide for **`Python`** code is strictly applied and enforced with static analysis tools.
+- The [PEP 8](https://www.python.org/dev/peps/pep-0008/){:target="_blank"} style guide for **`Python`** code is strictly applied and enforced with static analysis tools.
 - All program code must be commented with type hinting instructions.
 - All functions, modules and packages must be commented with **`Docstring`**.
 - The program code must be covered as far as possible with appropriate tests - the aim is always 100 % test coverage.
@@ -37,8 +37,8 @@ Version **`3.10`** is used for the **`Python`** programming language.
 
 The two tools **`isort`** and **`Black`** are used for formatting the programme code:
 
-- [Black](https://black.readthedocs.io/en/stable/) - The uncompromising **`Python`** code formatter.
-- [isort](https://pycqa.github.io/isort/) - A **`Python`** utility / library to sort imports.
+- [Black](https://black.readthedocs.io/en/stable/){:target="_blank"} - The uncompromising **`Python`** code formatter.
+- [isort](https://pycqa.github.io/isort/){:target="_blank"} - A **`Python`** utility / library to sort imports.
 
 Both tools are included in the call **`make dev`**. 
 They can be executed individually with **`make black`** and **`make isort`**, whereby **`sort`** should run first and **`black`** afterwards.
@@ -47,32 +47,32 @@ They can be executed individually with **`make black`** and **`make isort`**, wh
 
 The tools **`Bandit`**, **`Flake8`**, **`Mypy`** and **`Pylint`** are used for static code analysis:
 
-- [Bandit](https://bandit.readthedocs.io/en/latest/) - **`Bandit`** is a tool designed to find common security issues in **`Python`** code.
-- [Flake8](https://flake8.pycqa.org/en/latest/index.html#quickstart) - A **`Python`** tool that glues together **`pycodestyle`**, **`Pyflakes`**, **`McCabe`**, and third-party plugins to check the style and quality of some **`Python`** code.
-- [Mypy](https://mypy.readthedocs.io/en/stable/introduction.html) - Optional static typing for **`Python`**.
-- [Pylint](https://pylint.pycqa.org/en/latest/) - It's not just a linter that annoys you!
+- [Bandit](https://bandit.readthedocs.io/en/latest/){:target="_blank"} - **`Bandit`** is a tool designed to find common security issues in **`Python`** code.
+- [Flake8](https://flake8.pycqa.org/en/latest/index.html#quickstart){:target="_blank"} - A **`Python`** tool that glues together **`pycodestyle`**, **`Pyflakes`**, **`McCabe`**, and third-party plugins to check the style and quality of some **`Python`** code.
+- [Mypy](https://mypy.readthedocs.io/en/stable/introduction.html){:target="_blank"} - Optional static typing for **`Python`**.
+- [Pylint](https://pylint.pycqa.org/en/latest/){:target="_blank"} - It's not just a linter that annoys you!
 
 All tools are included in the call **`make dev`**.
 They can be executed individually with **`make bandit`**, **`make flake8`**, **`make mypy`** and **`make pylint`**.
 
 **`Flake8`** includes the following tools:
 
-- [McCabe](https://github.com/PyCQA/mccabe) - McCabe complexity checker for **`Python`**.
-- [pycodestyle](https://github.com/PyCQA/pycodestyle) - Simple **`Python`** style checker in one **`Python`** file.
-- [Pyflakes](https://github.com/PyCQA/pyflakes) - A simple program which checks **`Python`** source files for errors.
-- [Radon](https://radon.readthedocs.io/en/latest/) - Various code metrics for **`Python`** code.
+- [McCabe](https://github.com/PyCQA/mccabe){:target="_blank"} - McCabe complexity checker for **`Python`**.
+- [pycodestyle](https://github.com/PyCQA/pycodestyle){:target="_blank"} - Simple **`Python`** style checker in one **`Python`** file.
+- [Pyflakes](https://github.com/PyCQA/pyflakes){:target="_blank"} - A simple program which checks **`Python`** source files for errors.
+- [Radon](https://radon.readthedocs.io/en/latest/){:target="_blank"} - Various code metrics for **`Python`** code.
 
 ## 5. Software Documentation
 
 ### 5.1 API Documentation
 
-The creation of API documentation for functions, modules and packages is mandatory and enforced with the static analysis tool [pydocstyle](https://github.com/PyCQA/pydocstyle).
+The creation of API documentation for functions, modules and packages is mandatory and enforced with the static analysis tool [pydocstyle](https://github.com/PyCQA/pydocstyle){:target="_blank"}.
 **`pydocstyle`** is a static analysis tool for checking compliance with **`Python`** **`Docstring`** conventions.
 **`pydocstyle`** can be executed individually with **`make pydocstyle`** and is also included in the call **`make dev`**.
 
 The **`Docstring`** format used in DCR is that of type Google. 
-For Visual Studio Code, the extension [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring) can be used when creating API documentation.  
-With the [Pydoc-Markdown](https://github.com/NiklasRosenstein/pydoc-markdown) tool, the API documentation is extracted from the source files and put into Markdown format. 
+For Visual Studio Code, the extension [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring){:target="_blank"} can be used when creating API documentation.  
+With the [Pydoc-Markdown](https://github.com/NiklasRosenstein/pydoc-markdown){:target="_blank"} tool, the API documentation is extracted from the source files and put into Markdown format. 
 In this format, the API documentation can then be integrated into the user documentation.
 
 Examples for the format of the API documentation:
@@ -116,7 +116,7 @@ Examples for the format of the API documentation:
     Returns:
     dict[str, bool]: The command line arguments found.
 
-In Visual Studio Code, the [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring) tool can be used to create a framework for API documentation.
+In Visual Studio Code, the [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring){:target="_blank"} tool can be used to create a framework for API documentation.
 
 ### 5.2 User Documention
 
@@ -131,22 +131,22 @@ The remaining documents for the user documentation can be found in the file dire
 | **`release_notes.md`**   | Release Notes                |                                           |
 | **`research.md`**        | Research                     | Reference to the relevant research papers |
 
-The [MkDocs](https://github.com/mkdocs/mkdocs/) tool is used to create the user documentation. 
+The [MkDocs](https://github.com/mkdocs/mkdocs/){:target="_blank"} tool is used to create the user documentation. 
 With the command **`make mkdocs`** the user documentation is created by MkDocs and uploaded to the GitHub pages of the repository.
 The command **`make mkdocs`** is also included in the call **`make dev`**.
 
 ## 6. Software Testing
 
-[pytest](https://github.com/pytest-dev/pytest/) is used as a software testing framework with the following plugins::
+[pytest](https://github.com/pytest-dev/pytest/){:target="_blank"} is used as a software testing framework with the following plugins::
 
-- [pytest-cov](https://github.com/pytest-dev/pytest-cov/) for coverage reporting,
-- [pytest-deadfixture](https://github.com/jllorencetti/pytest-deadfixtures) to list unused or duplicate fixtures, and
-- [pytest-random-order](https://github.com/jbasko/pytest-random-order) to randomise the order of the tests.
+- [pytest-cov](https://github.com/pytest-dev/pytest-cov/){:target="_blank"} for coverage reporting,
+- [pytest-deadfixture](https://github.com/jllorencetti/pytest-deadfixtures){:target="_blank"} to list unused or duplicate fixtures, and
+- [pytest-random-order](https://github.com/jbasko/pytest-random-order){:target="_blank"} to randomise the order of the tests.
 
 On the one hand, the tests must be as complete as possible, i.e. a test coverage of 100% is aimed for, but on the other hand, the scope of the test code should be minimal, i.e. unnecessary repetitions must be strictly avoided. 
 The best strategy for this is to first create a test case for the normal case and then add special tests for the special cases not yet covered.
 
-Finally, the tool [Coveralls for Python](https://github.com/TheKevJames/coveralls-python) is used to enable a connection to [Coveralls](https://coveralls.io/github/KonnexionsGmbH/dcr).
+Finally, the tool [Coveralls for Python](https://github.com/TheKevJames/coveralls-python){:target="_blank"} is used to enable a connection to [Coveralls](https://coveralls.io/github/KonnexionsGmbH/dcr){:target="_blank"}.
 
 ## 7. Continuous Delivery
 
@@ -189,16 +189,16 @@ The individual steps to be carried out
 
 ## 8. Development Environment
 
-[DockerHub](https://hub.docker.com)
+[DockerHub](https://hub.docker.com){:target="_blank"}
 
-[dcr_dev - Document Content Recognition Development Image](https://hub.docker.com/repository/docker/konnexionsgmbh/dcr_dev)
+[dcr_dev - Document Content Recognition Development Image](https://hub.docker.com/repository/docker/konnexionsgmbh/dcr_dev){:target="_blank"}
 
-The whole software environment for the operation and further development of DCR can be created most easily by using a Docker container (version 1.0.0 from [here](https://hub.docker.com/repository/docker/konnexionsgmbh/dcr_dev)).
+The whole software environment for the operation and further development of DCR can be created most easily by using a Docker container (version 1.0.0 from [here](https://hub.docker.com/repository/docker/konnexionsgmbh/dcr_dev){:target="_blank"}).
 
 Alternatively, in an **`Ubuntu`** based environment, e.g.: in a virtual machine or  the Windows Subsystem for Linux (WSL), the two following scripts can be used to install the necessary software:
 
-- `scripts/run_install_4-vm_wsl2_1.sh`
-- `scripts/run_install_4-vm_wsl2_2.sh`
+- **`scripts/run_install_4-vm_wsl2_1.sh`**
+- **`scripts/run_install_4-vm_wsl2_2.sh`**
 
 
 ## 9. Next Development Steps
@@ -227,3 +227,12 @@ Alternatively, in an **`Ubuntu`** based environment, e.g.: in a virtual machine 
 
 - tools.py - verify the content of the inbox directories
 
+### Version Planning
+
+| Version | Feature(s)               |
+|---------|--------------------------|
+| 0.5.0   | Inbox processing         |
+| 0.6.0   | Pandoc processing        |
+| 0.7.0   | Tesseract OCR processing |
+| 0.8.0   | PDFlib TET processing    |
+| 0.9.0   | Parser                   |

@@ -40,8 +40,6 @@ echo "Current version of asdf is: $(asdf --version)"
 echo " "
 echo "=============================================================================="
 
-
-
 sudo rm -rf ${HOME}/.asdf/downloads/python
 sudo rm -rf ${HOME}/.asdf/downloads/tmux
 

@@ -3,19 +3,21 @@
 ![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/1.0.0.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
 
 ----
 
 ## 1. Current Version
 
-### 1.0.0
+### 0.5.0
 
 Release Date: dd.mm.2021
 
 #### New Features
 
-- TBD
+- Setup of the entire development infrastructure
+- Creation of the first version of the user documentation
+- Processing of new document arrivals in the file directory **`ìnbox`**
 
 #### Applied Software
 
@@ -44,7 +46,7 @@ Release Date: dd.mm.2021
 
 #### Open issues
 
-- Pydoc-Markdown: (see [here](#issues_pydoc_markdown))
+- Pydoc-Markdown: (see [here](#issues_pydoc_markdown){:target="_blank"})
 
 ----
 
@@ -52,7 +54,7 @@ Release Date: dd.mm.2021
 
 ### <a name="issues_pydoc_markdown"></a> Pydoc-Markdown
 
-- Issue: Please help me with combined Pydoc-Markdown and MKDocs (see [here](https://github.com/NiklasRosenstein/pydoc-markdown/discussions/243)).
+- Issue: Please help me with combined Pydoc-Markdown and MKDocs (see [here](https://github.com/NiklasRosenstein/pydoc-markdown/discussions/243){:target="_blank"}).
 
 ## 3. Version History
 
