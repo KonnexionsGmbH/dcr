@@ -5,7 +5,7 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
 
-Based on the paper "Unfolding the Structure of a Document using Deep Learning" (**[Rahman and Finin, 2019](docs/research.md#Rahman)**), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
+Based on the paper "Unfolding the Structure of a Document using Deep Learning" (**[Rahman and Finin, 2019](https://konnexionsgmbh.github.io/dcr/research/#rahman-m-finin-t-2019)**), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
 Documents not in PDF format are converted to PDF format using **[Pandoc](https://pandoc.org)**.
 Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to PDF format using the **[Tesseract OCR](https://github.com/tesseract-ocr/tesseract)** software.
 This process applies to all image format files e.g. jpeg, tiff etc., as well as scanned images in PDF format.
@@ -33,7 +33,7 @@ Make sure to stick around to answer some questions as well!
 ## Links
 
 - **[Official Documentation](https://konnexionsgmbh.github.io/dcr/)**
-- **[Release Notes](docs/release_notes.md)**
+- **[Release Notes](https://konnexionsgmbh.github.io/dcr/release_notes/)**
 - **[Discussions](https://github.com/KonnexionsGmbH/dcr/discussions)** (Third-party themes, recipes, plugins and more)
 
 ## Contributing to DCR
