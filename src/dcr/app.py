@@ -7,7 +7,6 @@ Returns:
 """
 
 import configparser
-import datetime
 import locale
 import logging
 import logging.config
@@ -15,26 +14,10 @@ import sys
 from typing import List
 
 import yaml
+from libs import cfg
+from libs import db
 from libs import inbox
-from libs.database import check_db_up_to_date
-from libs.database import create_or_upgrade_database
-from libs.globals import ACTION_ALL_COMPLETE
-from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
-from libs.globals import ACTION_PROCESS_INBOX
-from libs.globals import ACTION_PROCESS_INBOX_OCR
-from libs.globals import CONFIG
-from libs.globals import DCR_CFG_DATABASE
-from libs.globals import DCR_CFG_DATABASE_FILE
-from libs.globals import DCR_CFG_DATABASE_URL
-from libs.globals import DCR_CFG_FILE
-from libs.globals import DCR_CFG_SECTION
-from libs.globals import FILE_ENCODING_DEFAULT
-from libs.globals import LOCALE
-from libs.globals import LOGGER_CFG_FILE
-from libs.globals import LOGGER_END
-from libs.globals import LOGGER_PROGRESS_UPDATE
-from libs.globals import LOGGER_START
-from libs.utils import terminate_fatal
+from libs import utils
 
 
 # -----------------------------------------------------------------------------
@@ -63,48 +46,45 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
     Returns:
         dict[str, bool]: The command line arguments found.
     """
-    logger.debug(LOGGER_START)
+    logger.debug(cfg.LOGGER_START)
 
     num = len(argv)
 
     if num == 0:
-        terminate_fatal(logger, "No command line arguments found")
+        utils.terminate_fatal(logger, "No command line arguments found")
 
     if num == 1:
-        terminate_fatal(
+        utils.terminate_fatal(
             logger, "The specific command line arguments are missing"
         )
 
     args = {
-        ACTION_DB_CREATE_OR_UPGRADE: False,
-        ACTION_PROCESS_INBOX: False,
-        ACTION_PROCESS_INBOX_OCR: False,
+        cfg.ACTION_DB_CREATE_OR_UPGRADE: False,
+        cfg.ACTION_PROCESS_INBOX: False,
+        cfg.ACTION_PROCESS_INBOX_OCR: False,
     }
 
     for i in range(1, num):
         arg = argv[i].lower()
-        if arg == ACTION_ALL_COMPLETE:
+        if arg == cfg.ACTION_ALL_COMPLETE:
             for key in args:
                 args[key] = True
         elif arg in (
-            ACTION_DB_CREATE_OR_UPGRADE,
-            ACTION_PROCESS_INBOX,
-            ACTION_PROCESS_INBOX_OCR,
+            cfg.ACTION_DB_CREATE_OR_UPGRADE,
+            cfg.ACTION_PROCESS_INBOX,
+            cfg.ACTION_PROCESS_INBOX_OCR,
         ):
             args[arg] = True
         else:
-            terminate_fatal(
+            utils.terminate_fatal(
                 logger, "Unknown command line argument='" + argv[i] + "'"
             )
 
-    print(
-        LOGGER_PROGRESS_UPDATE,
-        str(datetime.datetime.now()),
-        " : The command line arguments are validated and loaded.",
-        sep="",
+    utils.progress_msg(
+        logger, "The command line arguments are validated and loaded"
     )
 
-    logger.debug(LOGGER_END)
+    logger.debug(cfg.LOGGER_END)
 
     return args
 
@@ -121,28 +101,26 @@ def get_config(logger: logging.Logger) -> None:
     Args:
         logger (logging.Logger): Current logger.
     """
-    logger.debug(LOGGER_START)
+    logger.debug(cfg.LOGGER_START)
 
     config_parser = configparser.ConfigParser()
-    config_parser.read(DCR_CFG_FILE)
+    config_parser.read(cfg.DCR_CFG_FILE)
 
     for section in config_parser.sections():
-        if section == DCR_CFG_SECTION:
+        if section == cfg.DCR_CFG_SECTION:
             for (key, value) in config_parser.items(section):
-                CONFIG[key] = value
+                cfg.config[key] = value
 
-    CONFIG[DCR_CFG_DATABASE] = (
-        CONFIG[DCR_CFG_DATABASE_URL] + CONFIG[DCR_CFG_DATABASE_FILE]
+    cfg.config[cfg.DCR_CFG_DATABASE] = (
+        cfg.config[cfg.DCR_CFG_DATABASE_URL]
+        + cfg.config[cfg.DCR_CFG_DATABASE_FILE]
     )
 
-    print(
-        LOGGER_PROGRESS_UPDATE,
-        str(datetime.datetime.now()),
-        " : The configuration parameters are checked and loaded.",
-        sep="",
+    utils.progress_msg(
+        logger, "The configuration parameters are checked and loaded"
     )
 
-    logger.debug(LOGGER_END)
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -152,22 +130,18 @@ def initialise_logger() -> logging.Logger:
     """Initialise the root logging functionality.
 
     Returns:
-        logging.Logger: Root loggger.
+        logging.Logger: Root logger.
     """
-    with open(LOGGER_CFG_FILE, "r", encoding=FILE_ENCODING_DEFAULT) as file:
+    with open(
+        cfg.LOGGER_CFG_FILE, "r", encoding=cfg.FILE_ENCODING_DEFAULT
+    ) as file:
         log_config = yaml.safe_load(file.read())
 
     logging.config.dictConfig(log_config)
     logger = logging.getLogger("dcr.py")
     logger.setLevel(logging.DEBUG)
 
-    print(
-        LOGGER_PROGRESS_UPDATE,
-        str(datetime.datetime.now()),
-        " : The logger is configured and ready.",
-        sep="",
-    )
-    print("")
+    utils.progress_msg(logger, "The logger is configured and ready")
 
     return logger
 
@@ -186,33 +160,33 @@ def main(argv: List[str]) -> None:
     # Initialise the logging functionality.
     logger = initialise_logger()
 
-    logger.debug(LOGGER_START)
+    logger.debug(cfg.LOGGER_START)
 
     print("Start app.py")
 
-    locale.setlocale(locale.LC_ALL, LOCALE)
+    locale.setlocale(locale.LC_ALL, cfg.LOCALE)
 
     # Load the command line arguments into the memory (pdf ...`)
     args = get_args(logger, argv)
 
-    # Load the configuration parameters into the memory (CONFIG params
+    # Load the configuration parameters into the memory (cfg.CONFIG params
     # `file.configuration.name ...`)
     get_config(logger)
 
-    if args[ACTION_DB_CREATE_OR_UPGRADE]:
+    if args[cfg.ACTION_DB_CREATE_OR_UPGRADE]:
         # Create or upgrade the database.
-        create_or_upgrade_database(logger)
+        db.create_or_upgrade_database(logger)
 
     # Setting up the database.
-    check_db_up_to_date(logger)
+    db.check_db_up_to_date(logger)
 
-    if args[ACTION_PROCESS_INBOX]:
+    if args[cfg.ACTION_PROCESS_INBOX]:
         # Processing the inbox directory.
         inbox.process_inbox(logger)
 
     print("End   app.py")
 
-    logger.debug(LOGGER_END)
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------

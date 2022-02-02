@@ -13,11 +13,11 @@ import pytest
 from app import get_config
 from app import initialise_logger
 from app import main
-from libs.database import METADATA
-from libs.globals import ACTION_DB_CREATE_OR_UPGRADE
-from libs.globals import CONFIG
-from libs.globals import DCR_CFG_DATABASE_FILE
-from libs.globals import DCR_CFG_DIRECTORY_INBOX
+from libs.db import METADATA
+from libs.cfg import ACTION_DB_CREATE_OR_UPGRADE
+from libs.cfg import config
+from libs.cfg import DCR_CFG_DATABASE_FILE
+from libs.cfg import DCR_CFG_DIRECTORY_INBOX
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -78,11 +78,11 @@ def fxtr_new_db_empty_inbox(
     """Fixture: New empty database, but no inbox directory."""
     get_config(LOGGER)
 
-    fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(config[DCR_CFG_DATABASE_FILE])
 
-    fxtr_rmdir_opt(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir_opt(config[DCR_CFG_DIRECTORY_INBOX])
 
-    fxtr_mkdir(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+    fxtr_mkdir(config[DCR_CFG_DIRECTORY_INBOX])
 
     METADATA.clear()
 
@@ -90,9 +90,9 @@ def fxtr_new_db_empty_inbox(
 
     yield
 
-    fxtr_rmdir(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir(config[DCR_CFG_DIRECTORY_INBOX])
 
-    fxtr_remove(CONFIG[DCR_CFG_DATABASE_FILE])
+    fxtr_remove(config[DCR_CFG_DATABASE_FILE])
 
 
 # -----------------------------------------------------------------------------
@@ -103,9 +103,9 @@ def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
     """Fixture: New empty database, but no inbox directory."""
     get_config(LOGGER)
 
-    fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(config[DCR_CFG_DATABASE_FILE])
 
-    fxtr_rmdir_opt(CONFIG[DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir_opt(config[DCR_CFG_DIRECTORY_INBOX])
 
     METADATA.clear()
 
@@ -113,7 +113,7 @@ def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
 
     yield
 
-    fxtr_remove(CONFIG[DCR_CFG_DATABASE_FILE])
+    fxtr_remove(config[DCR_CFG_DATABASE_FILE])
 
 
 # -----------------------------------------------------------------------------
@@ -124,11 +124,11 @@ def fxtr_no_db(fxtr_remove_opt):
     """Fixture: No database available."""
     get_config(LOGGER)
 
-    fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(config[DCR_CFG_DATABASE_FILE])
 
     yield
 
-    fxtr_remove_opt(CONFIG[DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(config[DCR_CFG_DATABASE_FILE])
 
 
 # -----------------------------------------------------------------------------

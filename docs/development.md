@@ -223,19 +223,19 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 ## 10. Next Development Steps
 
-**1st Priority:**
+**1<sup>st</sup> Priority:**
 
 - API Documentation
 - error handling - highly defensive
 - inbox.py - process_inbox() - processing ocr & non-ocr in the same method
 - tools.py - verify the content of the inbox directories
 
-**2nd Priority:** 
+**2<sup>nd</sup> Priority:** 
 
 - Tesseract OCR
     - Installation  
 
-**3rd Priority**
+**3<sup>rd</sup> Priority**
 
 - n/a
 

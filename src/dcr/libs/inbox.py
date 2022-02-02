@@ -8,21 +8,50 @@ converted into the pdf file format either with the help of Pandoc
 or with the help of Tesseract OCR.
 """
 
-import datetime
 import logging.config
 import os
 import pathlib
-import shutil
 
-from libs.globals import CONFIG
-from libs.globals import DCR_CFG_DIRECTORY_INBOX
-from libs.globals import DCR_CFG_DIRECTORY_INBOX_ACCEPTED
-from libs.globals import DCR_CFG_DIRECTORY_INBOX_REJECTED
-from libs.globals import FILE_EXTENSION_PDF
-from libs.globals import LOGGER_END
-from libs.globals import LOGGER_PROGRESS_UPDATE
-from libs.globals import LOGGER_START
-from libs.utils import terminate_fatal
+from libs import cfg
+from libs import utils
+
+
+# -----------------------------------------------------------------------------
+# Check the inbox file directories and create the missing ones.
+# -----------------------------------------------------------------------------
+def check_and_create_inboxes(logger: logging.Logger) -> None:
+    """Check the inbox file directories and create the missing ones.
+
+    The file directory inbox must exist. The two file directories
+    inbox_accepted and inbox_rejected are created if they do not
+    already exist.
+
+    Args:
+        logger (logging.Logger): Current logger.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    cfg.inbox = cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX]
+    if not os.path.isdir(cfg.inbox):
+        utils.terminate_fatal(
+            logger,
+            "The input directory with the name "
+            + cfg.inbox
+            + " does not exist - error="
+            + str(OSError),
+        )
+
+    cfg.inbox_accepted = cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
+    create_directory(logger, "the accepted documents", cfg.inbox_accepted)
+
+    cfg.inbox_rejected = cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
+    create_directory(logger, "the rejected documents", cfg.inbox_rejected)
+
+    print("inbox   =", str(pathlib.Path(cfg.inbox).absolute()))
+    print("accepted=", str(pathlib.Path(cfg.inbox_accepted).absolute()))
+    print("rejected=", str(pathlib.Path(cfg.inbox_rejected).absolute()))
+
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -41,16 +70,16 @@ def create_directory(
     if not os.path.isdir(directory_name):
         try:
             os.mkdir(directory_name)
-            print(
-                LOGGER_PROGRESS_UPDATE,
-                str(datetime.datetime.now()),
-                " : The file directory for " + directory_type + " was ",
-                "newly created under the name ",
-                directory_name,
-                sep="",
+            utils.progress_msg(
+                logger,
+                "The file directory for "
+                + directory_type
+                + " was "
+                + "newly created under the name "
+                + directory_name,
             )
         except OSError:
-            terminate_fatal(
+            utils.terminate_fatal(
                 logger,
                 " : The file directory for "
                 + directory_type
@@ -77,53 +106,34 @@ def process_inbox(logger: logging.Logger) -> None:
     3. Documents of type pdf consisting only of a scanned image are copied
        unchanged to the inbox_ocr directory.
     4. All other documents are copied to the inbox_rejected directory.
-    5. For each document an new entry is created in the database table
+    5. For each document a new entry is created in the database table
        document.
 
     Args:
         logger (logging.Logger): Current logger.
     """
-    logger.debug(LOGGER_START)
+    logger.debug(cfg.LOGGER_START)
 
-    inbox = CONFIG[DCR_CFG_DIRECTORY_INBOX]
-    if not os.path.isdir(inbox):
-        terminate_fatal(
-            logger,
-            "The input directory with the name "
-            + inbox
-            + " does not exist - error="
-            + str(OSError),
-        )
+    # Check the inbox file directories and create the missing ones.
+    check_and_create_inboxes(logger)
 
-    inbox_accepted = CONFIG[DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    create_directory(logger, "the accepted documents", inbox_accepted)
+    # Process the new document input.
+    process_new_input(logger)
 
-    inbox_rejected = CONFIG[DCR_CFG_DIRECTORY_INBOX_REJECTED]
-    create_directory(logger, "the rejected documents", inbox_rejected)
-
-    process_new_input(logger, inbox, inbox_accepted, inbox_rejected)
-
-    print(
-        LOGGER_PROGRESS_UPDATE,
-        str(datetime.datetime.now()),
-        " : The new documents in the inbox file directory are checked and ",
-        "prepared for further processing",
-        sep="",
+    utils.progress_msg(
+        logger,
+        "The new documents in the inbox file directory are checked and "
+        + "prepared for further processing",
     )
 
-    logger.debug(LOGGER_END)
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
-# Process the new document input.
+# Process the new documents in the input file directory.
 # -----------------------------------------------------------------------------
-def process_new_input(
-    logger: logging.Logger,
-    inbox: str,
-    inbox_accepted: str,
-    inbox_rejected: str,
-) -> None:
-    """Process the new document input.
+def process_new_input(logger: logging.Logger) -> None:
+    """Process the new documents in the input file directory.
 
     1. Documents of type doc, docx or txt are converted to pdf format
        and copied to the inbox_accepted directory.
@@ -132,30 +142,43 @@ def process_new_input(
     3. Documents of type pdf consisting only of a scanned image are copied
        unchanged to the inbox_ocr directory.
     4. All other documents are copied to the inbox_rejected directory.
-    5. For each document an new entry is created in the database table
+    5. For each document a new entry is created in the database table
        document.
 
     Args:
-        logger (logging.Logger): Current logger.
+        logger (logging.Logger): [description]
     """
-    logger.debug(LOGGER_START)
+    logger.debug(cfg.LOGGER_START)
 
-    files = pathlib.Path(inbox)
-    for file in files.iterdir():
+    directory = "."
+    print("directory name=", directory)
+    for file in pathlib.Path(directory).iterdir():
         if file.is_file():
-            extension = file.suffix.lower()
-            if extension == FILE_EXTENSION_PDF:
-                shutil.move(
-                    inbox / file.name,
-                    inbox_accepted / file.name,
-                )
-            else:
-                logger.info(
-                    "files_2_pdfs(): unsupported file type: '%s'", file.name
-                )
-                shutil.move(
-                    inbox / file.name,
-                    inbox_rejected / file.name,
-                )
+            print("absolute_name   =", file.absolute())
+            print(
+                "directory_name  =", str(pathlib.Path(file).parent.absolute())
+            )
+            print("file_name       =", file.name)
+            print("base_name       =", pathlib.PurePath(file).stem)
+            print("file_suffix_orig=", file.suffix)
 
-    logger.debug(LOGGER_END)
+    # for file in pathlib.Path(inbox).iterdir():
+    #     if file.is_file():
+    #         TOTAL_NEW+1
+    #         file.stat().
+    #         extension = file.suffix.lower()
+    #         if extension == FILE_EXTENSION_PDF:
+    #             shutil.move(
+    #                 inbox / file.name,
+    #                 inbox_accepted / file.name,
+    #             )
+    #         else:
+    #             logger.info(
+    #                 "files_2_pdfs(): unsupported file type: '%s'", file.name
+    #             )
+    #             shutil.move(
+    #                 inbox / file.name,
+    #                 inbox_rejected / file.name,
+    #             )
+
+    logger.debug(cfg.LOGGER_END)

@@ -8,57 +8,15 @@ Returns:
 
 import datetime
 import logging.config
-from os import PathLike
-from typing import Dict
-from typing import TypeAlias
-from typing import Union
 
 import sqlalchemy
 import sqlalchemy.orm
-from libs.globals import CONFIG
-from libs.globals import DCR_CFG_DATABASE_FILE
-from libs.globals import DCR_CFG_DATABASE_URL
-from libs.globals import DCR_CFG_DCR_VERSION
-from libs.globals import LOGGER_END
-from libs.globals import LOGGER_PROGRESS_UPDATE
-from libs.globals import LOGGER_START
-from libs.utils import terminate_fatal
+from libs import cfg
+from libs import utils
 from sqlalchemy import ForeignKey
-from sqlalchemy import MetaData
 from sqlalchemy import Table
 from sqlalchemy import insert
 from sqlalchemy import select
-from sqlalchemy.engine import Engine
-
-# -----------------------------------------------------------------------------
-# Constants & Globals.
-# -----------------------------------------------------------------------------
-Columns: TypeAlias = list[Dict[str, Union[PathLike[str], str]]]
-
-DB_ENGINE: str = "engine"
-DB_METADATA: str = "metadata"
-DB_REFLECT: str = "reflect"
-
-DBC_ACTION: str = "action"
-DBC_CREATED_AT: str = "created_at"
-DBC_DOCUMENT_ID: str = "document_id"
-DBC_FUNCTION: str = "function"
-DBC_ID: str = "id"
-DBC_MODIFIED_AT: str = "modified_at"
-DBC_MODULE: str = "module"
-DBC_PACKAGE: str = "package"
-DBC_STATUS: str = "status"
-DBC_VERSION: str = "version"
-
-DBT_DOCUMENT: str = "document"
-DBT_JOURNAL: str = "journal"
-DBT_VERSION: str = "version"
-
-
-# ENGINE: Engine = sqlalchemy.create_engine(CONFIG[DCR_CFG_DATABASE_URL])
-ENGINE: Engine = sqlalchemy.create_engine("sqlite:///data/dcr.db")
-
-METADATA: MetaData = MetaData()
 
 
 # -----------------------------------------------------------------------------
@@ -70,40 +28,37 @@ def check_db_up_to_date(logger: logging.Logger) -> None:
     Args:
         logger (logging.Logger): Current logger.
     """
-    logger.debug(LOGGER_START)
+    logger.debug(cfg.LOGGER_START)
 
-    if not sqlalchemy.inspect(ENGINE).has_table(DBT_VERSION):
-        terminate_fatal(
+    if not sqlalchemy.inspect(cfg.engine).has_table(cfg.DBT_VERSION):
+        utils.terminate_fatal(
             logger,
             "The database "
-            + CONFIG[DCR_CFG_DATABASE_FILE]
+            + cfg.config[cfg.DCR_CFG_DATABASE_FILE]
             + " does not yet exist.",
         )
 
     current_version = select_version_unique(logger)
 
-    if CONFIG[DCR_CFG_DCR_VERSION] != current_version:
-        terminate_fatal(
+    if cfg.config[cfg.DCR_CFG_DCR_VERSION] != current_version:
+        utils.terminate_fatal(
             logger,
             "Current database version is "
             + current_version
             + " - but expected version is "
-            + str(CONFIG[DCR_CFG_DCR_VERSION]),
+            + str(cfg.config[cfg.DCR_CFG_DCR_VERSION]),
         )
 
-    print(
-        LOGGER_PROGRESS_UPDATE,
-        str(datetime.datetime.now()),
-        " : The current version of database "
-        + str(CONFIG[DCR_CFG_DATABASE_URL])
-        + str(CONFIG[DCR_CFG_DATABASE_FILE])
-        + " is ",
-        current_version,
-        ".",
-        sep="",
+    utils.progress_msg(
+        logger,
+        "The current version of database "
+        + str(cfg.config[cfg.DCR_CFG_DATABASE_URL])
+        + str(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+        + " is "
+        + current_version,
     )
 
-    logger.debug(LOGGER_END)
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -115,7 +70,7 @@ def create_database(logger: logging.Logger) -> None:
     Args:
         logger (logging.Logger): Current logger.
     """
-    logger.debug(LOGGER_START)
+    logger.debug(cfg.LOGGER_START)
 
     create_table_version()
 
@@ -123,24 +78,26 @@ def create_database(logger: logging.Logger) -> None:
 
     create_table_journal()
 
+    create_table_run()
+
     # Implement the database schema
-    METADATA.create_all(ENGINE)
+    cfg.meta_data.create_all(cfg.engine)
 
     insert_table(
-        logger, DBT_VERSION, [{DBC_VERSION: CONFIG[DCR_CFG_DCR_VERSION]}]
+        logger,
+        cfg.DBT_VERSION,
+        [{cfg.DBC_VERSION: cfg.config[cfg.DCR_CFG_DCR_VERSION]}],
     )
 
-    print(
-        LOGGER_PROGRESS_UPDATE,
-        str(datetime.datetime.now()),
-        " : The database "
-        + str(CONFIG[DCR_CFG_DATABASE_URL])
-        + str(CONFIG[DCR_CFG_DATABASE_FILE])
-        + " has been successfully created.",
-        sep="",
+    utils.progress_msg(
+        logger,
+        "The database "
+        + str(cfg.config[cfg.DCR_CFG_DATABASE_URL])
+        + str(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+        + " has been successfully created",
     )
 
-    logger.debug(LOGGER_END)
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -152,31 +109,29 @@ def create_or_upgrade_database(logger: logging.Logger) -> None:
     Args:
         logger (logging.Logger): Current logger.
     """
-    logger.debug(LOGGER_START)
+    logger.debug(cfg.LOGGER_START)
 
     is_new: bool = False
     is_upgrade: bool = False
 
-    if not sqlalchemy.inspect(ENGINE).has_table(DBT_VERSION):
+    if not sqlalchemy.inspect(cfg.engine).has_table(cfg.DBT_VERSION):
         create_database(logger)
         is_new = True
 
     # TBD
     # if not is_new:
-    #     is_upgrade = check_database_upgrade(LOGGER, config)
+    #     is_upgrade = check_database_upgrade(cfg.LOGGER, config)
 
     if not (is_new or is_upgrade):
-        print(
-            LOGGER_PROGRESS_UPDATE,
-            str(datetime.datetime.now()),
-            " : The database "
-            + str(CONFIG[DCR_CFG_DATABASE_URL])
-            + str(CONFIG[DCR_CFG_DATABASE_FILE])
-            + " is already up to date.",
-            sep="",
+        utils.progress_msg(
+            logger,
+            "The database "
+            + str(cfg.config[cfg.DCR_CFG_DATABASE_URL])
+            + str(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+            + " is already up to date",
         )
 
-    logger.debug(LOGGER_END)
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -185,25 +140,27 @@ def create_or_upgrade_database(logger: logging.Logger) -> None:
 def create_table_document() -> None:
     """Initialise the database table document."""
     sqlalchemy.Table(
-        DBT_DOCUMENT,
-        METADATA,
+        cfg.DBT_DOCUMENT,
+        cfg.meta_data,
         sqlalchemy.Column(
-            DBC_ID,
+            cfg.DBC_ID,
             sqlalchemy.Integer,
             autoincrement=True,
             nullable=False,
             primary_key=True,
         ),
         sqlalchemy.Column(
-            DBC_CREATED_AT, sqlalchemy.DateTime, default=datetime.datetime.now
+            cfg.DBC_CREATED_AT,
+            sqlalchemy.DateTime,
+            default=datetime.datetime.now,
         ),
         sqlalchemy.Column(
-            DBC_MODIFIED_AT,
+            cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
             onupdate=datetime.datetime.now,
         ),
         sqlalchemy.Column(
-            DBC_STATUS, sqlalchemy.String, nullable=False, unique=True
+            cfg.DBC_STATUS, sqlalchemy.String, nullable=False, unique=True
         ),
     )
 
@@ -214,29 +171,105 @@ def create_table_document() -> None:
 def create_table_journal() -> None:
     """Initialise the database table journal."""
     sqlalchemy.Table(
-        DBT_JOURNAL,
-        METADATA,
+        cfg.DBT_JOURNAL,
+        cfg.meta_data,
         sqlalchemy.Column(
-            DBC_ID,
+            cfg.DBC_ID,
             sqlalchemy.Integer,
             autoincrement=True,
             nullable=False,
             primary_key=True,
         ),
         sqlalchemy.Column(
-            DBC_CREATED_AT, sqlalchemy.DateTime, default=datetime.datetime.now
+            cfg.DBC_CREATED_AT,
+            sqlalchemy.DateTime,
+            default=datetime.datetime.now,
         ),
-        sqlalchemy.Column(DBC_ACTION, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(cfg.DBC_ACTION, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
-            DBC_DOCUMENT_ID,
+            cfg.DBC_DOCUMENT_ID,
             sqlalchemy.Integer,
-            ForeignKey(DBT_DOCUMENT + "." + DBC_ID, ondelete="CASCADE"),
+            ForeignKey(
+                cfg.DBT_DOCUMENT + "." + cfg.DBC_ID, ondelete="CASCADE"
+            ),
             nullable=False,
         ),
-        sqlalchemy.Column(DBC_FUNCTION, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(DBC_MODULE, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(DBC_PACKAGE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(cfg.DBC_FUNCTION, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(cfg.DBC_MODULE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(cfg.DBC_PACKAGE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            cfg.DBC_RUN_ID,
+            sqlalchemy.Integer,
+            ForeignKey(cfg.DBT_RUN + "." + cfg.DBC_ID, ondelete="CASCADE"),
+            nullable=False,
+        ),
     )
+
+
+# -----------------------------------------------------------------------------
+# Initialise the database table run.
+# -----------------------------------------------------------------------------
+def create_table_run() -> None:
+    """Initialise the database table run."""
+    sqlalchemy.Table(
+        cfg.DBT_RUN,
+        cfg.meta_data,
+        sqlalchemy.Column(
+            cfg.DBC_ID,
+            sqlalchemy.Integer,
+            autoincrement=True,
+            nullable=False,
+            primary_key=True,
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_CREATED_AT,
+            sqlalchemy.DateTime,
+            default=datetime.datetime.now,
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_MODIFIED_AT,
+            sqlalchemy.DateTime,
+            onupdate=datetime.datetime.now,
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_INBOX_CONFIG, sqlalchemy.String, nullable=True
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_INBOX_ACCEPTED_ABS_NAME, sqlalchemy.String, nullable=True
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_INBOX_ACCEPTED_CONFIG, sqlalchemy.String, nullable=True
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_INBOX_REJECTED_ABS_NAME, sqlalchemy.String, nullable=True
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_INBOX_REJECTED_CONFIG, sqlalchemy.String, nullable=True
+        ),
+    )
+
+
+# -----------------------------------------------------------------------------
+# Create the table run entry.
+# -----------------------------------------------------------------------------
+def create_table_run_entry(logger: logging.Logger) -> None:
+    """Create the table run entry.
+
+    If the database table is not yet included in the database schema, then the
+    database table is created and the current version number of DCR is
+    inserted.
+
+    Args:
+        logger (logging.Logger): Current logger.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    insert_table(logger, cfg.DBT_RUN, [])
+
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -253,25 +286,27 @@ def create_table_version() -> sqlalchemy.Table:
         sqlalchemy.Table: Schema of database table `version`.
     """
     return sqlalchemy.Table(
-        DBT_VERSION,
-        METADATA,
+        cfg.DBT_VERSION,
+        cfg.meta_data,
         sqlalchemy.Column(
-            DBC_ID,
+            cfg.DBC_ID,
             sqlalchemy.Integer,
             autoincrement=True,
             nullable=False,
             primary_key=True,
         ),
         sqlalchemy.Column(
-            DBC_CREATED_AT, sqlalchemy.DateTime, default=datetime.datetime.now
+            cfg.DBC_CREATED_AT,
+            sqlalchemy.DateTime,
+            default=datetime.datetime.now,
         ),
         sqlalchemy.Column(
-            DBC_MODIFIED_AT,
+            cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
             onupdate=datetime.datetime.now,
         ),
         sqlalchemy.Column(
-            DBC_VERSION, sqlalchemy.String, nullable=False, unique=True
+            cfg.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True
         ),
     )
 
@@ -279,22 +314,30 @@ def create_table_version() -> sqlalchemy.Table:
 # -----------------------------------------------------------------------------
 # Insert a new row into a database table.
 # -----------------------------------------------------------------------------
-def insert_table(logger: logging.Logger, table: str, columns: Columns) -> None:
+def insert_table(
+    logger: logging.Logger, table: str, columns: cfg.Columns
+) -> sqlalchemy.Integer:
     """Insert a new row into a database table.
 
     Args:
         logger (logging.Logger): Current logger.
         table (str): Table name.
         columns (Columns): Pairs of column name and value.
+
+    Returns:
+        sqlalchemy.Integer: The primary key of the new row.
     """
-    logger.debug(LOGGER_START)
+    logger.debug(cfg.LOGGER_START)
 
-    dbt = Table(table, METADATA, autoload_with=ENGINE)
+    dbt = Table(table, cfg.meta_data, autoload_with=cfg.engine)
 
-    with ENGINE.connect() as conn:
-        conn.execute(insert(dbt).values(columns))
+    with cfg.engine.connect() as conn:
+        result = conn.execute(insert(dbt).values(columns))
+        row = result.fetchone()
 
-    logger.debug(LOGGER_END)
+    logger.debug(cfg.LOGGER_END)
+
+    return row.id
 
 
 # -----------------------------------------------------------------------------
@@ -311,28 +354,28 @@ def select_version_unique(logger: logging.Logger) -> str:
     Returns:
         str: The version number found.
     """
-    logger.debug(LOGGER_START)
+    logger.debug(cfg.LOGGER_START)
 
-    dbt = Table(DBT_VERSION, METADATA, autoload_with=ENGINE)
+    dbt = Table(cfg.DBT_VERSION, cfg.meta_data, autoload_with=cfg.engine)
 
     current_version: str = ""
 
-    with ENGINE.connect() as conn:
+    with cfg.engine.connect() as conn:
         for row in conn.execute(select(dbt.c.version)):
             if current_version == "":
                 current_version = row.version
             else:
-                terminate_fatal(
+                utils.terminate_fatal(
                     logger,
                     "Column version in database table version not unique",
                 )
 
     if current_version == "":
-        terminate_fatal(
+        utils.terminate_fatal(
             logger, "Column version in database table version not found"
         )
 
-    logger.debug(LOGGER_END)
+    logger.debug(cfg.LOGGER_END)
 
     return current_version
 
@@ -349,8 +392,8 @@ def upgrade_database(logger: logging.Logger) -> None:
     Args:
         logger (logging.Logger): Current logger.
     """
-    logger.debug(LOGGER_START)
+    logger.debug(cfg.LOGGER_START)
 
     # TBD: Database upgrade
 
-    logger.debug(LOGGER_END)
+    logger.debug(cfg.LOGGER_END)

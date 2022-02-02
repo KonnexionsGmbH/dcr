@@ -2,15 +2,15 @@
 
 import pytest
 from app import initialise_logger
-from libs.database import DBC_VERSION
-from libs.database import DBT_VERSION
-from libs.database import ENGINE
-from libs.database import METADATA
-from libs.database import check_db_up_to_date
-from libs.database import insert_table
-from libs.database import select_version_unique
-from libs.globals import CONFIG
-from libs.globals import DCR_CFG_DCR_VERSION
+from libs.db import DBC_VERSION
+from libs.db import DBT_VERSION
+from libs.db import ENGINE
+from libs.db import METADATA
+from libs.db import check_db_up_to_date
+from libs.db import insert_table
+from libs.db import select_version_unique
+from libs.cfg import config
+from libs.cfg import DCR_CFG_DCR_VERSION
 from sqlalchemy import Table
 from sqlalchemy import delete
 
@@ -25,7 +25,7 @@ LOGGER = initialise_logger()
 # -----------------------------------------------------------------------------
 def test_check_db_up_to_date_wrong_version(fxtr_new_db_no_inbox):
     """Test: Wrong database version."""
-    CONFIG[DCR_CFG_DCR_VERSION] = "0.0.0"
+    config[DCR_CFG_DCR_VERSION] = "0.0.0"
 
     with pytest.raises(SystemExit) as expt:
         check_db_up_to_date(LOGGER)

@@ -1,12 +1,20 @@
 .DEFAULT_GOAL := dev
 
-dev_ext: isort black compileall        bandit flake8 mypy pylint pydocstyle pytest
-dev_int: isort black compileall mkdocs bandit flake8 mypy pylint pydocstyle pytest
+black: black_src black_tests
+flake8: flake8_src flake8_tests
+isort: isort_src isort_tests
+pydocstyle: pydocstyle_src pydocstyle_tests
+pylint: pylint_src pylint_tests
+
+dev_ext: isort black compileall        bandit flake8 mypy pylint_src pydocstyle pytest
+dev_int: isort black compileall mkdocs bandit flake8 mypy pylint_src pydocstyle pytest
 
 inst_dev:  pip pipenv pipenv_dev
 inst_prod: pip pipenv pipenv_prod
 
 prod: inst_prod compileall
+
+syntax: isort_src black_src compileall flake8_src mypy pylint_src pydocstyle_src
 
 ifeq ($(OS),Windows_NT)
     export MYPYPATH=src\\dcr
@@ -28,10 +36,15 @@ bandit:
 # The Uncompromising Code Formatter
 # https://github.com/psf/black
 # Configuration file: pyproject.toml
-black:
+black_src:
 	@echo "Info **********  Start: black ***************************************"
 	pipenv run black --version
-	pipenv run black src tests
+	pipenv run black src
+	@echo "Info **********  End:   black ***************************************"
+black_tests:
+	@echo "Info **********  Start: black ***************************************"
+	pipenv run black --version
+	pipenv run black tests
 	@echo "Info **********  End:   black ***************************************"
 
 # Byte-compile Python libraries
@@ -59,20 +72,29 @@ coveralls:
 # includes Radon:       https://github.com/rubik/radon
 # https://github.com/pycqa/flake8
 # Configuration file: setup.cfg
-flake8:
+flake8_src:
 	@echo "Info **********  Start: Flake8 **************************************"
 	pipenv run flake8 --version
 	pipenv run flake8 src
+	@echo "Info **********  End:   Flake8 **************************************"
+flake8_tests:
+	@echo "Info **********  Start: Flake8 **************************************"
+	pipenv run flake8 --version
 	pipenv run flake8 tests
 	@echo "Info **********  End:   Flake8 **************************************"
 
 # isort your imports, so you don't have to.
 # https://github.com/PyCQA/isort
 # Configuration file: pyproject.toml
-isort:
+isort_src:
 	@echo "Info **********  Start: isort ***************************************"
 	pipenv run isort --version
-	pipenv run isort src tests
+	pipenv run isort src
+	@echo "Info **********  End:   isort ***************************************"
+isort_tests:
+	@echo "Info **********  Start: isort ***************************************"
+	pipenv run isort --version
+	pipenv run isort tests
 	@echo "Info **********  End:   isort ***************************************"
 
 # Project documentation with Markdown.
@@ -128,16 +150,21 @@ pipenv_prod:
 # pydocstyle - docstring style checker.
 # https://github.com/PyCQA/pydocstyle
 # Configuration file: pyproject.toml
-pydocstyle:
+pydocstyle_src:
 	@echo "Info **********  Start: pydocstyle **********************************"
 	pipenv run pydocstyle --version
-	pipenv run pydocstyle --count src tests
+	pipenv run pydocstyle --count src
+	@echo "Info **********  End:   pydocstyle **********************************"
+pydocstyle_tests:
+	@echo "Info **********  Start: pydocstyle **********************************"
+	pipenv run pydocstyle --version
+	pipenv run pydocstyle --count tests
 	@echo "Info **********  End:   pydocstyle **********************************"
 
 # Pylint is a tool that checks for errors in Python code.
 # https://github.com/PyCQA/pylint/
 # Configuration file: pyproject.toml
-pylint:
+pylint_src:
 	@echo "Info **********  Start: Pylint **************************************"
 	pipenv run pylint --version
 	pipenv run pylint src

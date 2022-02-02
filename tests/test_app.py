@@ -5,8 +5,8 @@ from app import get_args
 from app import initialise_logger
 from app import main
 from conftest import DCR_ARGV_0
-from libs.globals import ACTION_ALL_COMPLETE
-from libs.globals import ACTION_PROCESS_INBOX
+from libs.cfg import ACTION_ALL_COMPLETE
+from libs.cfg import ACTION_PROCESS_INBOX
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

@@ -37,6 +37,6 @@ theme:
   logo: img/Logo.png
   name: material
   palette:
-    primary: light-blue
+    primary: blue
     accent: red
 

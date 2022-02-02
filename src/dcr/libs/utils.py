@@ -1,10 +1,31 @@
 """Helper functions."""
-
+import datetime
 import logging
 import sys
 
-from libs.globals import LOGGER_FATAL_HEAD
-from libs.globals import LOGGER_FATAL_TAIL
+from libs import cfg
+
+
+# -----------------------------------------------------------------------------
+# Terminate the application immediately..
+# -----------------------------------------------------------------------------
+def progress_msg(logger: logging.Logger, msg: str) -> None:
+    """Create a progress message.
+
+    Args:
+        logger (logging.Logger): Current logger.
+        msg (str): Progress message.
+    """
+    final_msg: str = (
+        cfg.LOGGER_PROGRESS_UPDATE
+        + str(datetime.datetime.now())
+        + " : "
+        + msg
+        + "."
+    )
+
+    print(final_msg)
+    logger.info(final_msg)
 
 
 # -----------------------------------------------------------------------------
@@ -18,8 +39,8 @@ def terminate_fatal(logger: logging.Logger, error_msg: str) -> None:
         error_msg (str): Error message.
     """
     print("")
-    print(LOGGER_FATAL_HEAD)
-    print(LOGGER_FATAL_HEAD, error_msg, LOGGER_FATAL_TAIL, sep="")
-    print(LOGGER_FATAL_HEAD)
-    logger.critical(LOGGER_FATAL_HEAD + error_msg + LOGGER_FATAL_TAIL)
+    print(cfg.LOGGER_FATAL_HEAD)
+    print(cfg.LOGGER_FATAL_HEAD, error_msg, cfg.LOGGER_FATAL_TAIL, sep="")
+    print(cfg.LOGGER_FATAL_HEAD)
+    logger.critical(cfg.LOGGER_FATAL_HEAD + error_msg + cfg.LOGGER_FATAL_TAIL)
     sys.exit(1)

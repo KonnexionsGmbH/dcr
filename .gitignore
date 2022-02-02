@@ -4,6 +4,7 @@
 /.idea/
 /.vs/
 /.vscode/
+/True
 /coverage.xml
 /data/
 /docs/*.pdf
