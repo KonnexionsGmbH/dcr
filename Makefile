@@ -3,11 +3,11 @@
 ##                                                                            .
 ## ============================================================================
 ## DCR - Document Content Recognition - make Documentation.
-##       ----------------------------------------------------------------------
+##       ---------------------------------------------------------------
 ##       The purpose of this Makefile is to support the whole software
 ##       development process for DCR. it contains also the necessary
 ##       tools for the CI activities.
-##       ----------------------------------------------------------------------
+##       ---------------------------------------------------------------
 ##       The available make commands are:
 ## ----------------------------------------------------------------------------
 ## help:               Show this help.
