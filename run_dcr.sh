@@ -76,7 +76,7 @@ case "${DCR_CHOICE_ACTION}" in
     fi
     ;;
   all|d_c_u|p_i)
-    if ! ( pipenv run python src/dcr/app.py "${DCR_CHOICE_ACTION}" ); then
+    if ! ( pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}" ); then
         exit 255
     fi
     ;;

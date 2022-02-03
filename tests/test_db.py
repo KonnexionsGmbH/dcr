@@ -2,7 +2,6 @@
 """Testing Module database."""
 
 import pytest
-from app import initialise_logger
 from libs.cfg import DBC_VERSION
 from libs.cfg import DBT_VERSION
 from libs.cfg import DCR_CFG_DCR_VERSION
@@ -14,6 +13,8 @@ from libs.db import insert_table
 from libs.db import select_version_version_unique
 from sqlalchemy import Table
 from sqlalchemy import delete
+
+from dcr import initialise_logger
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

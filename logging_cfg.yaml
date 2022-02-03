@@ -19,7 +19,7 @@ handlers:
     formatter: extended
 
 loggers:
-  app.py:
+  dcr.py:
     handlers: [ console, file_handler ]
 root:
   handlers: [ file_handler ]

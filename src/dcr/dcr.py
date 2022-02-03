@@ -159,7 +159,7 @@ def main(argv: List[str]) -> None:
 
     logger.debug(cfg.LOGGER_START)
 
-    print("Start app.py")
+    print("Start dcr.py")
 
     locale.setlocale(locale.LC_ALL, cfg.LOCALE)
 
@@ -187,7 +187,7 @@ def main(argv: List[str]) -> None:
     if args[cfg.ACTION_PROCESS_INBOX]:
         terminate_run_entry(logger)
 
-    print("End   app.py")
+    print("End   dcr.py")
 
     logger.debug(cfg.LOGGER_END)
 

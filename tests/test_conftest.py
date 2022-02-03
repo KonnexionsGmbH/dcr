@@ -3,7 +3,7 @@
 import os
 from pathlib import Path
 
-from app import initialise_logger
+from dcr import initialise_logger
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

@@ -11,19 +11,20 @@ import os
 import shutil
 
 import pytest
-from app import get_config
-from app import initialise_logger
-from app import main
 from libs.cfg import ACTION_DB_CREATE_OR_UPGRADE
 from libs.cfg import DCR_CFG_DATABASE_FILE
 from libs.cfg import DCR_CFG_DIRECTORY_INBOX
 from libs.cfg import config
 from libs.cfg import meta_data
 
+from dcr import get_config
+from dcr import initialise_logger
+from dcr import main
+
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-DCR_ARGV_0 = "src/dcr/app.py"
+DCR_ARGV_0 = "src/dcr/dcr.py"
 
 LOGGER = initialise_logger()
 
