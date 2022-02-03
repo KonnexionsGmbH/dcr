@@ -36,7 +36,7 @@ jobs:
       - name: Install pipenv
         run: make pipenv
       - name: Install dcr dependencies
-        run: make pipenv_dev
+        run: make pipenv-dev
       - name: Run isort for sorting your imports
         run: make isort
       - name: Run Black for formatting your code
