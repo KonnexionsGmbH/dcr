@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 """Test Configuration and Fixtures.
 
 Setup test configurations and store fixtures.
@@ -13,11 +14,11 @@ import pytest
 from app import get_config
 from app import initialise_logger
 from app import main
-from libs.db import METADATA
 from libs.cfg import ACTION_DB_CREATE_OR_UPGRADE
-from libs.cfg import config
 from libs.cfg import DCR_CFG_DATABASE_FILE
 from libs.cfg import DCR_CFG_DIRECTORY_INBOX
+from libs.cfg import config
+from libs.cfg import meta_data
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -41,7 +42,7 @@ def fxtr_mkdir():
         Fixture: Create a new directory.
 
         Args:
-            directory_name (str): Directory name including path.
+            directory_name (str): The directory name including path.
         """
         os.mkdir(directory_name)
 
@@ -60,7 +61,7 @@ def fxtr_mkdir_opt(fxtr_mkdir):
         Fixture: Create a new directory if not existing.
 
         Args:
-            directory_name (str): Directory name including path.
+            directory_name (str): The directory name including path.
         """
         if not os.path.isdir(directory_name):
             fxtr_mkdir(directory_name)
@@ -84,7 +85,7 @@ def fxtr_new_db_empty_inbox(
 
     fxtr_mkdir(config[DCR_CFG_DIRECTORY_INBOX])
 
-    METADATA.clear()
+    meta_data.clear()
 
     main([DCR_ARGV_0, ACTION_DB_CREATE_OR_UPGRADE])
 
@@ -107,7 +108,7 @@ def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
 
     fxtr_rmdir_opt(config[DCR_CFG_DIRECTORY_INBOX])
 
-    METADATA.clear()
+    meta_data.clear()
 
     main([DCR_ARGV_0, ACTION_DB_CREATE_OR_UPGRADE])
 
@@ -125,6 +126,8 @@ def fxtr_no_db(fxtr_remove_opt):
     get_config(LOGGER)
 
     fxtr_remove_opt(config[DCR_CFG_DATABASE_FILE])
+
+    meta_data.clear()
 
     yield
 
@@ -182,7 +185,7 @@ def fxtr_rmdir():
         Fixture: Delete a directory.
 
         Args:
-            directory_name (str): Directory name including path.
+            directory_name (str): The directory name including path.
         """
         shutil.rmtree(directory_name)
 
@@ -201,7 +204,7 @@ def fxtr_rmdir_opt(fxtr_rmdir):
         Fixture: Delete a directory if existing.
 
         Args:
-            directory_name (str): Directory name including path.
+            directory_name (str): The directory name including path.
         """
         if os.path.isdir(directory_name):
             fxtr_rmdir(directory_name)

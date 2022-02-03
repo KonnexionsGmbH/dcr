@@ -10,7 +10,12 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  development_standards:
+  standards:
+    # --------------------------------------------------------------------------
+    # Perform all development-specific tools, including formatting, static code
+    # analysis, style enforcement and documentation creation. Changes in the code
+    # or in the documentation are also replicated in the repository.
+    # --------------------------------------------------------------------------
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development Standards
     runs-on: ${{ matrix.os }}
     strategy:
@@ -51,34 +56,10 @@ jobs:
       - name: Publish the code coverage to coveralls.io
         run: make coveralls
 
-  production:
-    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production
-    runs-on: ${{ matrix.os }}
-    #   env:
-    strategy:
-      max-parallel: 3
-      matrix:
-        os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
-        python-version: ["3.10"]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1  # no history, just HEAD
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install pip
-        run: make pip
-      - name: Install pipenv
-        run: make pipenv
-      - name: Install dcr dependencies
-        run: make pipenv_prod
-      - name: Compile the Python code
-        run: make compileall
-      - name: Run pytest for writing better program
-        run: make pytest_prod
-
-  test_framework:
+  development:
+    # --------------------------------------------------------------------------
+    # Install the development environment and run all tests based on pytest.
+    # --------------------------------------------------------------------------
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Test Framework
     runs-on: ${{ matrix.os }}
     strategy:
@@ -99,8 +80,38 @@ jobs:
       - name: Install pipenv
         run: make pipenv
       - name: Install dcr dependencies
-        run: make pipenv_dev
+        run: make pipenv-dev
       - name: Compile the Python code
         run: make compileall
       - name: Run pytest for writing better program
         run: make pytest
+
+  production:
+    # --------------------------------------------------------------------------
+    # Install the productive environment and run all tests based on pytest.
+    # --------------------------------------------------------------------------
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production
+    runs-on: ${{ matrix.os }}
+    #   env:
+    strategy:
+      max-parallel: 3
+      matrix:
+        os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
+        python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1  # no history, just HEAD
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pip
+        run: make pip
+      - name: Install pipenv
+        run: make pipenv
+      - name: Install dcr dependencies
+        run: make pipenv-prod
+      - name: Compile the Python code
+        run: make compileall
+      - name: Run pytest for writing better program
+        run: make pytest-ci

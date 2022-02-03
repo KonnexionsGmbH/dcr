@@ -146,9 +146,6 @@ def initialise_logger() -> logging.Logger:
     return logger
 
 
-# -----------------------------------------------------------------------------
-# Entry point.
-# -----------------------------------------------------------------------------
 def main(argv: List[str]) -> None:
     """Entry point.
 
@@ -181,10 +178,42 @@ def main(argv: List[str]) -> None:
     db.check_db_up_to_date(logger)
 
     if args[cfg.ACTION_PROCESS_INBOX]:
+        db.create_table_run_entry(logger)
+
+    if args[cfg.ACTION_PROCESS_INBOX]:
         # Processing the inbox directory.
         inbox.process_inbox(logger)
 
+    if args[cfg.ACTION_PROCESS_INBOX]:
+        terminate_run_entry(logger)
+
     print("End   app.py")
+
+    logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Terminate the current entry in the database table run.
+# -----------------------------------------------------------------------------
+def terminate_run_entry(logger: logging.Logger) -> None:
+    """Terminate the current entry in the database table run.
+
+    Returns:
+        logging.Logger: Root logger.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    db.update_table_id(
+        logger,
+        cfg.DBT_RUN,
+        cfg.run_id,
+        {
+            cfg.DBC_STATUS: cfg.DBC_STATUS_END,
+            cfg.DBC_TOTAL_ACCEPTED: cfg.total_accepted,
+            cfg.DBC_TOTAL_NEW: cfg.total_new,
+            cfg.DBC_TOTAL_REJECTED: cfg.total_rejected,
+        },
+    )
 
     logger.debug(cfg.LOGGER_END)
 

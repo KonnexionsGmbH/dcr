@@ -1,16 +1,17 @@
+# pylint: disable=unused-argument
 """Testing Module database."""
 
 import pytest
 from app import initialise_logger
-from libs.db import DBC_VERSION
-from libs.db import DBT_VERSION
-from libs.db import ENGINE
-from libs.db import METADATA
+from libs.cfg import DBC_VERSION
+from libs.cfg import DBT_VERSION
+from libs.cfg import DCR_CFG_DCR_VERSION
+from libs.cfg import config
+from libs.cfg import engine
+from libs.cfg import meta_data
 from libs.db import check_db_up_to_date
 from libs.db import insert_table
-from libs.db import select_version_unique
-from libs.cfg import config
-from libs.cfg import DCR_CFG_DCR_VERSION
+from libs.db import select_version_version_unique
 from sqlalchemy import Table
 from sqlalchemy import delete
 
@@ -35,16 +36,16 @@ def test_check_db_up_to_date_wrong_version(fxtr_new_db_no_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test Function - select_version_unique().
+# Test Function - select_version_version_unique().
 # -----------------------------------------------------------------------------
 def test_select_version_unique_not_found(fxtr_new_db_no_inbox):
     """Test: Column version not found."""
-    with ENGINE.begin() as conn:
-        version = Table(DBT_VERSION, METADATA, autoload_with=ENGINE)
+    with engine.begin() as conn:
+        version = Table(DBT_VERSION, meta_data, autoload_with=engine)
         conn.execute(delete(version))
 
     with pytest.raises(SystemExit) as expt:
-        select_version_unique(LOGGER)
+        select_version_version_unique(LOGGER)
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
@@ -55,7 +56,7 @@ def test_select_version_unique_not_unique(fxtr_new_db_no_inbox):
     insert_table(LOGGER, DBT_VERSION, [{DBC_VERSION: "0.0.0"}])
 
     with pytest.raises(SystemExit) as expt:
-        select_version_unique(LOGGER)
+        select_version_version_unique(LOGGER)
 
     assert expt.type == SystemExit
     assert expt.value.code == 1

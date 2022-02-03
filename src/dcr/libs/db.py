@@ -6,8 +6,8 @@ Returns:
     [type]: None.
 """
 
-import datetime
 import logging.config
+from typing import Dict
 
 import sqlalchemy
 import sqlalchemy.orm
@@ -15,8 +15,10 @@ from libs import cfg
 from libs import utils
 from sqlalchemy import ForeignKey
 from sqlalchemy import Table
+from sqlalchemy import func
 from sqlalchemy import insert
 from sqlalchemy import select
+from sqlalchemy import update
 
 
 # -----------------------------------------------------------------------------
@@ -38,7 +40,7 @@ def check_db_up_to_date(logger: logging.Logger) -> None:
             + " does not yet exist.",
         )
 
-    current_version = select_version_unique(logger)
+    current_version = select_version_version_unique(logger)
 
     if cfg.config[cfg.DCR_CFG_DCR_VERSION] != current_version:
         utils.terminate_fatal(
@@ -72,13 +74,15 @@ def create_database(logger: logging.Logger) -> None:
     """
     logger.debug(cfg.LOGGER_START)
 
-    create_table_version()
-
     create_table_document()
 
-    create_table_journal()
-
     create_table_run()
+
+    create_table_version()
+
+    # FK: document
+    # FK: run
+    create_table_journal()
 
     # Implement the database schema
     cfg.meta_data.create_all(cfg.engine)
@@ -152,17 +156,19 @@ def create_table_document() -> None:
         sqlalchemy.Column(
             cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
-            default=datetime.datetime.now,
+            server_default=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
-            onupdate=datetime.datetime.now,
+            onupdate=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_STATUS, sqlalchemy.String, nullable=False, unique=True
         ),
     )
+
+    cfg.meta_data.create_all(cfg.engine)
 
 
 # -----------------------------------------------------------------------------
@@ -183,7 +189,7 @@ def create_table_journal() -> None:
         sqlalchemy.Column(
             cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
-            default=datetime.datetime.now,
+            server_default=func.current_timestamp(),
         ),
         sqlalchemy.Column(cfg.DBC_ACTION, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
@@ -205,6 +211,8 @@ def create_table_journal() -> None:
         ),
     )
 
+    cfg.meta_data.create_all(cfg.engine)
+
 
 # -----------------------------------------------------------------------------
 # Initialise the database table run.
@@ -224,12 +232,12 @@ def create_table_run() -> None:
         sqlalchemy.Column(
             cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
-            default=datetime.datetime.now,
+            server_default=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
-            onupdate=datetime.datetime.now,
+            onupdate=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True
@@ -249,7 +257,25 @@ def create_table_run() -> None:
         sqlalchemy.Column(
             cfg.DBC_INBOX_REJECTED_CONFIG, sqlalchemy.String, nullable=True
         ),
+        sqlalchemy.Column(cfg.DBC_STATUS, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            cfg.DBC_TOTAL_ACCEPTED,
+            sqlalchemy.Integer,
+            nullable=True,
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_TOTAL_NEW,
+            sqlalchemy.Integer,
+            nullable=True,
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_TOTAL_REJECTED,
+            sqlalchemy.Integer,
+            nullable=True,
+        ),
     )
+
+    cfg.meta_data.create_all(cfg.engine)
 
 
 # -----------------------------------------------------------------------------
@@ -267,7 +293,9 @@ def create_table_run_entry(logger: logging.Logger) -> None:
     """
     logger.debug(cfg.LOGGER_START)
 
-    insert_table(logger, cfg.DBT_RUN, [])
+    insert_table(logger, cfg.DBT_RUN, [{cfg.DBC_STATUS: cfg.DBC_STATUS_START}])
+
+    cfg.run_id = select_table_id_last(logger, cfg.DBT_RUN)
 
     logger.debug(cfg.LOGGER_END)
 
@@ -285,7 +313,7 @@ def create_table_version() -> sqlalchemy.Table:
     Returns:
         sqlalchemy.Table: Schema of database table `version`.
     """
-    return sqlalchemy.Table(
+    dbt = sqlalchemy.Table(
         cfg.DBT_VERSION,
         cfg.meta_data,
         sqlalchemy.Column(
@@ -298,52 +326,80 @@ def create_table_version() -> sqlalchemy.Table:
         sqlalchemy.Column(
             cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
-            default=datetime.datetime.now,
+            server_default=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
-            onupdate=datetime.datetime.now,
+            onupdate=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True
         ),
     )
 
+    cfg.meta_data.create_all(cfg.engine)
+
+    return dbt
+
 
 # -----------------------------------------------------------------------------
 # Insert a new row into a database table.
 # -----------------------------------------------------------------------------
 def insert_table(
-    logger: logging.Logger, table: str, columns: cfg.Columns
-) -> sqlalchemy.Integer:
+    logger: logging.Logger, table_name: str, columns: cfg.Columns
+) -> None:
     """Insert a new row into a database table.
 
     Args:
         logger (logging.Logger): Current logger.
-        table (str): Table name.
+        table_name (str): Table name.
         columns (Columns): Pairs of column name and value.
-
-    Returns:
-        sqlalchemy.Integer: The primary key of the new row.
     """
     logger.debug(cfg.LOGGER_START)
 
-    dbt = Table(table, cfg.meta_data, autoload_with=cfg.engine)
+    dbt = Table(table_name, cfg.meta_data, autoload_with=cfg.engine)
 
     with cfg.engine.connect() as conn:
-        result = conn.execute(insert(dbt).values(columns))
+        conn.execute(insert(dbt).values(columns))
+
+    logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Get the last id from a database table.
+# -----------------------------------------------------------------------------
+def select_table_id_last(
+    logger: logging.Logger, table_name: str
+) -> sqlalchemy.Integer:
+    """Get the last id from a database table.
+
+    Get the version number from the database table `version`.
+
+    Args:
+        logger (logging.Logger): Current logger.
+        table_name (str): Database table name.
+
+    Returns:
+        sqlalchemy.Integer: The last id found.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    dbt = Table(table_name, cfg.meta_data, autoload_with=cfg.engine)
+
+    with cfg.engine.connect() as conn:
+        result = conn.execute(select(func.max(dbt.c.id)))
         row = result.fetchone()
 
     logger.debug(cfg.LOGGER_END)
 
-    return row.id
+    return row[0]
 
 
 # -----------------------------------------------------------------------------
 # Get the version number from the database table version.
 # -----------------------------------------------------------------------------
-def select_version_unique(logger: logging.Logger) -> str:
+def select_version_version_unique(logger: logging.Logger) -> str:
     """Get the version number.
 
     Get the version number from the database table `version`.
@@ -378,6 +434,33 @@ def select_version_unique(logger: logging.Logger) -> str:
     logger.debug(cfg.LOGGER_END)
 
     return current_version
+
+
+# -----------------------------------------------------------------------------
+# Update a database row based on its id column.
+# -----------------------------------------------------------------------------
+def update_table_id(
+    logger: logging.Logger,
+    table_name: str,
+    id_where: sqlalchemy.Integer,
+    columns: Dict[str, str],
+) -> None:
+    """Update a database row based on its id column.
+
+    Args:
+        logger (logging.Logger): Current logger.
+        table_name (str): Table name.
+        id_where (sqlalchemy.Integer): Content of column id.
+        columns (Columns): Pairs of column name and value.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    dbt = Table(table_name, cfg.meta_data, autoload_with=cfg.engine)
+
+    with cfg.engine.connect() as conn:
+        conn.execute(update(dbt).where(dbt.c.id == id_where).values(columns))
+
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------

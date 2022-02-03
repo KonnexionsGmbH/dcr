@@ -13,6 +13,7 @@ import os
 import pathlib
 
 from libs import cfg
+from libs import db
 from libs import utils
 
 
@@ -47,9 +48,23 @@ def check_and_create_inboxes(logger: logging.Logger) -> None:
     cfg.inbox_rejected = cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
     create_directory(logger, "the rejected documents", cfg.inbox_rejected)
 
-    print("inbox   =", str(pathlib.Path(cfg.inbox).absolute()))
-    print("accepted=", str(pathlib.Path(cfg.inbox_accepted).absolute()))
-    print("rejected=", str(pathlib.Path(cfg.inbox_rejected).absolute()))
+    db.update_table_id(
+        logger,
+        cfg.DBT_RUN,
+        cfg.run_id,
+        {
+            cfg.DBC_INBOX_ABS_NAME: str(pathlib.Path(cfg.inbox).absolute()),
+            cfg.DBC_INBOX_CONFIG: cfg.inbox,
+            cfg.DBC_INBOX_ACCEPTED_ABS_NAME: str(
+                pathlib.Path(cfg.inbox_accepted).absolute()
+            ),
+            cfg.DBC_INBOX_ACCEPTED_CONFIG: cfg.inbox_accepted,
+            cfg.DBC_INBOX_REJECTED_ABS_NAME: str(
+                pathlib.Path(cfg.inbox_rejected).absolute()
+            ),
+            cfg.DBC_INBOX_REJECTED_CONFIG: cfg.inbox_rejected,
+        },
+    )
 
     logger.debug(cfg.LOGGER_END)
 

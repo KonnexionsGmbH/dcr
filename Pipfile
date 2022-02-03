@@ -7,6 +7,10 @@ name = "pypi"
 pyinstaller = "*"
 PyYAML = "*"
 SQLAlchemy = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-deadfixtures = "*"
+pytest-random-order = "*"
 
 [dev-packages]
 bandit = "*"
