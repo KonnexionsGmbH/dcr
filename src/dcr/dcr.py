@@ -30,21 +30,20 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
     The valid arguments are:
 
         all   - Run the complete processing of all new documents.
-        d_c_u - Create or upgrade the database.
+        db_c  - Create the database.
         p_i   - Process input folder.
 
     With the option all, the following process steps are executed
     in this order:
 
-        1. d_c_u
-        2. p_i
+        1. p_i
 
     Args:
         logger (logging.Logger): Current logger.
         argv (List[str]): Command line arguments.
 
     Returns:
-        dict[str, bool]: The command line arguments found.
+        dict[str, bool]: The processing steps based on CLI arguments.
     """
     logger.debug(cfg.LOGGER_START)
 
@@ -59,20 +58,17 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
         )
 
     args = {
-        cfg.ACTION_DB_CREATE_OR_UPGRADE: False,
+        cfg.ACTION_CREATE_DB: False,
         cfg.ACTION_PROCESS_INBOX: False,
-        cfg.ACTION_PROCESS_INBOX_OCR: False,
     }
 
     for i in range(1, num):
         arg = argv[i].lower()
         if arg == cfg.ACTION_ALL_COMPLETE:
-            for key in args:
-                args[key] = True
+            args[cfg.ACTION_PROCESS_INBOX] = True
         elif arg in (
-            cfg.ACTION_DB_CREATE_OR_UPGRADE,
+            cfg.ACTION_CREATE_DB,
             cfg.ACTION_PROCESS_INBOX,
-            cfg.ACTION_PROCESS_INBOX_OCR,
         ):
             args[arg] = True
         else:
@@ -146,6 +142,9 @@ def initialise_logger() -> logging.Logger:
     return logger
 
 
+# -----------------------------------------------------------------------------
+# Initialising the logging functionality.
+# -----------------------------------------------------------------------------
 def main(argv: List[str]) -> None:
     """Entry point.
 
@@ -163,35 +162,57 @@ def main(argv: List[str]) -> None:
 
     locale.setlocale(locale.LC_ALL, cfg.LOCALE)
 
-    # Load the command line arguments into the memory (pdf ...`)
+    # Load the command line arguments into the memory.
     args = get_args(logger, argv)
 
-    # Load the configuration parameters into the memory (cfg.CONFIG params
-    # `file.configuration.name ...`)
+    # Load the configuration parameters into the memory.
     get_config(logger)
 
-    db.connect_database(logger)
-
-    if args[cfg.ACTION_DB_CREATE_OR_UPGRADE]:
-        # Create or upgrade the database.
-        db.create_or_upgrade_database(logger)
-
-    # Setting up the database.
-    db.check_db_up_to_date(logger)
-
-    if args[cfg.ACTION_PROCESS_INBOX]:
-        db.create_table_run_entry(logger)
-
-    if args[cfg.ACTION_PROCESS_INBOX]:
-        # Processing the inbox directory.
-        inbox.process_inbox(logger)
-
-    if args[cfg.ACTION_PROCESS_INBOX]:
-        terminate_run_entry(logger)
+    if args[cfg.ACTION_CREATE_DB]:
+        # Create the database tables.
+        utils.progress_msg(logger, "Start: Create the database tables ...")
+        db.create_db_tables(logger)
+        # Create the database triggers.
+        utils.progress_msg(logger, "Start: Create the database triggers ...")
+        db.create_db_triggers(logger)
+    else:
+        # Process the documents.
+        utils.progress_msg(logger, "Start: Process the documents ...")
+        process_documents(logger, args)
 
     print("End   dcr.py")
 
     logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Process the documents.
+# -----------------------------------------------------------------------------
+def process_documents(logger: logging.Logger, args: dict[str, bool]) -> None:
+    """Process the documents.
+
+    Args:
+        logger (logging.Logger): Current logger.
+        args (dict[str, bool]): The processing steps based on CLI arguments.
+    """
+    # Connect to the database.
+    db.connect_db(logger)
+
+    # Check the version of the database.
+    db.check_db_up_to_date(logger)
+
+    # Creation of the run entry in the database.
+    db.create_dbt_run_row(logger)
+
+    # Process the documents in the inbox file directory.
+    if args[cfg.ACTION_PROCESS_INBOX]:
+        inbox.process_inbox(logger)
+
+    # Finalise the run entry in the database.
+    terminate_run_entry(logger)
+
+    # Disconnect from the database.
+    db.disconnect_db(logger)
 
 
 # -----------------------------------------------------------------------------
@@ -205,7 +226,7 @@ def terminate_run_entry(logger: logging.Logger) -> None:
     """
     logger.debug(cfg.LOGGER_START)
 
-    db.update_table_id(
+    db.update_dbt_id(
         logger,
         cfg.DBT_RUN,
         cfg.run_id,

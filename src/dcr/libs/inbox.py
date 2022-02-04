@@ -48,7 +48,7 @@ def check_and_create_inboxes(logger: logging.Logger) -> None:
     cfg.inbox_rejected = cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
     create_directory(logger, "the rejected documents", cfg.inbox_rejected)
 
-    db.update_table_id(
+    db.update_dbt_id(
         logger,
         cfg.DBT_RUN,
         cfg.run_id,

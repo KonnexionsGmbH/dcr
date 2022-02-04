@@ -13,9 +13,8 @@ from sqlalchemy.engine import Engine
 # Global Constants.
 # -----------------------------------------------------------------------------
 ACTION_ALL_COMPLETE: str = "all"
-ACTION_DB_CREATE_OR_UPGRADE: str = "d_c_u"
+ACTION_CREATE_DB: str = "db_c"
 ACTION_PROCESS_INBOX: str = "p_i"
-ACTION_PROCESS_INBOX_OCR: str = "p_i_o"
 
 DBC_ACTION: str = "action"
 DBC_CREATED_AT: str = "created_at"
