@@ -170,6 +170,8 @@ def main(argv: List[str]) -> None:
     # `file.configuration.name ...`)
     get_config(logger)
 
+    db.connect_database(logger)
+
     if args[cfg.ACTION_DB_CREATE_OR_UPGRADE]:
         # Create or upgrade the database.
         db.create_or_upgrade_database(logger)

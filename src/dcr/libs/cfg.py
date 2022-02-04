@@ -17,10 +17,6 @@ ACTION_DB_CREATE_OR_UPGRADE: str = "d_c_u"
 ACTION_PROCESS_INBOX: str = "p_i"
 ACTION_PROCESS_INBOX_OCR: str = "p_i_o"
 
-DB_ENGINE: str = "engine"
-DB_METADATA: str = "metadata"
-DB_REFLECT: str = "reflect"
-
 DBC_ACTION: str = "action"
 DBC_CREATED_AT: str = "created_at"
 DBC_DOCUMENT_ID: str = "document_id"
@@ -80,14 +76,13 @@ Columns: TypeAlias = list[Dict[str, Union[PathLike[str], str]]]
 # -----------------------------------------------------------------------------
 config: Dict[str, PathLike[str] | str] = {}
 
-# engine: Engine = sqlalchemy.create_engine(CONFIG[DCR_CFG_DATABASE_URL])
-engine: Engine = sqlalchemy.create_engine("sqlite:///data/dcr.db")
+engine: Engine
 
 inbox: PathLike[str] | str
 inbox_accepted: PathLike[str] | str
 inbox_rejected: PathLike[str] | str
 
-meta_data: MetaData = MetaData()
+metadata: MetaData
 
 run_id: sqlalchemy.Integer
 

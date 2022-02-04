@@ -17,10 +17,6 @@ ACTION_DB_CREATE_OR_UPGRADE: str
 ACTION_PROCESS_INBOX: str
 ACTION_PROCESS_INBOX_OCR: str
 
-DB_ENGINE: str
-DB_METADATA: str
-DB_REFLECT: str
-
 DBC_ACTION: str
 DBC_CREATED_AT: str
 DBC_DOCUMENT_ID: str
@@ -86,7 +82,7 @@ inbox: PathLike[str] | str
 inbox_accepted: PathLike[str] | str
 inbox_rejected: PathLike[str] | str
 
-meta_data: MetaData
+metadata: MetaData
 
 run_id: sqlalchemy.Integer
 

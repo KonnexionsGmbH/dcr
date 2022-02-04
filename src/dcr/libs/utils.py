@@ -25,7 +25,7 @@ def progress_msg(logger: logging.Logger, msg: str) -> None:
     )
 
     print(final_msg)
-    logger.info(final_msg)
+    logger.debug(final_msg)
 
 
 # -----------------------------------------------------------------------------
