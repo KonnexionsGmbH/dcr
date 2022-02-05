@@ -32,7 +32,7 @@ ifeq ($(OS),Windows_NT)
     export PYTHONPATH=src\\dcr
 else
     export MYPYPATH=src/dcr
-    export PYTHONPATH=src/dcr
+    export PYTHONPATH=src/dcr:src/dcr
 endif
 
 # Bandit is a tool designed to find common security issues in Python code.
@@ -166,6 +166,7 @@ pylint:             ## Lint the code with Pylint.
 # Configuration file: pyproject.toml
 pytest:             ## Run all tests with pytest.
 	@echo "Info **********  Start: pytest **************************************"
+	@echo "${PYTHONPATH}"
 	pipenv run pytest --version
 	pipenv run pytest --dead-fixtures tests
 	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order tests

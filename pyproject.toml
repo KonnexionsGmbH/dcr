@@ -48,10 +48,6 @@ warn_unused_ignores = true
 
 [tool.pytest.ini_options]
 console_output_style = "count"
-log_auto_indent = true
-log_cli = true
-log_cli_level = "INFO"
-log_file = true
-log_file_level = "DEBUG"
 markers = ["issue"]
+pythonpath = "src"
 testpaths = "tests"

@@ -11,11 +11,11 @@ import os
 import shutil
 
 import pytest
-from libs.cfg import ACTION_DB_CREATE_OR_UPGRADE
+from libs.cfg import ACTION_CREATE_DB
 from libs.cfg import DCR_CFG_DATABASE_FILE
 from libs.cfg import DCR_CFG_DIRECTORY_INBOX
 from libs.cfg import config
-from libs.cfg import meta_data
+from libs.cfg import metadata
 
 from dcr import get_config
 from dcr import initialise_logger
@@ -86,9 +86,9 @@ def fxtr_new_db_empty_inbox(
 
     fxtr_mkdir(config[DCR_CFG_DIRECTORY_INBOX])
 
-    meta_data.clear()
+    metadata.clear()
 
-    main([DCR_ARGV_0, ACTION_DB_CREATE_OR_UPGRADE])
+    main([DCR_ARGV_0, ACTION_CREATE_DB])
 
     yield
 
@@ -109,9 +109,9 @@ def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
 
     fxtr_rmdir_opt(config[DCR_CFG_DIRECTORY_INBOX])
 
-    meta_data.clear()
+    metadata.clear()
 
-    main([DCR_ARGV_0, ACTION_DB_CREATE_OR_UPGRADE])
+    main([DCR_ARGV_0, ACTION_CREATE_DB])
 
     yield
 
@@ -128,7 +128,7 @@ def fxtr_no_db(fxtr_remove_opt):
 
     fxtr_remove_opt(config[DCR_CFG_DATABASE_FILE])
 
-    meta_data.clear()
+    metadata.clear()
 
     yield
 

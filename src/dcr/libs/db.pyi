@@ -27,6 +27,7 @@ def insert_dbt_row(
 def select_dbt_id_last(
     logger: logging.Logger, table_name: str
 ) -> sqlalchemy.Integer: ...
+def select_version_version_unique(logger: logging.Logger) -> str: ...
 def update_dbt_id(
     logger: logging.Logger,
     table_name: str,
