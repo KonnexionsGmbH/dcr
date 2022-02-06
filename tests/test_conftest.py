@@ -3,6 +3,8 @@
 import os
 from pathlib import Path
 
+import touch
+
 from dcr import initialise_logger
 
 # -----------------------------------------------------------------------------
@@ -45,7 +47,7 @@ def test_file_ops(
 ):
     """Test: Pure functionality."""
     directory_name: os.PathLike = Path("tmp")
-    file_name: os.PathLike = directory_name / "test_file"
+    file_name: str = os.path.join(directory_name, "test_file")
 
     # Create empty file directory.
     fxtr_rmdir_opt(directory_name)
@@ -53,9 +55,9 @@ def test_file_ops(
     # The file does not yet exist.
     fxtr_remove_opt(file_name)
     # The file will be created.
-    file_name.touch()
+    touch.touch(file_name)
     fxtr_remove(file_name)
     # The file will be created.
-    file_name.touch()
+    touch.touch(file_name)
     fxtr_remove_opt(file_name)
     fxtr_remove_opt(file_name)

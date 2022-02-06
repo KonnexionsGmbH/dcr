@@ -12,6 +12,7 @@ import shutil
 
 import pytest
 from libs.cfg import ACTION_CREATE_DB
+from libs.cfg import DCR_ARGV_0
 from libs.cfg import DCR_CFG_DATABASE_FILE
 from libs.cfg import DCR_CFG_DIRECTORY_INBOX
 from libs.cfg import config
@@ -24,8 +25,6 @@ from dcr import main
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-DCR_ARGV_0 = "src/dcr/dcr.py"
-
 LOGGER = initialise_logger()
 
 # @pytest.mark.issue

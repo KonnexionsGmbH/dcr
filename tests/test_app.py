@@ -2,18 +2,17 @@
 """Testing Module dcr."""
 
 import pytest
-from conftest import DCR_ARGV_0
-
-# -----------------------------------------------------------------------------
-# Constants & Globals.
-# -----------------------------------------------------------------------------
 from libs.cfg import ACTION_ALL_COMPLETE
 from libs.cfg import ACTION_PROCESS_INBOX
+from libs.cfg import DCR_ARGV_0
 
 from dcr import get_args
 from dcr import initialise_logger
 from dcr import main
 
+# -----------------------------------------------------------------------------
+# Constants & Globals.
+# -----------------------------------------------------------------------------
 LOGGER = initialise_logger()
 
 

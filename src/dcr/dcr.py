@@ -19,10 +19,13 @@ from libs import db
 from libs import inbox
 from libs import utils
 
-
 # -----------------------------------------------------------------------------
 # Load the command line arguments into memory.
 # -----------------------------------------------------------------------------
+from libs.db import create_db_tables
+from libs.db import create_db_triggers
+
+
 def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
     """Load the command line arguments into memory.
 
@@ -171,10 +174,10 @@ def main(argv: List[str]) -> None:
     if args[cfg.ACTION_CREATE_DB]:
         # Create the database tables.
         utils.progress_msg(logger, "Start: Create the database tables ...")
-        db.create_db_tables(logger)
+        create_db_tables(logger)
         # Create the database triggers.
         utils.progress_msg(logger, "Start: Create the database triggers ...")
-        db.create_db_triggers(logger)
+        create_db_triggers(logger)
     else:
         # Process the documents.
         utils.progress_msg(logger, "Start: Process the documents ...")

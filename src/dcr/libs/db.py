@@ -5,8 +5,6 @@ Data definition related processing routines.
 Returns:
     [type]: None.
 """
-
-import datetime
 import logging.config
 import os
 import sqlite3
@@ -152,7 +150,7 @@ def create_db_tables(logger: logging.Logger) -> None:
             logger,
             "Database file "
             + config[cfg.DCR_CFG_DATABASE_FILE]
-            + " is already exising",
+            + " is already existing",
         )
 
     connect_db_core(logger)
@@ -193,12 +191,12 @@ def create_db_tables(logger: logging.Logger) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Create the trigger for the database column modified_at.
+# Create the trigger for the database column created_at.
 # -----------------------------------------------------------------------------
-def create_db_trigger_modified_at(
+def create_db_trigger_created_at(
     logger: logging.Logger, conn: sqlite3.Connection, table_name: str
 ) -> None:
-    """Create the trigger for the database column modified_at.
+    """Create the trigger for the database column created_at.
 
     Args:
         logger (logging.Logger): Current logger.
@@ -208,11 +206,11 @@ def create_db_trigger_modified_at(
     logger.debug(cfg.LOGGER_START)
 
     sql = """
-CREATE TRIGGER IF NOT EXISTS trigger_modified_at AFTER UPDATE
+CREATE TRIGGER IF NOT EXISTS trigger_created_at_xxx AFTER INSERT
 ON xxx FOR EACH ROW
     BEGIN
         UPDATE xxx
-           SET modified_at = strftime("%Y.%m.%d %H:%M:%f")
+           SET created_at = strftime('%Y-%m-%d %H:%M:%f', DATETIME('now'))
          WHERE id = NEW.id;
     END   """.replace(
         "xxx", table_name
@@ -233,31 +231,50 @@ ON xxx FOR EACH ROW
 
 
 # -----------------------------------------------------------------------------
-# Create the database triggers.
+# Create the trigger for the database column modified_at.
 # -----------------------------------------------------------------------------
-def create_db_triggers(logger: logging.Logger) -> None:
-    """Create the database triggers.
+def create_db_trigger_modified_at(
+    logger: logging.Logger, conn: sqlite3.Connection, table_name: str
+) -> None:
+    """Create the trigger for the database column modified_at.
 
     Args:
         logger (logging.Logger): Current logger.
+        conn (sqlite3.Connection): Database connection.
+        table_name (str): Table name.
     """
     logger.debug(cfg.LOGGER_START)
 
-    create_db_triggers_modified_at(logger)
-
-    utils.progress_msg(
-        logger,
-        "The database triggers have been successfully created",
+    sql = """
+CREATE TRIGGER IF NOT EXISTS trigger_modified_at_xxx AFTER UPDATE
+ON xxx FOR EACH ROW
+    BEGIN
+        UPDATE xxx
+           SET modified_at = strftime('%Y-%m-%d %H:%M:%f', DATETIME('now'))
+         WHERE id = NEW.id;
+    END   """.replace(
+        "xxx", table_name
     )
+
+    try:
+        conn.execute(sql)
+    except Error as err:
+        utils.terminate_fatal(
+            logger,
+            "Database table "
+            + table_name
+            + " - create trigger - error="
+            + str(err),
+        )
 
     logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
-# Create the triggers for the database column modified_at.
+# Create the triggers for the database tables.
 # -----------------------------------------------------------------------------
-def create_db_triggers_modified_at(logger: logging.Logger) -> None:
-    """Create the triggers for the database column modified_at.
+def create_db_triggers(logger: logging.Logger) -> None:
+    """Create the triggers for the database tables.
 
     Args:
         logger (logging.Logger): Current logger.
@@ -292,6 +309,7 @@ def create_db_triggers_modified_at(logger: logging.Logger) -> None:
           """
 
     for row in conn.cursor().execute(sql):
+        create_db_trigger_created_at(logger, conn, row[0])
         if row[0] != "journal":
             create_db_trigger_modified_at(logger, conn, row[0])
 
@@ -308,7 +326,7 @@ def create_db_triggers_modified_at(logger: logging.Logger) -> None:
 
     utils.progress_msg(
         logger,
-        "The database triggers are created",
+        "The database triggers have been successfully created",
     )
 
     logger.debug(cfg.LOGGER_END)
@@ -336,12 +354,11 @@ def create_dbt_document(table_name: str = cfg.DBT_DOCUMENT) -> None:
         sqlalchemy.Column(
             cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
-            server_default=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
-            onupdate=func.current_timestamp(),
+            # onupdate=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_STATUS, sqlalchemy.String, nullable=False, unique=True
@@ -371,7 +388,6 @@ def create_dbt_journal(table_name: str = cfg.DBT_JOURNAL) -> None:
         sqlalchemy.Column(
             cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
-            server_default=func.current_timestamp(),
         ),
         sqlalchemy.Column(cfg.DBC_ACTION, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
@@ -416,12 +432,11 @@ def create_dbt_run(table_name: str = cfg.DBT_RUN) -> None:
         sqlalchemy.Column(
             cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
-            server_default=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
-            onupdate=func.current_timestamp(),
+            # onupdate=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True
@@ -514,12 +529,11 @@ def create_dbt_version(
         sqlalchemy.Column(
             cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
-            server_default=str(datetime.datetime.utcnow()),
         ),
         sqlalchemy.Column(
             cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
-            onupdate=func.current_timestamp(),
+            # onupdate=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True

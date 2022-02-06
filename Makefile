@@ -182,6 +182,7 @@ pytest-ci:          ## Run all tests with pytest after test tool installation.
 	pipenv install pytest-cov
 	pipenv install pytest-deadfixtures
 	pipenv install pytest-random-order
+	pipenv install touch
 	pipenv run pytest --version
 	pipenv run pytest --dead-fixtures tests
 	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order tests
