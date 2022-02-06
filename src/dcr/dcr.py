@@ -18,14 +18,13 @@ from libs import cfg
 from libs import db
 from libs import inbox
 from libs import utils
-
-# -----------------------------------------------------------------------------
-# Load the command line arguments into memory.
-# -----------------------------------------------------------------------------
 from libs.db import create_db_tables
 from libs.db import create_db_triggers
 
 
+# -----------------------------------------------------------------------------
+# Load the command line arguments into memory.
+# -----------------------------------------------------------------------------
 def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
     """Load the command line arguments into memory.
 

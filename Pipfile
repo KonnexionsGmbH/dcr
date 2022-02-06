@@ -4,15 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyinstaller = "*"
 PyYAML = "*"
 SQLAlchemy = "*"
-pytest-cov = "*"
-pytest-deadfixtures = "*"
-pytest-random-order = "*"
-pytest = "*"
-setuptools ="*"
-types-setuptools ="*"
 
 [dev-packages]
 bandit = "*"
@@ -33,10 +26,8 @@ pytest-deadfixtures = "*"
 pytest-random-order ="*"
 PyYAML = "*"
 radon = "*"
-setuptools ="*"
 SQLAlchemy = "*"
 sqlalchemy-stubs = "*"
 touch = "*"
 types-PyYAML = "*"
-types-setuptools = "*"
 typing-extensions = "*"
