@@ -47,7 +47,6 @@ DBT_RUN: str = "run"
 DBT_VERSION: str = "version"
 
 DCR_ARGV_0: str = "src/dcr/dcr.py"
-DCR_CFG_DATABASE: str = "database"
 DCR_CFG_DATABASE_FILE: str = "database_file"
 DCR_CFG_DATABASE_URL: str = "database_url"
 DCR_CFG_DCR_VERSION: str = "dcr_version"

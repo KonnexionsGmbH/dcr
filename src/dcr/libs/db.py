@@ -8,6 +8,7 @@ Returns:
 import logging.config
 import os
 import sqlite3
+from pathlib import Path
 from sqlite3 import Error
 from typing import Dict
 
@@ -15,7 +16,6 @@ import sqlalchemy
 import sqlalchemy.orm
 from libs import cfg
 from libs import utils
-from libs.cfg import config
 from sqlalchemy import ForeignKey
 from sqlalchemy import MetaData
 from sqlalchemy import Table
@@ -40,9 +40,7 @@ def check_db_up_to_date(logger: logging.Logger) -> None:
     if not sqlalchemy.inspect(cfg.engine).has_table(cfg.DBT_VERSION):
         utils.terminate_fatal(
             logger,
-            "The database "
-            + cfg.config[cfg.DCR_CFG_DATABASE_FILE]
-            + " does not yet exist.",
+            "The database " + get_db_file_name() + " does not yet exist.",
         )
 
     current_version = select_version_version_unique(logger)
@@ -59,7 +57,7 @@ def check_db_up_to_date(logger: logging.Logger) -> None:
     utils.progress_msg(
         logger,
         "The current version of database "
-        + str(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+        + get_db_file_name()
         + " is "
         + current_version,
     )
@@ -78,21 +76,19 @@ def connect_db(logger: logging.Logger) -> None:
     """
     logger.debug(cfg.LOGGER_START)
 
-    if not os.path.isfile(config[cfg.DCR_CFG_DATABASE_FILE]):
+    db_file_name = get_db_file_name()
+
+    if not os.path.isfile(db_file_name):
         utils.terminate_fatal(
             logger,
-            "Database file "
-            + config[cfg.DCR_CFG_DATABASE_FILE]
-            + " is missing",
+            "Database file " + db_file_name + " is missing",
         )
 
     connect_db_core(logger)
 
     utils.progress_msg(
         logger,
-        "The database "
-        + cfg.config[cfg.DCR_CFG_DATABASE_FILE]
-        + " is connected",
+        "The database " + db_file_name + " is connected",
     )
 
     logger.debug(cfg.LOGGER_END)
@@ -117,7 +113,7 @@ def connect_db_core(logger: logging.Logger) -> None:
             "SQLAlchemy metadata not accessible - error=" + str(err),
         )
     try:
-        cfg.engine = sqlalchemy.create_engine(cfg.config[cfg.DCR_CFG_DATABASE])
+        cfg.engine = sqlalchemy.create_engine(get_db_url())
     except Error as err:
         utils.terminate_fatal(
             logger,
@@ -146,12 +142,12 @@ def create_db_tables(logger: logging.Logger) -> None:
     """
     logger.debug(cfg.LOGGER_START)
 
-    if os.path.isfile(config[cfg.DCR_CFG_DATABASE_FILE]):
+    db_file_name = get_db_file_name()
+
+    if os.path.isfile(db_file_name):
         utils.terminate_fatal(
             logger,
-            "Database file "
-            + config[cfg.DCR_CFG_DATABASE_FILE]
-            + " is already existing",
+            "Database file " + db_file_name + " is already existing",
         )
 
     connect_db_core(logger)
@@ -177,7 +173,7 @@ def create_db_tables(logger: logging.Logger) -> None:
     utils.progress_msg(
         logger,
         "The database "
-        + str(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+        + db_file_name
         + " has been successfully created, version number="
         + cfg.config[cfg.DCR_CFG_DCR_VERSION],
     )
@@ -276,22 +272,22 @@ def create_db_triggers(logger: logging.Logger) -> None:
     """
     logger.debug(cfg.LOGGER_START)
 
-    if not os.path.isfile(config[cfg.DCR_CFG_DATABASE_FILE]):
+    db_file_name = get_db_file_name()
+
+    if not os.path.isfile(db_file_name):
         utils.terminate_fatal(
             logger,
-            "Database file "
-            + config[cfg.DCR_CFG_DATABASE_FILE]
-            + " is missing",
+            "Database file " + db_file_name + " is missing",
         )
 
     conn: sqlite3.Connection | None = None
     try:
-        conn = sqlite3.connect(config[cfg.DCR_CFG_DATABASE_FILE])
+        conn = sqlite3.connect(db_file_name)
     except Error as err:
         utils.terminate_fatal(
             logger,
             "Database "
-            + cfg.DCR_CFG_DATABASE
+            + db_file_name
             + " - open connection - error="
             + str(err),
         )
@@ -314,7 +310,7 @@ def create_db_triggers(logger: logging.Logger) -> None:
         utils.terminate_fatal(
             logger,
             "Database "
-            + cfg.DCR_CFG_DATABASE
+            + db_file_name
             + " - close connection - error="
             + str(err),
         )
@@ -661,12 +657,36 @@ def disconnect_db(logger: logging.Logger) -> None:
 
     utils.progress_msg(
         logger,
-        "The database "
-        + cfg.config[cfg.DCR_CFG_DATABASE_FILE]
-        + " is disconnected",
+        "The database " + get_db_file_name() + " is disconnected",
     )
 
     logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Get the database file name.
+# -----------------------------------------------------------------------------
+def get_db_file_name() -> str:
+    """Get the database file name.
+
+    Returns:
+        str: [description]: Database file name.
+    """
+    return os.path.join(
+        os.getcwd(), Path(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+    )
+
+
+# -----------------------------------------------------------------------------
+# Get the database url.
+# -----------------------------------------------------------------------------
+def get_db_url() -> str:
+    """Get the database url.
+
+    Returns:
+        str: [description]: Database url.
+    """
+    return cfg.config[cfg.DCR_CFG_DATABASE_URL] + get_db_file_name()
 
 
 # -----------------------------------------------------------------------------

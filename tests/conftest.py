@@ -72,7 +72,7 @@ def fxtr_new_db_empty_inbox(
     """Fixture: New empty database, but no inbox directory."""
     dcr.get_config(LOGGER)
 
-    fxtr_remove_opt(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(libs.db.get_db_file_name())
 
     fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
 
@@ -87,7 +87,7 @@ def fxtr_new_db_empty_inbox(
 
     fxtr_rmdir(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
 
-    fxtr_remove(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove(libs.db.get_db_file_name())
 
 
 # -----------------------------------------------------------------------------
@@ -98,7 +98,7 @@ def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
     """Fixture: New empty database, but no inbox directory."""
     dcr.get_config(LOGGER)
 
-    fxtr_remove_opt(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(libs.db.get_db_file_name())
 
     fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
 
@@ -109,7 +109,7 @@ def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
 
     yield
 
-    fxtr_remove(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove(libs.db.get_db_file_name())
 
 
 # -----------------------------------------------------------------------------
@@ -120,14 +120,14 @@ def fxtr_no_db(fxtr_remove_opt):
     """Fixture: No database available."""
     dcr.get_config(LOGGER)
 
-    fxtr_remove_opt(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(libs.db.get_db_file_name())
 
     if libs.cfg.metadata is not None:
         libs.cfg.metadata.clear()
 
     yield
 
-    fxtr_remove_opt(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(libs.db.get_db_file_name())
 
 
 # -----------------------------------------------------------------------------

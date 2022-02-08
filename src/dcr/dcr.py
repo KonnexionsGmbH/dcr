@@ -18,8 +18,6 @@ from libs import cfg
 from libs import db
 from libs import inbox
 from libs import utils
-from libs.db import create_db_tables
-from libs.db import create_db_triggers
 
 
 # -----------------------------------------------------------------------------
@@ -109,11 +107,6 @@ def get_config(logger: logging.Logger) -> None:
             for (key, value) in config_parser.items(section):
                 cfg.config[key] = value
 
-    cfg.config[cfg.DCR_CFG_DATABASE] = (
-        cfg.config[cfg.DCR_CFG_DATABASE_URL]
-        + cfg.config[cfg.DCR_CFG_DATABASE_FILE]
-    )
-
     utils.progress_msg(
         logger, "The configuration parameters are checked and loaded"
     )
@@ -173,10 +166,10 @@ def main(argv: List[str]) -> None:
     if args[cfg.RUN_ACTION_CREATE_DB]:
         # Create the database tables.
         utils.progress_msg(logger, "Start: Create the database tables ...")
-        create_db_tables(logger)
+        db.create_db_tables(logger)
         # Create the database triggers.
         utils.progress_msg(logger, "Start: Create the database triggers ...")
-        create_db_triggers(logger)
+        db.create_db_triggers(logger)
         db.create_dbt_version_row(logger)
     else:
         # Process the documents.

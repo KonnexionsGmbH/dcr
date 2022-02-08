@@ -7,6 +7,7 @@ name = "pypi"
 PyYAML = "*"
 SQLAlchemy = "*"
 importlib-metadata = "*"
+atomicwrites = "*"
 
 [dev-packages]
 bandit = "*"
