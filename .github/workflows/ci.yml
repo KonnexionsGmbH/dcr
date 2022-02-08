@@ -31,10 +31,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install pip
-        run: make pip
-      - name: Install pipenv
-        run: make pipenv
       - name: Install dcr dependencies
         run: make pipenv-dev
       - name: Run isort for sorting your imports
@@ -75,10 +71,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install pip
-        run: make pip
-      - name: Install pipenv
-        run: make pipenv
       - name: Install dcr dependencies
         run: make pipenv-dev
       - name: Compile the Python code
@@ -105,10 +97,6 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install pip
-        run: make pip
-      - name: Install pipenv
-        run: make pipenv
       - name: Install dcr dependencies
         run: make pipenv-prod
       - name: Compile the Python code
