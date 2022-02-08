@@ -7,19 +7,21 @@ Returns:
 """
 import logging.config
 import os
-import sqlite3
 from pathlib import Path
 from sqlite3 import Error
 from typing import Dict
+from typing import List
 
 import sqlalchemy
 import sqlalchemy.orm
 from libs import cfg
 from libs import utils
+from sqlalchemy import DDL
 from sqlalchemy import ForeignKey
 from sqlalchemy import MetaData
 from sqlalchemy import Table
 from sqlalchemy import UniqueConstraint
+from sqlalchemy import event
 from sqlalchemy import func
 from sqlalchemy import insert
 from sqlalchemy import select
@@ -159,6 +161,17 @@ def create_db_tables(logger: logging.Logger) -> None:
     # FK: run
     create_dbt_journal()
 
+    # Create the database triggers.
+    create_db_triggers(
+        logger,
+        [
+            cfg.DBT_DOCUMENT,
+            cfg.DBT_JOURNAL,
+            cfg.DBT_RUN,
+            cfg.DBT_VERSION,
+        ],
+    )
+
     try:
         cfg.metadata.create_all(cfg.engine)
     except Error as err:
@@ -167,8 +180,6 @@ def create_db_tables(logger: logging.Logger) -> None:
             "SQLAlchemy 'metadata.create_all(engine)' issue - error="
             + str(err),
         )
-
-    disconnect_db(logger)
 
     utils.progress_msg(
         logger,
@@ -184,141 +195,77 @@ def create_db_tables(logger: logging.Logger) -> None:
 # -----------------------------------------------------------------------------
 # Create the trigger for the database column created_at.
 # -----------------------------------------------------------------------------
-def create_db_trigger_created_at(
-    logger: logging.Logger, conn: sqlite3.Connection, table_name: str
-) -> None:
+def create_db_trigger_created_at(table_name: str) -> None:
     """Create the trigger for the database column created_at.
 
     Args:
-        logger (logging.Logger): Current logger.
-        conn (sqlite3.Connection): Database connection.
         table_name (str): Table name.
     """
-    logger.debug(cfg.LOGGER_START)
-
-    sql = """
-CREATE TRIGGER IF NOT EXISTS trigger_created_at_xxx AFTER INSERT
-ON xxx FOR EACH ROW
-    BEGIN
-        UPDATE xxx
-           SET created_at = strftime('%Y-%m-%d %H:%M:%f', DATETIME('now'))
-         WHERE id = NEW.id;
-    END   """.replace(
-        "xxx", table_name
+    event.listen(
+        cfg.metadata,
+        "after_create",
+        DDL(
+            """
+        CREATE TRIGGER IF NOT EXISTS trigger_created_at_xxx AFTER INSERT
+        ON xxx FOR EACH ROW
+            BEGIN
+                UPDATE xxx
+                   SET created_at = strftime('%%Y-%%m-%%d %%H:%%M:%%f',
+                                             DATETIME('now'))
+                 WHERE id = NEW.id;
+            END   """.replace(
+                "xxx", table_name
+            )
+        ),
     )
-
-    try:
-        conn.execute(sql)
-    except Error as err:
-        utils.terminate_fatal(
-            logger,
-            "Database table "
-            + table_name
-            + " - create trigger - error="
-            + str(err),
-        )
-
-    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Create the trigger for the database column modified_at.
 # -----------------------------------------------------------------------------
-def create_db_trigger_modified_at(
-    logger: logging.Logger, conn: sqlite3.Connection, table_name: str
-) -> None:
+def create_db_trigger_modified_at(table_name: str) -> None:
     """Create the trigger for the database column modified_at.
 
     Args:
-        logger (logging.Logger): Current logger.
-        conn (sqlite3.Connection): Database connection.
         table_name (str): Table name.
     """
-    logger.debug(cfg.LOGGER_START)
-
-    sql = """
+    event.listen(
+        cfg.metadata,
+        "after_create",
+        DDL(
+            """
 CREATE TRIGGER IF NOT EXISTS trigger_modified_at_xxx AFTER UPDATE
 ON xxx FOR EACH ROW
     BEGIN
         UPDATE xxx
-           SET modified_at = strftime('%Y-%m-%d %H:%M:%f', DATETIME('now'))
+           SET modified_at = strftime('%%Y-%%m-%%d %%H:%%M:%%f',
+                                      DATETIME('now'))
          WHERE id = NEW.id;
     END   """.replace(
-        "xxx", table_name
+                "xxx", table_name
+            )
+        ),
     )
-
-    try:
-        conn.execute(sql)
-    except Error as err:
-        utils.terminate_fatal(
-            logger,
-            "Database table "
-            + table_name
-            + " - create trigger - error="
-            + str(err),
-        )
-
-    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Create the triggers for the database tables.
 # -----------------------------------------------------------------------------
-def create_db_triggers(logger: logging.Logger) -> None:
+def create_db_triggers(logger: logging.Logger, table_names: List[str]) -> None:
     """Create the triggers for the database tables.
 
     Args:
         logger (logging.Logger): Current logger.
+        table_names(List[str)]: Table names.
     """
     logger.debug(cfg.LOGGER_START)
 
-    db_file_name = get_db_file_name()
+    utils.progress_msg(logger, "Start: Create the database triggers ...")
 
-    if not os.path.isfile(db_file_name):
-        utils.terminate_fatal(
-            logger,
-            "Database file " + db_file_name + " is missing",
-        )
-
-    conn: sqlite3.Connection | None = None
-    try:
-        conn = sqlite3.connect(db_file_name)
-    except Error as err:
-        utils.terminate_fatal(
-            logger,
-            "Database "
-            + db_file_name
-            + " - open connection - error="
-            + str(err),
-        )
-
-    sql = """
-    SELECT name
-      FROM sqlite_schema
-     WHERE type = "table"
-     ORDER By name
-          """
-
-    for row in conn.cursor().execute(sql):
-        create_db_trigger_created_at(logger, conn, row[0])
-        if row[0] != "journal":
-            create_db_trigger_modified_at(logger, conn, row[0])
-
-    try:
-        conn.close()
-    except Error as err:
-        utils.terminate_fatal(
-            logger,
-            "Database "
-            + db_file_name
-            + " - close connection - error="
-            + str(err),
-        )
-
-    utils.progress_msg(
-        logger,
-        "The database triggers have been successfully created",
-    )
+    for table_name in table_names:
+        create_db_trigger_created_at(table_name)
+        if table_name != cfg.DBT_JOURNAL:
+            create_db_trigger_modified_at(table_name)
 
     logger.debug(cfg.LOGGER_END)
 

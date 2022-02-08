@@ -167,9 +167,6 @@ def main(argv: List[str]) -> None:
         # Create the database tables.
         utils.progress_msg(logger, "Start: Create the database tables ...")
         db.create_db_tables(logger)
-        # Create the database triggers.
-        utils.progress_msg(logger, "Start: Create the database triggers ...")
-        db.create_db_triggers(logger)
         db.create_dbt_version_row(logger)
     else:
         # Process the documents.
