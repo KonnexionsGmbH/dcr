@@ -7,7 +7,7 @@ Depending on the file format, the accepted documents are then
 converted into the pdf file format either with the help of Pandoc
 or with the help of Tesseract OCR.
 """
-
+import inspect
 import logging.config
 import os
 import pathlib
@@ -111,7 +111,7 @@ def create_directory(
 # -----------------------------------------------------------------------------
 # Process the new document input in the file directory inbox.
 # -----------------------------------------------------------------------------
-def process_inbox(logger: logging.Logger) -> None:
+def process_inbox_new(logger: logging.Logger) -> None:
     """Process the new document input in the file directory inbox.
 
     1. Documents of type doc, docx or txt are converted to pdf format
@@ -132,50 +132,24 @@ def process_inbox(logger: logging.Logger) -> None:
     # Check the inbox file directories and create the missing ones.
     check_and_create_inboxes(logger)
 
-    # Process the new document input.
-    process_new_input(logger)
-
-    utils.progress_msg(
-        logger,
-        "The new documents in the inbox file directory are checked and "
-        + "prepared for further processing",
-    )
-
-    logger.debug(cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Process the new documents in the input file directory.
-# -----------------------------------------------------------------------------
-def process_new_input(logger: logging.Logger) -> None:
-    """Process the new documents in the input file directory.
-
-    1. Documents of type doc, docx or txt are converted to pdf format
-       and copied to the inbox_accepted directory.
-    2. Documents of type pdf that do not consist only of a scanned image are
-       copied unchanged to the inbox_accepted directory.
-    3. Documents of type pdf consisting only of a scanned image are copied
-       unchanged to the inbox_ocr directory.
-    4. All other documents are copied to the inbox_rejected directory.
-    5. For each document a new entry is created in the database table
-       document.
-
-    Args:
-        logger (logging.Logger): [description]
-    """
-    logger.debug(cfg.LOGGER_START)
-
-    directory = "."
-    print("directory name=", directory)
-    for file in pathlib.Path(directory).iterdir():
+    for file in pathlib.Path(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX]
+    ).iterdir():
         if file.is_file():
-            print("absolute_name   =", file.absolute())
-            print(
-                "directory_name  =", str(pathlib.Path(file).parent.absolute())
+            cfg.CURRENT_FILE_NAME = file.name
+            cfg.CURRENT_STEM_NAME = pathlib.PurePath(file).stem
+            cfg.CURRENT_FILE_TYPE = file.suffix[1:].lower()
+            db.create_dbt_document_row(logger)
+            db.create_dbt_journal_row(
+                logger,
+                cfg.JOURNAL_ACTION_01_001,
+                __name__,
+                inspect.stack()[0][3],
             )
-            print("file_name       =", file.name)
-            print("base_name       =", pathlib.PurePath(file).stem)
-            print("file_suffix_orig=", file.suffix)
+            if cfg.CURRENT_FILE_TYPE == cfg.FILE_TYPE_PDF:
+                process_input_new_pdf(logger)
+            elif cfg.CURRENT_FILE_TYPE == cfg.FILE_TYPE_TXT:
+                process_input_new_pandoc(logger)
 
     # for file in pathlib.Path(inbox).iterdir():
     #     if file.is_file():
@@ -195,5 +169,39 @@ def process_new_input(logger: logging.Logger) -> None:
     #                 inbox / file.name,
     #                 inbox_rejected / file.name,
     #             )
+
+    utils.progress_msg(
+        logger,
+        "The new documents in the inbox file directory are checked and "
+        + "prepared for further processing",
+    )
+
+    logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Prepare the new documents in the input for Pandocy.
+# -----------------------------------------------------------------------------
+def process_input_new_pandoc(logger: logging.Logger) -> None:
+    """Prepare the new documents in the input for Pandocy.
+
+    Args:
+        logger (logging.Logger): [description]
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Process the new pdf documents in the input file directory.
+# -----------------------------------------------------------------------------
+def process_input_new_pdf(logger: logging.Logger) -> None:
+    """Process the new pdf documents in the input file directory.
+
+    Args:
+        logger (logging.Logger): [description]
+    """
+    logger.debug(cfg.LOGGER_START)
 
     logger.debug(cfg.LOGGER_END)

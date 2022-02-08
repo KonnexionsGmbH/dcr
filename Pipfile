@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 PyYAML = "*"
 SQLAlchemy = "*"
+importlib-metadata = "*"
 
 [dev-packages]
 bandit = "*"
@@ -28,6 +29,5 @@ PyYAML = "*"
 radon = "*"
 SQLAlchemy = "*"
 sqlalchemy-stubs = "*"
-touch = "*"
 types-PyYAML = "*"
 typing-extensions = "*"

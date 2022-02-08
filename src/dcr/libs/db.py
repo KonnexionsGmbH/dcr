@@ -19,6 +19,7 @@ from libs.cfg import config
 from sqlalchemy import ForeignKey
 from sqlalchemy import MetaData
 from sqlalchemy import Table
+from sqlalchemy import UniqueConstraint
 from sqlalchemy import func
 from sqlalchemy import insert
 from sqlalchemy import select
@@ -170,12 +171,6 @@ def create_db_tables(logger: logging.Logger) -> None:
             "SQLAlchemy 'metadata.create_all(engine)' issue - error="
             + str(err),
         )
-
-    insert_dbt_row(
-        logger,
-        cfg.DBT_VERSION,
-        [{cfg.DBC_VERSION: cfg.config[cfg.DCR_CFG_DCR_VERSION]}],
-    )
 
     disconnect_db(logger)
 
@@ -358,12 +353,47 @@ def create_dbt_document(table_name: str = cfg.DBT_DOCUMENT) -> None:
         sqlalchemy.Column(
             cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
-            # onupdate=func.current_timestamp(),
         ),
         sqlalchemy.Column(
-            cfg.DBC_STATUS, sqlalchemy.String, nullable=False, unique=True
+            cfg.DBC_FILE_NAME, sqlalchemy.String, nullable=False
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_FILE_TYPE, sqlalchemy.String, nullable=False
+        ),
+        sqlalchemy.Column(cfg.DBC_STATUS, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            cfg.DBC_STEM_NAME, sqlalchemy.String, nullable=False
         ),
     )
+
+
+# -----------------------------------------------------------------------------
+# Create the table document entry.
+# -----------------------------------------------------------------------------
+def create_dbt_document_row(logger: logging.Logger) -> None:
+    """Create the table document entry.
+
+    Args:
+        logger (logging.Logger): Current logger.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    insert_dbt_row(
+        logger,
+        cfg.DBT_DOCUMENT,
+        [
+            {
+                cfg.DBC_FILE_NAME: cfg.CURRENT_FILE_NAME,
+                cfg.DBC_FILE_TYPE: cfg.CURRENT_FILE_TYPE,
+                cfg.DBC_STATUS: cfg.STATUS_START,
+                cfg.DBC_STEM_NAME: cfg.CURRENT_STEM_NAME,
+            },
+        ],
+    )
+
+    cfg.document_id = select_dbt_id_last(logger, cfg.DBT_DOCUMENT)
+
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -389,7 +419,12 @@ def create_dbt_journal(table_name: str = cfg.DBT_JOURNAL) -> None:
             cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
         ),
-        sqlalchemy.Column(cfg.DBC_ACTION, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            cfg.DBC_ACTION_CODE, sqlalchemy.String, nullable=False
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_ACTION_TEXT, sqlalchemy.String, nullable=False
+        ),
         sqlalchemy.Column(
             cfg.DBC_DOCUMENT_ID,
             sqlalchemy.Integer,
@@ -398,16 +433,58 @@ def create_dbt_journal(table_name: str = cfg.DBT_JOURNAL) -> None:
             ),
             nullable=False,
         ),
-        sqlalchemy.Column(cfg.DBC_FUNCTION, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(cfg.DBC_MODULE, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(cfg.DBC_PACKAGE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            cfg.DBC_FUNCTION_NAME, sqlalchemy.String, nullable=False
+        ),
+        sqlalchemy.Column(
+            cfg.DBC_MODULE_NAME, sqlalchemy.String, nullable=False
+        ),
         sqlalchemy.Column(
             cfg.DBC_RUN_ID,
             sqlalchemy.Integer,
             ForeignKey(cfg.DBT_RUN + "." + cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
+        UniqueConstraint(
+            cfg.DBC_DOCUMENT_ID, cfg.DBC_ACTION_CODE, name="unique_key_1"
+        ),
     )
+
+
+# -----------------------------------------------------------------------------
+# Create the table journal entry.
+# -----------------------------------------------------------------------------
+def create_dbt_journal_row(
+    logger: logging.Logger, action: str, module_name: str, function_name: str
+) -> None:
+    """Create the table journal entry.
+
+    Args:
+        logger (logging.Logger): Current logger.
+        action (str): Current action.
+        module_name (str): Current module.
+        function_name (str): Current function.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    insert_dbt_row(
+        logger,
+        cfg.DBT_JOURNAL,
+        [
+            {
+                cfg.DBC_ACTION_CODE: action[0:7],
+                cfg.DBC_ACTION_TEXT: action[7:],
+                cfg.DBC_DOCUMENT_ID: cfg.document_id,
+                cfg.DBC_FUNCTION_NAME: function_name,
+                cfg.DBC_MODULE_NAME: module_name,
+                cfg.DBC_RUN_ID: cfg.run_id,
+            },
+        ],
+    )
+
+    cfg.journal_id = select_dbt_id_last(logger, cfg.DBT_JOURNAL)
+
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -436,7 +513,6 @@ def create_dbt_run(table_name: str = cfg.DBT_RUN) -> None:
         sqlalchemy.Column(
             cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
-            # onupdate=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True
@@ -481,18 +557,12 @@ def create_dbt_run(table_name: str = cfg.DBT_RUN) -> None:
 def create_dbt_run_row(logger: logging.Logger) -> None:
     """Create the table run entry.
 
-    If the database table is not yet included in the database schema, then the
-    database table is created and the current version number of DCR is
-    inserted.
-
     Args:
         logger (logging.Logger): Current logger.
     """
     logger.debug(cfg.LOGGER_START)
 
-    insert_dbt_row(
-        logger, cfg.DBT_RUN, [{cfg.DBC_STATUS: cfg.DBC_STATUS_START}]
-    )
+    insert_dbt_row(logger, cfg.DBT_RUN, [{cfg.DBC_STATUS: cfg.STATUS_START}])
 
     cfg.run_id = select_dbt_id_last(logger, cfg.DBT_RUN)
 
@@ -504,7 +574,7 @@ def create_dbt_run_row(logger: logging.Logger) -> None:
 # -----------------------------------------------------------------------------
 def create_dbt_version(
     table_name: str = cfg.DBT_VERSION,
-) -> sqlalchemy.Table:
+) -> None:
     """Create and initialise the database table version.
 
     If the database table is not yet included in the database schema, then the
@@ -513,10 +583,8 @@ def create_dbt_version(
 
     Args:
         table_name (str): Table name.
-    Returns:
-        sqlalchemy.Table: Schema of database table `version`.
     """
-    dbt = sqlalchemy.Table(
+    sqlalchemy.Table(
         table_name,
         cfg.metadata,
         sqlalchemy.Column(
@@ -533,14 +601,35 @@ def create_dbt_version(
         sqlalchemy.Column(
             cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
-            # onupdate=func.current_timestamp(),
         ),
         sqlalchemy.Column(
             cfg.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True
         ),
     )
 
-    return dbt
+
+# -----------------------------------------------------------------------------
+# Create the table version entry.
+# -----------------------------------------------------------------------------
+def create_dbt_version_row(logger: logging.Logger) -> None:
+    """Create the table version entry.
+
+    Args:
+        logger (logging.Logger): Current logger.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    connect_db_core(logger)
+
+    insert_dbt_row(
+        logger,
+        cfg.DBT_VERSION,
+        [{cfg.DBC_VERSION: cfg.config[cfg.DCR_CFG_DCR_VERSION]}],
+    )
+
+    disconnect_db(logger)
+
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------

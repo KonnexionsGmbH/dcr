@@ -1,7 +1,7 @@
 # pylint: disable=redefined-outer-name
 """Test Configuration and Fixtures.
 
-Setup test configurations and store fixtures.
+Setup test cfg.configurations and store fixtures.
 
 Returns:
     [type]: None.
@@ -11,12 +11,7 @@ import os
 import shutil
 
 import pytest
-from libs.cfg import ACTION_CREATE_DB
-from libs.cfg import DCR_ARGV_0
-from libs.cfg import DCR_CFG_DATABASE_FILE
-from libs.cfg import DCR_CFG_DIRECTORY_INBOX
-from libs.cfg import config
-from libs.cfg import metadata
+from libs import cfg
 
 from dcr import get_config
 from dcr import initialise_logger
@@ -79,21 +74,22 @@ def fxtr_new_db_empty_inbox(
     """Fixture: New empty database, but no inbox directory."""
     get_config(LOGGER)
 
-    fxtr_remove_opt(config[DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
 
-    fxtr_rmdir_opt(config[DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir_opt(cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX])
 
-    fxtr_mkdir(config[DCR_CFG_DIRECTORY_INBOX])
+    fxtr_mkdir(cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX])
 
-    metadata.clear()
+    if cfg.metadata is not None:
+        cfg.metadata.clear()
 
-    main([DCR_ARGV_0, ACTION_CREATE_DB])
+    main([cfg.DCR_ARGV_0, cfg.RUN_ACTION_CREATE_DB])
 
     yield
 
-    fxtr_rmdir(config[DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir(cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX])
 
-    fxtr_remove(config[DCR_CFG_DATABASE_FILE])
+    fxtr_remove(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
 
 
 # -----------------------------------------------------------------------------
@@ -104,17 +100,18 @@ def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
     """Fixture: New empty database, but no inbox directory."""
     get_config(LOGGER)
 
-    fxtr_remove_opt(config[DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
 
-    fxtr_rmdir_opt(config[DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir_opt(cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX])
 
-    metadata.clear()
+    if cfg.metadata is not None:
+        cfg.metadata.clear()
 
-    main([DCR_ARGV_0, ACTION_CREATE_DB])
+    main([cfg.DCR_ARGV_0, cfg.RUN_ACTION_CREATE_DB])
 
     yield
 
-    fxtr_remove(config[DCR_CFG_DATABASE_FILE])
+    fxtr_remove(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
 
 
 # -----------------------------------------------------------------------------
@@ -125,13 +122,14 @@ def fxtr_no_db(fxtr_remove_opt):
     """Fixture: No database available."""
     get_config(LOGGER)
 
-    fxtr_remove_opt(config[DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
 
-    metadata.clear()
+    if cfg.metadata is not None:
+        cfg.metadata.clear()
 
     yield
 
-    fxtr_remove_opt(config[DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
 
 
 # -----------------------------------------------------------------------------

@@ -12,14 +12,18 @@ from sqlalchemy.engine import Engine
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
-ACTION_ALL_COMPLETE: str
-ACTION_CREATE_DB: str
-ACTION_PROCESS_INBOX: str
+CURRENT_DOCUMENT_STATUS: str
+CURRENT_FILE_NAME: str
+CURRENT_FILE_TYPE: str
+CURRENT_STEM_NAME: str
 
-DBC_ACTION: str
+DBC_ACTION_CODE: str
+DBC_ACTION_TEXT: str
 DBC_CREATED_AT: str
 DBC_DOCUMENT_ID: str
-DBC_FUNCTION: str
+DBC_FILE_NAME: str
+DBC_FILE_TYPE: str
+DBC_FUNCTION_NAME: str
 DBC_ID: str
 DBC_INBOX_ABS_NAME: str
 DBC_INBOX_CONFIG: str
@@ -28,12 +32,11 @@ DBC_INBOX_ACCEPTED_CONFIG: str
 DBC_INBOX_REJECTED_ABS_NAME: str
 DBC_INBOX_REJECTED_CONFIG: str
 DBC_MODIFIED_AT: str
-DBC_MODULE: str
+DBC_MODULE_NAME: str
 DBC_PACKAGE: str
 DBC_RUN_ID: str
 DBC_STATUS: str
-DBC_STATUS_END: str
-DBC_STATUS_START: str
+DBC_STEM_NAME: str
 DBC_TOTAL_ACCEPTED: str
 DBC_TOTAL_NEW: str
 DBC_TOTAL_REJECTED: str
@@ -55,8 +58,14 @@ DCR_CFG_DIRECTORY_INBOX_REJECTED: str
 DCR_CFG_FILE: str
 DCR_CFG_SECTION: str
 
-FILE_ENCODING_DEFAULT: str
-FILE_EXTENSION_PDF: str
+FILE_TYPE_DOC: str
+FILE_TYPE_DOCX: str
+FILE_TYPE_JPEG: str
+FILE_TYPE_JPG: str
+FILE_TYPE_PDF: str
+FILE_TYPE_TXT: str
+
+JOURNAL_ACTION_01_001: str
 
 LOCALE: str
 LOGGER_CFG_FILE: str
@@ -65,6 +74,17 @@ LOGGER_FATAL_HEAD: str
 LOGGER_FATAL_TAIL: str
 LOGGER_PROGRESS_UPDATE: str
 LOGGER_START: str
+
+RUN_ACTION_ALL_COMPLETE: str
+RUN_ACTION_CREATE_DB: str
+RUN_ACTION_PROCESS_INBOX: str
+
+STATUS_END: str
+STATUS_INVALID_FILE_TYPE: str
+STATUS_NEW: str
+STATUS_NEXT_PANDOC: str
+STATUS_NEXT_TESSERACT: str
+STATUS_START: str
 
 # -----------------------------------------------------------------------------
 # Global Type Definitions.
@@ -76,7 +96,9 @@ Columns: TypeAlias = list[Dict[str, Union[PathLike[str], str]]]
 # -----------------------------------------------------------------------------
 config: Dict[str, PathLike[str] | str]
 
-engine: Engine
+document_id: sqlalchemy.Integer
+
+engine: Engine | None
 
 inbox: PathLike[str] | str
 inbox_accepted: PathLike[str] | str

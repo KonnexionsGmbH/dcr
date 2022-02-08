@@ -60,17 +60,17 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
         )
 
     args = {
-        cfg.ACTION_CREATE_DB: False,
-        cfg.ACTION_PROCESS_INBOX: False,
+        cfg.RUN_ACTION_CREATE_DB: False,
+        cfg.RUN_ACTION_PROCESS_INBOX: False,
     }
 
     for i in range(1, num):
         arg = argv[i].lower()
-        if arg == cfg.ACTION_ALL_COMPLETE:
-            args[cfg.ACTION_PROCESS_INBOX] = True
+        if arg == cfg.RUN_ACTION_ALL_COMPLETE:
+            args[cfg.RUN_ACTION_PROCESS_INBOX] = True
         elif arg in (
-            cfg.ACTION_CREATE_DB,
-            cfg.ACTION_PROCESS_INBOX,
+            cfg.RUN_ACTION_CREATE_DB,
+            cfg.RUN_ACTION_PROCESS_INBOX,
         ):
             args[arg] = True
         else:
@@ -170,13 +170,14 @@ def main(argv: List[str]) -> None:
     # Load the configuration parameters into the memory.
     get_config(logger)
 
-    if args[cfg.ACTION_CREATE_DB]:
+    if args[cfg.RUN_ACTION_CREATE_DB]:
         # Create the database tables.
         utils.progress_msg(logger, "Start: Create the database tables ...")
         create_db_tables(logger)
         # Create the database triggers.
         utils.progress_msg(logger, "Start: Create the database triggers ...")
         create_db_triggers(logger)
+        db.create_dbt_version_row(logger)
     else:
         # Process the documents.
         utils.progress_msg(logger, "Start: Process the documents ...")
@@ -207,8 +208,8 @@ def process_documents(logger: logging.Logger, args: dict[str, bool]) -> None:
     db.create_dbt_run_row(logger)
 
     # Process the documents in the inbox file directory.
-    if args[cfg.ACTION_PROCESS_INBOX]:
-        inbox.process_inbox(logger)
+    if args[cfg.RUN_ACTION_PROCESS_INBOX]:
+        inbox.process_inbox_new(logger)
 
     # Finalise the run entry in the database.
     terminate_run_entry(logger)
@@ -233,7 +234,7 @@ def terminate_run_entry(logger: logging.Logger) -> None:
         cfg.DBT_RUN,
         cfg.run_id,
         {
-            cfg.DBC_STATUS: cfg.DBC_STATUS_END,
+            cfg.DBC_STATUS: cfg.STATUS_END,
             cfg.DBC_TOTAL_ACCEPTED: cfg.total_accepted,
             cfg.DBC_TOTAL_NEW: cfg.total_new,
             cfg.DBC_TOTAL_REJECTED: cfg.total_rejected,

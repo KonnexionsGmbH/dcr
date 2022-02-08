@@ -116,31 +116,28 @@ mypy:               ## Find typing issues with Mypy.
 # pip is the package installer for Python.
 # https://pypi.org/project/pip/
 # Configuration file: none
-pip:                ## Install and / or Upgrade pip.
-	@echo "Info **********  Start: Install and / or Upgrade pip ****************"
-	python -m pip install --upgrade pip
-	python --version
-	python -m pip --version
-	@echo "Info **********  End:   Install and / or Upgrade pip ****************"
-
 # Pipenv: Python Development Workflow for Humans.
 # https://github.com/pypa/pipenv
 # Configuration file: Pipfile
-pipenv:             ## Install and upgrade pipenv.
-	@echo "Info **********  Start: Install and Upgrade pipenv ******************"
-	python -m pip install pipenv
-	python -m pip install --upgrade pipenv
-	python -m pipenv --version
-	@echo "Info **********  End:   Install and Upgrade pipenv ******************"
 pipenv-dev:         ## Install the package dependencies for development.
 	@echo "Info **********  Start: Installation of Development Packages ********"
+	python -m pip install --upgrade pip
+	python -m pip install --upgrade pipenv
 	python -m pipenv install --dev
+	python -m pipenv update --dev
 	pipenv run pip freeze
+	python --version
+	python -m pip --version
 	@echo "Info **********  End:   Installation of Development Packages ********"
 pipenv-prod:        ## Install the package dependencies for production.
 	@echo "Info **********  Start: Installation of Production Packages *********"
+	python -m pip install --upgrade pip
+	python -m pip install --upgrade pipenv
 	python -m pipenv install
+	python -m pipenv update
 	pipenv run pip freeze
+	python --version
+	python -m pip --version
 	@echo "Info **********  End:   Installation of Production Packages *********"
 
 # pydocstyle - docstring style checker.
@@ -166,12 +163,16 @@ pylint:             ## Lint the code with Pylint.
 # Configuration file: pyproject.toml
 pytest:             ## Run all tests with pytest.
 	@echo "Info **********  Start: pytest **************************************"
-	@echo "${PYTHONPATH}"
 	pipenv run pytest --version
 	pipenv run pytest --dead-fixtures tests
-	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order tests
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v tests
 	@echo "Info **********  End:   pytest **************************************"
-pytest-issue:       ## Run only the tests marked with issue.
+pytest-first-issue: ## Run all tests with pytest until the first issue occurs.
+	@echo "Info **********  Start: pytest **************************************"
+	pipenv run pytest --version
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v -x tests
+	@echo "Info **********  End:   pytest **************************************"
+pytest-issue:       ## Run only the tests with pytest which are marked with 'issue'.
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
 	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -m issue --setup-show tests
@@ -182,10 +183,9 @@ pytest-ci:          ## Run all tests with pytest after test tool installation.
 	pipenv install pytest-cov
 	pipenv install pytest-deadfixtures
 	pipenv install pytest-random-order
-	pipenv install touch
 	pipenv run pytest --version
 	pipenv run pytest --dead-fixtures tests
-	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order tests
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v tests
 	@echo "Info **********  End:   pytest **************************************"
 
 ## ============================================================================
