@@ -1,7 +1,7 @@
 # pylint: disable=redefined-outer-name
 """Test Configuration and Fixtures.
 
-Setup test cfg.configurations and store fixtures.
+Setup test libs.cfg.configurations and store fixtures.
 
 Returns:
     [type]: None.
@@ -10,17 +10,15 @@ Returns:
 import os
 import shutil
 
+import libs.cfg
 import pytest
-from libs import cfg
 
-from dcr import get_config
-from dcr import initialise_logger
-from dcr import main
+import dcr
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-LOGGER = initialise_logger()
+LOGGER = dcr.initialise_logger()
 
 # @pytest.mark.issue
 
@@ -72,24 +70,24 @@ def fxtr_new_db_empty_inbox(
     fxtr_mkdir, fxtr_remove, fxtr_remove_opt, fxtr_rmdir, fxtr_rmdir_opt
 ):
     """Fixture: New empty database, but no inbox directory."""
-    get_config(LOGGER)
+    dcr.get_config(LOGGER)
 
-    fxtr_remove_opt(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
 
-    fxtr_rmdir_opt(cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
 
-    fxtr_mkdir(cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX])
+    fxtr_mkdir(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
 
-    if cfg.metadata is not None:
-        cfg.metadata.clear()
+    if libs.cfg.metadata is not None:
+        libs.cfg.metadata.clear()
 
-    main([cfg.DCR_ARGV_0, cfg.RUN_ACTION_CREATE_DB])
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
     yield
 
-    fxtr_rmdir(cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
 
-    fxtr_remove(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
 
 
 # -----------------------------------------------------------------------------
@@ -98,20 +96,20 @@ def fxtr_new_db_empty_inbox(
 @pytest.fixture()
 def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
     """Fixture: New empty database, but no inbox directory."""
-    get_config(LOGGER)
+    dcr.get_config(LOGGER)
 
-    fxtr_remove_opt(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
 
-    fxtr_rmdir_opt(cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
 
-    if cfg.metadata is not None:
-        cfg.metadata.clear()
+    if libs.cfg.metadata is not None:
+        libs.cfg.metadata.clear()
 
-    main([cfg.DCR_ARGV_0, cfg.RUN_ACTION_CREATE_DB])
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
     yield
 
-    fxtr_remove(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
 
 
 # -----------------------------------------------------------------------------
@@ -120,16 +118,16 @@ def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
 @pytest.fixture()
 def fxtr_no_db(fxtr_remove_opt):
     """Fixture: No database available."""
-    get_config(LOGGER)
+    dcr.get_config(LOGGER)
 
-    fxtr_remove_opt(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
 
-    if cfg.metadata is not None:
-        cfg.metadata.clear()
+    if libs.cfg.metadata is not None:
+        libs.cfg.metadata.clear()
 
     yield
 
-    fxtr_remove_opt(cfg.config[cfg.DCR_CFG_DATABASE_FILE])
+    fxtr_remove_opt(libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE])
 
 
 # -----------------------------------------------------------------------------

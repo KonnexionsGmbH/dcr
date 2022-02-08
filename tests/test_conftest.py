@@ -5,12 +5,12 @@ from pathlib import Path
 
 import pytest
 
-from dcr import initialise_logger
+import dcr
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-LOGGER = initialise_logger()
+LOGGER = dcr.initialise_logger()
 
 
 # -----------------------------------------------------------------------------
