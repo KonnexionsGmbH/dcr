@@ -37,6 +37,20 @@ warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
 
+[[tool.pydoc-markdown.loaders]]
+type = "python"
+search_path = [ "src" ]
+
+[tool.pydoc-markdown.renderer]
+type = "mkdocs"
+output_directory = "."
+content_directory_name = "docs"
+
+[[tool.pydoc-markdown.renderer.pages]]
+title = "API Documentation"
+name = "index"
+contents = [ "dcr.*" ]
+
 [tool.pydocstyle]
 
 [tool.pylint]
@@ -49,5 +63,5 @@ warn_unused_ignores = true
 [tool.pytest.ini_options]
 console_output_style = "count"
 markers = ["issue"]
-pythonpath = "src"
-testpaths = "tests"
+pythonpath = "./src/dcr/"
+testpaths = "./tests/"
