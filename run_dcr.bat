@@ -16,7 +16,7 @@ if ["%1"] EQU [""] (
     echo db_c  - Create the database
     echo m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem
     echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules
-    echo p_i   - Process input folder
+    echo p_i   - Process the inbox folder
     echo ---------------------------------------------------------
     set /P DCR_CHOICE_ACTION="Enter the desired action [default: %DCR_CHOICE_ACTION_DEFAULT%] "
 

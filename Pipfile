@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pandoc = "*"
 PyYAML = "*"
 SQLAlchemy = "*"
-importlib-metadata = "*"
-atomicwrites = "*"
+weasyprint = "*"
 
 [dev-packages]
 bandit = "*"
@@ -19,6 +19,7 @@ mccabe = "*"
 mkdocs = "*"
 mkdocs-material = "*"
 MyPy = "*"
+pandoc = "*"
 pycodestyle = "*"
 pydoc-markdown = "*"
 pydocstyle = "*"
@@ -33,3 +34,4 @@ SQLAlchemy = "*"
 sqlalchemy-stubs = "*"
 types-PyYAML = "*"
 typing-extensions = "*"
+weasyprint = "*"

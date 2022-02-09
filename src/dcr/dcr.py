@@ -31,7 +31,7 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
 
         all   - Run the complete processing of all new documents.
         db_c  - Create the database.
-        p_i   - Process input folder.
+        p_i   - Process the inbox folder.
 
     With the option all, the following process steps are executed
     in this order:

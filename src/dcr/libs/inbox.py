@@ -37,7 +37,7 @@ def check_and_create_inboxes(logger: logging.Logger) -> None:
     if not os.path.isdir(cfg.inbox):
         utils.terminate_fatal(
             logger,
-            "The input directory with the name "
+            "The inbox directory with the name "
             + cfg.inbox
             + " does not exist - error="
             + str(OSError),
@@ -110,42 +110,9 @@ def create_directory(
 
 
 # -----------------------------------------------------------------------------
-# Process the document action 'start'.
-# -----------------------------------------------------------------------------
-def process_document_action_start(
-    logger: logging.Logger, file: pathlib.Path
-) -> None:
-    """Process the document action 'start'.
-
-    Analyses the file name and creates an entry in each of the two database
-    tables document and journal.
-
-    Args:
-        logger (logging.Logger): Current logger.
-        file (pathlib.Path): File.
-    """
-    logger.debug(cfg.LOGGER_START)
-
-    cfg.CURRENT_FILE_NAME = file.name
-    cfg.CURRENT_STEM_NAME = pathlib.PurePath(file).stem
-    cfg.CURRENT_FILE_TYPE = file.suffix[1:].lower()
-
-    db.insert_dbt_document_row(logger)
-
-    db.insert_dbt_journal_row(
-        logger,
-        cfg.JOURNAL_ACTION_01_001,
-        __name__,
-        inspect.stack()[0][3],
-    )
-
-    logger.debug(cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
 # Reject a new document that is faulty.
 # -----------------------------------------------------------------------------
-def process_document_rejected(
+def process_inbox_document_rejected(
     logger: logging.Logger,
     status: str,
     action: str,
@@ -206,6 +173,39 @@ def process_document_rejected(
 
 
 # -----------------------------------------------------------------------------
+# Process the document action 'start'.
+# -----------------------------------------------------------------------------
+def process_inbox_document_start(
+    logger: logging.Logger, file: pathlib.Path
+) -> None:
+    """Process the document action 'start'.
+
+    Analyses the file name and creates an entry in each of the two database
+    tables document and journal.
+
+    Args:
+        logger (logging.Logger): Current logger.
+        file (pathlib.Path): File.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    cfg.CURRENT_FILE_NAME = file.name
+    cfg.CURRENT_STEM_NAME = pathlib.PurePath(file).stem
+    cfg.CURRENT_FILE_TYPE = file.suffix[1:].lower()
+
+    db.insert_dbt_document_row(logger)
+
+    db.insert_dbt_journal_row(
+        logger,
+        cfg.JOURNAL_ACTION_01_001,
+        __name__,
+        inspect.stack()[0][3],
+    )
+
+    logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Process the new document input in the file directory inbox.
 # -----------------------------------------------------------------------------
 def process_inbox_new(logger: logging.Logger) -> None:
@@ -234,13 +234,13 @@ def process_inbox_new(logger: logging.Logger) -> None:
     ).iterdir():
         if file.is_file():
             cfg.total_new += 1
-            process_document_action_start(logger, file)
+            process_inbox_document_start(logger, file)
             if cfg.CURRENT_FILE_TYPE == cfg.FILE_TYPE_PDF:
-                process_input_new_pdf(logger)
+                process_inbox_new_pdf(logger)
             elif cfg.CURRENT_FILE_TYPE == cfg.FILE_TYPE_TXT:
-                process_input_new_pandoc(logger)
+                process_inbox_new_pandoc(logger)
             else:
-                process_document_rejected(
+                process_inbox_document_rejected(
                     logger,
                     cfg.STATUS_INVALID_FILE_TYPE,
                     cfg.JOURNAL_ACTION_01_901,
@@ -286,10 +286,10 @@ def process_inbox_new(logger: logging.Logger) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Prepare the new documents in the input for Pandoc.
+# Prepare the new documents in the inbox for Pandoc.
 # -----------------------------------------------------------------------------
-def process_input_new_pandoc(logger: logging.Logger) -> None:
-    """Prepare the new documents in the input for Pandoc.
+def process_inbox_new_pandoc(logger: logging.Logger) -> None:
+    """Prepare the new documents in the inbox for Pandoc.
 
     Args:
         logger (logging.Logger): [description]
@@ -300,10 +300,10 @@ def process_input_new_pandoc(logger: logging.Logger) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Process the new pdf documents in the input file directory.
+# Process the new pdf documents in the inbox file directory.
 # -----------------------------------------------------------------------------
-def process_input_new_pdf(logger: logging.Logger) -> None:
-    """Process the new pdf documents in the input file directory.
+def process_inbox_new_pdf(logger: logging.Logger) -> None:
+    """Process the new pdf documents in the inbox file directory.
 
     Args:
         logger (logging.Logger): [description]
