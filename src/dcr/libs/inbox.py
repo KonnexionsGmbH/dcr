@@ -146,12 +146,17 @@ def process_document_action_start(
 # Reject a new document that is faulty.
 # -----------------------------------------------------------------------------
 def process_document_rejected(
-    logger: logging.Logger, action: str, module_name: str, function_name: str
+    logger: logging.Logger,
+    status: str,
+    action: str,
+    module_name: str,
+    function_name: str,
 ) -> None:
     """Reject a new document that is faulty.
 
     Args:
         logger (logging.Logger): Current logger.
+        status (str): Current Status.
         action (str): Current action.
         module_name (str): Current module.
         function_name (str): Current function.
@@ -184,7 +189,7 @@ def process_document_rejected(
         cfg.DBT_DOCUMENT,
         cfg.run_id,
         {
-            cfg.DBC_STATUS: cfg.STATUS_REJECTED,
+            cfg.DBC_STATUS: status,
         },
     )
 
@@ -237,6 +242,7 @@ def process_inbox_new(logger: logging.Logger) -> None:
             else:
                 process_document_rejected(
                     logger,
+                    cfg.STATUS_INVALID_FILE_TYPE,
                     cfg.JOURNAL_ACTION_01_901,
                     __name__,
                     inspect.stack()[0][3],
@@ -262,16 +268,13 @@ def process_inbox_new(logger: logging.Logger) -> None:
     #             )
 
     utils.progress_msg(
-        logger,
-        "Number documents new      " + str(cfg.total_new)
+        logger, "Number documents new      " + str(cfg.total_new)
     )
     utils.progress_msg(
-        logger,
-        "Number documents accepted " + str(cfg.total_accepted)
+        logger, "Number documents accepted " + str(cfg.total_accepted)
     )
     utils.progress_msg(
-        logger,
-        "Number documents rejected " + str(cfg.total_rejected)
+        logger, "Number documents rejected " + str(cfg.total_rejected)
     )
     utils.progress_msg(
         logger,
