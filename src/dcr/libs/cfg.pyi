@@ -65,6 +65,7 @@ FILE_TYPE_PDF: str
 FILE_TYPE_TXT: str
 
 JOURNAL_ACTION_01_001: str
+JOURNAL_ACTION_01_901: str
 
 LOCALE: str
 LOGGER_CFG_FILE: str
@@ -83,6 +84,7 @@ STATUS_INVALID_FILE_TYPE: str
 STATUS_NEW: str
 STATUS_NEXT_PANDOC: str
 STATUS_NEXT_TESSERACT: str
+STATUS_REJECTED: str
 STATUS_START: str
 
 # -----------------------------------------------------------------------------

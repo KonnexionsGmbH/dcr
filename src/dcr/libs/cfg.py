@@ -67,6 +67,9 @@ FILE_TYPE_TXT: str = "txt"
 JOURNAL_ACTION_01_001: str = (
     "01.001 New document detected in the 'inbox' file directory"
 )
+JOURNAL_ACTION_01_901: str = (
+    "01.901 Document rejected because of unknown extension"
+)
 
 LOCALE: str = "en_US.UTF-8"
 LOGGER_CFG_FILE: str = "logging_cfg.yaml"
@@ -85,6 +88,7 @@ STATUS_INVALID_FILE_TYPE: str = "invalid_file_type"
 STATUS_NEW: str = "new"
 STATUS_NEXT_PANDOC: str = "next_pandoc"
 STATUS_NEXT_TESSERACT: str = "next_tesseract"
+STATUS_REJECTED: str = "rejected"
 STATUS_START: str = "start"
 
 # -----------------------------------------------------------------------------

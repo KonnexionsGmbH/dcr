@@ -134,15 +134,18 @@ def connect_db_core(logger: logging.Logger) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Create the database tables.
+# Create the database.
 # -----------------------------------------------------------------------------
-def create_db_tables(logger: logging.Logger) -> None:
+def create_database(logger: logging.Logger) -> None:
     """Create the database tables.
 
     Args:
         logger (logging.Logger): Current logger.
     """
     logger.debug(cfg.LOGGER_START)
+
+    print("")
+    utils.progress_msg(logger, "Start: Create the database ...")
 
     db_file_name = get_db_file_name()
 
@@ -153,6 +156,8 @@ def create_db_tables(logger: logging.Logger) -> None:
         )
 
     connect_db_core(logger)
+
+    utils.progress_msg(logger, "Create the database tables ...")
 
     create_dbt_document()
     create_dbt_run()
@@ -188,6 +193,7 @@ def create_db_tables(logger: logging.Logger) -> None:
         + " has been successfully created, version number="
         + cfg.config[cfg.DCR_CFG_DCR_VERSION],
     )
+    utils.progress_msg(logger, "End  : Create the database  ...")
 
     logger.debug(cfg.LOGGER_END)
 
@@ -260,7 +266,7 @@ def create_db_triggers(logger: logging.Logger, table_names: List[str]) -> None:
     """
     logger.debug(cfg.LOGGER_START)
 
-    utils.progress_msg(logger, "Start: Create the database triggers ...")
+    utils.progress_msg(logger, "Create the database triggers ...")
 
     for table_name in table_names:
         create_db_trigger_created_at(table_name)
@@ -308,35 +314,6 @@ def create_dbt_document(table_name: str = cfg.DBT_DOCUMENT) -> None:
             cfg.DBC_STEM_NAME, sqlalchemy.String, nullable=False
         ),
     )
-
-
-# -----------------------------------------------------------------------------
-# Create the table document entry.
-# -----------------------------------------------------------------------------
-def create_dbt_document_row(logger: logging.Logger) -> None:
-    """Create the table document entry.
-
-    Args:
-        logger (logging.Logger): Current logger.
-    """
-    logger.debug(cfg.LOGGER_START)
-
-    insert_dbt_row(
-        logger,
-        cfg.DBT_DOCUMENT,
-        [
-            {
-                cfg.DBC_FILE_NAME: cfg.CURRENT_FILE_NAME,
-                cfg.DBC_FILE_TYPE: cfg.CURRENT_FILE_TYPE,
-                cfg.DBC_STATUS: cfg.STATUS_START,
-                cfg.DBC_STEM_NAME: cfg.CURRENT_STEM_NAME,
-            },
-        ],
-    )
-
-    cfg.document_id = select_dbt_id_last(logger, cfg.DBT_DOCUMENT)
-
-    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -392,42 +369,6 @@ def create_dbt_journal(table_name: str = cfg.DBT_JOURNAL) -> None:
             cfg.DBC_DOCUMENT_ID, cfg.DBC_ACTION_CODE, name="unique_key_1"
         ),
     )
-
-
-# -----------------------------------------------------------------------------
-# Create the table journal entry.
-# -----------------------------------------------------------------------------
-def create_dbt_journal_row(
-    logger: logging.Logger, action: str, module_name: str, function_name: str
-) -> None:
-    """Create the table journal entry.
-
-    Args:
-        logger (logging.Logger): Current logger.
-        action (str): Current action.
-        module_name (str): Current module.
-        function_name (str): Current function.
-    """
-    logger.debug(cfg.LOGGER_START)
-
-    insert_dbt_row(
-        logger,
-        cfg.DBT_JOURNAL,
-        [
-            {
-                cfg.DBC_ACTION_CODE: action[0:7],
-                cfg.DBC_ACTION_TEXT: action[7:],
-                cfg.DBC_DOCUMENT_ID: cfg.document_id,
-                cfg.DBC_FUNCTION_NAME: function_name,
-                cfg.DBC_MODULE_NAME: module_name,
-                cfg.DBC_RUN_ID: cfg.run_id,
-            },
-        ],
-    )
-
-    cfg.journal_id = select_dbt_id_last(logger, cfg.DBT_JOURNAL)
-
-    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -492,24 +433,6 @@ def create_dbt_run(table_name: str = cfg.DBT_RUN) -> None:
             nullable=True,
         ),
     )
-
-
-# -----------------------------------------------------------------------------
-# Create the table run entry.
-# -----------------------------------------------------------------------------
-def create_dbt_run_row(logger: logging.Logger) -> None:
-    """Create the table run entry.
-
-    Args:
-        logger (logging.Logger): Current logger.
-    """
-    logger.debug(cfg.LOGGER_START)
-
-    insert_dbt_row(logger, cfg.DBT_RUN, [{cfg.DBC_STATUS: cfg.STATUS_START}])
-
-    cfg.run_id = select_dbt_id_last(logger, cfg.DBT_RUN)
-
-    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -637,6 +560,71 @@ def get_db_url() -> str:
 
 
 # -----------------------------------------------------------------------------
+# Insert the table document entry.
+# -----------------------------------------------------------------------------
+def insert_dbt_document_row(logger: logging.Logger) -> None:
+    """Insert the table document entry.
+
+    Args:
+        logger (logging.Logger): Current logger.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    insert_dbt_row(
+        logger,
+        cfg.DBT_DOCUMENT,
+        [
+            {
+                cfg.DBC_FILE_NAME: cfg.CURRENT_FILE_NAME,
+                cfg.DBC_FILE_TYPE: cfg.CURRENT_FILE_TYPE,
+                cfg.DBC_STATUS: cfg.STATUS_START,
+                cfg.DBC_STEM_NAME: cfg.CURRENT_STEM_NAME,
+            },
+        ],
+    )
+
+    cfg.document_id = select_dbt_id_last(logger, cfg.DBT_DOCUMENT)
+
+    logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Insert the table journal entry.
+# -----------------------------------------------------------------------------
+def insert_dbt_journal_row(
+    logger: logging.Logger, action: str, module_name: str, function_name: str
+) -> None:
+    """Insert the table journal entry.
+
+    Args:
+        logger (logging.Logger): Current logger.
+        action (str): Current action.
+        module_name (str): Current module.
+        function_name (str): Current function.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    insert_dbt_row(
+        logger,
+        cfg.DBT_JOURNAL,
+        [
+            {
+                cfg.DBC_ACTION_CODE: action[0:7],
+                cfg.DBC_ACTION_TEXT: action[7:],
+                cfg.DBC_DOCUMENT_ID: cfg.document_id,
+                cfg.DBC_FUNCTION_NAME: function_name,
+                cfg.DBC_MODULE_NAME: module_name,
+                cfg.DBC_RUN_ID: cfg.run_id,
+            },
+        ],
+    )
+
+    cfg.journal_id = select_dbt_id_last(logger, cfg.DBT_JOURNAL)
+
+    logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Insert a new row into a database table.
 # -----------------------------------------------------------------------------
 def insert_dbt_row(
@@ -655,6 +643,24 @@ def insert_dbt_row(
 
     with cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(insert(dbt).values(columns))
+
+    logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Insert the table run entry.
+# -----------------------------------------------------------------------------
+def insert_dbt_run_row(logger: logging.Logger) -> None:
+    """Insert the table run entry.
+
+    Args:
+        logger (logging.Logger): Current logger.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    insert_dbt_row(logger, cfg.DBT_RUN, [{cfg.DBC_STATUS: cfg.STATUS_START}])
+
+    cfg.run_id = select_dbt_id_last(logger, cfg.DBT_RUN)
 
     logger.debug(cfg.LOGGER_END)
 

@@ -11,6 +11,7 @@ import inspect
 import logging.config
 import os
 import pathlib
+import shutil
 
 from libs import cfg
 from libs import db
@@ -109,6 +110,97 @@ def create_directory(
 
 
 # -----------------------------------------------------------------------------
+# Process the document action 'start'.
+# -----------------------------------------------------------------------------
+def process_document_action_start(
+    logger: logging.Logger, file: pathlib.Path
+) -> None:
+    """Process the document action 'start'.
+
+    Analyses the file name and creates an entry in each of the two database
+    tables document and journal.
+
+    Args:
+        logger (logging.Logger): Current logger.
+        file (pathlib.Path): File.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    cfg.CURRENT_FILE_NAME = file.name
+    cfg.CURRENT_STEM_NAME = pathlib.PurePath(file).stem
+    cfg.CURRENT_FILE_TYPE = file.suffix[1:].lower()
+
+    db.insert_dbt_document_row(logger)
+
+    db.insert_dbt_journal_row(
+        logger,
+        cfg.JOURNAL_ACTION_01_001,
+        __name__,
+        inspect.stack()[0][3],
+    )
+
+    logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Reject a new document that is faulty.
+# -----------------------------------------------------------------------------
+def process_document_rejected(
+    logger: logging.Logger, action: str, module_name: str, function_name: str
+) -> None:
+    """Reject a new document that is faulty.
+
+    Args:
+        logger (logging.Logger): Current logger.
+        action (str): Current action.
+        module_name (str): Current module.
+        function_name (str): Current function.
+    """
+    logger.debug(cfg.LOGGER_START)
+
+    source_file = os.path.join(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX], cfg.CURRENT_FILE_NAME
+    )
+    target_file = os.path.join(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED],
+        cfg.CURRENT_FILE_NAME + "_" + str(cfg.document_id),
+    )
+
+    try:
+        shutil.move(source_file, target_file)
+    except shutil.Error as err:
+        utils.terminate_fatal(
+            logger,
+            "Issue when moving "
+            + source_file
+            + " to "
+            + target_file
+            + " - error="
+            + str(err),
+        )
+
+    db.update_dbt_id(
+        logger,
+        cfg.DBT_DOCUMENT,
+        cfg.run_id,
+        {
+            cfg.DBC_STATUS: cfg.STATUS_REJECTED,
+        },
+    )
+
+    db.insert_dbt_journal_row(
+        logger,
+        action,
+        module_name,
+        function_name,
+    )
+
+    cfg.total_rejected += 1
+
+    logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Process the new document input in the file directory inbox.
 # -----------------------------------------------------------------------------
 def process_inbox_new(logger: logging.Logger) -> None:
@@ -136,20 +228,19 @@ def process_inbox_new(logger: logging.Logger) -> None:
         cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX]
     ).iterdir():
         if file.is_file():
-            cfg.CURRENT_FILE_NAME = file.name
-            cfg.CURRENT_STEM_NAME = pathlib.PurePath(file).stem
-            cfg.CURRENT_FILE_TYPE = file.suffix[1:].lower()
-            db.create_dbt_document_row(logger)
-            db.create_dbt_journal_row(
-                logger,
-                cfg.JOURNAL_ACTION_01_001,
-                __name__,
-                inspect.stack()[0][3],
-            )
+            cfg.total_new += 1
+            process_document_action_start(logger, file)
             if cfg.CURRENT_FILE_TYPE == cfg.FILE_TYPE_PDF:
                 process_input_new_pdf(logger)
             elif cfg.CURRENT_FILE_TYPE == cfg.FILE_TYPE_TXT:
                 process_input_new_pandoc(logger)
+            else:
+                process_document_rejected(
+                    logger,
+                    cfg.JOURNAL_ACTION_01_901,
+                    __name__,
+                    inspect.stack()[0][3],
+                )
 
     # for file in pathlib.Path(inbox).iterdir():
     #     if file.is_file():
@@ -172,6 +263,18 @@ def process_inbox_new(logger: logging.Logger) -> None:
 
     utils.progress_msg(
         logger,
+        "Number documents new      " + str(cfg.total_new)
+    )
+    utils.progress_msg(
+        logger,
+        "Number documents accepted " + str(cfg.total_accepted)
+    )
+    utils.progress_msg(
+        logger,
+        "Number documents rejected " + str(cfg.total_rejected)
+    )
+    utils.progress_msg(
+        logger,
         "The new documents in the inbox file directory are checked and "
         + "prepared for further processing",
     )
@@ -180,10 +283,10 @@ def process_inbox_new(logger: logging.Logger) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Prepare the new documents in the input for Pandocy.
+# Prepare the new documents in the input for Pandoc.
 # -----------------------------------------------------------------------------
 def process_input_new_pandoc(logger: logging.Logger) -> None:
-    """Prepare the new documents in the input for Pandocy.
+    """Prepare the new documents in the input for Pandoc.
 
     Args:
         logger (logging.Logger): [description]

@@ -165,12 +165,10 @@ def main(argv: List[str]) -> None:
 
     if args[cfg.RUN_ACTION_CREATE_DB]:
         # Create the database tables.
-        utils.progress_msg(logger, "Start: Create the database tables ...")
-        db.create_db_tables(logger)
+        db.create_database(logger)
         db.create_dbt_version_row(logger)
     else:
         # Process the documents.
-        utils.progress_msg(logger, "Start: Process the documents ...")
         process_documents(logger, args)
 
     print("End   dcr.py")
@@ -188,6 +186,11 @@ def process_documents(logger: logging.Logger, args: dict[str, bool]) -> None:
         logger (logging.Logger): Current logger.
         args (dict[str, bool]): The processing steps based on CLI arguments.
     """
+    logger.debug(cfg.LOGGER_START)
+
+    print("")
+    utils.progress_msg(logger, "Start: Process the documents ...")
+
     # Connect to the database.
     db.connect_db(logger)
 
@@ -195,7 +198,7 @@ def process_documents(logger: logging.Logger, args: dict[str, bool]) -> None:
     db.check_db_up_to_date(logger)
 
     # Creation of the run entry in the database.
-    db.create_dbt_run_row(logger)
+    db.insert_dbt_run_row(logger)
 
     # Process the documents in the inbox file directory.
     if args[cfg.RUN_ACTION_PROCESS_INBOX]:
@@ -206,6 +209,10 @@ def process_documents(logger: logging.Logger, args: dict[str, bool]) -> None:
 
     # Disconnect from the database.
     db.disconnect_db(logger)
+
+    utils.progress_msg(logger, "End  : Process the documents ...")
+
+    logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
