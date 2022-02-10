@@ -107,20 +107,38 @@ def prepare_pdf() -> None:
     """Prepare a new pdf document for further processing."""
     cfg.logger.debug(cfg.LOGGER_START)
 
-    extracted_text = "".join(
-        [page.get_text() for page in fitz.open(utils.get_file_name_inbox())]
-    )
-
-    if bool(extracted_text):
-        process_inbox_accepted(
-            cfg.JOURNAL_ACTION_11_003,
-            inspect.stack()[0][3],
-            __name__,
-            cfg.STATUS_PARSER_READY,
-            utils.get_file_name_inbox_accepted(),
+    try:
+        extracted_text = "".join(
+            [
+                page.get_text()
+                for page in fitz.open(utils.get_file_name_inbox())
+            ]
         )
-    else:
-        prepare_pdf_for_tesseract()
+
+        if bool(extracted_text):
+            process_inbox_accepted(
+                cfg.JOURNAL_ACTION_11_003,
+                inspect.stack()[0][3],
+                __name__,
+                cfg.STATUS_PARSER_READY,
+                utils.get_file_name_inbox_accepted(),
+            )
+        else:
+            prepare_pdf_for_tesseract()
+    except OSError:
+        process_inbox_rejected(
+            db.update_document_status(
+                "The file  "
+                + utils.get_file_name_inbox()
+                + " can not be processed - error code="
+                + str(OSError.errno)
+                + " message="
+                + OSError.strerror,
+                inspect.stack()[0][3],
+                __name__,
+                cfg.STATUS_REJECTED_FILE_ERROR,
+            )
+        )
 
     cfg.logger.debug(cfg.LOGGER_END)
 
