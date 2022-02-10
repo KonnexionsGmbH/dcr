@@ -23,7 +23,7 @@ from libs import utils
 # -----------------------------------------------------------------------------
 # Load the command line arguments into memory.
 # -----------------------------------------------------------------------------
-def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
+def get_args(argv: List[str]) -> dict[str, bool]:
     """Load the command line arguments into memory.
 
     The command line arguments define the process steps to be executed.
@@ -31,7 +31,7 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
 
         all   - Run the complete processing of all new documents.
         db_c  - Create the database.
-        p_i   - Process the inbox folder.
+        p_i   - Process the inbox directory.
 
     With the option all, the following process steps are executed
     in this order:
@@ -39,22 +39,21 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
         1. p_i
 
     Args:
-        logger (logging.Logger): Current logger.
         argv (List[str]): Command line arguments.
 
     Returns:
         dict[str, bool]: The processing steps based on CLI arguments.
     """
-    logger.debug(cfg.LOGGER_START)
+    cfg.logger.debug(cfg.LOGGER_START)
 
     num = len(argv)
 
     if num == 0:
-        utils.terminate_fatal(logger, "No command line arguments found")
+        utils.terminate_fatal("No command line arguments found")
 
     if num == 1:
         utils.terminate_fatal(
-            logger, "The specific command line arguments are missing"
+            "The specific command line arguments are missing"
         )
 
     args = {
@@ -73,14 +72,12 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
             args[arg] = True
         else:
             utils.terminate_fatal(
-                logger, "Unknown command line argument='" + argv[i] + "'"
+                "Unknown command line argument='" + argv[i] + "'"
             )
 
-    utils.progress_msg(
-        logger, "The command line arguments are validated and loaded"
-    )
+    utils.progress_msg("The command line arguments are validated and loaded")
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
     return args
 
@@ -88,16 +85,13 @@ def get_args(logger: logging.Logger, argv: List[str]) -> dict[str, bool]:
 # -----------------------------------------------------------------------------
 # Load the configuration parameters into memory.
 # -----------------------------------------------------------------------------
-def get_config(logger: logging.Logger) -> None:
+def get_config() -> None:
     """Load the configuration parameters into memory.
 
     Loads the configuration parameters from the `setup.cfg` file under
     the `DCR` section into memory.
-
-    Args:
-        logger (logging.Logger): Current logger.
     """
-    logger.debug(cfg.LOGGER_START)
+    cfg.logger.debug(cfg.LOGGER_START)
 
     config_parser = configparser.ConfigParser()
     config_parser.read(cfg.DCR_CFG_FILE)
@@ -107,34 +101,26 @@ def get_config(logger: logging.Logger) -> None:
             for (key, value) in config_parser.items(section):
                 cfg.config[key] = value
 
-    utils.progress_msg(
-        logger, "The configuration parameters are checked and loaded"
-    )
+    utils.progress_msg("The configuration parameters are checked and loaded")
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Initialising the logging functionality.
 # -----------------------------------------------------------------------------
-def initialise_logger() -> logging.Logger:
-    """Initialise the root logging functionality.
-
-    Returns:
-        logging.Logger: Root logger.
-    """
+def initialise_logger() -> None:
+    """Initialise the root logging functionality."""
     with open(
         cfg.LOGGER_CFG_FILE, "r", encoding=cfg.FILE_ENCODING_DEFAULT
     ) as file:
         log_config = yaml.safe_load(file.read())
 
     logging.config.dictConfig(log_config)
-    logger = logging.getLogger("dcr.py")
-    logger.setLevel(logging.DEBUG)
+    cfg.logger = logging.getLogger("dcr.py")
+    cfg.logger.setLevel(logging.DEBUG)
 
-    utils.progress_msg(logger, "The logger is configured and ready")
-
-    return logger
+    utils.progress_msg("The logger is configured and ready")
 
 
 # -----------------------------------------------------------------------------
@@ -149,85 +135,82 @@ def main(argv: List[str]) -> None:
         argv (List[str]): Command line arguments.
     """
     # Initialise the logging functionality.
-    logger = initialise_logger()
+    initialise_logger()
 
-    logger.debug(cfg.LOGGER_START)
+    cfg.logger.debug(cfg.LOGGER_START)
 
     print("Start dcr.py")
 
     locale.setlocale(locale.LC_ALL, cfg.LOCALE)
 
     # Load the command line arguments into the memory.
-    args = get_args(logger, argv)
+    args = get_args(argv)
 
     # Load the configuration parameters into the memory.
-    get_config(logger)
+    get_config()
 
     if args[cfg.RUN_ACTION_CREATE_DB]:
-        # Create the database tables.
-        db.create_database(logger)
-        db.create_dbt_version_row(logger)
+        # Create the database.
+        print("")
+        utils.progress_msg("Start: Create the database ...")
+        db.create_database()
+        utils.progress_msg("End  : Create the database ...")
     else:
         # Process the documents.
-        process_documents(logger, args)
+        print("")
+        utils.progress_msg("Start: Process the documents ...")
+        process_documents(args)
+        utils.progress_msg("End  : Process the documents ...")
 
     print("End   dcr.py")
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Process the documents.
 # -----------------------------------------------------------------------------
-def process_documents(logger: logging.Logger, args: dict[str, bool]) -> None:
+def process_documents(args: dict[str, bool]) -> None:
     """Process the documents.
 
     Args:
-        logger (logging.Logger): Current logger.
         args (dict[str, bool]): The processing steps based on CLI arguments.
     """
-    logger.debug(cfg.LOGGER_START)
-
-    print("")
-    utils.progress_msg(logger, "Start: Process the documents ...")
+    cfg.logger.debug(cfg.LOGGER_START)
 
     # Connect to the database.
-    db.connect_db(logger)
+    db.connect_db()
 
     # Check the version of the database.
-    db.check_db_up_to_date(logger)
+    db.check_db_up_to_date()
 
     # Creation of the run entry in the database.
-    db.insert_dbt_run_row(logger)
+    db.insert_dbt_run_row()
 
     # Process the documents in the inbox file directory.
     if args[cfg.RUN_ACTION_PROCESS_INBOX]:
-        inbox.process_inbox_new(logger)
+        print("")
+        utils.progress_msg("Start: Process the inbox directory ...")
+        inbox.process_inbox_files()
+        utils.progress_msg("End  : Process the inbox directory ...")
 
     # Finalise the run entry in the database.
-    terminate_run_entry(logger)
+    terminate_run_entry()
 
     # Disconnect from the database.
-    db.disconnect_db(logger)
+    db.disconnect_db()
 
-    utils.progress_msg(logger, "End  : Process the documents ...")
-
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Terminate the current entry in the database table run.
 # -----------------------------------------------------------------------------
-def terminate_run_entry(logger: logging.Logger) -> None:
-    """Terminate the current entry in the database table run.
-
-    Returns:
-        logging.Logger: Root logger.
-    """
-    logger.debug(cfg.LOGGER_START)
+def terminate_run_entry() -> None:
+    """Terminate the current entry in the database table run."""
+    cfg.logger.debug(cfg.LOGGER_START)
 
     db.update_dbt_id(
-        logger,
         cfg.DBT_RUN,
         cfg.run_id,
         {
@@ -238,7 +221,7 @@ def terminate_run_entry(logger: logging.Logger) -> None:
         },
     )
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------

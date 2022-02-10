@@ -1,5 +1,5 @@
 """Library stub."""
-
+import logging
 from os import PathLike
 from typing import Dict
 from typing import TypeAlias
@@ -12,11 +12,6 @@ from sqlalchemy.engine import Engine
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
-CURRENT_DOCUMENT_STATUS: str
-CURRENT_FILE_NAME: str
-CURRENT_FILE_TYPE: str
-CURRENT_STEM_NAME: str
-
 DBC_ACTION_CODE: str
 DBC_ACTION_TEXT: str
 DBC_CREATED_AT: str
@@ -57,15 +52,39 @@ DCR_CFG_DIRECTORY_INBOX_REJECTED: str
 DCR_CFG_FILE: str
 DCR_CFG_SECTION: str
 
+FILE_ENCODING_DEFAULT: str
+
+FILE_TYPE_BMP: str
+FILE_TYPE_CSV: str
 FILE_TYPE_DOC: str
 FILE_TYPE_DOCX: str
+FILE_TYPE_EPUB: str
+FILE_TYPE_GIF: str
+FILE_TYPE_HTM: str
+FILE_TYPE_HTML: str
+FILE_TYPE_JP2: str
 FILE_TYPE_JPEG: str
 FILE_TYPE_JPG: str
+FILE_TYPE_JSON: str
+FILE_TYPE_MD: str
+FILE_TYPE_ODT: str
 FILE_TYPE_PDF: str
+FILE_TYPE_PMG: str
+FILE_TYPE_PMN: str
+FILE_TYPE_RST: str
+FILE_TYPE_RTF: str
+FILE_TYPE_TIFF: str
 FILE_TYPE_TXT: str
+FILE_TYPE_WEBP: str
 
 JOURNAL_ACTION_01_001: str
+JOURNAL_ACTION_11_001: str
+JOURNAL_ACTION_11_002: str
+JOURNAL_ACTION_11_003: str
+JOURNAL_ACTION_11_004: str
 JOURNAL_ACTION_01_901: str
+JOURNAL_ACTION_01_902: str
+JOURNAL_ACTION_01_903: str
 
 LOCALE: str
 LOGGER_CFG_FILE: str
@@ -79,13 +98,22 @@ RUN_ACTION_ALL_COMPLETE: str
 RUN_ACTION_CREATE_DB: str
 RUN_ACTION_PROCESS_INBOX: str
 
+# STATUS_INVALID_FILE_TYPE: str
+# STATUS_REJECTED: str
+
+STATUS_COMPLETED: str
 STATUS_END: str
-STATUS_INVALID_FILE_TYPE: str
-STATUS_NEW: str
-STATUS_NEXT_PANDOC: str
-STATUS_NEXT_TESSERACT: str
-STATUS_REJECTED: str
+STATUS_INBOX: str
+STATUS_PANDOC_ERROR: str
+STATUS_PANDOC_READY: str
+STATUS_PARSER_ERROR: str
+STATUS_PARSER_READY: str
+STATUS_PDF2IMAGE_ERROR: str
+STATUS_REJECTED_ERROR: str
+STATUS_REJECTED_FILE_TYPE: str
 STATUS_START: str
+STATUS_TESSERACT_ERROR: str
+STATUS_TESSERACT_READY: str
 
 # -----------------------------------------------------------------------------
 # Global Type Definitions.
@@ -101,13 +129,19 @@ document_id: sqlalchemy.Integer
 
 engine: Engine | None
 
+file_name: str
+file_type: str
+
 inbox: PathLike[str] | str
 inbox_accepted: PathLike[str] | str
 inbox_rejected: PathLike[str] | str
 
+logger: logging.Logger | None
 metadata: MetaData
 
 run_id: sqlalchemy.Integer
+
+stem_name: str
 
 total_accepted: int
 total_new: int

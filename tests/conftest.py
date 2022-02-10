@@ -11,6 +11,7 @@ import os
 import shutil
 
 import libs.cfg
+import libs.db
 import pytest
 
 import dcr
@@ -18,7 +19,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-LOGGER = dcr.initialise_logger()
+dcr.initialise_logger()
 
 # @pytest.mark.issue
 
@@ -70,7 +71,7 @@ def fxtr_new_db_empty_inbox(
     fxtr_mkdir, fxtr_remove, fxtr_remove_opt, fxtr_rmdir, fxtr_rmdir_opt
 ):
     """Fixture: New empty database, but no inbox directory."""
-    dcr.get_config(LOGGER)
+    dcr.get_config()
 
     fxtr_remove_opt(libs.db.get_db_file_name())
 
@@ -96,7 +97,7 @@ def fxtr_new_db_empty_inbox(
 @pytest.fixture()
 def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
     """Fixture: New empty database, but no inbox directory."""
-    dcr.get_config(LOGGER)
+    dcr.get_config()
 
     fxtr_remove_opt(libs.db.get_db_file_name())
 
@@ -118,7 +119,7 @@ def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
 @pytest.fixture()
 def fxtr_no_db(fxtr_remove_opt):
     """Fixture: No database available."""
-    dcr.get_config(LOGGER)
+    dcr.get_config()
 
     fxtr_remove_opt(libs.db.get_db_file_name())
 

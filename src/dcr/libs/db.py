@@ -5,7 +5,6 @@ Data definition related processing routines.
 Returns:
     [type]: None.
 """
-import logging.config
 import os
 from pathlib import Path
 from sqlite3 import Error
@@ -31,25 +30,19 @@ from sqlalchemy import update
 # -----------------------------------------------------------------------------
 # Check that the database version is up to date.
 # -----------------------------------------------------------------------------
-def check_db_up_to_date(logger: logging.Logger) -> None:
-    """Check that the database version is up to date.
-
-    Args:
-        logger (logging.Logger): Current logger.
-    """
-    logger.debug(cfg.LOGGER_START)
+def check_db_up_to_date() -> None:
+    """Check that the database version is up-to-date."""
+    cfg.logger.debug(cfg.LOGGER_START)
 
     if not sqlalchemy.inspect(cfg.engine).has_table(cfg.DBT_VERSION):
         utils.terminate_fatal(
-            logger,
             "The database " + get_db_file_name() + " does not yet exist.",
         )
 
-    current_version = select_version_version_unique(logger)
+    current_version = select_version_version_unique()
 
     if cfg.config[cfg.DCR_CFG_DCR_VERSION] != current_version:
         utils.terminate_fatal(
-            logger,
             "Current database version is "
             + current_version
             + " - but expected version is "
@@ -57,118 +50,95 @@ def check_db_up_to_date(logger: logging.Logger) -> None:
         )
 
     utils.progress_msg(
-        logger,
         "The current version of database "
         + get_db_file_name()
         + " is "
         + current_version,
     )
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Connect to the database.
 # -----------------------------------------------------------------------------
-def connect_db(logger: logging.Logger) -> None:
-    """Connect to the database.
-
-    Args:
-        logger (logging.Logger): Current logger.
-    """
-    logger.debug(cfg.LOGGER_START)
+def connect_db() -> None:
+    """Connect to the database."""
+    cfg.logger.debug(cfg.LOGGER_START)
 
     db_file_name = get_db_file_name()
 
     if not os.path.isfile(db_file_name):
         utils.terminate_fatal(
-            logger,
             "Database file " + db_file_name + " is missing",
         )
 
-    connect_db_core(logger)
+    connect_db_core()
 
     utils.progress_msg(
-        logger,
         "The database " + db_file_name + " is connected",
     )
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Connect to the database - core functionality.
 # -----------------------------------------------------------------------------
-def connect_db_core(logger: logging.Logger) -> None:
-    """Connect to the database - core functionality.
-
-    Args:
-        logger (logging.Logger): Current logger.
-    """
-    logger.debug(cfg.LOGGER_START)
+def connect_db_core() -> None:
+    """Connect to the database - core functionality."""
+    cfg.logger.debug(cfg.LOGGER_START)
 
     try:
         cfg.metadata = MetaData()
     except Error as err:
         utils.terminate_fatal(
-            logger,
             "SQLAlchemy metadata not accessible - error=" + str(err),
         )
     try:
         cfg.engine = sqlalchemy.create_engine(get_db_url())
     except Error as err:
         utils.terminate_fatal(
-            logger,
             "SQLAlchemy engine not accessible - error=" + str(err),
         )
     try:
         cfg.metadata.bind = cfg.engine
     except Error as err:
         utils.terminate_fatal(
-            logger,
             "SQLAlchemy metadata not connectable with engine - error="
             + str(err),
         )
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Create the database.
 # -----------------------------------------------------------------------------
-def create_database(logger: logging.Logger) -> None:
-    """Create the database tables.
-
-    Args:
-        logger (logging.Logger): Current logger.
-    """
-    logger.debug(cfg.LOGGER_START)
-
-    print("")
-    utils.progress_msg(logger, "Start: Create the database ...")
+def create_database() -> None:
+    """Create the database tables."""
+    cfg.logger.debug(cfg.LOGGER_START)
 
     db_file_name = get_db_file_name()
 
     if os.path.isfile(db_file_name):
         utils.terminate_fatal(
-            logger,
             "Database file " + db_file_name + " is already existing",
         )
 
-    connect_db_core(logger)
+    connect_db_core()
 
-    utils.progress_msg(logger, "Create the database tables ...")
+    utils.progress_msg("Create the database tables ...")
 
-    create_dbt_document()
-    create_dbt_run()
-    create_dbt_version()
+    create_dbt_document(cfg.DBT_DOCUMENT)
+    create_dbt_run(cfg.DBT_RUN)
+    create_dbt_version(cfg.DBT_VERSION)
     # FK: document
     # FK: run
-    create_dbt_journal()
+    create_dbt_journal(cfg.DBT_JOURNAL)
 
     # Create the database triggers.
     create_db_triggers(
-        logger,
         [
             cfg.DBT_DOCUMENT,
             cfg.DBT_JOURNAL,
@@ -181,21 +151,20 @@ def create_database(logger: logging.Logger) -> None:
         cfg.metadata.create_all(cfg.engine)
     except Error as err:
         utils.terminate_fatal(
-            logger,
             "SQLAlchemy 'metadata.create_all(engine)' issue - error="
             + str(err),
         )
 
+    insert_dbt_version_row()
+
     utils.progress_msg(
-        logger,
         "The database "
         + db_file_name
         + " has been successfully created, version number="
         + cfg.config[cfg.DCR_CFG_DCR_VERSION],
     )
-    utils.progress_msg(logger, "End  : Create the database  ...")
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -257,29 +226,28 @@ ON xxx FOR EACH ROW
 # -----------------------------------------------------------------------------
 # Create the triggers for the database tables.
 # -----------------------------------------------------------------------------
-def create_db_triggers(logger: logging.Logger, table_names: List[str]) -> None:
+def create_db_triggers(table_names: List[str]) -> None:
     """Create the triggers for the database tables.
 
     Args:
-        logger (logging.Logger): Current logger.
-        table_names(List[str)]: Table names.
+        table_names (List[str]): Table names.
     """
-    logger.debug(cfg.LOGGER_START)
+    cfg.logger.debug(cfg.LOGGER_START)
 
-    utils.progress_msg(logger, "Create the database triggers ...")
+    utils.progress_msg("Create the database triggers ...")
 
     for table_name in table_names:
         create_db_trigger_created_at(table_name)
         if table_name != cfg.DBT_JOURNAL:
             create_db_trigger_modified_at(table_name)
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Create the database table document.
 # -----------------------------------------------------------------------------
-def create_dbt_document(table_name: str = cfg.DBT_DOCUMENT) -> None:
+def create_dbt_document(table_name: str) -> None:
     """Create the database table document.
 
     Args:
@@ -319,7 +287,7 @@ def create_dbt_document(table_name: str = cfg.DBT_DOCUMENT) -> None:
 # -----------------------------------------------------------------------------
 # Create the database table journal.
 # -----------------------------------------------------------------------------
-def create_dbt_journal(table_name: str = cfg.DBT_JOURNAL) -> None:
+def create_dbt_journal(table_name: str) -> None:
     """Create the database table journal.
 
     Args:
@@ -374,7 +342,7 @@ def create_dbt_journal(table_name: str = cfg.DBT_JOURNAL) -> None:
 # -----------------------------------------------------------------------------
 # Create the database table run.
 # -----------------------------------------------------------------------------
-def create_dbt_run(table_name: str = cfg.DBT_RUN) -> None:
+def create_dbt_run(table_name: str) -> None:
     """Create the database table run.
 
     Args:
@@ -439,7 +407,7 @@ def create_dbt_run(table_name: str = cfg.DBT_RUN) -> None:
 # Create and initialise the database table version.
 # -----------------------------------------------------------------------------
 def create_dbt_version(
-    table_name: str = cfg.DBT_VERSION,
+    table_name: str,
 ) -> None:
     """Create and initialise the database table version.
 
@@ -475,45 +443,16 @@ def create_dbt_version(
 
 
 # -----------------------------------------------------------------------------
-# Create the table version entry.
-# -----------------------------------------------------------------------------
-def create_dbt_version_row(logger: logging.Logger) -> None:
-    """Create the table version entry.
-
-    Args:
-        logger (logging.Logger): Current logger.
-    """
-    logger.debug(cfg.LOGGER_START)
-
-    connect_db_core(logger)
-
-    insert_dbt_row(
-        logger,
-        cfg.DBT_VERSION,
-        [{cfg.DBC_VERSION: cfg.config[cfg.DCR_CFG_DCR_VERSION]}],
-    )
-
-    disconnect_db(logger)
-
-    logger.debug(cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
 # Disconnect the database.
 # -----------------------------------------------------------------------------
-def disconnect_db(logger: logging.Logger) -> None:
-    """Disconnect the database.
-
-    Args:
-        logger (logging.Logger): Current logger.
-    """
-    logger.debug(cfg.LOGGER_START)
+def disconnect_db() -> None:
+    """Disconnect the database."""
+    cfg.logger.debug(cfg.LOGGER_START)
 
     try:
         cfg.metadata.clear()
     except Error as err:
         utils.terminate_fatal(
-            logger,
             "SQLAlchemy metadata could not be cleared - error=" + str(err),
         )
 
@@ -521,16 +460,14 @@ def disconnect_db(logger: logging.Logger) -> None:
         cfg.engine.dispose()
     except Error as err:
         utils.terminate_fatal(
-            logger,
             "SQLAlchemy engine could not be disposed - error=" + str(err),
         )
 
     utils.progress_msg(
-        logger,
         "The database " + get_db_file_name() + " is disconnected",
     )
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -562,50 +499,45 @@ def get_db_url() -> str:
 # -----------------------------------------------------------------------------
 # Insert the table document entry.
 # -----------------------------------------------------------------------------
-def insert_dbt_document_row(logger: logging.Logger) -> None:
-    """Insert the table document entry.
-
-    Args:
-        logger (logging.Logger): Current logger.
-    """
-    logger.debug(cfg.LOGGER_START)
+def insert_dbt_document_row() -> None:
+    """Insert the table document entry."""
+    cfg.logger.debug(cfg.LOGGER_START)
 
     insert_dbt_row(
-        logger,
         cfg.DBT_DOCUMENT,
         [
             {
-                cfg.DBC_FILE_NAME: cfg.CURRENT_FILE_NAME,
-                cfg.DBC_FILE_TYPE: cfg.CURRENT_FILE_TYPE,
-                cfg.DBC_STATUS: cfg.STATUS_START,
-                cfg.DBC_STEM_NAME: cfg.CURRENT_STEM_NAME,
+                cfg.DBC_FILE_NAME: cfg.file_name,
+                cfg.DBC_FILE_TYPE: cfg.file_type,
+                cfg.DBC_STATUS: cfg.STATUS_INBOX,
+                cfg.DBC_STEM_NAME: cfg.stem_name,
             },
         ],
     )
 
-    cfg.document_id = select_dbt_id_last(logger, cfg.DBT_DOCUMENT)
+    cfg.document_id = select_dbt_id_last(cfg.DBT_DOCUMENT)
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Insert the table journal entry.
 # -----------------------------------------------------------------------------
 def insert_dbt_journal_row(
-    logger: logging.Logger, action: str, module_name: str, function_name: str
+    action: str,
+    function_name: str,
+    module_name: str,
 ) -> None:
     """Insert the table journal entry.
 
     Args:
-        logger (logging.Logger): Current logger.
         action (str): Current action.
-        module_name (str): Current module.
-        function_name (str): Current function.
+        function_name (str): Name of the originating function.
+        module_name (str): Name of the originating module.
     """
-    logger.debug(cfg.LOGGER_START)
+    cfg.logger.debug(cfg.LOGGER_START)
 
     insert_dbt_row(
-        logger,
         cfg.DBT_JOURNAL,
         [
             {
@@ -619,70 +551,79 @@ def insert_dbt_journal_row(
         ],
     )
 
-    cfg.journal_id = select_dbt_id_last(logger, cfg.DBT_JOURNAL)
+    cfg.journal_id = select_dbt_id_last(cfg.DBT_JOURNAL)
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Insert a new row into a database table.
 # -----------------------------------------------------------------------------
-def insert_dbt_row(
-    logger: logging.Logger, table_name: str, columns: cfg.Columns
-) -> None:
+def insert_dbt_row(table_name: str, columns: cfg.Columns) -> None:
     """Insert a new row into a database table.
 
     Args:
-        logger (logging.Logger): Current logger.
         table_name (str): Table name.
         columns (Columns): Pairs of column name and value.
     """
-    logger.debug(cfg.LOGGER_START)
+    cfg.logger.debug(cfg.LOGGER_START)
 
     dbt = Table(table_name, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(insert(dbt).values(columns))
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Insert the table run entry.
 # -----------------------------------------------------------------------------
-def insert_dbt_run_row(logger: logging.Logger) -> None:
-    """Insert the table run entry.
+def insert_dbt_run_row() -> None:
+    """Insert the table run entry."""
+    cfg.logger.debug(cfg.LOGGER_START)
 
-    Args:
-        logger (logging.Logger): Current logger.
-    """
-    logger.debug(cfg.LOGGER_START)
+    insert_dbt_row(cfg.DBT_RUN, [{cfg.DBC_STATUS: cfg.STATUS_START}])
 
-    insert_dbt_row(logger, cfg.DBT_RUN, [{cfg.DBC_STATUS: cfg.STATUS_START}])
+    cfg.run_id = select_dbt_id_last(cfg.DBT_RUN)
 
-    cfg.run_id = select_dbt_id_last(logger, cfg.DBT_RUN)
+    cfg.logger.debug(cfg.LOGGER_END)
 
-    logger.debug(cfg.LOGGER_END)
+
+# -----------------------------------------------------------------------------
+# Insert the table version entry.
+# -----------------------------------------------------------------------------
+def insert_dbt_version_row() -> None:
+    """Create the table version entry."""
+    cfg.logger.debug(cfg.LOGGER_START)
+
+    connect_db_core()
+
+    insert_dbt_row(
+        cfg.DBT_VERSION,
+        [{cfg.DBC_VERSION: cfg.config[cfg.DCR_CFG_DCR_VERSION]}],
+    )
+
+    disconnect_db()
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Get the last id from a database table.
 # -----------------------------------------------------------------------------
-def select_dbt_id_last(
-    logger: logging.Logger, table_name: str
-) -> sqlalchemy.Integer:
+def select_dbt_id_last(table_name: str) -> sqlalchemy.Integer:
     """Get the last id from a database table.
 
     Get the version number from the database table `version`.
 
     Args:
-        logger (logging.Logger): Current logger.
         table_name (str): Database table name.
 
     Returns:
         sqlalchemy.Integer: The last id found.
     """
-    logger.debug(cfg.LOGGER_START)
+    cfg.logger.debug(cfg.LOGGER_START)
 
     dbt = Table(table_name, cfg.metadata, autoload_with=cfg.engine)
 
@@ -690,7 +631,7 @@ def select_dbt_id_last(
         result = conn.execute(select(func.max(dbt.c.id)))
         row = result.fetchone()
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
     return row[0]
 
@@ -698,18 +639,15 @@ def select_dbt_id_last(
 # -----------------------------------------------------------------------------
 # Get the version number from the database table version.
 # -----------------------------------------------------------------------------
-def select_version_version_unique(logger: logging.Logger) -> str:
+def select_version_version_unique() -> str:
     """Get the version number.
 
     Get the version number from the database table `version`.
 
-    Args:
-        logger (logging.Logger): Current logger.
-
     Returns:
         str: The version number found.
     """
-    logger.debug(cfg.LOGGER_START)
+    cfg.logger.debug(cfg.LOGGER_START)
 
     dbt = Table(cfg.DBT_VERSION, cfg.metadata, autoload_with=cfg.engine)
 
@@ -721,16 +659,15 @@ def select_version_version_unique(logger: logging.Logger) -> str:
                 current_version = row.version
             else:
                 utils.terminate_fatal(
-                    logger,
                     "Column version in database table version not unique",
                 )
 
     if current_version == "":
         utils.terminate_fatal(
-            logger, "Column version in database table version not found"
+            "Column version in database table version not found"
         )
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
 
     return current_version
 
@@ -739,7 +676,6 @@ def select_version_version_unique(logger: logging.Logger) -> str:
 # Update a database row based on its id column.
 # -----------------------------------------------------------------------------
 def update_dbt_id(
-    logger: logging.Logger,
     table_name: str,
     id_where: sqlalchemy.Integer,
     columns: Dict[str, str],
@@ -747,35 +683,67 @@ def update_dbt_id(
     """Update a database row based on its id column.
 
     Args:
-        logger (logging.Logger): Current logger.
         table_name (str): Table name.
         id_where (sqlalchemy.Integer): Content of column id.
         columns (Columns): Pairs of column name and value.
     """
-    logger.debug(cfg.LOGGER_START)
+    cfg.logger.debug(cfg.LOGGER_START)
 
     dbt = Table(table_name, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(update(dbt).where(dbt.c.id == id_where).values(columns))
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Update the document status and create a new journal entry.
+# -----------------------------------------------------------------------------
+def update_document_status(
+    action: str,
+    function_name: str,
+    module_name: str,
+    status: str,
+) -> None:
+    """Update the document status and create a new journal entry.
+
+    Args:
+        action (str): Current action.
+        function_name (str): Name of the originating function.
+        module_name (str): Name of the originating module.
+        status (str): Current document status.
+    """
+    cfg.logger.debug(cfg.LOGGER_START)
+
+    update_dbt_id(
+        cfg.DBT_DOCUMENT,
+        cfg.document_id,
+        {
+            cfg.DBC_STATUS: status,
+        },
+    )
+
+    insert_dbt_journal_row(
+        action,
+        function_name,
+        module_name,
+    )
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Upgrade the current database schema..
 # -----------------------------------------------------------------------------
-def upgrade_db(logger: logging.Logger) -> None:
+def upgrade_db() -> None:
     """Upgrade the current database schema.
 
     Check if the current database schema needs to be upgraded and perform the
     necessary steps.
-
-    Args:
-        logger (logging.Logger): Current logger.
     """
-    logger.debug(cfg.LOGGER_START)
+    cfg.logger.debug(cfg.LOGGER_START)
 
     # TBD: Database upgrade
 
-    logger.debug(cfg.LOGGER_END)
+    cfg.logger.debug(cfg.LOGGER_END)

@@ -1,19 +1,60 @@
 """Helper functions."""
 import datetime
-import logging
+import os
 import sys
 
 from libs import cfg
 
 
 # -----------------------------------------------------------------------------
-# Terminate the application immediately..
+# Get the file name as per inbox.
 # -----------------------------------------------------------------------------
-def progress_msg(logger: logging.Logger, msg: str) -> None:
+def get_file_name_inbox() -> str:
+    """Get the file name as per inbox.
+
+    Returns:
+        str: File name as per inbox.
+    """
+    return os.path.join(cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX], cfg.file_name)
+
+
+# -----------------------------------------------------------------------------
+# Get the file name as per inbox accepted.
+# -----------------------------------------------------------------------------
+def get_file_name_inbox_accepted() -> str:
+    """Get the file name as per inbox accepted.
+
+    Returns:
+        str: File name as per inbox accepted.
+    """
+    return os.path.join(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED],
+        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
+    )
+
+
+# -----------------------------------------------------------------------------
+# Get the file name as per inbox rejected.
+# -----------------------------------------------------------------------------
+def get_file_name_inbox_rejected() -> str:
+    """Get the file name as per inbox rejected.
+
+    Returns:
+        str: File name as per inbox rejected.
+    """
+    return os.path.join(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED],
+        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
+    )
+
+
+# -----------------------------------------------------------------------------
+# Terminate the application immediately.
+# -----------------------------------------------------------------------------
+def progress_msg(msg: str) -> None:
     """Create a progress message.
 
     Args:
-        logger (logging.Logger): Current logger.
         msg (str): Progress message.
     """
     final_msg: str = (
@@ -25,22 +66,23 @@ def progress_msg(logger: logging.Logger, msg: str) -> None:
     )
 
     print(final_msg)
-    logger.debug(final_msg)
+    cfg.logger.debug(final_msg)
 
 
 # -----------------------------------------------------------------------------
-# Terminate the application immediately..
+# Terminate the application immediately.
 # -----------------------------------------------------------------------------
-def terminate_fatal(logger: logging.Logger, error_msg: str) -> None:
+def terminate_fatal(error_msg: str) -> None:
     """Terminate the application immediately.
 
     Args:
-        logger (logging.Logger): Current logger.
         error_msg (str): Error message.
     """
     print("")
     print(cfg.LOGGER_FATAL_HEAD)
     print(cfg.LOGGER_FATAL_HEAD, error_msg, cfg.LOGGER_FATAL_TAIL, sep="")
     print(cfg.LOGGER_FATAL_HEAD)
-    logger.critical(cfg.LOGGER_FATAL_HEAD + error_msg + cfg.LOGGER_FATAL_TAIL)
+    cfg.logger.critical(
+        "%s%s%s", cfg.LOGGER_FATAL_HEAD, error_msg, cfg.LOGGER_FATAL_TAIL
+    )
     sys.exit(1)

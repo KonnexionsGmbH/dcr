@@ -9,7 +9,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-LOGGER = dcr.initialise_logger()
+dcr.initialise_logger()
 
 
 # -----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ LOGGER = dcr.initialise_logger()
 def test_get_args_no():
     """Test: No command line arguments found."""
     with pytest.raises(SystemExit) as expt:
-        dcr.get_args(LOGGER, [])
+        dcr.get_args([])
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
@@ -27,7 +27,7 @@ def test_get_args_no():
 def test_get_args_one():
     """Test: The specific command line arguments are missing."""
     with pytest.raises(SystemExit) as expt:
-        dcr.get_args(LOGGER, [""])
+        dcr.get_args([""])
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
@@ -36,7 +36,7 @@ def test_get_args_one():
 def test_get_args_unknown():
     """Test: Unknown command line argument=xxx."""
     with pytest.raises(SystemExit) as expt:
-        dcr.get_args(LOGGER, ["n/a", "second"])
+        dcr.get_args(["n/a", "second"])
 
     assert expt.type == SystemExit
     assert expt.value.code == 1

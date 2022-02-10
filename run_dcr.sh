@@ -17,7 +17,7 @@ if [ -z "$1" ]; then
     echo "db_c  - Create the database"
     echo "m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem"
     echo "m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules"
-    echo "p_i   - Process the inbox folder"
+    echo "p_i   - Process the inbox directory"
     echo "------------------------------------------------------------------------------"
     read -rp "Enter the desired action [default: ${DCR_CHOICE_ACTION_DEFAULT}] " DCR_CHOICE_ACTION
     export DCR_CHOICE_ACTION=${DCR_CHOICE_ACTION:-$DCR_CHOICE_ACTION_DEFAULT}
