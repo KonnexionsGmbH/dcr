@@ -70,14 +70,15 @@ def fxtr_mkdir_opt(fxtr_mkdir):
 def fxtr_new_db_empty_inbox(
     fxtr_mkdir, fxtr_remove, fxtr_remove_opt, fxtr_rmdir, fxtr_rmdir_opt
 ):
-    """Fixture: New empty database, but no inbox directory."""
+    """Fixture: New empty database and empty inbox directories."""
     dcr.get_config()
 
     fxtr_remove_opt(libs.db.get_db_file_name())
 
     fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
-
     fxtr_mkdir(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
+    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED])
 
     if libs.cfg.metadata is not None:
         libs.cfg.metadata.clear()

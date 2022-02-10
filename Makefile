@@ -175,7 +175,7 @@ pytest-first-issue: ## Run all tests with pytest until the first issue occurs.
 pytest-issue:       ## Run only the tests with pytest which are marked with 'issue'.
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
-	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -m issue --setup-show tests
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -m issue --setup-show -v -x tests
 	@echo "Info **********  End:   pytest **************************************"
 pytest-ci:          ## Run all tests with pytest after test tool installation.
 	@echo "Info **********  Start: pytest **************************************"

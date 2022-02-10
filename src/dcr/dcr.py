@@ -157,10 +157,7 @@ def main(argv: List[str]) -> None:
         utils.progress_msg("End  : Create the database ...")
     else:
         # Process the documents.
-        print("")
-        utils.progress_msg("Start: Process the documents ...")
         process_documents(args)
-        utils.progress_msg("End  : Process the documents ...")
 
     print("End   dcr.py")
 

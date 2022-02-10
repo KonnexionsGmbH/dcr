@@ -495,14 +495,6 @@
             "markers": "python_full_version >= '3.6.2'",
             "version": "==2.9.3"
         },
-        "atomicwrites": {
-            "hashes": [
-                "sha256:6d1784dea7c0c8d4a5172b6c620f40b6e4cbfdf96d783691f2e1302a7b88e197",
-                "sha256:ae70396ad1a434f9c7046fd2dd196fc04b12f9e91ffb859164193be8b6168a7a"
-            ],
-            "markers": "sys_platform == 'win32'",
-            "version": "==1.4.0"
-        },
         "attrs": {
             "hashes": [
                 "sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4",
@@ -698,7 +690,7 @@
                 "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b",
                 "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"
             ],
-            "markers": "python_full_version >= '3.5.0'",
+            "markers": "python_version >= '3.5'",
             "version": "==0.4.4"
         },
         "coverage": {
@@ -1199,7 +1191,7 @@
                 "sha256:1b801f73f50389625722647f6befe15d5b43e507f73ce35569a13efaa2df4c08",
                 "sha256:2dc604155f670a82ae8a433e22c266c9628a88706415b90718bbc6b3a8b6994f"
             ],
-            "markers": "python_full_version >= '3.5.0' and python_full_version < '4.0.0'",
+            "markers": "python_version >= '3.5' and python_full_version < '4.0.0'",
             "version": "==0.2.0"
         },
         "nr.parsing.date": {
@@ -1215,7 +1207,7 @@
                 "sha256:558e82a24cf78e0724745670f9d334d2fd997b91f3f57bee725dab71133dcfae",
                 "sha256:86b91f9b9500f34b367780c26c60dc17c5f8f5784df38cbed7137b0ea6f3fa4d"
             ],
-            "markers": "python_full_version >= '3.5.0' and python_full_version < '4.0.0'",
+            "markers": "python_version >= '3.5' and python_full_version < '4.0.0'",
             "version": "==0.0.4"
         },
         "nr.pylang.utils": {
@@ -1231,7 +1223,7 @@
                 "sha256:76c93c8cc100b22d24fc4d751d35e8850f8094403f28c0862cb55a3644db6592",
                 "sha256:c55118d56bdd88a4cb2a4809f5cf853963de93ec0d1ce9f28d61792f85617000"
             ],
-            "markers": "python_full_version >= '3.5.0' and python_full_version < '4.0.0'",
+            "markers": "python_version >= '3.5' and python_full_version < '4.0.0'",
             "version": "==0.2.3"
         },
         "nr.utils.re": {
@@ -1390,7 +1382,7 @@
                 "sha256:44238f1b60a76d78fc8ca0528ee429702aae011c265fe6a8dd8b63049ae41c65",
                 "sha256:4e426f72023d88d03b2fa258de560726ce890ff3b630f88c21cbb8b2503b8c6a"
             ],
-            "markers": "python_full_version >= '3.5.0'",
+            "markers": "python_version >= '3.5'",
             "version": "==2.11.2"
         },
         "pylint": {

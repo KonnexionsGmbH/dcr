@@ -132,7 +132,7 @@ engine: Engine | None
 file_name: str
 file_type: str
 
-inbox: PathLike[str] | str
+INBOX: PathLike[str] | str
 inbox_accepted: PathLike[str] | str
 inbox_rejected: PathLike[str] | str
 

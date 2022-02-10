@@ -308,9 +308,9 @@ def process_inbox_files() -> None:
                     )
                 )
 
-    utils.progress_msg("Number documents new      " + str(cfg.total_new))
-    utils.progress_msg("Number documents accepted " + str(cfg.total_accepted))
-    utils.progress_msg("Number documents rejected " + str(cfg.total_rejected))
+    utils.progress_msg(f"Number documents new:      {cfg.total_new:6d}")
+    utils.progress_msg(f"Number documents accepted: {cfg.total_accepted:6d}")
+    utils.progress_msg(f"Number documents rejected: {cfg.total_rejected:6d}")
     utils.progress_msg(
         "The new documents in the inbox file directory are checked and "
         + "prepared for further processing",

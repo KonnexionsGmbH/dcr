@@ -1,5 +1,5 @@
 """Definition of the Global Constants, Types and Variables."""
-
+import logging
 from os import PathLike
 from typing import Dict
 from typing import TypeAlias
@@ -12,11 +12,6 @@ from sqlalchemy.engine import Engine
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
-CURRENT_DOCUMENT_STATUS: str = "n/a"
-CURRENT_FILE_NAME: str = "n/a"
-CURRENT_FILE_TYPE: str = "n/a"
-CURRENT_STEM_NAME: str = "n/a"
-
 DBC_ACTION_CODE: str = "action_code"
 DBC_ACTION_TEXT: str = "action_text"
 DBC_CREATED_AT: str = "created_at"
@@ -57,18 +52,53 @@ DCR_CFG_FILE: str = "setup.cfg"
 DCR_CFG_SECTION: str = "dcr"
 
 FILE_ENCODING_DEFAULT: str = "utf-8"
+
+FILE_TYPE_BMP: str = "bmp"
+FILE_TYPE_CSV: str = "csv"
 FILE_TYPE_DOC: str = "doc"
 FILE_TYPE_DOCX: str = "docx"
+FILE_TYPE_EPUB: str = "epub"
+FILE_TYPE_GIF: str = "gif"
+FILE_TYPE_HTM: str = "htm"
+FILE_TYPE_HTML: str = "html"
+FILE_TYPE_JP2: str = "jp2"
 FILE_TYPE_JPEG: str = "jpeg"
 FILE_TYPE_JPG: str = "jpg"
+FILE_TYPE_JSON: str = "json"
+FILE_TYPE_MD: str = "md"
+FILE_TYPE_ODT: str = "odt"
 FILE_TYPE_PDF: str = "pdf"
+FILE_TYPE_PMG: str = "png"
+FILE_TYPE_PMN: str = "pnm"
+FILE_TYPE_RST: str = "rst"
+FILE_TYPE_RTF: str = "rdf"
+FILE_TYPE_TIFF: str = "tiff"
 FILE_TYPE_TXT: str = "txt"
+FILE_TYPE_WEBP: str = "webp"
 
 JOURNAL_ACTION_01_001: str = (
     "01.001 New document detected in the 'inbox' file directory"
 )
+JOURNAL_ACTION_11_001: str = (
+    "11.001 Ready to convert the document to 'pdf' format using Pandoc"
+)
+JOURNAL_ACTION_11_002: str = (
+    "11.002 Ready to convert the document to 'pdf' format using Tesseract OCR"
+)
+JOURNAL_ACTION_11_003: str = "11.003 Ready to parse the pdf document"
+JOURNAL_ACTION_11_004: str = (
+    "11.004 Ready to convert the document to 'pdf' format using Tesseract OCR"
+    + " (after pdf2image processing)"
+)
 JOURNAL_ACTION_01_901: str = (
-    "01.901 Document rejected because of unknown extension"
+    "01.901 Document rejected because of unknown file extension"
+)
+JOURNAL_ACTION_01_902: str = (
+    "01.902 Issue when moving {source_file} to {target_file} - error={error}"
+)
+JOURNAL_ACTION_01_903: str = (
+    "01.903 Issue with pdf2imge processing of file "
+    + "{source_file} - error={error}"
 )
 
 LOCALE: str = "en_US.UTF-8"
@@ -83,13 +113,20 @@ RUN_ACTION_ALL_COMPLETE: str = "all"
 RUN_ACTION_CREATE_DB: str = "db_c"
 RUN_ACTION_PROCESS_INBOX: str = "p_i"
 
+STATUS_COMPLETED: str = "completed"
 STATUS_END: str = "end"
-STATUS_INVALID_FILE_TYPE: str = "invalid_file_type"
-STATUS_NEW: str = "new"
-STATUS_NEXT_PANDOC: str = "next_pandoc"
-STATUS_NEXT_TESSERACT: str = "next_tesseract"
-STATUS_REJECTED: str = "rejected"
+STATUS_INBOX: str = "inbox"
+STATUS_PANDOC_ERROR: str = "pandoc_error"
+STATUS_PANDOC_READY: str = "pandoc_ready"
+STATUS_PARSER_ERROR: str = "parser_error"
+STATUS_PARSER_READY: str = "parser_ready"
+STATUS_PDF2IMAGE_ERROR: str = "pdf2image_error"
+STATUS_REJECTED_ERROR: str = "rejected_error"
+STATUS_REJECTED_FILE_TYPE: str = "rejected_file_type"
 STATUS_START: str = "start"
+STATUS_TESSERACT_ERROR: str = "tesseract_error"
+STATUS_TESSERACT_READY: str = "tesseract_ready"
+
 
 # -----------------------------------------------------------------------------
 # Global Type Definitions.
@@ -105,13 +142,20 @@ document_id: sqlalchemy.Integer | None = None
 
 engine: Engine | None = None
 
-inbox: PathLike[str] | str | None = None
+file_name: str = ""
+file_type: str = ""
+
+INBOX: PathLike[str] | str | None = None
 inbox_accepted: PathLike[str] | str | None = None
 inbox_rejected: PathLike[str] | str | None = None
+
+logger: logging.Logger | None = None
 
 metadata: MetaData | None = None
 
 run_id: sqlalchemy.Integer | None = None
+
+stem_name: str = ""
 
 total_accepted: int = 0
 total_new: int = 0

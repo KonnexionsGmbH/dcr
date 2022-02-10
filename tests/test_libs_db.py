@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module database."""
+"""Testing Module libs.db."""
 
 import libs.cfg
 import libs.db

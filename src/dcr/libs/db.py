@@ -75,8 +75,9 @@ def connect_db() -> None:
 
     connect_db_core()
 
+    print("")
     utils.progress_msg(
-        "The database " + db_file_name + " is connected",
+        "The database " + db_file_name + " is now connected",
     )
 
     cfg.logger.debug(cfg.LOGGER_END)
@@ -463,8 +464,9 @@ def disconnect_db() -> None:
             "SQLAlchemy engine could not be disposed - error=" + str(err),
         )
 
+    print("")
     utils.progress_msg(
-        "The database " + get_db_file_name() + " is disconnected",
+        "The database " + get_db_file_name() + " is now disconnected",
     )
 
     cfg.logger.debug(cfg.LOGGER_END)
