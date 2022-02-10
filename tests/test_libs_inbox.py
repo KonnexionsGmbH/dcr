@@ -34,15 +34,21 @@ def test_file_extension_pdf_ok(fxtr_new_db_empty_inbox):
 
     shutil.copy(TESTS_INBOX + file_source, inbox)
 
+    print("before: inbox=         ",os.listdir(inbox))
+
+    assert len(os.listdir(inbox)) == 1, "before: inbox should contain one file"
+    assert os.path.isfile(inbox + "/" + file_source), "before: inbox should contain source file"
+
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    # Directory inbox ist empty
-    assert not os.listdir(inbox)
-    # Directory inbox_accepted contains exactly one file
-    assert len(os.listdir(inbox_accepted)) == 1
-    assert os.path.isfile(inbox_accepted + "/" + file_target)
-    # Directory inbox_rejected ist empty
-    assert not os.listdir(inbox_rejected)
+    print("after: inbox=         ",os.listdir(inbox))
+    print("after: inbox_accepted=",os.listdir(inbox_accepted))
+    print("after: inbox_rejected=",os.listdir(inbox_rejected))
+
+    assert not os.listdir(inbox), "after: inbox should be empty"
+    assert len(os.listdir(inbox_accepted)) == 1, "after: inbox_accepted should contain one file"
+    assert os.path.isfile(inbox_accepted + "/" + file_target), "after: inbox_accepted should contain target file"
+    assert not os.listdir(inbox_rejected), "after: inbox_rejected should be empty"
 
 
 # -----------------------------------------------------------------------------
@@ -61,16 +67,22 @@ def test_file_extension_pdf_ok_protected(fxtr_new_db_empty_inbox):
     shutil.copy(TESTS_INBOX + file_source, inbox)
 
     os.chmod(inbox + file_source, stat.SF_IMMUTABLE)
+    
+    print("before: inbox=         ",os.listdir(inbox))
+
+    assert len(os.listdir(inbox)) == 1, "before: inbox should contain one file"
+    assert os.path.isfile(inbox + "/" + file_source), "before: inbox should contain source file"
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    # Directory inbox contains exactly one file
-    assert len(os.listdir(inbox)) == 1
-    assert os.path.isfile(inbox_accepted + "/" + file_source)
-    # Directory inbox_accepted ist empty
-    assert not os.listdir(inbox_accepted)
-    # Directory inbox_rejected ist empty
-    assert not os.listdir(inbox_rejected)
+    print("after: inbox=         ",os.listdir(inbox))
+    print("after: inbox_accepted=",os.listdir(inbox_accepted))
+    print("after: inbox_rejected=",os.listdir(inbox_rejected))
+
+    assert len(os.listdir(inbox)) == 1, "after: inbox should contain one file"
+    assert os.path.isfile(inbox + "/" + file_source), "after: inbox should contain source file"
+    assert not os.listdir(inbox_accepted), "after: inbox_accepted should be empty"
+    assert not os.listdir(inbox_rejected), "after: inbox_rejected should be empty"
 
 
 # -----------------------------------------------------------------------------
@@ -87,15 +99,21 @@ def test_file_unknown_file_extension_ok(fxtr_new_db_empty_inbox):
 
     shutil.copy(TESTS_INBOX + file_source, inbox)
 
+    print("before: inbox=         ",os.listdir(inbox))
+
+    assert len(os.listdir(inbox)) == 1, "before: inbox should contain one file"
+    assert os.path.isfile(inbox + "/" + file_source), "before: inbox should contain source file"
+
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    # Directory inbox ist empty
-    assert not os.listdir(inbox)
-    # Directory inbox_accepted ist empty
-    assert not os.listdir(inbox_accepted)
-    # Directory inbox_rejected contains exactly one file
-    assert len(os.listdir(inbox_rejected)) == 1
-    assert os.path.isfile(inbox_rejected + "/" + file_target)
+    print("after: inbox=         ",os.listdir(inbox))
+    print("after: inbox_accepted=",os.listdir(inbox_accepted))
+    print("after: inbox_rejected=",os.listdir(inbox_rejected))
+
+    assert not os.listdir(inbox), "after: inbox should be empty"
+    assert len(os.listdir(inbox_accepted)) == 1, "after: inbox_accepted should contain one file"
+    assert os.path.isfile(inbox_accepted + "/" + file_target), "after: inbox_accepted should contain target file"
+    assert not os.listdir(inbox_rejected), "after: inbox_rejected should be empty"
 
 
 # -----------------------------------------------------------------------------
@@ -115,12 +133,19 @@ def test_file_unknown_file_extension_ok_protected(fxtr_new_db_empty_inbox):
 
     os.chmod(inbox + file_source, stat.SF_IMMUTABLE)
 
+    print("before: inbox=         ",os.listdir(inbox))
+
+    assert len(os.listdir(inbox)) == 1, "before: inbox should contain one file"
+    assert os.path.isfile(inbox + "/" + file_source), "before: inbox should contain source file"
+
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    # Directory inbox contains exactly one file
-    assert len(os.listdir(inbox)) == 1
-    assert os.path.isfile(inbox_accepted + "/" + file_source)
-    # Directory inbox_accepted ist empty
-    assert not os.listdir(inbox_accepted)
-    # Directory inbox_rejected ist empty
-    assert not os.listdir(inbox_rejected)
+    print("after: inbox=         ",os.listdir(inbox))
+    print("after: inbox_accepted=",os.listdir(inbox_accepted))
+    print("after: inbox_rejected=",os.listdir(inbox_rejected))
+
+    assert len(os.listdir(inbox)) == 1, "after: inbox should contain one file"
+    assert os.path.isfile(inbox + "/" + file_source), "after: inbox should contain source file"
+    assert not os.listdir(inbox_accepted), "after: inbox_accepted should be empty"
+    assert not os.listdir(inbox_rejected), "after: inbox_rejected should be empty"
+
