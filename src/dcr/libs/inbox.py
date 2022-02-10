@@ -125,7 +125,7 @@ def prepare_pdf() -> None:
             )
         else:
             prepare_pdf_for_tesseract()
-    except OSError as err:
+    except RuntimeError as err:
         process_inbox_rejected(
             db.update_document_status(
                 cfg.JOURNAL_ACTION_01_904.replace(
