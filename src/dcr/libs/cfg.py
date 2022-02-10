@@ -91,14 +91,19 @@ JOURNAL_ACTION_11_004: str = (
     + " (after pdf2image processing)"
 )
 JOURNAL_ACTION_01_901: str = (
-    "01.901 Document rejected because of unknown file extension"
+    "01.901 Document rejected because of unknown file extension={extension}"
 )
 JOURNAL_ACTION_01_902: str = (
-    "01.902 Issue when moving {source_file} to {target_file} - error={error}"
+    "01.902 Issue when moving {source_file} to {target_file} "
+    + "- error: code={error_code} msg={error_msg}"
 )
 JOURNAL_ACTION_01_903: str = (
-    "01.903 Issue with pdf2imge processing of file "
-    + "{source_file} - error={error}"
+    "01.903 Issue with pdf2image processing of file {source_file} "
+    + "- error: code={error_code} msg={error_msg}"
+)
+JOURNAL_ACTION_01_904: str = (
+    "01.904 Issue with fitz.open() processing of file {source_file} "
+    + "- error: code={error_code} msg={error_msg}"
 )
 
 LOCALE: str = "en_US.UTF-8"

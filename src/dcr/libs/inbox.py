@@ -86,7 +86,7 @@ def create_directory(directory_type: str, directory_name: str) -> None:
                 + "newly created under the name "
                 + directory_name,
             )
-        except OSError:
+        except OSError as err:
             utils.terminate_fatal(
                 " : The file directory for "
                 + directory_type
@@ -94,9 +94,9 @@ def create_directory(directory_type: str, directory_name: str) -> None:
                 + "not be created under the name "
                 + directory_name
                 + " - error code="
-                + str(OSError.errno)
+                + str(err.errno)
                 + " message="
-                + OSError.strerror,
+                + err.strerror,
             )
 
 
@@ -125,19 +125,16 @@ def prepare_pdf() -> None:
             )
         else:
             prepare_pdf_for_tesseract()
-    except OSError:
+    except OSError as err:
         process_inbox_rejected(
             db.update_document_status(
-                "The file  "
-                + utils.get_file_name_inbox()
-                + " can not be processed - error code="
-                + str(OSError.errno)
-                + " message="
-                + OSError.strerror,
+                cfg.JOURNAL_ACTION_01_904.replace(
+                    "{source_file}", utils.get_file_name_inbox()
+                ).replace("{error}", str(err)),
                 inspect.stack()[0][3],
                 __name__,
-                cfg.STATUS_REJECTED_FILE_ERROR,
-            )
+                cfg.STATUS_PDF2IMAGE_ERROR,
+            ),
         )
 
     cfg.logger.debug(cfg.LOGGER_END)
@@ -165,7 +162,9 @@ def prepare_pdf_for_tesseract() -> None:
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_903.replace(
                 "{source_file}", utils.get_file_name_inbox()
-            ).replace("{error}", str(err)),
+            )
+            .replace("{error_code}", str(err))
+            .replace("{error_msg}", err.strerror),
             inspect.stack()[0][3],
             __name__,
             cfg.STATUS_PDF2IMAGE_ERROR,
@@ -210,7 +209,8 @@ def process_inbox_accepted(
                 "{source_file}", utils.get_file_name_inbox()
             )
             .replace("{target_file}", target_file_name)
-            .replace("{error}", str(err)),
+            .replace("{error_code}", str(err))
+            .replace("{error_msg}", err.strerror),
             inspect.stack()[0][3],
             __name__,
             cfg.STATUS_REJECTED_ERROR,
@@ -429,7 +429,8 @@ def process_inbox_rejected(
                 "{source_file}", utils.get_file_name_inbox()
             )
             .replace("{target_file}", utils.get_file_name_inbox_rejected())
-            .replace("{error}", str(err)),
+            .replace("{error_code}", str(err))
+            .replace("{error_msg}", err.strerror),
             inspect.stack()[0][3],
             __name__,
             cfg.STATUS_REJECTED_ERROR,
