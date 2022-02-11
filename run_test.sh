@@ -70,13 +70,7 @@ case "${DCR_CHOICE_ACTION}" in
     rm -rf data/inbox
     mkdir data/inbox
     cp -r tests/inbox/* data/inbox
-    if [ -f "data/inbox/*protected*" ]; then
-      sudo chmod 000 data/inbox/*protected*
-    fi
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
-    if [ -f "data/inbox/*protected*" ]; then
-      sudo chmod 777 data/inbox/*protected*
-    fi
     ;;
   *)
     echo "Usage: ./run_test.sh all | db_c | m_d | m_p | p_i"

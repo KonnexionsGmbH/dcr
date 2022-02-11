@@ -93,9 +93,7 @@ REM > %LOG_FILE% 2>&1 (
     )
 
     if ["%_CHOICE%"] EQU ["%DCR_CHOICE_ACTION%"] (
-        attrib +R data\inbox\*protected*
         pipenv run python src\dcr\dcr.py %DCR_CHOICE_ACTION%
-        attrib -R data\inbox\*protected*
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
         )

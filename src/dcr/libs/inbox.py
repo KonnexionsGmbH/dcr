@@ -148,6 +148,7 @@ def prepare_pdf_for_tesseract() -> None:
     cfg.logger.debug(cfg.LOGGER_START)
 
     try:
+        print("wwe path=",cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
         with cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED] as path:
             convert_from_path(utils.get_file_name_inbox(), output_folder=path)
 
