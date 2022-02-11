@@ -3,7 +3,6 @@
 import os
 import shutil
 import stat
-import subprocess
 
 import libs.cfg
 import libs.db
@@ -19,76 +18,6 @@ import dcr
 TESTS_INBOX = "tests/inbox/__PYTEST_FILES__/"
 
 dcr.initialise_logger()
-
-
-# -----------------------------------------------------------------------------
-# Reset the file permissions again.
-# -----------------------------------------------------------------------------
-def reset_file_permissions(file_name):
-    """Reset the file permissions again.
-
-    Args:
-        file_name ([type]): File name.
-    """
-    if os.name == libs.cfg.OS_NT:
-        try:
-            subprocess.check_call(
-                ["attrib", "-R", file_name.replace("/", "\\")], shell=True
-            )
-        except subprocess.CalledProcessError as err:
-            print(
-                "Windows command 'attrib -R <file_name>'"
-                + "- error: code='{error_code}' msg='{error_msg}'".replace(
-                    "{error_code}",
-                    str(err.returncode).replace("{error_msg}", str(err)),
-                )
-            )
-    if os.name == libs.cfg.OS_POSIX:
-        try:
-            subprocess.check_call(["chmod", "777", file_name], shell=True)
-        except subprocess.CalledProcessError as err:
-            print(
-                "Unix command 'chmod 777 <file_name>'"
-                + "- error: code='{error_code}' msg='{error_msg}'".replace(
-                    "{error_code}",
-                    str(err.returncode).replace("{error_msg}", str(err)),
-                )
-            )
-
-
-# -----------------------------------------------------------------------------
-# Set the file permissions to provoke an error.
-# -----------------------------------------------------------------------------
-def set_file_permissions(file_name: str) -> None:
-    """Set the file permissions to provoke an error.
-
-    Args:
-        file_name ([type]): File name.
-    """
-    if os.name == libs.cfg.OS_NT:
-        try:
-            subprocess.check_call(
-                ["attrib", "+R", file_name.replace("/", "\\")], shell=True
-            )
-        except subprocess.CalledProcessError as err:
-            print(
-                "Windows command 'attrib +R <file_name>'"
-                + "- error: code='{error_code}' msg='{error_msg}'".replace(
-                    "{error_code}",
-                    str(err.returncode).replace("{error_msg}", str(err)),
-                )
-            )
-    if os.name == libs.cfg.OS_POSIX:
-        try:
-            subprocess.check_call(["chmod", "000", file_name], shell=True)
-        except subprocess.CalledProcessError as err:
-            print(
-                "Unix command 'chmod 000 <file_name>'"
-                + "- error: code='{error_code}' msg='{error_msg}'".replace(
-                    "{error_code}",
-                    str(err.returncode).replace("{error_msg}", str(err)),
-                )
-            )
 
 
 # -----------------------------------------------------------------------------
@@ -116,7 +45,7 @@ def show_inboxes_after(
 def test_file_extension_pdf_ok(fxtr_new_db_empty_inbox):
     """Test: pdf - text.
 
-    Due original file is expected in the file directory inbox_accepted.
+    The original file is expected in the file directory inbox_accepted.
     """
     inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
     inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
@@ -137,34 +66,31 @@ def test_file_extension_pdf_ok(fxtr_new_db_empty_inbox):
     )
 
 
-# -----------------------------------------------------------------------------
-# Test File Extension: pdf - pdf_text_ok_protected.
-# -----------------------------------------------------------------------------
-@pytest.mark.issue
-def test_file_extension_pdf_ok_protected(fxtr_new_db_empty_inbox):
-    """Test: pdf - text - protected.
-
-    Due to the write protection, the original file should remain
-    unchanged in the inbox.
-    """
-    inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-    inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
-
-    file_inbox = os.path.join(inbox, "pdf_text_ok_protected.pdf")
-    file_source = os.path.join(TESTS_INBOX, "pdf_text_ok_protected.pdf")
-
-    shutil.copy(file_source, inbox)
-
-    verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
-
-    set_file_permissions(file_inbox)
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-
-    reset_file_permissions(file_inbox)
-
-    verify_inbox_after(inbox, inbox_accepted, inbox_rejected, file_inbox)
+# TBD
+# # -----------------------------------------------------------------------------
+# # Test File Extension: pdf - pdf_text_ok_protected.
+# # -----------------------------------------------------------------------------
+# @pytest.mark.issue
+# def test_file_extension_pdf_ok_protected(fxtr_new_db_empty_inbox):
+#     """Test: pdf - text - protected.
+#
+#     Due to the write protection, the original file should remain
+#     unchanged in the inbox.
+#     """
+#     inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
+#     inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
+#     inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
+#
+#     file_inbox = os.path.join(inbox, "pdf_text_ok_protected.pdf")
+#     file_source = os.path.join(TESTS_INBOX, "pdf_text_ok_protected.pdf")
+#
+#     shutil.copy(file_source, inbox)
+#
+#     verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
+#
+#     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+#
+#     verify_inbox_after(inbox, inbox_accepted, inbox_rejected, file_inbox)
 
 
 # -----------------------------------------------------------------------------
@@ -183,7 +109,7 @@ def test_file_extension_unknown_ok(fxtr_new_db_empty_inbox):
 
     file_inbox = os.path.join(inbox, "unknown_file_extension.xxx")
     file_source = os.path.join(TESTS_INBOX, "unknown_file_extension.xxx")
-    file_target = os.path.join(inbox_accepted, "unknown_file_extension_1.xxx")
+    file_target = os.path.join(inbox_rejected, "unknown_file_extension_1.xxx")
 
     shutil.copy(file_source, inbox)
 
@@ -196,36 +122,33 @@ def test_file_extension_unknown_ok(fxtr_new_db_empty_inbox):
     )
 
 
-# -----------------------------------------------------------------------------
-# Test File Extension: xxx - unknown_file_extension_protected.
-# -----------------------------------------------------------------------------
-@pytest.mark.issue
-def test_file_extension_unknown_ok_protected(fxtr_new_db_empty_inbox):
-    """Test: xxx - protected.
-
-    Due to the write protection, the original file should remain
-    unchanged in the inbox.
-    """
-    inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-    inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
-
-    file_inbox = os.path.join(inbox, "unknown_file_extension_protected.pdf")
-    file_source = os.path.join(
-        TESTS_INBOX, "unknown_file_extension_protected.pdf"
-    )
-
-    shutil.copy(file_source, inbox)
-
-    verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
-
-    set_file_permissions(file_inbox)
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-
-    reset_file_permissions(file_inbox)
-
-    verify_inbox_after(inbox, inbox_accepted, inbox_rejected, file_inbox)
+# TBD
+# # -----------------------------------------------------------------------------
+# # Test File Extension: xxx - unknown_file_extension_protected.
+# # -----------------------------------------------------------------------------
+# @pytest.mark.issue
+# def test_file_extension_unknown_ok_protected(fxtr_new_db_empty_inbox):
+#     """Test: xxx - protected.
+#
+#     Due to the write protection, the original file should remain
+#     unchanged in the inbox.
+#     """
+#     inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
+#     inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
+#     inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
+#
+#     file_inbox = os.path.join(inbox, "unknown_file_extension_protected.pdf")
+#     file_source = os.path.join(
+#         TESTS_INBOX, "unknown_file_extension_protected.pdf"
+#     )
+#
+#     shutil.copy(file_source, inbox)
+#
+#     verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
+#
+#     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+#
+#     verify_inbox_after(inbox, inbox_accepted, inbox_rejected, file_inbox)
 
 
 # -----------------------------------------------------------------------------

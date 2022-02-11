@@ -9,7 +9,6 @@ Returns:
 
 import os
 import shutil
-import subprocess
 
 import libs.cfg
 import libs.db
@@ -147,29 +146,6 @@ def fxtr_remove():
         Args:
             file_name (str): File name including path.
         """
-        if os.name == libs.cfg.OS_NT:
-            try:
-                subprocess.check_call(["attrib", "-R", file_name], shell=True)
-            except subprocess.CalledProcessError as err:
-                print(
-                    "Windows command 'attrib -R <file_name>'"
-                    + "- error: code='{error_code}' msg='{error_msg}'".replace(
-                        "{error_code}",
-                        str(err.returncode).replace("{error_msg}", str(err)),
-                    )
-                )
-        if os.name == libs.cfg.OS_POSIX:
-            try:
-                subprocess.check_call(["chmod", "777", file_name], shell=True)
-            except subprocess.CalledProcessError as err:
-                print(
-                    "Unix command 'chmod 777 <file_name>'"
-                    + "- error: code='{error_code}' msg='{error_msg}'".replace(
-                        "{error_code}",
-                        str(err.returncode).replace("{error_msg}", str(err)),
-                    )
-                )
-
         os.remove(file_name)
 
     return _fxtr_remove
@@ -209,29 +185,6 @@ def fxtr_rmdir():
         Args:
             directory_name (str): The directory name including path.
         """
-        if os.name == libs.cfg.OS_NT:
-            try:
-                subprocess.check_call(["attrib", "-R", "*"], shell=True)
-            except subprocess.CalledProcessError as err:
-                print(
-                    "Windows command 'attrib -R <file_name>'"
-                    + "- error: code='{error_code}' msg='{error_msg}'".replace(
-                        "{error_code}",
-                        str(err.returncode).replace("{error_msg}", str(err)),
-                    )
-                )
-        if os.name == libs.cfg.OS_POSIX:
-            try:
-                subprocess.check_call(["chmod", "777", "*"], shell=True)
-            except subprocess.CalledProcessError as err:
-                print(
-                    "Unix command 'chmod 777 <file_name>'"
-                    + "- error: code='{error_code}' msg='{error_msg}'".replace(
-                        "{error_code}",
-                        str(err.returncode).replace("{error_msg}", str(err)),
-                    )
-                )
-
         shutil.rmtree(directory_name)
 
     return _fxtr_rmdir
