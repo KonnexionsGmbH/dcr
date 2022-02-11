@@ -45,10 +45,10 @@ def reset_file_permissions(file_name):
             )
     if os.name == libs.cfg.OS_POSIX:
         try:
-            subprocess.check_call(["chattr", "-i", file_name], shell=True)
+            subprocess.check_call(["chmod", "777", file_name], shell=True)
         except subprocess.CalledProcessError as err:
             print(
-                "Unix command 'chattr -i <file_name>'"
+                "Unix command 'chmod 777 <file_name>'"
                 + "- error: code='{error_code}' msg='{error_msg}'".replace(
                     "{error_code}",
                     str(err.returncode).replace("{error_msg}", str(err)),
@@ -80,10 +80,10 @@ def set_file_permissions(file_name: str) -> None:
             )
     if os.name == libs.cfg.OS_POSIX:
         try:
-            subprocess.check_call(["chattr", "+i", file_name], shell=True)
+            subprocess.check_call(["chmod", "000", file_name], shell=True)
         except subprocess.CalledProcessError as err:
             print(
-                "Unix command 'chattr +i <file_name>'"
+                "Unix command 'chmod 000 <file_name>'"
                 + "- error: code='{error_code}' msg='{error_msg}'".replace(
                     "{error_code}",
                     str(err.returncode).replace("{error_msg}", str(err)),
