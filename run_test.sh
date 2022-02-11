@@ -70,9 +70,9 @@ case "${DCR_CHOICE_ACTION}" in
     rm -rf data/inbox
     mkdir data/inbox
     cp -r tests/inbox/* data/inbox
-    sudo chattr +i data/inbox/*protected*
+    sudo chmod 000 data/inbox/*protected*
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
-    sudo chattr -i data/inbox/*protected*
+    sudo chmod 777 data/inbox/*protected*
     ;;
   *)
     echo "Usage: ./run_test.sh all | db_c | m_d | m_p | p_i"
