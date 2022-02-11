@@ -147,5 +147,6 @@ run_id: sqlalchemy.Integer
 stem_name: str
 
 total_accepted: int
+total_erroneus: int
 total_new: int
 total_rejected: int

@@ -159,6 +159,7 @@ def prepare_pdf_for_tesseract() -> None:
         )
         cfg.total_accepted += 1
     except shutil.Error as err:
+        cfg.total_erroneus +=1
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_903.replace(
                 "{source_file}", utils.get_file_name_inbox()
@@ -204,6 +205,7 @@ def process_inbox_accepted(
         )
         cfg.total_accepted += 1
     except (PermissionError, shutil.Error) as err:
+        cfg.total_erroneus +=1
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_902.replace(
                 "{source_file}", utils.get_file_name_inbox()
@@ -331,6 +333,7 @@ def process_inbox_files() -> None:
 
     utils.progress_msg(f"Number documents new:      {cfg.total_new:6d}")
     utils.progress_msg(f"Number documents accepted: {cfg.total_accepted:6d}")
+    utils.progress_msg(f"Number documents erroneus: {cfg.total_erroneus:6d}")
     utils.progress_msg(f"Number documents rejected: {cfg.total_rejected:6d}")
     utils.progress_msg(
         "The new documents in the inbox file directory are checked and "
@@ -418,6 +421,7 @@ def process_inbox_rejected(
     cfg.logger.debug(cfg.LOGGER_START)
 
     try:
+        cfg.total_erroneus +=1
         shutil.move(
             utils.get_file_name_inbox(), utils.get_file_name_inbox_rejected()
         )

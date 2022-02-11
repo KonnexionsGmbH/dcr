@@ -165,5 +165,6 @@ run_id: sqlalchemy.Integer | None = None
 stem_name: str = ""
 
 total_accepted: int = 0
+total_erroneus: int = 0
 total_new: int = 0
 total_rejected: int = 0
