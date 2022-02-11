@@ -159,7 +159,7 @@ def prepare_pdf_for_tesseract() -> None:
         )
         cfg.total_accepted += 1
     except shutil.Error as err:
-        cfg.total_erroneus +=1
+        cfg.total_erroneus += 1
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_903.replace(
                 "{source_file}", utils.get_file_name_inbox()
@@ -204,8 +204,20 @@ def process_inbox_accepted(
             status,
         )
         cfg.total_accepted += 1
-    except (PermissionError, shutil.Error) as err:
-        cfg.total_erroneus +=1
+    except PermissionError as err:
+        db.update_document_status(
+            cfg.JOURNAL_ACTION_01_905.replace(
+                "{source_file}", utils.get_file_name_inbox()
+            )
+            .replace("{error_code}", str(err))
+            .replace("{error_msg}", err.strerror),
+            inspect.stack()[0][3],
+            __name__,
+            cfg.STATUS_REJECTED_ERROR,
+        )
+        remove_optional_file(target_file_name)
+    except shutil.Error as err:
+        cfg.total_erroneus += 1
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_902.replace(
                 "{source_file}", utils.get_file_name_inbox()
@@ -421,7 +433,7 @@ def process_inbox_rejected(
     cfg.logger.debug(cfg.LOGGER_START)
 
     try:
-        cfg.total_erroneus +=1
+        cfg.total_erroneus += 1
         shutil.move(
             utils.get_file_name_inbox(), utils.get_file_name_inbox_rejected()
         )
@@ -430,7 +442,19 @@ def process_inbox_rejected(
         update_document_status
 
         cfg.total_rejected += 1
-    except (PermissionError, shutil.Error) as err:
+    except PermissionError as err:
+        db.update_document_status(
+            cfg.JOURNAL_ACTION_01_905.replace(
+                "{source_file}", utils.get_file_name_inbox()
+            )
+            .replace("{error_code}", str(err))
+            .replace("{error_msg}", err.strerror),
+            inspect.stack()[0][3],
+            __name__,
+            cfg.STATUS_REJECTED_ERROR,
+        )
+        remove_optional_file(utils.get_file_name_inbox_rejected())
+    except shutil.Error as err:
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_902.replace(
                 "{source_file}", utils.get_file_name_inbox()
@@ -462,3 +486,28 @@ def process_inbox_tesseract() -> None:
     print("doc_type=", doc_type)
 
     cfg.logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Remove the given file if existing.
+# -----------------------------------------------------------------------------
+def remove_optional_file(file_name: str) -> None:
+    """Remove the given file if existing.
+
+    Args:
+        file_name (str): Name of the file to be deleted.
+    """
+    if not os.path.isfile(file_name):
+        return
+
+    try:
+        os.remove(file_name)
+    except FileNotFoundError as err:
+        db.update_document_status(
+            cfg.JOURNAL_ACTION_01_906.replace("{source_file}", file_name)
+            .replace("{error_code}", str(err))
+            .replace("{error_msg}", err.strerror),
+            inspect.stack()[0][3],
+            __name__,
+            cfg.STATUS_REJECTED_ERROR,
+        )

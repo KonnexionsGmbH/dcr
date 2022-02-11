@@ -91,19 +91,27 @@ JOURNAL_ACTION_11_004: str = (
     + " (after pdf2image processing)"
 )
 JOURNAL_ACTION_01_901: str = (
-    "01.901 Document rejected because of unknown file extension={extension}"
+    "01.901 Document rejected because of unknown file extension='{extension}'"
 )
 JOURNAL_ACTION_01_902: str = (
-    "01.902 Issue when moving {source_file} to {target_file} "
-    + "- error: code={error_code} msg={error_msg}"
+    "01.902 Issue when moving '{source_file}' to '{target_file}' "
+    + "- error: code='{error_code}' msg='{error_msg}'"
 )
 JOURNAL_ACTION_01_903: str = (
-    "01.903 Issue with pdf2image processing of file {source_file} "
-    + "- error: code={error_code} msg={error_msg}"
+    "01.903 Issue with pdf2image processing of file '{source_file}' "
+    + "- error: code='{error_code}' msg='{error_msg}'"
 )
 JOURNAL_ACTION_01_904: str = (
-    "01.904 Issue with fitz.open() processing of file {source_file} "
-    + "- error: code={error_code} msg={error_msg}"
+    "01.904 Issue with fitz.open() processing of file '{source_file}' "
+    + "- error: code='{error_code}' msg='{error_msg}'"
+)
+JOURNAL_ACTION_01_905: str = (
+    "01.905 Permission issue with file '{source_file}' "
+    + "- error: code='{error_code}' msg='{error_msg}'"
+)
+JOURNAL_ACTION_01_906: str = (
+    "01.905 File '{source_file}' can not be deleted"
+    + "- error: code='{error_code}' msg='{error_msg}'"
 )
 
 LOCALE: str = "en_US.UTF-8"
@@ -129,6 +137,7 @@ STATUS_PDF2IMAGE_ERROR: str = "pdf2image_error"
 STATUS_REJECTED_ERROR: str = "rejected_error"
 STATUS_REJECTED_FILE_ERROR: str = "rejected_file_error"
 STATUS_REJECTED_FILE_EXTENSION: str = "rejected_file_extension"
+STATUS_REJECTED_FILE_PERMISSION: str = "rejected_file_permission"
 STATUS_START: str = "start"
 STATUS_TESSERACT_ERROR: str = "tesseract_error"
 STATUS_TESSERACT_READY: str = "tesseract_ready"
