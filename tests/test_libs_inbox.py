@@ -260,6 +260,8 @@ def verify_inboxes_before(
     """
     # Show the content of the inbox directories.
     print("before: inbox=         ", os.listdir(inbox))
+    print("before: file_inbox=    ", file_inbox)
+    print("before:    S_IMODE=    ", oct(stat.S_IMODE(os.stat(file_inbox).st_mode)))
     if os.path.isdir(inbox_accepted):
         print("before: inbox_accepted=", os.listdir(inbox_accepted))
     if os.path.isdir(inbox_rejected):
