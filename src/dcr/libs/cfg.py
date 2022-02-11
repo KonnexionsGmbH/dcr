@@ -102,8 +102,8 @@ JOURNAL_ACTION_01_903: str = (
     + "- error: code='{error_code}' msg='{error_msg}'"
 )
 JOURNAL_ACTION_01_904: str = (
-    "01.904 Issue with fitz.open() processing of file '{source_file}' "
-    + "- error: code='{error_code}' msg='{error_msg}'"
+    "01.904 Runtime error with fitz.open() processing of file '{source_file}' "
+    + "- error: msg='{error_msg}'"
 )
 JOURNAL_ACTION_01_905: str = (
     "01.905 Permission issue with file '{source_file}' "

@@ -22,6 +22,76 @@ dcr.initialise_logger()
 
 
 # -----------------------------------------------------------------------------
+# Reset the file permissions again.
+# -----------------------------------------------------------------------------
+def reset_file_permissions(file_name):
+    """Reset the file permissions again.
+
+    Args:
+        file_name ([type]): File name.
+    """
+    if os.name == libs.cfg.OS_NT:
+        try:
+            subprocess.check_call(
+                ["attrib", "-R", file_name.replace("/", "\\")], shell=True
+            )
+        except subprocess.CalledProcessError as err:
+            print(
+                "Windows command 'attrib -R <file_name>'"
+                + "- error: code='{error_code}' msg='{error_msg}'".replace(
+                    "{error_code}",
+                    str(err.returncode).replace("{error_msg}", err.output),
+                )
+            )
+    if os.name == libs.cfg.OS_POSIX:
+        try:
+            subprocess.check_call(["chattr", "-i", file_name], shell=True)
+        except subprocess.CalledProcessError as err:
+            print(
+                "Unix command 'chattr -i <file_name>'"
+                + "- error: code='{error_code}' msg='{error_msg}'".replace(
+                    "{error_code}",
+                    str(err.returncode).replace("{error_msg}", err.output),
+                )
+            )
+
+
+# -----------------------------------------------------------------------------
+# Set the file permissions to provoke an error.
+# -----------------------------------------------------------------------------
+def set_file_permissions(file_name: str) -> None:
+    """Set the file permissions to provoke an error.
+
+    Args:
+        file_name ([type]): File name.
+    """
+    if os.name == libs.cfg.OS_NT:
+        try:
+            subprocess.check_call(
+                ["attrib", "+R", file_name.replace("/", "\\")], shell=True
+            )
+        except subprocess.CalledProcessError as err:
+            print(
+                "Windows command 'attrib +R <file_name>'"
+                + "- error: code='{error_code}' msg='{error_msg}'".replace(
+                    "{error_code}",
+                    str(err.returncode).replace("{error_msg}", err.output),
+                )
+            )
+    if os.name == libs.cfg.OS_POSIX:
+        try:
+            subprocess.check_call(["chattr", "+i", file_name], shell=True)
+        except subprocess.CalledProcessError as err:
+            print(
+                "Unix command 'chattr +i <file_name>'"
+                + "- error: code='{error_code}' msg='{error_msg}'".replace(
+                    "{error_code}",
+                    str(err.returncode).replace("{error_msg}", err.output),
+                )
+            )
+
+
+# -----------------------------------------------------------------------------
 # Show the state of the inboxes after the test.
 # -----------------------------------------------------------------------------
 def show_inboxes_after(
@@ -43,7 +113,6 @@ def show_inboxes_after(
 # -----------------------------------------------------------------------------
 # Test File Extension: pdf - pdf_text_ok.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_file_extension_pdf_ok(fxtr_new_db_empty_inbox):
     """Test: pdf - text.
 
@@ -89,21 +158,11 @@ def test_file_extension_pdf_ok_protected(fxtr_new_db_empty_inbox):
 
     verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
 
-    if os.name == libs.cfg.OS_NT:
-        subprocess.check_call(
-            ["attrib", "+R", file_inbox.replace("/", "\\")], shell=True
-        )
-    if os.name == libs.cfg.OS_POSIX:
-        subprocess.check_call(["chattr", "+i", file_inbox], shell=True)
+    set_file_permissions(file_inbox)
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    if os.name == libs.cfg.OS_NT:
-        subprocess.check_call(
-            ["attrib", "-R", file_inbox.replace("/", "\\")], shell=True
-        )
-    if os.name == libs.cfg.OS_POSIX:
-        subprocess.check_call(["chattr", "-i", file_inbox], shell=True)
+    reset_file_permissions(file_inbox)
 
     verify_inbox_after(inbox, inbox_accepted, inbox_rejected, file_inbox)
 
@@ -160,21 +219,11 @@ def test_file_extension_unknown_ok_protected(fxtr_new_db_empty_inbox):
 
     verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
 
-    if os.name == libs.cfg.OS_NT:
-        subprocess.check_call(
-            ["attrib", "+R", file_inbox.replace("/", "\\")], shell=True
-        )
-    if os.name == libs.cfg.OS_POSIX:
-        subprocess.check_call(["chattr", "+i", file_inbox], shell=True)
+    set_file_permissions(file_inbox)
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    if os.name == libs.cfg.OS_NT:
-        subprocess.check_call(
-            ["attrib", "-R", file_inbox.replace("/", "\\")], shell=True
-        )
-    if os.name == libs.cfg.OS_POSIX:
-        subprocess.check_call(["chattr", "-i", file_inbox], shell=True)
+    reset_file_permissions(file_inbox)
 
     verify_inbox_after(inbox, inbox_accepted, inbox_rejected, file_inbox)
 

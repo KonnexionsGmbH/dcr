@@ -3,8 +3,6 @@
 import os
 from pathlib import Path
 
-import pytest
-
 import dcr
 
 # -----------------------------------------------------------------------------
@@ -41,7 +39,6 @@ def test_dir_ops(fxtr_mkdir, fxtr_mkdir_opt, fxtr_rmdir, fxtr_rmdir_opt):
 #                 fxtr_remove_opt,
 #                 fxtr_rmdir_opt
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_file_ops(fxtr_mkdir, fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
     """Test: Pure functionality."""
     directory_name: os.PathLike = Path("tmp")

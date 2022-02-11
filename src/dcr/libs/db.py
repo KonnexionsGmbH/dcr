@@ -94,7 +94,7 @@ def connect_db_core() -> None:
         cfg.metadata = MetaData()
     except Error as err:
         utils.terminate_fatal(
-            "SQLAlchemy metadata not accessible - error=" + str(err),
+            "SQLAlchemy metadata not accessible - error=" + str(err.errno),
         )
     try:
         cfg.engine = sqlalchemy.create_engine(get_db_url())

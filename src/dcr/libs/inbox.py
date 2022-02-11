@@ -130,7 +130,7 @@ def prepare_pdf() -> None:
             db.update_document_status(
                 cfg.JOURNAL_ACTION_01_904.replace(
                     "{source_file}", utils.get_file_name_inbox()
-                ).replace("{error}", str(err)),
+                ).replace("{error_msg}", err.args),
                 inspect.stack()[0][3],
                 __name__,
                 cfg.STATUS_PDF2IMAGE_ERROR,
@@ -164,7 +164,7 @@ def prepare_pdf_for_tesseract() -> None:
             cfg.JOURNAL_ACTION_01_903.replace(
                 "{source_file}", utils.get_file_name_inbox()
             )
-            .replace("{error_code}", str(err))
+            .replace("{error_code}", str(err.errno))
             .replace("{error_msg}", err.strerror),
             inspect.stack()[0][3],
             __name__,
@@ -209,7 +209,7 @@ def process_inbox_accepted(
             cfg.JOURNAL_ACTION_01_905.replace(
                 "{source_file}", utils.get_file_name_inbox()
             )
-            .replace("{error_code}", str(err))
+            .replace("{error_code}", str(err.errno))
             .replace("{error_msg}", err.strerror),
             inspect.stack()[0][3],
             __name__,
@@ -223,7 +223,7 @@ def process_inbox_accepted(
                 "{source_file}", utils.get_file_name_inbox()
             )
             .replace("{target_file}", target_file_name)
-            .replace("{error_code}", str(err))
+            .replace("{error_code}", str(err.errno))
             .replace("{error_msg}", err.strerror),
             inspect.stack()[0][3],
             __name__,
@@ -396,7 +396,7 @@ def process_inbox_pandoc() -> None:
     #         "01.902 Issue when converting file "
     #         + cfg.source_file
     #         + " with Pandoc - error="
-    #         + str(err),
+    #         + str(err.errno),
     #         cfg.STATUS_PANDOC_ERROR,
     #     )
     #
@@ -411,7 +411,7 @@ def process_inbox_pandoc() -> None:
     #             + " to "
     #             + target_file_rejected
     #             + " - error="
-    #             + str(err),
+    #             + str(err.errno),
     #             cfg.STATUS_REJECTED_ERROR,
     #         )
 
@@ -447,7 +447,7 @@ def process_inbox_rejected(
             cfg.JOURNAL_ACTION_01_905.replace(
                 "{source_file}", utils.get_file_name_inbox()
             )
-            .replace("{error_code}", str(err))
+            .replace("{error_code}", str(err.errno))
             .replace("{error_msg}", err.strerror),
             inspect.stack()[0][3],
             __name__,
@@ -460,7 +460,7 @@ def process_inbox_rejected(
                 "{source_file}", utils.get_file_name_inbox()
             )
             .replace("{target_file}", utils.get_file_name_inbox_rejected())
-            .replace("{error_code}", str(err))
+            .replace("{error_code}", str(err.errno))
             .replace("{error_msg}", err.strerror),
             inspect.stack()[0][3],
             __name__,
@@ -505,7 +505,7 @@ def remove_optional_file(file_name: str) -> None:
     except FileNotFoundError as err:
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_906.replace("{source_file}", file_name)
-            .replace("{error_code}", str(err))
+            .replace("{error_code}", str(err.errno))
             .replace("{error_msg}", err.strerror),
             inspect.stack()[0][3],
             __name__,
