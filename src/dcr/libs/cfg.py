@@ -122,6 +122,9 @@ LOGGER_FATAL_TAIL: str = " <===== FATAL ERROR"
 LOGGER_PROGRESS_UPDATE: str = "Progress update "
 LOGGER_START: str = "Start"
 
+OS_NT: str = "nt"
+OS_POSIX: str = "posix"
+
 RUN_ACTION_ALL_COMPLETE: str = "all"
 RUN_ACTION_CREATE_DB: str = "db_c"
 RUN_ACTION_PROCESS_INBOX: str = "p_i"

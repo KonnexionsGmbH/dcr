@@ -3,6 +3,7 @@
 import os
 import shutil
 import stat
+import subprocess
 
 import libs.cfg
 import libs.db
@@ -86,11 +87,23 @@ def test_file_extension_pdf_ok_protected(fxtr_new_db_empty_inbox):
 
     shutil.copy(file_source, inbox)
 
-    os.chmod(file_inbox, stat.SF_IMMUTABLE)
-
     verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
 
+    if os.name == libs.cfg.OS_NT:
+        subprocess.check_call(
+            ["attrib", "+R", file_inbox.replace("/", "\\")], shell=True
+        )
+    if os.name == libs.cfg.OS_POSIX:
+        subprocess.check_call(["chattr", "+i", file_inbox], shell=True)
+
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    if os.name == libs.cfg.OS_NT:
+        subprocess.check_call(
+            ["attrib", "-R", file_inbox.replace("/", "\\")], shell=True
+        )
+    if os.name == libs.cfg.OS_POSIX:
+        subprocess.check_call(["chattr", "-i", file_inbox], shell=True)
 
     verify_inbox_after(inbox, inbox_accepted, inbox_rejected, file_inbox)
 
@@ -145,11 +158,23 @@ def test_file_extension_unknown_ok_protected(fxtr_new_db_empty_inbox):
 
     shutil.copy(file_source, inbox)
 
-    os.chmod(file_inbox, stat.SF_IMMUTABLE)
-
     verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
 
+    if os.name == libs.cfg.OS_NT:
+        subprocess.check_call(
+            ["attrib", "+R", file_inbox.replace("/", "\\")], shell=True
+        )
+    if os.name == libs.cfg.OS_POSIX:
+        subprocess.check_call(["chattr", "+i", file_inbox], shell=True)
+
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    if os.name == libs.cfg.OS_NT:
+        subprocess.check_call(
+            ["attrib", "-R", file_inbox.replace("/", "\\")], shell=True
+        )
+    if os.name == libs.cfg.OS_POSIX:
+        subprocess.check_call(["chattr", "-i", file_inbox], shell=True)
 
     verify_inbox_after(inbox, inbox_accepted, inbox_rejected, file_inbox)
 

@@ -213,7 +213,7 @@ def process_inbox_accepted(
             .replace("{error_msg}", err.strerror),
             inspect.stack()[0][3],
             __name__,
-            cfg.STATUS_REJECTED_ERROR,
+            cfg.STATUS_REJECTED_FILE_PERMISSION,
         )
         remove_optional_file(target_file_name)
     except shutil.Error as err:
@@ -451,7 +451,7 @@ def process_inbox_rejected(
             .replace("{error_msg}", err.strerror),
             inspect.stack()[0][3],
             __name__,
-            cfg.STATUS_REJECTED_ERROR,
+            cfg.STATUS_REJECTED_FILE_PERMISSION,
         )
         remove_optional_file(utils.get_file_name_inbox_rejected())
     except shutil.Error as err:
