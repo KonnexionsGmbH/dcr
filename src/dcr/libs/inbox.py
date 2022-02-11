@@ -203,7 +203,7 @@ def process_inbox_accepted(
             status,
         )
         cfg.total_accepted += 1
-    except shutil.Error as err:
+    except (PermissionError, shutil.Error) as err:
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_902.replace(
                 "{source_file}", utils.get_file_name_inbox()
@@ -233,6 +233,7 @@ def process_inbox_document_initial(file: pathlib.Path) -> None:
     """
     cfg.logger.debug(cfg.LOGGER_START)
 
+    cfg.file_extension = file.suffix[1:]
     cfg.file_name = file.name
     cfg.stem_name = pathlib.PurePath(file).stem
     cfg.file_type = file.suffix[1:].lower()
@@ -319,10 +320,12 @@ def process_inbox_files() -> None:
             else:
                 process_inbox_rejected(
                     db.update_document_status(
-                        cfg.JOURNAL_ACTION_01_901,
+                        cfg.JOURNAL_ACTION_01_901.replace(
+                            "{extension}", cfg.file_extension
+                        ),
                         inspect.stack()[0][3],
                         __name__,
-                        cfg.STATUS_REJECTED_FILE_TYPE,
+                        cfg.STATUS_REJECTED_FILE_EXTENSION,
                     )
                 )
 
@@ -385,7 +388,7 @@ def process_inbox_pandoc() -> None:
     # if is_ok:
     #     try:
     #         shutil.move(cfg.source_file, target_file_accepted)
-    #     except shutil.Error as err:
+    #     except (PermissionError, shutil.Error) as err:
     #         process_inbox_document_rejected(
     #             logger,
     #             "01.903 Issue when moving file "
@@ -423,7 +426,7 @@ def process_inbox_rejected(
         update_document_status
 
         cfg.total_rejected += 1
-    except shutil.Error as err:
+    except (PermissionError, shutil.Error) as err:
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_902.replace(
                 "{source_file}", utils.get_file_name_inbox()

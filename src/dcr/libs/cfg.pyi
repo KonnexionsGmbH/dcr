@@ -112,7 +112,7 @@ STATUS_PARSER_READY: str
 STATUS_PDF2IMAGE_ERROR: str
 STATUS_REJECTED_ERROR: str
 STATUS_REJECTED_FILE_ERROR: str
-STATUS_REJECTED_FILE_TYPE: str
+STATUS_REJECTED_FILE_EXTENSION: str
 STATUS_START: str
 STATUS_TESSERACT_ERROR: str
 STATUS_TESSERACT_READY: str
@@ -131,6 +131,7 @@ document_id: sqlalchemy.Integer
 
 engine: Engine | None
 
+file_extension: str
 file_name: str
 file_type: str
 

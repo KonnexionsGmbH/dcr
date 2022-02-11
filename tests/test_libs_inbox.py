@@ -15,7 +15,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # @pytest.mark.issue
 
-TESTS_INBOX = "tests/inbox/"
+TESTS_INBOX = "tests/inbox/__PYTEST_FILES__/"
 
 dcr.initialise_logger()
 
@@ -34,9 +34,9 @@ def show_inboxes_after(
         inbox_rejected (str): File directory inbox_rejected.
     """
     # Show the content of the inbox directories.
-    print("after: inbox=         ", os.listdir(inbox))
-    print("after: inbox_accepted=", os.listdir(inbox_accepted))
-    print("after: inbox_rejected=", os.listdir(inbox_rejected))
+    print("after: ls inbox=         ", os.listdir(inbox))
+    print("after: ls inbox_accepted=", os.listdir(inbox_accepted))
+    print("after: ls inbox_rejected=", os.listdir(inbox_rejected))
 
 
 # -----------------------------------------------------------------------------
@@ -259,13 +259,16 @@ def verify_inboxes_before(
         file_inbox (str): The test file in the file directory input.
     """
     # Show the content of the inbox directories.
-    print("before: inbox=         ", os.listdir(inbox))
-    print("before: file_inbox=    ", file_inbox)
-    print("before:    S_IMODE=    ", oct(stat.S_IMODE(os.stat(file_inbox).st_mode)))
+    print("before: ls inbox=         ", os.listdir(inbox))
+    print("before: file_inbox=       ", file_inbox)
+    print(
+        "before:    S_IMODE=       ",
+        oct(stat.S_IMODE(os.stat(file_inbox).st_mode)),
+    )
     if os.path.isdir(inbox_accepted):
-        print("before: inbox_accepted=", os.listdir(inbox_accepted))
+        print("before: ls inbox_accepted=", os.listdir(inbox_accepted))
     if os.path.isdir(inbox_rejected):
-        print("before: inbox_rejected=", os.listdir(inbox_rejected))
+        print("before: ls inbox_rejected=", os.listdir(inbox_rejected))
 
     # Verify the content of the inbox directories.
     assert len(os.listdir(inbox)) == 1, "before: inbox should contain one file"

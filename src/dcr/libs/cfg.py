@@ -128,7 +128,7 @@ STATUS_PARSER_READY: str = "parser_ready"
 STATUS_PDF2IMAGE_ERROR: str = "pdf2image_error"
 STATUS_REJECTED_ERROR: str = "rejected_error"
 STATUS_REJECTED_FILE_ERROR: str = "rejected_file_error"
-STATUS_REJECTED_FILE_TYPE: str = "rejected_file_type"
+STATUS_REJECTED_FILE_EXTENSION: str = "rejected_file_extension"
 STATUS_START: str = "start"
 STATUS_TESSERACT_ERROR: str = "tesseract_error"
 STATUS_TESSERACT_READY: str = "tesseract_ready"
@@ -148,6 +148,7 @@ document_id: sqlalchemy.Integer | None = None
 
 engine: Engine | None = None
 
+file_extension: str = ""
 file_name: str = ""
 file_type: str = ""
 
