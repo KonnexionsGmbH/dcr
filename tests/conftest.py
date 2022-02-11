@@ -155,7 +155,7 @@ def fxtr_remove():
                     "Windows command 'attrib -R <file_name>'"
                     + "- error: code='{error_code}' msg='{error_msg}'".replace(
                         "{error_code}",
-                        str(err.returncode).replace("{error_msg}", err.output),
+                        str(err.returncode).replace("{error_msg}", err),
                     )
                 )
         if os.name == libs.cfg.OS_POSIX:
@@ -166,7 +166,7 @@ def fxtr_remove():
                     "Unix command 'chattr -i <file_name>'"
                     + "- error: code='{error_code}' msg='{error_msg}'".replace(
                         "{error_code}",
-                        str(err.returncode).replace("{error_msg}", err.output),
+                        str(err.returncode).replace("{error_msg}", err),
                     )
                 )
 
@@ -217,7 +217,7 @@ def fxtr_rmdir():
                     "Windows command 'attrib -R <file_name>'"
                     + "- error: code='{error_code}' msg='{error_msg}'".replace(
                         "{error_code}",
-                        str(err.returncode).replace("{error_msg}", err.output),
+                        str(err.returncode).replace("{error_msg}", err),
                     )
                 )
         if os.name == libs.cfg.OS_POSIX:
@@ -228,7 +228,7 @@ def fxtr_rmdir():
                     "Unix command 'chattr -i <file_name>'"
                     + "- error: code='{error_code}' msg='{error_msg}'".replace(
                         "{error_code}",
-                        str(err.returncode).replace("{error_msg}", err.output),
+                        str(err.returncode).replace("{error_msg}", err),
                     )
                 )
 
