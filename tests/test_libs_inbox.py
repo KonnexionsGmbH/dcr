@@ -40,7 +40,7 @@ def reset_file_permissions(file_name):
                 "Windows command 'attrib -R <file_name>'"
                 + "- error: code='{error_code}' msg='{error_msg}'".replace(
                     "{error_code}",
-                    str(err.returncode).replace("{error_msg}", err),
+                    str(err.returncode).replace("{error_msg}", str(err)),
                 )
             )
     if os.name == libs.cfg.OS_POSIX:
@@ -51,7 +51,7 @@ def reset_file_permissions(file_name):
                 "Unix command 'chattr -i <file_name>'"
                 + "- error: code='{error_code}' msg='{error_msg}'".replace(
                     "{error_code}",
-                    str(err.returncode).replace("{error_msg}", err),
+                    str(err.returncode).replace("{error_msg}", str(err)),
                 )
             )
 
@@ -75,7 +75,7 @@ def set_file_permissions(file_name: str) -> None:
                 "Windows command 'attrib +R <file_name>'"
                 + "- error: code='{error_code}' msg='{error_msg}'".replace(
                     "{error_code}",
-                    str(err.returncode).replace("{error_msg}", err),
+                    str(err.returncode).replace("{error_msg}", str(err)),
                 )
             )
     if os.name == libs.cfg.OS_POSIX:
@@ -86,7 +86,7 @@ def set_file_permissions(file_name: str) -> None:
                 "Unix command 'chattr +i <file_name>'"
                 + "- error: code='{error_code}' msg='{error_msg}'".replace(
                     "{error_code}",
-                    str(err.returncode).replace("{error_msg}", err),
+                    str(err.returncode).replace("{error_msg}", str(err)),
                 )
             )
 
