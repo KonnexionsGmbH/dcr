@@ -9,6 +9,7 @@ Returns:
 
 import os
 import shutil
+import subprocess
 
 import libs.cfg
 import libs.db
@@ -146,6 +147,29 @@ def fxtr_remove():
         Args:
             file_name (str): File name including path.
         """
+        if os.name == libs.cfg.OS_NT:
+            try:
+                subprocess.check_call(["attrib", "-R", file_name], shell=True)
+            except subprocess.CalledProcessError as err:
+                print(
+                    "Windows command 'attrib -R <file_name>'"
+                    + "- error: code='{error_code}' msg='{error_msg}'".replace(
+                        "{error_code}",
+                        str(err.returncode).replace("{error_msg}", err.output),
+                    )
+                )
+        if os.name == libs.cfg.OS_POSIX:
+            try:
+                subprocess.check_call(["chattr", "-i", file_name], shell=True)
+            except subprocess.CalledProcessError as err:
+                print(
+                    "Unix command 'chattr -i <file_name>'"
+                    + "- error: code='{error_code}' msg='{error_msg}'".replace(
+                        "{error_code}",
+                        str(err.returncode).replace("{error_msg}", err.output),
+                    )
+                )
+
         os.remove(file_name)
 
     return _fxtr_remove
@@ -185,6 +209,29 @@ def fxtr_rmdir():
         Args:
             directory_name (str): The directory name including path.
         """
+        if os.name == libs.cfg.OS_NT:
+            try:
+                subprocess.check_call(["attrib", "-R", "*"], shell=True)
+            except subprocess.CalledProcessError as err:
+                print(
+                    "Windows command 'attrib -R <file_name>'"
+                    + "- error: code='{error_code}' msg='{error_msg}'".replace(
+                        "{error_code}",
+                        str(err.returncode).replace("{error_msg}", err.output),
+                    )
+                )
+        if os.name == libs.cfg.OS_POSIX:
+            try:
+                subprocess.check_call(["chattr", "-i", "*"], shell=True)
+            except subprocess.CalledProcessError as err:
+                print(
+                    "Unix command 'chattr -i <file_name>'"
+                    + "- error: code='{error_code}' msg='{error_msg}'".replace(
+                        "{error_code}",
+                        str(err.returncode).replace("{error_msg}", err.output),
+                    )
+                )
+
         shutil.rmtree(directory_name)
 
     return _fxtr_rmdir

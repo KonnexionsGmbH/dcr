@@ -130,7 +130,7 @@ def prepare_pdf() -> None:
             db.update_document_status(
                 cfg.JOURNAL_ACTION_01_904.replace(
                     "{source_file}", utils.get_file_name_inbox()
-                ).replace("{error_msg}", err.args),
+                ).replace("{error_msg}", err),
                 inspect.stack()[0][3],
                 __name__,
                 cfg.STATUS_PDF2IMAGE_ERROR,
