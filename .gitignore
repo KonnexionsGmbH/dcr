@@ -12,3 +12,16 @@
 /src/dcr/*/__pycache__/
 /src/dcr/__pycache__/
 /tests/__pycache__/
+/tests/inbox/*.doc
+/tests/inbox/*.docx
+/tests/inbox/*.htm
+/tests/inbox/*.html
+/tests/inbox/*.jpeg
+/tests/inbox/*.jpg
+/tests/inbox/*.odt
+/tests/inbox/*.pdf
+/tests/inbox/*.png
+/tests/inbox/*.rtf
+/tests/inbox/*.tiff
+/tests/inbox/*.txt
+/tests/inbox/*.xxx
