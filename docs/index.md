@@ -30,19 +30,72 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ---
 
-## 2. Requirements
+## 2. Detailed processing steps
 
-### 2.1 Operating System
+### 2.1 Process the inbox directory
+
+In the first step, the file directory ""`inbox`** is checked for new document files. 
+An entry is created in the **`document`"" database table for each new document, showing the current processing status of the document. 
+In addition, each processing step of a document is documented in the database table **`journal`**.
+The new document files are processed based on their file extension as follows:
+
+#### 2.1.1 File extension **`pdf`**
+
+The package [fitz]() is used to check whether the **`pdf`** document is a scanned image or not. 
+A **`pdf`** document consisting of a scanned image is marked for conversion from **`pdf`** format to an image format and moved to the file directory **`ìnbox_accepted`**.
+Other **`pdf`** documents are marked for further processing with the **`pdf`** parser and then also moved to the file directory **`ìnbox_accepted`**.
+If, however, when checking the **`pdf`** document with **`fitz`**, it turns out that the document with the file extension **`pdf`** is not really a **`pdf`** document, then the document is moved to the file directory **`inbox_rejected`**.
+
+#### 2.1.2 File extension of documents for processing with Pandoc
+
+Document files with the following file extensions are marked for converting to **`pdf`** format using [Pandoc]():
+
+- **`csv`**
+- **`doc`**
+- **`docx`**
+- **`epub`**
+- **`htm`**
+- **`html`**
+- **`json`**
+- **`md`**
+- **`odt`**
+- **`rst`**
+- **`rtf`**
+- **`txt`**
+
+An exception are files with the file name **`README.md`**, which are ignored and not processed.
+
+#### 2.1.3 File extension of documents for processing with Tesseract OCR
+
+Document files with the following file extensions are marked for converting to **`pdf`** format using [Tesseract OCR]():
+
+- **`bmp`**
+- **`gif`**
+- **`jp2`**
+- **`jpeg`**
+- **`jpg`**
+- **`pmn`**
+- **`png`**
+- **`tiff`**
+- **`webp`**
+
+#### 2.1.4 Other file extensions of documents
+
+Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejectred`"".
+
+## 3. Requirements
+
+### 3.1 Operating System
 
 Continuous delivery / integration (CD/CI) runs on **`Ubunto 18.04`**, **`Ubuntu 20.04`**, **`Windows Server 2019`** and **`Windows Server 2022`**.
 This means that **`DCR`** also runs under **`Windows 10`** and **`Windows 11`**. 
 In this case, only the functionality of the **`grep`** and **`make`** tools must be made available, e.g. via [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm) or [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm).
 
-### 2.2 Python
+### 3.2 Python
 
 Because of the use of the new typing features, **`Python`** version [3.10](https://docs.python.org/3/whatsnew/3.10.html){:target="_blank"} or higher is required.
 
-## 3. Installation
+## 4. Installation
 
 1. Clone or copy the **`DCR`** repository from [here](https://github.com/KonnexionsGmbH/dcr){:target="_blank"}.
 
@@ -62,7 +115,7 @@ Because of the use of the new typing features, **`Python`** version [3.10](https
 
    - **`setup.cfg`**: for the **`DCR`** application in section **`dcr`**
 
-### 3.1 **`setup.cfg`**
+### 4.1 **`setup.cfg`**
 
 The customisable entries are:
 
@@ -79,7 +132,7 @@ The customisable entries are:
 | directory_inbox_accepted | **`data/inbox_accepted`** | directory for the accepted documents    |
 | directory_inbox_rejected | **`data/inbox_rejected`** | directory for the rejected documents    |
 
-## 4. Operation
+## 5. Operation
 
 **`DCR`** should be operated via the script **`run_dcr`**. 
 The following actions are available:
