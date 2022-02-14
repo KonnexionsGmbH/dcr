@@ -1,1 +1,1 @@
-"""Package: DCR libraries."""
+"""Package libs: DCR libraries."""

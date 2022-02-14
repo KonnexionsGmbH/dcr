@@ -80,11 +80,11 @@ Examples for the format of the API documentation:
 
 **Package Documentation**:
 
-    Package: DCR libraries.
+    Package libs: DCR libraries.
 
 **Module Dokumentation**:
 
-    Check and distribute incoming documents.
+    Module inbox: Check and distribute incoming documents.
   
     New documents are made available in the file directory inbox.
     These are then checked and moved to the accepted or
@@ -96,26 +96,24 @@ Examples for the format of the API documentation:
 **Function  Documentation**:
 
     Load the command line arguments into memory.
-    
+
     The command line arguments define the process steps to be executed.
     The valid arguments are:
-    
+
         all   - Run the complete processing of all new documents.
-        d_c_u - Create or upgrade the database.
-        p_i   - Process input folder.
-    
+        db_c  - Create the database.
+        p_i   - Process the inbox directory.
+
     With the option all, the following process steps are executed
     in this order:
-    
-        1. d_c_u
-        2. p_i
-    
+
+        1. p_i
+
     Args:
-    logger (logging.Logger): Current logger.
-    argv (List[str]): Command line arguments.
-    
+        argv (List[str]): Command line arguments.
+
     Returns:
-    dict[str, bool]: The command line arguments found.
+        dict[str, bool]: The processing steps based on CLI arguments.
 
 In Visual Studio Code, the [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring){:target="_blank"} tool can be used to create a framework for API documentation.
 
@@ -123,14 +121,15 @@ In Visual Studio Code, the [VSCode Python Docstring Generator](https://github.co
 
 The remaining documents for the user documentation can be found in the file directory **`docs`** in Markdown format:
 
-| File                     | Headline                     | Remarks                                   |
-|--------------------------|------------------------------|-------------------------------------------|
-| **`code_of_conduct.md`** | Code of Conduct              |                                           |
-| **`contributing.md`**    | Contributing Guide           |                                           |
-| **`development.md`**     | Development                  | Notes on the software development process |
-| **`index.md`**           | Document Content Recognition | Background, installation and user guide   |
-| **`release_notes.md`**   | Release Notes                |                                           |
-| **`research.md`**        | Research                     | Reference to the relevant research papers |
+| File                     | Headline                       | Remarks                                   |
+|--------------------------|--------------------------------|-------------------------------------------|
+| **`code_of_conduct.md`** | Code of Conduct                |                                           |
+| **`contributing.md`**    | Contributing Guide             |                                           |
+| **`development.md`**     | Development                    | Notes on the software development process |
+| **`index.md`**           | Document Content Recognition   | Background, installation and user guide   |
+| **`license.md`**         | Text of the licence agreement  |                                           |
+| **`release_notes.md`**   | Release Notes                  |                                           |
+| **`research.md`**        | Research                       | Reference to the relevant research papers |
 
 The [MkDocs](https://github.com/mkdocs/mkdocs/){:target="_blank"} tool is used to create the user documentation. 
 With the command **`make mkdocs`** the user documentation is created by MkDocs and uploaded to the GitHub pages of the repository.
@@ -163,7 +162,7 @@ The branches **`Production`** and **`Test Framework`** must be able to run error
 
 The individual steps to be carried out 
 
-1. in the branch **`Development Standards`** are:
+1. in the branch **`standards`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
     1. install the development specific packages with **`pipenv`**
     1. compile the **`Python`** code
@@ -175,16 +174,17 @@ The individual steps to be carried out
     1. run PyLint for checking for errors in **`Python`** code
     1. run pydocstyle for docstring style enforcement
     1. run MkDocs for creating project documentation with markdown.
-   1. publish the code coverage results to **`coveralls.io`**
+    1. publish the code coverage results to **`coveralls.io`**
 
-1. in the branch **`Production`** are:
+1. in the branch **`development`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
-    1. install the production specific packages with **`pipenv`**
+    1. install the **development** specific packages with **`pipenv`**
     1. compile the **`Python`** code
+    1. run pytest for writing better program
 
-1. in the branch **`Test Framework`** are:
+1. in the branch **`production`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
-    1. install the development specific packages with **`pipenv`**
+    1. install the **production** specific packages with **`pipenv`**
     1. compile the **`Python`** code
     1. run pytest for writing better program
 
@@ -213,13 +213,14 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 ## 9. Version Planning
 
-| Version | Feature(s)               |
-|---------|--------------------------|
-| 0.5.0   | Inbox processing         |
-| 0.6.0   | Pandoc processing        |
-| 0.7.0   | Tesseract OCR processing |
-| 0.8.0   | PDFlib TET processing    |
-| 0.9.0   | Parser                   |
+| Version | Feature(s)                       |
+|---------|----------------------------------|
+| 0.5.0   | Inbox processing                 |
+| 0.6.0   | pdf for Tesseract OCR processing |
+| 0.6.5   | Pandoc processing                |
+| 0.7.0   | Tesseract OCR processing         |
+| 0.8.0   | PDFlib TET processing            |
+| 0.9.0   | Parser                           |
 
 ## 10. Next Development Steps
 

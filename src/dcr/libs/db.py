@@ -1,4 +1,4 @@
-"""Database Definition Management.
+"""Module db: Database Definition Management.
 
 Data definition related processing routines.
 

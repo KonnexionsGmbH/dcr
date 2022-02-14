@@ -1,4 +1,4 @@
-"""Check and distribute incoming documents.
+"""Module inbox: Check and distribute incoming documents.
 
 New documents are made available in the file directory inbox.
 These are then checked and moved to the accepted or

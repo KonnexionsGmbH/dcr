@@ -1,4 +1,4 @@
-"""Helper functions."""
+"""Module utils: Helper functions."""
 import datetime
 import os
 import sys

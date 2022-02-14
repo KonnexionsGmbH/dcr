@@ -1,4 +1,4 @@
-"""Definition of the Global Constants, Types and Variables."""
+"""Module cfg: Definition of the Global Constants, Types and Variables."""
 import logging
 from os import PathLike
 from typing import Dict

@@ -52,9 +52,9 @@ Because of the use of the new typing features, **`Python`** version [3.10](https
 
 3. Install the necessary Python packages:
 
-    **`make inst_prod`**
+    **`make pipenv-prod`**
 
-4. Create or update the **`DCR`** database with the script **`run_dcr`** and action **`d_c_u`**.
+4. Create the **`DCR`** database with the script **`run_dcr`** and action **`db_c`**.
 
 5. Optionally, adjustments can be made in the following configuration files:
 
@@ -84,11 +84,10 @@ The customisable entries are:
 **`DCR`** should be operated via the script **`run_dcr`**. 
 The following actions are available:
 
-| Action      | Process                                                                                                           |
-|-------------|-------------------------------------------------------------------------------------------------------------------|
-| **`all`**   | Run the complete processing of all new documents                                                                  |
-| **`d_c_u`** | Create or upgrade the database                                                                                    |
-| **`m_d_e`** | Run the development ecosystem                                                                                     |
-| **`m_d_i`** | Run the installation of the necessary 3rd party packages for development                                          |
-| **`m_p`**   | Run the installation of the necessary 3rd party packages for production <br/>and compile all packages and modules |
-| **`p_i`**   | Process input folder                                                                                              |
+| Action     | Process                                                                                                       |
+|------------|---------------------------------------------------------------------------------------------------------------|
+| **`all`**  | Run the complete processing of all new documents.                                                             |
+| **`db_c`** | Create the database.                                                                                          |
+| **`m_d`**  | Run the installation of the necessary 3rd party packages for development and run the development ecosystem.   |
+| **`m_p`**  | Run the installation of the necessary 3rd party packages for production and compile all packages and modules. |
+| **`p_i`**  | Process the inbox directory.                                                                                  |
