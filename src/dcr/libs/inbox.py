@@ -264,6 +264,13 @@ def process_inbox_files() -> None:
         cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX]
     ).iterdir():
         if file.is_file():
+            if file.name == "README.md":
+                utils.progress_msg(
+                    "Attention: All files with the file name 'README.md' "
+                    + "are ignored"
+                )
+                continue
+
             cfg.total_new += 1
 
             process_inbox_document_initial(file)
@@ -326,13 +333,15 @@ def process_inbox_files() -> None:
                 )
 
     utils.progress_msg(f"Number documents new:       {cfg.total_new:6d}")
-    utils.progress_msg(f"Number documents accepted:  {cfg.total_accepted:6d}")
-    utils.progress_msg(f"Number documents erroneous: {cfg.total_erroneous:6d}")
-    utils.progress_msg(f"Number documents rejected:  {cfg.total_rejected:6d}")
-    utils.progress_msg(
-        "The new documents in the inbox file directory are checked and "
-        + "prepared for further processing",
-    )
+
+    if cfg.total_new > 0:
+        utils.progress_msg(f"Number documents accepted:  {cfg.total_accepted:6d}")
+        utils.progress_msg(f"Number documents erroneous: {cfg.total_erroneous:6d}")
+        utils.progress_msg(f"Number documents rejected:  {cfg.total_rejected:6d}")
+        utils.progress_msg(
+            "The new documents in the inbox file directory are checked and "
+            + "prepared for further processing",
+        )
 
     cfg.logger.debug(cfg.LOGGER_END)
 
