@@ -16,8 +16,9 @@ export CURRENT_PATH=$(pwd)
 
 export VERSION_DCR_DEV=0.5.0
 
-export VERSION_DBEAVER=21.3.3
+export VERSION_DBEAVER=21.3.4
 export VERSION_HTOP=3.1.2
+export VERSION_PANDOC=2.17.1.1
 export VERSION_PYTHON3=3.10.2
 export VERSION_TMUX=3.2a
 
@@ -94,7 +95,8 @@ sudo apt-get install -qy gnupg
 sudo apt-get update -qy
 sudo apt-get upgrade -qy
 
-sudo apt-get install -qy byacc \
+sudo apt-get install -qy autoconf \
+                         byacc \
                          curl \
                          dos2unix \
                          git \
@@ -104,6 +106,7 @@ sudo apt-get install -qy byacc \
                          libncurses-dev \
                          libncurses5-dev \
                          libncursesw5-dev \
+                         libpoppler-dev \
                          libreadline-dev \
                          libsqlite3-dev \
                          libssl-dev \
@@ -223,6 +226,19 @@ echo " "
 echo "=============================================================================> Version  htop: "
 echo " "
 echo "Current version of htop: $(htop --version)"
+echo " "
+echo "=============================================================================="
+
+echo "=============================================================================="
+echo "Step: Install Pandoc - Version ${VERSION_PANDOC}"
+echo "------------------------------------------------------------------------------"
+wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
+sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
+sudo rm -f pandoc-${VERSION_PANDOC}-1-amd64.deb
+echo " "
+echo "=============================================================================> Version  Pandoc: "
+echo " "
+echo "Current version of Pandoc: $(pandoc -v)"
 echo " "
 echo "=============================================================================="
 

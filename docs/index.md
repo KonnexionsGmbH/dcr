@@ -81,7 +81,7 @@ Document files with the following file extensions are marked for converting to *
 
 #### 2.1.4 Other file extensions of documents
 
-Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejectred`**.
+Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejected`**.
 
 ## 3. Requirements
 

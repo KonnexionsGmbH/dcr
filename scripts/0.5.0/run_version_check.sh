@@ -145,37 +145,19 @@ echo "==========================================================================
 echo " "
 echo "Current version of Oracle Instant Client: $(sqlplus -V)"
 echo " "
+echo "=============================================================================> Version  Pandoc: "
+echo " "
+echo "Current version of Pandoc: $(pandoc -v)"
+echo " "
 echo "=============================================================================> Version procps: "
 echo " "
 echo "Current version of procps: $(ps --version)"
 echo " "
 echo "=============================================================================> Version Python3: "
 echo " "
-echo "Current version of Python3: $(python3 --version)"
+echo "Current version of Python3: $(python --version)"
 echo " "
-echo "Current version of pip3: $(pip3 --version || true)"
-echo " "
-pip3 freeze | egrep -i 'alpha-vantage' || true
-pip3 freeze | egrep -i 'cx_oracle' || true
-pip3 freeze | egrep -i 'fire' || true
-pip3 freeze | egrep -i 'jupyter' || true
-pip3 freeze | egrep -i 'Keras' || true
-pip3 freeze | egrep -i 'matplotlib' || true
-pip3 freeze | egrep -i 'notebook' || true
-pip3 freeze | egrep -i 'numpy' || true
-pip3 freeze | egrep -i 'pandas' || true
-pip3 freeze | egrep -i 'Pillow' || true
-pip3 freeze | egrep -i 'pip' || true
-pip3 freeze | egrep -i 'PyYAML' || true
-pip3 freeze | egrep -i 'requests' || true
-pip3 freeze | egrep -i 'scikit-learn' || true
-pip3 freeze | egrep -i 'scipy' || true
-pip3 freeze | egrep -i 'seaborn' || true
-pip3 freeze | egrep -i 'statsmodels' || true
-pip3 freeze | egrep -i 'tensorflow|' || true
-pip3 freeze | egrep -i 'Theano' || true
-pip3 freeze | egrep -i 'virtualenvwrapper' || true
-pip3 freeze | egrep -i 'zodbbrowser' || true
+echo "Current version of pip3: $(pip --version || true)"
 echo " "
 echo "=============================================================================> Version R: "
 echo " "
