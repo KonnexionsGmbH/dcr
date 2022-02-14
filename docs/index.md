@@ -34,21 +34,21 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ### 2.1 Process the inbox directory
 
-In the first step, the file directory ""`inbox`** is checked for new document files. 
-An entry is created in the **`document`"" database table for each new document, showing the current processing status of the document. 
+In the first step, the file directory **`inbox`** is checked for new document files. 
+An entry is created in the **`document`** database table for each new document, showing the current processing status of the document. 
 In addition, each processing step of a document is documented in the database table **`journal`**.
 The new document files are processed based on their file extension as follows:
 
 #### 2.1.1 File extension **`pdf`**
 
-The package [fitz]() is used to check whether the **`pdf`** document is a scanned image or not. 
+The module **`fitz`** from package [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/module.html) is used to check whether the **`pdf`** document is a scanned image or not. 
 A **`pdf`** document consisting of a scanned image is marked for conversion from **`pdf`** format to an image format and moved to the file directory **`ìnbox_accepted`**.
 Other **`pdf`** documents are marked for further processing with the **`pdf`** parser and then also moved to the file directory **`ìnbox_accepted`**.
 If, however, when checking the **`pdf`** document with **`fitz`**, it turns out that the document with the file extension **`pdf`** is not really a **`pdf`** document, then the document is moved to the file directory **`inbox_rejected`**.
 
-#### 2.1.2 File extension of documents for processing with Pandoc
+#### 2.1.2 File extensions of documents for processing with Pandoc
 
-Document files with the following file extensions are marked for converting to **`pdf`** format using [Pandoc]():
+Document files with the following file extensions are marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org):
 
 - **`csv`**
 - **`doc`**
@@ -65,9 +65,9 @@ Document files with the following file extensions are marked for converting to *
 
 An exception are files with the file name **`README.md`**, which are ignored and not processed.
 
-#### 2.1.3 File extension of documents for processing with Tesseract OCR
+#### 2.1.3 File extensions of documents for processing with Tesseract OCR
 
-Document files with the following file extensions are marked for converting to **`pdf`** format using [Tesseract OCR]():
+Document files with the following file extensions are marked for converting to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract):
 
 - **`bmp`**
 - **`gif`**
@@ -81,7 +81,7 @@ Document files with the following file extensions are marked for converting to *
 
 #### 2.1.4 Other file extensions of documents
 
-Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejectred`"".
+Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejectred`**.
 
 ## 3. Requirements
 

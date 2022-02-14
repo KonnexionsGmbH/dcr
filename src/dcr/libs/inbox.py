@@ -306,8 +306,8 @@ def process_inbox_files() -> None:
                 cfg.FILE_TYPE_JP2,
                 cfg.FILE_TYPE_JPEG,
                 cfg.FILE_TYPE_JPG,
-                cfg.FILE_TYPE_PMG,
                 cfg.FILE_TYPE_PMN,
+                cfg.FILE_TYPE_PNG,
                 cfg.FILE_TYPE_TIFF,
                 cfg.FILE_TYPE_WEBP,
             ):
