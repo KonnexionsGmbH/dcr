@@ -1,0 +1,54 @@
+# -----------------------------------------------------------------------------
+# Convert the new document to PDF format using Pandoc.
+# -----------------------------------------------------------------------------
+def process_inbox_pandoc() -> None:
+
+
+
+
+
+    target_file_accepted = os.path.join(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED],
+        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
+    )
+    target_file_rejected = os.path.join(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED],
+        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
+    )
+    target_file_pdf = os.path.join(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED],
+        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.FILE_TYPE_PDF,
+    )
+
+    try:
+        pypandoc.convert_file(
+            source_file=cfg.source_file,
+            to=cfg.FILE_TYPE_PDF,
+            outputfile=target_file_pdf,
+            extra_args=["--latex-engine=weasyprint"],
+        )
+    except (OSError, RuntimeError) as err:
+        is_ok = False
+        process_inbox_document_rejected(
+            logger,
+            "01.902 Issue when converting file "
+            + cfg.source_file
+            + " with Pandoc - error="
+            + str(err.errno),
+            cfg.STATUS_PANDOC_ERROR,
+        )
+
+    if is_ok:
+        try:
+            shutil.move(cfg.source_file, target_file_accepted)
+        except (PermissionError, shutil.Error) as err:
+            process_inbox_document_rejected(
+                logger,
+                "01.903 Issue when moving file "
+                + cfg.source_file
+                + " to "
+                + target_file_rejected
+                + " - error="
+                + str(err.errno),
+                cfg.STATUS_REJECTED_ERROR,
+            )

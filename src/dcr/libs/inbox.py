@@ -11,6 +11,7 @@ import inspect
 import os
 import pathlib
 import shutil
+import tempfile
 
 import fitz
 from libs import cfg
@@ -148,9 +149,43 @@ def prepare_pdf_for_tesseract() -> None:
     cfg.logger.debug(cfg.LOGGER_START)
 
     try:
-        print("wwe path=",cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
-        with cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED] as path:
-            convert_from_path(utils.get_file_name_inbox(), output_folder=path)
+        # print("wwe path=",cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
+        # with cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED] as path:
+        with tempfile.TemporaryDirectory() as path:
+            images_from_path = convert_from_path(utils.get_file_name_inbox(), output_folder=path)
+
+
+
+        import os
+        import tempfile
+        from pdf2image import convert_from_path
+
+        filename = 'target.pdf'
+
+        with tempfile.TemporaryDirectory() as path:
+            images_from_path = convert_from_path(filename, output_folder=path, last_page=1, first_page=0)
+
+        base_filename = os.path.splitext(os.path.basename(filename))[0] + '.jpg'
+
+        save_dir = 'your_saved_dir'
+
+        for page in images_from_path:
+            page.save(os.path.join(save_dir, base_filename), 'JPEG')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         db.update_document_status(
             cfg.JOURNAL_ACTION_11_004,
@@ -160,7 +195,7 @@ def prepare_pdf_for_tesseract() -> None:
         )
         cfg.total_accepted += 1
     except shutil.Error as err:
-        cfg.total_erroneus += 1
+        cfg.total_erroneous += 1
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_903.replace(
                 "{source_file}", utils.get_file_name_inbox()
@@ -218,7 +253,7 @@ def process_inbox_accepted(
         )
         remove_optional_file(target_file_name)
     except shutil.Error as err:
-        cfg.total_erroneus += 1
+        cfg.total_erroneous += 1
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_902.replace(
                 "{source_file}", utils.get_file_name_inbox()
@@ -344,10 +379,10 @@ def process_inbox_files() -> None:
                     )
                 )
 
-    utils.progress_msg(f"Number documents new:      {cfg.total_new:6d}")
-    utils.progress_msg(f"Number documents accepted: {cfg.total_accepted:6d}")
-    utils.progress_msg(f"Number documents erroneus: {cfg.total_erroneus:6d}")
-    utils.progress_msg(f"Number documents rejected: {cfg.total_rejected:6d}")
+    utils.progress_msg(f"Number documents new:       {cfg.total_new:6d}")
+    utils.progress_msg(f"Number documents accepted:  {cfg.total_accepted:6d}")
+    utils.progress_msg(f"Number documents erroneous: {cfg.total_erroneous:6d}")
+    utils.progress_msg(f"Number documents rejected:  {cfg.total_rejected:6d}")
     utils.progress_msg(
         "The new documents in the inbox file directory are checked and "
         + "prepared for further processing",
@@ -370,52 +405,6 @@ def process_inbox_pandoc() -> None:
         cfg.STATUS_PANDOC_READY,
     )
 
-    # target_file_accepted = os.path.join(
-    #     cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED],
-    #     cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
-    # )
-    # target_file_rejected = os.path.join(
-    #     cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED],
-    #     cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
-    # )
-    # target_file_pdf = os.path.join(
-    #     cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED],
-    #     cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.FILE_TYPE_PDF,
-    # )
-    #
-    # try:
-    #     pypandoc.convert_file(
-    #         source_file=cfg.source_file,
-    #         to=cfg.FILE_TYPE_PDF,
-    #         outputfile=target_file_pdf,
-    #         extra_args=["--latex-engine=weasyprint"],
-    #     )
-    # except (OSError, RuntimeError) as err:
-    #     is_ok = False
-    #     process_inbox_document_rejected(
-    #         logger,
-    #         "01.902 Issue when converting file "
-    #         + cfg.source_file
-    #         + " with Pandoc - error="
-    #         + str(err.errno),
-    #         cfg.STATUS_PANDOC_ERROR,
-    #     )
-    #
-    # if is_ok:
-    #     try:
-    #         shutil.move(cfg.source_file, target_file_accepted)
-    #     except (PermissionError, shutil.Error) as err:
-    #         process_inbox_document_rejected(
-    #             logger,
-    #             "01.903 Issue when moving file "
-    #             + cfg.source_file
-    #             + " to "
-    #             + target_file_rejected
-    #             + " - error="
-    #             + str(err.errno),
-    #             cfg.STATUS_REJECTED_ERROR,
-    #         )
-
     cfg.logger.debug(cfg.LOGGER_END)
 
 
@@ -434,7 +423,7 @@ def process_inbox_rejected(
     cfg.logger.debug(cfg.LOGGER_START)
 
     try:
-        cfg.total_erroneus += 1
+        cfg.total_erroneous += 1
         shutil.move(
             utils.get_file_name_inbox(), utils.get_file_name_inbox_rejected()
         )
