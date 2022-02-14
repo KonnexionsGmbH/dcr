@@ -12,36 +12,6 @@ from sqlalchemy.engine import Engine
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
-DBC_ACTION_CODE: str
-DBC_ACTION_TEXT: str
-DBC_CREATED_AT: str
-DBC_DOCUMENT_ID: str
-DBC_FILE_NAME: str
-DBC_FILE_TYPE: str
-DBC_FUNCTION_NAME: str
-DBC_ID: str
-DBC_INBOX_ABS_NAME: str
-DBC_INBOX_CONFIG: str
-DBC_INBOX_ACCEPTED_ABS_NAME: str
-DBC_INBOX_ACCEPTED_CONFIG: str
-DBC_INBOX_REJECTED_ABS_NAME: str
-DBC_INBOX_REJECTED_CONFIG: str
-DBC_MODIFIED_AT: str
-DBC_MODULE_NAME: str
-DBC_PACKAGE: str
-DBC_RUN_ID: str
-DBC_STATUS: str
-DBC_STEM_NAME: str
-DBC_TOTAL_ACCEPTED: str
-DBC_TOTAL_NEW: str
-DBC_TOTAL_REJECTED: str
-DBC_VERSION: str
-
-DBT_DOCUMENT: str
-DBT_JOURNAL: str
-DBT_RUN: str
-DBT_VERSION: str
-
 DCR_ARGV_0: str
 DCR_CFG_DATABASE_FILE: str
 DCR_CFG_DATABASE_URL: str
@@ -78,16 +48,17 @@ FILE_TYPE_TXT: str
 FILE_TYPE_WEBP: str
 
 JOURNAL_ACTION_01_001: str
-JOURNAL_ACTION_11_001: str
-JOURNAL_ACTION_11_002: str
-JOURNAL_ACTION_11_003: str
-JOURNAL_ACTION_11_004: str
 JOURNAL_ACTION_01_901: str
 JOURNAL_ACTION_01_902: str
 JOURNAL_ACTION_01_903: str
 JOURNAL_ACTION_01_904: str
 JOURNAL_ACTION_01_905: str
 JOURNAL_ACTION_01_906: str
+JOURNAL_ACTION_11_001: str
+JOURNAL_ACTION_11_002: str
+JOURNAL_ACTION_11_003: str
+JOURNAL_ACTION_11_004: str
+JOURNAL_ACTION_11_005: str
 
 LOCALE: str
 LOGGER_CFG_FILE: str
@@ -104,9 +75,6 @@ RUN_ACTION_ALL_COMPLETE: str
 RUN_ACTION_CREATE_DB: str
 RUN_ACTION_PROCESS_INBOX: str
 
-# STATUS_INVALID_FILE_TYPE: str
-# STATUS_REJECTED: str
-
 STATUS_COMPLETED: str
 STATUS_END: str
 STATUS_INBOX: str
@@ -114,14 +82,16 @@ STATUS_PANDOC_ERROR: str
 STATUS_PANDOC_READY: str
 STATUS_PARSER_ERROR: str
 STATUS_PARSER_READY: str
-STATUS_PDF2IMAGE_ERROR: str
 STATUS_REJECTED_ERROR: str
 STATUS_REJECTED_FILE_ERROR: str
 STATUS_REJECTED_FILE_EXTENSION: str
 STATUS_REJECTED_FILE_PERMISSION: str
+STATUS_REJECTED_NO_PDF_FORMAT: str
 STATUS_START: str
 STATUS_TESSERACT_ERROR: str
 STATUS_TESSERACT_READY: str
+STATUS_TESSERACT_PDF_ERROR: str
+STATUS_TESSERACT_PDF_READY: str
 
 # -----------------------------------------------------------------------------
 # Global Type Definitions.
@@ -133,6 +103,9 @@ Columns: TypeAlias = list[Dict[str, Union[PathLike[str], str]]]
 # -----------------------------------------------------------------------------
 config: Dict[str, PathLike[str] | str]
 
+directory_inbox: PathLike[str] | str
+directory_inbox_accepted: PathLike[str] | str
+directory_inbox_rejected: PathLike[str] | str
 document_id: sqlalchemy.Integer
 
 engine: Engine | None
@@ -140,10 +113,6 @@ engine: Engine | None
 file_extension: str
 file_name: str
 file_type: str
-
-INBOX: PathLike[str] | str
-inbox_accepted: PathLike[str] | str
-inbox_rejected: PathLike[str] | str
 
 logger: logging.Logger | None
 metadata: MetaData
@@ -153,6 +122,6 @@ run_id: sqlalchemy.Integer
 stem_name: str
 
 total_accepted: int
-total_erroneus: int
+total_erroneous: int
 total_new: int
 total_rejected: int

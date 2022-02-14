@@ -15,7 +15,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # @pytest.mark.issue
 
-TESTS_INBOX = "tests/inbox/__PYTEST_FILES__/"
+TESTS_INBOX = "tests/__PYTEST_FILES__/"
 
 dcr.initialise_logger()
 
@@ -43,7 +43,7 @@ def show_inboxes_after(
 # Test File Extension: pdf - pdf_text_ok.
 # -----------------------------------------------------------------------------
 def test_file_extension_pdf_ok(fxtr_new_db_empty_inbox):
-    """Test: pdf - text.
+    """Test: pdf - pdf_text_ok.pdf.
 
     The original file is expected in the file directory inbox_accepted.
     """
@@ -67,11 +67,65 @@ def test_file_extension_pdf_ok(fxtr_new_db_empty_inbox):
 
 
 # -----------------------------------------------------------------------------
+# Test File Extension: pdf - pdf_wrong_format.
+# -----------------------------------------------------------------------------
+def test_file_extension_pdf_wrong_format(fxtr_new_db_empty_inbox):
+    """Test: pdf - pdf_wrong_format.pdf.
+
+    The original file is expected in the file directory inbox_rejected.
+    """
+    inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
+    inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
+    inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
+
+    file_inbox = os.path.join(inbox, "pdf_wrong_format.pdf")
+    file_source = os.path.join(TESTS_INBOX, "pdf_wrong_format.pdf")
+    file_target = os.path.join(inbox_rejected, "pdf_wrong_format_1.pdf")
+
+    shutil.copy(file_source, inbox)
+
+    verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    verify_inbox_rejected_after(
+        inbox, inbox_accepted, inbox_rejected, file_target
+    )
+
+
+# -----------------------------------------------------------------------------
+# Test File Extension: tiff - tiff_pdf_text_ok_1.
+# -----------------------------------------------------------------------------
+def test_file_extension_tiff_ok(fxtr_new_db_empty_inbox):
+    """Test: tiff - tiff_pdf_text_ok_1.tiff.
+
+    The original file is expected in the file directory inbox_accepted.
+    """
+    inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
+    inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
+    inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
+
+    file_inbox = os.path.join(inbox, "tiff_pdf_text_ok_1.tiff")
+    file_source = os.path.join(TESTS_INBOX, "tiff_pdf_text_ok_1.tiff")
+    file_target = os.path.join(inbox_accepted, "tiff_pdf_text_ok_1_1.tiff")
+
+    shutil.copy(file_source, inbox)
+
+    verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    verify_inbox_accepted_after(
+        inbox, inbox_accepted, inbox_rejected, file_target
+    )
+
+
+# -----------------------------------------------------------------------------
 # Test File Extension: xxx - unknown_file_extension.
 # -----------------------------------------------------------------------------
 @pytest.mark.issue
 def test_file_extension_unknown_ok(fxtr_new_db_empty_inbox):
-    """Test: xxx.
+    """Test: xxx - unknown_file_extension.xxx.
 
     Due to the unknown file extension, the original file is expected
     in the file directory inbox_rejected.

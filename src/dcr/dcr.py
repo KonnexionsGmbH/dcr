@@ -208,13 +208,13 @@ def terminate_run_entry() -> None:
     cfg.logger.debug(cfg.LOGGER_START)
 
     db.update_dbt_id(
-        cfg.DBT_RUN,
+        db.DBT_RUN,
         cfg.run_id,
         {
-            cfg.DBC_STATUS: cfg.STATUS_END,
-            cfg.DBC_TOTAL_ACCEPTED: cfg.total_accepted,
-            cfg.DBC_TOTAL_NEW: cfg.total_new,
-            cfg.DBC_TOTAL_REJECTED: cfg.total_rejected,
+            db.DBC_STATUS: cfg.STATUS_END,
+            db.DBC_TOTAL_ACCEPTED: cfg.total_accepted,
+            db.DBC_TOTAL_NEW: cfg.total_new,
+            db.DBC_TOTAL_REJECTED: cfg.total_rejected,
         },
     )
 

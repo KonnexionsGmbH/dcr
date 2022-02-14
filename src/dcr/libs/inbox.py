@@ -11,13 +11,12 @@ import inspect
 import os
 import pathlib
 import shutil
-import tempfile
+from typing import Callable
 
 import fitz
 from libs import cfg
 from libs import db
 from libs import utils
-from pdf2image import convert_from_path
 
 
 # -----------------------------------------------------------------------------
@@ -32,35 +31,41 @@ def check_and_create_directories() -> None:
     """
     cfg.logger.debug(cfg.LOGGER_START)
 
-    cfg.inbox = cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX]
-    if not os.path.isdir(cfg.inbox):
+    cfg.directory_inbox = cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX]
+    if not os.path.isdir(cfg.directory_inbox):
         utils.terminate_fatal(
             "The inbox directory with the name "
-            + cfg.inbox
+            + cfg.directory_inbox
             + " does not exist - error="
             + str(OSError),
         )
 
-    cfg.inbox_accepted = cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    create_directory("the accepted documents", cfg.inbox_accepted)
+    cfg.directory_inbox_accepted = cfg.config[
+        cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED
+    ]
+    create_directory("the accepted documents", cfg.directory_inbox_accepted)
 
-    cfg.inbox_rejected = cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
-    create_directory("the rejected documents", cfg.inbox_rejected)
+    cfg.directory_inbox_rejected = cfg.config[
+        cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
+    ]
+    create_directory("the rejected documents", cfg.directory_inbox_rejected)
 
     db.update_dbt_id(
-        cfg.DBT_RUN,
+        db.DBT_RUN,
         cfg.run_id,
         {
-            cfg.DBC_INBOX_ABS_NAME: str(pathlib.Path(cfg.inbox).absolute()),
-            cfg.DBC_INBOX_CONFIG: cfg.inbox,
-            cfg.DBC_INBOX_ACCEPTED_ABS_NAME: str(
-                pathlib.Path(cfg.inbox_accepted).absolute()
+            db.DBC_INBOX_ABS_NAME: str(
+                pathlib.Path(cfg.directory_inbox).absolute()
             ),
-            cfg.DBC_INBOX_ACCEPTED_CONFIG: cfg.inbox_accepted,
-            cfg.DBC_INBOX_REJECTED_ABS_NAME: str(
-                pathlib.Path(cfg.inbox_rejected).absolute()
+            db.DBC_INBOX_CONFIG: cfg.directory_inbox,
+            db.DBC_INBOX_ACCEPTED_ABS_NAME: str(
+                pathlib.Path(cfg.directory_inbox_accepted).absolute()
             ),
-            cfg.DBC_INBOX_REJECTED_CONFIG: cfg.inbox_rejected,
+            db.DBC_INBOX_ACCEPTED_CONFIG: cfg.directory_inbox_accepted,
+            db.DBC_INBOX_REJECTED_ABS_NAME: str(
+                pathlib.Path(cfg.directory_inbox_rejected).absolute()
+            ),
+            db.DBC_INBOX_REJECTED_CONFIG: cfg.directory_inbox_rejected,
         },
     )
 
@@ -117,94 +122,31 @@ def prepare_pdf() -> None:
         )
 
         if bool(extracted_text):
-            process_inbox_accepted(
-                cfg.JOURNAL_ACTION_11_003,
+            action: str = cfg.JOURNAL_ACTION_11_003
+            status: str = cfg.STATUS_PARSER_READY
+        else:
+            action: str = cfg.JOURNAL_ACTION_11_005
+            status: str = cfg.STATUS_TESSERACT_PDF_READY
+
+        process_inbox_accepted(
+            db.update_document_status(
+                action,
                 inspect.stack()[0][3],
                 __name__,
-                cfg.STATUS_PARSER_READY,
-                utils.get_file_name_inbox_accepted(),
-            )
-        else:
-            prepare_pdf_for_tesseract()
+                status,
+            ),
+            utils.get_file_name_inbox_accepted(),
+        )
     except RuntimeError as err:
         process_inbox_rejected(
             db.update_document_status(
                 cfg.JOURNAL_ACTION_01_904.replace(
                     "{source_file}", utils.get_file_name_inbox()
-                ).replace("{error_msg}", err),
+                ).replace("{error_msg}", str(err)),
                 inspect.stack()[0][3],
                 __name__,
-                cfg.STATUS_PDF2IMAGE_ERROR,
+                cfg.STATUS_REJECTED_NO_PDF_FORMAT,
             ),
-        )
-
-    cfg.logger.debug(cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Prepare a new pdf document for Tesseract OCR..
-# -----------------------------------------------------------------------------
-def prepare_pdf_for_tesseract() -> None:
-    """Prepare a new pdf document for Tesseract OCR."""
-    cfg.logger.debug(cfg.LOGGER_START)
-
-    try:
-        # print("wwe path=",cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
-        # with cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED] as path:
-        with tempfile.TemporaryDirectory() as path:
-            images_from_path = convert_from_path(utils.get_file_name_inbox(), output_folder=path)
-
-
-
-        import os
-        import tempfile
-        from pdf2image import convert_from_path
-
-        filename = 'target.pdf'
-
-        with tempfile.TemporaryDirectory() as path:
-            images_from_path = convert_from_path(filename, output_folder=path, last_page=1, first_page=0)
-
-        base_filename = os.path.splitext(os.path.basename(filename))[0] + '.jpg'
-
-        save_dir = 'your_saved_dir'
-
-        for page in images_from_path:
-            page.save(os.path.join(save_dir, base_filename), 'JPEG')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        db.update_document_status(
-            cfg.JOURNAL_ACTION_11_004,
-            inspect.stack()[0][3],
-            __name__,
-            cfg.STATUS_TESSERACT_READY,
-        )
-        cfg.total_accepted += 1
-    except shutil.Error as err:
-        cfg.total_erroneous += 1
-        db.update_document_status(
-            cfg.JOURNAL_ACTION_01_903.replace(
-                "{source_file}", utils.get_file_name_inbox()
-            )
-            .replace("{error_code}", str(err.errno))
-            .replace("{error_msg}", err.strerror),
-            inspect.stack()[0][3],
-            __name__,
-            cfg.STATUS_PDF2IMAGE_ERROR,
         )
 
     cfg.logger.debug(cfg.LOGGER_END)
@@ -214,31 +156,24 @@ def prepare_pdf_for_tesseract() -> None:
 # Accept a new document.
 # -----------------------------------------------------------------------------
 def process_inbox_accepted(
-    action: str,
-    function_name: str,
-    module_name: str,
-    status: str,
+    update_document_status: Callable[[str, str, str, str], None],
     target_file_name: str,
 ) -> None:
     """Accept a new document.
 
     Args:
-        action (str): Current action,
-        function_name (str): Name of the originating function.
-        module_name (str): Name of the originating module.
-        status (str): Current status,
         target_file_name (str): File name in the directory inbox_accepted.
+        update_document_status (db.update_document_status): Function to update
+                    the document status and create a new journal entry.
     """
     cfg.logger.debug(cfg.LOGGER_START)
 
     try:
         shutil.move(utils.get_file_name_inbox(), target_file_name)
-        db.update_document_status(
-            action,
-            function_name,
-            module_name,
-            status,
-        )
+
+        # pylint: disable=pointless-statement
+        update_document_status
+
         cfg.total_accepted += 1
     except PermissionError as err:
         db.update_document_status(
@@ -317,6 +252,11 @@ def process_inbox_files() -> None:
     """
     cfg.logger.debug(cfg.LOGGER_START)
 
+    cfg.total_accepted = 0
+    cfg.total_erroneous = 0
+    cfg.total_new = 0
+    cfg.total_rejected = 0
+
     # Check the inbox file directories and create the missing ones.
     check_and_create_directories()
 
@@ -332,6 +272,7 @@ def process_inbox_files() -> None:
                 prepare_pdf()
             elif cfg.file_type in (
                 cfg.FILE_TYPE_CSV,
+                cfg.FILE_TYPE_DOC,
                 cfg.FILE_TYPE_DOCX,
                 cfg.FILE_TYPE_EPUB,
                 cfg.FILE_TYPE_HTM,
@@ -341,13 +282,16 @@ def process_inbox_files() -> None:
                 cfg.FILE_TYPE_ODT,
                 cfg.FILE_TYPE_RST,
                 cfg.FILE_TYPE_RTF,
+                cfg.FILE_TYPE_TXT,
             ):
-                process_inbox_pandoc()
-                db.update_document_status(
-                    cfg.JOURNAL_ACTION_11_001,
-                    inspect.stack()[0][3],
-                    __name__,
-                    cfg.STATUS_PANDOC_READY,
+                process_inbox_accepted(
+                    db.update_document_status(
+                        cfg.JOURNAL_ACTION_11_001,
+                        inspect.stack()[0][3],
+                        __name__,
+                        cfg.STATUS_PANDOC_READY,
+                    ),
+                    utils.get_file_name_inbox_accepted(),
                 )
             elif cfg.file_type in (
                 cfg.FILE_TYPE_BMP,
@@ -360,12 +304,14 @@ def process_inbox_files() -> None:
                 cfg.FILE_TYPE_TIFF,
                 cfg.FILE_TYPE_WEBP,
             ):
-                process_inbox_tesseract()
-                db.update_document_status(
-                    cfg.JOURNAL_ACTION_11_002,
-                    inspect.stack()[0][3],
-                    __name__,
-                    cfg.STATUS_TESSERACT_READY,
+                process_inbox_accepted(
+                    db.update_document_status(
+                        cfg.JOURNAL_ACTION_11_002,
+                        inspect.stack()[0][3],
+                        __name__,
+                        cfg.STATUS_TESSERACT_READY,
+                    ),
+                    utils.get_file_name_inbox_accepted(),
                 )
             else:
                 process_inbox_rejected(
@@ -392,27 +338,10 @@ def process_inbox_files() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Convert the new document to PDF format using Pandoc.
-# -----------------------------------------------------------------------------
-def process_inbox_pandoc() -> None:
-    """Convert the new document to PDF format using Pandoc."""
-    cfg.logger.debug(cfg.LOGGER_START)
-
-    db.update_document_status(
-        cfg.JOURNAL_ACTION_11_001,
-        inspect.stack()[0][3],
-        __name__,
-        cfg.STATUS_PANDOC_READY,
-    )
-
-    cfg.logger.debug(cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
 # Reject a new document that is faulty.
 # -----------------------------------------------------------------------------
 def process_inbox_rejected(
-    update_document_status: db.update_document_status,
+    update_document_status: Callable[[str, str, str, str], None],
 ) -> None:
     """Reject a new document that is faulty.
 
@@ -456,24 +385,6 @@ def process_inbox_rejected(
             __name__,
             cfg.STATUS_REJECTED_ERROR,
         )
-
-    cfg.logger.debug(cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Process the new pdf files in the inbox file directory.
-# -----------------------------------------------------------------------------
-def process_inbox_tesseract() -> None:
-    """Process the new pdf documents in the inbox file directory."""
-    cfg.logger.debug(cfg.LOGGER_START)
-
-    extracted_text = "".join(
-        [page.getText() for page in fitz.open(utils.get_file_name_inbox())]
-    )
-
-    doc_type = "text" if extracted_text else "scan"
-
-    print("doc_type=", doc_type)
 
     cfg.logger.debug(cfg.LOGGER_END)
 

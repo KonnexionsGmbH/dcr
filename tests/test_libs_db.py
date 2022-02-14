@@ -38,7 +38,7 @@ def test_select_version_unique_not_found(fxtr_new_db_no_inbox):
 
     with libs.cfg.engine.begin() as conn:
         version = Table(
-            libs.cfg.DBT_VERSION,
+            libs.db.DBT_VERSION,
             libs.cfg.metadata,
             autoload_with=libs.cfg.engine,
         )
@@ -56,7 +56,7 @@ def test_select_version_unique_not_found(fxtr_new_db_no_inbox):
 def test_select_version_unique_not_unique(fxtr_new_db_no_inbox):
     """Test: Column version not unique."""
     libs.db.insert_dbt_row(
-        libs.cfg.DBT_VERSION, [{libs.cfg.DBC_VERSION: "0.0.0"}]
+        libs.db.DBT_VERSION, [{libs.db.DBC_VERSION: "0.0.0"}]
     )
 
     with pytest.raises(SystemExit) as expt:

@@ -6,6 +6,36 @@ from typing import List
 import sqlalchemy.orm
 from libs import cfg
 
+DBC_ACTION_CODE: str
+DBC_ACTION_TEXT: str
+DBC_CREATED_AT: str
+DBC_DOCUMENT_ID: str
+DBC_FILE_NAME: str
+DBC_FILE_TYPE: str
+DBC_FUNCTION_NAME: str
+DBC_ID: str
+DBC_INBOX_ABS_NAME: str
+DBC_INBOX_CONFIG: str
+DBC_INBOX_ACCEPTED_ABS_NAME: str
+DBC_INBOX_ACCEPTED_CONFIG: str
+DBC_INBOX_REJECTED_ABS_NAME: str
+DBC_INBOX_REJECTED_CONFIG: str
+DBC_MODIFIED_AT: str
+DBC_MODULE_NAME: str
+DBC_PACKAGE: str
+DBC_RUN_ID: str
+DBC_STATUS: str
+DBC_STEM_NAME: str
+DBC_TOTAL_ACCEPTED: str
+DBC_TOTAL_NEW: str
+DBC_TOTAL_REJECTED: str
+DBC_VERSION: str
+
+DBT_DOCUMENT: str
+DBT_JOURNAL: str
+DBT_RUN: str
+DBT_VERSION: str
+
 def check_db_up_to_date() -> None: ...
 def connect_db() -> None: ...
 def connect_db_core() -> None: ...

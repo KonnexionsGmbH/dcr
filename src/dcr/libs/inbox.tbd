@@ -1,4 +1,66 @@
 # -----------------------------------------------------------------------------
+# Prepare a new pdf document for Tesseract OCR..
+# -----------------------------------------------------------------------------
+def prepare_pdf_for_tesseract() -> None:
+    """Prepare a new pdf document for Tesseract OCR."""
+    cfg.logger.debug(cfg.LOGGER_START)
+
+    try:
+        # wwe
+        # print("wwe path=",cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
+        # with cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED] as path:
+        with tempfile.TemporaryDirectory() as path:
+            images_from_path = convert_from_path(
+                utils.get_file_name_inbox(), output_folder=path
+            )
+
+        import os
+        import tempfile
+
+        from pdf2image import convert_from_path
+
+        filename = "target.pdf"
+
+        with tempfile.TemporaryDirectory() as path:
+            images_from_path = convert_from_path(
+                filename, output_folder=path, last_page=1, first_page=0
+            )
+
+        base_filename = (
+            os.path.splitext(os.path.basename(filename))[0] + ".jpg"
+        )
+
+        save_dir = "your_saved_dir"
+
+        for page in images_from_path:
+            page.save(os.path.join(save_dir, base_filename), "JPEG")
+
+        db.update_document_status(
+            cfg.JOURNAL_ACTION_11_004,
+            inspect.stack()[0][3],
+            __name__,
+            cfg.STATUS_TESSERACT_READY,
+        )
+        cfg.total_accepted += 1
+    except shutil.Error as err:
+        cfg.total_erroneous += 1
+        db.update_document_status(
+            cfg.JOURNAL_ACTION_01_903.replace(
+                "{source_file}", utils.get_file_name_inbox()
+            )
+            .replace("{error_code}", str(err.errno))
+            .replace("{error_msg}", err.strerror),
+            inspect.stack()[0][3],
+            __name__,
+            cfg.STATUS_PDF2IMAGE_ERROR,
+        )
+
+    cfg.logger.debug(cfg.LOGGER_END)
+
+
+
+
+# -----------------------------------------------------------------------------
 # Convert the new document to PDF format using Pandoc.
 # -----------------------------------------------------------------------------
 def process_inbox_pandoc() -> None:

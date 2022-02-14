@@ -12,35 +12,6 @@ from sqlalchemy.engine import Engine
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
-DBC_ACTION_CODE: str = "action_code"
-DBC_ACTION_TEXT: str = "action_text"
-DBC_CREATED_AT: str = "created_at"
-DBC_DOCUMENT_ID: str = "document_id"
-DBC_FILE_NAME: str = "file_name"
-DBC_FILE_TYPE: str = "file_type"
-DBC_FUNCTION_NAME: str = "function_name"
-DBC_ID: str = "id"
-DBC_INBOX_ABS_NAME: str = "inbox_abs_name"
-DBC_INBOX_CONFIG: str = "inbox_config"
-DBC_INBOX_ACCEPTED_ABS_NAME: str = "inbox_accepted_abs_name"
-DBC_INBOX_ACCEPTED_CONFIG: str = "inbox_accepted_config"
-DBC_INBOX_REJECTED_ABS_NAME: str = "inbox_rejected_abs_name"
-DBC_INBOX_REJECTED_CONFIG: str = "inbox_rejected_config"
-DBC_MODIFIED_AT: str = "modified_at"
-DBC_MODULE_NAME: str = "module_name"
-DBC_RUN_ID: str = "run_id"
-DBC_STATUS: str = "status"
-DBC_STEM_NAME: str = "stem_name"
-DBC_TOTAL_ACCEPTED: str = "total_accepted"
-DBC_TOTAL_NEW: str = "total_new"
-DBC_TOTAL_REJECTED: str = "total_rejected"
-DBC_VERSION: str = "version"
-
-DBT_DOCUMENT: str = "document"
-DBT_JOURNAL: str = "journal"
-DBT_RUN: str = "run"
-DBT_VERSION: str = "version"
-
 DCR_ARGV_0: str = "src/dcr/dcr.py"
 DCR_CFG_DATABASE_FILE: str = "database_file"
 DCR_CFG_DATABASE_URL: str = "database_url"
@@ -71,24 +42,13 @@ FILE_TYPE_PDF: str = "pdf"
 FILE_TYPE_PMG: str = "png"
 FILE_TYPE_PMN: str = "pnm"
 FILE_TYPE_RST: str = "rst"
-FILE_TYPE_RTF: str = "rdf"
+FILE_TYPE_RTF: str = "rtf"
 FILE_TYPE_TIFF: str = "tiff"
 FILE_TYPE_TXT: str = "txt"
 FILE_TYPE_WEBP: str = "webp"
 
 JOURNAL_ACTION_01_001: str = (
     "01.001 New document detected in the 'inbox' file directory"
-)
-JOURNAL_ACTION_11_001: str = (
-    "11.001 Ready to convert the document to 'pdf' format using Pandoc"
-)
-JOURNAL_ACTION_11_002: str = (
-    "11.002 Ready to convert the document to 'pdf' format using Tesseract OCR"
-)
-JOURNAL_ACTION_11_003: str = "11.003 Ready to parse the pdf document"
-JOURNAL_ACTION_11_004: str = (
-    "11.004 Ready to convert the document to 'pdf' format using Tesseract OCR"
-    + " (after pdf2image processing)"
 )
 JOURNAL_ACTION_01_901: str = (
     "01.901 Document rejected because of unknown file extension='{extension}'"
@@ -113,6 +73,20 @@ JOURNAL_ACTION_01_906: str = (
     "01.905 File '{source_file}' can not be deleted"
     + "- error: code='{error_code}' msg='{error_msg}'"
 )
+JOURNAL_ACTION_11_001: str = (
+    "11.001 Ready to convert the document to 'pdf' format using Pandoc"
+)
+JOURNAL_ACTION_11_002: str = (
+    "11.002 Ready to convert the document to 'pdf' format using Tesseract OCR"
+)
+JOURNAL_ACTION_11_003: str = "11.003 Ready to parse the pdf document"
+JOURNAL_ACTION_11_004: str = (
+    "11.004 Ready to convert the document to 'pdf' format using Tesseract OCR"
+    + " (after pdf2image processing)"
+)
+JOURNAL_ACTION_11_005: str = (
+    "11.005 Ready to prepare the pdf document for Tesseract OCR"
+)
 
 LOCALE: str = "en_US.UTF-8"
 LOGGER_CFG_FILE: str = "logging_cfg.yaml"
@@ -136,14 +110,16 @@ STATUS_PANDOC_ERROR: str = "pandoc_error"
 STATUS_PANDOC_READY: str = "pandoc_ready"
 STATUS_PARSER_ERROR: str = "parser_error"
 STATUS_PARSER_READY: str = "parser_ready"
-STATUS_PDF2IMAGE_ERROR: str = "pdf2image_error"
 STATUS_REJECTED_ERROR: str = "rejected_error"
 STATUS_REJECTED_FILE_ERROR: str = "rejected_file_error"
 STATUS_REJECTED_FILE_EXTENSION: str = "rejected_file_extension"
 STATUS_REJECTED_FILE_PERMISSION: str = "rejected_file_permission"
+STATUS_REJECTED_NO_PDF_FORMAT: str = "rejected_no_pdf_format"
 STATUS_START: str = "start"
 STATUS_TESSERACT_ERROR: str = "tesseract_error"
 STATUS_TESSERACT_READY: str = "tesseract_ready"
+STATUS_TESSERACT_PDF_ERROR: str = "tesseract_pdf_error"
+STATUS_TESSERACT_PDF_READY: str = "tesseract_pdf_ready"
 
 
 # -----------------------------------------------------------------------------
@@ -156,6 +132,9 @@ Columns: TypeAlias = list[Dict[str, Union[PathLike[str], str]]]
 # -----------------------------------------------------------------------------
 config: Dict[str, PathLike[str] | str] = {}
 
+directory_inbox: PathLike[str] | str | None = None
+directory_inbox_accepted: PathLike[str] | str | None = None
+directory_inbox_rejected: PathLike[str] | str | None = None
 document_id: sqlalchemy.Integer | None = None
 
 engine: Engine | None = None
@@ -163,10 +142,6 @@ engine: Engine | None = None
 file_extension: str = ""
 file_name: str = ""
 file_type: str = ""
-
-INBOX: PathLike[str] | str | None = None
-inbox_accepted: PathLike[str] | str | None = None
-inbox_rejected: PathLike[str] | str | None = None
 
 logger: logging.Logger | None = None
 
@@ -176,7 +151,7 @@ run_id: sqlalchemy.Integer | None = None
 
 stem_name: str = ""
 
-total_accepted: int = 0
-total_erroneus: int = 0
-total_new: int = 0
-total_rejected: int = 0
+total_accepted: int
+total_erroneous: int
+total_new: int
+total_rejected: int

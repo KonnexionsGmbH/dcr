@@ -26,6 +26,38 @@ from sqlalchemy import insert
 from sqlalchemy import select
 from sqlalchemy import update
 
+# -----------------------------------------------------------------------------
+# Global Constants.
+# -----------------------------------------------------------------------------
+DBC_ACTION_CODE: str = "action_code"
+DBC_ACTION_TEXT: str = "action_text"
+DBC_CREATED_AT: str = "created_at"
+DBC_DOCUMENT_ID: str = "document_id"
+DBC_FILE_NAME: str = "file_name"
+DBC_FILE_TYPE: str = "file_type"
+DBC_FUNCTION_NAME: str = "function_name"
+DBC_ID: str = "id"
+DBC_INBOX_ABS_NAME: str = "inbox_abs_name"
+DBC_INBOX_CONFIG: str = "inbox_config"
+DBC_INBOX_ACCEPTED_ABS_NAME: str = "inbox_accepted_abs_name"
+DBC_INBOX_ACCEPTED_CONFIG: str = "inbox_accepted_config"
+DBC_INBOX_REJECTED_ABS_NAME: str = "inbox_rejected_abs_name"
+DBC_INBOX_REJECTED_CONFIG: str = "inbox_rejected_config"
+DBC_MODIFIED_AT: str = "modified_at"
+DBC_MODULE_NAME: str = "module_name"
+DBC_RUN_ID: str = "run_id"
+DBC_STATUS: str = "status"
+DBC_STEM_NAME: str = "stem_name"
+DBC_TOTAL_ACCEPTED: str = "total_accepted"
+DBC_TOTAL_NEW: str = "total_new"
+DBC_TOTAL_REJECTED: str = "total_rejected"
+DBC_VERSION: str = "version"
+
+DBT_DOCUMENT: str = "document"
+DBT_JOURNAL: str = "journal"
+DBT_RUN: str = "run"
+DBT_VERSION: str = "version"
+
 
 # -----------------------------------------------------------------------------
 # Check that the database version is up to date.
@@ -34,7 +66,7 @@ def check_db_up_to_date() -> None:
     """Check that the database version is up-to-date."""
     cfg.logger.debug(cfg.LOGGER_START)
 
-    if not sqlalchemy.inspect(cfg.engine).has_table(cfg.DBT_VERSION):
+    if not sqlalchemy.inspect(cfg.engine).has_table(DBT_VERSION):
         utils.terminate_fatal(
             "The database " + get_db_file_name() + " does not yet exist.",
         )
@@ -94,7 +126,7 @@ def connect_db_core() -> None:
         cfg.metadata = MetaData()
     except Error as err:
         utils.terminate_fatal(
-            "SQLAlchemy metadata not accessible - error=" + str(err.errno),
+            "SQLAlchemy metadata not accessible - error=" + str(err),
         )
     try:
         cfg.engine = sqlalchemy.create_engine(get_db_url())
@@ -131,20 +163,20 @@ def create_database() -> None:
 
     utils.progress_msg("Create the database tables ...")
 
-    create_dbt_document(cfg.DBT_DOCUMENT)
-    create_dbt_run(cfg.DBT_RUN)
-    create_dbt_version(cfg.DBT_VERSION)
+    create_dbt_document(DBT_DOCUMENT)
+    create_dbt_run(DBT_RUN)
+    create_dbt_version(DBT_VERSION)
     # FK: document
     # FK: run
-    create_dbt_journal(cfg.DBT_JOURNAL)
+    create_dbt_journal(DBT_JOURNAL)
 
     # Create the database triggers.
     create_db_triggers(
         [
-            cfg.DBT_DOCUMENT,
-            cfg.DBT_JOURNAL,
-            cfg.DBT_RUN,
-            cfg.DBT_VERSION,
+            DBT_DOCUMENT,
+            DBT_JOURNAL,
+            DBT_RUN,
+            DBT_VERSION,
         ],
     )
 
@@ -239,7 +271,7 @@ def create_db_triggers(table_names: List[str]) -> None:
 
     for table_name in table_names:
         create_db_trigger_created_at(table_name)
-        if table_name != cfg.DBT_JOURNAL:
+        if table_name != DBT_JOURNAL:
             create_db_trigger_modified_at(table_name)
 
     cfg.logger.debug(cfg.LOGGER_END)
@@ -258,30 +290,24 @@ def create_dbt_document(table_name: str) -> None:
         table_name,
         cfg.metadata,
         sqlalchemy.Column(
-            cfg.DBC_ID,
+            DBC_ID,
             sqlalchemy.Integer,
             autoincrement=True,
             nullable=False,
             primary_key=True,
         ),
         sqlalchemy.Column(
-            cfg.DBC_CREATED_AT,
+            DBC_CREATED_AT,
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(
-            cfg.DBC_MODIFIED_AT,
+            DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
         ),
-        sqlalchemy.Column(
-            cfg.DBC_FILE_NAME, sqlalchemy.String, nullable=False
-        ),
-        sqlalchemy.Column(
-            cfg.DBC_FILE_TYPE, sqlalchemy.String, nullable=False
-        ),
-        sqlalchemy.Column(cfg.DBC_STATUS, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(
-            cfg.DBC_STEM_NAME, sqlalchemy.String, nullable=False
-        ),
+        sqlalchemy.Column(DBC_FILE_NAME, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(DBC_STATUS, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(DBC_STEM_NAME, sqlalchemy.String, nullable=False),
     )
 
 
@@ -298,44 +324,36 @@ def create_dbt_journal(table_name: str) -> None:
         table_name,
         cfg.metadata,
         sqlalchemy.Column(
-            cfg.DBC_ID,
+            DBC_ID,
             sqlalchemy.Integer,
             autoincrement=True,
             nullable=False,
             primary_key=True,
         ),
         sqlalchemy.Column(
-            cfg.DBC_CREATED_AT,
+            DBC_CREATED_AT,
             sqlalchemy.DateTime,
         ),
+        sqlalchemy.Column(DBC_ACTION_CODE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(DBC_ACTION_TEXT, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
-            cfg.DBC_ACTION_CODE, sqlalchemy.String, nullable=False
-        ),
-        sqlalchemy.Column(
-            cfg.DBC_ACTION_TEXT, sqlalchemy.String, nullable=False
-        ),
-        sqlalchemy.Column(
-            cfg.DBC_DOCUMENT_ID,
+            DBC_DOCUMENT_ID,
             sqlalchemy.Integer,
-            ForeignKey(
-                cfg.DBT_DOCUMENT + "." + cfg.DBC_ID, ondelete="CASCADE"
-            ),
+            ForeignKey(DBT_DOCUMENT + "." + DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
         sqlalchemy.Column(
-            cfg.DBC_FUNCTION_NAME, sqlalchemy.String, nullable=False
+            DBC_FUNCTION_NAME, sqlalchemy.String, nullable=False
         ),
+        sqlalchemy.Column(DBC_MODULE_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
-            cfg.DBC_MODULE_NAME, sqlalchemy.String, nullable=False
-        ),
-        sqlalchemy.Column(
-            cfg.DBC_RUN_ID,
+            DBC_RUN_ID,
             sqlalchemy.Integer,
-            ForeignKey(cfg.DBT_RUN + "." + cfg.DBC_ID, ondelete="CASCADE"),
+            ForeignKey(DBT_RUN + "." + DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
         UniqueConstraint(
-            cfg.DBC_DOCUMENT_ID, cfg.DBC_ACTION_CODE, name="unique_key_1"
+            DBC_DOCUMENT_ID, DBC_ACTION_CODE, name="unique_key_1"
         ),
     )
 
@@ -353,51 +371,49 @@ def create_dbt_run(table_name: str) -> None:
         table_name,
         cfg.metadata,
         sqlalchemy.Column(
-            cfg.DBC_ID,
+            DBC_ID,
             sqlalchemy.Integer,
             autoincrement=True,
             nullable=False,
             primary_key=True,
         ),
         sqlalchemy.Column(
-            cfg.DBC_CREATED_AT,
+            DBC_CREATED_AT,
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(
-            cfg.DBC_MODIFIED_AT,
+            DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(
-            cfg.DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True
+            DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True
+        ),
+        sqlalchemy.Column(DBC_INBOX_CONFIG, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(
+            DBC_INBOX_ACCEPTED_ABS_NAME, sqlalchemy.String, nullable=True
         ),
         sqlalchemy.Column(
-            cfg.DBC_INBOX_CONFIG, sqlalchemy.String, nullable=True
+            DBC_INBOX_ACCEPTED_CONFIG, sqlalchemy.String, nullable=True
         ),
         sqlalchemy.Column(
-            cfg.DBC_INBOX_ACCEPTED_ABS_NAME, sqlalchemy.String, nullable=True
+            DBC_INBOX_REJECTED_ABS_NAME, sqlalchemy.String, nullable=True
         ),
         sqlalchemy.Column(
-            cfg.DBC_INBOX_ACCEPTED_CONFIG, sqlalchemy.String, nullable=True
+            DBC_INBOX_REJECTED_CONFIG, sqlalchemy.String, nullable=True
         ),
+        sqlalchemy.Column(DBC_STATUS, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
-            cfg.DBC_INBOX_REJECTED_ABS_NAME, sqlalchemy.String, nullable=True
-        ),
-        sqlalchemy.Column(
-            cfg.DBC_INBOX_REJECTED_CONFIG, sqlalchemy.String, nullable=True
-        ),
-        sqlalchemy.Column(cfg.DBC_STATUS, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(
-            cfg.DBC_TOTAL_ACCEPTED,
+            DBC_TOTAL_ACCEPTED,
             sqlalchemy.Integer,
             nullable=True,
         ),
         sqlalchemy.Column(
-            cfg.DBC_TOTAL_NEW,
+            DBC_TOTAL_NEW,
             sqlalchemy.Integer,
             nullable=True,
         ),
         sqlalchemy.Column(
-            cfg.DBC_TOTAL_REJECTED,
+            DBC_TOTAL_REJECTED,
             sqlalchemy.Integer,
             nullable=True,
         ),
@@ -423,22 +439,22 @@ def create_dbt_version(
         table_name,
         cfg.metadata,
         sqlalchemy.Column(
-            cfg.DBC_ID,
+            DBC_ID,
             sqlalchemy.Integer,
             autoincrement=True,
             nullable=False,
             primary_key=True,
         ),
         sqlalchemy.Column(
-            cfg.DBC_CREATED_AT,
+            DBC_CREATED_AT,
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(
-            cfg.DBC_MODIFIED_AT,
+            DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(
-            cfg.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True
+            DBC_VERSION, sqlalchemy.String, nullable=False, unique=True
         ),
     )
 
@@ -506,18 +522,18 @@ def insert_dbt_document_row() -> None:
     cfg.logger.debug(cfg.LOGGER_START)
 
     insert_dbt_row(
-        cfg.DBT_DOCUMENT,
+        DBT_DOCUMENT,
         [
             {
-                cfg.DBC_FILE_NAME: cfg.file_name,
-                cfg.DBC_FILE_TYPE: cfg.file_type,
-                cfg.DBC_STATUS: cfg.STATUS_INBOX,
-                cfg.DBC_STEM_NAME: cfg.stem_name,
+                DBC_FILE_NAME: cfg.file_name,
+                DBC_FILE_TYPE: cfg.file_type,
+                DBC_STATUS: cfg.STATUS_INBOX,
+                DBC_STEM_NAME: cfg.stem_name,
             },
         ],
     )
 
-    cfg.document_id = select_dbt_id_last(cfg.DBT_DOCUMENT)
+    cfg.document_id = select_dbt_id_last(DBT_DOCUMENT)
 
     cfg.logger.debug(cfg.LOGGER_END)
 
@@ -540,20 +556,20 @@ def insert_dbt_journal_row(
     cfg.logger.debug(cfg.LOGGER_START)
 
     insert_dbt_row(
-        cfg.DBT_JOURNAL,
+        DBT_JOURNAL,
         [
             {
-                cfg.DBC_ACTION_CODE: action[0:7],
-                cfg.DBC_ACTION_TEXT: action[7:],
-                cfg.DBC_DOCUMENT_ID: cfg.document_id,
-                cfg.DBC_FUNCTION_NAME: function_name,
-                cfg.DBC_MODULE_NAME: module_name,
-                cfg.DBC_RUN_ID: cfg.run_id,
+                DBC_ACTION_CODE: action[0:7],
+                DBC_ACTION_TEXT: action[7:],
+                DBC_DOCUMENT_ID: cfg.document_id,
+                DBC_FUNCTION_NAME: function_name,
+                DBC_MODULE_NAME: module_name,
+                DBC_RUN_ID: cfg.run_id,
             },
         ],
     )
 
-    cfg.journal_id = select_dbt_id_last(cfg.DBT_JOURNAL)
+    cfg.journal_id = select_dbt_id_last(DBT_JOURNAL)
 
     cfg.logger.debug(cfg.LOGGER_END)
 
@@ -585,9 +601,9 @@ def insert_dbt_run_row() -> None:
     """Insert the table run entry."""
     cfg.logger.debug(cfg.LOGGER_START)
 
-    insert_dbt_row(cfg.DBT_RUN, [{cfg.DBC_STATUS: cfg.STATUS_START}])
+    insert_dbt_row(DBT_RUN, [{DBC_STATUS: cfg.STATUS_START}])
 
-    cfg.run_id = select_dbt_id_last(cfg.DBT_RUN)
+    cfg.run_id = select_dbt_id_last(DBT_RUN)
 
     cfg.logger.debug(cfg.LOGGER_END)
 
@@ -602,8 +618,8 @@ def insert_dbt_version_row() -> None:
     connect_db_core()
 
     insert_dbt_row(
-        cfg.DBT_VERSION,
-        [{cfg.DBC_VERSION: cfg.config[cfg.DCR_CFG_DCR_VERSION]}],
+        DBT_VERSION,
+        [{DBC_VERSION: cfg.config[cfg.DCR_CFG_DCR_VERSION]}],
     )
 
     disconnect_db()
@@ -651,7 +667,7 @@ def select_version_version_unique() -> str:
     """
     cfg.logger.debug(cfg.LOGGER_START)
 
-    dbt = Table(cfg.DBT_VERSION, cfg.metadata, autoload_with=cfg.engine)
+    dbt = Table(DBT_VERSION, cfg.metadata, autoload_with=cfg.engine)
 
     current_version: str = ""
 
@@ -719,10 +735,10 @@ def update_document_status(
     cfg.logger.debug(cfg.LOGGER_START)
 
     update_dbt_id(
-        cfg.DBT_DOCUMENT,
+        DBT_DOCUMENT,
         cfg.document_id,
         {
-            cfg.DBC_STATUS: status,
+            DBC_STATUS: status,
         },
     )
 
