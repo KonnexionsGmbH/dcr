@@ -3,7 +3,7 @@
 ![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0.svg)
 
 ----
 

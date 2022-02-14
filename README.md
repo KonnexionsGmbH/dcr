@@ -3,7 +3,7 @@
 ![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0.svg)
 
 Based on the paper "Unfolding the Structure of a Document using Deep Learning" (**[Rahman and Finin, 2019](https://konnexionsgmbh.github.io/dcr/research/#rahman-m-finin-t-2019)**), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
 Documents not in PDF format are converted to PDF format using **[Pandoc](https://pandoc.org)**.
