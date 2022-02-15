@@ -8,14 +8,14 @@ set -e
 #
 # ----------------------------------------------------------------------------------
 
-export DCR_CHOICE_ACTION_DEFAULT=db_c
+export DCR_CHOICE_ACTION_DEFAULT=db_u
 export PYTHONPATH=src/dcr
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
     echo "all   - Run the complete processing of all new documents."
     echo "db_c  - Create the database."
-    echo "db_u  - Upgrade the database.""
+    echo "db_u  - Upgrade the database."
     echo "m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem."
     echo "m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules."
     echo "p_i   - Process the inbox directory."

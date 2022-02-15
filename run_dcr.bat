@@ -8,7 +8,7 @@ rem ----------------------------------------------------------------------------
 
 setlocal EnableDelayedExpansion
 
-set DCR_CHOICE_ACTION_DEFAULT=db_c
+set DCR_CHOICE_ACTION_DEFAULT=db_u
 
 if ["%1"] EQU [""] (
     echo =========================================================
@@ -99,7 +99,7 @@ REM > %LOG_FILE% 2>&1 (
         goto normal_exit
     )
 
-    echo Usage: "run_dcr[.bat] all | db_c | m_d | m_p | p_i | p_2_i"
+    echo Usage: "run_dcr[.bat] all | db_c | db_u | m_d | m_p | p_i | p_2_i"
     exit -1073741510
 
     :normal_exit

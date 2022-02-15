@@ -102,12 +102,15 @@ Examples for the format of the API documentation:
 
         all   - Run the complete processing of all new documents.
         db_c  - Create the database.
+        db_u  - Upgrade the database.
         p_i   - Process the inbox directory.
+        p_2_i - Convert pdf documents to image files.
 
     With the option all, the following process steps are executed
     in this order:
 
         1. p_i
+        2. p_2_i
 
     Args:
         argv (List[str]): Command line arguments.

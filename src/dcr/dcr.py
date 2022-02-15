@@ -31,12 +31,15 @@ def get_args(argv: List[str]) -> dict[str, bool]:
 
         all   - Run the complete processing of all new documents.
         db_c  - Create the database.
+        db_u  - Upgrade the database.
         p_i   - Process the inbox directory.
+        p_2_i - Convert pdf documents to image files.
 
     With the option all, the following process steps are executed
     in this order:
 
         1. p_i
+        2. p_2_i
 
     Args:
         argv (List[str]): Command line arguments.
@@ -58,16 +61,21 @@ def get_args(argv: List[str]) -> dict[str, bool]:
 
     args = {
         cfg.RUN_ACTION_CREATE_DB: False,
+        cfg.RUN_ACTION_PDF_2_IMAGE: False,
         cfg.RUN_ACTION_PROCESS_INBOX: False,
+        cfg.RUN_ACTION_UPGRADE_DB: False,
     }
 
     for i in range(1, num):
         arg = argv[i].lower()
         if arg == cfg.RUN_ACTION_ALL_COMPLETE:
+            args[cfg.RUN_ACTION_PDF_2_IMAGE] = True
             args[cfg.RUN_ACTION_PROCESS_INBOX] = True
         elif arg in (
             cfg.RUN_ACTION_CREATE_DB,
+            cfg.RUN_ACTION_PDF_2_IMAGE,
             cfg.RUN_ACTION_PROCESS_INBOX,
+            cfg.RUN_ACTION_UPGRADE_DB,
         ):
             args[arg] = True
         else:
@@ -155,7 +163,7 @@ def main(argv: List[str]) -> None:
         utils.progress_msg("Start: Create the database ...")
         db.create_database()
         utils.progress_msg("End  : Create the database ...")
-    elif args[cfg.RUN_ACTION_CREATE_DB]:
+    elif args[cfg.RUN_ACTION_UPGRADE_DB]:
         # Upgrade the database.
         print("")
         utils.progress_msg("Start: Upgrade the database ...")

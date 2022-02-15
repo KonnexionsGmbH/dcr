@@ -8,7 +8,7 @@ rem ----------------------------------------------------------------------------
 
 setlocal EnableDelayedExpansion
 
-set DCR_CHOICE_ACTION_DEFAULT=db_c
+set DCR_CHOICE_ACTION_DEFAULT=db_u
 
 if ["%1"] EQU [""] (
     echo =========================================================
