@@ -752,6 +752,33 @@ def update_document_status(
 
 
 # -----------------------------------------------------------------------------
+# Update the database version number.
+# -----------------------------------------------------------------------------
+def update_version_version(
+    version: str,
+) -> None:
+    """Update the database version number in database table version.
+
+    Args:
+        version (str): New version number.
+    """
+    cfg.logger.debug(cfg.LOGGER_START)
+
+    dbt = Table(DBT_VERSION, cfg.metadata, autoload_with=cfg.engine)
+
+    with cfg.engine.connect().execution_options(autocommit=True) as conn:
+        conn.execute(
+            update(dbt).values(
+                {
+                    DBC_VERSION: version,
+                }
+            )
+        )
+
+    cfg.logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Upgrade the current database schema.
 # -----------------------------------------------------------------------------
 def upgrade_database() -> None:
@@ -764,47 +791,47 @@ def upgrade_database() -> None:
 
     db_file_name = get_db_file_name()
 
-    if os.path.isfile(db_file_name):
+    if not os.path.isfile(db_file_name):
         utils.terminate_fatal(
-            "Database file " + db_file_name + " is already existing",
+            "Database file " + db_file_name + " is missing",
         )
 
     connect_db_core()
 
-    utils.progress_msg("Create the database tables ...")
+    utils.progress_msg("Upgrade the database tables ...")
 
-    create_dbt_document(DBT_DOCUMENT)
-    create_dbt_run(DBT_RUN)
-    create_dbt_version(DBT_VERSION)
-    # FK: document
-    # FK: run
-    create_dbt_journal(DBT_JOURNAL)
+    current_version: str = select_version_version_unique()
 
-    # Create the database triggers.
-    create_db_triggers(
-        [
-            DBT_DOCUMENT,
-            DBT_JOURNAL,
-            DBT_RUN,
-            DBT_VERSION,
-        ],
-    )
-
-    try:
-        cfg.metadata.create_all(cfg.engine)
-    except Error as err:
-        utils.terminate_fatal(
-            "SQLAlchemy 'metadata.create_all(engine)' issue - error="
-            + str(err),
+    if current_version == cfg.config[cfg.DCR_CFG_DCR_VERSION]:
+        utils.progress_msg(
+            "The database "
+            + db_file_name
+            + " is already up to date, version number="
+            + current_version,
         )
+    else:
+        if current_version == "0.5.0":
+            target_version: str = cfg.config[cfg.DCR_CFG_DCR_VERSION]
+            utils.progress_msg(
+                "Upgrade step: from version number="
+                + current_version
+                + " to version number="
+                + target_version,
+            )
+            update_version_version(target_version)
+        else:
+            utils.terminate_fatal(
+                "Database file "
+                + db_file_name
+                + " has the wrong version, version number="
+                + current_version,
+            )
 
-    insert_dbt_version_row()
-
-    utils.progress_msg(
-        "The database "
-        + db_file_name
-        + " has been successfully created, version number="
-        + cfg.config[cfg.DCR_CFG_DCR_VERSION],
-    )
+        utils.progress_msg(
+            "The database "
+            + db_file_name
+            + " has been successfully upgraded, version number="
+            + select_version_version_unique(),
+        )
 
     cfg.logger.debug(cfg.LOGGER_END)

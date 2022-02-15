@@ -6,7 +6,6 @@ import stat
 
 import libs.cfg
 import libs.db
-import pytest
 
 import dcr
 
@@ -123,7 +122,6 @@ def test_file_extension_tiff_ok(fxtr_new_db_empty_inbox):
 # -----------------------------------------------------------------------------
 # Test File Extension: xxx - unknown_file_extension.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_file_extension_unknown_ok(fxtr_new_db_empty_inbox):
     """Test: xxx - unknown_file_extension.xxx.
 
