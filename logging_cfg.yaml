@@ -20,6 +20,6 @@ handlers:
 
 loggers:
   dcr.py:
-    handlers: [ console, file_handler ]
+    handlers: [ console ]
 root:
   handlers: [ file_handler ]

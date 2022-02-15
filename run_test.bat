@@ -32,9 +32,9 @@ if ["%1"] EQU [""] (
 echo.
 echo Script %0 is now running
 
+if exist run_dcr_debug.log del /f /q run_dcr_debug.log
 set LOG_FILE=run_test.log
-if exist run_test.log       del /f /q run_test.log
-if exist run_test_debug.log del /f /q run_test_debug.log
+if exist run_test.log      del /f /q run_test.log
 
 echo.
 echo You can find the run log in the file %LOG_FILE%

@@ -30,9 +30,9 @@ fi
 echo ""
 echo "Script $0 is now running"
 
+rm -f run_dcr_debug.log
 export LOG_FILE=run_dcr.log
 rm -f run_dcr.log
-rm -f run_dcr_debug.log
 
 echo ""
 echo "You can find the run log in the file $LOG_FILE"

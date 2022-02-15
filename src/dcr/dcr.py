@@ -146,6 +146,7 @@ def main(argv: List[str]) -> None:
     initialise_logger()
 
     cfg.logger.debug(cfg.LOGGER_START)
+    cfg.logger.info("Start dcr.py")
 
     print("Start dcr.py")
 
@@ -178,6 +179,7 @@ def main(argv: List[str]) -> None:
 
     print("End   dcr.py")
 
+    cfg.logger.info("End   dcr.py")
     cfg.logger.debug(cfg.LOGGER_END)
 
 
