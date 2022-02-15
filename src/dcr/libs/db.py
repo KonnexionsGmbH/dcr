@@ -752,9 +752,9 @@ def update_document_status(
 
 
 # -----------------------------------------------------------------------------
-# Upgrade the current database schema..
+# Upgrade the current database schema.
 # -----------------------------------------------------------------------------
-def upgrade_db() -> None:
+def upgrade_database() -> None:
     """Upgrade the current database schema.
 
     Check if the current database schema needs to be upgraded and perform the
@@ -762,6 +762,49 @@ def upgrade_db() -> None:
     """
     cfg.logger.debug(cfg.LOGGER_START)
 
-    # TBD: Database upgrade
+    db_file_name = get_db_file_name()
+
+    if os.path.isfile(db_file_name):
+        utils.terminate_fatal(
+            "Database file " + db_file_name + " is already existing",
+        )
+
+    connect_db_core()
+
+    utils.progress_msg("Create the database tables ...")
+
+    create_dbt_document(DBT_DOCUMENT)
+    create_dbt_run(DBT_RUN)
+    create_dbt_version(DBT_VERSION)
+    # FK: document
+    # FK: run
+    create_dbt_journal(DBT_JOURNAL)
+
+    # Create the database triggers.
+    create_db_triggers(
+        [
+            DBT_DOCUMENT,
+            DBT_JOURNAL,
+            DBT_RUN,
+            DBT_VERSION,
+        ],
+    )
+
+    try:
+        cfg.metadata.create_all(cfg.engine)
+    except Error as err:
+        utils.terminate_fatal(
+            "SQLAlchemy 'metadata.create_all(engine)' issue - error="
+            + str(err),
+        )
+
+    insert_dbt_version_row()
+
+    utils.progress_msg(
+        "The database "
+        + db_file_name
+        + " has been successfully created, version number="
+        + cfg.config[cfg.DCR_CFG_DCR_VERSION],
+    )
 
     cfg.logger.debug(cfg.LOGGER_END)

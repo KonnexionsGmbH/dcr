@@ -32,7 +32,7 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ## 2. Detailed processing steps
 
-### 2.1 Process the inbox directory
+### 2.1 Process the inbox directory (step: **`p_i`**)
 
 In the first step, the file directory **`inbox`** is checked for new document files. 
 An entry is created in the **`document`** database table for each new document, showing the current processing status of the document. 
@@ -83,7 +83,7 @@ Document files with the following file extensions are marked for converting to *
 
 Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejected`**.
 
-### 2.2 Convert pdf documents to image files
+### 2.2 Convert pdf documents to image files (step: **`p_2_i`**)
 
 pdf documents consisting of scanned images must first be processed with OCR software in order to extract the text they contain. 
 Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) does not support the pdf file format, such a pdf document must first be converted into an image file. 
@@ -143,11 +143,12 @@ The customisable entries are:
 **`DCR`** should be operated via the script **`run_dcr`**. 
 The following actions are available:
 
-| Action       | Process                                                                                                       |
-|--------------|---------------------------------------------------------------------------------------------------------------|
-| **`all`**    | Run the complete processing of all new documents.                                                             |
-| **`db_c`**   | Create the database.                                                                                          |
-| **`m_d`**    | Run the installation of the necessary 3rd party packages for development and run the development ecosystem.   |
-| **`m_p`**    | Run the installation of the necessary 3rd party packages for production and compile all packages and modules. |
-| **`p_i`**    | Process the inbox directory.                                                                                  |
-| **`p_2_i`**  | Convert pdf documents to image files.                                                                         |
+| Action      | Process                                                                                                       |
+|-------------|---------------------------------------------------------------------------------------------------------------|
+| **`all`**   | Run the complete processing of all new documents.                                                             |
+| **`db_c`**  | Create the database.                                                                                          |
+| **`db_u`**  | Upgrade the database.                                                                                       |
+| **`m_d`**   | Run the installation of the necessary 3rd party packages for development and run the development ecosystem.   |
+| **`m_p`**   | Run the installation of the necessary 3rd party packages for production and compile all packages and modules. |
+| **`p_i`**   | Process the inbox directory.                                                                                  |
+| **`p_2_i`** | Convert pdf documents to image files.                                                                         |

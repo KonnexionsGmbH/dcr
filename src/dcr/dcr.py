@@ -155,6 +155,12 @@ def main(argv: List[str]) -> None:
         utils.progress_msg("Start: Create the database ...")
         db.create_database()
         utils.progress_msg("End  : Create the database ...")
+    elif args[cfg.RUN_ACTION_CREATE_DB]:
+        # Upgrade the database.
+        print("")
+        utils.progress_msg("Start: Upgrade the database ...")
+        db.upgrade_database()
+        utils.progress_msg("End  : Upgrade the database ...")
     else:
         # Process the documents.
         process_documents(args)
@@ -190,6 +196,13 @@ def process_documents(args: dict[str, bool]) -> None:
         utils.progress_msg("Start: Process the inbox directory ...")
         inbox.process_inbox_files()
         utils.progress_msg("End  : Process the inbox directory ...")
+
+    # Convert the scanned image pdf documents to image files.
+    if args[cfg.RUN_ACTION_PDF_2_IMAGE]:
+        print("")
+        utils.progress_msg("Start: Convert pdf documentss to image files ...")
+        inbox.convert_pdf_2_image()
+        utils.progress_msg("End  : Convert pdf documentss to image files ...")
 
     # Finalise the run entry in the database.
     terminate_run_entry()

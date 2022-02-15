@@ -14,6 +14,7 @@ if ["%1"] EQU [""] (
     echo =========================================================
     echo all   - Run the complete processing of all new documents.
     echo db_c  - Create the database.
+    echo db_u  - Upgrade the database.
     echo m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem.
     echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules.
     echo p_i   - Process the inbox directory.
@@ -85,6 +86,9 @@ REM > %LOG_FILE% 2>&1 (
         if exist data\dcr.db del /f /q data\dcr.db
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"]  (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["all"]   (
         if exist data\inbox rmdir /s /q data\inbox
@@ -99,6 +103,9 @@ REM > %LOG_FILE% 2>&1 (
         xcopy /E /I tests\inbox data\inbox
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"]   (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
 
     if ["%_CHOICE%"] EQU ["%DCR_CHOICE_ACTION%"] (
         pipenv run python src\dcr\dcr.py %DCR_CHOICE_ACTION%
@@ -108,7 +115,7 @@ REM > %LOG_FILE% 2>&1 (
         goto normal_exit
     )
 
-    echo Usage: "run_test[.bat] all | db_c | m_d | m_p | p_i | p_2_i"
+    echo Usage: "run_test[.bat] all | db_c | db_u | m_d | m_p | p_i | p_2_i"
 
     :normal_exit
     echo -----------------------------------------------------------------------

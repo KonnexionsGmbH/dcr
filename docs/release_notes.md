@@ -15,7 +15,8 @@ Release Date: dd.mm.2022
 
 #### New Features
 
-- Processing step p_2_i: Convert pdf documents into image files.
+- Processing step **`db_u`**: Upgrade the database.
+- Processing step **`p_2_i`**: Convert pdf documents into image files.
 
 #### Applied Software
 

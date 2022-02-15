@@ -73,6 +73,116 @@ def check_and_create_directories() -> None:
 
 
 # -----------------------------------------------------------------------------
+# Convert pdf documents to image files (step: p_2_i).
+# -----------------------------------------------------------------------------
+def convert_pdf_2_image() -> None:
+    """Convert scanned image pdf documents to image files.
+
+    TBD
+    """
+    cfg.logger.debug(cfg.LOGGER_START)
+
+    cfg.total_accepted = 0
+    cfg.total_erroneous = 0
+    cfg.total_new = 0
+    cfg.total_rejected = 0
+
+    # Check the inbox file directories and create the missing ones.
+    check_and_create_directories()
+
+    for file in pathlib.Path(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX]
+    ).iterdir():
+        if file.is_file():
+            if file.name == "README.md":
+                utils.progress_msg(
+                    "Attention: All files with the file name 'README.md' "
+                    + "are ignored"
+                )
+                continue
+
+            cfg.total_new += 1
+
+            process_inbox_document_initial(file)
+
+            if cfg.file_type == cfg.FILE_TYPE_PDF:
+                prepare_pdf()
+            elif cfg.file_type in (
+                cfg.FILE_TYPE_CSV,
+                cfg.FILE_TYPE_DOC,
+                cfg.FILE_TYPE_DOCX,
+                cfg.FILE_TYPE_EPUB,
+                cfg.FILE_TYPE_HTM,
+                cfg.FILE_TYPE_HTML,
+                cfg.FILE_TYPE_JSON,
+                cfg.FILE_TYPE_MD,
+                cfg.FILE_TYPE_ODT,
+                cfg.FILE_TYPE_RST,
+                cfg.FILE_TYPE_RTF,
+                cfg.FILE_TYPE_TXT,
+            ):
+                process_inbox_accepted(
+                    db.update_document_status(
+                        cfg.JOURNAL_ACTION_11_001,
+                        inspect.stack()[0][3],
+                        __name__,
+                        cfg.STATUS_PANDOC_READY,
+                    ),
+                    utils.get_file_name_inbox_accepted(),
+                )
+            elif cfg.file_type in (
+                cfg.FILE_TYPE_BMP,
+                cfg.FILE_TYPE_GIF,
+                cfg.FILE_TYPE_JP2,
+                cfg.FILE_TYPE_JPEG,
+                cfg.FILE_TYPE_JPG,
+                cfg.FILE_TYPE_PMN,
+                cfg.FILE_TYPE_PNG,
+                cfg.FILE_TYPE_TIFF,
+                cfg.FILE_TYPE_WEBP,
+            ):
+                process_inbox_accepted(
+                    db.update_document_status(
+                        cfg.JOURNAL_ACTION_11_002,
+                        inspect.stack()[0][3],
+                        __name__,
+                        cfg.STATUS_TESSERACT_READY,
+                    ),
+                    utils.get_file_name_inbox_accepted(),
+                )
+            else:
+                process_inbox_rejected(
+                    db.update_document_status(
+                        cfg.JOURNAL_ACTION_01_901.replace(
+                            "{extension}", cfg.file_extension
+                        ),
+                        inspect.stack()[0][3],
+                        __name__,
+                        cfg.STATUS_REJECTED_FILE_EXTENSION,
+                    )
+                )
+
+    utils.progress_msg(f"Number documents new:       {cfg.total_new:6d}")
+
+    if cfg.total_new > 0:
+        utils.progress_msg(
+            f"Number documents accepted:  {cfg.total_accepted:6d}"
+        )
+        utils.progress_msg(
+            f"Number documents erroneous: {cfg.total_erroneous:6d}"
+        )
+        utils.progress_msg(
+            f"Number documents rejected:  {cfg.total_rejected:6d}"
+        )
+        utils.progress_msg(
+            "The new documents in the inbox file directory are checked and "
+            + "prepared for further processing",
+        )
+
+    cfg.logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Create a new file directory if it does not already exist..
 # -----------------------------------------------------------------------------
 def create_directory(directory_type: str, directory_name: str) -> None:
@@ -235,7 +345,7 @@ def process_inbox_document_initial(file: pathlib.Path) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Process the files found in the inbox file directory..
+# Process the inbox directory (step: p_i).
 # -----------------------------------------------------------------------------
 def process_inbox_files() -> None:
     """Process the files found in the inbox file directory.
@@ -247,8 +357,6 @@ def process_inbox_files() -> None:
     3. Documents of type pdf consisting only of a scanned image are copied
        unchanged to the inbox_ocr directory.
     4. All other documents are copied to the inbox_rejected directory.
-    5. For each document a new entry is created in the database table
-       document.
     """
     cfg.logger.debug(cfg.LOGGER_START)
 
@@ -335,9 +443,15 @@ def process_inbox_files() -> None:
     utils.progress_msg(f"Number documents new:       {cfg.total_new:6d}")
 
     if cfg.total_new > 0:
-        utils.progress_msg(f"Number documents accepted:  {cfg.total_accepted:6d}")
-        utils.progress_msg(f"Number documents erroneous: {cfg.total_erroneous:6d}")
-        utils.progress_msg(f"Number documents rejected:  {cfg.total_rejected:6d}")
+        utils.progress_msg(
+            f"Number documents accepted:  {cfg.total_accepted:6d}"
+        )
+        utils.progress_msg(
+            f"Number documents erroneous: {cfg.total_erroneous:6d}"
+        )
+        utils.progress_msg(
+            f"Number documents rejected:  {cfg.total_rejected:6d}"
+        )
         utils.progress_msg(
             "The new documents in the inbox file directory are checked and "
             + "prepared for further processing",

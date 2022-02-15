@@ -101,7 +101,9 @@ OS_POSIX: str = "posix"
 
 RUN_ACTION_ALL_COMPLETE: str = "all"
 RUN_ACTION_CREATE_DB: str = "db_c"
+RUN_ACTION_PDF_2_IMAGE: str = "p_2_i"
 RUN_ACTION_PROCESS_INBOX: str = "p_i"
+RUN_ACTION_UPGRADE_DB: str = "db_u"
 
 STATUS_COMPLETED: str = "completed"
 STATUS_END: str = "end"

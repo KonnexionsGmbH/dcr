@@ -14,6 +14,7 @@ if ["%1"] EQU [""] (
     echo =========================================================
     echo all   - Run the complete processing of all new documents.
     echo db_c  - Create the database.
+    echo db_u  - Upgrade the database.
     echo m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem.
     echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules.
     echo p_i   - Process the inbox directory.
@@ -84,12 +85,10 @@ REM > %LOG_FILE% 2>&1 (
     )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["all"]   set _CHOICE=%DCR_CHOICE_ACTION%
-
     if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"]  set _CHOICE=%DCR_CHOICE_ACTION%
-
+    if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"]  set _CHOICE=%DCR_CHOICE_ACTION%
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"]   set _CHOICE=%DCR_CHOICE_ACTION%
-
-    if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"]   set _CHOICE=%DCR_CHOICE_ACTION%
+    if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] set _CHOICE=%DCR_CHOICE_ACTION%
 
     if ["%_CHOICE%"] EQU ["%DCR_CHOICE_ACTION%"] (
         pipenv run python src\dcr\dcr.py %DCR_CHOICE_ACTION%
