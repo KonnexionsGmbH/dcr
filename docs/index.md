@@ -1,8 +1,8 @@
 # DCR - Document Content Recognition
 
-![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
-![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
-![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
+![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
+![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
+![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0.svg)
 
 ----
@@ -83,6 +83,12 @@ Document files with the following file extensions are marked for converting to *
 
 Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejected`**.
 
+### 2.2 Convert pdf documents to image files
+
+pdf documents consisting of scanned images must first be processed with OCR software in order to extract the text they contain. 
+Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) does not support the pdf file format, such a pdf document must first be converted into an image file. 
+This is done with the software [pdf2image](https://pypi.org/project/pdf2image/), which in turn is based on the [Poppler](https://poppler.freedesktop.org) software.
+
 ## 3. Requirements
 
 ### 3.1 Operating System
@@ -137,10 +143,11 @@ The customisable entries are:
 **`DCR`** should be operated via the script **`run_dcr`**. 
 The following actions are available:
 
-| Action     | Process                                                                                                       |
-|------------|---------------------------------------------------------------------------------------------------------------|
-| **`all`**  | Run the complete processing of all new documents.                                                             |
-| **`db_c`** | Create the database.                                                                                          |
-| **`m_d`**  | Run the installation of the necessary 3rd party packages for development and run the development ecosystem.   |
-| **`m_p`**  | Run the installation of the necessary 3rd party packages for production and compile all packages and modules. |
-| **`p_i`**  | Process the inbox directory.                                                                                  |
+| Action       | Process                                                                                                       |
+|--------------|---------------------------------------------------------------------------------------------------------------|
+| **`all`**    | Run the complete processing of all new documents.                                                             |
+| **`db_c`**   | Create the database.                                                                                          |
+| **`m_d`**    | Run the installation of the necessary 3rd party packages for development and run the development ecosystem.   |
+| **`m_p`**    | Run the installation of the necessary 3rd party packages for production and compile all packages and modules. |
+| **`p_i`**    | Process the inbox directory.                                                                                  |
+| **`p_2_i`**  | Convert pdf documents to image files.                                                                         |

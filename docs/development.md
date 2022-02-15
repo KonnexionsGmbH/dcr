@@ -1,8 +1,8 @@
 # DCR - Development
 
-![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
-![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
-![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
+![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
+![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
+![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0.svg)
 
 ----
@@ -213,22 +213,22 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 ## 9. Version Planning
 
-| Version | Feature(s)                       |
-|---------|----------------------------------|
-| 0.5.0   | Inbox processing                 |
-| 0.6.0   | pdf for Tesseract OCR processing |
-| 0.6.5   | Pandoc processing                |
-| 0.7.0   | Tesseract OCR processing         |
-| 0.8.0   | PDFlib TET processing            |
-| 0.9.0   | Parser                           |
+| Version   | Feature(s)                       |
+|-----------|----------------------------------|
+| ~~0.5.0~~ | ~~Inbox processing~~             |
+| 0.6.0     | pdf for Tesseract OCR processing |
+| 0.6.5     | Pandoc processing                |
+| 0.7.0     | Tesseract OCR processing         |
+| 0.8.0     | PDFlib TET processing            |
+| 0.9.0     | Parser                           |
 
 ## 10. Next Development Steps
 
 **1<sup>st</sup> Priority:**
 
 - API Documentation
-- error handling - highly defensive
-- inbox.py - process_inbox() - processing ocr & non-ocr in the same method
+- ~~error handling - highly defensive~~
+- ~~inbox.py - process_inbox() - processing ocr & non-ocr in the same method~~
 - tools.py - verify the content of the inbox directories
 
 **2<sup>nd</sup> Priority:** 

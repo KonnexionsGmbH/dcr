@@ -1,8 +1,8 @@
 # DCR - Research
 
-![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
-![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
-![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
+![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
+![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
+![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0.svg)
 
 ----

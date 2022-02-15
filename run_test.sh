@@ -13,11 +13,12 @@ export PYTHONPATH=src/dcr
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
-    echo "all   - Run the complete processing of all new documents"
-    echo "db_c  - Create the database"
-    echo "m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem"
-    echo "m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules"
-    echo "p_i   - Process the inbox directory"
+    echo "all   - Run the complete processing of all new documents."
+    echo "db_c  - Create the database."
+    echo "m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem."
+    echo "m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules."
+    echo "p_i   - Process the inbox directory."
+    echo "p_2_i - Convert pdf documents to image files."
     echo "------------------------------------------------------------------------------"
     read -rp "Enter the desired action [default: ${DCR_CHOICE_ACTION_DEFAULT}] " DCR_CHOICE_ACTION
     export DCR_CHOICE_ACTION=${DCR_CHOICE_ACTION:-$DCR_CHOICE_ACTION_DEFAULT}
@@ -73,7 +74,7 @@ case "${DCR_CHOICE_ACTION}" in
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
-    echo "Usage: ./run_test.sh all | db_c | m_d | m_p | p_i"
+    echo "Usage: ./run_test.sh all | db_c | m_d | m_p | p_i | p_2_i"
     ;;
 esac
 
