@@ -17,6 +17,55 @@ import fitz
 from libs import cfg
 from libs import db
 from libs import utils
+from sqlalchemy import Table
+from sqlalchemy import select
+
+
+# -----------------------------------------------------------------------------
+# Check the inbox file directories.
+# -----------------------------------------------------------------------------
+def check_directories() -> None:
+    """Check the inbox file directories.
+
+    The file directory inbox_accepted must exist.
+    """
+    cfg.logger.debug(cfg.LOGGER_START)
+
+    cfg.directory_inbox = cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX]
+    cfg.directory_inbox_accepted = cfg.config[
+        cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED
+    ]
+    if not os.path.isdir(cfg.directory_inbox_accepted):
+        utils.terminate_fatal(
+            "The inbox_accepted directory with the name "
+            + cfg.directory_inbox_accepted
+            + " does not exist - error="
+            + str(OSError),
+        )
+    cfg.directory_inbox_rejected = cfg.config[
+        cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
+    ]
+
+    db.update_dbt_id(
+        db.DBT_RUN,
+        cfg.run_id,
+        {
+            db.DBC_INBOX_ABS_NAME: str(
+                pathlib.Path(cfg.directory_inbox).absolute()
+            ),
+            db.DBC_INBOX_CONFIG: cfg.directory_inbox,
+            db.DBC_INBOX_ACCEPTED_ABS_NAME: str(
+                pathlib.Path(cfg.directory_inbox_accepted).absolute()
+            ),
+            db.DBC_INBOX_ACCEPTED_CONFIG: cfg.directory_inbox_accepted,
+            db.DBC_INBOX_REJECTED_ABS_NAME: str(
+                pathlib.Path(cfg.directory_inbox_rejected).absolute()
+            ),
+            db.DBC_INBOX_REJECTED_CONFIG: cfg.directory_inbox_rejected,
+        },
+    )
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -82,101 +131,58 @@ def convert_pdf_2_image() -> None:
     """
     cfg.logger.debug(cfg.LOGGER_START)
 
-    cfg.total_accepted = 0
     cfg.total_erroneous = 0
-    cfg.total_new = 0
-    cfg.total_rejected = 0
+    cfg.total_ok_processed = 0
+    cfg.total_status_error = 0
+    cfg.total_status_ready = 0
+    cfg.total_to_be_processed = 0
 
     # Check the inbox file directories and create the missing ones.
     check_and_create_directories()
 
-    for file in pathlib.Path(
-        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX]
-    ).iterdir():
-        if file.is_file():
-            if file.name == "README.md":
-                utils.progress_msg(
-                    "Attention: All files with the file name 'README.md' "
-                    + "are ignored"
+    dbt = Table(db.DBT_DOCUMENT, cfg.metadata, autoload_with=cfg.engine)
+
+    with cfg.engine.connect() as conn:
+        rows = conn.execute(
+            select(dbt.c.file_name, dbt.c.id, dbt.c.status)
+            .where(
+                dbt.c.status.in_(
+                    [
+                        cfg.STATUS_TESSERACT_PDF_READY,
+                        cfg.STATUS_TESSERACT_PDF_ERROR,
+                    ]
                 )
-                continue
+            )
+            .order_by(dbt.c.id.desc())
+        )
 
-            cfg.total_new += 1
+        for row in rows:
+            cfg.total_to_be_processed += 1
+            cfg.document_id = row.id
+            cfg.file_name = row.file_name
+            cfg.document_status = row.status
 
-            process_inbox_document_initial(file)
+    utils.progress_msg(
+        f"Number documents to be processed:  {cfg.total_to_be_processed:6d}"
+    )
 
-            if cfg.file_type == cfg.FILE_TYPE_PDF:
-                prepare_pdf()
-            elif cfg.file_type in (
-                cfg.FILE_TYPE_CSV,
-                cfg.FILE_TYPE_DOC,
-                cfg.FILE_TYPE_DOCX,
-                cfg.FILE_TYPE_EPUB,
-                cfg.FILE_TYPE_HTM,
-                cfg.FILE_TYPE_HTML,
-                cfg.FILE_TYPE_JSON,
-                cfg.FILE_TYPE_MD,
-                cfg.FILE_TYPE_ODT,
-                cfg.FILE_TYPE_RST,
-                cfg.FILE_TYPE_RTF,
-                cfg.FILE_TYPE_TXT,
-            ):
-                process_inbox_accepted(
-                    db.update_document_status(
-                        cfg.JOURNAL_ACTION_11_001,
-                        inspect.stack()[0][3],
-                        __name__,
-                        cfg.STATUS_PANDOC_READY,
-                    ),
-                    utils.get_file_name_inbox_accepted(),
-                )
-            elif cfg.file_type in (
-                cfg.FILE_TYPE_BMP,
-                cfg.FILE_TYPE_GIF,
-                cfg.FILE_TYPE_JP2,
-                cfg.FILE_TYPE_JPEG,
-                cfg.FILE_TYPE_JPG,
-                cfg.FILE_TYPE_PMN,
-                cfg.FILE_TYPE_PNG,
-                cfg.FILE_TYPE_TIFF,
-                cfg.FILE_TYPE_WEBP,
-            ):
-                process_inbox_accepted(
-                    db.update_document_status(
-                        cfg.JOURNAL_ACTION_11_002,
-                        inspect.stack()[0][3],
-                        __name__,
-                        cfg.STATUS_TESSERACT_READY,
-                    ),
-                    utils.get_file_name_inbox_accepted(),
-                )
-            else:
-                process_inbox_rejected(
-                    db.update_document_status(
-                        cfg.JOURNAL_ACTION_01_901.replace(
-                            "{extension}", cfg.file_extension
-                        ),
-                        inspect.stack()[0][3],
-                        __name__,
-                        cfg.STATUS_REJECTED_FILE_EXTENSION,
-                    )
-                )
-
-    utils.progress_msg(f"Number documents new:       {cfg.total_new:6d}")
-
-    if cfg.total_new > 0:
+    if cfg.total_to_be_processed > 0:
         utils.progress_msg(
-            f"Number documents accepted:  {cfg.total_accepted:6d}"
+            f"Number status tesseract_pdf_ready: {cfg.total_status_ready:6d}"
         )
         utils.progress_msg(
-            f"Number documents erroneous: {cfg.total_erroneous:6d}"
+            f"Number status tesseract_pdf_error: {cfg.total_status_error:6d}"
         )
         utils.progress_msg(
-            f"Number documents rejected:  {cfg.total_rejected:6d}"
+            f"Number documents converted:        {cfg.total_ok_processed:6d}"
         )
         utils.progress_msg(
-            "The new documents in the inbox file directory are checked and "
-            + "prepared for further processing",
+            f"Number documents erroneous:        {cfg.total_erroneous:6d}"
+        )
+        utils.progress_msg(
+            "The involved pdf documents in the file directory "
+            + "'inbox_accepted' are converted to an image format "
+            + "for further processing",
         )
 
     cfg.logger.debug(cfg.LOGGER_END)
@@ -284,7 +290,7 @@ def process_inbox_accepted(
         # pylint: disable=pointless-statement
         update_document_status
 
-        cfg.total_accepted += 1
+        cfg.total_ok_processed += 1
     except PermissionError as err:
         db.update_document_status(
             cfg.JOURNAL_ACTION_01_905.replace(
@@ -360,10 +366,10 @@ def process_inbox_files() -> None:
     """
     cfg.logger.debug(cfg.LOGGER_START)
 
-    cfg.total_accepted = 0
     cfg.total_erroneous = 0
-    cfg.total_new = 0
+    cfg.total_ok_processed = 0
     cfg.total_rejected = 0
+    cfg.total_to_be_processed = 0
 
     # Check the inbox file directories and create the missing ones.
     check_and_create_directories()
@@ -379,7 +385,7 @@ def process_inbox_files() -> None:
                 )
                 continue
 
-            cfg.total_new += 1
+            cfg.total_to_be_processed += 1
 
             process_inbox_document_initial(file)
 
@@ -440,20 +446,22 @@ def process_inbox_files() -> None:
                     )
                 )
 
-    utils.progress_msg(f"Number documents new:       {cfg.total_new:6d}")
+    utils.progress_msg(
+        f"Number documents to be processed:  {cfg.total_to_be_processed:6d}"
+    )
 
-    if cfg.total_new > 0:
+    if cfg.total_to_be_processed > 0:
         utils.progress_msg(
-            f"Number documents accepted:  {cfg.total_accepted:6d}"
+            f"Number documents accepted:         {cfg.total_ok_processed:6d}"
         )
         utils.progress_msg(
-            f"Number documents erroneous: {cfg.total_erroneous:6d}"
+            f"Number documents erroneous:        {cfg.total_erroneous:6d}"
         )
         utils.progress_msg(
-            f"Number documents rejected:  {cfg.total_rejected:6d}"
+            f"Number documents rejected:         {cfg.total_rejected:6d}"
         )
         utils.progress_msg(
-            "The new documents in the inbox file directory are checked and "
+            "The new documents in the file directory 'inbox' are checked and "
             + "prepared for further processing",
         )
 

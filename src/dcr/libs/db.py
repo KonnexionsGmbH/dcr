@@ -29,6 +29,7 @@ from sqlalchemy import update
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
+DBC_ACTION: str = "action"
 DBC_ACTION_CODE: str = "action_code"
 DBC_ACTION_TEXT: str = "action_text"
 DBC_CREATED_AT: str = "created_at"
@@ -48,9 +49,9 @@ DBC_MODULE_NAME: str = "module_name"
 DBC_RUN_ID: str = "run_id"
 DBC_STATUS: str = "status"
 DBC_STEM_NAME: str = "stem_name"
-DBC_TOTAL_ACCEPTED: str = "total_accepted"
-DBC_TOTAL_NEW: str = "total_new"
-DBC_TOTAL_REJECTED: str = "total_rejected"
+DBC_TOTAL_ERRONEOUS: str = "total_erroneous"
+DBC_TOTAL_OK_PROCESSED: str = "total_ok_processed"
+DBC_TOTAL_TO_BE_PROCESSED: str = "total_to_be_processed"
 DBC_VERSION: str = "version"
 
 DBT_DOCUMENT: str = "document"
@@ -265,16 +266,12 @@ def create_db_triggers(table_names: List[str]) -> None:
     Args:
         table_names (List[str]): Table names.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
-
     utils.progress_msg("Create the database triggers ...")
 
     for table_name in table_names:
         create_db_trigger_created_at(table_name)
         if table_name != DBT_JOURNAL:
             create_db_trigger_modified_at(table_name)
-
-    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -385,6 +382,7 @@ def create_dbt_run(table_name: str) -> None:
             DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
         ),
+        sqlalchemy.Column(DBC_ACTION, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(
             DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True
         ),
@@ -401,19 +399,22 @@ def create_dbt_run(table_name: str) -> None:
         sqlalchemy.Column(
             DBC_INBOX_REJECTED_CONFIG, sqlalchemy.String, nullable=True
         ),
+        sqlalchemy.Column(
+            DBC_RUN_ID, sqlalchemy.Integer, nullable=False, default=-1
+        ),
         sqlalchemy.Column(DBC_STATUS, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
-            DBC_TOTAL_ACCEPTED,
+            DBC_TOTAL_ERRONEOUS,
             sqlalchemy.Integer,
             nullable=True,
         ),
         sqlalchemy.Column(
-            DBC_TOTAL_NEW,
+            DBC_TOTAL_OK_PROCESSED,
             sqlalchemy.Integer,
             nullable=True,
         ),
         sqlalchemy.Column(
-            DBC_TOTAL_REJECTED,
+            DBC_TOTAL_TO_BE_PROCESSED,
             sqlalchemy.Integer,
             nullable=True,
         ),
@@ -519,8 +520,6 @@ def get_db_url() -> str:
 # -----------------------------------------------------------------------------
 def insert_dbt_document_row() -> None:
     """Insert the table document entry."""
-    cfg.logger.debug(cfg.LOGGER_START)
-
     insert_dbt_row(
         DBT_DOCUMENT,
         [
@@ -534,8 +533,6 @@ def insert_dbt_document_row() -> None:
     )
 
     cfg.document_id = select_dbt_id_last(DBT_DOCUMENT)
-
-    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -553,8 +550,6 @@ def insert_dbt_journal_row(
         function_name (str): Name of the originating function.
         module_name (str): Name of the originating module.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
-
     insert_dbt_row(
         DBT_JOURNAL,
         [
@@ -571,8 +566,6 @@ def insert_dbt_journal_row(
 
     cfg.journal_id = select_dbt_id_last(DBT_JOURNAL)
 
-    cfg.logger.debug(cfg.LOGGER_END)
-
 
 # -----------------------------------------------------------------------------
 # Insert a new row into a database table.
@@ -584,14 +577,10 @@ def insert_dbt_row(table_name: str, columns: cfg.Columns) -> None:
         table_name (str): Table name.
         columns (Columns): Pairs of column name and value.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
-
     dbt = Table(table_name, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(insert(dbt).values(columns))
-
-    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -599,13 +588,18 @@ def insert_dbt_row(table_name: str, columns: cfg.Columns) -> None:
 # -----------------------------------------------------------------------------
 def insert_dbt_run_row() -> None:
     """Insert the table run entry."""
-    cfg.logger.debug(cfg.LOGGER_START)
-
-    insert_dbt_row(DBT_RUN, [{DBC_STATUS: cfg.STATUS_START}])
+    insert_dbt_row(
+        DBT_RUN,
+        [
+            {
+                DBC_ACTION: cfg.run_action,
+                DBC_RUN_ID: cfg.run_run_id,
+                DBC_STATUS: cfg.STATUS_START,
+            },
+        ],
+    )
 
     cfg.run_id = select_dbt_id_last(DBT_RUN)
-
-    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -613,20 +607,16 @@ def insert_dbt_run_row() -> None:
 # -----------------------------------------------------------------------------
 def insert_dbt_version_row() -> None:
     """Create the table version entry."""
-    cfg.logger.debug(cfg.LOGGER_START)
-
     insert_dbt_row(
         DBT_VERSION,
         [{DBC_VERSION: cfg.config[cfg.DCR_CFG_DCR_VERSION]}],
     )
 
-    cfg.logger.debug(cfg.LOGGER_END)
-
 
 # -----------------------------------------------------------------------------
 # Get the last id from a database table.
 # -----------------------------------------------------------------------------
-def select_dbt_id_last(table_name: str) -> sqlalchemy.Integer:
+def select_dbt_id_last(table_name: str) -> int:
     """Get the last id from a database table.
 
     Get the version number from the database table `version`.
@@ -635,17 +625,37 @@ def select_dbt_id_last(table_name: str) -> sqlalchemy.Integer:
         table_name (str): Database table name.
 
     Returns:
-        sqlalchemy.Integer: The last id found.
+        int: The last id found.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
-
     dbt = Table(table_name, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect() as conn:
         result = conn.execute(select(func.max(dbt.c.id)))
         row = result.fetchone()
 
-    cfg.logger.debug(cfg.LOGGER_END)
+    if row[0] is None:
+        return 0
+
+    return row[0]
+
+
+# -----------------------------------------------------------------------------
+# Get the last run_id from database table run.
+# -----------------------------------------------------------------------------
+def select_run_run_id_last() -> int:
+    """Get the last run_id from database table run.
+
+    Returns:
+        int: The last run id found.
+    """
+    dbt = Table(DBT_RUN, cfg.metadata, autoload_with=cfg.engine)
+
+    with cfg.engine.connect() as conn:
+        result = conn.execute(select(func.max(dbt.c.run_id)))
+        row = result.fetchone()
+
+    if row[0] is None:
+        return 0
 
     return row[0]
 
@@ -661,8 +671,6 @@ def select_version_version_unique() -> str:
     Returns:
         str: The version number found.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
-
     dbt = Table(DBT_VERSION, cfg.metadata, autoload_with=cfg.engine)
 
     current_version: str = ""
@@ -680,8 +688,6 @@ def select_version_version_unique() -> str:
         utils.terminate_fatal(
             "Column version in database table version not found"
         )
-
-    cfg.logger.debug(cfg.LOGGER_END)
 
     return current_version
 
@@ -701,14 +707,10 @@ def update_dbt_id(
         id_where (sqlalchemy.Integer): Content of column id.
         columns (Columns): Pairs of column name and value.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
-
     dbt = Table(table_name, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(update(dbt).where(dbt.c.id == id_where).values(columns))
-
-    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -728,8 +730,6 @@ def update_document_status(
         module_name (str): Name of the originating module.
         status (str): Current document status.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
-
     update_dbt_id(
         DBT_DOCUMENT,
         cfg.document_id,
@@ -744,8 +744,6 @@ def update_document_status(
         module_name,
     )
 
-    cfg.logger.debug(cfg.LOGGER_END)
-
 
 # -----------------------------------------------------------------------------
 # Update the database version number.
@@ -758,8 +756,6 @@ def update_version_version(
     Args:
         version (str): New version number.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
-
     dbt = Table(DBT_VERSION, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect().execution_options(autocommit=True) as conn:
@@ -770,8 +766,6 @@ def update_version_version(
                 }
             )
         )
-
-    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -806,22 +800,11 @@ def upgrade_database() -> None:
             + current_version,
         )
     else:
-        if current_version == "0.5.0":
-            target_version: str = cfg.config[cfg.DCR_CFG_DCR_VERSION]
-            utils.progress_msg(
-                "Upgrade step: from version number="
-                + current_version
-                + " to version number="
-                + target_version,
-            )
-            update_version_version(target_version)
-        else:
-            utils.terminate_fatal(
-                "Database file "
-                + db_file_name
-                + " has the wrong version, version number="
-                + current_version,
-            )
+        while (
+            select_version_version_unique()
+            != cfg.config[cfg.DCR_CFG_DCR_VERSION]
+        ):
+            upgrade_database_version()
 
         utils.progress_msg(
             "The database "
@@ -831,3 +814,66 @@ def upgrade_database() -> None:
         )
 
     cfg.logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Upgrade the current database schema.
+# -----------------------------------------------------------------------------
+def upgrade_database_version() -> None:
+    """Upgrade the database schema from the current version."""
+    cfg.logger.debug(cfg.LOGGER_START)
+
+    db_file_name = get_db_file_name()
+
+    current_version: str = select_version_version_unique()
+
+    if current_version == "0.5.0":
+        target_version: str = "0.6.0"
+        utils.progress_msg(
+            "Upgrade step: from version number="
+            + current_version
+            + " to version number="
+            + target_version,
+        )
+        with cfg.engine.connect().execution_options(autocommit=True) as conn:
+            conn.execute(
+                "ALTER TABLE "
+                + DBT_RUN
+                + " ADD COLUMN "
+                + DBC_ACTION
+                + " TEXT"
+            )
+            conn.execute(
+                "ALTER TABLE "
+                + DBT_RUN
+                + " ADD COLUMN "
+                + DBC_RUN_ID
+                + " INTEGER DEFAULT -1 NOT NULL"
+            )
+            conn.execute(
+                "ALTER TABLE "
+                + DBT_RUN
+                + " RENAME COLUMN total_accepted TO "
+                + DBC_TOTAL_OK_PROCESSED
+            )
+            conn.execute(
+                "ALTER TABLE "
+                + DBT_RUN
+                + " RENAME COLUMN total_new TO "
+                + DBC_TOTAL_TO_BE_PROCESSED
+            )
+            conn.execute(
+                "ALTER TABLE "
+                + DBT_RUN
+                + " RENAME COLUMN total_rejected TO "
+                + DBC_TOTAL_ERRONEOUS
+            )
+        update_version_version(target_version)
+        return
+
+    utils.terminate_fatal(
+        "Database file "
+        + db_file_name
+        + " has the wrong version, version number="
+        + current_version,
+    )

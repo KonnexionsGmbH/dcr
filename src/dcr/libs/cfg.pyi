@@ -119,11 +119,15 @@ file_type: str
 logger: logging.Logger | None
 metadata: MetaData
 
+run_action: str
 run_id: sqlalchemy.Integer
+run_run_id: sqlalchemy.Integer
 
 stem_name: str
 
-total_accepted: int
 total_erroneous: int
-total_new: int
+total_ok_processed: int
 total_rejected: int
+total_status_error: int
+total_status_ready: int
+total_to_be_processed: int

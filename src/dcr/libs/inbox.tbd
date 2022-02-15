@@ -41,7 +41,7 @@ def prepare_pdf_for_tesseract() -> None:
             __name__,
             cfg.STATUS_TESSERACT_READY,
         )
-        cfg.total_accepted += 1
+        cfg.total_ok_processed += 1
     except shutil.Error as err:
         cfg.total_erroneous += 1
         db.update_document_status(

@@ -200,46 +200,45 @@ def process_documents(args: dict[str, bool]) -> None:
     # Check the version of the database.
     db.check_db_up_to_date()
 
-    # Creation of the run entry in the database.
-    db.insert_dbt_run_row()
+    cfg.run_run_id = db.select_run_run_id_last() + 1
 
     # Process the documents in the inbox file directory.
     if args[cfg.RUN_ACTION_PROCESS_INBOX]:
+        cfg.run_action = cfg.RUN_ACTION_PROCESS_INBOX
         print("")
         utils.progress_msg("Start: Process the inbox directory ...")
+        db.insert_dbt_run_row()
         inbox.process_inbox_files()
+        db.update_dbt_id(
+            db.DBT_RUN,
+            cfg.run_id,
+            {
+                db.DBC_STATUS: cfg.STATUS_END,
+                db.DBC_TOTAL_TO_BE_PROCESSED: cfg.total_to_be_processed,
+                db.DBC_TOTAL_OK_PROCESSED: cfg.total_ok_processed,
+                db.DBC_TOTAL_ERRONEOUS: cfg.total_erroneous,
+            },
+        )
         utils.progress_msg("End  : Process the inbox directory ...")
 
     # Convert the scanned image pdf documents to image files.
     if args[cfg.RUN_ACTION_PDF_2_IMAGE]:
+        cfg.run_action = cfg.RUN_ACTION_PDF_2_IMAGE
         print("")
         utils.progress_msg("Start: Convert pdf documentss to image files ...")
+        db.insert_dbt_run_row()
         inbox.convert_pdf_2_image()
+        db.update_dbt_id(
+            db.DBT_RUN,
+            cfg.run_id,
+            {
+                db.DBC_STATUS: cfg.STATUS_END,
+                db.DBC_TOTAL_TO_BE_PROCESSED: cfg.total_to_be_processed,
+                db.DBC_TOTAL_OK_PROCESSED: cfg.total_ok_processed,
+                db.DBC_TOTAL_ERRONEOUS: cfg.total_erroneous,
+            },
+        )
         utils.progress_msg("End  : Convert pdf documentss to image files ...")
-
-    # Finalise the run entry in the database.
-    terminate_run_entry()
-
-    cfg.logger.debug(cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Terminate the current entry in the database table run.
-# -----------------------------------------------------------------------------
-def terminate_run_entry() -> None:
-    """Terminate the current entry in the database table run."""
-    cfg.logger.debug(cfg.LOGGER_START)
-
-    db.update_dbt_id(
-        db.DBT_RUN,
-        cfg.run_id,
-        {
-            db.DBC_STATUS: cfg.STATUS_END,
-            db.DBC_TOTAL_ACCEPTED: cfg.total_accepted,
-            db.DBC_TOTAL_NEW: cfg.total_new,
-            db.DBC_TOTAL_REJECTED: cfg.total_rejected,
-        },
-    )
 
     cfg.logger.debug(cfg.LOGGER_END)
 

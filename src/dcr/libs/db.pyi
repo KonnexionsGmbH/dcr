@@ -6,6 +6,7 @@ from typing import List
 import sqlalchemy.orm
 from libs import cfg
 
+DBC_ACTION: str
 DBC_ACTION_CODE: str
 DBC_ACTION_TEXT: str
 DBC_CREATED_AT: str
@@ -26,9 +27,9 @@ DBC_PACKAGE: str
 DBC_RUN_ID: str
 DBC_STATUS: str
 DBC_STEM_NAME: str
-DBC_TOTAL_ACCEPTED: str
-DBC_TOTAL_NEW: str
-DBC_TOTAL_REJECTED: str
+DBC_TOTAL_OK_PROCESSED: str
+DBC_TOTAL_TO_BE_PROCESSED: str
+DBC_TOTAL_ERRONEOUS: str
 DBC_VERSION: str
 
 DBT_DOCUMENT: str
@@ -61,7 +62,8 @@ def insert_dbt_journal_row(
 def insert_dbt_row(table: str, columns: cfg.Columns) -> None: ...
 def insert_dbt_run_row() -> None: ...
 def insert_dbt_version_row() -> None: ...
-def select_dbt_id_last(table_name: str) -> sqlalchemy.Integer: ...
+def select_dbt_id_last(table_name: str) -> int: ...
+def select_run_run_id_last() -> int: ...
 def select_version_version_unique() -> str: ...
 def update_dbt_id(
     table_name: str,
