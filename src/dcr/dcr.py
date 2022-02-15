@@ -173,6 +173,9 @@ def main(argv: List[str]) -> None:
         # Process the documents.
         process_documents(args)
 
+    # Disconnect from the database.
+    db.disconnect_db()
+
     print("End   dcr.py")
 
     cfg.logger.debug(cfg.LOGGER_END)
@@ -214,9 +217,6 @@ def process_documents(args: dict[str, bool]) -> None:
 
     # Finalise the run entry in the database.
     terminate_run_entry()
-
-    # Disconnect from the database.
-    db.disconnect_db()
 
     cfg.logger.debug(cfg.LOGGER_END)
 

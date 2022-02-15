@@ -615,14 +615,10 @@ def insert_dbt_version_row() -> None:
     """Create the table version entry."""
     cfg.logger.debug(cfg.LOGGER_START)
 
-    connect_db_core()
-
     insert_dbt_row(
         DBT_VERSION,
         [{DBC_VERSION: cfg.config[cfg.DCR_CFG_DCR_VERSION]}],
     )
-
-    disconnect_db()
 
     cfg.logger.debug(cfg.LOGGER_END)
 
