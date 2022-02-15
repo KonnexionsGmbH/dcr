@@ -1,5 +1,6 @@
 """Module utils: Helper functions."""
 import datetime
+import hashlib
 import os
 import sys
 
@@ -46,6 +47,28 @@ def get_file_name_inbox_rejected() -> str:
         cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED],
         cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
     )
+
+
+# -----------------------------------------------------------------------------
+# Get the SHA256 hash string of a file.
+# -----------------------------------------------------------------------------
+def get_sha256(file_name: str) -> str:
+    """Get the SHA256 hash string of a file.
+
+    Args:
+        file_name (str): File name.
+
+    Returns:
+        str: SHA256 hash string.
+    """
+    sha256_hash = hashlib.sha256()
+
+    with open(file_name, "rb") as file:
+        # Read and update hash string value in blocks of 4K
+        for byte_block in iter(lambda: file.read(4096), b""):
+            sha256_hash.update(byte_block)
+
+    return sha256_hash.hexdigest()
 
 
 # -----------------------------------------------------------------------------

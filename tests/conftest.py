@@ -131,6 +131,32 @@ def fxtr_no_db(fxtr_remove_opt):
 
 
 # -----------------------------------------------------------------------------
+# Fixture - No database and no file directories available.
+# -----------------------------------------------------------------------------
+@pytest.fixture()
+def fxtr_nothing(fxtr_remove_opt,fxtr_rmdir_opt):
+    """Fixture: No database and no file directories available."""
+    dcr.get_config()
+
+    fxtr_remove_opt(libs.db.get_db_file_name())
+
+    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
+    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED])
+
+    if libs.cfg.metadata is not None:
+        libs.cfg.metadata.clear()
+
+    yield
+
+    fxtr_remove_opt(libs.db.get_db_file_name())
+
+    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
+    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED])
+
+
+# -----------------------------------------------------------------------------
 # Fixture - Delete a file.
 # -----------------------------------------------------------------------------
 @pytest.fixture()

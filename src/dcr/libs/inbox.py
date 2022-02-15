@@ -162,6 +162,13 @@ def convert_pdf_2_image() -> None:
             cfg.file_name = row.file_name
             cfg.document_status = row.status
 
+            if cfg.document_status == cfg.STATUS_TESSERACT_PDF_READY:
+                cfg.total_status_ready += 1
+            else:
+                cfg.total_status_error += 1
+
+            convert_pdf_2_image_file()
+
     utils.progress_msg(
         f"Number documents to be processed:  {cfg.total_to_be_processed:6d}"
     )
@@ -186,6 +193,16 @@ def convert_pdf_2_image() -> None:
         )
 
     cfg.logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Convert pdf documents to image files (step: p_2_i).
+# -----------------------------------------------------------------------------
+def convert_pdf_2_image_file() -> None:
+    """Convert scanned image pdf documents to image files.
+
+    TBD
+    """
 
 
 # -----------------------------------------------------------------------------
@@ -338,6 +355,7 @@ def process_inbox_document_initial(file: pathlib.Path) -> None:
     cfg.file_name = file.name
     cfg.stem_name = pathlib.PurePath(file).stem
     cfg.file_type = file.suffix[1:].lower()
+    cfg.sha256 = utils.get_sha256(utils.get_file_name_inbox())
 
     db.insert_dbt_document_row()
 

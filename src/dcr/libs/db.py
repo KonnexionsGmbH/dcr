@@ -39,14 +39,15 @@ DBC_FILE_TYPE: str = "file_type"
 DBC_FUNCTION_NAME: str = "function_name"
 DBC_ID: str = "id"
 DBC_INBOX_ABS_NAME: str = "inbox_abs_name"
-DBC_INBOX_CONFIG: str = "inbox_config"
 DBC_INBOX_ACCEPTED_ABS_NAME: str = "inbox_accepted_abs_name"
 DBC_INBOX_ACCEPTED_CONFIG: str = "inbox_accepted_config"
+DBC_INBOX_CONFIG: str = "inbox_config"
 DBC_INBOX_REJECTED_ABS_NAME: str = "inbox_rejected_abs_name"
 DBC_INBOX_REJECTED_CONFIG: str = "inbox_rejected_config"
 DBC_MODIFIED_AT: str = "modified_at"
 DBC_MODULE_NAME: str = "module_name"
 DBC_RUN_ID: str = "run_id"
+DBC_SHA256: str = "sha256"
 DBC_STATUS: str = "status"
 DBC_STEM_NAME: str = "stem_name"
 DBC_TOTAL_ERRONEOUS: str = "total_erroneous"
@@ -303,6 +304,8 @@ def create_dbt_document(table_name: str) -> None:
         ),
         sqlalchemy.Column(DBC_FILE_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
+        sqlalchemy.Column(DBC_SHA256, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(DBC_STATUS, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(DBC_STEM_NAME, sqlalchemy.String, nullable=False),
     )
@@ -382,7 +385,7 @@ def create_dbt_run(table_name: str) -> None:
             DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
         ),
-        sqlalchemy.Column(DBC_ACTION, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(DBC_ACTION, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
             DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True
         ),
@@ -399,9 +402,7 @@ def create_dbt_run(table_name: str) -> None:
         sqlalchemy.Column(
             DBC_INBOX_REJECTED_CONFIG, sqlalchemy.String, nullable=True
         ),
-        sqlalchemy.Column(
-            DBC_RUN_ID, sqlalchemy.Integer, nullable=False, default=-1
-        ),
+        sqlalchemy.Column(DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
         sqlalchemy.Column(DBC_STATUS, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
             DBC_TOTAL_ERRONEOUS,
@@ -526,6 +527,8 @@ def insert_dbt_document_row() -> None:
             {
                 DBC_FILE_NAME: cfg.file_name,
                 DBC_FILE_TYPE: cfg.file_type,
+                DBC_RUN_ID: cfg.run_run_id,
+                DBC_SHA256: cfg.sha256,
                 DBC_STATUS: cfg.STATUS_INBOX,
                 DBC_STEM_NAME: cfg.stem_name,
             },
@@ -817,10 +820,10 @@ def upgrade_database() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Upgrade the current database schema.
+# Upgrade the current database schema - from one version to the next.
 # -----------------------------------------------------------------------------
 def upgrade_database_version() -> None:
-    """Upgrade the database schema from the current version."""
+    """Upgrade the current database schema - from one version to the next."""
     cfg.logger.debug(cfg.LOGGER_START)
 
     db_file_name = get_db_file_name()
@@ -828,47 +831,7 @@ def upgrade_database_version() -> None:
     current_version: str = select_version_version_unique()
 
     if current_version == "0.5.0":
-        target_version: str = "0.6.0"
-        utils.progress_msg(
-            "Upgrade step: from version number="
-            + current_version
-            + " to version number="
-            + target_version,
-        )
-        with cfg.engine.connect().execution_options(autocommit=True) as conn:
-            conn.execute(
-                "ALTER TABLE "
-                + DBT_RUN
-                + " ADD COLUMN "
-                + DBC_ACTION
-                + " TEXT"
-            )
-            conn.execute(
-                "ALTER TABLE "
-                + DBT_RUN
-                + " ADD COLUMN "
-                + DBC_RUN_ID
-                + " INTEGER DEFAULT -1 NOT NULL"
-            )
-            conn.execute(
-                "ALTER TABLE "
-                + DBT_RUN
-                + " RENAME COLUMN total_accepted TO "
-                + DBC_TOTAL_OK_PROCESSED
-            )
-            conn.execute(
-                "ALTER TABLE "
-                + DBT_RUN
-                + " RENAME COLUMN total_new TO "
-                + DBC_TOTAL_TO_BE_PROCESSED
-            )
-            conn.execute(
-                "ALTER TABLE "
-                + DBT_RUN
-                + " RENAME COLUMN total_rejected TO "
-                + DBC_TOTAL_ERRONEOUS
-            )
-        update_version_version(target_version)
+        upgrade_database_version_0_5_0()
         return
 
     utils.terminate_fatal(
@@ -877,3 +840,113 @@ def upgrade_database_version() -> None:
         + " has the wrong version, version number="
         + current_version,
     )
+
+
+# -----------------------------------------------------------------------------
+# Upgrade the current database schema - from version 0.5.0.
+# -----------------------------------------------------------------------------
+def upgrade_database_version_0_5_0() -> None:
+    """Upgrade the current database schema - from version 0.5.0."""
+    current_version: str = "0.5.0"
+    target_version: str = "0.6.0"
+
+    utils.progress_msg(
+        "Upgrade step: from version number="
+        + current_version
+        + " to version number="
+        + target_version,
+    )
+
+    with cfg.engine.connect().execution_options(autocommit=True) as conn:
+        # ---------------------------------------------------------------------
+        # Database table: document
+        # ---------------------------------------------------------------------
+        conn.execute(
+            "ALTER TABLE "
+            + DBT_DOCUMENT
+            + " ADD COLUMN "
+            + DBC_SHA256
+            + " TEXT DEFAULT 'n/a' NOT NULL"
+        )
+        conn.execute(
+            "ALTER TABLE "
+            + DBT_DOCUMENT
+            + " ADD COLUMN "
+            + DBC_RUN_ID
+            + " INTEGER DEFAULT -1 NOT NULL"
+        )
+
+        dbt = Table(DBT_DOCUMENT, cfg.metadata, autoload_with=cfg.engine)
+
+        conn.execute(update(dbt).where(dbt.c.run_id == -1).values(run_id=1))
+
+        rows = conn.execute(
+            select(dbt.c.file_name, dbt.c.id, dbt.c.status).where(
+                dbt.c.sha256 == "n/a"
+            )
+        )
+
+        for row in rows:
+            if row.status in ([]):
+                directory: str = cfg.config[
+                    cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
+                ]
+            else:
+                directory: str = cfg.config[
+                    cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED
+                ]
+
+            sha256: str = utils.get_sha256(
+                os.path.join(directory, row.file_name)
+            )
+            update(dbt).where(dbt.c.id == row.id).values(sha256=sha256)
+
+        # ---------------------------------------------------------------------
+        # Database table: run
+        # ---------------------------------------------------------------------
+        conn.execute(
+            "ALTER TABLE "
+            + DBT_RUN
+            + " ADD COLUMN "
+            + DBC_ACTION
+            + " TEXT DEFAULT 'n/a' NOT NULL"
+        )
+        conn.execute(
+            "ALTER TABLE "
+            + DBT_RUN
+            + " ADD COLUMN "
+            + DBC_RUN_ID
+            + " INTEGER DEFAULT -1 NOT NULL"
+        )
+        conn.execute(
+            "ALTER TABLE "
+            + DBT_RUN
+            + " RENAME COLUMN total_accepted TO "
+            + DBC_TOTAL_OK_PROCESSED
+        )
+        conn.execute(
+            "ALTER TABLE "
+            + DBT_RUN
+            + " RENAME COLUMN total_new TO "
+            + DBC_TOTAL_TO_BE_PROCESSED
+        )
+        conn.execute(
+            "ALTER TABLE "
+            + DBT_RUN
+            + " RENAME COLUMN total_rejected TO "
+            + DBC_TOTAL_ERRONEOUS
+        )
+
+        dbt = Table(DBT_RUN, cfg.metadata, autoload_with=cfg.engine)
+
+        conn.execute(
+            update(dbt)
+            .where(dbt.c.action == "n/a")
+            .values(action=cfg.RUN_ACTION_PROCESS_INBOX)
+        )
+
+        conn.execute(
+            update(dbt).where(dbt.c.run_id == -1).values(run_id=dbt.c.id)
+        )
+
+    update_version_version(target_version)

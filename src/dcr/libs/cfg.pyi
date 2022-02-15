@@ -123,6 +123,7 @@ run_action: str
 run_id: sqlalchemy.Integer
 run_run_id: sqlalchemy.Integer
 
+sha256: str
 stem_name: str
 
 total_erroneous: int

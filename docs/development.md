@@ -233,6 +233,7 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 - ~~error handling - highly defensive~~
 - ~~inbox.py - process_inbox() - processing ocr & non-ocr in the same method~~
 - tools.py - verify the content of the inbox directories
+- duplicate handling 
 
 **2<sup>nd</sup> Priority:** 
 

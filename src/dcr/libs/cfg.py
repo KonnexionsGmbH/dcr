@@ -153,6 +153,7 @@ run_action: str
 run_id: sqlalchemy.Integer | None = None
 run_run_id: sqlalchemy.Integer | None = None
 
+sha256: str
 stem_name: str = ""
 
 total_erroneous: int
