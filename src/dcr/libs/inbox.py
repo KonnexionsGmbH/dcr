@@ -12,6 +12,7 @@ import os
 import pathlib
 import shutil
 from typing import Callable
+from typing import List
 
 import fitz
 from libs import cfg
@@ -19,6 +20,42 @@ from libs import db
 from libs import utils
 from sqlalchemy import Table
 from sqlalchemy import select
+
+# -----------------------------------------------------------------------------
+# Global Constants.
+# -----------------------------------------------------------------------------
+FILE_TYPE_PANDOC: List[str] = [
+    "csv",
+    "doc",
+    "docx",
+    "epub",
+    "htm",
+    "html",
+    "json",
+    "md",
+    "odt",
+    "rst",
+    "rtf",
+    "txt",
+]
+
+FILE_TYPE_PDF: str = "pdf"
+
+FILE_TYPE_TESSERACT: List[str] = [
+    "bmp",
+    "gif",
+    "jfif",
+    "jiff",
+    "jpeg",
+    "jpg",
+    "pip",
+    "pjpeg",
+    "pmn",
+    "png",
+    "tif",
+    "tiff",
+    "webp",
+]
 
 
 # -----------------------------------------------------------------------------
@@ -407,22 +444,11 @@ def process_inbox_files() -> None:
 
             process_inbox_document_initial(file)
 
-            if cfg.file_type == cfg.FILE_TYPE_PDF:
+            #
+
+            if cfg.file_type == FILE_TYPE_PDF:
                 prepare_pdf()
-            elif cfg.file_type in (
-                cfg.FILE_TYPE_CSV,
-                cfg.FILE_TYPE_DOC,
-                cfg.FILE_TYPE_DOCX,
-                cfg.FILE_TYPE_EPUB,
-                cfg.FILE_TYPE_HTM,
-                cfg.FILE_TYPE_HTML,
-                cfg.FILE_TYPE_JSON,
-                cfg.FILE_TYPE_MD,
-                cfg.FILE_TYPE_ODT,
-                cfg.FILE_TYPE_RST,
-                cfg.FILE_TYPE_RTF,
-                cfg.FILE_TYPE_TXT,
-            ):
+            elif cfg.file_type in FILE_TYPE_PANDOC:
                 process_inbox_accepted(
                     db.update_document_status(
                         cfg.JOURNAL_ACTION_11_001,
@@ -432,17 +458,7 @@ def process_inbox_files() -> None:
                     ),
                     utils.get_file_name_inbox_accepted(),
                 )
-            elif cfg.file_type in (
-                cfg.FILE_TYPE_BMP,
-                cfg.FILE_TYPE_GIF,
-                cfg.FILE_TYPE_JP2,
-                cfg.FILE_TYPE_JPEG,
-                cfg.FILE_TYPE_JPG,
-                cfg.FILE_TYPE_PMN,
-                cfg.FILE_TYPE_PNG,
-                cfg.FILE_TYPE_TIFF,
-                cfg.FILE_TYPE_WEBP,
-            ):
+            elif cfg.file_type in FILE_TYPE_TESSERACT:
                 process_inbox_accepted(
                     db.update_document_status(
                         cfg.JOURNAL_ACTION_11_002,

@@ -1,6 +1,5 @@
 # pylint: disable=unused-argument
 """Testing Module libs.db."""
-import os
 import shutil
 
 import libs.cfg
@@ -121,28 +120,3 @@ def test_upgrade_0_1_3(fxtr_no_db):
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
-
-
-# -----------------------------------------------------------------------------
-# Test Database Upgrade - Upgrade from database table version 0.5.0.
-# -----------------------------------------------------------------------------
-@pytest.mark.issue
-def test_upgrade_0_5_0(fxtr_nothing):
-    """Test: Upgrade from database table version 0.5.0."""
-    shutil.copy(
-        TESTS_DATABASES + "dcr.db_0.5.0",
-        libs.cfg.config[libs.cfg.DCR_CFG_DATABASE_FILE],
-    )
-
-    inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
-
-    shutil.copytree(TESTS_INBOX, inbox_accepted)
-    shutil.copytree(TESTS_INBOX, inbox_rejected)
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
-
-    assert (
-        libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]
-        == libs.db.select_version_version_unique()
-    )
