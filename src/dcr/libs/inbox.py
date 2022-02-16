@@ -83,25 +83,6 @@ def check_directories() -> None:
         cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
     ]
 
-    db.update_dbt_id(
-        db.DBT_RUN,
-        cfg.run_id,
-        {
-            db.DBC_INBOX_ABS_NAME: str(
-                pathlib.Path(cfg.directory_inbox).absolute()
-            ),
-            db.DBC_INBOX_CONFIG: cfg.directory_inbox,
-            db.DBC_INBOX_ACCEPTED_ABS_NAME: str(
-                pathlib.Path(cfg.directory_inbox_accepted).absolute()
-            ),
-            db.DBC_INBOX_ACCEPTED_CONFIG: cfg.directory_inbox_accepted,
-            db.DBC_INBOX_REJECTED_ABS_NAME: str(
-                pathlib.Path(cfg.directory_inbox_rejected).absolute()
-            ),
-            db.DBC_INBOX_REJECTED_CONFIG: cfg.directory_inbox_rejected,
-        },
-    )
-
     cfg.logger.debug(cfg.LOGGER_END)
 
 
@@ -135,25 +116,6 @@ def check_and_create_directories() -> None:
         cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
     ]
     create_directory("the rejected documents", cfg.directory_inbox_rejected)
-
-    db.update_dbt_id(
-        db.DBT_RUN,
-        cfg.run_id,
-        {
-            db.DBC_INBOX_ABS_NAME: str(
-                pathlib.Path(cfg.directory_inbox).absolute()
-            ),
-            db.DBC_INBOX_CONFIG: cfg.directory_inbox,
-            db.DBC_INBOX_ACCEPTED_ABS_NAME: str(
-                pathlib.Path(cfg.directory_inbox_accepted).absolute()
-            ),
-            db.DBC_INBOX_ACCEPTED_CONFIG: cfg.directory_inbox_accepted,
-            db.DBC_INBOX_REJECTED_ABS_NAME: str(
-                pathlib.Path(cfg.directory_inbox_rejected).absolute()
-            ),
-            db.DBC_INBOX_REJECTED_CONFIG: cfg.directory_inbox_rejected,
-        },
-    )
 
     cfg.logger.debug(cfg.LOGGER_END)
 
@@ -252,6 +214,8 @@ def create_directory(directory_type: str, directory_name: str) -> None:
         directory_type (str): Directory type.
         directory_name (str): Directory name - may include a path.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     if not os.path.isdir(directory_name):
         try:
             os.mkdir(directory_name)
@@ -274,6 +238,8 @@ def create_directory(directory_type: str, directory_name: str) -> None:
                 + " message="
                 + err.strerror,
             )
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -300,22 +266,39 @@ def prepare_pdf() -> None:
 
         process_inbox_accepted(
             db.update_document_status(
-                action,
-                inspect.stack()[0][3],
-                __name__,
-                status,
+                {
+                    db.DBC_INBOX_ACCEPTED_ABS_NAME: str(
+                        pathlib.Path(cfg.directory_inbox_accepted).absolute()
+                    ),
+                    db.DBC_STATUS: status,
+                },
+                {
+                    db.DBC_ACTION_CODE: action[0:7],
+                    db.DBC_ACTION_TEXT: action[7:],
+                    db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                    db.DBC_MODULE_NAME: __name__,
+                },
             ),
             utils.get_file_name_inbox_accepted(),
         )
     except RuntimeError as err:
+        action: str = cfg.JOURNAL_ACTION_01_904.replace(
+            "{source_file}", utils.get_file_name_inbox()
+        ).replace("{error_msg}", str(err))
         process_inbox_rejected(
             db.update_document_status(
-                cfg.JOURNAL_ACTION_01_904.replace(
-                    "{source_file}", utils.get_file_name_inbox()
-                ).replace("{error_msg}", str(err)),
-                inspect.stack()[0][3],
-                __name__,
-                cfg.STATUS_REJECTED_NO_PDF_FORMAT,
+                {
+                    db.DBC_INBOX_REJECTED_ABS_NAME: str(
+                        pathlib.Path(cfg.directory_inbox_rejected).absolute()
+                    ),
+                    db.DBC_STATUS: cfg.STATUS_REJECTED_NO_PDF_FORMAT,
+                },
+                {
+                    db.DBC_ACTION_CODE: action[0:7],
+                    db.DBC_ACTION_TEXT: action[7:],
+                    db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                    db.DBC_MODULE_NAME: __name__,
+                },
             ),
         )
 
@@ -346,30 +329,54 @@ def process_inbox_accepted(
 
         cfg.total_ok_processed += 1
     except PermissionError as err:
-        db.update_document_status(
+        # pylint: disable=expression-not-assigned
+        action: str = (
             cfg.JOURNAL_ACTION_01_905.replace(
                 "{source_file}", utils.get_file_name_inbox()
             )
             .replace("{error_code}", str(err.errno))
-            .replace("{error_msg}", err.strerror),
-            inspect.stack()[0][3],
-            __name__,
-            cfg.STATUS_REJECTED_FILE_PERMISSION,
+            .replace("{error_msg}", err.strerror)
         )
+        db.update_document_status(
+            {
+                db.DBC_INBOX_REJECTED_ABS_NAME: str(
+                    pathlib.Path(cfg.directory_inbox_rejected).absolute()
+                ),
+                db.DBC_STATUS: cfg.STATUS_REJECTED_FILE_PERMISSION,
+            },
+            {
+                db.DBC_ACTION_CODE: action[0:7],
+                db.DBC_ACTION_TEXT: action[7:],
+                db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                db.DBC_MODULE_NAME: __name__,
+            },
+        ),
         remove_optional_file(target_file_name)
     except shutil.Error as err:
         cfg.total_erroneous += 1
-        db.update_document_status(
+        # pylint: disable=expression-not-assigned
+        action: str = (
             cfg.JOURNAL_ACTION_01_902.replace(
                 "{source_file}", utils.get_file_name_inbox()
             )
             .replace("{target_file}", target_file_name)
             .replace("{error_code}", str(err.errno))
-            .replace("{error_msg}", err.strerror),
-            inspect.stack()[0][3],
-            __name__,
-            cfg.STATUS_REJECTED_ERROR,
+            .replace("{error_msg}", err.strerror)
         )
+        db.update_document_status(
+            {
+                db.DBC_INBOX_REJECTED_ABS_NAME: str(
+                    pathlib.Path(cfg.directory_inbox_rejected).absolute()
+                ),
+                db.DBC_STATUS: cfg.STATUS_REJECTED_ERROR,
+            },
+            {
+                db.DBC_ACTION_CODE: action[0:7],
+                db.DBC_ACTION_TEXT: action[7:],
+                db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                db.DBC_MODULE_NAME: __name__,
+            },
+        ),
 
     cfg.logger.debug(cfg.LOGGER_END)
 
@@ -394,12 +401,31 @@ def process_inbox_document_initial(file: pathlib.Path) -> None:
     cfg.file_type = file.suffix[1:].lower()
     cfg.sha256 = utils.get_sha256(utils.get_file_name_inbox())
 
-    db.insert_dbt_document_row()
+    cfg.document_id = db.insert_dbt_row(
+        db.DBT_DOCUMENT,
+        {
+            db.DBC_FILE_NAME: cfg.file_name,
+            db.DBC_FILE_TYPE: cfg.file_type,
+            db.DBC_INBOX_ABS_NAME: str(
+                pathlib.Path(cfg.directory_inbox).absolute()
+            ),
+            db.DBC_RUN_ID: cfg.run_run_id,
+            db.DBC_SHA256: cfg.sha256,
+            db.DBC_STATUS: cfg.STATUS_INBOX,
+            db.DBC_STEM_NAME: cfg.stem_name,
+        },
+    )
 
-    db.insert_dbt_journal_row(
-        cfg.JOURNAL_ACTION_01_001,
-        inspect.stack()[0][3],
-        __name__,
+    db.insert_dbt_row(
+        db.DBT_JOURNAL,
+        {
+            db.DBC_ACTION_CODE: cfg.JOURNAL_ACTION_01_001[0:7],
+            db.DBC_ACTION_TEXT: cfg.JOURNAL_ACTION_01_001[7:],
+            db.DBC_DOCUMENT_ID: cfg.document_id,
+            db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+            db.DBC_MODULE_NAME: __name__,
+            db.DBC_RUN_ID: cfg.run_id,
+        },
     )
 
     cfg.logger.debug(cfg.LOGGER_END)
@@ -451,33 +477,64 @@ def process_inbox_files() -> None:
             elif cfg.file_type in FILE_TYPE_PANDOC:
                 process_inbox_accepted(
                     db.update_document_status(
-                        cfg.JOURNAL_ACTION_11_001,
-                        inspect.stack()[0][3],
-                        __name__,
-                        cfg.STATUS_PANDOC_READY,
+                        {
+                            db.DBC_INBOX_ACCEPTED_ABS_NAME: str(
+                                pathlib.Path(
+                                    cfg.directory_inbox_accepted
+                                ).absolute()
+                            ),
+                            db.DBC_STATUS: cfg.STATUS_PANDOC_READY,
+                        },
+                        {
+                            db.DBC_ACTION_CODE: cfg.JOURNAL_ACTION_11_001[0:7],
+                            db.DBC_ACTION_TEXT: cfg.JOURNAL_ACTION_11_001[7:],
+                            db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                            db.DBC_MODULE_NAME: __name__,
+                        },
                     ),
                     utils.get_file_name_inbox_accepted(),
                 )
             elif cfg.file_type in FILE_TYPE_TESSERACT:
                 process_inbox_accepted(
                     db.update_document_status(
-                        cfg.JOURNAL_ACTION_11_002,
-                        inspect.stack()[0][3],
-                        __name__,
-                        cfg.STATUS_TESSERACT_READY,
+                        {
+                            db.DBC_INBOX_ACCEPTED_ABS_NAME: str(
+                                pathlib.Path(
+                                    cfg.directory_inbox_accepted
+                                ).absolute()
+                            ),
+                            db.DBC_STATUS: cfg.STATUS_TESSERACT_READY,
+                        },
+                        {
+                            db.DBC_ACTION_CODE: cfg.JOURNAL_ACTION_11_002[0:7],
+                            db.DBC_ACTION_TEXT: cfg.JOURNAL_ACTION_11_002[7:],
+                            db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                            db.DBC_MODULE_NAME: __name__,
+                        },
                     ),
                     utils.get_file_name_inbox_accepted(),
                 )
             else:
+                action: str = cfg.JOURNAL_ACTION_01_901.replace(
+                    "{extension}", cfg.file_extension
+                )
                 process_inbox_rejected(
                     db.update_document_status(
-                        cfg.JOURNAL_ACTION_01_901.replace(
-                            "{extension}", cfg.file_extension
-                        ),
-                        inspect.stack()[0][3],
-                        __name__,
-                        cfg.STATUS_REJECTED_FILE_EXTENSION,
-                    )
+                        {
+                            db.DBC_INBOX_REJECTED_ABS_NAME: str(
+                                pathlib.Path(
+                                    cfg.directory_inbox_rejected
+                                ).absolute()
+                            ),
+                            db.DBC_STATUS: cfg.STATUS_REJECTED_FILE_EXTENSION,
+                        },
+                        {
+                            db.DBC_ACTION_CODE: action[0:7],
+                            db.DBC_ACTION_TEXT: action[7:],
+                            db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                            db.DBC_MODULE_NAME: __name__,
+                        },
+                    ),
                 )
 
     utils.progress_msg(
@@ -527,29 +584,53 @@ def process_inbox_rejected(
 
         cfg.total_rejected += 1
     except PermissionError as err:
-        db.update_document_status(
+        # pylint: disable=expression-not-assigned
+        action: str = (
             cfg.JOURNAL_ACTION_01_905.replace(
                 "{source_file}", utils.get_file_name_inbox()
             )
             .replace("{error_code}", str(err.errno))
-            .replace("{error_msg}", err.strerror),
-            inspect.stack()[0][3],
-            __name__,
-            cfg.STATUS_REJECTED_FILE_PERMISSION,
+            .replace("{error_msg}", err.strerror)
         )
+        db.update_document_status(
+            {
+                db.DBC_INBOX_REJECTED_ABS_NAME: str(
+                    pathlib.Path(cfg.directory_inbox_rejected).absolute()
+                ),
+                db.DBC_STATUS: cfg.STATUS_REJECTED_FILE_PERMISSION,
+            },
+            {
+                db.DBC_ACTION_CODE: action[0:7],
+                db.DBC_ACTION_TEXT: action[7:],
+                db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                db.DBC_MODULE_NAME: __name__,
+            },
+        ),
         remove_optional_file(utils.get_file_name_inbox_rejected())
     except shutil.Error as err:
-        db.update_document_status(
+        # pylint: disable=expression-not-assigned
+        action: str = (
             cfg.JOURNAL_ACTION_01_902.replace(
                 "{source_file}", utils.get_file_name_inbox()
             )
             .replace("{target_file}", utils.get_file_name_inbox_rejected())
             .replace("{error_code}", str(err.errno))
-            .replace("{error_msg}", err.strerror),
-            inspect.stack()[0][3],
-            __name__,
-            cfg.STATUS_REJECTED_ERROR,
+            .replace("{error_msg}", err.strerror)
         )
+        db.update_document_status(
+            {
+                db.DBC_INBOX_REJECTED_ABS_NAME: str(
+                    pathlib.Path(cfg.directory_inbox_rejected).absolute()
+                ),
+                db.DBC_STATUS: cfg.STATUS_REJECTED_ERROR,
+            },
+            {
+                db.DBC_ACTION_CODE: action[0:7],
+                db.DBC_ACTION_TEXT: action[7:],
+                db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                db.DBC_MODULE_NAME: __name__,
+            },
+        ),
 
     cfg.logger.debug(cfg.LOGGER_END)
 
@@ -563,17 +644,33 @@ def remove_optional_file(file_name: str) -> None:
     Args:
         file_name (str): Name of the file to be deleted.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     if not os.path.isfile(file_name):
         return
 
     try:
         os.remove(file_name)
     except FileNotFoundError as err:
-        db.update_document_status(
+        # pylint: disable=expression-not-assigned
+        action: str = (
             cfg.JOURNAL_ACTION_01_906.replace("{source_file}", file_name)
             .replace("{error_code}", str(err.errno))
-            .replace("{error_msg}", err.strerror),
-            inspect.stack()[0][3],
-            __name__,
-            cfg.STATUS_REJECTED_ERROR,
+            .replace("{error_msg}", err.strerror)
         )
+        db.update_document_status(
+            {
+                db.DBC_INBOX_REJECTED_ABS_NAME: str(
+                    pathlib.Path(cfg.directory_inbox_rejected).absolute()
+                ),
+                db.DBC_STATUS: cfg.STATUS_REJECTED_ERROR,
+            },
+            {
+                db.DBC_ACTION_CODE: action[0:7],
+                db.DBC_ACTION_TEXT: action[7:],
+                db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                db.DBC_MODULE_NAME: __name__,
+            },
+        ),
+
+    cfg.logger.debug(cfg.LOGGER_END)

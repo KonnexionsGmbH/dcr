@@ -207,7 +207,14 @@ def process_documents(args: dict[str, bool]) -> None:
         cfg.run_action = cfg.RUN_ACTION_PROCESS_INBOX
         print("")
         utils.progress_msg("Start: Process the inbox directory ...")
-        db.insert_dbt_run_row()
+        cfg.run_id = db.insert_dbt_row(
+            db.DBT_RUN,
+            {
+                db.DBC_ACTION: cfg.run_action,
+                db.DBC_RUN_ID: cfg.run_run_id,
+                db.DBC_STATUS: cfg.STATUS_START,
+            },
+        )
         inbox.process_inbox_files()
         db.update_dbt_id(
             db.DBT_RUN,
@@ -225,8 +232,15 @@ def process_documents(args: dict[str, bool]) -> None:
     if args[cfg.RUN_ACTION_PDF_2_IMAGE]:
         cfg.run_action = cfg.RUN_ACTION_PDF_2_IMAGE
         print("")
-        utils.progress_msg("Start: Convert pdf documentss to image files ...")
-        db.insert_dbt_run_row()
+        utils.progress_msg("Start: Convert pdf documents to image files ...")
+        cfg.run_id = db.insert_dbt_row(
+            db.DBT_RUN,
+            {
+                db.DBC_ACTION: cfg.run_action,
+                db.DBC_RUN_ID: cfg.run_run_id,
+                db.DBC_STATUS: cfg.STATUS_START,
+            },
+        )
         inbox.convert_pdf_2_image()
         db.update_dbt_id(
             db.DBT_RUN,
@@ -238,7 +252,7 @@ def process_documents(args: dict[str, bool]) -> None:
                 db.DBC_TOTAL_ERRONEOUS: cfg.total_erroneous,
             },
         )
-        utils.progress_msg("End  : Convert pdf documentss to image files ...")
+        utils.progress_msg("End  : Convert pdf documents to image files ...")
 
     cfg.logger.debug(cfg.LOGGER_END)
 

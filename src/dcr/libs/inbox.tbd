@@ -1,3 +1,27 @@
+    db.update_dbt_id(
+        db.DBT_RUN,
+        cfg.run_id,
+        {
+            db.DBC_INBOX_ABS_NAME: str(
+                pathlib.Path(cfg.directory_inbox).absolute()
+            ),
+            db.DBC_INBOX_CONFIG: cfg.directory_inbox,
+            db.DBC_INBOX_ACCEPTED_ABS_NAME: str(
+                pathlib.Path(cfg.directory_inbox_accepted).absolute()
+            ),
+            db.DBC_INBOX_ACCEPTED_CONFIG: cfg.directory_inbox_accepted,
+            db.DBC_INBOX_REJECTED_ABS_NAME: str(
+                pathlib.Path(cfg.directory_inbox_rejected).absolute()
+            ),
+            db.DBC_INBOX_REJECTED_CONFIG: cfg.directory_inbox_rejected,
+        },
+    )
+
+
+
+
+
+
 # -----------------------------------------------------------------------------
 # Prepare a new pdf document for Tesseract OCR..
 # -----------------------------------------------------------------------------

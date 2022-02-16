@@ -75,7 +75,7 @@ STATUS_TESSERACT_PDF_READY: str
 # -----------------------------------------------------------------------------
 # Global Type Definitions.
 # -----------------------------------------------------------------------------
-Columns: TypeAlias = list[Dict[str, Union[PathLike[str], str]]]
+Columns: TypeAlias = Dict[str, Union[PathLike[str], sqlalchemy.Integer, str]]
 
 # -----------------------------------------------------------------------------
 # Global Variables.
@@ -86,15 +86,16 @@ directory_inbox: PathLike[str] | str
 directory_inbox_accepted: PathLike[str] | str
 directory_inbox_rejected: PathLike[str] | str
 document_id: sqlalchemy.Integer
+document_status: str
 
-engine: Engine | None
+engine: Engine
 
 file_extension: str
 file_name: str
 file_type: str
 
-logger: logging.Logger | None
-metadata: MetaData
+logger: logging.Logger
+metadata: MetaData | None
 
 run_action: str
 run_id: sqlalchemy.Integer

@@ -61,12 +61,16 @@ def get_sha256(file_name: str) -> str:
     Returns:
         str: SHA256 hash string.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     sha256_hash = hashlib.sha256()
 
     with open(file_name, "rb") as file:
         # Read and update hash string value in blocks of 4K
         for byte_block in iter(lambda: file.read(4096), b""):
             sha256_hash.update(byte_block)
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
     return sha256_hash.hexdigest()
 
@@ -101,6 +105,8 @@ def terminate_fatal(error_msg: str) -> None:
     Args:
         error_msg (str): Error message.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     print("")
     print(cfg.LOGGER_FATAL_HEAD)
     print(cfg.LOGGER_FATAL_HEAD, error_msg, cfg.LOGGER_FATAL_TAIL, sep="")
@@ -108,4 +114,7 @@ def terminate_fatal(error_msg: str) -> None:
     cfg.logger.critical(
         "%s%s%s", cfg.LOGGER_FATAL_HEAD, error_msg, cfg.LOGGER_FATAL_TAIL
     )
+
+    cfg.logger.debug(cfg.LOGGER_END)
+
     sys.exit(1)

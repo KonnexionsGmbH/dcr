@@ -1,3 +1,26 @@
+        sqlalchemy.Column(
+            DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True
+        ),
+        sqlalchemy.Column(DBC_INBOX_CONFIG, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(
+            DBC_INBOX_ACCEPTED_ABS_NAME, sqlalchemy.String, nullable=True
+        ),
+        sqlalchemy.Column(
+            DBC_INBOX_ACCEPTED_CONFIG, sqlalchemy.String, nullable=True
+        ),
+        sqlalchemy.Column(
+            DBC_INBOX_REJECTED_ABS_NAME, sqlalchemy.String, nullable=True
+        ),
+        sqlalchemy.Column(
+            DBC_INBOX_REJECTED_CONFIG, sqlalchemy.String, nullable=True
+        ),
+
+
+
+
+
+
+
 # TBD: Template for migration from version 1.0.0 to version x.x.x
 # # -----------------------------------------------------------------------------
 # # Upgrade the current database schema - from version 0.5.0.

@@ -40,10 +40,7 @@ DBC_FUNCTION_NAME: str = "function_name"
 DBC_ID: str = "id"
 DBC_INBOX_ABS_NAME: str = "inbox_abs_name"
 DBC_INBOX_ACCEPTED_ABS_NAME: str = "inbox_accepted_abs_name"
-DBC_INBOX_ACCEPTED_CONFIG: str = "inbox_accepted_config"
-DBC_INBOX_CONFIG: str = "inbox_config"
 DBC_INBOX_REJECTED_ABS_NAME: str = "inbox_rejected_abs_name"
-DBC_INBOX_REJECTED_CONFIG: str = "inbox_rejected_config"
 DBC_MODIFIED_AT: str = "modified_at"
 DBC_MODULE_NAME: str = "module_name"
 DBC_RUN_ID: str = "run_id"
@@ -190,7 +187,9 @@ def create_database() -> None:
             + str(err),
         )
 
-    insert_dbt_version_row()
+    insert_dbt_row(
+        DBT_VERSION, {DBC_VERSION: cfg.config[cfg.DCR_CFG_DCR_VERSION]}
+    )
 
     utils.progress_msg(
         "The database "
@@ -211,6 +210,8 @@ def create_db_trigger_created_at(table_name: str) -> None:
     Args:
         table_name (str): Table name.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     event.listen(
         cfg.metadata,
         "after_create",
@@ -229,6 +230,8 @@ def create_db_trigger_created_at(table_name: str) -> None:
         ),
     )
 
+    cfg.logger.debug(cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Create the trigger for the database column modified_at.
@@ -239,6 +242,8 @@ def create_db_trigger_modified_at(table_name: str) -> None:
     Args:
         table_name (str): Table name.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     event.listen(
         cfg.metadata,
         "after_create",
@@ -257,6 +262,8 @@ ON xxx FOR EACH ROW
         ),
     )
 
+    cfg.logger.debug(cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Create the triggers for the database tables.
@@ -267,12 +274,16 @@ def create_db_triggers(table_names: List[str]) -> None:
     Args:
         table_names (List[str]): Table names.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     utils.progress_msg("Create the database triggers ...")
 
     for table_name in table_names:
         create_db_trigger_created_at(table_name)
         if table_name != DBT_JOURNAL:
             create_db_trigger_modified_at(table_name)
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -284,6 +295,8 @@ def create_dbt_document(table_name: str) -> None:
     Args:
         table_name (str): Table name.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     sqlalchemy.Table(
         table_name,
         cfg.metadata,
@@ -304,11 +317,22 @@ def create_dbt_document(table_name: str) -> None:
         ),
         sqlalchemy.Column(DBC_FILE_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=False
+        ),
+        sqlalchemy.Column(
+            DBC_INBOX_ACCEPTED_ABS_NAME, sqlalchemy.String, nullable=True
+        ),
+        sqlalchemy.Column(
+            DBC_INBOX_REJECTED_ABS_NAME, sqlalchemy.String, nullable=True
+        ),
         sqlalchemy.Column(DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
         sqlalchemy.Column(DBC_SHA256, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(DBC_STATUS, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(DBC_STEM_NAME, sqlalchemy.String, nullable=False),
     )
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -320,6 +344,8 @@ def create_dbt_journal(table_name: str) -> None:
     Args:
         table_name (str): Table name.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     sqlalchemy.Table(
         table_name,
         cfg.metadata,
@@ -357,6 +383,8 @@ def create_dbt_journal(table_name: str) -> None:
         ),
     )
 
+    cfg.logger.debug(cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Create the database table run.
@@ -367,6 +395,8 @@ def create_dbt_run(table_name: str) -> None:
     Args:
         table_name (str): Table name.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     sqlalchemy.Table(
         table_name,
         cfg.metadata,
@@ -386,22 +416,6 @@ def create_dbt_run(table_name: str) -> None:
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(DBC_ACTION, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(
-            DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True
-        ),
-        sqlalchemy.Column(DBC_INBOX_CONFIG, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(
-            DBC_INBOX_ACCEPTED_ABS_NAME, sqlalchemy.String, nullable=True
-        ),
-        sqlalchemy.Column(
-            DBC_INBOX_ACCEPTED_CONFIG, sqlalchemy.String, nullable=True
-        ),
-        sqlalchemy.Column(
-            DBC_INBOX_REJECTED_ABS_NAME, sqlalchemy.String, nullable=True
-        ),
-        sqlalchemy.Column(
-            DBC_INBOX_REJECTED_CONFIG, sqlalchemy.String, nullable=True
-        ),
         sqlalchemy.Column(DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
         sqlalchemy.Column(DBC_STATUS, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
@@ -421,6 +435,8 @@ def create_dbt_run(table_name: str) -> None:
         ),
     )
 
+    cfg.logger.debug(cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Create and initialise the database table version.
@@ -437,6 +453,8 @@ def create_dbt_version(
     Args:
         table_name (str): Table name.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     sqlalchemy.Table(
         table_name,
         cfg.metadata,
@@ -459,6 +477,8 @@ def create_dbt_version(
             DBC_VERSION, sqlalchemy.String, nullable=False, unique=True
         ),
     )
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -517,127 +537,54 @@ def get_db_url() -> str:
 
 
 # -----------------------------------------------------------------------------
-# Insert the table document entry.
-# -----------------------------------------------------------------------------
-def insert_dbt_document_row() -> None:
-    """Insert the table document entry."""
-    insert_dbt_row(
-        DBT_DOCUMENT,
-        [
-            {
-                DBC_FILE_NAME: cfg.file_name,
-                DBC_FILE_TYPE: cfg.file_type,
-                DBC_RUN_ID: cfg.run_run_id,
-                DBC_SHA256: cfg.sha256,
-                DBC_STATUS: cfg.STATUS_INBOX,
-                DBC_STEM_NAME: cfg.stem_name,
-            },
-        ],
-    )
-
-    cfg.document_id = select_dbt_id_last(DBT_DOCUMENT)
-
-
-# -----------------------------------------------------------------------------
-# Insert the table journal entry.
-# -----------------------------------------------------------------------------
-def insert_dbt_journal_row(
-    action: str,
-    function_name: str,
-    module_name: str,
-) -> None:
-    """Insert the table journal entry.
-
-    Args:
-        action (str): Current action.
-        function_name (str): Name of the originating function.
-        module_name (str): Name of the originating module.
-    """
-    insert_dbt_row(
-        DBT_JOURNAL,
-        [
-            {
-                DBC_ACTION_CODE: action[0:7],
-                DBC_ACTION_TEXT: action[7:],
-                DBC_DOCUMENT_ID: cfg.document_id,
-                DBC_FUNCTION_NAME: function_name,
-                DBC_MODULE_NAME: module_name,
-                DBC_RUN_ID: cfg.run_id,
-            },
-        ],
-    )
-
-    cfg.journal_id = select_dbt_id_last(DBT_JOURNAL)
-
-
-# -----------------------------------------------------------------------------
 # Insert a new row into a database table.
 # -----------------------------------------------------------------------------
-def insert_dbt_row(table_name: str, columns: cfg.Columns) -> None:
+def insert_dbt_row(
+    table_name: str,
+    columns: cfg.Columns,
+) -> sqlalchemy.Integer:
     """Insert a new row into a database table.
 
     Args:
         table_name (str): Table name.
-        columns (Columns): Pairs of column name and value.
+        columns (cfg.TYPE_COLUMNS_INSERT): Pairs of column name and value.
+
+    Returns:
+        sqlalchemy.Integer: The last id found.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     dbt = Table(table_name, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(insert(dbt).values(columns))
 
+    cfg.logger.debug(cfg.LOGGER_END)
 
-# -----------------------------------------------------------------------------
-# Insert the table run entry.
-# -----------------------------------------------------------------------------
-def insert_dbt_run_row() -> None:
-    """Insert the table run entry."""
-    insert_dbt_row(
-        DBT_RUN,
-        [
-            {
-                DBC_ACTION: cfg.run_action,
-                DBC_RUN_ID: cfg.run_run_id,
-                DBC_STATUS: cfg.STATUS_START,
-            },
-        ],
-    )
-
-    cfg.run_id = select_dbt_id_last(DBT_RUN)
-
-
-# -----------------------------------------------------------------------------
-# Insert the table version entry.
-# -----------------------------------------------------------------------------
-def insert_dbt_version_row() -> None:
-    """Create the table version entry."""
-    insert_dbt_row(
-        DBT_VERSION,
-        [{DBC_VERSION: cfg.config[cfg.DCR_CFG_DCR_VERSION]}],
-    )
+    return select_dbt_id_last(table_name)
 
 
 # -----------------------------------------------------------------------------
 # Get the last id from a database table.
 # -----------------------------------------------------------------------------
-def select_dbt_id_last(table_name: str) -> int:
+def select_dbt_id_last(table_name: str) -> sqlalchemy.Integer:
     """Get the last id from a database table.
-
-    Get the version number from the database table `version`.
 
     Args:
         table_name (str): Database table name.
 
     Returns:
-        int: The last id found.
+        sqlalchemy.Integer: The last id found.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     dbt = Table(table_name, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect() as conn:
         result = conn.execute(select(func.max(dbt.c.id)))
         row = result.fetchone()
 
-    if row[0] is None:
-        return 0
+    cfg.logger.debug(cfg.LOGGER_END)
 
     return row[0]
 
@@ -651,6 +598,8 @@ def select_run_run_id_last() -> int:
     Returns:
         int: The last run id found.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     dbt = Table(DBT_RUN, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect() as conn:
@@ -658,7 +607,10 @@ def select_run_run_id_last() -> int:
         row = result.fetchone()
 
     if row[0] is None:
+        cfg.logger.debug(cfg.LOGGER_END)
         return 0
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
     return row[0]
 
@@ -674,6 +626,8 @@ def select_version_version_unique() -> str:
     Returns:
         str: The version number found.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     dbt = Table(DBT_VERSION, cfg.metadata, autoload_with=cfg.engine)
 
     current_version: str = ""
@@ -691,6 +645,8 @@ def select_version_version_unique() -> str:
         utils.terminate_fatal(
             "Column version in database table version not found"
         )
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
     return current_version
 
@@ -710,42 +666,46 @@ def update_dbt_id(
         id_where (sqlalchemy.Integer): Content of column id.
         columns (Columns): Pairs of column name and value.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     dbt = Table(table_name, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(update(dbt).where(dbt.c.id == id_where).values(columns))
 
+    cfg.logger.debug(cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
-# Update the document status and create a new journal entry.
+# Update the document and create a new journal entry.
 # -----------------------------------------------------------------------------
 def update_document_status(
-    action: str,
-    function_name: str,
-    module_name: str,
-    status: str,
+    document_columns: cfg.Columns,
+    journal_columns: cfg.Columns,
 ) -> None:
-    """Update the document status and create a new journal entry.
+    """Update the document and create a new journal entry.
 
     Args:
-        action (str): Current action.
-        function_name (str): Name of the originating function.
-        module_name (str): Name of the originating module.
-        status (str): Current document status.
+        document_columns (cfg.Columns): Columns regarding
+                                        database table document.
+        journal_columns (cfg.Columns): Columns regarding
+                                       database table journal.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     update_dbt_id(
         DBT_DOCUMENT,
         cfg.document_id,
-        {
-            DBC_STATUS: status,
-        },
+        document_columns,
     )
 
-    insert_dbt_journal_row(
-        action,
-        function_name,
-        module_name,
+    insert_dbt_row(
+        DBT_JOURNAL,
+        journal_columns
+        | {DBC_DOCUMENT_ID: cfg.document_id, DBC_RUN_ID: cfg.run_id},
     )
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -759,6 +719,8 @@ def update_version_version(
     Args:
         version (str): New version number.
     """
+    cfg.logger.debug(cfg.LOGGER_START)
+
     dbt = Table(DBT_VERSION, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect().execution_options(autocommit=True) as conn:
@@ -769,6 +731,8 @@ def update_version_version(
                 }
             )
         )
+
+    cfg.logger.debug(cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -835,6 +799,7 @@ def upgrade_database_version() -> None:
             "An automatic upgrade of the database version is only "
             + "supported from version 1.0.0."
         )
+        cfg.logger.debug(cfg.LOGGER_END)
         return
 
     # TBD: Template for migration from version 1.0.0 to version x.x.x

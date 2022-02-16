@@ -104,31 +104,32 @@ STATUS_TESSERACT_PDF_READY: str = "tesseract_pdf_ready"
 # -----------------------------------------------------------------------------
 # Global Type Definitions.
 # -----------------------------------------------------------------------------
-Columns: TypeAlias = list[Dict[str, Union[PathLike[str], str]]]
+Columns: TypeAlias = Dict[str, Union[PathLike[str], sqlalchemy.Integer, str]]
 
 # -----------------------------------------------------------------------------
 # Global Variables.
 # -----------------------------------------------------------------------------
 config: Dict[str, PathLike[str] | str] = {}
 
-directory_inbox: PathLike[str] | str | None = None
-directory_inbox_accepted: PathLike[str] | str | None = None
-directory_inbox_rejected: PathLike[str] | str | None = None
-document_id: sqlalchemy.Integer | None = None
+directory_inbox: PathLike[str] | str
+directory_inbox_accepted: PathLike[str] | str
+directory_inbox_rejected: PathLike[str] | str
+document_id: sqlalchemy.Integer
+document_status: str
 
-engine: Engine | None = None
+engine: Engine
 
 file_extension: str = ""
 file_name: str = ""
 file_type: str = ""
 
-logger: logging.Logger | None = None
+logger: logging.Logger
 
 metadata: MetaData | None = None
 
 run_action: str
-run_id: sqlalchemy.Integer | None = None
-run_run_id: sqlalchemy.Integer | None = None
+run_id: sqlalchemy.Integer
+run_run_id: sqlalchemy.Integer
 
 sha256: str
 stem_name: str = ""
