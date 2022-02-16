@@ -20,6 +20,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import MetaData
 from sqlalchemy import Table
 from sqlalchemy import UniqueConstraint
+from sqlalchemy import and_
 from sqlalchemy import event
 from sqlalchemy import func
 from sqlalchemy import insert
@@ -567,7 +568,7 @@ def insert_dbt_row(
 # -----------------------------------------------------------------------------
 # Get the last id from a database table.
 # -----------------------------------------------------------------------------
-def select_dbt_id_last(table_name: str) -> sqlalchemy.Integer:
+def select_dbt_id_last(table_name: str) -> int | sqlalchemy.Integer:
     """Get the last id from a database table.
 
     Args:
@@ -576,15 +577,48 @@ def select_dbt_id_last(table_name: str) -> sqlalchemy.Integer:
     Returns:
         sqlalchemy.Integer: The last id found.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
-
     dbt = Table(table_name, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect() as conn:
         result = conn.execute(select(func.max(dbt.c.id)))
         row = result.fetchone()
 
-    cfg.logger.debug(cfg.LOGGER_END)
+    if row[0] == "None":
+        return 0
+
+    return row[0]
+
+
+# -----------------------------------------------------------------------------
+# Get the filename of an accepted document based on the hash key.
+# -----------------------------------------------------------------------------
+def select_document_file_name_sha256(
+    document_id: sqlalchemy.Integer, sha256: str
+) -> str | None:
+    """Get the filename of an accepted document based on the hash key.
+
+    Args:
+        document_id (sqlalchemy.Integer): Document id.
+        sha256 (str): Hash key.
+
+    Returns:
+        str: The file name found.
+    """
+    dbt = Table(DBT_DOCUMENT, cfg.metadata, autoload_with=cfg.engine)
+
+    with cfg.engine.connect() as conn:
+        row = conn.execute(
+            select(dbt.c.file_name).where(
+                and_(
+                    dbt.c.id != document_id,
+                    dbt.c.sha256 == sha256,
+                    dbt.c.inbox_rejected_abs_name is None,
+                )
+            )
+        ).fetchone()
+
+    if row is None:
+        return row
 
     return row[0]
 
@@ -592,25 +626,19 @@ def select_dbt_id_last(table_name: str) -> sqlalchemy.Integer:
 # -----------------------------------------------------------------------------
 # Get the last run_id from database table run.
 # -----------------------------------------------------------------------------
-def select_run_run_id_last() -> int:
+def select_run_run_id_last() -> int | sqlalchemy.Integer:
     """Get the last run_id from database table run.
 
     Returns:
-        int: The last run id found.
+        sqlalchemy.Integer: The last run id found.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
-
     dbt = Table(DBT_RUN, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect() as conn:
-        result = conn.execute(select(func.max(dbt.c.run_id)))
-        row = result.fetchone()
+        row = conn.execute(select(func.max(dbt.c.run_id))).fetchone()
 
     if row[0] is None:
-        cfg.logger.debug(cfg.LOGGER_END)
         return 0
-
-    cfg.logger.debug(cfg.LOGGER_END)
 
     return row[0]
 
@@ -626,8 +654,6 @@ def select_version_version_unique() -> str:
     Returns:
         str: The version number found.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
-
     dbt = Table(DBT_VERSION, cfg.metadata, autoload_with=cfg.engine)
 
     current_version: str = ""
@@ -645,8 +671,6 @@ def select_version_version_unique() -> str:
         utils.terminate_fatal(
             "Column version in database table version not found"
         )
-
-    cfg.logger.debug(cfg.LOGGER_END)
 
     return current_version
 
@@ -702,7 +726,7 @@ def update_document_status(
     insert_dbt_row(
         DBT_JOURNAL,
         journal_columns
-        | {DBC_DOCUMENT_ID: cfg.document_id, DBC_RUN_ID: cfg.run_id},
+        | {DBC_DOCUMENT_ID: cfg.document_id, DBC_RUN_ID: cfg.run_run_id},
     )
 
     cfg.logger.debug(cfg.LOGGER_END)

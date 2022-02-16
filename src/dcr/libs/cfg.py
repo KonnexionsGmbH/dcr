@@ -64,6 +64,17 @@ JOURNAL_ACTION_11_004: str = (
 JOURNAL_ACTION_11_005: str = (
     "11.005 Ready to prepare the pdf document for Tesseract OCR"
 )
+JOURNAL_ACTION_21_001: str = (
+    "21.001 This 'pdf' document must be converted into an image format "
+    + "for further processing"
+)
+JOURNAL_ACTION_21_002: str = (
+    "21.002 Ready to convert the document to 'pdf' format using Tesseract OCR"
+)
+JOURNAL_ACTION_21_901: str = (
+    "21.901 This document seems to be identical to the document '{file_name}'"
+)
+
 
 LOCALE: str = "en_US.UTF-8"
 LOGGER_CFG_FILE: str = "logging_cfg.yaml"
@@ -83,22 +94,24 @@ RUN_ACTION_PROCESS_INBOX: str = "p_i"
 RUN_ACTION_UPGRADE_DB: str = "db_u"
 
 STATUS_COMPLETED: str = "completed"
-STATUS_END: str = "end"
-STATUS_INBOX: str = "inbox"
+STATUS_END: str = "end"  # run
 STATUS_PANDOC_ERROR: str = "pandoc_error"
 STATUS_PANDOC_READY: str = "pandoc_ready"
 STATUS_PARSER_ERROR: str = "parser_error"
 STATUS_PARSER_READY: str = "parser_ready"
 STATUS_REJECTED_ERROR: str = "rejected_error"
+STATUS_REJECTED_FILE_DUPLICATE: str = "rejected_file_duplicate"
 STATUS_REJECTED_FILE_ERROR: str = "rejected_file_error"
 STATUS_REJECTED_FILE_EXTENSION: str = "rejected_file_extension"
 STATUS_REJECTED_FILE_PERMISSION: str = "rejected_file_permission"
 STATUS_REJECTED_NO_PDF_FORMAT: str = "rejected_no_pdf_format"
-STATUS_START: str = "start"
+STATUS_START: str = "start"  # run
+STATUS_START_INBOX: str = "start_inbox"
+STATUS_START_PDF2IMAGE: str = "start_pdf2image"
 STATUS_TESSERACT_ERROR: str = "tesseract_error"
-STATUS_TESSERACT_READY: str = "tesseract_ready"
 STATUS_TESSERACT_PDF_ERROR: str = "tesseract_pdf_error"
 STATUS_TESSERACT_PDF_READY: str = "tesseract_pdf_ready"
+STATUS_TESSERACT_READY: str = "tesseract_ready"
 
 
 # -----------------------------------------------------------------------------

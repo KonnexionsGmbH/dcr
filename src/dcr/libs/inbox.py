@@ -161,6 +161,18 @@ def convert_pdf_2_image() -> None:
             cfg.file_name = row.file_name
             cfg.document_status = row.status
 
+            db.update_document_status(
+                {
+                    db.DBC_STATUS: cfg.STATUS_START_PDF2IMAGE,
+                },
+                {
+                    db.DBC_ACTION_CODE: cfg.JOURNAL_ACTION_21_001[0:7],
+                    db.DBC_ACTION_TEXT: cfg.JOURNAL_ACTION_21_001[7:],
+                    db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                    db.DBC_MODULE_NAME: __name__,
+                },
+            )
+
             if cfg.document_status == cfg.STATUS_TESSERACT_PDF_READY:
                 cfg.total_status_ready += 1
             else:
@@ -411,7 +423,7 @@ def process_inbox_document_initial(file: pathlib.Path) -> None:
             ),
             db.DBC_RUN_ID: cfg.run_run_id,
             db.DBC_SHA256: cfg.sha256,
-            db.DBC_STATUS: cfg.STATUS_INBOX,
+            db.DBC_STATUS: cfg.STATUS_START_INBOX,
             db.DBC_STEM_NAME: cfg.stem_name,
         },
     )
@@ -424,7 +436,7 @@ def process_inbox_document_initial(file: pathlib.Path) -> None:
             db.DBC_DOCUMENT_ID: cfg.document_id,
             db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
             db.DBC_MODULE_NAME: __name__,
-            db.DBC_RUN_ID: cfg.run_id,
+            db.DBC_RUN_ID: cfg.run_run_id,
         },
     )
 
@@ -470,9 +482,33 @@ def process_inbox_files() -> None:
 
             process_inbox_document_initial(file)
 
-            #
+            file_name = db.select_document_file_name_sha256(
+                cfg.document_id, cfg.sha256
+            )
 
-            if cfg.file_type == FILE_TYPE_PDF:
+            if file_name is not None:
+                action: str = cfg.JOURNAL_ACTION_21_901.replace(
+                    "{file_name}", file_name
+                )
+                process_inbox_rejected(
+                    db.update_document_status(
+                        {
+                            db.DBC_INBOX_REJECTED_ABS_NAME: str(
+                                pathlib.Path(
+                                    cfg.directory_inbox_rejected
+                                ).absolute()
+                            ),
+                            db.DBC_STATUS: cfg.STATUS_REJECTED_FILE_DUPLICATE,
+                        },
+                        {
+                            db.DBC_ACTION_CODE: action[0:7],
+                            db.DBC_ACTION_TEXT: action[7:],
+                            db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                            db.DBC_MODULE_NAME: __name__,
+                        },
+                    ),
+                )
+            elif cfg.file_type == FILE_TYPE_PDF:
                 prepare_pdf()
             elif cfg.file_type in FILE_TYPE_PANDOC:
                 process_inbox_accepted(
