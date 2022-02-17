@@ -1,52 +1,9 @@
 """Module utils: Helper functions."""
 import datetime
 import hashlib
-import os
 import sys
 
 from libs import cfg
-
-
-# -----------------------------------------------------------------------------
-# Get the file name as per inbox.
-# -----------------------------------------------------------------------------
-def get_file_name_inbox() -> str:
-    """Get the file name as per inbox.
-
-    Returns:
-        str: File name as per inbox.
-    """
-    return os.path.join(cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX], cfg.file_name)
-
-
-# -----------------------------------------------------------------------------
-# Get the file name as per inbox accepted.
-# -----------------------------------------------------------------------------
-def get_file_name_inbox_accepted() -> str:
-    """Get the file name as per inbox accepted.
-
-    Returns:
-        str: File name as per inbox accepted.
-    """
-    return os.path.join(
-        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED],
-        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
-    )
-
-
-# -----------------------------------------------------------------------------
-# Get the file name as per inbox rejected.
-# -----------------------------------------------------------------------------
-def get_file_name_inbox_rejected() -> str:
-    """Get the file name as per inbox rejected.
-
-    Returns:
-        str: File name as per inbox rejected.
-    """
-    return os.path.join(
-        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED],
-        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
-    )
 
 
 # -----------------------------------------------------------------------------

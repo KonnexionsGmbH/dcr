@@ -109,6 +109,24 @@ def get_config() -> None:
             for (key, value) in config_parser.items(section):
                 cfg.config[key] = value
 
+    if cfg.config[cfg.DCR_CFG_IGNORE_DUPLICATES]:
+        cfg.is_check_duplicates = False
+    else:
+        cfg.is_check_duplicates = True
+
+    cfg.pdf2image_type = cfg.config[cfg.DCR_CFG_PDF2IMAGE_TYPE]
+
+    if cfg.pdf2image_type not in [
+        cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG,
+        cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG,
+    ]:
+        utils.terminate_fatal(
+            "Invalid configuration parameter value for parameter "
+            + "'pdf2image_type': '"
+            + cfg.pdf2image_type
+            + "'"
+        )
+
     utils.progress_msg("The configuration parameters are checked and loaded")
 
     cfg.logger.debug(cfg.LOGGER_END)

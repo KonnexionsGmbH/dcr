@@ -35,6 +35,7 @@ DBC_ACTION_CODE: str = "action_code"
 DBC_ACTION_TEXT: str = "action_text"
 DBC_CREATED_AT: str = "created_at"
 DBC_DOCUMENT_ID: str = "document_id"
+DBC_DOCUMENT_ID_PARENT: str = "document_id_parent"
 DBC_FILE_NAME: str = "file_name"
 DBC_FILE_TYPE: str = "file_type"
 DBC_FUNCTION_NAME: str = "function_name"
@@ -316,10 +317,16 @@ def create_dbt_document(table_name: str) -> None:
             DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
         ),
+        sqlalchemy.Column(
+            DBC_DOCUMENT_ID_PARENT,
+            sqlalchemy.Integer,
+            ForeignKey(DBT_DOCUMENT + "." + DBC_ID, ondelete="CASCADE"),
+            nullable=True,
+        ),
         sqlalchemy.Column(DBC_FILE_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
-            DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=False
+            DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True
         ),
         sqlalchemy.Column(
             DBC_INBOX_ACCEPTED_ABS_NAME, sqlalchemy.String, nullable=True
@@ -328,7 +335,7 @@ def create_dbt_document(table_name: str) -> None:
             DBC_INBOX_REJECTED_ABS_NAME, sqlalchemy.String, nullable=True
         ),
         sqlalchemy.Column(DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
-        sqlalchemy.Column(DBC_SHA256, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(DBC_SHA256, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(DBC_STATUS, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(DBC_STEM_NAME, sqlalchemy.String, nullable=False),
     )
@@ -559,6 +566,7 @@ def insert_dbt_row(
 
     with cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(insert(dbt).values(columns))
+        conn.close()
 
     cfg.logger.debug(cfg.LOGGER_END)
 
@@ -582,6 +590,7 @@ def select_dbt_id_last(table_name: str) -> int | sqlalchemy.Integer:
     with cfg.engine.connect() as conn:
         result = conn.execute(select(func.max(dbt.c.id)))
         row = result.fetchone()
+        conn.close()
 
     if row[0] == "None":
         return 0
@@ -616,6 +625,7 @@ def select_document_file_name_sha256(
                 )
             )
         ).fetchone()
+        conn.close()
 
     if row is None:
         return row
@@ -636,6 +646,7 @@ def select_run_run_id_last() -> int | sqlalchemy.Integer:
 
     with cfg.engine.connect() as conn:
         row = conn.execute(select(func.max(dbt.c.run_id))).fetchone()
+        conn.close()
 
     if row[0] is None:
         return 0
@@ -666,6 +677,7 @@ def select_version_version_unique() -> str:
                 utils.terminate_fatal(
                     "Column version in database table version not unique",
                 )
+        conn.close()
 
     if current_version == "":
         utils.terminate_fatal(
@@ -696,6 +708,7 @@ def update_dbt_id(
 
     with cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(update(dbt).where(dbt.c.id == id_where).values(columns))
+        conn.close()
 
     cfg.logger.debug(cfg.LOGGER_END)
 
@@ -755,6 +768,7 @@ def update_version_version(
                 }
             )
         )
+        conn.close()
 
     cfg.logger.debug(cfg.LOGGER_END)
 

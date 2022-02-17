@@ -15,15 +15,18 @@ from typing import Callable
 from typing import List
 
 import fitz
+import pdf2image
 from libs import cfg
 from libs import db
 from libs import utils
+from pdf2image.exceptions import PDFPopplerTimeoutError
 from sqlalchemy import Table
 from sqlalchemy import select
 
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
+FILE_TYPE_JPG: str = "jpg"
 FILE_TYPE_PANDOC: List[str] = [
     "csv",
     "doc",
@@ -38,9 +41,8 @@ FILE_TYPE_PANDOC: List[str] = [
     "rtf",
     "txt",
 ]
-
 FILE_TYPE_PDF: str = "pdf"
-
+FILE_TYPE_PNG: str = "png"
 FILE_TYPE_TESSERACT: List[str] = [
     "bmp",
     "gif",
@@ -131,19 +133,35 @@ def convert_pdf_2_image() -> None:
     cfg.logger.debug(cfg.LOGGER_START)
 
     cfg.total_erroneous = 0
+    cfg.total_generated = 0
     cfg.total_ok_processed = 0
     cfg.total_status_error = 0
     cfg.total_status_ready = 0
     cfg.total_to_be_processed = 0
 
-    # Check the inbox file directories and create the missing ones.
-    check_and_create_directories()
+    if (
+        cfg.config[cfg.DCR_CFG_PDF2IMAGE_TYPE]
+        == cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG
+    ):
+        cfg.document_child_file_type = FILE_TYPE_PNG
+    else:
+        cfg.document_child_file_type = FILE_TYPE_JPG
+
+    # Check the inbox file directories.
+    check_directories()
 
     dbt = Table(db.DBT_DOCUMENT, cfg.metadata, autoload_with=cfg.engine)
 
     with cfg.engine.connect() as conn:
         rows = conn.execute(
-            select(dbt.c.file_name, dbt.c.id, dbt.c.status)
+            select(
+                dbt.c.file_name,
+                dbt.c.file_type,
+                dbt.c.id,
+                dbt.c.inbox_accepted_abs_name,
+                dbt.c.status,
+                dbt.c.stem_name,
+            )
             .where(
                 dbt.c.status.in_(
                     [
@@ -157,9 +175,14 @@ def convert_pdf_2_image() -> None:
 
         for row in rows:
             cfg.total_to_be_processed += 1
+            cfg.document_file_name_accepted_abs = os.path.join(
+                row.inbox_accepted_abs_name,
+                row.stem_name + "_" + str(row.id) + "." + row.file_type,
+            )
             cfg.document_id = row.id
-            cfg.file_name = row.file_name
             cfg.document_status = row.status
+            cfg.document_inbox_accepted_abs_name = row.inbox_accepted_abs_name
+            cfg.document_stem_name = row.stem_name
 
             db.update_document_status(
                 {
@@ -180,6 +203,8 @@ def convert_pdf_2_image() -> None:
 
             convert_pdf_2_image_file()
 
+        conn.close()
+
     utils.progress_msg(
         f"Number documents to be processed:  {cfg.total_to_be_processed:6d}"
     )
@@ -195,10 +220,13 @@ def convert_pdf_2_image() -> None:
             f"Number documents converted:        {cfg.total_ok_processed:6d}"
         )
         utils.progress_msg(
+            f"Number documents generated:        {cfg.total_generated:6d}"
+        )
+        utils.progress_msg(
             f"Number documents erroneous:        {cfg.total_erroneous:6d}"
         )
         utils.progress_msg(
-            "The involved pdf documents in the file directory "
+            "The involved 'pdf' documents in the file directory "
             + "'inbox_accepted' are converted to an image format "
             + "for further processing",
         )
@@ -210,10 +238,99 @@ def convert_pdf_2_image() -> None:
 # Convert pdf documents to image files (step: p_2_i).
 # -----------------------------------------------------------------------------
 def convert_pdf_2_image_file() -> None:
-    """Convert scanned image pdf documents to image files.
+    """Convert scanned image pdf documents to image files."""
+    try:
+        # Convert the 'pdf' document
+        images = pdf2image.convert_from_path(
+            cfg.document_file_name_accepted_abs
+        )
 
-    TBD
-    """
+        # Store the image pages
+        child_no = 0
+        for img in images:
+            try:
+                child_no = +1
+
+                cfg.document_child_stem_name = (
+                    cfg.document_file_name
+                    + "_"
+                    + str(cfg.document_id)
+                    + "_"
+                    + str(child_no)
+                )
+                cfg.document_child_file_name = (
+                    cfg.document_child_stem_name
+                    + "."
+                    + cfg.document_child_file_type
+                )
+                cfg.document_child_file_name_abs = os.path.join(
+                    cfg.document_inbox_accepted_abs_name,
+                    cfg.document_child_file_name,
+                )
+
+                img.save(
+                    cfg.document_child_file_name_abs,
+                    cfg.config[cfg.DCR_CFG_PDF2IMAGE_TYPE],
+                )
+
+                initialise_document_child()
+
+                cfg.total_generated += 1
+            except OSError as err:
+                cfg.total_erroneous += 1
+                action: str = (
+                    cfg.JOURNAL_ACTION_21_902.replace(
+                        "{child_no}", str(child_no)
+                    )
+                    .replace("{file_name}", cfg.document_child_file_name)
+                    .replace("{error_code}", str(err.errno))
+                    .replace("{error_msg}", err.strerror)
+                )
+                db.update_document_status(
+                    {
+                        db.DBC_STATUS: cfg.STATUS_TESSERACT_PDF_ERROR,
+                    },
+                    {
+                        db.DBC_ACTION_CODE: action[0:7],
+                        db.DBC_ACTION_TEXT: action[7:],
+                        db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                        db.DBC_MODULE_NAME: __name__,
+                    },
+                )
+
+            # Document successfully converted to image format
+            cfg.total_ok_processed += 1
+
+            action: str = cfg.JOURNAL_ACTION_21_002.replace(
+                "{child_no}", str(child_no)
+            )
+            db.update_document_status(
+                {
+                    db.DBC_STATUS: cfg.STATUS_TESSERACT_PDF_END,
+                },
+                {
+                    db.DBC_ACTION_CODE: action[0:7],
+                    db.DBC_ACTION_TEXT: action[7:],
+                    db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                    db.DBC_MODULE_NAME: __name__,
+                },
+            )
+    except PDFPopplerTimeoutError as err:
+        cfg.total_erroneous += 1
+        action: str = cfg.JOURNAL_ACTION_21_901.replace(
+            "{file_name}", cfg.document_file_name_accepted_abs
+        ).replace("{error_msg}", str(err))
+        db.update_document_status(
+            {
+                db.DBC_STATUS: cfg.STATUS_TESSERACT_PDF_ERROR,
+            },
+            {
+                db.DBC_ACTION_CODE: action[0:7],
+                db.DBC_ACTION_TEXT: action[7:],
+                db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+                db.DBC_MODULE_NAME: __name__,
+            },
+        )
 
 
 # -----------------------------------------------------------------------------
@@ -255,6 +372,125 @@ def create_directory(directory_type: str, directory_name: str) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Initialise a new child document in the database and in the journal.
+# -----------------------------------------------------------------------------
+def initialise_document_child() -> None:
+    """Initialise a new child document in the database and in the journal.
+
+    Create an entry in each of the two database tables document and journal.
+    """
+    cfg.logger.debug(cfg.LOGGER_START)
+
+    if cfg.is_check_duplicates:
+        sha256 = utils.get_sha256(cfg.document_child_file_name_abs)
+    else:
+        sha256 = None
+
+    document_id = db.insert_dbt_row(
+        db.DBT_DOCUMENT,
+        {
+            db.DBC_DOCUMENT_ID_PARENT: cfg.document_id,
+            db.DBC_FILE_NAME: cfg.document_child_file_name,
+            db.DBC_FILE_TYPE: cfg.document_child_file_type,
+            db.DBC_INBOX_ABS_NAME: cfg.document_inbox_accepted_abs_name,
+            db.DBC_RUN_ID: cfg.run_run_id,
+            db.DBC_SHA256: sha256,
+            db.DBC_STATUS: cfg.STATUS_TESSERACT_READY,
+            db.DBC_STEM_NAME: cfg.document_child_stem_name,
+        },
+    )
+
+    db.insert_dbt_row(
+        db.DBT_JOURNAL,
+        {
+            db.DBC_ACTION_CODE: cfg.JOURNAL_ACTION_21_003[0:7],
+            db.DBC_ACTION_TEXT: cfg.JOURNAL_ACTION_21_003[7:],
+            db.DBC_DOCUMENT_ID: document_id,
+            db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+            db.DBC_MODULE_NAME: __name__,
+            db.DBC_RUN_ID: cfg.run_run_id,
+        },
+    )
+
+    cfg.logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Initialise a new document in the database and in the journal.
+# -----------------------------------------------------------------------------
+def initialise_document_inbox(file: pathlib.Path) -> None:
+    """Initialise a new document in the database and in the journal.
+
+    Analyses the file name and creates an entry in each of the two database
+    tables document and journal.
+
+    Args:
+        file (pathlib.Path): File.
+    """
+    cfg.logger.debug(cfg.LOGGER_START)
+
+    cfg.document_file_extension = file.suffix[1:]
+    cfg.document_file_name = file.name
+    cfg.document_file_name_abs = os.path.join(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX], cfg.document_file_name
+    )
+    cfg.document_stem_name = pathlib.PurePath(file).stem
+    cfg.document_file_type = file.suffix[1:].lower()
+
+    if cfg.is_check_duplicates:
+        cfg.document_sha256 = utils.get_sha256(cfg.document_file_name_abs)
+    else:
+        cfg.document_sha256 = None
+
+    cfg.document_id = db.insert_dbt_row(
+        db.DBT_DOCUMENT,
+        {
+            db.DBC_FILE_NAME: cfg.document_file_name,
+            db.DBC_FILE_TYPE: cfg.document_file_type,
+            db.DBC_INBOX_ABS_NAME: str(
+                pathlib.Path(cfg.directory_inbox).absolute()
+            ),
+            db.DBC_RUN_ID: cfg.run_run_id,
+            db.DBC_SHA256: cfg.document_sha256,
+            db.DBC_STATUS: cfg.STATUS_START_INBOX,
+            db.DBC_STEM_NAME: cfg.document_stem_name,
+        },
+    )
+
+    cfg.document_file_name_accepted_abs = os.path.join(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED],
+        cfg.document_stem_name
+        + "_"
+        + str(cfg.document_id)
+        + "."
+        + cfg.document_file_type,
+    )
+
+    cfg.document_file_name_rejected_abs = os.path.join(
+        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED],
+        cfg.document_stem_name
+        + "_"
+        + str(cfg.document_id)
+        + "."
+        + cfg.document_file_type,
+    )
+
+    db.insert_dbt_row(
+        db.DBT_JOURNAL,
+        {
+            db.DBC_ACTION_CODE: cfg.JOURNAL_ACTION_01_001[0:7],
+            db.DBC_ACTION_TEXT: cfg.JOURNAL_ACTION_01_001[7:],
+            db.DBC_DOCUMENT_ID: cfg.document_id,
+            db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
+            db.DBC_MODULE_NAME: __name__,
+            db.DBC_RUN_ID: cfg.run_run_id,
+        },
+    )
+
+    cfg.logger.debug(cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Prepare a new pdf document for further processing..
 # -----------------------------------------------------------------------------
 def prepare_pdf() -> None:
@@ -263,10 +499,7 @@ def prepare_pdf() -> None:
 
     try:
         extracted_text = "".join(
-            [
-                page.get_text()
-                for page in fitz.open(utils.get_file_name_inbox())
-            ]
+            [page.get_text() for page in fitz.open(cfg.document_file_name_abs)]
         )
 
         if bool(extracted_text):
@@ -291,11 +524,11 @@ def prepare_pdf() -> None:
                     db.DBC_MODULE_NAME: __name__,
                 },
             ),
-            utils.get_file_name_inbox_accepted(),
+            cfg.document_file_name_accepted_abs,
         )
     except RuntimeError as err:
         action: str = cfg.JOURNAL_ACTION_01_904.replace(
-            "{source_file}", utils.get_file_name_inbox()
+            "{source_file}", cfg.document_file_name_abs
         ).replace("{error_msg}", str(err))
         process_inbox_rejected(
             db.update_document_status(
@@ -334,7 +567,7 @@ def process_inbox_accepted(
     cfg.logger.debug(cfg.LOGGER_START)
 
     try:
-        shutil.move(utils.get_file_name_inbox(), target_file_name)
+        shutil.move(cfg.document_file_name_abs, target_file_name)
 
         # pylint: disable=pointless-statement
         update_document_status
@@ -344,7 +577,7 @@ def process_inbox_accepted(
         # pylint: disable=expression-not-assigned
         action: str = (
             cfg.JOURNAL_ACTION_01_905.replace(
-                "{source_file}", utils.get_file_name_inbox()
+                "{source_file}", cfg.document_file_name_abs
             )
             .replace("{error_code}", str(err.errno))
             .replace("{error_msg}", err.strerror)
@@ -369,7 +602,7 @@ def process_inbox_accepted(
         # pylint: disable=expression-not-assigned
         action: str = (
             cfg.JOURNAL_ACTION_01_902.replace(
-                "{source_file}", utils.get_file_name_inbox()
+                "{source_file}", cfg.document_file_name_abs
             )
             .replace("{target_file}", target_file_name)
             .replace("{error_code}", str(err.errno))
@@ -389,56 +622,6 @@ def process_inbox_accepted(
                 db.DBC_MODULE_NAME: __name__,
             },
         ),
-
-    cfg.logger.debug(cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Initialise a new document in the database and in the journal.
-# -----------------------------------------------------------------------------
-def process_inbox_document_initial(file: pathlib.Path) -> None:
-    """Initialise a new document in the database and in the journal.
-
-    Analyses the file name and creates an entry in each of the two database
-    tables document and journal.
-
-    Args:
-        file (pathlib.Path): File.
-    """
-    cfg.logger.debug(cfg.LOGGER_START)
-
-    cfg.file_extension = file.suffix[1:]
-    cfg.file_name = file.name
-    cfg.stem_name = pathlib.PurePath(file).stem
-    cfg.file_type = file.suffix[1:].lower()
-    cfg.sha256 = utils.get_sha256(utils.get_file_name_inbox())
-
-    cfg.document_id = db.insert_dbt_row(
-        db.DBT_DOCUMENT,
-        {
-            db.DBC_FILE_NAME: cfg.file_name,
-            db.DBC_FILE_TYPE: cfg.file_type,
-            db.DBC_INBOX_ABS_NAME: str(
-                pathlib.Path(cfg.directory_inbox).absolute()
-            ),
-            db.DBC_RUN_ID: cfg.run_run_id,
-            db.DBC_SHA256: cfg.sha256,
-            db.DBC_STATUS: cfg.STATUS_START_INBOX,
-            db.DBC_STEM_NAME: cfg.stem_name,
-        },
-    )
-
-    db.insert_dbt_row(
-        db.DBT_JOURNAL,
-        {
-            db.DBC_ACTION_CODE: cfg.JOURNAL_ACTION_01_001[0:7],
-            db.DBC_ACTION_TEXT: cfg.JOURNAL_ACTION_01_001[7:],
-            db.DBC_DOCUMENT_ID: cfg.document_id,
-            db.DBC_FUNCTION_NAME: inspect.stack()[0][3],
-            db.DBC_MODULE_NAME: __name__,
-            db.DBC_RUN_ID: cfg.run_run_id,
-        },
-    )
 
     cfg.logger.debug(cfg.LOGGER_END)
 
@@ -480,11 +663,14 @@ def process_inbox_files() -> None:
 
             cfg.total_to_be_processed += 1
 
-            process_inbox_document_initial(file)
+            initialise_document_inbox(file)
 
-            file_name = db.select_document_file_name_sha256(
-                cfg.document_id, cfg.sha256
-            )
+            if cfg.is_check_duplicates:
+                file_name = db.select_document_file_name_sha256(
+                    cfg.document_id, cfg.document_sha256
+                )
+            else:
+                file_name = None
 
             if file_name is not None:
                 action: str = cfg.JOURNAL_ACTION_21_901.replace(
@@ -508,9 +694,9 @@ def process_inbox_files() -> None:
                         },
                     ),
                 )
-            elif cfg.file_type == FILE_TYPE_PDF:
+            elif cfg.document_file_type == FILE_TYPE_PDF:
                 prepare_pdf()
-            elif cfg.file_type in FILE_TYPE_PANDOC:
+            elif cfg.document_file_type in FILE_TYPE_PANDOC:
                 process_inbox_accepted(
                     db.update_document_status(
                         {
@@ -528,9 +714,9 @@ def process_inbox_files() -> None:
                             db.DBC_MODULE_NAME: __name__,
                         },
                     ),
-                    utils.get_file_name_inbox_accepted(),
+                    cfg.document_file_name_accepted_abs,
                 )
-            elif cfg.file_type in FILE_TYPE_TESSERACT:
+            elif cfg.document_file_type in FILE_TYPE_TESSERACT:
                 process_inbox_accepted(
                     db.update_document_status(
                         {
@@ -548,11 +734,11 @@ def process_inbox_files() -> None:
                             db.DBC_MODULE_NAME: __name__,
                         },
                     ),
-                    utils.get_file_name_inbox_accepted(),
+                    cfg.document_file_name_accepted_abs,
                 )
             else:
                 action: str = cfg.JOURNAL_ACTION_01_901.replace(
-                    "{extension}", cfg.file_extension
+                    "{extension}", cfg.document_file_extension
                 )
                 process_inbox_rejected(
                     db.update_document_status(
@@ -612,7 +798,7 @@ def process_inbox_rejected(
     try:
         cfg.total_erroneous += 1
         shutil.move(
-            utils.get_file_name_inbox(), utils.get_file_name_inbox_rejected()
+            cfg.document_file_name_abs, cfg.document_file_name_rejected_abs
         )
 
         # pylint: disable=pointless-statement
@@ -623,7 +809,7 @@ def process_inbox_rejected(
         # pylint: disable=expression-not-assigned
         action: str = (
             cfg.JOURNAL_ACTION_01_905.replace(
-                "{source_file}", utils.get_file_name_inbox()
+                "{source_file}", cfg.document_file_name_abs
             )
             .replace("{error_code}", str(err.errno))
             .replace("{error_msg}", err.strerror)
@@ -642,14 +828,14 @@ def process_inbox_rejected(
                 db.DBC_MODULE_NAME: __name__,
             },
         ),
-        remove_optional_file(utils.get_file_name_inbox_rejected())
+        remove_optional_file(cfg.document_file_name_rejected_abs)
     except shutil.Error as err:
         # pylint: disable=expression-not-assigned
         action: str = (
             cfg.JOURNAL_ACTION_01_902.replace(
-                "{source_file}", utils.get_file_name_inbox()
+                "{source_file}", cfg.document_file_name_abs
             )
-            .replace("{target_file}", utils.get_file_name_inbox_rejected())
+            .replace("{target_file}", cfg.document_file_name_rejected_abs)
             .replace("{error_code}", str(err.errno))
             .replace("{error_msg}", err.strerror)
         )

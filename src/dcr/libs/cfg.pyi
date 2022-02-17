@@ -13,6 +13,7 @@ from sqlalchemy.engine import Engine
 # Global Constants.
 # -----------------------------------------------------------------------------
 DCR_ARGV_0: str
+
 DCR_CFG_DATABASE_FILE: str
 DCR_CFG_DATABASE_URL: str
 DCR_CFG_DCR_VERSION: str
@@ -20,6 +21,10 @@ DCR_CFG_DIRECTORY_INBOX: str
 DCR_CFG_DIRECTORY_INBOX_ACCEPTED: str
 DCR_CFG_DIRECTORY_INBOX_REJECTED: str
 DCR_CFG_FILE: str
+DCR_CFG_IGNORE_DUPLICATES: str
+DCR_CFG_PDF2IMAGE_TYPE: str
+DCR_CFG_PDF2IMAGE_TYPE_JPEG: str
+DCR_CFG_PDF2IMAGE_TYPE_PNG: str
 DCR_CFG_SECTION: str
 
 FILE_ENCODING_DEFAULT: str
@@ -38,7 +43,9 @@ JOURNAL_ACTION_11_004: str
 JOURNAL_ACTION_11_005: str
 JOURNAL_ACTION_21_001: str
 JOURNAL_ACTION_21_002: str
+JOURNAL_ACTION_21_003: str
 JOURNAL_ACTION_21_901: str
+JOURNAL_ACTION_21_902: str
 
 LOCALE: str
 LOGGER_CFG_FILE: str
@@ -73,6 +80,7 @@ STATUS_START: str
 STATUS_START_INBOX: str
 STATUS_START_PDF2IMAGE: str
 STATUS_TESSERACT_ERROR: str
+STATUS_TESSERACT_PDF_END: str
 STATUS_TESSERACT_PDF_ERROR: str
 STATUS_TESSERACT_PDF_READY: str
 STATUS_TESSERACT_READY: str
@@ -90,26 +98,39 @@ config: Dict[str, PathLike[str] | str]
 directory_inbox: PathLike[str] | str
 directory_inbox_accepted: PathLike[str] | str
 directory_inbox_rejected: PathLike[str] | str
+
+document_child_file_name: str
+document_child_file_name_abs: str
+document_child_file_type: str
+document_child_stem_name: str
+document_file_extension: str
+document_file_name: str
+document_file_name_abs: str
+document_file_name_accepted_abs: str
+document_file_name_rejected_abs: str
+document_file_type: str
 document_id: sqlalchemy.Integer
+document_inbox_accepted_abs_name: str
+document_sha256: str
 document_status: str
+document_stem_name: str
 
 engine: Engine
 
-file_extension: str
-file_name: str
-file_type: str
+is_check_duplicates: bool
 
 logger: logging.Logger
+
 metadata: MetaData | None
+
+pdf2image_type: str
 
 run_action: str
 run_id: sqlalchemy.Integer
 run_run_id: sqlalchemy.Integer
 
-sha256: str
-stem_name: str
-
 total_erroneous: int
+total_generated: int
 total_ok_processed: int
 total_rejected: int
 total_status_error: int

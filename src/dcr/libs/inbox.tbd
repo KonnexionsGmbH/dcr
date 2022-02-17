@@ -95,15 +95,15 @@ def process_inbox_pandoc() -> None:
 
     target_file_accepted = os.path.join(
         cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED],
-        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
+        cfg.document_stem_name + "_" + str(cfg.document_id) + "." + cfg.document_file_type,
     )
     target_file_rejected = os.path.join(
         cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED],
-        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
+        cfg.document_stem_name + "_" + str(cfg.document_id) + "." + cfg.document_file_type,
     )
     target_file_pdf = os.path.join(
         cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED],
-        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.FILE_TYPE_PDF,
+        cfg.document_stem_name + "_" + str(cfg.document_id) + "." + cfg.FILE_TYPE_PDF,
     )
 
     try:
