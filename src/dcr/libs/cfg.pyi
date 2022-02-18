@@ -16,6 +16,18 @@ DCR_ARGV_0: str
 
 DCR_CFG_DATABASE_FILE: str
 DCR_CFG_DATABASE_URL: str
+DCR_CFG_DB_CONNECTION_PORT: str
+DCR_CFG_DB_CONNECTION_PREFIX: str
+DCR_CFG_DB_CONTAINER_PORT: str
+DCR_CFG_DB_DATABASE: str
+DCR_CFG_DB_DATABASE_ADMIN: str
+DCR_CFG_DB_DIALECT: str
+DCR_CFG_DB_HOST: str
+DCR_CFG_DB_PASSWORD: str
+DCR_CFG_DB_PASSWORD_ADMIN: str
+DCR_CFG_DB_SCHEMA: str
+DCR_CFG_DB_USER: str
+DCR_CFG_DB_USER_ADMIN: str
 DCR_CFG_DCR_VERSION: str
 DCR_CFG_DIRECTORY_INBOX: str
 DCR_CFG_DIRECTORY_INBOX_ACCEPTED: str
@@ -26,8 +38,11 @@ DCR_CFG_PDF2IMAGE_TYPE: str
 DCR_CFG_PDF2IMAGE_TYPE_JPEG: str
 DCR_CFG_PDF2IMAGE_TYPE_PNG: str
 DCR_CFG_SECTION: str
+DCR_CFG_VERBOSE: str
 
 FILE_ENCODING_DEFAULT: str
+
+INFORMATION_NOT_YET_AVAILABLE: str
 
 JOURNAL_ACTION_01_001: str
 JOURNAL_ACTION_01_901: str
@@ -71,9 +86,9 @@ STATUS_PANDOC_READY: str
 STATUS_PARSER_ERROR: str
 STATUS_PARSER_READY: str
 STATUS_REJECTED_ERROR: str
-STATUS_REJECTED_FILE_DUPLICATE: str
+STATUS_REJECTED_FILE_DUPL: str
 STATUS_REJECTED_FILE_ERROR: str
-STATUS_REJECTED_FILE_EXTENSION: str
+STATUS_REJECTED_FILE_EXT: str
 STATUS_REJECTED_FILE_PERMISSION: str
 STATUS_REJECTED_NO_PDF_FORMAT: str
 STATUS_START: str
@@ -95,17 +110,22 @@ Columns: TypeAlias = Dict[str, Union[PathLike[str], sqlalchemy.Integer, str]]
 # -----------------------------------------------------------------------------
 config: Dict[str, PathLike[str] | str]
 
+db_current_database: str
+db_current_user: str
+
 directory_inbox: PathLike[str] | str
 directory_inbox_accepted: PathLike[str] | str
 directory_inbox_rejected: PathLike[str] | str
 
 document_child_file_name: str
 document_child_file_name_abs: str
+document_child_file_name_orig: str
 document_child_file_type: str
+document_child_no: int
 document_child_stem_name: str
 document_file_extension: str
 document_file_name: str
-document_file_name_abs: str
+document_file_name_abs_orig: str
 document_file_name_accepted_abs: str
 document_file_name_rejected_abs: str
 document_file_type: str
@@ -114,10 +134,12 @@ document_inbox_accepted_abs_name: str
 document_sha256: str
 document_status: str
 document_stem_name: str
+document_stem_name_orig: str
 
 engine: Engine
 
-is_check_duplicates: bool
+is_ignore_duplicates: bool
+is_verbose: bool
 
 logger: logging.Logger
 

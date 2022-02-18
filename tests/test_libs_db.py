@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.db."""
+"""Testing Module libs.db.orm."""
 import shutil
 
 import libs.cfg
@@ -29,7 +29,7 @@ def test_check_db_up_to_date_wrong_version(fxtr_new_db_no_inbox):
     libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION] = "0.0.0"
 
     with pytest.raises(SystemExit) as expt:
-        libs.db.check_db_up_to_date()
+        libs.db.orm.check_db_up_to_date()
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
@@ -40,23 +40,23 @@ def test_check_db_up_to_date_wrong_version(fxtr_new_db_no_inbox):
 # -----------------------------------------------------------------------------
 def test_select_version_unique_not_found(fxtr_new_db_no_inbox):
     """Test: No row in table version."""
-    libs.db.connect_db()
+    libs.db.orm.connect_db()
 
     with libs.cfg.engine.begin() as conn:
         version = Table(
-            libs.db.DBT_VERSION,
+            libs.db.orm.DBT_VERSION,
             libs.cfg.metadata,
             autoload_with=libs.cfg.engine,
         )
         conn.execute(delete(version))
 
     with pytest.raises(SystemExit) as expt:
-        libs.db.select_version_version_unique()
+        libs.db.orm.select_version_version_unique()
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
 
-    libs.db.disconnect_db()
+    libs.db.orm.disconnect_db()
 
 
 # -----------------------------------------------------------------------------
@@ -64,12 +64,10 @@ def test_select_version_unique_not_found(fxtr_new_db_no_inbox):
 # -----------------------------------------------------------------------------
 def test_select_version_unique_not_unique(fxtr_new_db_no_inbox):
     """Test: More than one row in table version."""
-    libs.db.insert_dbt_row(
-        libs.db.DBT_VERSION, [{libs.db.DBC_VERSION: "0.0.0"}]
-    )
+    libs.db.orm.insert_dbt_row(libs.db.orm.DBT_VERSION, {libs.db.orm.DBC_VERSION: "0.0.0"})
 
     with pytest.raises(SystemExit) as expt:
-        libs.db.select_version_version_unique()
+        libs.db.orm.select_version_version_unique()
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
@@ -93,14 +91,13 @@ def test_upgrade_no_database_file(fxtr_no_db):
 # -----------------------------------------------------------------------------
 @pytest.mark.issue
 def test_upgrade_up_to_date_already(fxtr_no_db):
-    """Test: Database is up to date."""
+    """Test: Database is up-to-date."""
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
 
     assert (
-        libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]
-        == libs.db.select_version_version_unique()
+        libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION] == libs.db.orm.select_version_version_unique()
     )
 
 

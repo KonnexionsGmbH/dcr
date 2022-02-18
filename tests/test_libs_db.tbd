@@ -20,5 +20,5 @@
 #
 #     assert (
 #         libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]
-#         == libs.db.select_version_version_unique()
+#         == libs.db.orm.select_version_version_unique()
 #     )

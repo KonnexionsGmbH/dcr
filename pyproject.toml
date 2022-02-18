@@ -1,7 +1,7 @@
 [tool.bandit]
 
 [tool.black]
-line-length = 79
+line-length = 100
 
 [tool.isort]
 float_to_top = true
@@ -52,13 +52,6 @@ name = "index"
 contents = [ "dcr.*" ]
 
 [tool.pydocstyle]
-
-[tool.pylint]
-# TBD
-#min-similarity-lines = 12
-#ignore-comments = true
-#ignore-docstrings = true
-#ignore-imports = true
 
 [tool.pytest.ini_options]
 console_output_style = "count"

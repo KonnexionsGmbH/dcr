@@ -2,8 +2,9 @@
 import datetime
 import hashlib
 import sys
+import traceback
 
-from libs import cfg
+import libs.cfg
 
 
 # -----------------------------------------------------------------------------
@@ -18,7 +19,7 @@ def get_sha256(file_name: str) -> str:
     Returns:
         str: SHA256 hash string.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     sha256_hash = hashlib.sha256()
 
@@ -27,13 +28,13 @@ def get_sha256(file_name: str) -> str:
         for byte_block in iter(lambda: file.read(4096), b""):
             sha256_hash.update(byte_block)
 
-    cfg.logger.debug(cfg.LOGGER_END)
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return sha256_hash.hexdigest()
 
 
 # -----------------------------------------------------------------------------
-# Terminate the application immediately.
+# Create a progress message.
 # -----------------------------------------------------------------------------
 def progress_msg(msg: str) -> None:
     """Create a progress message.
@@ -41,16 +42,60 @@ def progress_msg(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    final_msg: str = (
-        cfg.LOGGER_PROGRESS_UPDATE
-        + str(datetime.datetime.now())
-        + " : "
-        + msg
-        + "."
-    )
+    if libs.cfg.is_verbose:
+        final_msg: str = (
+            libs.cfg.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
+        )
 
-    print(final_msg)
-    cfg.logger.debug(final_msg)
+        print(final_msg)
+
+        libs.cfg.logger.debug(final_msg)
+
+
+# -----------------------------------------------------------------------------
+# Create a progress message: connected to database.
+# -----------------------------------------------------------------------------
+def progress_msg_connected() -> None:
+    """Create a progress message: connected to database."""
+    if libs.cfg.is_verbose:
+        print("")
+        progress_msg(
+            "User '"
+            + libs.cfg.db_current_user
+            + "' is now connected to database '"
+            + libs.cfg.db_current_database
+            + "'"
+        )
+
+
+# -----------------------------------------------------------------------------
+# Create a progress message: disconnected from database.
+# -----------------------------------------------------------------------------
+def progress_msg_disconnected() -> None:
+    """Create a progress message: disconnected from database."""
+    if libs.cfg.is_verbose:
+        print("")
+        libs.utils.progress_msg(
+            "User '"
+            + libs.cfg.db_current_user
+            + "' is now disconnected from database '"
+            + libs.cfg.db_current_database
+            + "'"
+        )
+
+
+# -----------------------------------------------------------------------------
+# Create a progress message with empty line before.
+# -----------------------------------------------------------------------------
+def progress_msg_empty_before(msg: str) -> None:
+    """Create a progress message.
+
+    Args:
+        msg (str): Progress message.
+    """
+    if libs.cfg.is_verbose:
+        print("")
+        progress_msg(msg)
 
 
 # -----------------------------------------------------------------------------
@@ -62,16 +107,18 @@ def terminate_fatal(error_msg: str) -> None:
     Args:
         error_msg (str): Error message.
     """
-    cfg.logger.debug(cfg.LOGGER_START)
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     print("")
-    print(cfg.LOGGER_FATAL_HEAD)
-    print(cfg.LOGGER_FATAL_HEAD, error_msg, cfg.LOGGER_FATAL_TAIL, sep="")
-    print(cfg.LOGGER_FATAL_HEAD)
-    cfg.logger.critical(
-        "%s%s%s", cfg.LOGGER_FATAL_HEAD, error_msg, cfg.LOGGER_FATAL_TAIL
+    print(libs.cfg.LOGGER_FATAL_HEAD)
+    print(libs.cfg.LOGGER_FATAL_HEAD, error_msg, libs.cfg.LOGGER_FATAL_TAIL, sep="")
+    print(libs.cfg.LOGGER_FATAL_HEAD)
+    libs.cfg.logger.critical(
+        "%s%s%s", libs.cfg.LOGGER_FATAL_HEAD, error_msg, libs.cfg.LOGGER_FATAL_TAIL
     )
 
-    cfg.logger.debug(cfg.LOGGER_END)
+    traceback.print_exc()
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     sys.exit(1)

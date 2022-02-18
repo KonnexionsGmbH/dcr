@@ -22,9 +22,7 @@ dcr.initialise_logger()
 # -----------------------------------------------------------------------------
 # Show the state of the inboxes after the test.
 # -----------------------------------------------------------------------------
-def show_inboxes_after(
-    inbox: str, inbox_accepted: str, inbox_rejected: str
-) -> None:
+def show_inboxes_after(inbox: str, inbox_accepted: str, inbox_rejected: str) -> None:
     """Show the state of the inboxes after the test.
 
     Args:
@@ -60,9 +58,7 @@ def test_file_extension_pdf_ok(fxtr_new_db_empty_inbox):
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    verify_inbox_accepted_after(
-        inbox, inbox_accepted, inbox_rejected, file_target
-    )
+    verify_inbox_accepted_after(inbox, inbox_accepted, inbox_rejected, file_target)
 
 
 # -----------------------------------------------------------------------------
@@ -87,9 +83,7 @@ def test_file_extension_pdf_wrong_format(fxtr_new_db_empty_inbox):
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    verify_inbox_rejected_after(
-        inbox, inbox_accepted, inbox_rejected, file_target
-    )
+    verify_inbox_rejected_after(inbox, inbox_accepted, inbox_rejected, file_target)
 
 
 # -----------------------------------------------------------------------------
@@ -114,9 +108,7 @@ def test_file_extension_tiff_ok(fxtr_new_db_empty_inbox):
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    verify_inbox_accepted_after(
-        inbox, inbox_accepted, inbox_rejected, file_target
-    )
+    verify_inbox_accepted_after(inbox, inbox_accepted, inbox_rejected, file_target)
 
 
 # -----------------------------------------------------------------------------
@@ -142,9 +134,7 @@ def test_file_extension_unknown_ok(fxtr_new_db_empty_inbox):
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    verify_inbox_rejected_after(
-        inbox, inbox_accepted, inbox_rejected, file_target
-    )
+    verify_inbox_rejected_after(inbox, inbox_accepted, inbox_rejected, file_target)
 
 
 # -----------------------------------------------------------------------------
@@ -166,15 +156,9 @@ def verify_inbox_after(
 
     # Verify the content of the inbox directories.
     assert len(os.listdir(inbox)) == 1, "after: inbox should contain one file"
-    assert os.path.isfile(
-        file_inbox
-    ), "after: inbox should contain source file"
-    assert not os.listdir(
-        inbox_accepted
-    ), "after: inbox_accepted should be empty"
-    assert not os.listdir(
-        inbox_rejected
-    ), "after: inbox_rejected should be empty"
+    assert os.path.isfile(file_inbox), "after: inbox should contain source file"
+    assert not os.listdir(inbox_accepted), "after: inbox_accepted should be empty"
+    assert not os.listdir(inbox_rejected), "after: inbox_rejected should be empty"
 
 
 # -----------------------------------------------------------------------------
@@ -196,15 +180,9 @@ def verify_inbox_accepted_after(
 
     # Verify the content of the inbox directories.
     assert not os.listdir(inbox), "after: inbox should be empty"
-    assert (
-        len(os.listdir(inbox_accepted)) == 1
-    ), "after: inbox_accepted should contain one file"
-    assert os.path.isfile(
-        file_target
-    ), "after: inbox_accepted should contain target file"
-    assert not os.listdir(
-        inbox_rejected
-    ), "after: inbox_rejected should be empty"
+    assert len(os.listdir(inbox_accepted)) == 1, "after: inbox_accepted should contain one file"
+    assert os.path.isfile(file_target), "after: inbox_accepted should contain target file"
+    assert not os.listdir(inbox_rejected), "after: inbox_rejected should be empty"
 
 
 # -----------------------------------------------------------------------------
@@ -226,15 +204,9 @@ def verify_inbox_rejected_after(
 
     # Verify the content of the inbox directories.
     assert not os.listdir(inbox), "after: inbox should be empty"
-    assert not os.listdir(
-        inbox_accepted
-    ), "after: inbox_accepted should be empty"
-    assert (
-        len(os.listdir(inbox_rejected)) == 1
-    ), "after: inbox_rejected should contain one file"
-    assert os.path.isfile(
-        file_target
-    ), "after: inbox_rejected should contain target file"
+    assert not os.listdir(inbox_accepted), "after: inbox_accepted should be empty"
+    assert len(os.listdir(inbox_rejected)) == 1, "after: inbox_rejected should contain one file"
+    assert os.path.isfile(file_target), "after: inbox_rejected should contain target file"
 
 
 # -----------------------------------------------------------------------------
@@ -265,14 +237,8 @@ def verify_inboxes_before(
 
     # Verify the content of the inbox directories.
     assert len(os.listdir(inbox)) == 1, "before: inbox should contain one file"
-    assert os.path.isfile(
-        file_inbox
-    ), "before: inbox should contain source file"
+    assert os.path.isfile(file_inbox), "before: inbox should contain source file"
     if os.path.isdir(inbox_accepted):
-        assert not os.listdir(
-            inbox_accepted
-        ), "before: inbox_accepted should be empty"
+        assert not os.listdir(inbox_accepted), "before: inbox_accepted should be empty"
     if os.path.isdir(inbox_rejected):
-        assert not os.listdir(
-            inbox_rejected
-        ), "before: inbox_rejected should be empty"
+        assert not os.listdir(inbox_rejected), "before: inbox_rejected should be empty"

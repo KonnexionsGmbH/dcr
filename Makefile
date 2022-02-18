@@ -17,7 +17,7 @@ dev: format lint pydocstyle tests
 ## docs:               Check the API docs, create and upload the user docs.
 docs: pydocstyle mkdocs
 ## format:             Format the code with isort and Black.
-format: isort black
+format: isort black docformatter
 ## lint:               Lint the code with Bandit, Flake8, Mypy and Pylint.
 lint: bandit flake8 mypy pylint
 ## tests:              Run all tests with pytest.
@@ -70,6 +70,15 @@ coveralls:          ## Run all the tests and upload the coverage data to coveral
 	pipenv run pytest --cov=src --cov-report=xml tests
 	pipenv run coveralls --service=github
 	@echo "Info **********  End:   coveralls ***********************************"
+
+# Formats docstrings to follow PEP 257
+# https://github.com/PyCQA/docformatter
+# Configuration file: none
+docformatter:       ## Format the docstrings with docformatter.
+	@echo "Info **********  Start: docformatter ********************************"
+	pipenv run docformatter --version
+	pipenv run docformatter --in-place -r src tests
+	@echo "Info **********  End:   docformatter ********************************"
 
 # Flake8: Your Tool For Style Guide Enforcement.
 # includes McCabe:      https://github.com/PyCQA/mccabe
@@ -151,7 +160,7 @@ pydocstyle:         ## Check the API documentation with pydocstyle.
 
 # Pylint is a tool that checks for errors in Python code.
 # https://github.com/PyCQA/pylint/
-# Configuration file: pyproject.toml
+# Configuration file: .pylintrc
 pylint:             ## Lint the code with Pylint.
 	@echo "Info **********  Start: Pylint **************************************"
 	pipenv run pylint --version

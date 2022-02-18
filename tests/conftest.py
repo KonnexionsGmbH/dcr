@@ -11,7 +11,7 @@ import os
 import shutil
 
 import libs.cfg
-import libs.db
+import libs.db.orm
 import pytest
 
 import dcr
@@ -20,6 +20,22 @@ import dcr
 # Constants & Globals.
 # -----------------------------------------------------------------------------
 dcr.initialise_logger()
+
+
+# -----------------------------------------------------------------------------
+# Fixture - Drop the database.
+# -----------------------------------------------------------------------------
+@pytest.fixture()
+def fxtr_drop_database():
+    """Fixture Factory: Drop the database."""
+
+    def drop_database():
+        """Fixture: Drop the database."""
+        dcr.get_config()
+
+        drop_database()
+
+    return drop_database
 
 
 # -----------------------------------------------------------------------------
@@ -65,13 +81,11 @@ def fxtr_mkdir_opt(fxtr_mkdir):
 # Fixture - New empty database and empty inbox.
 # -----------------------------------------------------------------------------
 @pytest.fixture()
-def fxtr_new_db_empty_inbox(
-    fxtr_mkdir, fxtr_remove, fxtr_remove_opt, fxtr_rmdir, fxtr_rmdir_opt
-):
+def fxtr_new_db_empty_inbox(fxtr_mkdir, fxtr_drop_database, fxtr_rmdir, fxtr_rmdir_opt):
     """Fixture: New empty database and empty inbox directories."""
     dcr.get_config()
 
-    fxtr_remove_opt(libs.db.get_db_file_name())
+    fxtr_drop_database()
 
     fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
     fxtr_mkdir(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
@@ -87,18 +101,18 @@ def fxtr_new_db_empty_inbox(
 
     fxtr_rmdir(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
 
-    fxtr_remove(libs.db.get_db_file_name())
+    fxtr_drop_database()
 
 
 # -----------------------------------------------------------------------------
 # Fixture - New empty database, but no inbox directory.
 # -----------------------------------------------------------------------------
 @pytest.fixture()
-def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
+def fxtr_new_db_no_inbox(fxtr_drop_database, fxtr_rmdir_opt):
     """Fixture: New empty database, but no inbox directory."""
     dcr.get_config()
 
-    fxtr_remove_opt(libs.db.get_db_file_name())
+    fxtr_drop_database()
 
     fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
 
@@ -109,64 +123,7 @@ def fxtr_new_db_no_inbox(fxtr_remove, fxtr_remove_opt, fxtr_rmdir_opt):
 
     yield
 
-    fxtr_remove(libs.db.get_db_file_name())
-
-
-# -----------------------------------------------------------------------------
-# Fixture - No database available.
-# -----------------------------------------------------------------------------
-@pytest.fixture()
-def fxtr_no_db(fxtr_remove_opt):
-    """Fixture: No database available."""
-    dcr.get_config()
-
-    fxtr_remove_opt(libs.db.get_db_file_name())
-
-    if libs.cfg.metadata is not None:
-        libs.cfg.metadata.clear()
-
-    yield
-
-    fxtr_remove_opt(libs.db.get_db_file_name())
-
-
-# -----------------------------------------------------------------------------
-# Fixture - Delete a file.
-# -----------------------------------------------------------------------------
-@pytest.fixture()
-def fxtr_remove():
-    """Fixture Factory: Delete a file."""
-
-    def _fxtr_remove(file_name: str):
-        """
-        Fixture: Delete a file.
-
-        Args:
-            file_name (str): File name including path.
-        """
-        os.remove(file_name)
-
-    return _fxtr_remove
-
-
-# -----------------------------------------------------------------------------
-# Fixture - Delete a file if existing.
-# -----------------------------------------------------------------------------
-@pytest.fixture()
-def fxtr_remove_opt(fxtr_remove):
-    """Fixture Factory: Delete a file if existing."""
-
-    def _fxtr_remove_opt(file_name: str):
-        """
-        Fixture: Delete a file if existing.
-
-        Args:
-            file_name (str): File name including path.
-        """
-        if os.path.isfile(file_name):
-            fxtr_remove(file_name)
-
-    return _fxtr_remove_opt
+    fxtr_drop_database()
 
 
 # -----------------------------------------------------------------------------
