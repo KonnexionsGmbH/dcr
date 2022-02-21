@@ -75,6 +75,8 @@ jobs:
         run: make pipenv-dev
       - name: Compile the Python code
         run: make compileall
+      - name: Create a PostgreSQL container
+        run: ./scripts/run_setup_postgresql.sh dev
       - name: Run pytest for writing better program
         run: make pytest
 
@@ -101,5 +103,7 @@ jobs:
         run: make pipenv-prod
       - name: Compile the Python code
         run: make compileall
+      - name: Create a PostgreSQL container
+        run: ./scripts/run_setup_postgresql.sh prod
       - name: Run pytest for writing better program
         run: make pytest-ci
