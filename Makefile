@@ -183,6 +183,7 @@ pytest-ci:          ## Run all tests with pytest after test tool installation.
 	pipenv install pytest
 	pipenv install pytest-cov
 	pipenv install pytest-deadfixtures
+	pipenv install pytest-helpers-namespace
 	pipenv install pytest-random-order
 	pipenv run pytest --version
 	pipenv run pytest --dead-fixtures tests
