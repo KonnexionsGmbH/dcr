@@ -27,6 +27,8 @@ tests: pytest
 help:
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
 
+export DCR_ENVIRONMENT_TYPE=test
+
 ifeq ($(OS),Windows_NT)
     export MYPYPATH=src\\dcr
     export PYTHONPATH=src\\dcr
@@ -41,7 +43,7 @@ endif
 bandit:             ## Find common security issues with Bandit.
 	@echo "Info **********  Start: Bandit **************************************"
 	pipenv run bandit --version
-	pipenv run bandit -r src
+	pipenv run bandit -c pyproject.toml -r src
 	@echo "Info **********  End:   Bandit **************************************"
 
 # The Uncompromising Code Formatter
@@ -176,16 +178,6 @@ pytest:             ## Run all tests with pytest.
 	pipenv run pytest --dead-fixtures tests
 	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v tests
 	@echo "Info **********  End:   pytest **************************************"
-pytest-first-issue: ## Run all tests with pytest until the first issue occurs.
-	@echo "Info **********  Start: pytest **************************************"
-	pipenv run pytest --version
-	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v -x tests
-	@echo "Info **********  End:   pytest **************************************"
-pytest-issue:       ## Run only the tests with pytest which are marked with 'issue'.
-	@echo "Info **********  Start: pytest **************************************"
-	pipenv run pytest --version
-	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -m issue --setup-show -v -x tests
-	@echo "Info **********  End:   pytest **************************************"
 pytest-ci:          ## Run all tests with pytest after test tool installation.
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv install pytest
@@ -195,6 +187,17 @@ pytest-ci:          ## Run all tests with pytest after test tool installation.
 	pipenv run pytest --version
 	pipenv run pytest --dead-fixtures tests
 	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v tests
+	@echo "Info **********  End:   pytest **************************************"
+pytest-first-issue: ## Run all tests with pytest until the first issue occurs.
+	@echo "Info **********  Start: pytest **************************************"
+	pipenv run pytest --version
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v -x tests
+	@echo "Info **********  End:   pytest **************************************"
+pytest-issue:       ## Run only the tests with pytest which are marked with 'issue'.
+	@echo "Info **********  Start: pytest **************************************"
+	pipenv run pytest --version
+	@echo DCR_ENVIRONMENT_TYPE=${DCR_ENVIRONMENT_TYPE}
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -m issue -s --setup-show -v -x tests
 	@echo "Info **********  End:   pytest **************************************"
 
 ## ============================================================================

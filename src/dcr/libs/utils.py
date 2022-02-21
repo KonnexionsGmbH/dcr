@@ -1,10 +1,12 @@
 """Module utils: Helper functions."""
 import datetime
 import hashlib
+import subprocess
 import sys
 import traceback
 
 import libs.cfg
+import libs.utils
 
 
 # -----------------------------------------------------------------------------
@@ -96,6 +98,24 @@ def progress_msg_empty_before(msg: str) -> None:
     if libs.cfg.is_verbose:
         print("")
         progress_msg(msg)
+
+
+# -----------------------------------------------------------------------------
+# Start the database Docker container.
+# -----------------------------------------------------------------------------
+def start_db_docker_container() -> None:
+    """Start the database Docker container."""
+    try:
+        subprocess.run(
+            ["docker", "start", libs.cfg.config[libs.cfg.DCR_CFG_DB_DOCKER_CONTAINER]], check=True
+        )
+    except subprocess.CalledProcessError as err:
+        libs.utils.terminate_fatal(
+            "The Docker Container '"
+            + libs.cfg.config[libs.cfg.DCR_CFG_DB_DOCKER_CONTAINER]
+            + "' cannot be started - error="
+            + str(err),
+        )
 
 
 # -----------------------------------------------------------------------------

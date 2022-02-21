@@ -7,6 +7,8 @@ from libs import cfg
 
 # from typing import List
 
+DB_DIALECT_POSTGRESQL: str
+
 DBC_ACTION: str
 DBC_ACTION_CODE: str
 DBC_ACTION_TEXT: str
@@ -56,6 +58,7 @@ def insert_dbt_row(
     table_name: str,
     columns: cfg.Columns,
 ) -> sqlalchemy.Integer: ...
+def prepare_connect_db() -> None: ...
 def select_dbt_id_last(table_name: str) -> int | sqlalchemy.Integer: ...
 def select_document_file_name_sha256(
     document_id: sqlalchemy.Integer, sha256: str

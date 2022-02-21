@@ -3,12 +3,22 @@
 import os
 from pathlib import Path
 
-import dcr
-
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-dcr.initialise_logger()
+# @pytest.mark.issue
+
+
+# -----------------------------------------------------------------------------
+# Test Function - fxtr_no_db_docker_container
+# -----------------------------------------------------------------------------
+def test_db_docker_container(fxtr_no_db_docker_container, fxtr_setup_logger_environment):
+    """Test: Pure functionality."""
+    fxtr_setup_logger_environment()
+
+    fxtr_no_db_docker_container()
+
+    fxtr_no_db_docker_container()
 
 
 # -----------------------------------------------------------------------------
@@ -31,26 +41,3 @@ def test_dir_ops(fxtr_mkdir, fxtr_mkdir_opt, fxtr_rmdir, fxtr_rmdir_opt):
     fxtr_rmdir(directory_name)
     # The directory no longer exists
     fxtr_rmdir_opt(directory_name)
-
-
-# -----------------------------------------------------------------------------
-# Test Function - fxtr_drop_database
-#                 fxtr_mkdir,
-#                 fxtr_rmdir_opt
-# -----------------------------------------------------------------------------
-def test_file_ops(fxtr_mkdir, fxtr_drop_database, fxtr_rmdir_opt):
-    """Test: Pure functionality."""
-    directory_name: os.PathLike = Path("tmp")
-    file_name: str = os.path.join(directory_name, "test_file")
-
-    # Create empty file directory.
-    fxtr_rmdir_opt(directory_name)
-    fxtr_mkdir(directory_name)
-    # The file does not yet exist.
-    fxtr_drop_database()
-    # The file will be created.
-    Path(file_name).touch()
-    fxtr_drop_database(file_name)
-    # The file will be created.
-    Path(file_name).touch()
-    fxtr_drop_database()

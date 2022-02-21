@@ -2,13 +2,15 @@
 
 rem ----------------------------------------------------------------------------
 rem
-rem run_test.bat: Document Content Recognition.
+rem run_dcr_prod.bat: Document Content Recognition - Production Environment.
 rem
 rem ----------------------------------------------------------------------------
 
 setlocal EnableDelayedExpansion
 
 set DCR_CHOICE_ACTION_DEFAULT=db_u
+set DCR_ENVIRONMENT_TYPE=prod
+set PYTHONPATH=src/dcr
 
 if ["%1"] EQU [""] (
     echo =========================================================
@@ -32,9 +34,9 @@ if ["%1"] EQU [""] (
 echo.
 echo Script %0 is now running
 
-if exist run_dcr_debug.log del /f /q run_dcr_debug.log
-set LOG_FILE=run_test.log
-if exist run_test.log      del /f /q run_test.log
+if exist run_dcr_prod_debug.log del /f /q run_dcr_prod_debug.log
+set LOG_FILE=run_dcr_prod.log
+if exist run_dcr_prod.log       del /f /q run_dcr_prod.log
 
 echo.
 echo You can find the run log in the file %LOG_FILE%
@@ -49,7 +51,9 @@ REM > %LOG_FILE% 2>&1 (
     echo -----------------------------------------------------------------------
     echo DCR - Document Content Recognition.
     echo -----------------------------------------------------------------------
-    echo CHOICE_ACTION : %DCR_CHOICE_ACTION%
+    echo CHOICE_ACTION    : %DCR_CHOICE_ACTION%
+    echo ENVIRONMENT_TYPE : %DCR_ENVIRONMENT_TYPE%
+    echo PYTHONPATH       : %PYTHONPATH%
     echo -----------------------------------------------------------------------
     echo:| TIME
     echo =======================================================================
@@ -60,10 +64,12 @@ REM > %LOG_FILE% 2>&1 (
         make pipenv-dev
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'make inst_dev' was aborted
+            exit -1073741510
         )
         make dev
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'make eco_dev' was aborted
+            exit -1073741510
         )
         goto normal_exit
     )
@@ -72,50 +78,33 @@ REM > %LOG_FILE% 2>&1 (
         make pipenv-prod
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'make prod' was aborted
+            exit -1073741510
         )
         make compileall
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'make prod' was aborted
+            exit -1073741510
         )
         goto normal_exit
     )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["all"]   set _CHOICE=%DCR_CHOICE_ACTION%
-
-    if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"]  (
-        if exist data\dcr.db del /f /q data\dcr.db
-        set _CHOICE=%DCR_CHOICE_ACTION%
-    )
-    if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"]  (
-        set _CHOICE=%DCR_CHOICE_ACTION%
-    )
-
-    if ["%DCR_CHOICE_ACTION%"] EQU ["all"]   (
-        if exist data\inbox rmdir /s /q data\inbox
-        mkdir data\inbox
-        xcopy /E /I tests\inbox data\inbox
-        set _CHOICE=%DCR_CHOICE_ACTION%
-    )
-
-    if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"]   (
-        if exist data\inbox rmdir /s /q data\inbox
-        mkdir data\inbox
-        xcopy /E /I tests\inbox data\inbox
-        set _CHOICE=%DCR_CHOICE_ACTION%
-    )
-    if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"]   (
-        set _CHOICE=%DCR_CHOICE_ACTION%
-    )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"]  set _CHOICE=%DCR_CHOICE_ACTION%
+    if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"]  set _CHOICE=%DCR_CHOICE_ACTION%
+    if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"]   set _CHOICE=%DCR_CHOICE_ACTION%
+    if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] set _CHOICE=%DCR_CHOICE_ACTION%
 
     if ["%_CHOICE%"] EQU ["%DCR_CHOICE_ACTION%"] (
         pipenv run python src\dcr\dcr.py %DCR_CHOICE_ACTION%
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
+            exit -1073741510
         )
         goto normal_exit
     )
 
-    echo Usage: "run_test[.bat] all | db_c | db_u | m_d | m_p | p_i | p_2_i"
+    echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | p_i | p_2_i"
+    exit -1073741510
 
     :normal_exit
     echo -----------------------------------------------------------------------

@@ -1,4 +1,5 @@
 [tool.bandit]
+skips = ["B404", "B603", "B607", "B608"]
 
 [tool.black]
 line-length = 100
@@ -56,5 +57,6 @@ contents = [ "dcr.*" ]
 [tool.pytest.ini_options]
 console_output_style = "count"
 markers = ["issue"]
+norecursedirs = "./tests/helpers"
 pythonpath = "./src/dcr/"
 testpaths = "./tests/"

@@ -5,31 +5,83 @@ Data definition related processing routines.
 Returns:
     [type]: None.
 """
-
 import libs.cfg
 import libs.db.orm
 import libs.utils
 import psycopg2
+
+# pylint: disable=no-name-in-module
+from psycopg2.errors import ObjectInUse
+from psycopg2.errors import OperationalError
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from psycopg2.extensions import connection
+from psycopg2.extensions import cursor
+
+
+# -----------------------------------------------------------------------------
+# Connect to the database.
+# -----------------------------------------------------------------------------
+def connect_db() -> connection:
+    """Connect to the database.
+
+    Returns:
+        psycopg2.connection: Database connection.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    libs.db.orm.prepare_connect_db()
+
+    conn = None
+
+    try:
+        conn = psycopg2.connect(
+            dbname=libs.cfg.db_current_database,
+            host=libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST],
+            password=libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD],
+            port=libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT],
+            user=libs.cfg.db_current_user,
+        )
+    except OperationalError as err:
+        libs.utils.terminate_fatal(
+            "No database connection possible - error=" + str(err),
+        )
+
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+    libs.utils.progress_msg_connected()
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+    return conn
 
 
 # -----------------------------------------------------------------------------
 # Connect to the admin database.
 # -----------------------------------------------------------------------------
-def connect_db_admin():
-    """Connect to the admin database."""
+def connect_db_admin() -> connection:
+    """Connect to the admin database.
+
+    Returns:
+        psycopg2.connection: Database connection.
+    """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE_ADMIN]
-    libs.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER_ADMIN]
+    prepare_connect_db_admin()
 
-    conn = psycopg2.connect(
-        dbname=libs.cfg.db_current_database,
-        host=libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST],
-        password=libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD_ADMIN],
-        port=libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT],
-        user=libs.cfg.db_current_user,
-    )
+    conn = None
+
+    try:
+        conn = psycopg2.connect(
+            dbname=libs.cfg.db_current_database,
+            host=libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST],
+            password=libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD_ADMIN],
+            port=libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT],
+            user=libs.cfg.db_current_user,
+        )
+    except OperationalError as err:
+        libs.utils.terminate_fatal(
+            "No database connection possible - error=" + str(err),
+        )
 
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
@@ -89,7 +141,7 @@ def create_database_postgresql() -> None:
         "The user '" + user + "' has now all privileges on database '" + database + "'"
     )
 
-    disconnect_db_admin(conn, cur)
+    disconnect_db(conn, cur)
 
     libs.db.orm.create_schema()
 
@@ -104,13 +156,15 @@ def create_database_postgresql() -> None:
 # -----------------------------------------------------------------------------
 # Disconnect the admin database.
 # -----------------------------------------------------------------------------
-def disconnect_db_admin(conn, cur) -> None:
+def disconnect_db(conn: connection|None, cur: cursor | None) -> None:
     """Disconnect the admin database."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    cur.close()
+    if cur is not None:
+        cur.close()
 
-    conn.close()
+    if conn is not None:
+        conn.close()
 
     libs.utils.progress_msg_disconnected()
 
@@ -152,15 +206,68 @@ def drop_database_postgresql() -> None:
 
     cur = conn.cursor()
 
-    cur.execute("DROP DATABASE IF EXISTS " + database)
+    try:
+        cur.execute("DROP DATABASE IF EXISTS " + database)
+    except ObjectInUse as err:
+        libs.utils.terminate_fatal("The database cannot be dropped - error=" + str(err))
+
     libs.utils.progress_msg("If existing, the database '" + database + "' has now been dropped")
 
     cur.execute("DROP USER IF EXISTS " + user)
     libs.utils.progress_msg("If existing, the user '" + user + "' has now been dropped")
 
-    disconnect_db_admin(conn, cur)
+    disconnect_db(conn, cur)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Prepare the database connection for administrators.
+# -----------------------------------------------------------------------------
+def prepare_connect_db_admin() -> None:
+    """Prepare the database connection for administrators."""
+    if libs.cfg.is_docker_container:
+        libs.utils.start_db_docker_container()
+
+    libs.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE_ADMIN]
+    libs.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER_ADMIN]
+
+
+# -----------------------------------------------------------------------------
+# Get the version number from the database table 'version'.
+# -----------------------------------------------------------------------------
+def select_version_version_unique(cur: cursor) -> str:
+    """Get the version number from the database table 'version'.
+
+    Args:
+        cur (cursor): The current database cursor.
+
+    Returns:
+        str: The version number found.
+    """
+    cur.execute(
+        "SELECT "
+        + libs.db.orm.DBC_VERSION
+        + " FROM "
+        + libs.cfg.config[libs.cfg.DCR_CFG_DB_SCHEMA]
+        + "."
+        + libs.db.orm.DBT_VERSION
+    )
+
+    current_version: str = ""
+
+    for row in cur.fetchall():
+        if current_version == "":
+            current_version = row[0]
+        else:
+            libs.utils.terminate_fatal(
+                "Column version in database table version not unique",
+            )
+
+    if current_version == "":
+        libs.utils.terminate_fatal("Column version in database table version not found")
+
+    return current_version
 
 
 # -----------------------------------------------------------------------------
@@ -174,27 +281,28 @@ def upgrade_database() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    connect_db_admin()
+    conn = connect_db()
+
+    cur = conn.cursor()
 
     libs.utils.progress_msg("Upgrade the database tables ...")
 
-    current_version: str = libs.db.orm.select_version_version_unique()
+    current_version: str = select_version_version_unique(cur)
 
     if current_version == libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]:
         libs.utils.progress_msg(
             "The database is already up to date, version number=" + current_version,
         )
     else:
-        while (
-            libs.db.orm.select_version_version_unique()
-            != libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]
-        ):
-            upgrade_database_version()
+        while select_version_version_unique(cur) != libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]:
+            upgrade_database_version(cur)
 
         libs.utils.progress_msg(
             "The database has been successfully upgraded, version number="
-            + libs.db.orm.select_version_version_unique(),
+            + select_version_version_unique(cur),
         )
+
+    disconnect_db(conn, cur)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -202,19 +310,21 @@ def upgrade_database() -> None:
 # -----------------------------------------------------------------------------
 # Upgrade the current database schema - from one version to the next.
 # -----------------------------------------------------------------------------
-def upgrade_database_version() -> None:
-    """Upgrade the current database schema - from one version to the next."""
+def upgrade_database_version(cur: cursor) -> None:
+    """Upgrade the current database schema - from one version to the next.
+
+    Args:
+        cur (cursor): The current database cursor.
+    """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    current_version: str = libs.db.orm.select_version_version_unique()
+    current_version: str = select_version_version_unique(cur)
 
     if current_version == "0.5.0":
-        libs.utils.progress_msg(
+        libs.utils.terminate_fatal(
             "An automatic upgrade of the database version is only "
             + "supported from version 1.0.0."
         )
-        libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-        return
 
     # TBD: Template for migration from version 1.0.0 to version x.x.x
     # if current_version == "0.5.0":

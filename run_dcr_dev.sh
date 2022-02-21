@@ -4,11 +4,12 @@ set -e
 
 # ----------------------------------------------------------------------------------
 #
-# run_test.sh: Document Content Recognition.
+# run_dcr_dev.sh: Document Content Recognition - Development Environment.
 #
 # ----------------------------------------------------------------------------------
 
 export DCR_CHOICE_ACTION_DEFAULT=db_u
+export DCR_ENVIRONMENT_TYPE=dev
 export PYTHONPATH=src/dcr
 
 if [ -z "$1" ]; then
@@ -30,9 +31,9 @@ fi
 echo ""
 echo "Script $0 is now running"
 
-rm -f run_dcr_debug.log
-export LOG_FILE=run_test.log
-rm -f run_test.log
+rm -f run_dcr_dev_debug.log
+export LOG_FILE=run_dcr_dev.log
+rm -f run_dcr_dev.log
 
 echo ""
 echo "You can find the run log in the file $LOG_FILE"
@@ -46,7 +47,9 @@ echo "Start $0"
 echo "------------------------------------------------------------------------------"
 echo "DCR - Document Content Recognition."
 echo "------------------------------------------------------------------------------"
-echo "CHOICE_ACTION : ${DCR_CHOICE_ACTION}"
+echo "CHOICE_ACTION    : ${DCR_CHOICE_ACTION}"
+echo "ENVIRONMENT_TYPE : ${DCR_ENVIRONMENT_TYPE}"
+echo "PYTHONPATH       : ${PYTHONPATH}"
 echo "------------------------------------------------------------------------------"
 date +"DATE TIME : %d.%m.%Y %H:%M:%S"
 echo "=============================================================================="
@@ -78,7 +81,7 @@ case "${DCR_CHOICE_ACTION}" in
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
-    echo "Usage: ./run_test.sh all | db_c | db_u | m_d | m_p | p_i | p_2_i"
+    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | p_i | p_2_i"
     ;;
 esac
 

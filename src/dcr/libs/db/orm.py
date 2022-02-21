@@ -24,6 +24,9 @@ from sqlalchemy import func
 from sqlalchemy import insert
 from sqlalchemy import select
 from sqlalchemy import update
+from sqlalchemy.engine import Connection
+from sqlalchemy.exc import InternalError
+from sqlalchemy.exc import OperationalError
 
 # -----------------------------------------------------------------------------
 # Global Constants.
@@ -96,8 +99,7 @@ def connect_db() -> None:
     """Connect to the database."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE]
-    libs.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER]
+    prepare_connect_db()
 
     try:
         libs.cfg.metadata = MetaData()
@@ -118,7 +120,18 @@ def connect_db() -> None:
             + "&password="
             + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD]
         )
-    except Error as err:
+
+        conn: Connection | None = None
+
+        try:
+            conn = libs.cfg.engine.connect()
+        except OperationalError as err:
+            libs.utils.terminate_fatal(
+                "No database connection possible - error=" + str(err),
+            )
+
+        conn.close()
+    except InternalError as err:
         libs.utils.terminate_fatal(
             "SQLAlchemy engine not accessible - error=" + str(err),
         )
@@ -591,6 +604,18 @@ def insert_dbt_row(
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return select_dbt_id_last(table_name)
+
+
+# -----------------------------------------------------------------------------
+# Prepare the database connection for normal users.
+# -----------------------------------------------------------------------------
+def prepare_connect_db() -> None:
+    """Prepare the database connection for normal users."""
+    if libs.cfg.is_docker_container:
+        libs.utils.start_db_docker_container()
+
+    libs.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE]
+    libs.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER]
 
 
 # -----------------------------------------------------------------------------

@@ -32,13 +32,23 @@ DCR_CFG_DCR_VERSION: str
 DCR_CFG_DIRECTORY_INBOX: str
 DCR_CFG_DIRECTORY_INBOX_ACCEPTED: str
 DCR_CFG_DIRECTORY_INBOX_REJECTED: str
+DCR_CFG_DB_DOCKER_CONTAINER: str
 DCR_CFG_FILE: str
 DCR_CFG_IGNORE_DUPLICATES: str
 DCR_CFG_PDF2IMAGE_TYPE: str
 DCR_CFG_PDF2IMAGE_TYPE_JPEG: str
 DCR_CFG_PDF2IMAGE_TYPE_PNG: str
 DCR_CFG_SECTION: str
+DCR_CFG_SECTION_DEV: str
+DCR_CFG_SECTION_PROD: str
+DCR_CFG_SECTION_TEST: str
 DCR_CFG_VERBOSE: str
+
+DCR_ENVIRONMENT_TYPE: str
+
+ENVIRONMENT_TYPE_DEV: str
+ENVIRONMENT_TYPE_PROD: str
+ENVIRONMENT_TYPE_TEST: str
 
 FILE_ENCODING_DEFAULT: str
 
@@ -100,6 +110,8 @@ STATUS_TESSERACT_PDF_ERROR: str
 STATUS_TESSERACT_PDF_READY: str
 STATUS_TESSERACT_READY: str
 
+VERBOSE_TRUE: str
+
 # -----------------------------------------------------------------------------
 # Global Type Definitions.
 # -----------------------------------------------------------------------------
@@ -137,7 +149,9 @@ document_stem_name: str
 document_stem_name_orig: str
 
 engine: Engine
+environment_type: str
 
+is_docker_container: bool
 is_ignore_duplicates: bool
 is_verbose: bool
 

@@ -10,6 +10,7 @@ import configparser
 import locale
 import logging
 import logging.config
+import os
 import sys
 from typing import List
 
@@ -25,7 +26,7 @@ import yaml
 # Load the command line arguments into memory.
 # -----------------------------------------------------------------------------
 def get_args(argv: List[str]) -> dict[str, bool]:
-    """Load the command line arguments into memory.
+    """Load the command line arguments.
 
     The command line arguments define the process steps to be executed.
     The valid arguments are:
@@ -88,65 +89,66 @@ def get_args(argv: List[str]) -> dict[str, bool]:
 
 
 # -----------------------------------------------------------------------------
-# Load the configuration parameters into memory.
+# Load the configuration parameters.
 # -----------------------------------------------------------------------------
 def get_config() -> None:
-    """Load the configuration parameters into memory.
+    """Load the configuration parameters.
 
     Loads the configuration parameters from the `setup.cfg` file under
-    the `DCR` section into memory.
+    the `DCR` sections.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     config_parser = configparser.ConfigParser()
     config_parser.read(libs.cfg.DCR_CFG_FILE)
 
+    libs.cfg.config.clear()
+
     for section in config_parser.sections():
         if section == libs.cfg.DCR_CFG_SECTION:
             for (key, value) in config_parser.items(section):
                 libs.cfg.config[key] = value
 
-    # -------------------------------------------------------------------------
-    # Parameter: ignore_duplicates
-    #
-    if libs.cfg.DCR_CFG_IGNORE_DUPLICATES not in libs.cfg.config:
-        libs.cfg.is_ignore_duplicates = True
-    elif libs.cfg.config[libs.cfg.DCR_CFG_IGNORE_DUPLICATES].lower() == "true":
-        libs.cfg.is_ignore_duplicates = True
-    else:
-        libs.cfg.is_ignore_duplicates = False
+    for section in config_parser.sections():
+        if section == libs.cfg.DCR_CFG_SECTION + "_" + libs.cfg.environment_type:
+            for (key, value) in config_parser.items(section):
+                libs.cfg.config[key] = value
 
-    # -------------------------------------------------------------------------
-    # Parameter: pdf2image_type
-    #
-    if libs.cfg.DCR_CFG_PDF2IMAGE_TYPE not in libs.cfg.config:
-        libs.cfg.pdf2image_type = libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
-    else:
-        libs.cfg.pdf2image_type = libs.cfg.config[libs.cfg.DCR_CFG_PDF2IMAGE_TYPE]
-        if libs.cfg.pdf2image_type not in [
-            libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG,
-            libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG,
-        ]:
-            libs.utils.terminate_fatal(
-                "Invalid configuration parameter value for parameter "
-                + "'pdf2image_type': '"
-                + libs.cfg.pdf2image_type
-                + "'"
-            )
-
-    # -------------------------------------------------------------------------
-    # Parameter: verbose
-    #
-    if libs.cfg.DCR_CFG_VERBOSE not in libs.cfg.config:
-        libs.cfg.is_verbose = True
-    elif libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE].lower() == "true":
-        libs.cfg.is_verbose = True
-    else:
-        libs.cfg.is_verbose = False
+    validate_config()
 
     libs.utils.progress_msg("The configuration parameters are checked and loaded")
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Load environment variables.
+# -----------------------------------------------------------------------------
+def get_environment() -> None:
+    """Load environment variables."""
+    try:
+        libs.cfg.environment_type = os.environ[libs.cfg.DCR_ENVIRONMENT_TYPE]
+    except KeyError:
+        libs.utils.terminate_fatal(
+            "The environment variable '" + libs.cfg.DCR_ENVIRONMENT_TYPE + "' is missing"
+        )
+
+    if libs.cfg.environment_type not in [
+        libs.cfg.ENVIRONMENT_TYPE_DEV,
+        libs.cfg.ENVIRONMENT_TYPE_PROD,
+        libs.cfg.ENVIRONMENT_TYPE_TEST,
+    ]:
+        libs.utils.terminate_fatal(
+            "The environment variable '"
+            + libs.cfg.DCR_ENVIRONMENT_TYPE
+            + "' has the invalid content '"
+            + libs.cfg.environment_type
+            + "'"
+        )
+
+    libs.utils.progress_msg(
+        "The run is performed in the environment '" + libs.cfg.environment_type + "'"
+    )
 
 
 # -----------------------------------------------------------------------------
@@ -185,10 +187,13 @@ def main(argv: List[str]) -> None:
 
     locale.setlocale(locale.LC_ALL, libs.cfg.LOCALE)
 
-    # Load the command line arguments into the memory.
+    # Load the environment variables.
+    get_environment()
+
+    # Load the command line arguments.
     args = get_args(argv)
 
-    # Load the configuration parameters into the memory.
+    # Load the configuration parameters.
     get_config()
 
     if args[libs.cfg.RUN_ACTION_CREATE_DB]:
@@ -284,6 +289,52 @@ def process_documents(args: dict[str, bool]) -> None:
     libs.db.orm.disconnect_db()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters.
+# -----------------------------------------------------------------------------
+def validate_config() -> None:
+    """Validate the configuration parameters."""
+    # -------------------------------------------------------------------------
+    # Parameter: db_docker_container
+    #
+    if libs.cfg.DCR_CFG_DB_DOCKER_CONTAINER not in libs.cfg.config:
+        libs.cfg.is_docker_container = False
+
+    # -------------------------------------------------------------------------
+    # Parameter: ignore_duplicates
+    #
+    if libs.cfg.DCR_CFG_IGNORE_DUPLICATES in libs.cfg.config:
+        if libs.cfg.config[libs.cfg.DCR_CFG_IGNORE_DUPLICATES].lower() == "true":
+            libs.cfg.is_ignore_duplicates = True
+
+    # -------------------------------------------------------------------------
+    # Parameter: pdf2image_type
+    #
+    if libs.cfg.DCR_CFG_PDF2IMAGE_TYPE not in libs.cfg.config:
+        libs.cfg.pdf2image_type = libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
+    else:
+        libs.cfg.pdf2image_type = libs.cfg.config[libs.cfg.DCR_CFG_PDF2IMAGE_TYPE]
+        if libs.cfg.pdf2image_type not in [
+            libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG,
+            libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG,
+        ]:
+            libs.utils.terminate_fatal(
+                "Invalid configuration parameter value for parameter "
+                + "'pdf2image_type': '"
+                + libs.cfg.pdf2image_type
+                + "'"
+            )
+
+    # -------------------------------------------------------------------------
+    # Parameter: verbose
+    #
+    if libs.cfg.DCR_CFG_VERBOSE in libs.cfg.config:
+        if libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE].lower() == "false":
+            libs.cfg.is_verbose = False
+        else:
+            libs.cfg.is_verbose = True
 
 
 # -----------------------------------------------------------------------------

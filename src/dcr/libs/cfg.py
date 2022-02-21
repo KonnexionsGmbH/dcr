@@ -22,6 +22,7 @@ DCR_CFG_DB_CONTAINER_PORT: str = "db_container_port"
 DCR_CFG_DB_DATABASE: str = "db_database"
 DCR_CFG_DB_DATABASE_ADMIN: str = "db_database_admin"
 DCR_CFG_DB_DIALECT: str = "db_dialect"
+DCR_CFG_DB_DOCKER_CONTAINER: str = "db_docker_container"
 DCR_CFG_DB_HOST: str = "db_host"
 DCR_CFG_DB_PASSWORD: str = "db_password"
 DCR_CFG_DB_PASSWORD_ADMIN: str = "db_password_admin"
@@ -38,7 +39,16 @@ DCR_CFG_PDF2IMAGE_TYPE: str = "pdf2image_type"
 DCR_CFG_PDF2IMAGE_TYPE_JPEG: str = "JPEG"
 DCR_CFG_PDF2IMAGE_TYPE_PNG: str = "PNG"
 DCR_CFG_SECTION: str = "dcr"
+DCR_CFG_SECTION_DEV: str = "dcr_dev"
+DCR_CFG_SECTION_PROD: str = "dcr_prod"
+DCR_CFG_SECTION_TEST: str = "dcr_test"
 DCR_CFG_VERBOSE: str = "verbose"
+
+DCR_ENVIRONMENT_TYPE: str = "DCR_ENVIRONMENT_TYPE"
+
+ENVIRONMENT_TYPE_DEV: str = "dev"
+ENVIRONMENT_TYPE_PROD: str = "prod"
+ENVIRONMENT_TYPE_TEST: str = "test"
 
 FILE_ENCODING_DEFAULT: str = "utf-8"
 
@@ -97,7 +107,6 @@ JOURNAL_ACTION_21_902: str = (
     + "- error: code='{error_code}' msg='{error_msg}'"
 )
 
-
 LOCALE: str = "en_US.UTF-8"
 LOGGER_CFG_FILE: str = "logging_cfg.yaml"
 LOGGER_END: str = "End"
@@ -136,6 +145,7 @@ STATUS_TESSERACT_PDF_ERROR: str = "tesseract_pdf_error"
 STATUS_TESSERACT_PDF_READY: str = "tesseract_pdf_ready"
 STATUS_TESSERACT_READY: str = "tesseract_ready"
 
+VERBOSE_TRUE: str = "true"
 
 # -----------------------------------------------------------------------------
 # Global Type Definitions.
@@ -174,8 +184,10 @@ document_status: str
 document_stem_name: str
 
 engine: Engine
+environment_type: str
 
-is_ignore_duplicates: bool
+is_docker_container: bool = True
+is_ignore_duplicates: bool = False
 is_verbose: bool = True
 
 logger: logging.Logger
