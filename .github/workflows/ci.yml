@@ -52,7 +52,7 @@ jobs:
       - name: Create a PostgreSQL container
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
-            ./scripts/run_setup_postgresql.sh prod
+            ./scripts/run_setup_postgresql.sh test
       - name: Publish the code coverage to coveralls.io
         run: make coveralls
 
@@ -82,7 +82,7 @@ jobs:
       - name: Create a PostgreSQL container
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
-            ./scripts/run_setup_postgresql.sh dev
+            ./scripts/run_setup_postgresql.sh test
       - name: Run pytest for writing better program
         run: make pytest
 
@@ -112,6 +112,6 @@ jobs:
       - name: Create a PostgreSQL container
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
-            ./scripts/run_setup_postgresql.sh prod
+            ./scripts/run_setup_postgresql.sh test
       - name: Run pytest for writing better program
         run: make pytest-ci
