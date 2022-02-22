@@ -1,4 +1,8 @@
-"""Library stub."""
+"""Library Stub.
+
+Returns:
+    [type]: None.
+"""
 import logging
 from os import PathLike
 from typing import Dict
@@ -6,8 +10,6 @@ from typing import TypeAlias
 from typing import Union
 
 import sqlalchemy
-from sqlalchemy import MetaData
-from sqlalchemy.engine import Engine
 
 # -----------------------------------------------------------------------------
 # Global Constants.
@@ -54,24 +56,6 @@ FILE_ENCODING_DEFAULT: str
 
 INFORMATION_NOT_YET_AVAILABLE: str
 
-JOURNAL_ACTION_01_001: str
-JOURNAL_ACTION_01_901: str
-JOURNAL_ACTION_01_902: str
-JOURNAL_ACTION_01_903: str
-JOURNAL_ACTION_01_904: str
-JOURNAL_ACTION_01_905: str
-JOURNAL_ACTION_01_906: str
-JOURNAL_ACTION_11_001: str
-JOURNAL_ACTION_11_002: str
-JOURNAL_ACTION_11_003: str
-JOURNAL_ACTION_11_004: str
-JOURNAL_ACTION_11_005: str
-JOURNAL_ACTION_21_001: str
-JOURNAL_ACTION_21_002: str
-JOURNAL_ACTION_21_003: str
-JOURNAL_ACTION_21_901: str
-JOURNAL_ACTION_21_902: str
-
 LOCALE: str
 LOGGER_CFG_FILE: str
 LOGGER_END: str
@@ -89,27 +73,6 @@ RUN_ACTION_PDF_2_IMAGE: str
 RUN_ACTION_PROCESS_INBOX: str
 RUN_ACTION_UPGRADE_DB: str
 
-STATUS_COMPLETED: str
-STATUS_END: str
-STATUS_PANDOC_ERROR: str
-STATUS_PANDOC_READY: str
-STATUS_PARSER_ERROR: str
-STATUS_PARSER_READY: str
-STATUS_REJECTED_ERROR: str
-STATUS_REJECTED_FILE_DUPL: str
-STATUS_REJECTED_FILE_ERROR: str
-STATUS_REJECTED_FILE_EXT: str
-STATUS_REJECTED_FILE_PERMISSION: str
-STATUS_REJECTED_NO_PDF_FORMAT: str
-STATUS_START: str
-STATUS_START_INBOX: str
-STATUS_START_PDF2IMAGE: str
-STATUS_TESSERACT_ERROR: str
-STATUS_TESSERACT_PDF_END: str
-STATUS_TESSERACT_PDF_ERROR: str
-STATUS_TESSERACT_PDF_READY: str
-STATUS_TESSERACT_READY: str
-
 VERBOSE_TRUE: str
 
 # -----------------------------------------------------------------------------
@@ -122,33 +85,37 @@ Columns: TypeAlias = Dict[str, Union[PathLike[str], sqlalchemy.Integer, str]]
 # -----------------------------------------------------------------------------
 config: Dict[str, PathLike[str] | str]
 
-db_current_database: str
-db_current_user: str
-
 directory_inbox: PathLike[str] | str
 directory_inbox_accepted: PathLike[str] | str
 directory_inbox_rejected: PathLike[str] | str
 
+document_child_directory_name: str
+document_child_directory_type: str
+document_child_error_code: str | None
 document_child_file_name: str
-document_child_file_name_abs: str
-document_child_file_name_orig: str
 document_child_file_type: str
-document_child_no: int
+document_child_id: sqlalchemy.Integer
+document_child_id_base: sqlalchemy.Integer | None
+document_child_id_parent: sqlalchemy.Integer | None
+document_child_next_step: str | None
+document_child_no: sqlalchemy.Integer
+document_child_sha256: str | None
+document_child_status: str
 document_child_stem_name: str
-document_file_extension: str
+
+document_directory_name: str
+document_directory_type: str
+document_error_code: str | None
 document_file_name: str
-document_file_name_abs_orig: str
-document_file_name_accepted_abs: str
-document_file_name_rejected_abs: str
 document_file_type: str
 document_id: sqlalchemy.Integer
-document_inbox_accepted_abs_name: str
-document_sha256: str
+document_id_base: sqlalchemy.Integer | None
+document_id_parent: sqlalchemy.Integer | None
+document_next_step: str | None
+document_sha256: str | None
 document_status: str
 document_stem_name: str
-document_stem_name_orig: str
 
-engine: Engine
 environment_type: str
 
 is_docker_container: bool
@@ -156,8 +123,6 @@ is_ignore_duplicates: bool
 is_verbose: bool
 
 logger: logging.Logger
-
-metadata: MetaData | None
 
 pdf2image_type: str
 

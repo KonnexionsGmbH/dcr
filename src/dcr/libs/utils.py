@@ -1,22 +1,28 @@
-"""Module utils: Helper functions."""
+"""Helper functions.
+
+Returns:
+    [type]: None.
+"""
 import datetime
 import hashlib
+import pathlib
 import subprocess
 import sys
 import traceback
 
 import libs.cfg
+import libs.db.cfg
 import libs.utils
 
 
 # -----------------------------------------------------------------------------
 # Get the SHA256 hash string of a file.
 # -----------------------------------------------------------------------------
-def get_sha256(file_name: str) -> str:
+def get_sha256(file: pathlib.Path) -> str:
     """Get the SHA256 hash string of a file.
 
     Args:
-        file_name (str): File name.
+        file (: pathlib.Path): File.
 
     Returns:
         str: SHA256 hash string.
@@ -25,9 +31,9 @@ def get_sha256(file_name: str) -> str:
 
     sha256_hash = hashlib.sha256()
 
-    with open(file_name, "rb") as file:
+    with open(file, "rb") as file_content:
         # Read and update hash string value in blocks of 4K
-        for byte_block in iter(lambda: file.read(4096), b""):
+        for byte_block in iter(lambda: file_content.read(4096), b""):
             sha256_hash.update(byte_block)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -63,9 +69,9 @@ def progress_msg_connected() -> None:
         print("")
         progress_msg(
             "User '"
-            + libs.cfg.db_current_user
+            + libs.db.cfg.db_current_user
             + "' is now connected to database '"
-            + libs.cfg.db_current_database
+            + libs.db.cfg.db_current_database
             + "'"
         )
 
@@ -79,9 +85,9 @@ def progress_msg_disconnected() -> None:
         print("")
         libs.utils.progress_msg(
             "User '"
-            + libs.cfg.db_current_user
+            + libs.db.cfg.db_current_user
             + "' is now disconnected from database '"
-            + libs.cfg.db_current_database
+            + libs.db.cfg.db_current_database
             + "'"
         )
 

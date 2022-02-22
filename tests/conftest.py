@@ -14,6 +14,7 @@ from typing import Callable
 from typing import Tuple
 
 import libs.cfg
+import libs.db.cfg
 import libs.db.orm
 import pytest
 
@@ -142,8 +143,8 @@ def fxtr_new_db_empty_inbox(
     fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
     fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED])
 
-    if libs.cfg.metadata is not None:
-        libs.cfg.metadata.clear()
+    if libs.db.cfg.metadata is not None:
+        libs.db.cfg.metadata.clear()
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
@@ -154,21 +155,6 @@ def fxtr_new_db_empty_inbox(
     fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
     fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
     fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED])
-
-
-# wwe
-# # -----------------------------------------------------------------------------
-# # Fixture - New empty database.
-# # -----------------------------------------------------------------------------
-# @pytest.fixture()
-# def fxtr_new_db():
-#     """Fixture: New empty database."""
-#     if libs.cfg.metadata is not None:
-#         libs.cfg.metadata.clear()
-#
-#     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
-#
-#     yield
 
 
 # -----------------------------------------------------------------------------
@@ -291,7 +277,6 @@ def restore_config_param(
         config_parser.write(configfile)
 
     dcr.get_config()
-
 
 
 # -----------------------------------------------------------------------------

@@ -2,6 +2,7 @@
 """Testing Module libs.db.driver."""
 
 import libs.cfg
+import libs.db.cfg
 import libs.db.driver
 import libs.db.orm
 import pytest
@@ -201,11 +202,11 @@ def test_select_version_version_unique():
 
     libs.db.orm.connect_db()
 
-    with libs.cfg.engine.begin() as conn:
+    with libs.db.cfg.engine.begin() as conn:
         version = Table(
-            libs.db.orm.DBT_VERSION,
-            libs.cfg.metadata,
-            autoload_with=libs.cfg.engine,
+            libs.db.cfg.DBT_VERSION,
+            libs.db.cfg.metadata,
+            autoload_with=libs.db.cfg.engine,
         )
         conn.execute(delete(version))
 
@@ -220,7 +221,7 @@ def test_select_version_version_unique():
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
-    libs.db.orm.insert_dbt_row(libs.db.orm.DBT_VERSION, {libs.db.orm.DBC_VERSION: "0.0.0"})
+    libs.db.orm.insert_dbt_row(libs.db.cfg.DBT_VERSION, {libs.db.cfg.DBC_VERSION: "0.0.0"})
 
     with pytest.raises(SystemExit) as expt:
         libs.db.orm.select_version_version_unique()

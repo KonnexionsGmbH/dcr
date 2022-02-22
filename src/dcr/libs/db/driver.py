@@ -1,11 +1,10 @@
-"""Module db: Database Definition Management.
-
-Data definition related processing routines.
+"""Database Definition Management.
 
 Returns:
     [type]: None.
 """
 import libs.cfg
+import libs.db.cfg
 import libs.db.orm
 import libs.utils
 import psycopg2
@@ -35,11 +34,11 @@ def connect_db() -> connection:
 
     try:
         conn = psycopg2.connect(
-            dbname=libs.cfg.db_current_database,
+            dbname=libs.db.cfg.db_current_database,
             host=libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST],
             password=libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD],
             port=libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT],
-            user=libs.cfg.db_current_user,
+            user=libs.db.cfg.db_current_user,
         )
     except OperationalError as err:
         libs.utils.terminate_fatal(
@@ -72,11 +71,11 @@ def connect_db_admin() -> connection:
 
     try:
         conn = psycopg2.connect(
-            dbname=libs.cfg.db_current_database,
+            dbname=libs.db.cfg.db_current_database,
             host=libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST],
             password=libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD_ADMIN],
             port=libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT],
-            user=libs.cfg.db_current_user,
+            user=libs.db.cfg.db_current_user,
         )
     except OperationalError as err:
         libs.utils.terminate_fatal(
@@ -101,7 +100,7 @@ def create_database() -> None:
 
     if libs.cfg.DCR_CFG_DB_DIALECT not in libs.cfg.config:
         create_database_postgresql()
-    elif libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT] == libs.db.orm.DB_DIALECT_POSTGRESQL:
+    elif libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT] == libs.db.cfg.DB_DIALECT_POSTGRESQL:
         create_database_postgresql()
     else:
         libs.utils.terminate_fatal(
@@ -156,7 +155,7 @@ def create_database_postgresql() -> None:
 # -----------------------------------------------------------------------------
 # Disconnect the admin database.
 # -----------------------------------------------------------------------------
-def disconnect_db(conn: connection|None, cur: cursor | None) -> None:
+def disconnect_db(conn: connection | None, cur: cursor | None) -> None:
     """Disconnect the admin database."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
@@ -180,7 +179,7 @@ def drop_database() -> None:
 
     if libs.cfg.DCR_CFG_DB_DIALECT not in libs.cfg.config:
         drop_database_postgresql()
-    elif libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT] == libs.db.orm.DB_DIALECT_POSTGRESQL:
+    elif libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT] == libs.db.cfg.DB_DIALECT_POSTGRESQL:
         drop_database_postgresql()
     else:
         libs.utils.terminate_fatal(
@@ -229,8 +228,8 @@ def prepare_connect_db_admin() -> None:
     if libs.cfg.is_docker_container:
         libs.utils.start_db_docker_container()
 
-    libs.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE_ADMIN]
-    libs.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER_ADMIN]
+    libs.db.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE_ADMIN]
+    libs.db.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER_ADMIN]
 
 
 # -----------------------------------------------------------------------------
@@ -247,11 +246,11 @@ def select_version_version_unique(cur: cursor) -> str:
     """
     cur.execute(
         "SELECT "
-        + libs.db.orm.DBC_VERSION
+        + libs.db.cfg.DBC_VERSION
         + " FROM "
         + libs.cfg.config[libs.cfg.DCR_CFG_DB_SCHEMA]
         + "."
-        + libs.db.orm.DBT_VERSION
+        + libs.db.cfg.DBT_VERSION
     )
 
     current_version: str = ""

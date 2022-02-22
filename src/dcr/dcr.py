@@ -1,4 +1,4 @@
-"""Entry point functionality.
+"""Entry Point Functionality.
 
 This is the entry point to the application DCR.
 
@@ -15,6 +15,7 @@ import sys
 from typing import List
 
 import libs.cfg
+import libs.db.cfg
 import libs.db.driver
 import libs.db.orm
 import libs.inbox
@@ -240,22 +241,22 @@ def process_documents(args: dict[str, bool]) -> None:
         libs.cfg.run_action = libs.cfg.RUN_ACTION_PROCESS_INBOX
         libs.utils.progress_msg_empty_before("Start: Process the inbox directory ...")
         libs.cfg.run_id = libs.db.orm.insert_dbt_row(
-            libs.db.orm.DBT_RUN,
+            libs.db.cfg.DBT_RUN,
             {
-                libs.db.orm.DBC_ACTION: libs.cfg.run_action,
-                libs.db.orm.DBC_RUN_ID: libs.cfg.run_run_id,
-                libs.db.orm.DBC_STATUS: libs.cfg.STATUS_START,
+                libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
+                libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
             },
         )
-        libs.inbox.process_inbox_files()
+        libs.inbox.process_inbox()
         libs.db.orm.update_dbt_id(
-            libs.db.orm.DBT_RUN,
+            libs.db.cfg.DBT_RUN,
             libs.cfg.run_id,
             {
-                libs.db.orm.DBC_STATUS: libs.cfg.STATUS_END,
-                libs.db.orm.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-                libs.db.orm.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-                libs.db.orm.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
+                libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+                libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+                libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
             },
         )
         libs.utils.progress_msg("End  : Process the inbox directory ...")
@@ -265,22 +266,22 @@ def process_documents(args: dict[str, bool]) -> None:
         libs.cfg.run_action = libs.cfg.RUN_ACTION_PDF_2_IMAGE
         libs.utils.progress_msg_empty_before("Start: Convert pdf documents to image files ...")
         libs.cfg.run_id = libs.db.orm.insert_dbt_row(
-            libs.db.orm.DBT_RUN,
+            libs.db.cfg.DBT_RUN,
             {
-                libs.db.orm.DBC_ACTION: libs.cfg.run_action,
-                libs.db.orm.DBC_RUN_ID: libs.cfg.run_run_id,
-                libs.db.orm.DBC_STATUS: libs.cfg.STATUS_START,
+                libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
+                libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
             },
         )
         libs.inbox.convert_pdf_2_image()
         libs.db.orm.update_dbt_id(
-            libs.db.orm.DBT_RUN,
+            libs.db.cfg.DBT_RUN,
             libs.cfg.run_id,
             {
-                libs.db.orm.DBC_STATUS: libs.cfg.STATUS_END,
-                libs.db.orm.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-                libs.db.orm.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-                libs.db.orm.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
+                libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+                libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+                libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
             },
         )
         libs.utils.progress_msg("End  : Convert pdf documents to image files ...")

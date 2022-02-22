@@ -1,15 +1,15 @@
-"""Module db: Database Definition Management.
-
-Data definition related processing routines.
+"""Database Manipulation Management.
 
 Returns:
     [type]: None.
 """
 from sqlite3 import Error
+from typing import Callable
 from typing import Dict
 from typing import List
 
 import libs.cfg
+import libs.db.cfg
 import libs.utils
 import sqlalchemy
 import sqlalchemy.orm
@@ -28,40 +28,6 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.exc import InternalError
 from sqlalchemy.exc import OperationalError
 
-# -----------------------------------------------------------------------------
-# Global Constants.
-# -----------------------------------------------------------------------------
-DB_DIALECT_POSTGRESQL: str = "postgresql"
-
-DBC_ACTION: str = "action"
-DBC_ACTION_CODE: str = "action_code"
-DBC_ACTION_TEXT: str = "action_text"
-DBC_CREATED_AT: str = "created_at"
-DBC_DOCUMENT_ID: str = "document_id"
-DBC_DOCUMENT_ID_PARENT: str = "document_id_parent"
-DBC_FILE_NAME: str = "file_name"
-DBC_FILE_TYPE: str = "file_type"
-DBC_FUNCTION_NAME: str = "function_name"
-DBC_ID: str = "id"
-DBC_INBOX_ABS_NAME: str = "inbox_abs_name"
-DBC_INBOX_ACCEPTED_ABS_NAME: str = "inbox_accepted_abs_name"
-DBC_INBOX_REJECTED_ABS_NAME: str = "inbox_rejected_abs_name"
-DBC_MODIFIED_AT: str = "modified_at"
-DBC_MODULE_NAME: str = "module_name"
-DBC_RUN_ID: str = "run_id"
-DBC_SHA256: str = "sha256"
-DBC_STATUS: str = "status"
-DBC_STEM_NAME: str = "stem_name"
-DBC_TOTAL_ERRONEOUS: str = "total_erroneous"
-DBC_TOTAL_OK_PROCESSED: str = "total_ok_processed"
-DBC_TOTAL_TO_BE_PROCESSED: str = "total_to_be_processed"
-DBC_VERSION: str = "version"
-
-DBT_DOCUMENT: str = "document"
-DBT_JOURNAL: str = "journal"
-DBT_RUN: str = "run"
-DBT_VERSION: str = "version"
-
 
 # -----------------------------------------------------------------------------
 # Check that the database version is up to date.
@@ -70,7 +36,7 @@ def check_db_up_to_date() -> None:
     """Check that the database version is up-to-date."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    if not sqlalchemy.inspect(libs.cfg.engine).has_table(DBT_VERSION):
+    if not sqlalchemy.inspect(libs.db.cfg.engine).has_table(libs.db.cfg.DBT_VERSION):
         libs.utils.terminate_fatal(
             "The database does not yet exist.",
         )
@@ -102,21 +68,21 @@ def connect_db() -> None:
     prepare_connect_db()
 
     try:
-        libs.cfg.metadata = MetaData()
+        libs.db.cfg.metadata = MetaData()
     except Error as err:
         libs.utils.terminate_fatal(
             "SQLAlchemy metadata not accessible - error=" + str(err),
         )
     try:
-        libs.cfg.engine = sqlalchemy.create_engine(
+        libs.db.cfg.engine = sqlalchemy.create_engine(
             libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PREFIX]
             + libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST]
             + ":"
             + libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT]
             + "/"
-            + libs.cfg.db_current_database
+            + libs.db.cfg.db_current_database
             + "?user="
-            + libs.cfg.db_current_user
+            + libs.db.cfg.db_current_user
             + "&password="
             + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD]
         )
@@ -124,7 +90,7 @@ def connect_db() -> None:
         conn: Connection | None = None
 
         try:
-            conn = libs.cfg.engine.connect()
+            conn = libs.db.cfg.engine.connect()
         except OperationalError as err:
             libs.utils.terminate_fatal(
                 "No database connection possible - error=" + str(err),
@@ -136,7 +102,7 @@ def connect_db() -> None:
             "SQLAlchemy engine not accessible - error=" + str(err),
         )
     try:
-        libs.cfg.metadata.bind = libs.cfg.engine
+        libs.db.cfg.metadata.bind = libs.db.cfg.engine
     except Error as err:
         libs.utils.terminate_fatal(
             "SQLAlchemy metadata not connectable with engine - error=" + str(err),
@@ -159,7 +125,7 @@ def create_db_trigger_function(column_name: str) -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     event.listen(
-        libs.cfg.metadata,
+        libs.db.cfg.metadata,
         "after_create",
         DDL(
             """
@@ -198,7 +164,7 @@ def create_db_trigger_created_at(table_name: str) -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     event.listen(
-        libs.cfg.metadata,
+        libs.db.cfg.metadata,
         "after_create",
         DDL(
             """
@@ -232,7 +198,7 @@ def create_db_trigger_modified_at(table_name: str) -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     event.listen(
-        libs.cfg.metadata,
+        libs.db.cfg.metadata,
         "after_create",
         DDL(
             """
@@ -267,12 +233,12 @@ def create_db_triggers(table_names: List[str]) -> None:
 
     libs.utils.progress_msg("Create the database triggers ...")
 
-    for column_name in [DBC_CREATED_AT, DBC_MODIFIED_AT]:
+    for column_name in [libs.db.cfg.DBC_CREATED_AT, libs.db.cfg.DBC_MODIFIED_AT]:
         create_db_trigger_function(column_name)
 
     for table_name in table_names:
         create_db_trigger_created_at(table_name)
-        if table_name != DBT_JOURNAL:
+        if table_name != libs.db.cfg.DBT_JOURNAL:
             create_db_trigger_modified_at(table_name)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -291,37 +257,44 @@ def create_dbt_document(table_name: str) -> None:
 
     sqlalchemy.Table(
         table_name,
-        libs.cfg.metadata,
+        libs.db.cfg.metadata,
         sqlalchemy.Column(
-            DBC_ID,
+            libs.db.cfg.DBC_ID,
             sqlalchemy.Integer,
             autoincrement=True,
             nullable=False,
             primary_key=True,
         ),
         sqlalchemy.Column(
-            DBC_CREATED_AT,
+            libs.db.cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(
-            DBC_MODIFIED_AT,
+            libs.db.cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
         ),
+        sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_NAME, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_TYPE, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
-            DBC_DOCUMENT_ID_PARENT,
+            libs.db.cfg.DBC_DOCUMENT_ID_BASE,
             sqlalchemy.Integer,
-            ForeignKey(DBT_DOCUMENT + "." + DBC_ID, ondelete="CASCADE"),
+            ForeignKey(libs.db.cfg.DBT_DOCUMENT + "." + libs.db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=True,
         ),
-        sqlalchemy.Column(DBC_FILE_NAME, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(DBC_INBOX_ABS_NAME, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(DBC_INBOX_ACCEPTED_ABS_NAME, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(DBC_INBOX_REJECTED_ABS_NAME, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
-        sqlalchemy.Column(DBC_SHA256, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(DBC_STATUS, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(DBC_STEM_NAME, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_DOCUMENT_ID_PARENT,
+            sqlalchemy.Integer,
+            ForeignKey(libs.db.cfg.DBT_DOCUMENT + "." + libs.db.cfg.DBC_ID, ondelete="CASCADE"),
+            nullable=True,
+        ),
+        sqlalchemy.Column(libs.db.cfg.DBC_ERROR_CODE, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(libs.db.cfg.DBC_FILE_NAME, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_NEXT_STEP, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(libs.db.cfg.DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_SHA256, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(libs.db.cfg.DBC_STATUS, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_STEM_NAME, sqlalchemy.String, nullable=False),
     )
 
     libs.utils.progress_msg("The database table '" + table_name + "' has now been created")
@@ -342,35 +315,37 @@ def create_dbt_journal(table_name: str) -> None:
 
     sqlalchemy.Table(
         table_name,
-        libs.cfg.metadata,
+        libs.db.cfg.metadata,
         sqlalchemy.Column(
-            DBC_ID,
+            libs.db.cfg.DBC_ID,
             sqlalchemy.Integer,
             autoincrement=True,
             nullable=False,
             primary_key=True,
         ),
         sqlalchemy.Column(
-            DBC_CREATED_AT,
+            libs.db.cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
         ),
-        sqlalchemy.Column(DBC_ACTION_CODE, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(DBC_ACTION_TEXT, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_ACTION_CODE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_ACTION_TEXT, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
-            DBC_DOCUMENT_ID,
+            libs.db.cfg.DBC_DOCUMENT_ID,
             sqlalchemy.Integer,
-            ForeignKey(DBT_DOCUMENT + "." + DBC_ID, ondelete="CASCADE"),
+            ForeignKey(libs.db.cfg.DBT_DOCUMENT + "." + libs.db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
-        sqlalchemy.Column(DBC_FUNCTION_NAME, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(DBC_MODULE_NAME, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_FUNCTION_NAME, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_MODULE_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
-            DBC_RUN_ID,
+            libs.db.cfg.DBC_RUN_ID,
             sqlalchemy.Integer,
-            ForeignKey(DBT_RUN + "." + DBC_ID, ondelete="CASCADE"),
+            ForeignKey(libs.db.cfg.DBT_RUN + "." + libs.db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
-        UniqueConstraint(DBC_DOCUMENT_ID, DBC_ACTION_CODE, name="unique_key_1"),
+        UniqueConstraint(
+            libs.db.cfg.DBC_DOCUMENT_ID, libs.db.cfg.DBC_ACTION_CODE, name="unique_key_1"
+        ),
     )
 
     libs.utils.progress_msg("The database table '" + table_name + "' has now been created")
@@ -391,37 +366,37 @@ def create_dbt_run(table_name: str) -> None:
 
     sqlalchemy.Table(
         table_name,
-        libs.cfg.metadata,
+        libs.db.cfg.metadata,
         sqlalchemy.Column(
-            DBC_ID,
+            libs.db.cfg.DBC_ID,
             sqlalchemy.Integer,
             autoincrement=True,
             nullable=False,
             primary_key=True,
         ),
         sqlalchemy.Column(
-            DBC_CREATED_AT,
+            libs.db.cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(
-            DBC_MODIFIED_AT,
+            libs.db.cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
         ),
-        sqlalchemy.Column(DBC_ACTION, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
-        sqlalchemy.Column(DBC_STATUS, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_ACTION, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_STATUS, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
-            DBC_TOTAL_ERRONEOUS,
+            libs.db.cfg.DBC_TOTAL_ERRONEOUS,
             sqlalchemy.Integer,
             nullable=True,
         ),
         sqlalchemy.Column(
-            DBC_TOTAL_OK_PROCESSED,
+            libs.db.cfg.DBC_TOTAL_OK_PROCESSED,
             sqlalchemy.Integer,
             nullable=True,
         ),
         sqlalchemy.Column(
-            DBC_TOTAL_TO_BE_PROCESSED,
+            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED,
             sqlalchemy.Integer,
             nullable=True,
         ),
@@ -451,23 +426,23 @@ def create_dbt_version(
 
     sqlalchemy.Table(
         table_name,
-        libs.cfg.metadata,
+        libs.db.cfg.metadata,
         sqlalchemy.Column(
-            DBC_ID,
+            libs.db.cfg.DBC_ID,
             sqlalchemy.Integer,
             autoincrement=True,
             nullable=False,
             primary_key=True,
         ),
         sqlalchemy.Column(
-            DBC_CREATED_AT,
+            libs.db.cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(
-            DBC_MODIFIED_AT,
+            libs.db.cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
         ),
-        sqlalchemy.Column(DBC_VERSION, sqlalchemy.String, nullable=False, unique=True),
+        sqlalchemy.Column(libs.db.cfg.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True),
     )
 
     libs.utils.progress_msg("The database table '" + table_name + "' has now been created")
@@ -486,41 +461,46 @@ def create_schema() -> None:
 
     connect_db()
 
-    libs.cfg.engine.execute(sqlalchemy.schema.CreateSchema(schema))
+    libs.db.cfg.engine.execute(sqlalchemy.schema.CreateSchema(schema))
 
-    with libs.cfg.engine.connect().execution_options(autocommit=True) as conn:
+    with libs.db.cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(DDL("DROP SCHEMA IF EXISTS " + schema + " CASCADE"))
         libs.utils.progress_msg("If existing, the schema '" + schema + "' has now been dropped")
 
         conn.execute(DDL("CREATE SCHEMA " + schema))
         libs.utils.progress_msg("The schema '" + schema + "' has now been created")
 
-        conn.execute(DDL("ALTER ROLE " + libs.cfg.db_current_user + " SET search_path = " + schema))
+        conn.execute(
+            DDL("ALTER ROLE " + libs.db.cfg.db_current_user + " SET search_path = " + schema)
+        )
         conn.execute(DDL("SET search_path = " + schema))
         libs.utils.progress_msg("The search path '" + schema + "' has now been set")
 
         conn.close()
 
-    create_dbt_document(DBT_DOCUMENT)
-    create_dbt_run(DBT_RUN)
-    create_dbt_version(DBT_VERSION)
+    create_dbt_document(libs.db.cfg.DBT_DOCUMENT)
+    create_dbt_run(libs.db.cfg.DBT_RUN)
+    create_dbt_version(libs.db.cfg.DBT_VERSION)
     # FK: document
     # FK: run
-    create_dbt_journal(DBT_JOURNAL)
+    create_dbt_journal(libs.db.cfg.DBT_JOURNAL)
 
     # Create the database triggers.
     create_db_triggers(
         [
-            DBT_DOCUMENT,
-            DBT_JOURNAL,
-            DBT_RUN,
-            DBT_VERSION,
+            libs.db.cfg.DBT_DOCUMENT,
+            libs.db.cfg.DBT_JOURNAL,
+            libs.db.cfg.DBT_RUN,
+            libs.db.cfg.DBT_VERSION,
         ],
     )
 
-    libs.cfg.metadata.create_all(libs.cfg.engine)
+    libs.db.cfg.metadata.create_all(libs.db.cfg.engine)
 
-    insert_dbt_row(DBT_VERSION, {DBC_VERSION: libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]})
+    insert_dbt_row(
+        libs.db.cfg.DBT_VERSION,
+        {libs.db.cfg.DBC_VERSION: libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]},
+    )
 
     # Disconnect from the database.
     disconnect_db()
@@ -536,14 +516,14 @@ def disconnect_db() -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     try:
-        libs.cfg.metadata.clear()
+        libs.db.cfg.metadata.clear()
     except Error as err:
         libs.utils.terminate_fatal(
             "SQLAlchemy metadata could not be cleared - error=" + str(err),
         )
 
     try:
-        libs.cfg.engine.dispose()
+        libs.db.cfg.engine.dispose()
     except Error as err:
         libs.utils.terminate_fatal(
             "SQLAlchemy engine could not be disposed - error=" + str(err),
@@ -595,15 +575,47 @@ def insert_dbt_row(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = Table(table_name, libs.cfg.metadata, autoload_with=libs.cfg.engine)
+    dbt = Table(table_name, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
 
-    with libs.cfg.engine.connect().execution_options(autocommit=True) as conn:
+    with libs.db.cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(insert(dbt).values(columns))
         conn.close()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return select_dbt_id_last(table_name)
+
+
+# -----------------------------------------------------------------------------
+# Insert a new row into a database table.
+# -----------------------------------------------------------------------------
+def insert_journal(
+    module_name: str,
+    function_name: str,
+    journal_action: str,
+) -> None:
+    """Insert a new row into database table 'journal'.
+
+    Args:
+        module_name (str): Module name.
+        function_name (str): Function name.
+        journal_action (str): Journal action.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    insert_dbt_row(
+        libs.db.cfg.DBT_JOURNAL,
+        {
+            libs.db.cfg.DBC_ACTION_CODE: journal_action[0:7],
+            libs.db.cfg.DBC_ACTION_TEXT: journal_action[7:],
+            libs.db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id,
+            libs.db.cfg.DBC_FUNCTION_NAME: function_name,
+            libs.db.cfg.DBC_MODULE_NAME: module_name,
+            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+        },
+    )
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -614,8 +626,8 @@ def prepare_connect_db() -> None:
     if libs.cfg.is_docker_container:
         libs.utils.start_db_docker_container()
 
-    libs.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE]
-    libs.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER]
+    libs.db.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE]
+    libs.db.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER]
 
 
 # -----------------------------------------------------------------------------
@@ -630,9 +642,9 @@ def select_dbt_id_last(table_name: str) -> int | sqlalchemy.Integer:
     Returns:
         sqlalchemy.Integer: The last id found.
     """
-    dbt = Table(table_name, libs.cfg.metadata, autoload_with=libs.cfg.engine)
+    dbt = Table(table_name, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
 
-    with libs.cfg.engine.connect() as conn:
+    with libs.db.cfg.engine.connect() as conn:
         result = conn.execute(select(func.max(dbt.c.id)))
         row = result.fetchone()
         conn.close()
@@ -656,15 +668,17 @@ def select_document_file_name_sha256(document_id: sqlalchemy.Integer, sha256: st
     Returns:
         str: The file name found.
     """
-    dbt = Table(DBT_DOCUMENT, libs.cfg.metadata, autoload_with=libs.cfg.engine)
+    dbt = Table(libs.db.cfg.DBT_DOCUMENT, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
 
-    with libs.cfg.engine.connect() as conn:
+    with libs.db.cfg.engine.connect() as conn:
         row = conn.execute(
+            #           select(dbt.c.file_name).where(
             select(dbt.c.file_name).where(
                 and_(
                     dbt.c.id != document_id,
+                    dbt.c.directory_type == libs.db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX,
                     dbt.c.sha256 == sha256,
-                    dbt.c.inbox_rejected_abs_name is None,
+                    dbt.c.status == libs.db.cfg.DOCUMENT_STATUS_END,
                 )
             )
         ).fetchone()
@@ -685,9 +699,9 @@ def select_run_run_id_last() -> int | sqlalchemy.Integer:
     Returns:
         sqlalchemy.Integer: The last run id found.
     """
-    dbt = Table(DBT_RUN, libs.cfg.metadata, autoload_with=libs.cfg.engine)
+    dbt = Table(libs.db.cfg.DBT_RUN, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
 
-    with libs.cfg.engine.connect() as conn:
+    with libs.db.cfg.engine.connect() as conn:
         row = conn.execute(select(func.max(dbt.c.run_id))).fetchone()
         conn.close()
 
@@ -708,11 +722,11 @@ def select_version_version_unique() -> str:
     Returns:
         str: The version number found.
     """
-    dbt = Table(DBT_VERSION, libs.cfg.metadata, autoload_with=libs.cfg.engine)
+    dbt = Table(libs.db.cfg.DBT_VERSION, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
 
     current_version: str = ""
 
-    with libs.cfg.engine.connect() as conn:
+    with libs.db.cfg.engine.connect() as conn:
         for row in conn.execute(select(dbt.c.version)):
             if current_version == "":
                 current_version = row.version
@@ -745,9 +759,9 @@ def update_dbt_id(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = Table(table_name, libs.cfg.metadata, autoload_with=libs.cfg.engine)
+    dbt = Table(table_name, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
 
-    with libs.cfg.engine.connect().execution_options(autocommit=True) as conn:
+    with libs.db.cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(update(dbt).where(dbt.c.id == id_where).values(columns))
         conn.close()
 
@@ -758,29 +772,25 @@ def update_dbt_id(
 # Update the document and create a new journal entry.
 # -----------------------------------------------------------------------------
 def update_document_status(
-    document_columns: libs.cfg.Columns,
-    journal_columns: libs.cfg.Columns,
+    document_columns: libs.cfg.Columns, call_insert_journal: Callable[[str, str, str], None]
 ) -> None:
     """Update the document and create a new journal entry.
 
     Args:
         document_columns (libs.cfg.Columns): Columns regarding
                                         database table document.
-        journal_columns (libs.cfg.Columns): Columns regarding
-                                       database table journal.
+        call_insert_journal (Callable[[str, str, str], None]): New entry in
+                                        database table journal.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     update_dbt_id(
-        DBT_DOCUMENT,
+        libs.db.cfg.DBT_DOCUMENT,
         libs.cfg.document_id,
         document_columns,
     )
 
-    insert_dbt_row(
-        DBT_JOURNAL,
-        journal_columns | {DBC_DOCUMENT_ID: libs.cfg.document_id, DBC_RUN_ID: libs.cfg.run_run_id},
-    )
+    call_insert_journal()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -798,13 +808,13 @@ def update_version_version(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = Table(DBT_VERSION, libs.cfg.metadata, autoload_with=libs.cfg.engine)
+    dbt = Table(libs.db.cfg.DBT_VERSION, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
 
-    with libs.cfg.engine.connect().execution_options(autocommit=True) as conn:
+    with libs.db.cfg.engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(
             update(dbt).values(
                 {
-                    DBC_VERSION: version,
+                    libs.db.cfg.DBC_VERSION: version,
                 }
             )
         )
