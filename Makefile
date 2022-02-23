@@ -27,6 +27,7 @@ tests: pytest
 help:
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
 
+export DOCKER_CLI_EXPERIMENTAL=enabled
 export DCR_ENVIRONMENT_TYPE=test
 
 ifeq ($(OS),Windows_NT)
