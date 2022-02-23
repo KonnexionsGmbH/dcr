@@ -34,7 +34,6 @@ DCR_CFG_DCR_VERSION: str
 DCR_CFG_DIRECTORY_INBOX: str
 DCR_CFG_DIRECTORY_INBOX_ACCEPTED: str
 DCR_CFG_DIRECTORY_INBOX_REJECTED: str
-DCR_CFG_DB_DOCKER_CONTAINER: str
 DCR_CFG_FILE: str
 DCR_CFG_IGNORE_DUPLICATES: str
 DCR_CFG_PDF2IMAGE_TYPE: str
@@ -89,6 +88,7 @@ directory_inbox: PathLike[str] | str
 directory_inbox_accepted: PathLike[str] | str
 directory_inbox_rejected: PathLike[str] | str
 
+document_child_child_no: sqlalchemy.Integer | None
 document_child_directory_name: str
 document_child_directory_type: str
 document_child_error_code: str | None
@@ -98,11 +98,11 @@ document_child_id: sqlalchemy.Integer
 document_child_id_base: sqlalchemy.Integer | None
 document_child_id_parent: sqlalchemy.Integer | None
 document_child_next_step: str | None
-document_child_no: sqlalchemy.Integer
 document_child_sha256: str | None
 document_child_status: str
 document_child_stem_name: str
 
+document_child_no: sqlalchemy.Integer | None
 document_directory_name: str
 document_directory_type: str
 document_error_code: str | None
@@ -118,7 +118,6 @@ document_stem_name: str
 
 environment_type: str
 
-is_docker_container: bool
 is_ignore_duplicates: bool
 is_verbose: bool
 

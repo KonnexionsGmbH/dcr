@@ -298,12 +298,6 @@ def process_documents(args: dict[str, bool]) -> None:
 def validate_config() -> None:
     """Validate the configuration parameters."""
     # -------------------------------------------------------------------------
-    # Parameter: db_docker_container
-    #
-    if libs.cfg.DCR_CFG_DB_DOCKER_CONTAINER not in libs.cfg.config:
-        libs.cfg.is_docker_container = False
-
-    # -------------------------------------------------------------------------
     # Parameter: ignore_duplicates
     #
     if libs.cfg.DCR_CFG_IGNORE_DUPLICATES in libs.cfg.config:

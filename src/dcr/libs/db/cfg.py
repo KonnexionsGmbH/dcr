@@ -5,6 +5,8 @@ Returns:
 """
 from typing import List
 
+from psycopg2.extensions import connection
+from psycopg2.extensions import cursor
 from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine
 
@@ -16,6 +18,7 @@ DB_DIALECT_POSTGRESQL: str = "postgresql"
 DBC_ACTION: str = "action"
 DBC_ACTION_CODE: str = "action_code"
 DBC_ACTION_TEXT: str = "action_text"
+DBC_CHILD_NO: str = "child_no"
 DBC_CREATED_AT: str = "created_at"
 DBC_DIRECTORY_NAME: str = "directory_name"
 DBC_DIRECTORY_TYPE: str = "directory_type"
@@ -52,7 +55,8 @@ DOCUMENT_ERROR_CODE_REJECTED_ERROR: str = "rejected_error"
 DOCUMENT_ERROR_CODE_REJECTED_FILE_DUPL: str = "Duplicate file"
 DOCUMENT_ERROR_CODE_REJECTED_FILE_ERROR: str = "rejected_file_error"
 DOCUMENT_ERROR_CODE_REJECTED_FILE_EXT: str = "Unknown file extension"
-DOCUMENT_ERROR_CODE_REJECTED_FILE_PERMISSION: str = "rejected_file_permission"
+DOCUMENT_ERROR_CODE_REJECTED_FILE_MOVE: str = "Issue with file move"
+DOCUMENT_ERROR_CODE_REJECTED_FILE_RIGHTS: str = "Issue with file permissions"
 DOCUMENT_ERROR_CODE_REJECTED_NO_PDF_FORMAT: str = "No 'pdf' format"
 DOCUMENT_ERROR_CODE_REJECTED_PDF2IMAGE: str = "Issue with pdf2image"
 
@@ -100,10 +104,17 @@ DOCUMENT_STATUS_ERROR: str = "error"
 DOCUMENT_STATUS_START: str = "start"
 
 JOURNAL_ACTION_01_001: str = (
-    "01.001 Start (p_i): New document detected in the 'inbox' file directory."
+    "01.001 Start (p_i): Document file '{file_name}' detected " + "in the 'inbox' file directory."
+)
+JOURNAL_ACTION_01_002: str = (
+    "01.002 End   (p_i): Document file '{source_file}' successfully moved to file '{target_file}'."
+)
+JOURNAL_ACTION_01_003: str = (
+    "01.003 Next  (p_i): Ready to convert document file '{file_name}' "
+    + "to '{type}' format using pdf2image."
 )
 JOURNAL_ACTION_01_901: str = (
-    "01.901 Issue: Document rejected because of unknown file extension='{extension}'."
+    "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
 )
 JOURNAL_ACTION_01_902: str = (
     "01.902 Issue (p_i): Moving '{source_file}' to '{target_file}' "
@@ -126,19 +137,16 @@ JOURNAL_ACTION_11_002: str = (
     "11.002 Ready to convert the document to 'pdf' format using Tesseract OCR."
 )
 JOURNAL_ACTION_11_003: str = "11.003 Ready to process the 'pdf' document using PDFlib TET."
-JOURNAL_ACTION_11_004: str = (
-    "11.004 Ready to convert the 'pdf' document to '{type}' format using pdf2image."
-)
 JOURNAL_ACTION_21_001: str = (
-    "21.001 Start (p_2_i): The 'pdf' document must be converted into image file(s) "
+    "21.001 Start (p_2_i): The document file '{file_name}' must be converted into image file(s) "
     + "for further processing."
 )
 JOURNAL_ACTION_21_002: str = (
-    "21.002 End (p_2_i): The original 'pdf' document has been successfully converted "
+    "21.002 End   (p_2_i): The document file '{file_name}' has been successfully converted "
     + "to {child_no} image file(s)."
 )
 JOURNAL_ACTION_21_003: str = (
-    "21.003 End (p_2_i): The created image file {file_name} "
+    "21.003 Next  (p_2_i): The created image file '{file_name}' "
     + "is ready to be processed with Tesseract OCR."
 )
 JOURNAL_ACTION_21_901: str = (
@@ -160,7 +168,7 @@ RUN_STATUS_START: str = "start"
 
 db_current_database: str
 db_current_user: str
-
-engine: Engine
-
-metadata: MetaData | None = None
+db_driver_conn: connection | None = None
+db_driver_cur: cursor | None = None
+db_orm_engine: Engine | None = None
+db_orm_metadata: MetaData | None = None

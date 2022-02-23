@@ -27,6 +27,7 @@ from sqlalchemy import update
 from sqlalchemy.engine import Connection
 from sqlalchemy.exc import InternalError
 from sqlalchemy.exc import OperationalError
+from sqlalchemy.pool import NullPool
 
 
 # -----------------------------------------------------------------------------
@@ -36,9 +37,14 @@ def check_db_up_to_date() -> None:
     """Check that the database version is up-to-date."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    if not sqlalchemy.inspect(libs.db.cfg.engine).has_table(libs.db.cfg.DBT_VERSION):
+    if libs.db.cfg.db_orm_engine is None:
         libs.utils.terminate_fatal(
             "The database does not yet exist.",
+        )
+
+    if not sqlalchemy.inspect(libs.db.cfg.db_orm_engine).has_table(libs.db.cfg.DBT_VERSION):
+        libs.utils.terminate_fatal(
+            "The database table 'version' does not yet exist.",
         )
 
     current_version = select_version_version_unique()
@@ -68,13 +74,13 @@ def connect_db() -> None:
     prepare_connect_db()
 
     try:
-        libs.db.cfg.metadata = MetaData()
+        libs.db.cfg.db_orm_metadata = MetaData()
     except Error as err:
         libs.utils.terminate_fatal(
             "SQLAlchemy metadata not accessible - error=" + str(err),
         )
     try:
-        libs.db.cfg.engine = sqlalchemy.create_engine(
+        libs.db.cfg.db_orm_engine = sqlalchemy.create_engine(
             libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PREFIX]
             + libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST]
             + ":"
@@ -84,13 +90,14 @@ def connect_db() -> None:
             + "?user="
             + libs.db.cfg.db_current_user
             + "&password="
-            + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD]
+            + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD],
+            poolclass=NullPool,
         )
 
         conn: Connection | None = None
 
         try:
-            conn = libs.db.cfg.engine.connect()
+            conn = libs.db.cfg.db_orm_engine.connect()
         except OperationalError as err:
             libs.utils.terminate_fatal(
                 "No database connection possible - error=" + str(err),
@@ -102,7 +109,7 @@ def connect_db() -> None:
             "SQLAlchemy engine not accessible - error=" + str(err),
         )
     try:
-        libs.db.cfg.metadata.bind = libs.db.cfg.engine
+        libs.db.cfg.db_orm_metadata.bind = libs.db.cfg.db_orm_engine
     except Error as err:
         libs.utils.terminate_fatal(
             "SQLAlchemy metadata not connectable with engine - error=" + str(err),
@@ -125,7 +132,7 @@ def create_db_trigger_function(column_name: str) -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     event.listen(
-        libs.db.cfg.metadata,
+        libs.db.cfg.db_orm_metadata,
         "after_create",
         DDL(
             """
@@ -164,7 +171,7 @@ def create_db_trigger_created_at(table_name: str) -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     event.listen(
-        libs.db.cfg.metadata,
+        libs.db.cfg.db_orm_metadata,
         "after_create",
         DDL(
             """
@@ -198,7 +205,7 @@ def create_db_trigger_modified_at(table_name: str) -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     event.listen(
-        libs.db.cfg.metadata,
+        libs.db.cfg.db_orm_metadata,
         "after_create",
         DDL(
             """
@@ -257,7 +264,7 @@ def create_dbt_document(table_name: str) -> None:
 
     sqlalchemy.Table(
         table_name,
-        libs.db.cfg.metadata,
+        libs.db.cfg.db_orm_metadata,
         sqlalchemy.Column(
             libs.db.cfg.DBC_ID,
             sqlalchemy.Integer,
@@ -272,6 +279,11 @@ def create_dbt_document(table_name: str) -> None:
         sqlalchemy.Column(
             libs.db.cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_CHILD_NO,
+            sqlalchemy.Integer,
+            nullable=True,
         ),
         sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_TYPE, sqlalchemy.String, nullable=False),
@@ -315,7 +327,7 @@ def create_dbt_journal(table_name: str) -> None:
 
     sqlalchemy.Table(
         table_name,
-        libs.db.cfg.metadata,
+        libs.db.cfg.db_orm_metadata,
         sqlalchemy.Column(
             libs.db.cfg.DBC_ID,
             sqlalchemy.Integer,
@@ -366,7 +378,7 @@ def create_dbt_run(table_name: str) -> None:
 
     sqlalchemy.Table(
         table_name,
-        libs.db.cfg.metadata,
+        libs.db.cfg.db_orm_metadata,
         sqlalchemy.Column(
             libs.db.cfg.DBC_ID,
             sqlalchemy.Integer,
@@ -426,7 +438,7 @@ def create_dbt_version(
 
     sqlalchemy.Table(
         table_name,
-        libs.db.cfg.metadata,
+        libs.db.cfg.db_orm_metadata,
         sqlalchemy.Column(
             libs.db.cfg.DBC_ID,
             sqlalchemy.Integer,
@@ -461,9 +473,9 @@ def create_schema() -> None:
 
     connect_db()
 
-    libs.db.cfg.engine.execute(sqlalchemy.schema.CreateSchema(schema))
+    libs.db.cfg.db_orm_engine.execute(sqlalchemy.schema.CreateSchema(schema))
 
-    with libs.db.cfg.engine.connect().execution_options(autocommit=True) as conn:
+    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(DDL("DROP SCHEMA IF EXISTS " + schema + " CASCADE"))
         libs.utils.progress_msg("If existing, the schema '" + schema + "' has now been dropped")
 
@@ -495,7 +507,7 @@ def create_schema() -> None:
         ],
     )
 
-    libs.db.cfg.metadata.create_all(libs.db.cfg.engine)
+    libs.db.cfg.db_orm_metadata.create_all(libs.db.cfg.db_orm_engine)
 
     insert_dbt_row(
         libs.db.cfg.DBT_VERSION,
@@ -513,48 +525,35 @@ def create_schema() -> None:
 # -----------------------------------------------------------------------------
 def disconnect_db() -> None:
     """Disconnect the database."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    try:
-        libs.db.cfg.metadata.clear()
-    except Error as err:
-        libs.utils.terminate_fatal(
-            "SQLAlchemy metadata could not be cleared - error=" + str(err),
+    if libs.db.cfg.db_orm_metadata is None and libs.db.cfg.db_orm_engine is None:
+        libs.db.cfg.db_current_database = None
+        libs.db.cfg.db_current_user = None
+        libs.utils.progress_msg(
+            "There is currently no open database connection (orm)",
         )
+        return
 
-    try:
-        libs.db.cfg.engine.dispose()
-    except Error as err:
-        libs.utils.terminate_fatal(
-            "SQLAlchemy engine could not be disposed - error=" + str(err),
-        )
+    if libs.db.cfg.db_orm_metadata is not None:
+        try:
+            libs.db.cfg.db_orm_metadata.clear()
+        except Error as err:
+            libs.utils.terminate_fatal(
+                "SQLAlchemy metadata could not be cleared - error=" + str(err),
+            )
+        finally:
+            libs.db.cfg.db_orm_metadata = None
+
+    if libs.db.cfg.db_orm_engine is not None:
+        try:
+            libs.db.cfg.db_orm_engine.dispose()
+        except Error as err:
+            libs.utils.terminate_fatal(
+                "SQLAlchemy engine could not be disposed - error=" + str(err),
+            )
+        finally:
+            libs.db.cfg.db_orm_engine = None
 
     libs.utils.progress_msg_disconnected()
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Get the database url.
-# -----------------------------------------------------------------------------
-def get_db_url() -> str:
-    """Get the database url.
-
-    Returns:
-        str: [description]: Database url.
-    """
-    return (
-        libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PREFIX]
-        + libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST]
-        + ":"
-        + libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT]
-        + "/"
-        + libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE]
-        + "?user="
-        + libs.cfg.config[libs.cfg.DCR_CFG_DB_USER]
-        + "&password="
-        + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD]
-    )
 
 
 # -----------------------------------------------------------------------------
@@ -575,9 +574,9 @@ def insert_dbt_row(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = Table(table_name, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
+    dbt = Table(table_name, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine)
 
-    with libs.db.cfg.engine.connect().execution_options(autocommit=True) as conn:
+    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(insert(dbt).values(columns))
         conn.close()
 
@@ -592,6 +591,7 @@ def insert_dbt_row(
 def insert_journal(
     module_name: str,
     function_name: str,
+    document_id: sqlalchemy.Integer,
     journal_action: str,
 ) -> None:
     """Insert a new row into database table 'journal'.
@@ -599,6 +599,7 @@ def insert_journal(
     Args:
         module_name (str): Module name.
         function_name (str): Function name.
+        document_id (sqlalchemy.Integer): Document id.
         journal_action (str): Journal action.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
@@ -608,7 +609,7 @@ def insert_journal(
         {
             libs.db.cfg.DBC_ACTION_CODE: journal_action[0:7],
             libs.db.cfg.DBC_ACTION_TEXT: journal_action[7:],
-            libs.db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id,
+            libs.db.cfg.DBC_DOCUMENT_ID: document_id,
             libs.db.cfg.DBC_FUNCTION_NAME: function_name,
             libs.db.cfg.DBC_MODULE_NAME: module_name,
             libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
@@ -623,9 +624,6 @@ def insert_journal(
 # -----------------------------------------------------------------------------
 def prepare_connect_db() -> None:
     """Prepare the database connection for normal users."""
-    if libs.cfg.is_docker_container:
-        libs.utils.start_db_docker_container()
-
     libs.db.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE]
     libs.db.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER]
 
@@ -642,9 +640,9 @@ def select_dbt_id_last(table_name: str) -> int | sqlalchemy.Integer:
     Returns:
         sqlalchemy.Integer: The last id found.
     """
-    dbt = Table(table_name, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
+    dbt = Table(table_name, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine)
 
-    with libs.db.cfg.engine.connect() as conn:
+    with libs.db.cfg.db_orm_engine.connect() as conn:
         result = conn.execute(select(func.max(dbt.c.id)))
         row = result.fetchone()
         conn.close()
@@ -668,9 +666,13 @@ def select_document_file_name_sha256(document_id: sqlalchemy.Integer, sha256: st
     Returns:
         str: The file name found.
     """
-    dbt = Table(libs.db.cfg.DBT_DOCUMENT, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
+    dbt = Table(
+        libs.db.cfg.DBT_DOCUMENT,
+        libs.db.cfg.db_orm_metadata,
+        autoload_with=libs.db.cfg.db_orm_engine,
+    )
 
-    with libs.db.cfg.engine.connect() as conn:
+    with libs.db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(
             #           select(dbt.c.file_name).where(
             select(dbt.c.file_name).where(
@@ -699,9 +701,11 @@ def select_run_run_id_last() -> int | sqlalchemy.Integer:
     Returns:
         sqlalchemy.Integer: The last run id found.
     """
-    dbt = Table(libs.db.cfg.DBT_RUN, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
+    dbt = Table(
+        libs.db.cfg.DBT_RUN, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine
+    )
 
-    with libs.db.cfg.engine.connect() as conn:
+    with libs.db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(select(func.max(dbt.c.run_id))).fetchone()
         conn.close()
 
@@ -722,11 +726,15 @@ def select_version_version_unique() -> str:
     Returns:
         str: The version number found.
     """
-    dbt = Table(libs.db.cfg.DBT_VERSION, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
+    dbt = Table(
+        libs.db.cfg.DBT_VERSION,
+        libs.db.cfg.db_orm_metadata,
+        autoload_with=libs.db.cfg.db_orm_engine,
+    )
 
     current_version: str = ""
 
-    with libs.db.cfg.engine.connect() as conn:
+    with libs.db.cfg.db_orm_engine.connect() as conn:
         for row in conn.execute(select(dbt.c.version)):
             if current_version == "":
                 current_version = row.version
@@ -759,9 +767,9 @@ def update_dbt_id(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = Table(table_name, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
+    dbt = Table(table_name, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine)
 
-    with libs.db.cfg.engine.connect().execution_options(autocommit=True) as conn:
+    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(update(dbt).where(dbt.c.id == id_where).values(columns))
         conn.close()
 
@@ -790,7 +798,8 @@ def update_document_status(
         document_columns,
     )
 
-    call_insert_journal()
+    # pylint: disable=pointless-statement
+    call_insert_journal
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -808,9 +817,13 @@ def update_version_version(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = Table(libs.db.cfg.DBT_VERSION, libs.db.cfg.metadata, autoload_with=libs.db.cfg.engine)
+    dbt = Table(
+        libs.db.cfg.DBT_VERSION,
+        libs.db.cfg.db_orm_metadata,
+        autoload_with=libs.db.cfg.db_orm_engine,
+    )
 
-    with libs.db.cfg.engine.connect().execution_options(autocommit=True) as conn:
+    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(
             update(dbt).values(
                 {

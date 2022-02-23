@@ -6,12 +6,12 @@ Returns:
 import datetime
 import hashlib
 import pathlib
-import subprocess
 import sys
 import traceback
 
 import libs.cfg
 import libs.db.cfg
+import libs.db.driver
 import libs.utils
 
 
@@ -82,14 +82,23 @@ def progress_msg_connected() -> None:
 def progress_msg_disconnected() -> None:
     """Create a progress message: disconnected from database."""
     if libs.cfg.is_verbose:
+        if libs.db.cfg.db_current_database is None and libs.db.cfg.db_current_user is None:
+            print("")
+            libs.utils.progress_msg("Database is now disconnected")
+            return
+
+        database = (
+            "n/a" if libs.db.cfg.db_current_database is None else libs.db.cfg.db_current_database
+        )
+        user = "n/a" if libs.db.cfg.db_current_user is None else libs.db.cfg.db_current_user
+
         print("")
         libs.utils.progress_msg(
-            "User '"
-            + libs.db.cfg.db_current_user
-            + "' is now disconnected from database '"
-            + libs.db.cfg.db_current_database
-            + "'"
+            "User '" + user + "' is now disconnected from database '" + database + "'"
         )
+
+        libs.db.cfg.db_current_database = None
+        libs.db.cfg.db_current_user = None
 
 
 # -----------------------------------------------------------------------------
@@ -104,24 +113,6 @@ def progress_msg_empty_before(msg: str) -> None:
     if libs.cfg.is_verbose:
         print("")
         progress_msg(msg)
-
-
-# -----------------------------------------------------------------------------
-# Start the database Docker container.
-# -----------------------------------------------------------------------------
-def start_db_docker_container() -> None:
-    """Start the database Docker container."""
-    try:
-        subprocess.run(
-            ["docker", "start", libs.cfg.config[libs.cfg.DCR_CFG_DB_DOCKER_CONTAINER]], check=True
-        )
-    except subprocess.CalledProcessError as err:
-        libs.utils.terminate_fatal(
-            "The Docker Container '"
-            + libs.cfg.config[libs.cfg.DCR_CFG_DB_DOCKER_CONTAINER]
-            + "' cannot be started - error="
-            + str(err),
-        )
 
 
 # -----------------------------------------------------------------------------
@@ -146,5 +137,7 @@ def terminate_fatal(error_msg: str) -> None:
     traceback.print_exc()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+    libs.db.driver.disconnect_db()
 
     sys.exit(1)

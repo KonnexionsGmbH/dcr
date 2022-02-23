@@ -30,9 +30,11 @@ help:
 export DCR_ENVIRONMENT_TYPE=test
 
 ifeq ($(OS),Windows_NT)
+	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
     export MYPYPATH=src\\dcr
     export PYTHONPATH=src\\dcr
 else
+	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
     export MYPYPATH=src/dcr
     export PYTHONPATH=src/dcr:src/dcr
 endif
@@ -174,12 +176,14 @@ pylint:             ## Lint the code with Pylint.
 # Configuration file: pyproject.toml
 pytest:             ## Run all tests with pytest.
 	@echo "Info **********  Start: pytest **************************************"
+	$(DCR_DOCKER_CONTAINER)
 	pipenv run pytest --version
 	pipenv run pytest --dead-fixtures tests
 	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v tests
 	@echo "Info **********  End:   pytest **************************************"
 pytest-ci:          ## Run all tests with pytest after test tool installation.
 	@echo "Info **********  Start: pytest **************************************"
+	$(DCR_DOCKER_CONTAINER)
 	pipenv install pytest
 	pipenv install pytest-cov
 	pipenv install pytest-deadfixtures

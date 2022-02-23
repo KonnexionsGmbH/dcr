@@ -81,9 +81,10 @@ docker create -e        POSTGRES_DB=dcr_db_%DCR_ENVIRONMENT_TYPE%_admin ^
               -e        POSTGRES_USER=dcr_user_admin ^
               --name    dcr_db_%DCR_ENVIRONMENT_TYPE% ^
               -p        %DCR_CONNECTION_PORT%:%DCR_CONTAINER_PORT% ^
+              --restart always ^
               postgres:%DCR_VERSION%
 
-echo Docker start  dcr_db_%DCR_ENVIRONMENT_TYPE% (PostgreSQL %DCR_VERSION%) ...
+echo Docker start dcr_db_%DCR_ENVIRONMENT_TYPE% (PostgreSQL %DCR_VERSION%) ...
 docker start dcr_db_%DCR_ENVIRONMENT_TYPE%
 
 ping -n 30 127.0.0.1>nul

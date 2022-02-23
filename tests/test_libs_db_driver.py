@@ -22,40 +22,21 @@ import dcr
 # -----------------------------------------------------------------------------
 def test_connect_db(fxtr_setup_logger_environment):
     """Test: connect_db()."""
-    config_parser, setup_cfg, setup_cfg_backup = pytest.helpers.backup_setup_cfg(
-        fxtr_setup_logger_environment
-    )
-
     # -------------------------------------------------------------------------
     config_section = libs.cfg.DCR_CFG_SECTION_TEST
     config_param = libs.cfg.DCR_CFG_DB_CONNECTION_PORT
 
-    value_original = pytest.helpers.store_config_param(
-        config_parser, config_section, config_param, "9999"
-    )
-
-    fxtr_setup_logger_environment()
+    value_original = pytest.helpers.store_config_param(config_section, config_param, "9999")
 
     dcr.get_config()
 
-    conn = None
-
     with pytest.raises(SystemExit) as expt:
-        conn = libs.db.driver.connect_db()
+        libs.db.driver.connect_db()
 
     assert expt.type == SystemExit, "DCR_CFG_DB_CONNECTION_PORT: no database"
     assert expt.value.code == 1, "DCR_CFG_DB_CONNECTION_PORT: no database"
 
-    pytest.helpers.restore_config_param(config_parser, config_section, config_param, value_original)
-
-    # -------------------------------------------------------------------------
-    libs.db.driver.disconnect_db(conn, None)
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.restore_setup_cfg(setup_cfg, setup_cfg_backup)
-
-    # -------------------------------------------------------------------------
-    libs.db.driver.drop_database()
+    pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
 
 # -----------------------------------------------------------------------------
@@ -63,40 +44,21 @@ def test_connect_db(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_connect_db_admin(fxtr_setup_logger_environment):
     """Test: connect_db_admin()."""
-    config_parser, setup_cfg, setup_cfg_backup = pytest.helpers.backup_setup_cfg(
-        fxtr_setup_logger_environment
-    )
-
     # -------------------------------------------------------------------------
     config_section = libs.cfg.DCR_CFG_SECTION_TEST
     config_param = libs.cfg.DCR_CFG_DB_CONNECTION_PORT
 
-    value_original = pytest.helpers.store_config_param(
-        config_parser, config_section, config_param, "9999"
-    )
-
-    fxtr_setup_logger_environment()
+    value_original = pytest.helpers.store_config_param(config_section, config_param, "9999")
 
     dcr.get_config()
 
-    conn = None
-
     with pytest.raises(SystemExit) as expt:
-        conn = libs.db.driver.connect_db_admin()
+        libs.db.driver.connect_db_admin()
 
     assert expt.type == SystemExit, "DCR_CFG_DB_CONNECTION_PORT: no database"
     assert expt.value.code == 1, "DCR_CFG_DB_CONNECTION_PORT: no database"
 
-    pytest.helpers.restore_config_param(config_parser, config_section, config_param, value_original)
-
-    # -------------------------------------------------------------------------
-    libs.db.driver.disconnect_db(conn, None)
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.restore_setup_cfg(setup_cfg, setup_cfg_backup)
-
-    # -------------------------------------------------------------------------
-    libs.db.driver.drop_database()
+    pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
 
 # -----------------------------------------------------------------------------
@@ -104,10 +66,6 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_create_database(fxtr_setup_logger_environment):
     """Test: create_database()."""
-    config_parser, setup_cfg, setup_cfg_backup = pytest.helpers.backup_setup_cfg(
-        fxtr_setup_logger_environment
-    )
-
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
@@ -115,19 +73,17 @@ def test_create_database(fxtr_setup_logger_environment):
     config_section = libs.cfg.DCR_CFG_SECTION
     config_param = libs.cfg.DCR_CFG_DB_DIALECT
 
-    value_original = pytest.helpers.delete_config_param(config_parser, config_section, config_param)
+    value_original = pytest.helpers.delete_config_param(config_section, config_param)
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
-    pytest.helpers.restore_config_param(config_parser, config_section, config_param, value_original)
+    pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
     # -------------------------------------------------------------------------
     config_section = libs.cfg.DCR_CFG_SECTION
     config_param = libs.cfg.DCR_CFG_DB_DIALECT
 
-    value_original = pytest.helpers.store_config_param(
-        config_parser, config_section, config_param, "n/a"
-    )
+    value_original = pytest.helpers.store_config_param(config_section, config_param, "n/a")
 
     with pytest.raises(SystemExit) as expt:
         dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
@@ -135,13 +91,7 @@ def test_create_database(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_DB_DIALECT: unknown DB dialect"
     assert expt.value.code == 1, "DCR_CFG_DB_DIALECT: unknown DB dialect"
 
-    pytest.helpers.restore_config_param(config_parser, config_section, config_param, value_original)
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.restore_setup_cfg(setup_cfg, setup_cfg_backup)
-
-    # -------------------------------------------------------------------------
-    libs.db.driver.drop_database()
+    pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
 
 # -----------------------------------------------------------------------------
@@ -149,10 +99,6 @@ def test_create_database(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_drop_database(fxtr_setup_logger_environment):
     """Test: drop_database()."""
-    config_parser, setup_cfg, setup_cfg_backup = pytest.helpers.backup_setup_cfg(
-        fxtr_setup_logger_environment
-    )
-
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
     libs.db.driver.drop_database()
@@ -161,20 +107,18 @@ def test_drop_database(fxtr_setup_logger_environment):
     config_section = libs.cfg.DCR_CFG_SECTION
     config_param = libs.cfg.DCR_CFG_DB_DIALECT
 
-    value_original = pytest.helpers.delete_config_param(config_parser, config_section, config_param)
+    value_original = pytest.helpers.delete_config_param(config_section, config_param)
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
     libs.db.driver.drop_database()
 
-    pytest.helpers.restore_config_param(config_parser, config_section, config_param, value_original)
+    pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
     # -------------------------------------------------------------------------
     config_section = libs.cfg.DCR_CFG_SECTION
     config_param = libs.cfg.DCR_CFG_DB_DIALECT
 
-    value_original = pytest.helpers.store_config_param(
-        config_parser, config_section, config_param, "n/a"
-    )
+    value_original = pytest.helpers.store_config_param(config_section, config_param, "n/a")
 
     dcr.get_config()
 
@@ -184,42 +128,16 @@ def test_drop_database(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_DB_DIALECT: unknown DB dialect"
     assert expt.value.code == 1, "DCR_CFG_DB_DIALECT: unknown DB dialect"
 
-    pytest.helpers.restore_config_param(config_parser, config_section, config_param, value_original)
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.restore_setup_cfg(setup_cfg, setup_cfg_backup)
-
-    # -------------------------------------------------------------------------
-    libs.db.driver.drop_database()
+    pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
 
 # -----------------------------------------------------------------------------
 # Test Function - select_version_version_unique().
 # -----------------------------------------------------------------------------
-def test_select_version_version_unique():
+def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     """Test: select_version_version_unique()."""
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
-
-    libs.db.orm.connect_db()
-
-    with libs.db.cfg.engine.begin() as conn:
-        version = Table(
-            libs.db.cfg.DBT_VERSION,
-            libs.db.cfg.metadata,
-            autoload_with=libs.db.cfg.engine,
-        )
-        conn.execute(delete(version))
-
-    with pytest.raises(SystemExit) as expt:
-        libs.db.orm.select_version_version_unique()
-
-    assert expt.type == SystemExit, "Version missing"
-    assert expt.value.code == 1, "Version missing"
-
-    libs.db.orm.disconnect_db()
-
     # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+    libs.db.orm.connect_db()
 
     libs.db.orm.insert_dbt_row(libs.db.cfg.DBT_VERSION, {libs.db.cfg.DBC_VERSION: "0.0.0"})
 
@@ -232,16 +150,30 @@ def test_select_version_version_unique():
     libs.db.orm.disconnect_db()
 
     # -------------------------------------------------------------------------
-    libs.db.driver.drop_database()
+    libs.db.orm.connect_db()
+
+    with libs.db.cfg.db_orm_engine.begin() as conn:
+        version = Table(
+            libs.db.cfg.DBT_VERSION,
+            libs.db.cfg.db_orm_metadata,
+            autoload_with=libs.db.cfg.db_orm_engine,
+        )
+        conn.execute(delete(version))
+
+    with pytest.raises(SystemExit) as expt:
+        libs.db.orm.select_version_version_unique()
+
+    assert expt.type == SystemExit, "Version missing"
+    assert expt.value.code == 1, "Version missing"
+
+    libs.db.orm.disconnect_db()
 
 
 # -----------------------------------------------------------------------------
 # Test Function - upgrade_database().
 # -----------------------------------------------------------------------------
-def test_upgrade_database():
+def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     """Test: upgrade_database()."""
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
-
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
 
     # -------------------------------------------------------------------------
@@ -271,5 +203,3 @@ def test_upgrade_database():
 
     assert expt.type == SystemExit, "Version unknown"
     assert expt.value.code == 1, "Version unknown"
-
-    libs.db.orm.disconnect_db()

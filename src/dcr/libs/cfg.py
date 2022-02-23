@@ -24,7 +24,6 @@ DCR_CFG_DB_CONTAINER_PORT: str = "db_container_port"
 DCR_CFG_DB_DATABASE: str = "db_database"
 DCR_CFG_DB_DATABASE_ADMIN: str = "db_database_admin"
 DCR_CFG_DB_DIALECT: str = "db_dialect"
-DCR_CFG_DB_DOCKER_CONTAINER: str = "db_docker_container"
 DCR_CFG_DB_HOST: str = "db_host"
 DCR_CFG_DB_PASSWORD: str = "db_password"
 DCR_CFG_DB_PASSWORD_ADMIN: str = "db_password_admin"
@@ -38,8 +37,8 @@ DCR_CFG_DIRECTORY_INBOX_REJECTED: str = "directory_inbox_rejected"
 DCR_CFG_FILE: str = "setup.cfg"
 DCR_CFG_IGNORE_DUPLICATES: str = "ignore_duplicates"
 DCR_CFG_PDF2IMAGE_TYPE: str = "pdf2image_type"
-DCR_CFG_PDF2IMAGE_TYPE_JPEG: str = "JPEG"
-DCR_CFG_PDF2IMAGE_TYPE_PNG: str = "PNG"
+DCR_CFG_PDF2IMAGE_TYPE_JPEG: str = "jpeg"
+DCR_CFG_PDF2IMAGE_TYPE_PNG: str = "png"
 DCR_CFG_SECTION: str = "dcr"
 DCR_CFG_SECTION_DEV: str = "dcr_dev"
 DCR_CFG_SECTION_PROD: str = "dcr_prod"
@@ -89,6 +88,7 @@ directory_inbox: PathLike[str] | str
 directory_inbox_accepted: PathLike[str] | str
 directory_inbox_rejected: PathLike[str] | str
 
+document_child_child_no: sqlalchemy.Integer | None
 document_child_directory_name: str
 document_child_directory_type: str
 document_child_error_code: str | None
@@ -103,6 +103,7 @@ document_child_sha256: str | None
 document_child_status: str
 document_child_stem_name: str
 
+document_child_no: sqlalchemy.Integer | None
 document_directory_name: str
 document_directory_type: str
 document_error_code: str | None
@@ -118,7 +119,6 @@ document_stem_name: str
 
 environment_type: str
 
-is_docker_container: bool = True
 is_ignore_duplicates: bool = False
 is_verbose: bool = True
 

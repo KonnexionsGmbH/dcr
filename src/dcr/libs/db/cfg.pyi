@@ -5,6 +5,8 @@ Returns:
 """
 from typing import List
 
+from psycopg2.extensions import connection
+from psycopg2.extensions import cursor
 from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine
 
@@ -16,6 +18,7 @@ DB_DIALECT_POSTGRESQL: str
 DBC_ACTION: str
 DBC_ACTION_CODE: str
 DBC_ACTION_TEXT: str
+DBC_CHILD_NO: str
 DBC_CREATED_AT: str
 DBC_DIRECTORY_NAME: str
 DBC_DIRECTORY_TYPE: str
@@ -52,7 +55,8 @@ DOCUMENT_ERROR_CODE_REJECTED_ERROR: str
 DOCUMENT_ERROR_CODE_REJECTED_FILE_DUPL: str
 DOCUMENT_ERROR_CODE_REJECTED_FILE_ERROR: str
 DOCUMENT_ERROR_CODE_REJECTED_FILE_EXT: str
-DOCUMENT_ERROR_CODE_REJECTED_FILE_PERMISSION: str
+DOCUMENT_ERROR_CODE_REJECTED_FILE_MOVE: str
+DOCUMENT_ERROR_CODE_REJECTED_FILE_RIGHTS: str
 DOCUMENT_ERROR_CODE_REJECTED_NO_PDF_FORMAT: str
 DOCUMENT_ERROR_CODE_REJECTED_PDF2IMAGE: str
 
@@ -73,6 +77,8 @@ DOCUMENT_STATUS_ERROR: str
 DOCUMENT_STATUS_START: str
 
 JOURNAL_ACTION_01_001: str
+JOURNAL_ACTION_01_002: str
+JOURNAL_ACTION_01_003: str
 JOURNAL_ACTION_01_901: str
 JOURNAL_ACTION_01_902: str
 JOURNAL_ACTION_01_903: str
@@ -81,7 +87,6 @@ JOURNAL_ACTION_01_905: str
 JOURNAL_ACTION_11_001: str
 JOURNAL_ACTION_11_002: str
 JOURNAL_ACTION_11_003: str
-JOURNAL_ACTION_11_004: str
 JOURNAL_ACTION_21_001: str
 JOURNAL_ACTION_21_002: str
 JOURNAL_ACTION_21_003: str
@@ -97,7 +102,7 @@ RUN_STATUS_START: str
 
 db_current_database: str
 db_current_user: str
-
-engine: Engine
-
-metadata: MetaData | None = None
+db_driver_conn: connection | None = None
+db_driver_cur: cursor | None = None
+db_orm_engine: Engine | None = None
+db_orm_metadata: MetaData | None = None
