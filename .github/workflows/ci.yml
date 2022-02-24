@@ -51,6 +51,8 @@ jobs:
         run: make mkdocs
       - name: Create a PostgreSQL container
         run: |
+            sudo bash -c 'echo "{ "cgroup-parent": "/actions_job","experimental":true}" > /etc/docker/daemon.json'
+            sudo systemctl restart docker.service
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
       - name: Publish the code coverage to coveralls.io
@@ -65,8 +67,7 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-#       os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
-        os: ["ubuntu-18.04", "ubuntu-20.04"]
+        os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
         python-version: ["3.10"]
     steps:
       - uses: actions/checkout@v2
@@ -82,6 +83,8 @@ jobs:
         run: make compileall
       - name: Create a PostgreSQL container
         run: |
+            sudo bash -c 'echo "{ "cgroup-parent": "/actions_job","experimental":true}" > /etc/docker/daemon.json'
+            sudo systemctl restart docker.service
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
       - name: Run pytest for writing better program
@@ -97,8 +100,7 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-#       os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
-        os: ["ubuntu-18.04", "ubuntu-20.04"]
+        os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
         python-version: ["3.10"]
     steps:
       - uses: actions/checkout@v2
@@ -113,6 +115,8 @@ jobs:
         run: make compileall
       - name: Create a PostgreSQL container
         run: |
+            sudo bash -c 'echo "{ "cgroup-parent": "/actions_job","experimental":true}" > /etc/docker/daemon.json'
+            sudo systemctl restart docker.service
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
       - name: Run pytest for writing better program

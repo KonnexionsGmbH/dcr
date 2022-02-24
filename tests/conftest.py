@@ -309,6 +309,19 @@ def verify_action_after(
         no_inbox_accepted (int): Target number of files in the 'inbox_accepted' file directory.
         no_inbox_rejected (int): Target number of files in the 'inbox_rejected' file directory.
     """
+    print(
+        "verify_action_after()  - " + libs.cfg.directory_inbox + "          =",
+        os.listdir(libs.cfg.directory_inbox),
+    )
+    print(
+        "verify_action_after()  - " + libs.cfg.directory_inbox_accepted + " =",
+        os.listdir(libs.cfg.directory_inbox_accepted),
+    )
+    print(
+        "verify_action_after()  - " + libs.cfg.directory_inbox_rejected + " =",
+        os.listdir(libs.cfg.directory_inbox_rejected),
+    )
+
     assert len(os.listdir(libs.cfg.directory_inbox)) == no_inbox, "after file directory: inbox"
     assert (
         len(os.listdir(libs.cfg.directory_inbox_accepted)) == no_inbox_accepted
@@ -317,7 +330,6 @@ def verify_action_after(
         len(os.listdir(libs.cfg.directory_inbox_rejected)) == no_inbox_rejected
     ), "after file directory: inbox_rejected"
 
-    print("verify_action_after() - " + directory_name + "=", os.listdir(directory_name))
     assert os.path.isfile(
         os.path.join(directory_name, file_name)
     ), "after: inbox_accepted should contain target file"
@@ -338,6 +350,11 @@ def verify_action_before(
         no_inbox_accepted (int): Target number of files in the 'inbox_accepted' file directory.
         no_inbox_rejected (int): Target number of files in the 'inbox_rejected' file directory.
     """
+    print(
+        "verify_action_before() - " + libs.cfg.directory_inbox + "          =",
+        os.listdir(libs.cfg.directory_inbox),
+    )
+
     assert len(os.listdir(libs.cfg.directory_inbox)) == no_inbox, "before file directory: inbox"
     assert (
         len(os.listdir(libs.cfg.directory_inbox_accepted)) == no_inbox_accepted
@@ -346,7 +363,6 @@ def verify_action_before(
         len(os.listdir(libs.cfg.directory_inbox_rejected)) == no_inbox_rejected
     ), "before file directory: inbox_rejected"
 
-    print("verify_action_before()         - ", os.listdir(libs.cfg.directory_inbox))
     assert os.path.isfile(
         os.path.join(libs.cfg.directory_inbox, file_name)
     ), "before: inbox should contain source file"

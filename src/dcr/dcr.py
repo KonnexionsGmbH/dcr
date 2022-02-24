@@ -300,6 +300,7 @@ def validate_config() -> None:
     # -------------------------------------------------------------------------
     # Parameter: ignore_duplicates
     #
+    libs.cfg.is_ignore_duplicates = False
     if libs.cfg.DCR_CFG_IGNORE_DUPLICATES in libs.cfg.config:
         if libs.cfg.config[libs.cfg.DCR_CFG_IGNORE_DUPLICATES].lower() == "true":
             libs.cfg.is_ignore_duplicates = True
@@ -307,9 +308,8 @@ def validate_config() -> None:
     # -------------------------------------------------------------------------
     # Parameter: pdf2image_type
     #
-    if libs.cfg.DCR_CFG_PDF2IMAGE_TYPE not in libs.cfg.config:
-        libs.cfg.pdf2image_type = libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
-    else:
+    libs.cfg.pdf2image_type = libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
+    if libs.cfg.DCR_CFG_PDF2IMAGE_TYPE in libs.cfg.config:
         libs.cfg.pdf2image_type = libs.cfg.config[libs.cfg.DCR_CFG_PDF2IMAGE_TYPE]
         if libs.cfg.pdf2image_type not in [
             libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG,
@@ -325,11 +325,10 @@ def validate_config() -> None:
     # -------------------------------------------------------------------------
     # Parameter: verbose
     #
+    libs.cfg.is_verbose = True
     if libs.cfg.DCR_CFG_VERBOSE in libs.cfg.config:
         if libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE].lower() == "false":
             libs.cfg.is_verbose = False
-        else:
-            libs.cfg.is_verbose = True
 
 
 # -----------------------------------------------------------------------------

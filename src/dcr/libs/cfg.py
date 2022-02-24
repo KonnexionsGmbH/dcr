@@ -119,7 +119,7 @@ document_stem_name: str
 
 environment_type: str
 
-is_ignore_duplicates: bool = False
+is_ignore_duplicates: bool
 is_verbose: bool = True
 
 logger: logging.Logger
