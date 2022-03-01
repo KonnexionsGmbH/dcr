@@ -401,11 +401,11 @@ def run_action_process_inbox(
 
 
 # -----------------------------------------------------------------------------
-# Setup RUN_ACTION_...
+# Set up RUN_ACTION_...
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def run_action_setup() -> Tuple[int, Tuple[int, int, int]]:
-    """Setup RUN_ACTION_...
+    """Set up RUN_ACTION_...
 
     Returns:
         Tuple[int, Tuple[int, int,int]]: (current_document_id, (current_no_inbox,
@@ -420,11 +420,11 @@ def run_action_setup() -> Tuple[int, Tuple[int, int, int]]:
 
 
 # -----------------------------------------------------------------------------
-# Runs before all tests.
+# Run before all tests.
 # -----------------------------------------------------------------------------
 @pytest.fixture(scope="session", autouse=True)
 def setup():
-    """Runs before all tests."""
+    """Run before all tests."""
     dcr.initialise_logger()
 
 

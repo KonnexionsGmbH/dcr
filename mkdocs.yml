@@ -10,13 +10,13 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Research: research.md
+  - API Documentation: dcr_api.md
+  - Code of Conduct: code_of_conduct.md
+  - Contributing Guide: contributing.md
   - Development : development.md
-  - About:
-    - Release Notes: release_notes.md
-    - Code of Conduct: code_of_conduct.md
-    - Contributing Guide: contributing.md
-    - License: license.md
+  - License: license.md
+  - Release Notes: release_notes.md
+  - Research: research.md
 
 plugins:
   - search

@@ -15,7 +15,7 @@
 ## dev:                Format, lint and test the code.
 dev: format lint pydocstyle tests
 ## docs:               Check the API docs, create and upload the user docs.
-docs: pydocstyle mkdocs
+docs: pydocstyle pydoc-markdown mkdocs
 ## format:             Format the code with isort and Black.
 format: isort black docformatter
 ## lint:               Lint the code with Bandit, Flake8, Mypy and Pylint.
@@ -159,7 +159,7 @@ pipenv-prod:        ## Install the package dependencies for production.
 pydoc-markdown:     ## Create Python API documentation in Markdown format with Pydoc-Markdown.
 	@echo "Info **********  Start: Pydoc-Markdown ******************************"
 	pipenv run pydoc-markdown --version
-	pipenv run pydoc-markdown -I src/dcr
+	pipenv run pydoc-markdown -I src/dcr --render-toc > docs/dcr_api.md
 	@echo "Info **********  End:   Pydoc-Markdown ******************************"
 
 # pydocstyle - docstring style checker.
