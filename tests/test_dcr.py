@@ -20,7 +20,6 @@ CONFIG_PARAM_NO: int = 19
 # -----------------------------------------------------------------------------
 def test_get_args(fxtr_setup_logger_environment):
     """Test: get_args()."""
-    # -------------------------------------------------------------------------
     args = dcr.get_args([libs.cfg.DCR_ARGV_0, "AlL"])
 
     assert len(args) == 4, "arg: all"
@@ -220,24 +219,34 @@ def test_get_environment(fxtr_setup_logger):
 # -----------------------------------------------------------------------------
 def test_main_all(fxtr_setup_empty_db_and_inbox):
     """Test: main() - RUN_ACTION_ALL_COMPLETE."""
+    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
+    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
 
 def test_main_db_c(fxtr_setup_empty_db_and_inbox):
     """Test: main() - RUN_ACTION_CREATE_DB."""
+    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
 
 def test_main_p_i(fxtr_setup_empty_db_and_inbox):
     """Test: main() - RUN_ACTION_PROCESS_INBOX."""
+    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
 
 def test_main_p_2_i(fxtr_mkdir, fxtr_setup_empty_db_and_inbox):
     """Test: main() - RUN_ACTION_PDF_2_IMAGE."""
+    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
 
 def test_main_db_u(fxtr_setup_empty_db_and_inbox):
     """Test: main() - RUN_ACTION_UPGRADE_DB."""
+    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
+    libs.cfg.logger.info(libs.cfg.LOGGER_START)

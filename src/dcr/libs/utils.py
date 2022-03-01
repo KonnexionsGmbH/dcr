@@ -5,6 +5,7 @@ Returns:
 """
 import datetime
 import hashlib
+import os
 import pathlib
 import sys
 import traceback
@@ -116,6 +117,21 @@ def progress_msg_empty_before(msg: str) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Convert a string into a file path.
+# -----------------------------------------------------------------------------
+def str_2_path(param: str) -> pathlib.Path:
+    """Convert a string into a file path.
+
+    Args:
+        param (str): text parameter.
+
+    Returns:
+        pathlib.Path: File path.
+    """
+    return pathlib.Path(os.path.join(os.getcwd(), *param.split("/" if "/" in param else "\\")))
+
+
+# -----------------------------------------------------------------------------
 # Terminate the application immediately.
 # -----------------------------------------------------------------------------
 def terminate_fatal(error_msg: str) -> None:
@@ -134,7 +150,7 @@ def terminate_fatal(error_msg: str) -> None:
         "%s%s%s", libs.cfg.LOGGER_FATAL_HEAD, error_msg, libs.cfg.LOGGER_FATAL_TAIL
     )
 
-    traceback.print_exc()
+    traceback.print_exc(chain=True)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 

@@ -298,9 +298,46 @@ def process_documents(args: dict[str, bool]) -> None:
 def validate_config() -> None:
     """Validate the configuration parameters."""
     # -------------------------------------------------------------------------
+    # Parameter: directory_inbox
+    #
+    if libs.cfg.DCR_CFG_DIRECTORY_INBOX in libs.cfg.config:
+        libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX] = libs.utils.str_2_path(
+            libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
+        )
+    else:
+        libs.utils.terminate_fatal(
+            "Missing configuration parameter '" + libs.cfg.DCR_CFG_DIRECTORY_INBOX + "'"
+        )
+
+    # -------------------------------------------------------------------------
+    # Parameter: directory_inbox_accepted
+    #
+    if libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED in libs.cfg.config:
+        libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED] = libs.utils.str_2_path(
+            libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
+        )
+    else:
+        libs.utils.terminate_fatal(
+            "Missing configuration parameter '" + libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED + "'"
+        )
+
+    # -------------------------------------------------------------------------
+    # Parameter: directory_inbox_rejected
+    #
+    if libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED in libs.cfg.config:
+        libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED] = libs.utils.str_2_path(
+            libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
+        )
+    else:
+        libs.utils.terminate_fatal(
+            "Missing configuration parameter '" + libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED + "'"
+        )
+
+    # -------------------------------------------------------------------------
     # Parameter: ignore_duplicates
     #
     libs.cfg.is_ignore_duplicates = False
+
     if libs.cfg.DCR_CFG_IGNORE_DUPLICATES in libs.cfg.config:
         if libs.cfg.config[libs.cfg.DCR_CFG_IGNORE_DUPLICATES].lower() == "true":
             libs.cfg.is_ignore_duplicates = True
@@ -309,6 +346,7 @@ def validate_config() -> None:
     # Parameter: pdf2image_type
     #
     libs.cfg.pdf2image_type = libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
+
     if libs.cfg.DCR_CFG_PDF2IMAGE_TYPE in libs.cfg.config:
         libs.cfg.pdf2image_type = libs.cfg.config[libs.cfg.DCR_CFG_PDF2IMAGE_TYPE]
         if libs.cfg.pdf2image_type not in [
@@ -326,6 +364,7 @@ def validate_config() -> None:
     # Parameter: verbose
     #
     libs.cfg.is_verbose = True
+
     if libs.cfg.DCR_CFG_VERBOSE in libs.cfg.config:
         if libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE].lower() == "false":
             libs.cfg.is_verbose = False

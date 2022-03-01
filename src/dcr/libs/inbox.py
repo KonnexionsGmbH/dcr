@@ -42,7 +42,7 @@ def check_directories() -> None:
     if not os.path.isdir(libs.cfg.directory_inbox_accepted):
         libs.utils.terminate_fatal(
             "The inbox_accepted directory with the name "
-            + libs.cfg.directory_inbox_accepted
+            + str(libs.cfg.directory_inbox_accepted)
             + " does not exist - error="
             + str(OSError),
         )
@@ -67,16 +67,16 @@ def check_and_create_directories() -> None:
     if not os.path.isdir(libs.cfg.directory_inbox):
         libs.utils.terminate_fatal(
             "The inbox directory with the name "
-            + libs.cfg.directory_inbox
+            + str(libs.cfg.directory_inbox)
             + " does not exist - error="
             + str(OSError),
         )
 
     libs.cfg.directory_inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    create_directory("the accepted documents", libs.cfg.directory_inbox_accepted)
+    create_directory("the accepted documents", str(libs.cfg.directory_inbox_accepted))
 
     libs.cfg.directory_inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
-    create_directory("the rejected documents", libs.cfg.directory_inbox_rejected)
+    create_directory("the rejected documents", str(libs.cfg.directory_inbox_rejected))
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -409,7 +409,7 @@ def initialise_document_child(journal_action: str) -> None:
         libs.db.cfg.DBT_DOCUMENT,
         {
             libs.db.cfg.DBC_CHILD_NO: libs.cfg.document_child_child_no,
-            libs.db.cfg.DBC_DIRECTORY_NAME: libs.cfg.document_child_directory_name,
+            libs.db.cfg.DBC_DIRECTORY_NAME: str(libs.cfg.document_child_directory_name),
             libs.db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_child_directory_type,
             libs.db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_child_id_base,
             libs.db.cfg.DBC_DOCUMENT_ID_PARENT: libs.cfg.document_child_id_parent,

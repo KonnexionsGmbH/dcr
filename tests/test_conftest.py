@@ -1,7 +1,8 @@
 """Testing Module conftest."""
-
 import os
 from pathlib import Path
+
+import libs.cfg
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -34,10 +35,10 @@ def test_mkdir_rmdir_rmdir_opt(fxtr_mkdir, fxtr_rmdir, fxtr_rmdir_opt):
 # pylint: disable=unused-argument
 def test_setup_empty_db_and_inbox(fxtr_setup_empty_db_and_inbox):
     """Test: Pure functionality."""
-    print("")
-    print("===============================================")
-    print("=======> test_setup_empty_db_and_inbox <=======")
-    print("===============================================")
+    libs.cfg.logger.debug("")
+    libs.cfg.logger.debug("===============================================")
+    libs.cfg.logger.debug("=======> test_setup_empty_db_and_inbox <=======")
+    libs.cfg.logger.debug("===============================================")
 
 
 # -----------------------------------------------------------------------------
@@ -46,10 +47,10 @@ def test_setup_empty_db_and_inbox(fxtr_setup_empty_db_and_inbox):
 # pylint: disable=unused-argument
 def test_setup_logger(fxtr_setup_logger):
     """Test: Pure functionality."""
-    print("")
-    print("===============================================")
-    print("=============> test_setup_logger <=============")
-    print("===============================================")
+    libs.cfg.logger.debug("")
+    libs.cfg.logger.debug("===============================================")
+    libs.cfg.logger.debug("=============> test_setup_logger <=============")
+    libs.cfg.logger.debug("===============================================")
 
 
 # -----------------------------------------------------------------------------
@@ -58,7 +59,7 @@ def test_setup_logger(fxtr_setup_logger):
 # pylint: disable=unused-argument
 def test_setup_logger_environment(fxtr_setup_logger_environment):
     """Test: Pure functionality."""
-    print("")
-    print("===============================================")
-    print("=======> test_setup_logger_environment <=======")
-    print("===============================================")
+    libs.cfg.logger.debug("")
+    libs.cfg.logger.debug("===============================================")
+    libs.cfg.logger.debug("=======> test_setup_logger_environment <=======")
+    libs.cfg.logger.debug("===============================================")

@@ -34,9 +34,15 @@ if ["%1"] EQU [""] (
 echo.
 echo Script %0 is now running
 
-if exist run_dcr_dev_debug.log del /f /q run_dcr_dev_debug.log
+if exist run_dcr_dev_debug.log (
+    del /f /q run_dcr_dev_debug.log
+)
+
 set LOG_FILE=run_dcr_dev.log
-if exist run_dcr_dev.log      del /f /q run_dcr_dev.log
+
+if exist run_dcr_dev.log (
+    del /f /q run_dcr_dev.log
+)
 
 echo.
 echo You can find the run log in the file %LOG_FILE%
@@ -84,10 +90,14 @@ REM > %LOG_FILE% 2>&1 (
         goto normal_exit
     )
 
-    if ["%DCR_CHOICE_ACTION%"] EQU ["all"]   set _CHOICE=%DCR_CHOICE_ACTION%
+    if ["%DCR_CHOICE_ACTION%"] EQU ["all"] (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"]  (
-        if exist data\dcr.db del /f /q data\dcr.db
+        if exist data\dcr.db (
+            del /f /q data\dcr.db
+        )
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
     if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"]  (
@@ -95,14 +105,18 @@ REM > %LOG_FILE% 2>&1 (
     )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["all"]   (
-        if exist data\inbox rmdir /s /q data\inbox
+        if exist data\inbox (
+            rd /s /q data\inbox
+        )
         mkdir data\inbox
         xcopy /E /I tests\inbox data\inbox
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"]   (
-        if exist data\inbox rmdir /s /q data\inbox
+        if exist data\inbox (
+            rd /s /q data\inbox
+        )
         mkdir data\inbox
         xcopy /E /I tests\inbox data\inbox
         set _CHOICE=%DCR_CHOICE_ACTION%

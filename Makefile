@@ -153,6 +153,15 @@ pipenv-prod:        ## Install the package dependencies for production.
 	python -m pip --version
 	@echo "Info **********  End:   Installation of Production Packages *********"
 
+# Pydoc-Markdown - create Python API documentation in Markdown format.
+# https://github.com/NiklasRosenstein/pydoc-markdown
+# Configuration file: pyproject.toml
+pydoc-markdown:     ## Create Python API documentation in Markdown format with Pydoc-Markdown.
+	@echo "Info **********  Start: Pydoc-Markdown ******************************"
+	pipenv run pydoc-markdown --version
+	pipenv run pydoc-markdown -I src/dcr
+	@echo "Info **********  End:   Pydoc-Markdown ******************************"
+
 # pydocstyle - docstring style checker.
 # https://github.com/PyCQA/pydocstyle
 # Configuration file: pyproject.toml

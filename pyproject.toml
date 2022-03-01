@@ -39,23 +39,25 @@ warn_unused_configs = true
 warn_unused_ignores = true
 
 [[tool.pydoc-markdown.loaders]]
+search_path = [ "src/dcr" ]
 type = "python"
-search_path = [ "src" ]
 
 [tool.pydoc-markdown.renderer]
-type = "mkdocs"
-output_directory = "."
 content_directory_name = "docs"
+output_directory = "."
+type = "mkdocs"
 
 [[tool.pydoc-markdown.renderer.pages]]
-title = "API Documentation"
-name = "index"
 contents = [ "dcr.*" ]
+name = "index"
+title = "API Documentation"
 
 [tool.pydocstyle]
 
 [tool.pytest.ini_options]
 console_output_style = "count"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+log_format = "%(asctime)s [%(module)s.py  ] %(levelname)-5s %(funcName)s:%(lineno)d %(message)s"
 markers = ["issue"]
 norecursedirs = "./tests/helpers"
 pythonpath = "./src/dcr/"
