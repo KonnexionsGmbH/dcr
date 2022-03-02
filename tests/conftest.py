@@ -7,7 +7,6 @@ Returns:
     [type]: None.
 """
 import configparser
-import logging
 import os
 import shutil
 from pathlib import Path
@@ -31,8 +30,6 @@ CONFIG_PARSER: configparser.ConfigParser = configparser.ConfigParser()
 FILE_NAME_SETUP_CFG: str = "setup.cfg"
 FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
 
-LOGGER = logging.getLogger(__name__)
-
 TESTS_INBOX = libs.utils.str_2_path("tests/__PYTEST_FILES__/")
 
 
@@ -48,24 +45,6 @@ def backup_setup_cfg() -> None:
         shutil.copy2(FILE_NAME_SETUP_CFG, FILE_NAME_SETUP_CFG_BACKUP)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Copy a file from the sample test file directory.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def copy_file_from_pytest_2_dir(
-    source_file: Tuple[str, str | None],
-    target_dir: Path,
-) -> None:
-    """Copy a file from the sample test file directory.
-
-    Args:
-        source_file: Tuple[str, str | None]: Source file name.
-        target_dir: Path: Target directory.
-    """
-    (source_stem, source_ext) = source_file
-    copy_files_from_pytest([(source_file, (target_dir, [source_stem], source_ext))])
 
 
 # -----------------------------------------------------------------------------
@@ -105,6 +84,25 @@ def copy_files_from_pytest(
         assert os.path.isfile(target_file), "target file missing"
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Copy files from the sample test file directory.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def copy_files_from_pytest_2_dir(
+    source_files: List[Tuple[str, str | None]],
+    target_dir: Path,
+) -> None:
+    """Copy files from the sample test file directory.
+
+    Args:
+        source_files: List[Tuple[str, str | None]]: Source file name.
+        target_dir: Path: Target directory.
+    """
+    for source_file in source_files:
+        (source_stem, source_ext) = source_file
+        copy_files_from_pytest([(source_file, (target_dir, [source_stem], source_ext))])
 
 
 # -----------------------------------------------------------------------------
@@ -390,7 +388,7 @@ def verify_content_inboxes(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.cfg.logger.debug("files to be checked=%s",str(file_list))
+    libs.cfg.logger.info("files to be checked=%s", str(file_list))
 
     for (directory, file_comp, ext) in file_list:
         assert os.path.isdir(directory), "directory to be checked missing"
@@ -399,7 +397,7 @@ def verify_content_inboxes(
         libs.cfg.logger.debug("file to be checked=%s", file)
         assert os.path.isfile(file), "file to be checked is missing"
 
-    libs.cfg.logger.debug("no. files expected =%s", str(no_of_files))
+    libs.cfg.logger.info("no. files expected =%s", str(no_of_files))
 
     (no_inbox, no_accepted, no_rejected) = no_of_files
 

@@ -575,7 +575,7 @@ def process_inbox() -> None:
     # Check the inbox file directories and create the missing ones.
     check_and_create_directories()
 
-    for file in pathlib.Path(libs.cfg.directory_inbox).iterdir():
+    for file in sorted(pathlib.Path(libs.cfg.directory_inbox).iterdir()):
         if file.is_file():
             if file.name == "README.md":
                 libs.utils.progress_msg(

@@ -22,6 +22,8 @@ import dcr
 # -----------------------------------------------------------------------------
 def test_connect_db(fxtr_setup_logger_environment):
     """Test: connect_db()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     # -------------------------------------------------------------------------
     config_section = libs.cfg.DCR_CFG_SECTION_TEST
     config_param = libs.cfg.DCR_CFG_DB_CONNECTION_PORT
@@ -38,12 +40,17 @@ def test_connect_db(fxtr_setup_logger_environment):
 
     pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Test Function - connect_db_admin().
 # -----------------------------------------------------------------------------
 def test_connect_db_admin(fxtr_setup_logger_environment):
     """Test: connect_db_admin()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     # -------------------------------------------------------------------------
     config_section = libs.cfg.DCR_CFG_SECTION_TEST
     config_param = libs.cfg.DCR_CFG_DB_CONNECTION_PORT
@@ -60,12 +67,17 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
 
     pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Test Function - create_database().
 # -----------------------------------------------------------------------------
 def test_create_database(fxtr_setup_logger_environment):
     """Test: create_database()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
@@ -93,12 +105,17 @@ def test_create_database(fxtr_setup_logger_environment):
 
     pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Test Function - drop_database().
 # -----------------------------------------------------------------------------
 def test_drop_database(fxtr_setup_logger_environment):
     """Test: drop_database()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
     libs.db.driver.drop_database()
@@ -130,24 +147,36 @@ def test_drop_database(fxtr_setup_logger_environment):
 
     pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Test Function - select_version_version_unique().
 # -----------------------------------------------------------------------------
+@pytest.mark.issue
 def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     """Test: select_version_version_unique()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     # -------------------------------------------------------------------------
     libs.db.orm.connect_db()
 
     libs.db.orm.insert_dbt_row(libs.db.cfg.DBT_VERSION, {libs.db.cfg.DBC_VERSION: "0.0.0"})
 
+    libs.db.orm.disconnect_db()
+
+    libs.db.driver.connect_db()
+
+    libs.db.cfg.db_driver_cur = libs.db.cfg.db_driver_conn.cursor()
+
     with pytest.raises(SystemExit) as expt:
-        libs.db.orm.select_version_version_unique()
+        libs.db.driver.select_version_version_unique()
+
+    libs.db.driver.disconnect_db()
 
     assert expt.type == SystemExit, "Version not unique"
     assert expt.value.code == 1, "Version not unique"
-
-    libs.db.orm.disconnect_db()
 
     # -------------------------------------------------------------------------
     libs.db.orm.connect_db()
@@ -160,13 +189,22 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
         )
         conn.execute(delete(version))
 
+    libs.db.orm.disconnect_db()
+
+    libs.db.driver.connect_db()
+
+    libs.db.cfg.db_driver_cur = libs.db.cfg.db_driver_conn.cursor()
+
     with pytest.raises(SystemExit) as expt:
-        libs.db.orm.select_version_version_unique()
+        libs.db.driver.select_version_version_unique()
+
+    libs.db.driver.disconnect_db()
 
     assert expt.type == SystemExit, "Version missing"
     assert expt.value.code == 1, "Version missing"
 
-    libs.db.orm.disconnect_db()
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -174,6 +212,9 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     """Test: upgrade_database()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
 
     # -------------------------------------------------------------------------
@@ -203,3 +244,6 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
 
     assert expt.type == SystemExit, "Version unknown"
     assert expt.value.code == 1, "Version unknown"
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)

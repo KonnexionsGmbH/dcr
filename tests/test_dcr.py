@@ -90,17 +90,6 @@ def test_get_config(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.delete_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES
-    )
-
-    assert not libs.cfg.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: false (missing)"
-
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
-    )
-
-    # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "TruE"
     )
@@ -123,21 +112,6 @@ def test_get_config(fxtr_setup_logger_environment):
 
     assert expt.type == SystemExit, "DCR_CFG_PDF2IMAGE_TYPE: invalid"
     assert expt.value.code == 1, "DCR_CFG_PDF2IMAGE_TYPE: invalid"
-
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original
-    )
-
-    # -------------------------------------------------------------------------
-    value_original = pytest.helpers.delete_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE
-    )
-
-    dcr.get_config()
-
-    assert (
-        libs.cfg.pdf2image_type == libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
-    ), "DCR_CFG_PDF2IMAGE_TYPE: default"
 
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original
@@ -167,6 +141,88 @@ def test_get_config(fxtr_setup_logger_environment):
 
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, value_original
+    )
+
+
+# -----------------------------------------------------------------------------
+# Test Function - get_config() - missing.
+# -----------------------------------------------------------------------------
+def test_get_config_missing(fxtr_setup_logger_environment):
+    """Test: get_config() - missing."""
+    # -------------------------------------------------------------------------
+    dcr.get_config()
+
+    assert len(libs.cfg.config) == CONFIG_PARAM_NO, "config:: complete"
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DIRECTORY_INBOX
+    )
+
+    with pytest.raises(SystemExit) as expt:
+        dcr.get_config()
+
+    assert expt.type == SystemExit, "DCR_CFG_DIRECTORY_INBOX: missing"
+    assert expt.value.code == 1, "DCR_CFG_DIRECTORY_INBOX: missing"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DIRECTORY_INBOX, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED
+    )
+
+    with pytest.raises(SystemExit) as expt:
+        dcr.get_config()
+
+    assert expt.type == SystemExit, "DCR_CFG_DIRECTORY_INBOX_ACCEPTED: missing"
+    assert expt.value.code == 1, "DCR_CFG_DIRECTORY_INBOX_ACCEPTED: missing"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
+    )
+
+    with pytest.raises(SystemExit) as expt:
+        dcr.get_config()
+
+    assert expt.type == SystemExit, "DCR_CFG_DIRECTORY_INBOX_REJECTED: missing"
+    assert expt.value.code == 1, "DCR_CFG_DIRECTORY_INBOX_REJECTED: missing"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES
+    )
+
+    assert not libs.cfg.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: false (missing)"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE
+    )
+
+    dcr.get_config()
+
+    assert (
+        libs.cfg.pdf2image_type == libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
+    ), "DCR_CFG_PDF2IMAGE_TYPE: default"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original
     )
 
     # -------------------------------------------------------------------------

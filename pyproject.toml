@@ -56,9 +56,6 @@ title = "API Documentation"
 
 [tool.pytest.ini_options]
 console_output_style = "count"
-log_cli_date_format = "%Y-%m-%d %H:%M:%S"
-log_cli_format = "%(asctime)s [%(module)s.py  ] %(levelname)-5s %(funcName)s:%(lineno)d %(message)s"
-log_cli_level = "debug"
 markers = ["issue"]
 norecursedirs = "./tests/helpers"
 pythonpath = "./src/dcr/"
