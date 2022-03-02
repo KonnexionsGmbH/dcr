@@ -304,6 +304,8 @@ def validate_config() -> None:
         libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX] = libs.utils.str_2_path(
             libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
         )
+
+        libs.cfg.directory_inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
     else:
         libs.utils.terminate_fatal(
             "Missing configuration parameter '" + libs.cfg.DCR_CFG_DIRECTORY_INBOX + "'"
@@ -316,6 +318,10 @@ def validate_config() -> None:
         libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED] = libs.utils.str_2_path(
             libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
         )
+
+        libs.cfg.directory_inbox_accepted = libs.cfg.config[
+            libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED
+        ]
     else:
         libs.utils.terminate_fatal(
             "Missing configuration parameter '" + libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED + "'"
@@ -328,6 +334,10 @@ def validate_config() -> None:
         libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED] = libs.utils.str_2_path(
             libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
         )
+
+        libs.cfg.directory_inbox_rejected = libs.cfg.config[
+            libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
+        ]
     else:
         libs.utils.terminate_fatal(
             "Missing configuration parameter '" + libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED + "'"

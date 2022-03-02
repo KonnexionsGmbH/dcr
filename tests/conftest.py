@@ -10,12 +10,15 @@ import configparser
 import logging
 import os
 import shutil
+from pathlib import Path
+from typing import List
 from typing import Tuple
 
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver
 import libs.db.orm
+import libs.utils
 import pytest
 
 import dcr
@@ -30,7 +33,7 @@ FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
 
 LOGGER = logging.getLogger(__name__)
 
-TESTS_INBOX = "tests/__PYTEST_FILES__/"
+TESTS_INBOX = libs.utils.str_2_path("tests/__PYTEST_FILES__/")
 
 
 # -----------------------------------------------------------------------------
@@ -48,36 +51,60 @@ def backup_setup_cfg() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Copy the test file into the file directory 'inbox'.
+# Copy a file from the sample test file directory.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def copy_test_file_2_inbox(
-    document_id: int, stem_name: str, file_extension: str | None
-) -> Tuple[str, str]:
-    """Copy the test file into the file directory 'inbox'.
+def copy_file_from_pytest_2_dir(
+    source_file: Tuple[str, str | None],
+    target_dir: Path,
+) -> None:
+    """Copy a file from the sample test file directory.
 
     Args:
-        document_id (int): Document id.
-        stem_name (str): Stem name.
-        file_extension (str|None): File extension.
+        source_file: Tuple[str, str | None]: Source file name.
+        target_dir: Path: Target directory.
+    """
+    (source_stem, source_ext) = source_file
+    copy_files_from_pytest([(source_file, (target_dir, [source_stem], source_ext))])
 
-    Returns:
-        Tuple[str, str]: A tuple with source filename and the target filename.
+
+# -----------------------------------------------------------------------------
+# Copy files from the sample test file directory.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def copy_files_from_pytest(
+    file_list: List[Tuple[Tuple[str, str | None], Tuple[Path, List[str], str | None]]]
+) -> None:
+    """Copy files from the sample test file directory.
+
+    Args:
+        file_list (List[Tuple[Tuple[str, str | None], Tuple[Path, List[str], str | None]]]):
+                  List of files to be copied.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    if file_extension is None:
-        file_name_source = stem_name
-        file_name_target = stem_name
-    else:
-        file_name_source = stem_name + "." + file_extension
-        file_name_target = stem_name + "_" + str(document_id) + "." + file_extension
+    assert os.path.isdir(TESTS_INBOX), "source directory missing"
 
-    shutil.copy(os.path.join(TESTS_INBOX, file_name_source), libs.cfg.directory_inbox)
+    for ((source_stem, source_ext), (target_dir, target_file_comp, target_ext)) in file_list:
+        source_file_name = source_stem if source_ext is None else source_stem + "." + source_ext
+        source_file = os.path.join(TESTS_INBOX, source_file_name)
+        libs.cfg.logger.debug("source file=%s", source_file)
+        assert os.path.isfile(source_file), "source file missing"
+
+        assert os.path.isdir(target_dir), "target directory missing"
+        target_file_name = (
+            "_".join(target_file_comp)
+            if target_ext is None
+            else "_".join(target_file_comp) + "." + target_ext
+        )
+        target_file = os.path.join(target_dir, target_file_name)
+        libs.cfg.logger.debug("target file=%s", target_file)
+        assert os.path.isfile(target_file) is False, "target file already existing"
+
+        shutil.copy(source_file, target_file)
+        assert os.path.isfile(target_file), "target file missing"
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-    return file_name_source, file_name_target
 
 
 # -----------------------------------------------------------------------------
@@ -201,18 +228,18 @@ def fxtr_setup_empty_db_and_inbox(
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
-    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
-    fxtr_mkdir(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
-    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
-    fxtr_mkdir(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
-    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED])
-    fxtr_mkdir(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED])
+    fxtr_rmdir_opt(libs.cfg.directory_inbox)
+    fxtr_mkdir(libs.cfg.directory_inbox)
+    fxtr_rmdir_opt(libs.cfg.directory_inbox_accepted)
+    fxtr_mkdir(libs.cfg.directory_inbox_accepted)
+    fxtr_rmdir_opt(libs.cfg.directory_inbox_rejected)
+    fxtr_mkdir(libs.cfg.directory_inbox_rejected)
 
     yield
 
-    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED])
-    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
-    fxtr_rmdir_opt(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX])
+    fxtr_rmdir_opt(libs.cfg.directory_inbox_rejected)
+    fxtr_rmdir_opt(libs.cfg.directory_inbox_accepted)
+    fxtr_rmdir_opt(libs.cfg.directory_inbox)
 
     libs.db.driver.drop_database()
 
@@ -301,187 +328,12 @@ def restore_setup_cfg():
 
 
 # -----------------------------------------------------------------------------
-# Run RUN_ACTION_PDF_2_IMAGE.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def run_action_pdf_2_image(
-    run_action: str,
-    stem_name: str,
-    no_inboxes: Tuple[int, int, int],
-) -> Tuple[int, int, int]:
-    """Run RUN_ACTION_PROCESS_INBOX.
-
-    Args:
-        run_action:str: Run action.
-        stem_name: str: Stem name.
-        no_inboxes: Tuple[int,int,int]: Target number of files in the inbox file directories.
-
-    Returns:
-        Tuple[int, int, int]: New number of files in the inboxes.
-    """
-    file_name_target = stem_name + "_1." + libs.cfg.pdf2image_type
-
-    no_inbox, no_inbox_accepted, no_inbox_rejected = no_inboxes
-
-    show_state_directories("before")
-
-    dcr.main([libs.cfg.DCR_ARGV_0, run_action])
-
-    show_state_directories("after")
-
-    no_inbox_accepted += 1
-    verify_action_after(
-        libs.cfg.directory_inbox_accepted,
-        file_name_target,
-        no_inbox,
-        no_inbox_accepted,
-        no_inbox_rejected,
-    )
-
-    return no_inbox, no_inbox_accepted, no_inbox_rejected
-
-
-# -----------------------------------------------------------------------------
-# Run RUN_ACTION_PROCESS_INBOX.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def run_action_process_inbox(
-    run_action: str,
-    document_id,
-    file: Tuple[str, str, str | None],
-    no_inboxes: Tuple[int, int, int],
-) -> Tuple[int, int, int]:
-    """Run RUN_ACTION_PROCESS_INBOX.
-
-    Args:
-        run_action:str: Run action.
-        document_id (_type_): Document id
-        file: Tuple[str, str, str|None]: Directory_name, stem name and file extension.
-        no_inboxes: Tuple[int,int,int]: Target number of files in the inbox file directories.
-
-    Returns:
-        Tuple[int, int, int]: New number of files in the inboxes.
-    """
-    directory_name, stem_name, file_extension = file
-
-    file_name_source, file_name_target = copy_test_file_2_inbox(
-        document_id, stem_name, file_extension
-    )
-
-    no_inbox, no_inbox_accepted, no_inbox_rejected = no_inboxes
-
-    no_inbox += 1
-    # verify_action_before(
-    #     file_name_source,
-    #     no_inbox,
-    #     no_inbox_accepted,
-    #     no_inbox_rejected,
-    # )
-
-    show_state_directories("before")
-
-    dcr.main([libs.cfg.DCR_ARGV_0, run_action])
-
-    show_state_directories("after")
-
-    if file_extension is None:
-        directory_name = libs.cfg.directory_inbox
-    else:
-        no_inbox -= 1
-        if directory_name == libs.cfg.directory_inbox_accepted:
-            no_inbox_accepted += 1
-        if directory_name == libs.cfg.directory_inbox_rejected:
-            no_inbox_rejected += 1
-
-    # verify_action_after(
-    #     directory_name, file_name_target, no_inbox, no_inbox_accepted, no_inbox_rejected
-    # )
-
-    return no_inbox, no_inbox_accepted, no_inbox_rejected
-
-
-# -----------------------------------------------------------------------------
-# Set up RUN_ACTION_...
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def run_action_setup() -> Tuple[int, Tuple[int, int, int]]:
-    """Set up RUN_ACTION_...
-
-    Returns:
-        Tuple[int, Tuple[int, int,int]]: (current_document_id, (current_no_inbox,
-                                                                current_no_inbox_accepted,
-                                                                current_no_inbox_rejected)).
-    """
-    libs.cfg.directory_inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-    libs.cfg.directory_inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    libs.cfg.directory_inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
-
-    return 1, (0, 0, 0)
-
-
-# -----------------------------------------------------------------------------
 # Run before all tests.
 # -----------------------------------------------------------------------------
 @pytest.fixture(scope="session", autouse=True)
 def setup():
     """Run before all tests."""
     dcr.initialise_logger()
-
-
-# -----------------------------------------------------------------------------
-# Show the state of the directories.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def show_state_directories(comment:str) -> None:
-    """Show the state of the directories.
-
-    Args:
-        comment (str): Comment.
-    """
-    if os.path.isdir(libs.cfg.directory_inbox):
-        libs.cfg.logger.debug(
-            "show_state_directories(%s)  - %s         =%s",
-            comment,
-            str(libs.cfg.directory_inbox),
-            os.listdir(libs.cfg.directory_inbox),
-        )
-    else:
-        libs.cfg.logger.debug(
-            comment,
-            "show_state_directories(%s)  - %s          =%s",
-            str(libs.cfg.directory_inbox),
-            "missing",
-        )
-
-    if os.path.isdir(libs.cfg.directory_inbox):
-        libs.cfg.logger.debug(
-            "show_state_directories(%s)  - %s=%s",
-            comment,
-            str(libs.cfg.directory_inbox_accepted),
-            os.listdir(libs.cfg.directory_inbox_accepted),
-        )
-    else:
-        libs.cfg.logger.debug(
-            comment,
-            "show_state_directories(%s)  - %s=%s",
-            str(libs.cfg.directory_inbox_accepted),
-            "missing",
-        )
-
-    if os.path.isdir(libs.cfg.directory_inbox):
-        libs.cfg.logger.debug(
-            "show_state_directories(%s)  - %s=%s",
-            comment,
-            str(libs.cfg.directory_inbox_rejected),
-            os.listdir(libs.cfg.directory_inbox_rejected),
-        )
-    else:
-        libs.cfg.logger.debug(
-            comment,
-            "show_state_directories(%s)  - %s=%s",
-            str(libs.cfg.directory_inbox_rejected),
-            "missing",
-        )
 
 
 # -----------------------------------------------------------------------------
@@ -520,69 +372,75 @@ def store_config_param(
 
 
 # -----------------------------------------------------------------------------
-# Verify the inboxes after a successful action.
+# Verify the contents of the inbox file directories.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def verify_action_after(
-    directory_name: str,
-    file_name: str,
-    no_inbox: int,
-    no_inbox_accepted: int,
-    no_inbox_rejected: int,
+def verify_content_inboxes(
+    file_list: List[Tuple[Path, List[str], str | None]],
+    no_of_files: Tuple[int | None, int | None, int | None],
 ) -> None:
-    """Verify the inboxes after a successful action.
+    """Verify the contents of the inbox file directories.
 
     Args:
-        directory_name (str): Directory name of the new addition.
-        file_name (str): File name of the new addition.
-        no_inbox (int): Target number of files in the 'inbox' file directory.
-        no_inbox_accepted (int): Target number of files in the 'inbox_accepted' file directory.
-        no_inbox_rejected (int): Target number of files in the 'inbox_rejected' file directory.
+        file_list: List[Tuple[Path, List[str], str | None]]:
+                   List of files to be checked.
+        no_of_files: Tuple[int | None, int | None, int | None]:
+                     Expected number of files in the file directories
+                     inbox, inbox_accepted and inbox_rejected
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    assert len(os.listdir(libs.cfg.directory_inbox)) == no_inbox, "after file directory: inbox"
-    assert (
-        len(os.listdir(libs.cfg.directory_inbox_accepted)) == no_inbox_accepted
-    ), "after file directory: inbox_accepted"
-    assert (
-        len(os.listdir(libs.cfg.directory_inbox_rejected)) == no_inbox_rejected
-    ), "after file directory: inbox_rejected"
+    libs.cfg.logger.debug("files to be checked=%s",str(file_list))
 
-    assert os.path.isfile(
-        os.path.join(directory_name, file_name)
-    ), "after: inbox_accepted should contain target file"
+    for (directory, file_comp, ext) in file_list:
+        assert os.path.isdir(directory), "directory to be checked missing"
+        file_name = "_".join(file_comp) if ext is None else "_".join(file_comp) + "." + ext
+        file = os.path.join(directory, file_name)
+        libs.cfg.logger.debug("file to be checked=%s", file)
+        assert os.path.isfile(file), "file to be checked is missing"
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    libs.cfg.logger.debug("no. files expected =%s", str(no_of_files))
 
+    (no_inbox, no_accepted, no_rejected) = no_of_files
 
-# -----------------------------------------------------------------------------
-# Verify the inboxes before the action.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def verify_action_before(
-    file_name: str, no_inbox: int, no_inbox_accepted: int, no_inbox_rejected: int
-) -> None:
-    """Verify the inboxes before the action.
+    if no_inbox is None:
+        assert os.path.isdir(libs.cfg.directory_inbox) is False, "directory inbox is existing"
+    else:
+        libs.cfg.logger.debug(
+            "content directory %s=%s",
+            libs.cfg.directory_inbox,
+            str(os.listdir(libs.cfg.directory_inbox)),
+        )
+        assert (
+            len(os.listdir(libs.cfg.directory_inbox)) == no_inbox
+        ), "no files in directory inbox is unexpected"
 
-    Args:
-        file_name (str): File name of the test file in the file directory 'inbox'.
-        no_inbox (int): Target number of files in the 'inbox' file directory.
-        no_inbox_accepted (int): Target number of files in the 'inbox_accepted' file directory.
-        no_inbox_rejected (int): Target number of files in the 'inbox_rejected' file directory.
-    """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    if no_accepted is None:
+        assert (
+            os.path.isdir(libs.cfg.directory_inbox_accepted) is False
+        ), "directory inbox_accepted is existing"
+    else:
+        libs.cfg.logger.debug(
+            "content directory %s=%s",
+            libs.cfg.directory_inbox_accepted,
+            str(os.listdir(libs.cfg.directory_inbox_accepted)),
+        )
+        assert (
+            len(os.listdir(libs.cfg.directory_inbox_accepted)) == no_accepted
+        ), "no files in directory inbox_accepted is unexpected"
 
-    assert len(os.listdir(libs.cfg.directory_inbox)) == no_inbox, "before file directory: inbox"
-    assert (
-        len(os.listdir(libs.cfg.directory_inbox_accepted)) == no_inbox_accepted
-    ), "before file directory: inbox_accepted"
-    assert (
-        len(os.listdir(libs.cfg.directory_inbox_rejected)) == no_inbox_rejected
-    ), "before file directory: inbox_rejected"
-
-    assert os.path.isfile(
-        os.path.join(libs.cfg.directory_inbox, file_name)
-    ), "before: inbox should contain source file"
+    if no_rejected is None:
+        assert (
+            os.path.isdir(libs.cfg.directory_inbox_rejected) is False
+        ), "directory inbox_rejected is existing"
+    else:
+        libs.cfg.logger.debug(
+            "content directory %s=%s",
+            libs.cfg.directory_inbox_rejected,
+            str(os.listdir(libs.cfg.directory_inbox_rejected)),
+        )
+        assert (
+            len(os.listdir(libs.cfg.directory_inbox_rejected)) == no_rejected
+        ), "no files in directory inbox_rejected is unexpected"
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

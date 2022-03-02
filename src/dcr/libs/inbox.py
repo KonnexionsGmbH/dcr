@@ -37,8 +37,6 @@ def check_directories() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.cfg.directory_inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-    libs.cfg.directory_inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
     if not os.path.isdir(libs.cfg.directory_inbox_accepted):
         libs.utils.terminate_fatal(
             "The inbox_accepted directory with the name "
@@ -46,7 +44,6 @@ def check_directories() -> None:
             + " does not exist - error="
             + str(OSError),
         )
-    libs.cfg.directory_inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -63,7 +60,6 @@ def check_and_create_directories() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.cfg.directory_inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
     if not os.path.isdir(libs.cfg.directory_inbox):
         libs.utils.terminate_fatal(
             "The inbox directory with the name "
@@ -72,10 +68,8 @@ def check_and_create_directories() -> None:
             + str(OSError),
         )
 
-    libs.cfg.directory_inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
     create_directory("the accepted documents", str(libs.cfg.directory_inbox_accepted))
 
-    libs.cfg.directory_inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
     create_directory("the rejected documents", str(libs.cfg.directory_inbox_rejected))
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -581,7 +575,7 @@ def process_inbox() -> None:
     # Check the inbox file directories and create the missing ones.
     check_and_create_directories()
 
-    for file in pathlib.Path(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]).iterdir():
+    for file in pathlib.Path(libs.cfg.directory_inbox).iterdir():
         if file.is_file():
             if file.name == "README.md":
                 libs.utils.progress_msg(
