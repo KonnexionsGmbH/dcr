@@ -19,6 +19,8 @@ import libs.db.driver
 import libs.db.orm
 import libs.utils
 import pytest
+from sqlalchemy import Table
+from sqlalchemy import delete
 
 import dcr
 
@@ -133,6 +135,25 @@ def delete_config_param(config_section: str, config_param: str) -> str:
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return config_value_orig
+
+
+# -----------------------------------------------------------------------------
+# Delete all entries in the database table 'version'.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def delete_version_version():
+    """Delete all entries in the database table 'version'."""
+    libs.db.orm.connect_db()
+
+    with libs.db.cfg.db_orm_engine.begin() as conn:
+        version = Table(
+            libs.db.cfg.DBT_VERSION,
+            libs.db.cfg.db_orm_metadata,
+            autoload_with=libs.db.cfg.db_orm_engine,
+        )
+        conn.execute(delete(version))
+
+    libs.db.orm.disconnect_db()
 
 
 # -----------------------------------------------------------------------------

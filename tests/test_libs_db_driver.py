@@ -6,8 +6,6 @@ import libs.db.cfg
 import libs.db.driver
 import libs.db.orm
 import pytest
-from sqlalchemy import Table
-from sqlalchemy import delete
 
 import dcr
 
@@ -154,7 +152,6 @@ def test_drop_database(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 # Test Function - select_version_version_unique().
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     """Test: select_version_version_unique()."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
@@ -175,21 +172,11 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
 
     libs.db.driver.disconnect_db()
 
-    assert expt.type == SystemExit, "Version not unique"
-    assert expt.value.code == 1, "Version not unique"
+    assert expt.type == SystemExit, "Version not unique (driver)"
+    assert expt.value.code == 1, "Version not unique (driver)"
 
     # -------------------------------------------------------------------------
-    libs.db.orm.connect_db()
-
-    with libs.db.cfg.db_orm_engine.begin() as conn:
-        version = Table(
-            libs.db.cfg.DBT_VERSION,
-            libs.db.cfg.db_orm_metadata,
-            autoload_with=libs.db.cfg.db_orm_engine,
-        )
-        conn.execute(delete(version))
-
-    libs.db.orm.disconnect_db()
+    pytest.helpers.delete_version_version()
 
     libs.db.driver.connect_db()
 
@@ -200,8 +187,8 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
 
     libs.db.driver.disconnect_db()
 
-    assert expt.type == SystemExit, "Version missing"
-    assert expt.value.code == 1, "Version missing"
+    assert expt.type == SystemExit, "Version missing (driver)"
+    assert expt.value.code == 1, "Version missing (driver)"
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

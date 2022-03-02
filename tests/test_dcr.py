@@ -20,6 +20,9 @@ CONFIG_PARAM_NO: int = 19
 # -----------------------------------------------------------------------------
 def test_get_args(fxtr_setup_logger_environment):
     """Test: get_args()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
     args = dcr.get_args([libs.cfg.DCR_ARGV_0, "AlL"])
 
     assert len(args) == 4, "arg: all"
@@ -65,12 +68,17 @@ def test_get_args(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "invalid arg"
     assert expt.value.code == 1, "invalid arg"
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Test Function - get_config().
 # -----------------------------------------------------------------------------
 def test_get_config(fxtr_setup_logger_environment):
     """Test: get_config()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     # -------------------------------------------------------------------------
     dcr.get_config()
 
@@ -143,12 +151,17 @@ def test_get_config(fxtr_setup_logger_environment):
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, value_original
     )
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Test Function - get_config() - missing.
 # -----------------------------------------------------------------------------
 def test_get_config_missing(fxtr_setup_logger_environment):
     """Test: get_config() - missing."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     # -------------------------------------------------------------------------
     dcr.get_config()
 
@@ -236,12 +249,17 @@ def test_get_config_missing(fxtr_setup_logger_environment):
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, value_original
     )
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Test Function - get_environment().
 # -----------------------------------------------------------------------------
 def test_get_environment(fxtr_setup_logger):
     """Test: get_environment()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     # -------------------------------------------------------------------------
     os.environ[libs.cfg.DCR_ENVIRONMENT_TYPE] = "n/a"
 
@@ -269,40 +287,73 @@ def test_get_environment(fxtr_setup_logger):
 
     assert libs.cfg.environment_type == libs.cfg.ENVIRONMENT_TYPE_TEST, "DCR_ENVIRONMENT_TYPE: ok"
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Test Function - main().
 # -----------------------------------------------------------------------------
 def test_main_all(fxtr_setup_empty_db_and_inbox):
     """Test: main() - RUN_ACTION_ALL_COMPLETE."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
     libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
     libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 def test_main_db_c(fxtr_setup_empty_db_and_inbox):
     """Test: main() - RUN_ACTION_CREATE_DB."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
     libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
     libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 def test_main_p_i(fxtr_setup_empty_db_and_inbox):
     """Test: main() - RUN_ACTION_PROCESS_INBOX."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
     libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
     libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 def test_main_p_2_i(fxtr_mkdir, fxtr_setup_empty_db_and_inbox):
     """Test: main() - RUN_ACTION_PDF_2_IMAGE."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
     libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
     libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 def test_main_db_u(fxtr_setup_empty_db_and_inbox):
     """Test: main() - RUN_ACTION_UPGRADE_DB."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
     libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
     libs.cfg.logger.info(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
