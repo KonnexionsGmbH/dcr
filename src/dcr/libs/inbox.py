@@ -163,6 +163,7 @@ def convert_pdf_2_image() -> None:
             if libs.cfg.document_status == libs.db.cfg.DOCUMENT_STATUS_START:
                 libs.cfg.total_status_ready += 1
             else:
+                # not testable
                 libs.cfg.total_status_error += 1
 
             convert_pdf_2_image_file()
@@ -215,11 +216,11 @@ def convert_pdf_2_image_file() -> None:
             libs.cfg.document_child_child_no = +1
 
             libs.cfg.document_child_stem_name = (
-                    libs.cfg.document_stem_name + "_" + str(libs.cfg.document_child_child_no)
+                libs.cfg.document_stem_name + "_" + str(libs.cfg.document_child_child_no)
             )
 
             libs.cfg.document_child_file_name = (
-                    libs.cfg.document_child_stem_name + "." + libs.cfg.document_child_file_type
+                libs.cfg.document_child_stem_name + "." + libs.cfg.document_child_file_type
             )
 
             file_name_child = os.path.join(
@@ -273,8 +274,8 @@ def convert_pdf_2_image_file() -> None:
             #
             #     libs.db.orm.update_document_status(
             #         {
-            #             libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_ERROR,
-            #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+            #           libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_ERROR,
+            #           libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
             #         },
             #         libs.db.orm.insert_journal(
             #             __name__,
@@ -305,6 +306,7 @@ def convert_pdf_2_image_file() -> None:
                     ).replace("{child_no}", str(libs.cfg.document_child_child_no)),
                 ),
             )
+    # not testable
     except PDFPopplerTimeoutError as err:
         libs.cfg.total_erroneous += 1
 
@@ -690,7 +692,7 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
 
     libs.cfg.total_ok_processed += 1
 
-    return
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
     # not testable
     # try:
     #     shutil.move(source_file, target_file)
@@ -716,6 +718,8 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
     #     )
     #
     #     libs.cfg.total_ok_processed += 1
+    #
+    #     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
     #
     #     return
     # except PermissionError as err:
@@ -751,8 +755,8 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
     #             .replace("{error_msg}", err.strerror),
     #         ),
     #     )
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    #
+    # libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -842,7 +846,7 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
 
     libs.cfg.total_rejected += 1
 
-    return
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
     # not testable
     # try:
     #     libs.cfg.total_erroneous += 1
@@ -898,5 +902,5 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
     #             ),
     #         ),
     #     )
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    #
+    # libs.cfg.logger.debug(libs.cfg.LOGGER_END)

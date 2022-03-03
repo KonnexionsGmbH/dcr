@@ -3,7 +3,8 @@
 Returns:
     [type]: None.
 """
-from sqlite3 import Error
+# not testable
+# from sqlite3 import Error
 from typing import Callable
 from typing import Dict
 from typing import List
@@ -24,11 +25,14 @@ from sqlalchemy import func
 from sqlalchemy import insert
 from sqlalchemy import select
 from sqlalchemy import update
-from sqlalchemy.engine import Connection
+
 # not testable
 # from sqlalchemy.exc import InternalError
 # from sqlalchemy.exc import OperationalError
 from sqlalchemy.pool import NullPool
+
+# not testable
+# from sqlalchemy.engine import Connection
 
 
 # -----------------------------------------------------------------------------
@@ -96,7 +100,7 @@ def connect_db() -> None:
         + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD],
         poolclass=NullPool,
     )
-    conn: Connection | None = libs.db.cfg.db_orm_engine.connect()
+    libs.db.cfg.db_orm_engine.connect()
     # not testable
     # try:
     #     libs.db.cfg.db_orm_engine = sqlalchemy.create_engine(
