@@ -3,7 +3,7 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0)
 
 ----
 
@@ -20,7 +20,7 @@ Release Date: dd.mm.2022
 
 | Software                                   | Version  | Remark                              | Status |
 |:-------------------------------------------|:---------|:------------------------------------|--------|
-| DBeaver                                    | 21.3.4   | for virtual machine only [optional] |        |
+| DBeaver                                    | 21.3.5   | for virtual machine only [optional] |        |
 | Docker Desktop                             | 20.10.12 | base version [Docker Image & VM]    | new    | 
 | Git                                        | 2.25.1   | base version                        |        |
 | [Poppler](https://poppler.freedesktop.org) | 0.86.1   | base version                        | new    |
@@ -62,8 +62,6 @@ Release Date: dd.mm.2022
 - Microsoft Windows Server 2019: (see [here](#issues_windows_2019){:target="_blank"}) 
 
 - Pydoc-Markdown: (see [here](#issues_pydoc_markdown){:target="_blank"})
-
-- pytest: (see [here](#issues_pydoc_markdown){:target="_blank"})
 
 ----
 
