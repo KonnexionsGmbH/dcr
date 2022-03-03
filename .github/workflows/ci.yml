@@ -27,6 +27,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1  # no history, just HEAD
+      - uses: docker-practice/actions-setup-docker@master
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -73,6 +74,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1  # no history, just HEAD
+      - uses: docker-practice/actions-setup-docker@master
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -106,6 +108,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1  # no history, just HEAD
+      - uses: docker-practice/actions-setup-docker@master
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
