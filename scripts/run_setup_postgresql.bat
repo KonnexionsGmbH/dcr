@@ -14,8 +14,8 @@ if ["%DCR_CONTAINER_PORT%"] EQU [""] (
     set DCR_CONTAINER_PORT=5432
 )
 
-if ["%DCR_VERSION%"] EQU [""] (
-    set DCR_VERSION=latest
+if ["%DCR_POSTGRESQL_VERSION%"] EQU [""] (
+    set DCR_POSTGRESQL_VERSION=latest
 )
 
 if ["%1"] EQU [""] (
@@ -53,7 +53,7 @@ echo ---------------------------------------------------------------------------
 echo CONNECTION_PORT    : %DCR_CONNECTION_PORT%
 echo CONTAINER_PORT     : %DCR_CONTAINER_PORT%
 echo ENVIRONMENT        : %DCR_ENVIRONMENT_TYPE%
-echo POSTGRESQL VERSION : %DCR_VERSION%
+echo POSTGRESQL VERSION : %DCR_POSTGRESQL_VERSION%
 echo --------------------------------------------------------------------------------
 echo:| TIME
 echo ================================================================================
@@ -73,7 +73,7 @@ rem ----------------------------------------------------------------------------
 
 echo PostgreSQL
 echo --------------------------------------------------------------------------------
-echo Docker create dcr_db_%DCR_ENVIRONMENT_TYPE% (PostgreSQL %DCR_VERSION%)
+echo Docker create dcr_db_%DCR_ENVIRONMENT_TYPE% (PostgreSQL %DCR_POSTGRESQL_VERSION%)
 
 docker create -e        POSTGRES_DB=dcr_db_%DCR_ENVIRONMENT_TYPE%_admin ^
               -e        POSTGRES_HOST_AUTH_METHOD=password ^
@@ -82,9 +82,9 @@ docker create -e        POSTGRES_DB=dcr_db_%DCR_ENVIRONMENT_TYPE%_admin ^
               --name    dcr_db_%DCR_ENVIRONMENT_TYPE% ^
               -p        %DCR_CONNECTION_PORT%:%DCR_CONTAINER_PORT% ^
               --restart always ^
-              postgres:%DCR_VERSION%
+              postgres:%DCR_POSTGRESQL_VERSION%
 
-echo Docker start dcr_db_%DCR_ENVIRONMENT_TYPE% (PostgreSQL %DCR_VERSION%) ...
+echo Docker start dcr_db_%DCR_ENVIRONMENT_TYPE% (PostgreSQL %DCR_POSTGRESQL_VERSION%) ...
 docker start dcr_db_%DCR_ENVIRONMENT_TYPE%
 
 ping -n 30 127.0.0.1>nul

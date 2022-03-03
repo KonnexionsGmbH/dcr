@@ -15,7 +15,7 @@ if [ -z "${DCR_CONTAINER_PORT}" ]; then
 fi
 
 if [ -z "${DCR_VERSION}" ]; then
-    export DCR_VERSION=latest
+    export DCR_POSTGRESQL_VERSION=latest
 fi
 
 if [ -z "$1" ]; then
@@ -50,7 +50,7 @@ echo "--------------------------------------------------------------------------
 echo "CONNECTION_PORT    : ${DCR_CONNECTION_PORT}"
 echo "CONTAINER_PORT     : ${DCR_CONTAINER_PORT}"
 echo "ENVIRONMENT        : ${DCR_ENVIRONMENT_TYPE}"
-echo "POSTGRESQL VERSION : ${DCR_VERSION}"
+echo "POSTGRESQL VERSION : ${DCR_POSTGRESQL_VERSION}"
 echo --------------------------------------------------------------------------------
 
 echo "Docker stop/rm dcr_db_${DCR_ENVIRONMENT_TYPE} ...................................... before:"
@@ -68,7 +68,7 @@ start=$(date +%s)
 
 echo "PostgreSQL."
 echo "--------------------------------------------------------------------------------"
-echo "Docker create dcr_db_${DCR_ENVIRONMENT_TYPE} (PostgreSQL ${DCR_VERSION})"
+echo "Docker create dcr_db_${DCR_ENVIRONMENT_TYPE} (PostgreSQL ${DCR_POSTGRESQL_VERSION})"
 
 docker create -e        POSTGRES_DB=dcr_db_${DCR_ENVIRONMENT_TYPE}_admin \
               -e        POSTGRES_HOST_AUTH_METHOD=password \
@@ -77,9 +77,9 @@ docker create -e        POSTGRES_DB=dcr_db_${DCR_ENVIRONMENT_TYPE}_admin \
               --name    dcr_db_${DCR_ENVIRONMENT_TYPE} \
               -p        "${DCR_CONNECTION_PORT}":"${DCR_CONTAINER_PORT}" \
               --restart always \
-              postgres:"${DCR_VERSION}"
+              postgres:"${DCR_POSTGRESQL_VERSION}"
 
-echo "Docker start dcr_db_${DCR_ENVIRONMENT_TYPE} (PostgreSQL ${DCR_VERSION}) ..."
+echo "Docker start dcr_db_${DCR_ENVIRONMENT_TYPE} (PostgreSQL ${DCR_POSTGRESQL_VERSION}) ..."
 if ! docker start dcr_db_${DCR_ENVIRONMENT_TYPE}; then
     exit 255
 fi
