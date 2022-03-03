@@ -15,7 +15,9 @@ nav:
   - Contributing Guide: contributing.md
   - Development : development.md
   - License: license.md
-  - Release Notes: release_notes.md
+  - Release:
+    - Release Notes: release_notes.md
+    - Release History: release_history.md
   - Research: research.md
 
 plugins:

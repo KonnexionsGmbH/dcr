@@ -7,7 +7,7 @@
 
 ----
 
-## 0.6.0
+## 1. Version 0.6.0
 
 Release Date: dd.mm.2022
 
