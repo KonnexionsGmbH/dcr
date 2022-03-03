@@ -1,5 +1,7 @@
 # pylint: disable=unused-argument
 """Testing Module libs.db.orm."""
+from sqlalchemy import Table
+
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver
@@ -27,25 +29,32 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        libs.db.orm.check_db_up_to_date()
+
+    assert expt.type == SystemExit
+    assert expt.value.code == 1
+
+    # -------------------------------------------------------------------------
+    current_version = libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]
+
     libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION] = "0.0.0"
 
     with pytest.raises(SystemExit) as expt:
+        libs.db.orm.connect_db()
         libs.db.orm.check_db_up_to_date()
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
 
+    libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION] = current_version
+
     # -------------------------------------------------------------------------
-    libs.db.driver.connect_db_admin()
+    libs.db.orm.connect_db()
 
-    libs.db.cfg.db_driver_cur = libs.db.cfg.db_driver_conn.cursor()
+    dbt = Table(libs.db.cfg.DBT_VERSION, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine)
 
-    try:
-        libs.db.cfg.db_driver_cur.execute("DROP TABLE IF EXISTS " + libs.db.cfg.DBT_VERSION)
-    except ObjectInUse as err:
-        libs.utils.terminate_fatal("The database cannot be dropped - error=" + str(err))
-
-    libs.db.driver.disconnect_db()
+    dbt.drop()
 
     with pytest.raises(SystemExit) as expt:
         libs.db.orm.check_db_up_to_date()
@@ -53,16 +62,6 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     assert expt.type == SystemExit
     assert expt.value.code == 1
 
-    # -------------------------------------------------------------------------
-    libs.db.cfg.db_orm_engine = None
-
-    with pytest.raises(SystemExit) as expt:
-        libs.db.orm.check_db_up_to_date()
-
-    assert expt.type == SystemExit
-    assert expt.value.code == 1
-
-    # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
