@@ -13,12 +13,12 @@ nav:
   - API Documentation: dcr_api.md
   - Code of Conduct: code_of_conduct.md
   - Contributing Guide: contributing.md
-  - Development : development.md
+  - Development Notes: development_notes.md
   - License: license.md
-  - Release:
+  - Release Documents:
     - Release Notes: release_notes.md
     - Release History: release_history.md
-  - Research: research.md
+  - Research Notes: research_notes.md
 
 plugins:
   - search

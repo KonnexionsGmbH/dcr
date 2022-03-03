@@ -1,4 +1,4 @@
-# DCR - Development
+# DCR - Development Notes
 
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
@@ -34,8 +34,8 @@ Version **`3.10`** is used for the **`Python`** programming language.
 - In the event of an error, the execution of the script must be terminated immediately.
 - Apart from the main scripts, all other scripts should be present in the **`scripts`** file directory.
 - The main scripts are:
-  - `run_dcr_dev` - Running the DCR functionality for development purposes.
-  - `run_dcr_prod` - Performing the DCR functionality for productive operation.
+    - `run_dcr_dev` - Running the DCR functionality for development purposes.
+    - `run_dcr_prod` - Performing the DCR functionality for productive operation.
 
 ## 3. Code Formatting
 
@@ -240,6 +240,7 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 **2<sup>nd</sup> Priority:** 
 
+- Layout improvement API documentation
 - Tesseract OCR
     - Installation  
 
