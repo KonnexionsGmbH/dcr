@@ -11,7 +11,7 @@
 
 Release Date: 14.02.2022
 
-### System Requirements
+### 1. System Requirements
 
 - Operating system: any Java-enabled Linux, Mac or Windows variant
 - Docker Desktop Community: 4.0.0 (e.g. from [Docker for Windows release notes](https://docs.docker.com/docker-for-windows/release-notes){:target="_blank"})
@@ -19,13 +19,13 @@ Release Date: 14.02.2022
 - Java Development Kit 16 or 17, (e.g. from [here](https://jdk.java.net/java-se-ri/17){:target="_blank"})
 
 
-### New Features
+### 2. New Features
 
 - Setup of the entire development infrastructure
 - Creation of the first version of the user documentation
 - Processing of new document arrivals in the file directory **`ìnbox`**
 
-### Applied Software
+### 3. Applied Software
 
 | Software         | Version        | Remark                   |
 |:-----------------|:---------------|:-------------------------|

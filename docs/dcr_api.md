@@ -75,13 +75,9 @@
 
 # dcr
 
-Entry Point Functionality.
+Module dcr: Entry Point Functionality.
 
 This is the entry point to the application DCR.
-
-**Returns**:
-
-- `[type]` - None.
 
 <a id="dcr.get_args"></a>
 
@@ -200,11 +196,7 @@ Package libs: DCR libraries.
 
 # libs.cfg
 
-DCR Configuration Data.
-
-**Returns**:
-
-- `[type]` - None.
+Module libs.cfg: DCR Configuration Data.
 
 <a id="libs.db"></a>
 
@@ -216,21 +208,13 @@ Package libs.db: DCR Database Processing.
 
 # libs.db.cfg
 
-Database Configuration Data.
-
-**Returns**:
-
-- `[type]` - None.
+Module libs.db.cfg: Database Configuration Data.
 
 <a id="libs.db.driver"></a>
 
 # libs.db.driver
 
-Database Definition Management.
-
-**Returns**:
-
-- `[type]` - None.
+Module libs.db.driver: Database Definition Management.
 
 <a id="libs.db.driver.connect_db"></a>
 
@@ -353,11 +337,7 @@ Upgrade the current database schema - from one version to the next.
 
 # libs.db.orm
 
-Database Manipulation Management.
-
-**Returns**:
-
-- `[type]` - None.
+Module libs.db.orm: Database Manipulation Management.
 
 <a id="libs.db.orm.check_db_up_to_date"></a>
 
@@ -663,17 +643,13 @@ Update the database version number in database table version.
 
 # libs.inbox
 
-Check and distribute incoming documents.
+Module libs.inbox: Check, distribute and process incoming documents.
 
 New documents are made available in the file directory inbox. These are
 then checked and moved to the accepted or rejected file directories
 depending on the result of the check. Depending on the file format, the
 accepted documents are then converted into the pdf file format either
 with the help of Pandoc or with the help of Tesseract OCR.
-
-**Returns**:
-
-- `[type]` - None.
 
 <a id="libs.inbox.check_directories"></a>
 
@@ -886,11 +862,7 @@ Reject a new document that is faulty.
 
 # libs.utils
 
-Helper functions.
-
-**Returns**:
-
-- `[type]` - None.
+Module libs.utils: Helper functions.
 
 <a id="libs.utils.get_sha256"></a>
 

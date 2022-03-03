@@ -11,12 +11,12 @@
 
 Release Date: dd.mm.2022
 
-### New Features
+### 1.1 New Features
 
 - Processing step **`db_u`**: Upgrade the database.
 - Processing step **`p_2_i`**: Convert pdf documents into image files.
 
-### Applied Software
+### 1.2 Applied Software
 
 | Software                                   | Version  | Remark                              | Status |
 |:-------------------------------------------|:---------|:------------------------------------|--------|
@@ -27,7 +27,7 @@ Release Date: dd.mm.2022
 | Python3                                    | 3.10.2   |                                     |        |
 | Python3 - pip                              | 22.0.3   |                                     |        |
 
-#### Unix-specific Software
+#### 1.2.1 Unix-specific Software
 
 | Software                                                        | Version        | Remark                  | Status |
 |:----------------------------------------------------------------|:---------------|:------------------------|--------|
@@ -47,7 +47,7 @@ Release Date: dd.mm.2022
 | Wget                                                            | 1.20.3         |                         |        |
 
 
-#### Windows-specific Software
+#### 1.2.2 Windows-specific Software
 
 | Software                                                                                | Version | Remark                   | Status |
 |:----------------------------------------------------------------------------------------|:--------|:-------------------------|--------|
@@ -57,17 +57,17 @@ Release Date: dd.mm.2022
 
 ----
 
-### Open issues
+### 1.3 Open issues
 
-- Microsoft Windows Server 2019: (see [here](#issues_windows_2019){:target="_blank"}) 
+1. Microsoft Windows Server 2019: (see [here](#issues_windows_2019){:target="_blank"}) 
 
-- Pydoc-Markdown: (see [here](#issues_pydoc_markdown){:target="_blank"})
+2. Pydoc-Markdown: (see [here](#issues_pydoc_markdown){:target="_blank"})
 
 ----
 
 ## 2. Detailed Open Issues
 
-### <a name="issues_windows_2019"></a> Microsoft Windows Server 2019
+### <a name="issues_windows_2019"></a> 2.1 Microsoft Windows Server 2019
 
 - Issue: File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\codecs.py", line 319, in decode
     def decode(self, input, final=False)
@@ -112,18 +112,19 @@ Release Date: dd.mm.2022
     Aborted!
 ```
 
-### <a name="issues_pydoc_markdown"></a> Pydoc-Markdown
+### <a name="issues_pydoc_markdown"></a> 2.2 Pydoc-Markdown
 
 - Issue: Please help me with combined Pydoc-Markdown and MKDocs (see [here](https://github.com/NiklasRosenstein/pydoc-markdown/discussions/243){:target="_blank"}).
 
-
-Traceback (most recent call last):
-  File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1129, in create_spinner
-    yield sp
-  File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1320, in venv_resolve_deps
-    c = resolve(cmd, sp, project=project)
-  File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1139, in resolve
-    for line in iter(c.stderr.readline, ""):
-  File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\codecs.py", line 319, in decode
-    def decode(self, input, final=False):
-KeyboardInterrupt
+```
+    Traceback (most recent call last):
+      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1129, in create_spinner
+        yield sp
+      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1320, in venv_resolve_deps
+        c = resolve(cmd, sp, project=project)
+      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1139, in resolve
+        for line in iter(c.stderr.readline, ""):
+      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\codecs.py", line 319, in decode
+        def decode(self, input, final=False):
+    KeyboardInterrupt
+```
