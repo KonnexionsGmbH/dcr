@@ -4,6 +4,7 @@
 /.idea/
 /.vs/
 /.vscode/
+/README.pdf
 /True
 /coverage.xml
 /data/
@@ -25,3 +26,5 @@
 /tests/inbox/*.tiff
 /tests/inbox/*.txt
 /tests/inbox/*.xxx
+/tests/inbox/htm_ok_files/
+/tests/inbox/html_ok_files/

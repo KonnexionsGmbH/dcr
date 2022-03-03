@@ -15,9 +15,9 @@
 ## dev:                Format, lint and test the code.
 dev: format lint pydocstyle tests
 ## docs:               Check the API docs, create and upload the user docs.
-docs: pydocstyle mkdocs
-## format:             Format the code with isort and Black.
-format: isort black
+docs: pydocstyle pydoc-markdown mkdocs
+## format:             Format the code with isort, Black and docformatter.
+format: isort black docformatter
 ## lint:               Lint the code with Bandit, Flake8, Mypy and Pylint.
 lint: bandit flake8 mypy pylint
 ## tests:              Run all tests with pytest.
@@ -27,10 +27,14 @@ tests: pytest
 help:
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
 
+export DCR_ENVIRONMENT_TYPE=test
+
 ifeq ($(OS),Windows_NT)
+	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
     export MYPYPATH=src\\dcr
     export PYTHONPATH=src\\dcr
 else
+	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
     export MYPYPATH=src/dcr
     export PYTHONPATH=src/dcr:src/dcr
 endif
@@ -41,7 +45,7 @@ endif
 bandit:             ## Find common security issues with Bandit.
 	@echo "Info **********  Start: Bandit **************************************"
 	pipenv run bandit --version
-	pipenv run bandit -r src
+	pipenv run bandit -c pyproject.toml -r src
 	@echo "Info **********  End:   Bandit **************************************"
 
 # The Uncompromising Code Formatter
@@ -70,6 +74,15 @@ coveralls:          ## Run all the tests and upload the coverage data to coveral
 	pipenv run pytest --cov=src --cov-report=xml tests
 	pipenv run coveralls --service=github
 	@echo "Info **********  End:   coveralls ***********************************"
+
+# Formats docstrings to follow PEP 257
+# https://github.com/PyCQA/docformatter
+# Configuration file: none
+docformatter:       ## Format the docstrings with docformatter.
+	@echo "Info **********  Start: docformatter ********************************"
+	pipenv run docformatter --version
+	pipenv run docformatter --in-place -r src tests
+	@echo "Info **********  End:   docformatter ********************************"
 
 # Flake8: Your Tool For Style Guide Enforcement.
 # includes McCabe:      https://github.com/PyCQA/mccabe
@@ -140,6 +153,15 @@ pipenv-prod:        ## Install the package dependencies for production.
 	python -m pip --version
 	@echo "Info **********  End:   Installation of Production Packages *********"
 
+# Pydoc-Markdown - create Python API documentation in Markdown format.
+# https://github.com/NiklasRosenstein/pydoc-markdown
+# Configuration file: pyproject.toml
+pydoc-markdown:     ## Create Python API documentation in Markdown format with Pydoc-Markdown.
+	@echo "Info **********  Start: Pydoc-Markdown ******************************"
+	pipenv run pydoc-markdown --version
+	pipenv run pydoc-markdown -I src/dcr --render-toc > docs/dcr_api.md
+	@echo "Info **********  End:   Pydoc-Markdown ******************************"
+
 # pydocstyle - docstring style checker.
 # https://github.com/PyCQA/pydocstyle
 # Configuration file: pyproject.toml
@@ -151,7 +173,7 @@ pydocstyle:         ## Check the API documentation with pydocstyle.
 
 # Pylint is a tool that checks for errors in Python code.
 # https://github.com/PyCQA/pylint/
-# Configuration file: pyproject.toml
+# Configuration file: .pylintrc
 pylint:             ## Lint the code with Pylint.
 	@echo "Info **********  Start: Pylint **************************************"
 	pipenv run pylint --version
@@ -163,6 +185,19 @@ pylint:             ## Lint the code with Pylint.
 # Configuration file: pyproject.toml
 pytest:             ## Run all tests with pytest.
 	@echo "Info **********  Start: pytest **************************************"
+	$(DCR_DOCKER_CONTAINER)
+	pipenv run pytest --version
+	pipenv run pytest --dead-fixtures tests
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v tests
+	@echo "Info **********  End:   pytest **************************************"
+pytest-ci:          ## Run all tests with pytest after test tool installation.
+	@echo "Info **********  Start: pytest **************************************"
+	$(DCR_DOCKER_CONTAINER)
+	pipenv install pytest
+	pipenv install pytest-cov
+	pipenv install pytest-deadfixtures
+	pipenv install pytest-helpers-namespace
+	pipenv install pytest-random-order
 	pipenv run pytest --version
 	pipenv run pytest --dead-fixtures tests
 	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v tests
@@ -175,17 +210,8 @@ pytest-first-issue: ## Run all tests with pytest until the first issue occurs.
 pytest-issue:       ## Run only the tests with pytest which are marked with 'issue'.
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
-	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -m issue --setup-show -v -x tests
-	@echo "Info **********  End:   pytest **************************************"
-pytest-ci:          ## Run all tests with pytest after test tool installation.
-	@echo "Info **********  Start: pytest **************************************"
-	pipenv install pytest
-	pipenv install pytest-cov
-	pipenv install pytest-deadfixtures
-	pipenv install pytest-random-order
-	pipenv run pytest --version
-	pipenv run pytest --dead-fixtures tests
-	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v tests
+	@echo DCR_ENVIRONMENT_TYPE=${DCR_ENVIRONMENT_TYPE}
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -m issue -s --setup-show -v -x tests
 	@echo "Info **********  End:   pytest **************************************"
 
 ## ============================================================================

@@ -1,55 +1,45 @@
-"""Module utils: Helper functions."""
+"""Module libs.utils: Helper functions."""
 import datetime
+import hashlib
 import os
+import pathlib
 import sys
+import traceback
 
-from libs import cfg
+import libs.cfg
+import libs.db.cfg
+import libs.db.driver
+import libs.utils
 
 
 # -----------------------------------------------------------------------------
-# Get the file name as per inbox.
+# Get the SHA256 hash string of a file.
 # -----------------------------------------------------------------------------
-def get_file_name_inbox() -> str:
-    """Get the file name as per inbox.
+def get_sha256(file: pathlib.Path) -> str:
+    """Get the SHA256 hash string of a file.
+
+    Args:
+        file (: pathlib.Path): File.
 
     Returns:
-        str: File name as per inbox.
+        str: SHA256 hash string.
     """
-    return os.path.join(cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX], cfg.file_name)
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    sha256_hash = hashlib.sha256()
+
+    with open(file, "rb") as file_content:
+        # Read and update hash string value in blocks of 4K
+        for byte_block in iter(lambda: file_content.read(4096), b""):
+            sha256_hash.update(byte_block)
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+    return sha256_hash.hexdigest()
 
 
 # -----------------------------------------------------------------------------
-# Get the file name as per inbox accepted.
-# -----------------------------------------------------------------------------
-def get_file_name_inbox_accepted() -> str:
-    """Get the file name as per inbox accepted.
-
-    Returns:
-        str: File name as per inbox accepted.
-    """
-    return os.path.join(
-        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED],
-        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
-    )
-
-
-# -----------------------------------------------------------------------------
-# Get the file name as per inbox rejected.
-# -----------------------------------------------------------------------------
-def get_file_name_inbox_rejected() -> str:
-    """Get the file name as per inbox rejected.
-
-    Returns:
-        str: File name as per inbox rejected.
-    """
-    return os.path.join(
-        cfg.config[cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED],
-        cfg.stem_name + "_" + str(cfg.document_id) + "." + cfg.file_type,
-    )
-
-
-# -----------------------------------------------------------------------------
-# Terminate the application immediately.
+# Create a progress message.
 # -----------------------------------------------------------------------------
 def progress_msg(msg: str) -> None:
     """Create a progress message.
@@ -57,16 +47,84 @@ def progress_msg(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    final_msg: str = (
-        cfg.LOGGER_PROGRESS_UPDATE
-        + str(datetime.datetime.now())
-        + " : "
-        + msg
-        + "."
-    )
+    if libs.cfg.is_verbose:
+        final_msg: str = (
+            libs.cfg.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
+        )
 
-    print(final_msg)
-    cfg.logger.debug(final_msg)
+        print(final_msg)
+
+        libs.cfg.logger.debug(final_msg)
+
+
+# -----------------------------------------------------------------------------
+# Create a progress message: connected to database.
+# -----------------------------------------------------------------------------
+def progress_msg_connected() -> None:
+    """Create a progress message: connected to database."""
+    if libs.cfg.is_verbose:
+        print("")
+        progress_msg(
+            "User '"
+            + libs.db.cfg.db_current_user
+            + "' is now connected to database '"
+            + libs.db.cfg.db_current_database
+            + "'"
+        )
+
+
+# -----------------------------------------------------------------------------
+# Create a progress message: disconnected from database.
+# -----------------------------------------------------------------------------
+def progress_msg_disconnected() -> None:
+    """Create a progress message: disconnected from database."""
+    if libs.cfg.is_verbose:
+        if libs.db.cfg.db_current_database is None and libs.db.cfg.db_current_user is None:
+            print("")
+            libs.utils.progress_msg("Database is now disconnected")
+            return
+
+        database = (
+            "n/a" if libs.db.cfg.db_current_database is None else libs.db.cfg.db_current_database
+        )
+        user = "n/a" if libs.db.cfg.db_current_user is None else libs.db.cfg.db_current_user
+
+        print("")
+        libs.utils.progress_msg(
+            "User '" + user + "' is now disconnected from database '" + database + "'"
+        )
+
+        libs.db.cfg.db_current_database = None
+        libs.db.cfg.db_current_user = None
+
+
+# -----------------------------------------------------------------------------
+# Create a progress message with empty line before.
+# -----------------------------------------------------------------------------
+def progress_msg_empty_before(msg: str) -> None:
+    """Create a progress message.
+
+    Args:
+        msg (str): Progress message.
+    """
+    if libs.cfg.is_verbose:
+        print("")
+        progress_msg(msg)
+
+
+# -----------------------------------------------------------------------------
+# Convert a string into a file path.
+# -----------------------------------------------------------------------------
+def str_2_path(param: str) -> pathlib.Path:
+    """Convert a string into a file path.
+
+    Args:
+        param (str): text parameter.
+
+    Returns:
+        pathlib.Path: File path.
+    """
+    return pathlib.Path(os.path.join(os.getcwd(), *param.split("/" if "/" in param else "\\")))
 
 
 # -----------------------------------------------------------------------------
@@ -78,11 +136,20 @@ def terminate_fatal(error_msg: str) -> None:
     Args:
         error_msg (str): Error message.
     """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     print("")
-    print(cfg.LOGGER_FATAL_HEAD)
-    print(cfg.LOGGER_FATAL_HEAD, error_msg, cfg.LOGGER_FATAL_TAIL, sep="")
-    print(cfg.LOGGER_FATAL_HEAD)
-    cfg.logger.critical(
-        "%s%s%s", cfg.LOGGER_FATAL_HEAD, error_msg, cfg.LOGGER_FATAL_TAIL
+    print(libs.cfg.LOGGER_FATAL_HEAD)
+    print(libs.cfg.LOGGER_FATAL_HEAD, error_msg, libs.cfg.LOGGER_FATAL_TAIL, sep="")
+    print(libs.cfg.LOGGER_FATAL_HEAD)
+    libs.cfg.logger.critical(
+        "%s%s%s", libs.cfg.LOGGER_FATAL_HEAD, error_msg, libs.cfg.LOGGER_FATAL_TAIL
     )
+
+    traceback.print_exc(chain=True)
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+    libs.db.driver.disconnect_db()
+
     sys.exit(1)

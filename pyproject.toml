@@ -1,7 +1,8 @@
 [tool.bandit]
+skips = ["B404", "B603", "B607", "B608"]
 
 [tool.black]
-line-length = 79
+line-length = 100
 
 [tool.isort]
 float_to_top = true
@@ -38,30 +39,24 @@ warn_unused_configs = true
 warn_unused_ignores = true
 
 [[tool.pydoc-markdown.loaders]]
+search_path = [ "src/dcr" ]
 type = "python"
-search_path = [ "src" ]
 
 [tool.pydoc-markdown.renderer]
-type = "mkdocs"
-output_directory = "."
 content_directory_name = "docs"
+output_directory = "."
+type = "mkdocs"
 
 [[tool.pydoc-markdown.renderer.pages]]
-title = "API Documentation"
-name = "index"
 contents = [ "dcr.*" ]
+name = "index"
+title = "API Documentation"
 
 [tool.pydocstyle]
-
-[tool.pylint]
-# TBD
-#min-similarity-lines = 12
-#ignore-comments = true
-#ignore-docstrings = true
-#ignore-imports = true
 
 [tool.pytest.ini_options]
 console_output_style = "count"
 markers = ["issue"]
+norecursedirs = "./tests/helpers"
 pythonpath = "./src/dcr/"
 testpaths = "./tests/"

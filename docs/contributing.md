@@ -1,9 +1,9 @@
 # DCR - Contributing Guide
 
-![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
-![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
-![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
+![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
+![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
+![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0)
 
 ----
 
@@ -24,4 +24,4 @@ In case of software changes we strongly recommend you to respect the license ter
 
 ## 3. Notes on the Software Development Process
 
-[See here](development.md){:target="_blank"}
+[See here](development_notes.md){:target="_blank"}

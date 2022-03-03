@@ -33,22 +33,21 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dcr dependencies
         run: make pipenv-dev
-      - name: Run isort for sorting your imports
-        run: make isort
-      - name: Run Black for formatting your code
-        run: make black
-      - name: Run Bandit for finding common security issues
-        run: make bandit
-      - name: Run Flake8 for style guide enforcement
-        run: make flake8
-      - name: Run MyPy for static typing
-        run: make mypy
-      - name: Run PyLint for checking for errors in Python code
-        run: make pylint
-      - name: Run pydocstyle for docstring style enforcement
-        run: make pydocstyle
-      - name: Run MkDocs for creating project documentation with markdown.
-        run: make mkdocs
+      - name: Run the formatting tools
+        run: make format
+      - name: Run the Lint software tools
+        run: make lint
+      - name: Create the documentation and upload it
+        run: make docs
+      - name: Create a PostgreSQL container
+        run: |
+            chmod +x ./scripts/run_setup_postgresql.sh
+            ./scripts/run_setup_postgresql.sh test
+      - name: Install Poppler
+        run: |
+            sudo apt-get update -qy
+            sudo apt-get upgrade -qy
+            sudo apt-get install -qy poppler-utils
       - name: Publish the code coverage to coveralls.io
         run: make coveralls
 
@@ -59,9 +58,10 @@ jobs:
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Test Framework
     runs-on: ${{ matrix.os }}
     strategy:
-      max-parallel: 3
+      max-parallel: 4
       matrix:
-        os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
+#       os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
+        os: ["ubuntu-18.04", "ubuntu-20.04"]
         python-version: ["3.10"]
     steps:
       - uses: actions/checkout@v2
@@ -75,6 +75,15 @@ jobs:
         run: make pipenv-dev
       - name: Compile the Python code
         run: make compileall
+      - name: Create a PostgreSQL container
+        run: |
+            chmod +x ./scripts/run_setup_postgresql.sh
+            ./scripts/run_setup_postgresql.sh test
+      - name: Install Poppler
+        run: |
+            sudo apt-get update -qy
+            sudo apt-get upgrade -qy
+            sudo apt-get install -qy poppler-utils
       - name: Run pytest for writing better program
         run: make pytest
 
@@ -86,9 +95,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     #   env:
     strategy:
-      max-parallel: 3
+      max-parallel: 4
       matrix:
-        os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
+#       os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
+        os: ["ubuntu-18.04", "ubuntu-20.04"]
         python-version: ["3.10"]
     steps:
       - uses: actions/checkout@v2
@@ -101,5 +111,14 @@ jobs:
         run: make pipenv-prod
       - name: Compile the Python code
         run: make compileall
+      - name: Create a PostgreSQL container
+        run: |
+            chmod +x ./scripts/run_setup_postgresql.sh
+            ./scripts/run_setup_postgresql.sh test
+      - name: Install Poppler
+        run: |
+            sudo apt-get update -qy
+            sudo apt-get upgrade -qy
+            sudo apt-get install -qy poppler-utils
       - name: Run pytest for writing better program
         run: make pytest-ci

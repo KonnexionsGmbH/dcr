@@ -14,9 +14,9 @@ export HOST_ENVIRONMENT_DEFAULT=vm
 
 export CURRENT_PATH=$(pwd)
 
-export VERSION_DCR_DEV=0.5.0
+export VERSION_DCR_DEV=0.6.0
 
-export VERSION_DBEAVER=21.3.4
+export VERSION_DBEAVER=21.3.5
 export VERSION_HTOP=3.1.2
 export VERSION_PANDOC=2.17.1.1
 export VERSION_PYTHON3=3.10.2
@@ -116,7 +116,9 @@ sudo apt-get install -qy autoconf \
                          locales \
                          lsb-release \
                          pkg-config \
+                         poppler-utils \
                          procps \
+                         software-properties-common \
                          tk-dev \
                          tzdata \
                          unzip \
@@ -191,6 +193,11 @@ eval echo 'export PATH_ORIG=${PATH_ORIG}' >> ${HOME}/.bashrc
 echo '' >> ${HOME}/.bashrc
 eval echo '. ${HOME}/.asdf/asdf.sh' >> ${HOME}/.bashrc
 eval echo '. ${HOME}/.asdf/completions/asdf.bash' >> ${HOME}/.bashrc
+# from Docker Desktop --------------------------------------------------------------
+if [ "${HOST_ENVIRONMENT}" = "vm" ]; then
+    echo '' >> ${HOME}/.bashrc
+    echo 'if [ `id -gn` != "docker" ]; then ( newgrp docker ) fi' >> ${HOME}/.bashrc
+fi
 
 echo '' >> ${HOME}/.bashrc
 echo '# ----------------------------------------------------------------------------' >> ${HOME}/.bashrc
@@ -206,6 +213,32 @@ echo "--------------------------------------------------------------------------
 sudo rm -rf ${HOME}/.asdf
 git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf
 echo "=============================================================================="
+
+if [ "${HOST_ENVIRONMENT}" = "vm" ]; then
+    echo "------------------------------------------------------------------------------"
+    echo "Step: Install Docker Desktop"
+    echo "------------------------------------------------------------------------------"
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" --yes
+    sudo apt-key fingerprint 0EBFCD88
+    sudo apt-get install -qy docker-ce \
+                             docker-ce-cli \
+                             containerd.io
+    sudo chmod 666 /var/run/docker.sock
+    if ! [ $(getent group docker | grep -q "\b$USER\b") ]; then
+        sudo usermod -aG docker $USER
+    fi
+    docker ps     | grep "portainer"           && docker stop portainer
+    docker ps -a  | grep "portainer"           && docker rm --force portainer
+    docker images | grep "portainer/portainer" && docker rmi -f portainer/portainer
+    docker run -d --name portainer -p 8000:8000 -p 9000:9000 -v "//var/run/docker.sock/":/var/run/docker.sock -v "/Home/portainer/":/data portainer/portainer
+    echo " "
+    echo "=============================================================================> Version  Docker Desktop: "
+    echo " "
+    echo "Current version of Docker Desktop: $(docker version)"
+    echo " "
+    echo "=============================================================================="
+fi
 
 echo "------------------------------------------------------------------------------"
 echo "Step: Install htop - Version ${VERSION_HTOP}"

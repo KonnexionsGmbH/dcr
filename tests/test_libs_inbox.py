@@ -1,8 +1,5 @@
 # pylint: disable=unused-argument
 """Testing Module libs.inbox."""
-import os
-import shutil
-import stat
 
 import libs.cfg
 import libs.db
@@ -15,266 +12,415 @@ import dcr
 # -----------------------------------------------------------------------------
 # @pytest.mark.issue
 
-TESTS_INBOX = "tests/__PYTEST_FILES__/"
-
-dcr.initialise_logger()
-
 
 # -----------------------------------------------------------------------------
-# Show the state of the inboxes after the test.
+# Test RUN_ACTION_ALL_COMPLETE - normal.
 # -----------------------------------------------------------------------------
-def show_inboxes_after(
-    inbox: str, inbox_accepted: str, inbox_rejected: str
-) -> None:
-    """Show the state of the inboxes after the test.
+def test_run_action_all_normal(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_ALL_COMPLETE - normal."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    Args:
-        inbox (str): File directory inbox.
-        inbox_accepted (str): File directory inbox_accepted.
-        inbox_rejected (str): File directory inbox_rejected.
-    """
-    # Show the content of the inbox directories.
-    print("after: ls inbox=         ", os.listdir(inbox))
-    print("after: ls inbox_accepted=", os.listdir(inbox_accepted))
-    print("after: ls inbox_rejected=", os.listdir(inbox_rejected))
+    # -------------------------------------------------------------------------
+    stem_name: str = "pdf_scanned_ok"
+    file_ext: str = "pdf"
 
+    pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
 
-# -----------------------------------------------------------------------------
-# Test File Extension: pdf - pdf_text_ok.
-# -----------------------------------------------------------------------------
-def test_file_extension_pdf_ok(fxtr_new_db_empty_inbox):
-    """Test: pdf - pdf_text_ok.pdf.
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
 
-    The original file is expected in the file directory inbox_accepted.
-    """
-    inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-    inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
+    # -------------------------------------------------------------------------
+    child_no: int = 1
+    document_id: int = 1
+    no_files_expected = (0, 2, 0)
 
-    file_inbox = os.path.join(inbox, "pdf_text_ok.pdf")
-    file_source = os.path.join(TESTS_INBOX, "pdf_text_ok.pdf")
-    file_target = os.path.join(inbox_accepted, "pdf_text_ok_1.pdf")
+    file_p_i = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id)],
+        file_ext,
+    )
 
-    shutil.copy(file_source, inbox)
+    file_p_2_i = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id), str(child_no)],
+        libs.cfg.pdf2image_type,
+    )
 
-    verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
+    files_to_be_checked = [
+        file_p_i,
+        file_p_2_i,
+    ]
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-
-    verify_inbox_accepted_after(
-        inbox, inbox_accepted, inbox_rejected, file_target
+    pytest.helpers.verify_content_inboxes(
+        files_to_be_checked,
+        no_files_expected,
     )
 
 
 # -----------------------------------------------------------------------------
-# Test File Extension: pdf - pdf_wrong_format.
+# Test RUN_ACTION_PDF_2_IMAGE - normal - jpeg.
 # -----------------------------------------------------------------------------
-def test_file_extension_pdf_wrong_format(fxtr_new_db_empty_inbox):
-    """Test: pdf - pdf_wrong_format.pdf.
+def test_run_action_pdf_2_image_normal_jpeg(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PDF_2_IMAGE - normal - jpeg."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    The original file is expected in the file directory inbox_rejected.
-    """
-    inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-    inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
+    # -------------------------------------------------------------------------
+    stem_name: str = "pdf_scanned_ok"
+    file_ext: str = "pdf"
 
-    file_inbox = os.path.join(inbox, "pdf_wrong_format.pdf")
-    file_source = os.path.join(TESTS_INBOX, "pdf_wrong_format.pdf")
-    file_target = os.path.join(inbox_rejected, "pdf_wrong_format_1.pdf")
+    pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
 
-    shutil.copy(file_source, inbox)
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
+    # -------------------------------------------------------------------------
+    document_id: int = 1
+    no_files_expected = (0, 1, 0)
+
+    file_p_i = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id)],
+        file_ext,
+    )
+
+    files_to_be_checked = [
+        file_p_i,
+    ]
+
+    pytest.helpers.verify_content_inboxes(
+        files_to_be_checked,
+        no_files_expected,
+    )
+
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+
+    # -------------------------------------------------------------------------
+    child_no: int = 1
+    no_files_expected = (0, 2, 0)
+
+    file_p_2_i = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id), str(child_no)],
+        libs.cfg.pdf2image_type,
+    )
+
+    files_to_be_checked = [
+        file_p_i,
+        file_p_2_i,
+    ]
+
+    pytest.helpers.verify_content_inboxes(
+        files_to_be_checked,
+        no_files_expected,
+    )
+
+    # -------------------------------------------------------------------------
+    fxtr_rmdir_opt(libs.cfg.directory_inbox_accepted)
+
+    with pytest.raises(SystemExit) as expt:
+        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+
+    assert expt.type == SystemExit, "inbox_accepted directory missing"
+    assert expt.value.code == 1, "inbox_accepted, directory missing"
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_PDF_2_IMAGE - normal - png.
+# -----------------------------------------------------------------------------
+def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PDF_2_IMAGE - normal - png."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    stem_name: str = "pdf_scanned_ok"
+    file_ext: str = "pdf"
+
+    pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
+
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    # -------------------------------------------------------------------------
+    document_id: int = 1
+    no_files_expected = (0, 1, 0)
+
+    file_p_i = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id)],
+        file_ext,
+    )
+
+    files_to_be_checked = [
+        file_p_i,
+    ]
+
+    pytest.helpers.verify_content_inboxes(
+        files_to_be_checked,
+        no_files_expected,
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_PDF2IMAGE_TYPE,
+        libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG,
+    )
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    child_no: int = 1
+    no_files_expected = (0, 2, 0)
+
+    file_p_2_i = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id), str(child_no)],
+        libs.cfg.pdf2image_type,
+    )
+
+    files_to_be_checked = [
+        file_p_i,
+        file_p_2_i,
+    ]
+
+    pytest.helpers.verify_content_inboxes(
+        files_to_be_checked,
+        no_files_expected,
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_PROCESS_INBOX - accepted.
+# -----------------------------------------------------------------------------
+def test_run_action_process_inbox_accepted(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PROCESS_INBOX - accepted."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_from_pytest_2_dir(
+        [
+            ("doc_ok", "doc"),
+            ("docx_ok", "docx"),
+            ("jpeg_pdf_text_ok_1", "jpeg"),
+            ("jpg_pdf_text_ok_1", "jpg"),
+            ("odt_ok", "odt"),
+            ("pdf_text_ok", "pdf"),
+            ("png_pdf_text_ok_1", "png"),
+            ("README.md", None),
+            ("rtf_ok", "rtf"),
+            ("tiff_pdf_text_ok_2", "tiff"),
+            ("txt_ok", "txt"),
+        ],
+        libs.cfg.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    # -------------------------------------------------------------------------
+    no_files_expected = (1, 10, 0)
+
+    files_to_be_checked = [
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["doc_ok", "1"],
+            "doc",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["docx_ok", "3"],
+            "docx",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["jpeg_pdf_text_ok_1", "5"],
+            "jpeg",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["jpg_pdf_text_ok_1", "7"],
+            "jpg",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["odt_ok", "9"],
+            "odt",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_text_ok", "11"],
+            "pdf",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["png_pdf_text_ok_1", "13"],
+            "png",
+        ),
+        (
+            libs.cfg.directory_inbox,
+            ["README.md"],
+            None,
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["rtf_ok", "15"],
+            "rtf",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["tiff_pdf_text_ok_2", "17"],
+            "tiff",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["txt_ok", "19"],
+            "txt",
+        ),
+    ]
+
+    pytest.helpers.verify_content_inboxes(
+        files_to_be_checked,
+        no_files_expected,
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_PROCESS_INBOX - ignore duplicates.
+# -----------------------------------------------------------------------------
+def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PROCESS_INBOX - ignore duplicates."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_from_pytest_2_dir(
+        [
+            ("pdf_text_ok", "pdf"),
+            ("pdf_text_ok_protected", "pdf"),
+        ],
+        libs.cfg.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "true"
+    )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    verify_inbox_rejected_after(
-        inbox, inbox_accepted, inbox_rejected, file_target
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
     )
 
+    # -------------------------------------------------------------------------
+    no_files_expected = (0, 2, 0)
 
-# -----------------------------------------------------------------------------
-# Test File Extension: tiff - tiff_pdf_text_ok_1.
-# -----------------------------------------------------------------------------
-def test_file_extension_tiff_ok(fxtr_new_db_empty_inbox):
-    """Test: tiff - tiff_pdf_text_ok_1.tiff.
+    files_to_be_checked = [
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_text_ok", "1"],
+            "pdf",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_text_ok_protected", "3"],
+            "pdf",
+        ),
+    ]
 
-    The original file is expected in the file directory inbox_accepted.
-    """
-    inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-    inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
-
-    file_inbox = os.path.join(inbox, "tiff_pdf_text_ok_1.tiff")
-    file_source = os.path.join(TESTS_INBOX, "tiff_pdf_text_ok_1.tiff")
-    file_target = os.path.join(inbox_accepted, "tiff_pdf_text_ok_1_1.tiff")
-
-    shutil.copy(file_source, inbox)
-
-    verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-
-    verify_inbox_accepted_after(
-        inbox, inbox_accepted, inbox_rejected, file_target
+    pytest.helpers.verify_content_inboxes(
+        files_to_be_checked,
+        no_files_expected,
     )
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
-# Test File Extension: xxx - unknown_file_extension.
+# Test RUN_ACTION_PROCESS_INBOX - rejected.
 # -----------------------------------------------------------------------------
 @pytest.mark.issue
-def test_file_extension_unknown_ok(fxtr_new_db_empty_inbox):
-    """Test: xxx - unknown_file_extension.xxx.
+def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PROCESS_INBOX - rejected."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    Due to the unknown file extension, the original file is expected
-    in the file directory inbox_rejected.
-    """
-    inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-    inbox_accepted = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-    inbox_rejected = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
+    # -------------------------------------------------------------------------
+    fxtr_rmdir_opt(libs.cfg.directory_inbox_accepted)
 
-    file_inbox = os.path.join(inbox, "unknown_file_extension.xxx")
-    file_source = os.path.join(TESTS_INBOX, "unknown_file_extension.xxx")
-    file_target = os.path.join(inbox_rejected, "unknown_file_extension_1.xxx")
+    fxtr_rmdir_opt(libs.cfg.directory_inbox_rejected)
 
-    shutil.copy(file_source, inbox)
+    pytest.helpers.copy_files_from_pytest_2_dir(
+        [
+            ("pdf_text_ok", "pdf"),
+            ("pdf_text_ok_protected", "pdf"),
+            ("pdf_wrong_format", "pdf"),
+            ("unknown_file_extension", "xxx"),
+            ("unknown_file_extension_protected", "xxx"),
+        ],
+        libs.cfg.directory_inbox,
+    )
 
-    verify_inboxes_before(inbox, inbox_accepted, inbox_rejected, file_inbox)
-
+    # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    verify_inbox_rejected_after(
-        inbox, inbox_accepted, inbox_rejected, file_target
+    # -------------------------------------------------------------------------
+    no_files_expected = (0, 1, 4)
+
+    files_to_be_checked = [
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_text_ok", "1"],
+            "pdf",
+        ),
+        (
+            libs.cfg.directory_inbox_rejected,
+            ["pdf_text_ok_protected", "3"],
+            "pdf",
+        ),
+        (
+            libs.cfg.directory_inbox_rejected,
+            ["pdf_wrong_format", "5"],
+            "pdf",
+        ),
+        (
+            libs.cfg.directory_inbox_rejected,
+            ["unknown_file_extension", "7"],
+            "xxx",
+        ),
+        (
+            libs.cfg.directory_inbox_rejected,
+            ["unknown_file_extension_protected", "9"],
+            "xxx",
+        ),
+    ]
+
+    pytest.helpers.verify_content_inboxes(
+        files_to_be_checked,
+        no_files_expected,
     )
 
+    # -------------------------------------------------------------------------
+    fxtr_rmdir_opt(libs.cfg.directory_inbox)
 
-# -----------------------------------------------------------------------------
-# Show and verify the state of the inbox after the test.
-# -----------------------------------------------------------------------------
-def verify_inbox_after(
-    inbox: str, inbox_accepted: str, inbox_rejected: str, file_inbox: str
-) -> None:
-    """Show and verify the state of the inbox after the test.
+    with pytest.raises(SystemExit) as expt:
+        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    Args:
-        inbox (str): File directory inbox.
-        inbox_accepted (str): File directory inbox_accepted.
-        inbox_rejected (str): File directory inbox_rejected.
-        file_inbox (str): The test file in the file directory input.
-    """
-    # Show the content of the inbox directories.
-    show_inboxes_after(inbox, inbox_accepted, inbox_rejected)
+    assert expt.type == SystemExit, "inbox directory missing"
+    assert expt.value.code == 1, "inbox directory missing"
 
-    # Verify the content of the inbox directories.
-    assert len(os.listdir(inbox)) == 1, "after: inbox should contain one file"
-    assert os.path.isfile(
-        file_inbox
-    ), "after: inbox should contain source file"
-    assert not os.listdir(
-        inbox_accepted
-    ), "after: inbox_accepted should be empty"
-    assert not os.listdir(
-        inbox_rejected
-    ), "after: inbox_rejected should be empty"
-
-
-# -----------------------------------------------------------------------------
-# Show and verify the state of the inbox_accepted after the test.
-# -----------------------------------------------------------------------------
-def verify_inbox_accepted_after(
-    inbox: str, inbox_accepted: str, inbox_rejected: str, file_target: str
-) -> None:
-    """Show and verify the state of the inbox_accepted after the test.
-
-    Args:
-        inbox (str): File directory inbox.
-        inbox_accepted (str): File directory inbox_accepted.
-        inbox_rejected (str): File directory inbox_rejected.
-        file_target (str): Expected file in the file directory input_accepted.
-    """
-    # Show the content of the inbox directories.
-    show_inboxes_after(inbox, inbox_accepted, inbox_rejected)
-
-    # Verify the content of the inbox directories.
-    assert not os.listdir(inbox), "after: inbox should be empty"
-    assert (
-        len(os.listdir(inbox_accepted)) == 1
-    ), "after: inbox_accepted should contain one file"
-    assert os.path.isfile(
-        file_target
-    ), "after: inbox_accepted should contain target file"
-    assert not os.listdir(
-        inbox_rejected
-    ), "after: inbox_rejected should be empty"
-
-
-# -----------------------------------------------------------------------------
-# Show and verify the state of the inbox_rejected after the test.
-# -----------------------------------------------------------------------------
-def verify_inbox_rejected_after(
-    inbox: str, inbox_accepted: str, inbox_rejected: str, file_target: str
-) -> None:
-    """Show and verify the state of the inbox_rejected after the test.
-
-    Args:
-        inbox (str): File directory inbox.
-        inbox_accepted (str): File directory inbox_accepted.
-        inbox_rejected (str): File directory inbox_rejected.
-        file_target (str): Expected file in the file directory input_rejected.
-    """
-    # Show the content of the inbox directories.
-    show_inboxes_after(inbox, inbox_accepted, inbox_rejected)
-
-    # Verify the content of the inbox directories.
-    assert not os.listdir(inbox), "after: inbox should be empty"
-    assert not os.listdir(
-        inbox_accepted
-    ), "after: inbox_accepted should be empty"
-    assert (
-        len(os.listdir(inbox_rejected)) == 1
-    ), "after: inbox_rejected should contain one file"
-    assert os.path.isfile(
-        file_target
-    ), "after: inbox_rejected should contain target file"
-
-
-# -----------------------------------------------------------------------------
-# Show and verify the state of the inboxes before the test.
-# -----------------------------------------------------------------------------
-def verify_inboxes_before(
-    inbox: str, inbox_accepted: str, inbox_rejected: str, file_inbox: str
-) -> None:
-    """Show and verify the state of the inboxes before the test.
-
-    Args:
-        inbox (str): File directory inbox.
-        inbox_accepted (str): File directory inbox_accepted.
-        inbox_rejected (str): File directory inbox_rejected.
-        file_inbox (str): The test file in the file directory input.
-    """
-    # Show the content of the inbox directories.
-    print("before: ls inbox=         ", os.listdir(inbox))
-    print("before: file_inbox=       ", file_inbox)
-    print(
-        "before:    S_IMODE=       ",
-        oct(stat.S_IMODE(os.stat(file_inbox).st_mode)),
-    )
-    if os.path.isdir(inbox_accepted):
-        print("before: ls inbox_accepted=", os.listdir(inbox_accepted))
-    if os.path.isdir(inbox_rejected):
-        print("before: ls inbox_rejected=", os.listdir(inbox_rejected))
-
-    # Verify the content of the inbox directories.
-    assert len(os.listdir(inbox)) == 1, "before: inbox should contain one file"
-    assert os.path.isfile(
-        file_inbox
-    ), "before: inbox should contain source file"
-    if os.path.isdir(inbox_accepted):
-        assert not os.listdir(
-            inbox_accepted
-        ), "before: inbox_accepted should be empty"
-    if os.path.isdir(inbox_rejected):
-        assert not os.listdir(
-            inbox_rejected
-        ), "before: inbox_rejected should be empty"
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)

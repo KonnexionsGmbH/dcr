@@ -1,9 +1,9 @@
 # DCR Document Content Recognition
 
-![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
-![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
-![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
+![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
+![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
+![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0)
 
 Based on the paper "Unfolding the Structure of a Document using Deep Learning" (**[Rahman and Finin, 2019](https://konnexionsgmbh.github.io/dcr/research/#rahman-m-finin-t-2019)**), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
 Documents not in PDF format are converted to PDF format using **[Pandoc](https://pandoc.org)**.
@@ -14,7 +14,8 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr/)** for mo
 
 ## Features
 
-- TBD.
+- Identifying scanned image pdf documents using [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/module.html).
+- Converting scanned image pdf documents to a series of jpeg files using [pdf2image](https://pypi.org/project/pdf2image/).
 - Much more!
 
 ## Support

@@ -1,15 +1,15 @@
 # DCR - Document Content Recognition
 
-![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
-![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/dcr.svg)
-![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/dcr.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.5.0.svg)
+![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
+![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
+![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0)
 
 ----
 
 ## 1. Introduction
 
-Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](research.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
+Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](research_notes.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
 Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org){:target="_blank"}. 
 Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to PDF format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. 
 This process applies to all image format files e.g. jpeg, tiff etc., as well as scanned images in PDF format.  
@@ -32,7 +32,7 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 ## 2. Detailed processing steps
 
-### 2.1 Process the inbox directory
+### 2.1 Process the inbox directory (step: **`p_i`**)
 
 In the first step, the file directory **`inbox`** is checked for new document files. 
 An entry is created in the **`document`** database table for each new document, showing the current processing status of the document. 
@@ -82,6 +82,12 @@ Document files with the following file extensions are marked for converting to *
 #### 2.1.4 Other file extensions of documents
 
 Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejected`**.
+
+### 2.2 Convert pdf documents to image files (step: **`p_2_i`**)
+
+pdf documents consisting of scanned images must first be processed with OCR software in order to extract the text they contain. 
+Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) does not support the pdf file format, such a pdf document must first be converted into an image file. 
+This is done with the software [pdf2image](https://pypi.org/project/pdf2image/), which in turn is based on the [Poppler](https://poppler.freedesktop.org) software.
 
 ## 3. Requirements
 
@@ -137,10 +143,12 @@ The customisable entries are:
 **`DCR`** should be operated via the script **`run_dcr`**. 
 The following actions are available:
 
-| Action     | Process                                                                                                       |
-|------------|---------------------------------------------------------------------------------------------------------------|
-| **`all`**  | Run the complete processing of all new documents.                                                             |
-| **`db_c`** | Create the database.                                                                                          |
-| **`m_d`**  | Run the installation of the necessary 3rd party packages for development and run the development ecosystem.   |
-| **`m_p`**  | Run the installation of the necessary 3rd party packages for production and compile all packages and modules. |
-| **`p_i`**  | Process the inbox directory.                                                                                  |
+| Action      | Process                                                                                                       |
+|-------------|---------------------------------------------------------------------------------------------------------------|
+| **`all`**   | Run the complete processing of all new documents.                                                             |
+| **`db_c`**  | Create the database.                                                                                          |
+| **`db_u`**  | Upgrade the database.                                                                                       |
+| **`m_d`**   | Run the installation of the necessary 3rd party packages for development and run the development ecosystem.   |
+| **`m_p`**   | Run the installation of the necessary 3rd party packages for production and compile all packages and modules. |
+| **`p_i`**   | Process the inbox directory.                                                                                  |
+| **`p_2_i`** | Convert pdf documents to image files.                                                                         |
