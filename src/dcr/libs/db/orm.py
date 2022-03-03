@@ -577,12 +577,13 @@ def insert_dbt_row(
     dbt = Table(table_name, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine)
 
     with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
-        conn.execute(insert(dbt).values(columns))
+        result = conn.execute(insert(dbt).values(columns).returning(dbt.columns.id))
+        row = result.fetchone()
         conn.close()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
-    return select_dbt_id_last(table_name)
+    return row[0]
 
 
 # -----------------------------------------------------------------------------
@@ -626,31 +627,6 @@ def prepare_connect_db() -> None:
     """Prepare the database connection for normal users."""
     libs.db.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE]
     libs.db.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER]
-
-
-# -----------------------------------------------------------------------------
-# Get the last id from a database table.
-# -----------------------------------------------------------------------------
-def select_dbt_id_last(table_name: str) -> int | sqlalchemy.Integer:
-    """Get the last id from a database table.
-
-    Args:
-        table_name (str): Database table name.
-
-    Returns:
-        sqlalchemy.Integer: The last id found.
-    """
-    dbt = Table(table_name, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine)
-
-    with libs.db.cfg.db_orm_engine.connect() as conn:
-        result = conn.execute(select(func.max(dbt.c.id)))
-        row = result.fetchone()
-        conn.close()
-
-    if row[0] == "None":
-        return 0
-
-    return row[0]
 
 
 # -----------------------------------------------------------------------------
