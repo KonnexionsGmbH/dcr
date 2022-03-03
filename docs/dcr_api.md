@@ -40,7 +40,6 @@
   * [insert\_dbt\_row](#libs.db.orm.insert_dbt_row)
   * [insert\_journal](#libs.db.orm.insert_journal)
   * [prepare\_connect\_db](#libs.db.orm.prepare_connect_db)
-  * [select\_dbt\_id\_last](#libs.db.orm.select_dbt_id_last)
   * [select\_document\_file\_name\_sha256](#libs.db.orm.select_document_file_name_sha256)
   * [select\_run\_run\_id\_last](#libs.db.orm.select_run_run_id_last)
   * [select\_version\_version\_unique](#libs.db.orm.select_version_version_unique)
@@ -76,7 +75,7 @@
 
 # dcr
 
-# Entry Point Functionality.
+Entry Point Functionality.
 
 This is the entry point to the application DCR.
 
@@ -92,7 +91,7 @@ This is the entry point to the application DCR.
 def get_args(argv: List[str]) -> dict[str, bool]
 ```
 
-# Load the command line arguments.
+Load the command line arguments.
 
 The command line arguments define the process steps to be executed.
 The valid arguments are:
@@ -563,25 +562,6 @@ def prepare_connect_db() -> None
 
 Prepare the database connection for normal users.
 
-<a id="libs.db.orm.select_dbt_id_last"></a>
-
-#### select\_dbt\_id\_last
-
-```python
-def select_dbt_id_last(table_name: str) -> int | sqlalchemy.Integer
-```
-
-Get the last id from a database table.
-
-**Arguments**:
-
-- `table_name` _str_ - Database table name.
-  
-
-**Returns**:
-
-- `sqlalchemy.Integer` - The last id found.
-
 <a id="libs.db.orm.select_document_file_name_sha256"></a>
 
 #### select\_document\_file\_name\_sha256
@@ -653,7 +633,7 @@ Update a database row based on its id column.
 #### update\_document\_status
 
 ```python
-def update_document_status(document_columns: libs.cfg.Columns, call_insert_journal: Callable[[str, str, str], None]) -> None
+def update_document_status(document_columns: libs.cfg.Columns, call_insert_journal: Callable[[str, str, sqlalchemy.Integer, str], None]) -> None
 ```
 
 Update the document and create a new journal entry.
@@ -662,7 +642,7 @@ Update the document and create a new journal entry.
 
 - `document_columns` _libs.cfg.Columns_ - Columns regarding
   database table document.
-- `call_insert_journal` _Callable[[str, str, str], None]_ - New entry in
+- `call_insert_journal` _Callable[[str, str, sqlalchemy.Integer, str], None]_ - New entry in
   database table journal.
 
 <a id="libs.db.orm.update_version_version"></a>

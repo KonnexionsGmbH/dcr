@@ -53,6 +53,11 @@ jobs:
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
+      - name: Install Poppler
+        run: |
+            sudo apt-get update -qy
+            sudo apt-get upgrade -qy
+            sudo apt-get install -qy poppler-utils
       - name: Publish the code coverage to coveralls.io
         run: make coveralls
 
@@ -63,9 +68,10 @@ jobs:
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Test Framework
     runs-on: ${{ matrix.os }}
     strategy:
-      max-parallel: 3
+      max-parallel: 4
       matrix:
-        os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
+#       os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
+        os: ["ubuntu-18.04", "ubuntu-20.04"]
         python-version: ["3.10"]
     steps:
       - uses: actions/checkout@v2
@@ -83,6 +89,11 @@ jobs:
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
+      - name: Install Poppler
+        run: |
+            sudo apt-get update -qy
+            sudo apt-get upgrade -qy
+            sudo apt-get install -qy poppler-utils
       - name: Run pytest for writing better program
         run: make pytest
 
@@ -94,9 +105,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     #   env:
     strategy:
-      max-parallel: 3
+      max-parallel: 4
       matrix:
-        os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
+#       os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
+        os: ["ubuntu-18.04", "ubuntu-20.04"]
         python-version: ["3.10"]
     steps:
       - uses: actions/checkout@v2
@@ -113,5 +125,10 @@ jobs:
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
+      - name: Install Poppler
+        run: |
+            sudo apt-get update -qy
+            sudo apt-get upgrade -qy
+            sudo apt-get install -qy poppler-utils
       - name: Run pytest for writing better program
         run: make pytest-ci
