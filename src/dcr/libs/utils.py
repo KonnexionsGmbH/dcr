@@ -1,8 +1,4 @@
-"""Helper functions.
-
-Returns:
-    [type]: None.
-"""
+"""Module libs.utils: Helper functions."""
 import datetime
 import hashlib
 import os

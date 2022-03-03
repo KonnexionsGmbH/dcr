@@ -1,8 +1,4 @@
-"""Database Manipulation Management.
-
-Returns:
-    [type]: None.
-"""
+"""Module libs.db.orm: Database Manipulation Management."""
 # not testable
 # from sqlite3 import Error
 from typing import Callable

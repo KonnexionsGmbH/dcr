@@ -1,8 +1,4 @@
-"""Database Definition Management.
-
-Returns:
-    [type]: None.
-"""
+"""Module libs.db.driver: Database Definition Management."""
 import libs.cfg
 import libs.db.cfg
 import libs.db.orm

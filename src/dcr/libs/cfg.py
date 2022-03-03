@@ -1,8 +1,4 @@
-"""DCR Configuration Data.
-
-Returns:
-    [type]: None.
-"""
+"""Module libs.cfg: DCR Configuration Data."""
 import logging
 from os import PathLike
 from typing import Dict

@@ -33,22 +33,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dcr dependencies
         run: make pipenv-dev
-      - name: Run isort for sorting your imports
-        run: make isort
-      - name: Run Black for formatting your code
-        run: make black
-      - name: Run Bandit for finding common security issues
-        run: make bandit
-      - name: Run Flake8 for style guide enforcement
-        run: make flake8
-      - name: Run MyPy for static typing
-        run: make mypy
-      - name: Run PyLint for checking for errors in Python code
-        run: make pylint
-      - name: Run pydocstyle for docstring style enforcement
-        run: make pydocstyle
-      - name: Run MkDocs for creating project documentation with markdown.
-        run: make mkdocs
+      - name: Run the formatting tools
+        run: make format
+      - name: Run the Lint software tools
+        run: make lint
+      - name: Create the documentation and upload it
+        run: make docs
       - name: Create a PostgreSQL container
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh

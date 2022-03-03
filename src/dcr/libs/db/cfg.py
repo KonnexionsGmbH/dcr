@@ -1,8 +1,4 @@
-"""Database Configuration Data.
-
-Returns:
-    [type]: None.
-"""
+"""Module libs.db.cfg: Database Configuration Data."""
 from typing import List
 
 from psycopg2.extensions import connection
