@@ -212,54 +212,82 @@ def convert_pdf_2_image_file() -> None:
 
         # Store the image pages
         for img in images:
-            try:
-                libs.cfg.document_child_child_no = +1
+            libs.cfg.document_child_child_no = +1
 
-                libs.cfg.document_child_stem_name = (
+            libs.cfg.document_child_stem_name = (
                     libs.cfg.document_stem_name + "_" + str(libs.cfg.document_child_child_no)
-                )
+            )
 
-                libs.cfg.document_child_file_name = (
+            libs.cfg.document_child_file_name = (
                     libs.cfg.document_child_stem_name + "." + libs.cfg.document_child_file_type
-                )
+            )
 
-                file_name_child = os.path.join(
-                    libs.cfg.document_child_directory_name,
-                    libs.cfg.document_child_file_name,
-                )
+            file_name_child = os.path.join(
+                libs.cfg.document_child_directory_name,
+                libs.cfg.document_child_file_name,
+            )
 
-                img.save(
-                    file_name_child,
-                    libs.cfg.pdf2image_type,
-                )
+            img.save(
+                file_name_child,
+                libs.cfg.pdf2image_type,
+            )
 
-                journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_003.replace(
-                    "{file_name}", libs.cfg.document_child_file_name
-                )
+            journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_003.replace(
+                "{file_name}", libs.cfg.document_child_file_name
+            )
 
-                initialise_document_child(journal_action)
+            initialise_document_child(journal_action)
 
-                libs.cfg.total_generated += 1
-            except OSError as err:
-                libs.cfg.total_erroneous += 1
-
-                libs.db.orm.update_document_status(
-                    {
-                        libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_ERROR,
-                        libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-                    },
-                    libs.db.orm.insert_journal(
-                        __name__,
-                        inspect.stack()[0][3],
-                        libs.cfg.document_id,
-                        libs.db.cfg.JOURNAL_ACTION_21_902.replace(
-                            "{child_no}", str(libs.cfg.document_child_child_no)
-                        )
-                        .replace("{file_name}", libs.cfg.document_child_file_name)
-                        .replace("{error_code}", str(err.errno))
-                        .replace("{error_msg}", err.strerror),
-                    ),
-                )
+            libs.cfg.total_generated += 1
+            # not testable
+            # try:
+            #     libs.cfg.document_child_child_no = +1
+            #
+            #     libs.cfg.document_child_stem_name = (
+            #         libs.cfg.document_stem_name + "_" + str(libs.cfg.document_child_child_no)
+            #     )
+            #
+            #     libs.cfg.document_child_file_name = (
+            #         libs.cfg.document_child_stem_name + "." + libs.cfg.document_child_file_type
+            #     )
+            #
+            #     file_name_child = os.path.join(
+            #         libs.cfg.document_child_directory_name,
+            #         libs.cfg.document_child_file_name,
+            #     )
+            #
+            #     img.save(
+            #         file_name_child,
+            #         libs.cfg.pdf2image_type,
+            #     )
+            #
+            #     journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_003.replace(
+            #         "{file_name}", libs.cfg.document_child_file_name
+            #     )
+            #
+            #     initialise_document_child(journal_action)
+            #
+            #     libs.cfg.total_generated += 1
+            # except OSError as err:
+            #     libs.cfg.total_erroneous += 1
+            #
+            #     libs.db.orm.update_document_status(
+            #         {
+            #             libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_ERROR,
+            #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+            #         },
+            #         libs.db.orm.insert_journal(
+            #             __name__,
+            #             inspect.stack()[0][3],
+            #             libs.cfg.document_id,
+            #             libs.db.cfg.JOURNAL_ACTION_21_902.replace(
+            #                 "{child_no}", str(libs.cfg.document_child_child_no)
+            #             )
+            #             .replace("{file_name}", libs.cfg.document_child_file_name)
+            #             .replace("{error_code}", str(err.errno))
+            #             .replace("{error_msg}", err.strerror),
+            #         ),
+            #     )
 
             # Document successfully converted to image format
             libs.cfg.total_ok_processed += 1
@@ -309,27 +337,36 @@ def create_directory(directory_type: str, directory_name: str) -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     if not os.path.isdir(directory_name):
-        try:
-            os.mkdir(directory_name)
-            libs.utils.progress_msg(
-                "The file directory for "
-                + directory_type
-                + " was "
-                + "newly created under the name "
-                + directory_name,
-            )
-        except OSError as err:
-            libs.utils.terminate_fatal(
-                " : The file directory for "
-                + directory_type
-                + " can "
-                + "not be created under the name "
-                + directory_name
-                + " - error code="
-                + str(err.errno)
-                + " message="
-                + err.strerror,
-            )
+        os.mkdir(directory_name)
+        libs.utils.progress_msg(
+            "The file directory for "
+            + directory_type
+            + " was "
+            + "newly created under the name "
+            + directory_name,
+        )
+        # not testable
+        # try:
+        #     os.mkdir(directory_name)
+        #     libs.utils.progress_msg(
+        #         "The file directory for "
+        #         + directory_type
+        #         + " was "
+        #         + "newly created under the name "
+        #         + directory_name,
+        #     )
+        # except OSError as err:
+        #     libs.utils.terminate_fatal(
+        #         " : The file directory for "
+        #         + directory_type
+        #         + " can "
+        #         + "not be created under the name "
+        #         + directory_name
+        #         + " - error code="
+        #         + str(err.errno)
+        #         + " message="
+        #         + err.strerror,
+        #     )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -629,65 +666,91 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
         libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name
     )
 
-    try:
-        shutil.move(source_file, target_file)
+    shutil.move(source_file, target_file)
 
-        initialise_document_child(journal_action)
+    initialise_document_child(journal_action)
 
-        libs.db.orm.update_dbt_id(
-            libs.db.cfg.DBT_DOCUMENT,
-            libs.cfg.document_id,
-            {
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
-            },
-        )
+    libs.db.orm.update_dbt_id(
+        libs.db.cfg.DBT_DOCUMENT,
+        libs.cfg.document_id,
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
+        },
+    )
 
-        # pylint: disable=expression-not-assigned
-        libs.db.orm.insert_journal(
-            __name__,
-            inspect.stack()[0][3],
-            libs.cfg.document_id,
-            libs.db.cfg.JOURNAL_ACTION_01_002.replace("{source_file}", source_file).replace(
-                "{target_file}", target_file
-            ),
-        )
+    # pylint: disable=expression-not-assigned
+    libs.db.orm.insert_journal(
+        __name__,
+        inspect.stack()[0][3],
+        libs.cfg.document_id,
+        libs.db.cfg.JOURNAL_ACTION_01_002.replace("{source_file}", source_file).replace(
+            "{target_file}", target_file
+        ),
+    )
 
-        libs.cfg.total_ok_processed += 1
+    libs.cfg.total_ok_processed += 1
 
-        return
-    except PermissionError as err:
-        # pylint: disable=expression-not-assigned
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_RIGHTS,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_01_904.replace("{source_file}", source_file)
-                .replace("{error_code}", str(err.errno))
-                .replace("{error_msg}", err.strerror),
-            ),
-        )
-    except shutil.Error as err:
-        # pylint: disable=expression-not-assigned
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_MOVE,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_01_902.replace("{source_file}", source_file)
-                .replace("{target_file}", target_file)
-                .replace("{error_code}", str(err.errno))
-                .replace("{error_msg}", err.strerror),
-            ),
-        )
+    return
+    # not testable
+    # try:
+    #     shutil.move(source_file, target_file)
+    #
+    #     initialise_document_child(journal_action)
+    #
+    #     libs.db.orm.update_dbt_id(
+    #         libs.db.cfg.DBT_DOCUMENT,
+    #         libs.cfg.document_id,
+    #         {
+    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
+    #         },
+    #     )
+    #
+    #     # pylint: disable=expression-not-assigned
+    #     libs.db.orm.insert_journal(
+    #         __name__,
+    #         inspect.stack()[0][3],
+    #         libs.cfg.document_id,
+    #         libs.db.cfg.JOURNAL_ACTION_01_002.replace("{source_file}", source_file).replace(
+    #             "{target_file}", target_file
+    #         ),
+    #     )
+    #
+    #     libs.cfg.total_ok_processed += 1
+    #
+    #     return
+    # except PermissionError as err:
+    #     # pylint: disable=expression-not-assigned
+    #     libs.db.orm.update_document_status(
+    #         {
+    #             libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_RIGHTS,
+    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
+    #         },
+    #         libs.db.orm.insert_journal(
+    #             __name__,
+    #             inspect.stack()[0][3],
+    #             libs.cfg.document_id,
+    #             libs.db.cfg.JOURNAL_ACTION_01_904.replace("{source_file}", source_file)
+    #             .replace("{error_code}", str(err.errno))
+    #             .replace("{error_msg}", err.strerror),
+    #         ),
+    #     )
+    # except shutil.Error as err:
+    #     # pylint: disable=expression-not-assigned
+    #     libs.db.orm.update_document_status(
+    #         {
+    #             libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_MOVE,
+    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
+    #         },
+    #         libs.db.orm.insert_journal(
+    #             __name__,
+    #             inspect.stack()[0][3],
+    #             libs.cfg.document_id,
+    #             libs.db.cfg.JOURNAL_ACTION_01_902.replace("{source_file}", source_file)
+    #             .replace("{target_file}", target_file)
+    #             .replace("{error_code}", str(err.errno))
+    #             .replace("{error_msg}", err.strerror),
+    #         ),
+    #     )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -762,59 +825,78 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
         libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name
     )
 
-    try:
-        libs.cfg.total_erroneous += 1
+    libs.cfg.total_erroneous += 1
 
-        shutil.move(source_file, target_file)
+    shutil.move(source_file, target_file)
 
-        initialise_document_child(journal_action)
+    initialise_document_child(journal_action)
 
-        libs.db.orm.update_dbt_id(
-            libs.db.cfg.DBT_DOCUMENT,
-            libs.cfg.document_id,
-            {
-                libs.db.cfg.DBC_ERROR_CODE: error_code,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-            },
-        )
+    libs.db.orm.update_dbt_id(
+        libs.db.cfg.DBT_DOCUMENT,
+        libs.cfg.document_id,
+        {
+            libs.db.cfg.DBC_ERROR_CODE: error_code,
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+        },
+    )
 
-        libs.cfg.total_rejected += 1
+    libs.cfg.total_rejected += 1
 
-        return
-    except PermissionError as err:
-        # pylint: disable=expression-not-assigned
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_RIGHTS,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_01_904.replace("{source_file}", source_file)
-                .replace("{error_code}", str(err.errno))
-                .replace("{error_msg}", err.strerror),
-            ),
-        )
-    except shutil.Error as err:
-        # pylint: disable=expression-not-assigned
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_MOVE,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_01_902.replace("{source_file}", source_file).replace(
-                    "{target_file}",
-                    target_file.replace("{error_code}", str(err.errno)).replace(
-                        "{error_msg}", err.strerror
-                    ),
-                ),
-            ),
-        )
+    return
+    # not testable
+    # try:
+    #     libs.cfg.total_erroneous += 1
+    #
+    #     shutil.move(source_file, target_file)
+    #
+    #     initialise_document_child(journal_action)
+    #
+    #     libs.db.orm.update_dbt_id(
+    #         libs.db.cfg.DBT_DOCUMENT,
+    #         libs.cfg.document_id,
+    #         {
+    #             libs.db.cfg.DBC_ERROR_CODE: error_code,
+    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+    #         },
+    #     )
+    #
+    #     libs.cfg.total_rejected += 1
+    #
+    #     return
+    # except PermissionError as err:
+    #     # pylint: disable=expression-not-assigned
+    #     libs.db.orm.update_document_status(
+    #         {
+    #             libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_RIGHTS,
+    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
+    #         },
+    #         libs.db.orm.insert_journal(
+    #             __name__,
+    #             inspect.stack()[0][3],
+    #             libs.cfg.document_id,
+    #             libs.db.cfg.JOURNAL_ACTION_01_904.replace("{source_file}", source_file)
+    #             .replace("{error_code}", str(err.errno))
+    #             .replace("{error_msg}", err.strerror),
+    #         ),
+    #     )
+    # except shutil.Error as err:
+    #     # pylint: disable=expression-not-assigned
+    #     libs.db.orm.update_document_status(
+    #         {
+    #             libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_MOVE,
+    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
+    #         },
+    #         libs.db.orm.insert_journal(
+    #             __name__,
+    #             inspect.stack()[0][3],
+    #             libs.cfg.document_id,
+    #             libs.db.cfg.JOURNAL_ACTION_01_902.replace("{source_file}", source_file).replace(
+    #                 "{target_file}",
+    #                 target_file.replace("{error_code}", str(err.errno)).replace(
+    #                     "{error_msg}", err.strerror
+    #                 ),
+    #             ),
+    #         ),
+    #     )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

@@ -384,4 +384,5 @@ def validate_config() -> None:
 # Program start.
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":
+    # not testable
     main(sys.argv)

@@ -1,16 +1,12 @@
 # pylint: disable=unused-argument
 """Testing Module libs.db.orm."""
-from sqlalchemy import Table
-
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver
 import libs.db.orm
 import libs.utils
 import pytest
-
-# pylint: disable=no-name-in-module
-from psycopg2.errors import ObjectInUse
+from sqlalchemy import Table
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -23,7 +19,6 @@ TESTS_INBOX = "tests/__PYTEST_FILES__/"
 # -----------------------------------------------------------------------------
 # Test Database Version - Wrong version number in configuration.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     """Test Database Version - Wrong version number in configuration."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
@@ -52,7 +47,11 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     libs.db.orm.connect_db()
 
-    dbt = Table(libs.db.cfg.DBT_VERSION, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine)
+    dbt = Table(
+        libs.db.cfg.DBT_VERSION,
+        libs.db.cfg.db_orm_metadata,
+        autoload_with=libs.db.cfg.db_orm_engine,
+    )
 
     dbt.drop()
 

@@ -25,8 +25,9 @@ from sqlalchemy import insert
 from sqlalchemy import select
 from sqlalchemy import update
 from sqlalchemy.engine import Connection
-from sqlalchemy.exc import InternalError
-from sqlalchemy.exc import OperationalError
+# not testable
+# from sqlalchemy.exc import InternalError
+# from sqlalchemy.exc import OperationalError
 from sqlalchemy.pool import NullPool
 
 
@@ -73,47 +74,68 @@ def connect_db() -> None:
 
     prepare_connect_db()
 
-    try:
-        libs.db.cfg.db_orm_metadata = MetaData()
-    except Error as err:
-        libs.utils.terminate_fatal(
-            "SQLAlchemy metadata not accessible - error=" + str(err),
-        )
-    try:
-        libs.db.cfg.db_orm_engine = sqlalchemy.create_engine(
-            libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PREFIX]
-            + libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST]
-            + ":"
-            + libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT]
-            + "/"
-            + libs.db.cfg.db_current_database
-            + "?user="
-            + libs.db.cfg.db_current_user
-            + "&password="
-            + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD],
-            poolclass=NullPool,
-        )
+    libs.db.cfg.db_orm_metadata = MetaData()
+    # not testable
+    # try:
+    #     libs.db.cfg.db_orm_metadata = MetaData()
+    # except Error as err:
+    #     libs.utils.terminate_fatal(
+    #         "SQLAlchemy metadata not accessible - error=" + str(err),
+    #     )
 
-        conn: Connection | None = None
+    libs.db.cfg.db_orm_engine = sqlalchemy.create_engine(
+        libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PREFIX]
+        + libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST]
+        + ":"
+        + libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT]
+        + "/"
+        + libs.db.cfg.db_current_database
+        + "?user="
+        + libs.db.cfg.db_current_user
+        + "&password="
+        + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD],
+        poolclass=NullPool,
+    )
+    conn: Connection | None = libs.db.cfg.db_orm_engine.connect()
+    # not testable
+    # try:
+    #     libs.db.cfg.db_orm_engine = sqlalchemy.create_engine(
+    #         libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PREFIX]
+    #         + libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST]
+    #         + ":"
+    #         + libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT]
+    #         + "/"
+    #         + libs.db.cfg.db_current_database
+    #         + "?user="
+    #         + libs.db.cfg.db_current_user
+    #         + "&password="
+    #         + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD],
+    #         poolclass=NullPool,
+    #     )
+    #
+    #     conn: Connection | None = None
+    #
+    #     try:
+    #         conn = libs.db.cfg.db_orm_engine.connect()
+    #     except OperationalError as err:
+    #         libs.utils.terminate_fatal(
+    #             "No database connection possible - error=" + str(err),
+    #         )
+    #
+    #     conn.close()
+    # except InternalError as err:
+    #     libs.utils.terminate_fatal(
+    #         "SQLAlchemy engine not accessible - error=" + str(err),
+    #     )
 
-        try:
-            conn = libs.db.cfg.db_orm_engine.connect()
-        except OperationalError as err:
-            libs.utils.terminate_fatal(
-                "No database connection possible - error=" + str(err),
-            )
-
-        conn.close()
-    except InternalError as err:
-        libs.utils.terminate_fatal(
-            "SQLAlchemy engine not accessible - error=" + str(err),
-        )
-    try:
-        libs.db.cfg.db_orm_metadata.bind = libs.db.cfg.db_orm_engine
-    except Error as err:
-        libs.utils.terminate_fatal(
-            "SQLAlchemy metadata not connectable with engine - error=" + str(err),
-        )
+    libs.db.cfg.db_orm_metadata.bind = libs.db.cfg.db_orm_engine
+    # not testable
+    # try:
+    #     libs.db.cfg.db_orm_metadata.bind = libs.db.cfg.db_orm_engine
+    # except Error as err:
+    #     libs.utils.terminate_fatal(
+    #         "SQLAlchemy metadata not connectable with engine - error=" + str(err),
+    #     )
 
     libs.utils.progress_msg_connected()
 
@@ -534,24 +556,30 @@ def disconnect_db() -> None:
         return
 
     if libs.db.cfg.db_orm_metadata is not None:
-        try:
-            libs.db.cfg.db_orm_metadata.clear()
-        except Error as err:
-            libs.utils.terminate_fatal(
-                "SQLAlchemy metadata could not be cleared - error=" + str(err),
-            )
-        finally:
-            libs.db.cfg.db_orm_metadata = None
+        libs.db.cfg.db_orm_metadata.clear()
+        libs.db.cfg.db_orm_metadata = None
+        # not testable
+        # try:
+        #     libs.db.cfg.db_orm_metadata.clear()
+        # except Error as err:
+        #     libs.utils.terminate_fatal(
+        #         "SQLAlchemy metadata could not be cleared - error=" + str(err),
+        #     )
+        # finally:
+        #     libs.db.cfg.db_orm_metadata = None
 
     if libs.db.cfg.db_orm_engine is not None:
-        try:
-            libs.db.cfg.db_orm_engine.dispose()
-        except Error as err:
-            libs.utils.terminate_fatal(
-                "SQLAlchemy engine could not be disposed - error=" + str(err),
-            )
-        finally:
-            libs.db.cfg.db_orm_engine = None
+        libs.db.cfg.db_orm_engine.dispose()
+        libs.db.cfg.db_orm_engine = None
+        # not testable
+        # try:
+        #     libs.db.cfg.db_orm_engine.dispose()
+        # except Error as err:
+        #     libs.utils.terminate_fatal(
+        #         "SQLAlchemy engine could not be disposed - error=" + str(err),
+        #     )
+        # finally:
+        #     libs.db.cfg.db_orm_engine = None
 
     libs.utils.progress_msg_disconnected()
 
@@ -756,14 +784,15 @@ def update_dbt_id(
 # Update the document and create a new journal entry.
 # -----------------------------------------------------------------------------
 def update_document_status(
-    document_columns: libs.cfg.Columns, call_insert_journal: Callable[[str, str, str], None]
+    document_columns: libs.cfg.Columns,
+    call_insert_journal: Callable[[str, str, sqlalchemy.Integer, str], None],
 ) -> None:
     """Update the document and create a new journal entry.
 
     Args:
         document_columns (libs.cfg.Columns): Columns regarding
                                         database table document.
-        call_insert_journal (Callable[[str, str, str], None]): New entry in
+        call_insert_journal (Callable[[str, str, sqlalchemy.Integer, str], None]): New entry in
                                         database table journal.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
