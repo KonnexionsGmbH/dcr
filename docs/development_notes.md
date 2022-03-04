@@ -232,17 +232,18 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 **1<sup>st</sup> Priority:**
 
-- API Documentation
+- convert the appropriate documents into the `pdf` format with Pandoc.
+- test cases for file duplicate
+- tools.py - verify the content of the inbox directories
+- ~~API Documentation~~
+- ~~duplicate handling~~ 
 - ~~error handling - highly defensive~~
 - ~~inbox.py - process_inbox() - processing ocr & non-ocr in the same method~~
-- tools.py - verify the content of the inbox directories
-- ~~duplicate handling~~ 
 
 **2<sup>nd</sup> Priority:** 
 
 - Layout improvement API documentation
-- Tesseract OCR
-    - Installation  
+- Tesseract OCR - Installation  
 
 **3<sup>rd</sup> Priority**
 

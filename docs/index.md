@@ -36,7 +36,7 @@ This process applies to all image format files e.g. jpeg, tiff etc., as well as 
 
 In the first step, the file directory **`inbox`** is checked for new document files. 
 An entry is created in the **`document`** database table for each new document, showing the current processing status of the document. 
-In addition, each processing step of a document is documented in the database table **`journal`**.
+In addition, each processing step of a document is recorded in the database table **`journal`**.
 The new document files are processed based on their file extension as follows:
 
 #### 2.1.1 File extension **`pdf`**
@@ -48,7 +48,7 @@ If, however, when checking the **`pdf`** document with **`fitz`**, it turns out 
 
 #### 2.1.2 File extensions of documents for processing with Pandoc
 
-Document files with the following file extensions are marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org):
+Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org):
 
 - **`csv`**
 - **`doc`**
@@ -67,7 +67,7 @@ An exception are files with the file name **`README.md`**, which are ignored and
 
 #### 2.1.3 File extensions of documents for processing with Tesseract OCR
 
-Document files with the following file extensions are marked for converting to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract):
+Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract):
 
 - **`bmp`**
 - **`gif`**
@@ -86,20 +86,25 @@ Document files that do not fall into one of the previous categories are marked a
 ### 2.2 Convert pdf documents to image files (step: **`p_2_i`**)
 
 pdf documents consisting of scanned images must first be processed with OCR software in order to extract the text they contain. 
-Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) does not support the pdf file format, such a pdf document must first be converted into an image file. 
+Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) does not support the pdf file format, such a pdf document must first be converted into one or more image files. 
 This is done with the software [pdf2image](https://pypi.org/project/pdf2image/), which in turn is based on the [Poppler](https://poppler.freedesktop.org) software.
+The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image files (child document(s)).
 
 ## 3. Requirements
 
 ### 3.1 Operating System
 
-Continuous delivery / integration (CD/CI) runs on **`Ubunto 18.04`**, **`Ubuntu 20.04`**, **`Windows Server 2019`** and **`Windows Server 2022`**.
+Continuous delivery / integration (CD/CI) runs on **`Ubunto 18.04`**, **`Ubuntu 20.04`**~~, **`Windows Server 2019`** and **`Windows Server 2022`**~~.
 This means that **`DCR`** also runs under **`Windows 10`** and **`Windows 11`**. 
-In this case, only the functionality of the **`grep`** and **`make`** tools must be made available, e.g. via [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm) or [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm).
+In this case, only the functionality of the **`grep`**, **`make`**  and **`sed`** tools must be made available, e.g. via [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm), [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm) or [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm).
 
 ### 3.2 Python
 
 Because of the use of the new typing features, **`Python`** version [3.10](https://docs.python.org/3/whatsnew/3.10.html){:target="_blank"} or higher is required.
+
+### 3.3 Poppler
+
+To convert the scanned PDF documents into image files for Tesseract OCR, the rendering library [Poppler](https://poppler.freedesktop.org) is used and must therefore also be installed.
 
 ## 4. Installation
 
@@ -113,9 +118,11 @@ Because of the use of the new typing features, **`Python`** version [3.10](https
 
     **`make pipenv-prod`**
 
-4. Create the **`DCR`** database with the script **`run_dcr`** and action **`db_c`**.
+4. Create a PostgreSQL database container with the script **`scripts/run_setup_postgresql`**.
 
-5. Optionally, adjustments can be made in the following configuration files:
+5. Create the **`DCR`** database with the script **`run_dcr_prod`** and action **`db_c`**.
+
+6. Optionally, adjustments can be made in the following configuration files:
 
    - **`logging_cfg.yaml`**: for the logging functionality
 
@@ -125,22 +132,69 @@ Because of the use of the new typing features, **`Python`** version [3.10](https
 
 The customisable entries are:
 
-    [dcr] 
-    database_file = data/dcr.db
-    directory_inbox = data/inbox
-    directory_inbox_accepted = data/inbox_accepted
-    directory_inbox_rejected = data/inbox_rejected
+      [dcr]
+      db_connection_port = see environment
+      db_connection_prefix = postgresql+psycopg2://
+      db_database = see environment
+      db_database_admin = see environment
+      db_dialect = postgresql
+      db_host = localhost
+      db_password = postgresql
+      db_password_admin = postgresql
+      db_schema = dcr_schema
+      db_user = dcr_user
+      db_user_admin = dcr_user_admin
+      dcr_version = 0.6.0
+      directory_inbox = data/inbox
+      directory_inbox_accepted = data/inbox_accepted
+      directory_inbox_rejected = data/inbox_rejected
+      ignore_duplicates = false
+      pdf2image_type = jpeg
+      verbose = true
 
-| Parameter                | Default value             | Description                             |
-|--------------------------|---------------------------|-----------------------------------------|
-| database_file            | **`data/dcr.db`**         | directory and name of the database file |
-| directory_inbox          | **`data/inbox`**          | directory for the unprocessed documents |
-| directory_inbox_accepted | **`data/inbox_accepted`** | directory for the accepted documents    |
-| directory_inbox_rejected | **`data/inbox_rejected`** | directory for the rejected documents    |
+| Parameter                | Default value                | Description                                                                   |
+|--------------------------|------------------------------|-------------------------------------------------------------------------------|
+| db_connection_port       | environment specific         | port number the DBMS server is listening on                                   |
+| db_connection_prefix     | **`postgresql+psycopg2://`** | front part of the database URL                                                |
+| db_database              | environment specific         | DCR database name                                                             |
+| db_database_admin        | environment specific         | administrative database name                                                  |
+| db_dialect               | **`postgresql`**             | DBMS used, currently: only PostgreSQL allowed                                 |
+| db_host                  | **`localhost`**              | host name of the DBMS server                                                  |
+| db_password              | **`postgresql`**             | DCR database user password                                                    |
+| db_password_admin        | **`postgresql`**             | administrative database password                                              |
+| db_schema                | **`dcr_schema`**             | database schema name                                                          |
+| db_user                  | **`postgresql`**             | DCR database user name                                                        |
+| db_user_admin            | **`postgresql`**             | administrative database user name                                             |
+| dcr_version              | **`0.6.0`**                  | current version number of the DCR application                                 |
+| directory_inbox          | **`data/inbox`**             | directory for the new documents received                                      |
+| directory_inbox_accepted | **`data/inbox_accepted`**    | directory for the accepted documents                                          |
+| directory_inbox_rejected | **`data/inbox_rejected`**    | directory for the rejected documents                                          |
+| ignore_duplicates        | **`false`**                  | accept presumably duplicated documents <br/>based on a SHA256 hash key        |
+| pdfimage_type            | **`jpeg`**                   | format of the image files for the scanned <br/>`pdf` document: `jpeg`or `pdf` |
+| verbose                  | **`true`**                   | display progress messages for processing                                      |
+
+The configuration parameters can be set differently for the individual environments (`dev`, `prod` and `test`).
+
+**Examples**:
+      
+      [dcr_dev]
+      db_connection_port = 5432
+      db_database = dcr_db_dev
+      db_database_admin = dcr_db_dev_admin
+      
+      [dcr_prod]
+      db_connection_port = 5433
+      db_database = dcr_db_prod
+      db_database_admin = dcr_db_prod_admin
+      
+      [dcr_test]
+      db_connection_port = 5434
+      db_database = dcr_db_test
+      db_database_admin = dcr_db_test_admin
 
 ## 5. Operation
 
-**`DCR`** should be operated via the script **`run_dcr`**. 
+**`DCR`** should be operated via the script **`run_dcr_prod`**. 
 The following actions are available:
 
 | Action      | Process                                                                                                       |
