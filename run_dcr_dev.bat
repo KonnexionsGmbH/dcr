@@ -19,6 +19,7 @@ if ["%1"] EQU [""] (
     echo db_u  - Upgrade the database.
     echo m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem.
     echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules.
+    echo n_2_p - Convert non-pdf documents to pdf files.
     echo p_i   - Process the inbox directory.
     echo p_2_i - Convert pdf documents to image files.
     echo ---------------------------------------------------------
@@ -49,8 +50,6 @@ echo You can find the run log in the file %LOG_FILE%
 echo.
 echo Please wait ...
 echo.
-
-REM > %LOG_FILE% 2>&1 (
 
     echo =======================================================================
     echo Start %0
@@ -90,7 +89,12 @@ REM > %LOG_FILE% 2>&1 (
         goto normal_exit
     )
 
-    if ["%DCR_CHOICE_ACTION%"] EQU ["all"] (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["all"]   (
+        if exist data\inbox (
+            rd /s /q data\inbox
+        )
+        mkdir data\inbox
+        xcopy /E /I tests\inbox data\inbox
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
@@ -104,12 +108,7 @@ REM > %LOG_FILE% 2>&1 (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
-    if ["%DCR_CHOICE_ACTION%"] EQU ["all"]   (
-        if exist data\inbox (
-            rd /s /q data\inbox
-        )
-        mkdir data\inbox
-        xcopy /E /I tests\inbox data\inbox
+    if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p"]   (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
@@ -133,7 +132,7 @@ REM > %LOG_FILE% 2>&1 (
         goto normal_exit
     )
 
-    echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | p_i | p_2_i"
+    echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | n_2_p | p_i | p_2_i"
 
     :normal_exit
     echo -----------------------------------------------------------------------

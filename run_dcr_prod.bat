@@ -19,6 +19,7 @@ if ["%1"] EQU [""] (
     echo db_u  - Upgrade the database.
     echo m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem.
     echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules.
+    echo n_2_p - Convert non-pdf documents to pdf files.
     echo p_i   - Process the inbox directory.
     echo p_2_i - Convert pdf documents to image files.
     echo ---------------------------------------------------------
@@ -34,9 +35,13 @@ if ["%1"] EQU [""] (
 echo.
 echo Script %0 is now running
 
-if exist run_dcr_prod_debug.log del /f /q run_dcr_prod_debug.log
+if exist run_dcr_prod_debug.log (
+    del /f /q run_dcr_prod_debug.log
+)
 set LOG_FILE=run_dcr_prod.log
-if exist run_dcr_prod.log       del /f /q run_dcr_prod.log
+if exist run_dcr_prod.log (
+    del /f /q run_dcr_prod.log
+)
 
 echo.
 echo You can find the run log in the file %LOG_FILE%
@@ -44,7 +49,7 @@ echo.
 echo Please wait ...
 echo.
 
-REM > %LOG_FILE% 2>&1 (
+%LOG_FILE% 2>&1 (
 
     echo =======================================================================
     echo Start %0
@@ -88,11 +93,27 @@ REM > %LOG_FILE% 2>&1 (
         goto normal_exit
     )
 
-    if ["%DCR_CHOICE_ACTION%"] EQU ["all"]   set _CHOICE=%DCR_CHOICE_ACTION%
-    if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"]  set _CHOICE=%DCR_CHOICE_ACTION%
-    if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"]  set _CHOICE=%DCR_CHOICE_ACTION%
-    if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"]   set _CHOICE=%DCR_CHOICE_ACTION%
-    if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] set _CHOICE=%DCR_CHOICE_ACTION%
+    if ["%DCR_CHOICE_ACTION%"] EQU ["all"] (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
+
+    if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"] (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"] (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
+
+    if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p"] (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
+
+    if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"] (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
 
     if ["%_CHOICE%"] EQU ["%DCR_CHOICE_ACTION%"] (
         pipenv run python src\dcr\dcr.py %DCR_CHOICE_ACTION%
@@ -103,7 +124,7 @@ REM > %LOG_FILE% 2>&1 (
         goto normal_exit
     )
 
-    echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | p_i | p_2_i"
+    echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | n_2_p | p_i | p_2_i"
     exit -1073741510
 
     :normal_exit

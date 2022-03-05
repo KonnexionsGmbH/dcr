@@ -3,29 +3,29 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.5)
 
 ----
 
-## 1. Version 0.6.0
+## 1. Version 0.6.5
 
 Release Date: dd.mm.2022
 
 ### 1.1 New Features
 
-- Processing step **`db_u`**: Upgrade the database.
-- Processing step **`p_2_i`**: Convert pdf documents into image files.
+- processing step **`n_2_p`**: Convert appropriate non-pdf documents to pdf files.
 
 ### 1.2 Applied Software
 
-| Software                                   | Version  | Remark                              | Status |
-|:-------------------------------------------|:---------|:------------------------------------|--------|
-| DBeaver                                    | 21.3.5   | for virtual machine only [optional] |        |
-| Docker Desktop                             | 20.10.12 | base version [Docker Image & VM]    | new    | 
-| Git                                        | 2.25.1   | base version                        |        |
-| [Poppler](https://poppler.freedesktop.org) | 0.86.1   | base version                        | new    |
-| Python3                                    | 3.10.2   |                                     |        |
-| Python3 - pip                              | 22.0.3   |                                     |        |
+| Software                                                     | Version  | Remark                              | Status |
+|:-------------------------------------------------------------|:---------|:------------------------------------|--------|
+| DBeaver                                                      | 21.3.5   | for virtual machine only [optional] |        |
+| Docker Desktop                                               | 20.10.12 | base version [Docker Image & VM]    |        | 
+| Git                                                          | 2.25.1   | base version                        |        |
+| [Pandoc](https://pandoc.org){:target="_blank"}               | 2.17.1.1 |                                     | new    |
+| [Poppler](https://poppler.freedesktop.org){:target="_blank"} | 0.86.1   | base version                        |        |
+| Python3                                                      | 3.10.2   |                                     |        |
+| Python3 - pip                                                | 22.0.3   |                                     |        |
 
 #### 1.2.1 Unix-specific Software
 
@@ -51,9 +51,9 @@ Release Date: dd.mm.2022
 
 | Software                                                                                | Version | Remark                   | Status |
 |:----------------------------------------------------------------------------------------|:--------|:-------------------------|--------|
-| [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm){:target="_blank"} | 2.5.4   | base version             | new    |
-| [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} | 3.81    | base version             | new    |
-| [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}   | 4.2.1   | base version             | new    |
+| [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm){:target="_blank"} | 2.5.4   | base version             |        |
+| [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} | 3.81    | base version             |        |
+| [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}   | 4.2.1   | base version             |        |
 
 ----
 

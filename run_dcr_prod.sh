@@ -19,6 +19,7 @@ if [ -z "$1" ]; then
     echo "db_u  - Upgrade the database."
     echo "m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem."
     echo "m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules."
+    echo "n_2_p - Convert non-pdf documents to pdf files."
     echo "p_i   - Process the inbox directory."
     echo "p_2_i - Convert pdf documents to image files."
     echo "------------------------------------------------------------------------------"
@@ -75,7 +76,7 @@ case "${DCR_CHOICE_ACTION}" in
         exit 255
     fi
     ;;
-  all|db_c|db_u|p_i|p_2_i)
+  all|db_c|db_u|n_2_p|p_i|p_2_i)
     if ! ( pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}" ); then
         exit 255
     fi

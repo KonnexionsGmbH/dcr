@@ -31,6 +31,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         all   - Run the complete processing of all new documents.
         db_c  - Create the database.
         db_u  - Upgrade the database.
+        n_2_p - Convert non-pdf documents to pdf files.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
 
@@ -39,6 +40,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
 
         1. p_i
         2. p_2_i
+        3. n_2_p
 
     Args:
         argv (List[str]): Command line arguments.
@@ -58,6 +60,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
 
     args = {
         libs.cfg.RUN_ACTION_CREATE_DB: False,
+        libs.cfg.RUN_ACTION_NON_PDF_2_PDF: False,
         libs.cfg.RUN_ACTION_PDF_2_IMAGE: False,
         libs.cfg.RUN_ACTION_PROCESS_INBOX: False,
         libs.cfg.RUN_ACTION_UPGRADE_DB: False,
@@ -66,10 +69,12 @@ def get_args(argv: List[str]) -> dict[str, bool]:
     for i in range(1, num):
         arg = argv[i].lower()
         if arg == libs.cfg.RUN_ACTION_ALL_COMPLETE:
+            args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF] = True
             args[libs.cfg.RUN_ACTION_PDF_2_IMAGE] = True
             args[libs.cfg.RUN_ACTION_PROCESS_INBOX] = True
         elif arg in (
             libs.cfg.RUN_ACTION_CREATE_DB,
+            libs.cfg.RUN_ACTION_NON_PDF_2_PDF,
             libs.cfg.RUN_ACTION_PDF_2_IMAGE,
             libs.cfg.RUN_ACTION_PROCESS_INBOX,
             libs.cfg.RUN_ACTION_UPGRADE_DB,
@@ -281,6 +286,32 @@ def process_documents(args: dict[str, bool]) -> None:
             },
         )
         libs.utils.progress_msg("End  : Convert pdf documents to image files ...")
+
+
+    # Convert the non-pdf documents to pdf files.
+    if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
+        libs.cfg.run_action = libs.cfg.RUN_ACTION_NON_PDF_2_PDF
+        libs.utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ...")
+        libs.cfg.run_id = libs.db.orm.insert_dbt_row(
+            libs.db.cfg.DBT_RUN,
+            {
+                libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
+                libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            },
+        )
+        libs.inbox.convert_non_pdf_2_pdf()
+        libs.db.orm.update_dbt_id(
+            libs.db.cfg.DBT_RUN,
+            libs.cfg.run_id,
+            {
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
+                libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+                libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+                libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            },
+        )
+        libs.utils.progress_msg("End  : Convert non-pdf documents to pdf files ...")
 
     # Disconnect from the database.
     libs.db.orm.disconnect_db()

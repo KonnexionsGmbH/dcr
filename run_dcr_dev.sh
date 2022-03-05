@@ -19,6 +19,7 @@ if [ -z "$1" ]; then
     echo "db_u  - Upgrade the database."
     echo "m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem."
     echo "m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules."
+    echo "n_2_p - Convert non-pdf documents to pdf files."
     echo "p_i   - Process the inbox directory."
     echo "p_2_i - Convert pdf documents to image files."
     echo "------------------------------------------------------------------------------"
@@ -71,7 +72,7 @@ case "${DCR_CHOICE_ACTION}" in
     rm -f data/dcr.db
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
-  db_u|p_2_i)
+  db_u|n_2_p|p_2_i)
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   all|p_i)
@@ -81,7 +82,7 @@ case "${DCR_CHOICE_ACTION}" in
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
-    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | p_i | p_2_i"
+    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p | p_i | p_2_i"
     ;;
 esac
 
