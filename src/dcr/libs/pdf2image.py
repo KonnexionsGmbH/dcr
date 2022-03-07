@@ -16,7 +16,6 @@ import libs.inbox
 import libs.utils
 import pdf2image
 from pdf2image.exceptions import PDFPopplerTimeoutError
-from sqlalchemy import Table
 
 
 # -----------------------------------------------------------------------------
@@ -29,29 +28,17 @@ def convert_pdf_2_image() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.cfg.total_erroneous = 0
-    libs.cfg.total_generated = 0
-    libs.cfg.total_ok_processed = 0
-    libs.cfg.total_status_error = 0
-    libs.cfg.total_status_ready = 0
-    libs.cfg.total_to_be_processed = 0
-
     if libs.cfg.config[libs.cfg.DCR_CFG_PDF2IMAGE_TYPE] == libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG:
         libs.cfg.document_child_file_type = libs.db.cfg.DOCUMENT_FILE_TYPE_PNG
     else:
         libs.cfg.document_child_file_type = libs.db.cfg.DOCUMENT_FILE_TYPE_JPG
 
-    # Check the inbox file directories.
-    libs.utils.check_directories()
+    libs.cfg.total_generated = 0
 
-    dbt = Table(
-        libs.db.cfg.DBT_DOCUMENT,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
-    )
+    dbt = libs.utils.select_document_prepare()
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_documents(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PDF2IMAGE)
+        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PDF2IMAGE)
 
         for row in rows:
             libs.utils.start_document_processing(row, libs.db.cfg.JOURNAL_ACTION_21_001)
@@ -119,21 +106,7 @@ def convert_pdf_2_image_file() -> None:
             )
 
             if os.path.exists(file_name_child):
-                # pylint: disable=expression-not-assigned
-                libs.db.orm.update_document_status(
-                    {
-                        libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-                        libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-                    },
-                    libs.db.orm.insert_journal(
-                        __name__,
-                        inspect.stack()[0][3],
-                        libs.cfg.document_id,
-                        libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", file_name_child),
-                    ),
-                )
-
-                libs.cfg.total_erroneous += 1
+                libs.utils.duplicate_file_error(file_name_child)
             else:
                 img.save(
                     file_name_child,
@@ -149,21 +122,11 @@ def convert_pdf_2_image_file() -> None:
                 libs.cfg.total_generated += 1
 
                 # Document successfully converted to image format
-                libs.cfg.total_ok_processed += 1
+                journal_action = libs.db.cfg.JOURNAL_ACTION_21_002.replace(
+                    "{file_name}", libs.cfg.document_file_name
+                ).replace("{child_no}", str(libs.cfg.document_child_child_no))
 
-                libs.db.orm.update_document_status(
-                    {
-                        libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
-                    },
-                    libs.db.orm.insert_journal(
-                        __name__,
-                        inspect.stack()[0][3],
-                        libs.cfg.document_id,
-                        libs.db.cfg.JOURNAL_ACTION_21_002.replace(
-                            "{file_name}", libs.cfg.document_file_name
-                        ).replace("{child_no}", str(libs.cfg.document_child_child_no)),
-                    ),
-                )
+                libs.utils.finalize_file_conversion(journal_action)
     # not testable
     except PDFPopplerTimeoutError as err:
         libs.cfg.total_erroneous += 1

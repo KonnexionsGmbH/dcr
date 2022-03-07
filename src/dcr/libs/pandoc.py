@@ -7,7 +7,6 @@ import libs.db.cfg
 import libs.db.orm
 import libs.utils
 import pypandoc
-from sqlalchemy import Table
 
 
 # -----------------------------------------------------------------------------
@@ -20,23 +19,10 @@ def convert_non_pdf_2_pdf() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.cfg.total_erroneous = 0
-    libs.cfg.total_ok_processed = 0
-    libs.cfg.total_status_error = 0
-    libs.cfg.total_status_ready = 0
-    libs.cfg.total_to_be_processed = 0
-
-    # Check the inbox file directories.
-    libs.utils.check_directories()
-
-    dbt = Table(
-        libs.db.cfg.DBT_DOCUMENT,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
-    )
+    dbt = libs.utils.select_document_prepare()
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_documents(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PANDOC)
+        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PANDOC)
 
         for row in rows:
             libs.utils.start_document_processing(row, libs.db.cfg.JOURNAL_ACTION_31_001)
@@ -119,21 +105,11 @@ def convert_non_pdf_2_pdf_file() -> None:
         libs.utils.initialise_document_child(journal_action)
 
         # Document successfully converted to pdf format
-        libs.cfg.total_ok_processed += 1
+        journal_action = libs.db.cfg.JOURNAL_ACTION_31_002.replace(
+            "{source_file}", source_file
+        ).replace(f"{target_file}", target_file)
 
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_31_002.replace("{source_file}", source_file).replace(
-                    f"{target_file}", target_file
-                ),
-            ),
-        )
+        libs.utils.finalize_file_conversion(journal_action)
 
 
 # -----------------------------------------------------------------------------

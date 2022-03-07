@@ -303,21 +303,7 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
     )
 
     if os.path.exists(target_file):
-        # pylint: disable=expression-not-assigned
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", target_file),
-            ),
-        )
-
-        libs.cfg.total_erroneous += 1
+        libs.utils.duplicate_file_error(target_file)
     else:
         shutil.move(source_file, target_file)
 

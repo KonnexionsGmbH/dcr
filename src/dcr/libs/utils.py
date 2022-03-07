@@ -42,6 +42,56 @@ def check_directories() -> None:
 
 
 # -----------------------------------------------------------------------------
+# Duplicate file error.
+# -----------------------------------------------------------------------------
+def duplicate_file_error(file_name: str) -> None:
+    """Duplicate file error.
+
+    Args:
+        file_name (_type_): File name.
+    """
+    # pylint: disable=expression-not-assigned
+    libs.db.orm.update_document_status(
+        {
+            libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+        },
+        libs.db.orm.insert_journal(
+            __name__,
+            inspect.stack()[0][3],
+            libs.cfg.document_id,
+            libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", file_name),
+        ),
+    )
+
+    libs.cfg.total_erroneous += 1
+
+
+# -----------------------------------------------------------------------------
+# Finalise the file conversion.
+# -----------------------------------------------------------------------------
+def finalize_file_conversion(journal_action: str) -> None:
+    """Finalise the file conversion.
+
+    Args:
+        journal_action (str): journal action.
+    """
+    libs.cfg.total_ok_processed += 1
+
+    libs.db.orm.update_document_status(
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
+        },
+        libs.db.orm.insert_journal(
+            __name__,
+            inspect.stack()[0][3],
+            libs.cfg.document_id,
+            journal_action,
+        ),
+    )
+
+
+# -----------------------------------------------------------------------------
 # Get the SHA256 hash string of a file.
 # -----------------------------------------------------------------------------
 def get_sha256(file: pathlib.Path) -> str:
@@ -187,7 +237,7 @@ def progress_msg_empty_before(msg: str) -> None:
 # -----------------------------------------------------------------------------
 # Select the documents to be processed.
 # -----------------------------------------------------------------------------
-def select_documents(conn: Connection, dbt: Table, next_step: str) -> engine.CursorResult:
+def select_document(conn: Connection, dbt: Table, next_step: str) -> engine.CursorResult:
     """Select the documents to be processed.
 
     Args:
@@ -222,6 +272,31 @@ def select_documents(conn: Connection, dbt: Table, next_step: str) -> engine.Cur
             )
         )
         .order_by(dbt.c.id.desc())
+    )
+
+
+# -----------------------------------------------------------------------------
+# Prepare the selection of the documents to be processed.
+# -----------------------------------------------------------------------------
+def select_document_prepare() -> Table:
+    """Prepare the selection of the documents to be processed.
+
+    Returns:
+        Table: Database table document,
+    """
+    libs.cfg.total_erroneous = 0
+    libs.cfg.total_ok_processed = 0
+    libs.cfg.total_status_error = 0
+    libs.cfg.total_status_ready = 0
+    libs.cfg.total_to_be_processed = 0
+
+    # Check the inbox file directories.
+    libs.utils.check_directories()
+
+    return Table(
+        libs.db.cfg.DBT_DOCUMENT,
+        libs.db.cfg.db_orm_metadata,
+        autoload_with=libs.db.cfg.db_orm_engine,
     )
 
 
