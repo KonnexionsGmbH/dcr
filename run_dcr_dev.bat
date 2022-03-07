@@ -99,9 +99,6 @@ echo.
     )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"]  (
-        if exist data\dcr.db (
-            del /f /q data\dcr.db
-        )
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
     if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"]  (

@@ -16,33 +16,7 @@ import libs.cfg
 import libs.db.cfg
 import libs.db.orm
 import libs.utils
-import pdf2image
-from pdf2image.exceptions import PDFPopplerTimeoutError
-from sqlalchemy import Table
-from sqlalchemy import select
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.elements import and_
-
-
-# -----------------------------------------------------------------------------
-# Check the inbox file directories.
-# -----------------------------------------------------------------------------
-def check_directories() -> None:
-    """Check the inbox file directories.
-
-    The file directory inbox_accepted must exist.
-    """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    if not os.path.isdir(libs.cfg.directory_inbox_accepted):
-        libs.utils.terminate_fatal(
-            "The inbox_accepted directory with the name "
-            + str(libs.cfg.directory_inbox_accepted)
-            + " does not exist - error="
-            + str(OSError),
-        )
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -73,257 +47,6 @@ def check_and_create_directories() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Convert pdf documents to image files (step: p_2_i).
-# -----------------------------------------------------------------------------
-def convert_pdf_2_image() -> None:
-    """Convert scanned image pdf documents to image files.
-
-    TBD
-    """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    libs.cfg.total_erroneous = 0
-    libs.cfg.total_generated = 0
-    libs.cfg.total_ok_processed = 0
-    libs.cfg.total_status_error = 0
-    libs.cfg.total_status_ready = 0
-    libs.cfg.total_to_be_processed = 0
-
-    if libs.cfg.config[libs.cfg.DCR_CFG_PDF2IMAGE_TYPE] == libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG:
-        libs.cfg.document_child_file_type = libs.db.cfg.DOCUMENT_FILE_TYPE_PNG
-    else:
-        libs.cfg.document_child_file_type = libs.db.cfg.DOCUMENT_FILE_TYPE_JPG
-
-    # Check the inbox file directories.
-    check_directories()
-
-    dbt = Table(
-        libs.db.cfg.DBT_DOCUMENT,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
-    )
-
-    with libs.db.cfg.db_orm_engine.connect() as conn:
-        rows = conn.execute(
-            select(
-                dbt.c.id,
-                dbt.c.directory_name,
-                dbt.c.directory_type,
-                dbt.c.document_id_base,
-                dbt.c.document_id_parent,
-                dbt.c.file_name,
-                dbt.c.file_type,
-                dbt.c.status,
-                dbt.c.stem_name,
-            )
-            .where(
-                and_(
-                    dbt.c.next_step == libs.db.cfg.DOCUMENT_NEXT_STEP_PDF2IMAGE,
-                    dbt.c.status.in_(
-                        [
-                            libs.db.cfg.DOCUMENT_STATUS_ERROR,
-                            libs.db.cfg.DOCUMENT_STATUS_START,
-                        ]
-                    ),
-                )
-            )
-            .order_by(dbt.c.id.desc())
-        )
-
-        for row in rows:
-            libs.cfg.total_to_be_processed += 1
-
-            libs.cfg.document_directory_name = row.directory_name
-            libs.cfg.document_directory_type = row.directory_type
-            libs.cfg.document_file_name = row.file_name
-            libs.cfg.document_file_type = row.file_type
-            libs.cfg.document_id = row.id
-            libs.cfg.document_id_base = row.document_id_base
-            libs.cfg.document_id_parent = row.document_id_parent
-            libs.cfg.document_status = row.status
-            libs.cfg.document_stem_name = row.stem_name
-
-            libs.db.orm.update_document_status(
-                {
-                    libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_START,
-                },
-                libs.db.orm.insert_journal(
-                    __name__,
-                    inspect.stack()[0][3],
-                    libs.cfg.document_id,
-                    libs.db.cfg.JOURNAL_ACTION_21_001.replace(
-                        "{file_name}", libs.cfg.document_file_name
-                    ),
-                ),
-            )
-
-            if libs.cfg.document_status == libs.db.cfg.DOCUMENT_STATUS_START:
-                libs.cfg.total_status_ready += 1
-            else:
-                # not testable
-                libs.cfg.total_status_error += 1
-
-            convert_pdf_2_image_file()
-
-        conn.close()
-
-    libs.utils.progress_msg(
-        f"Number documents to be processed:  {libs.cfg.total_to_be_processed:6d}"
-    )
-
-    if libs.cfg.total_to_be_processed > 0:
-        libs.utils.progress_msg(
-            f"Number status tesseract_pdf_ready: {libs.cfg.total_status_ready:6d}"
-        )
-        libs.utils.progress_msg(
-            f"Number status tesseract_pdf_error: {libs.cfg.total_status_error:6d}"
-        )
-        libs.utils.progress_msg(
-            f"Number documents converted:        {libs.cfg.total_ok_processed:6d}"
-        )
-        libs.utils.progress_msg(f"Number documents generated:        {libs.cfg.total_generated:6d}")
-        libs.utils.progress_msg(f"Number documents erroneous:        {libs.cfg.total_erroneous:6d}")
-        libs.utils.progress_msg(
-            "The involved 'pdf' documents in the file directory "
-            + "'inbox_accepted' are converted to an image format "
-            + "for further processing",
-        )
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Convert pdf documents to image files (step: p_2_i).
-# -----------------------------------------------------------------------------
-def convert_pdf_2_image_file() -> None:
-    """Convert scanned image pdf documents to image files."""
-    file_name_parent = os.path.join(
-        libs.cfg.document_directory_name,
-        libs.cfg.document_file_name,
-    )
-
-    try:
-        # Convert the 'pdf' document
-        images = pdf2image.convert_from_path(file_name_parent)
-
-        prepare_document_child_pdf2image()
-
-        # Store the image pages
-        for img in images:
-            libs.cfg.document_child_child_no = +1
-
-            libs.cfg.document_child_stem_name = (
-                libs.cfg.document_stem_name + "_" + str(libs.cfg.document_child_child_no)
-            )
-
-            libs.cfg.document_child_file_name = (
-                libs.cfg.document_child_stem_name + "." + libs.cfg.document_child_file_type
-            )
-
-            file_name_child = os.path.join(
-                libs.cfg.document_child_directory_name,
-                libs.cfg.document_child_file_name,
-            )
-
-            img.save(
-                file_name_child,
-                libs.cfg.pdf2image_type,
-            )
-
-            journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_003.replace(
-                "{file_name}", libs.cfg.document_child_file_name
-            )
-
-            initialise_document_child(journal_action)
-
-            libs.cfg.total_generated += 1
-            # not testable
-            # try:
-            #     libs.cfg.document_child_child_no = +1
-            #
-            #     libs.cfg.document_child_stem_name = (
-            #         libs.cfg.document_stem_name + "_" + str(libs.cfg.document_child_child_no)
-            #     )
-            #
-            #     libs.cfg.document_child_file_name = (
-            #         libs.cfg.document_child_stem_name + "." + libs.cfg.document_child_file_type
-            #     )
-            #
-            #     file_name_child = os.path.join(
-            #         libs.cfg.document_child_directory_name,
-            #         libs.cfg.document_child_file_name,
-            #     )
-            #
-            #     img.save(
-            #         file_name_child,
-            #         libs.cfg.pdf2image_type,
-            #     )
-            #
-            #     journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_003.replace(
-            #         "{file_name}", libs.cfg.document_child_file_name
-            #     )
-            #
-            #     initialise_document_child(journal_action)
-            #
-            #     libs.cfg.total_generated += 1
-            # except OSError as err:
-            #     libs.cfg.total_erroneous += 1
-            #
-            #     libs.db.orm.update_document_status(
-            #         {
-            #           libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_ERROR,
-            #           libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-            #         },
-            #         libs.db.orm.insert_journal(
-            #             __name__,
-            #             inspect.stack()[0][3],
-            #             libs.cfg.document_id,
-            #             libs.db.cfg.JOURNAL_ACTION_21_902.replace(
-            #                 "{child_no}", str(libs.cfg.document_child_child_no)
-            #             )
-            #             .replace("{file_name}", libs.cfg.document_child_file_name)
-            #             .replace("{error_code}", str(err.errno))
-            #             .replace("{error_msg}", err.strerror),
-            #         ),
-            #     )
-
-            # Document successfully converted to image format
-            libs.cfg.total_ok_processed += 1
-
-            libs.db.orm.update_document_status(
-                {
-                    libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
-                },
-                libs.db.orm.insert_journal(
-                    __name__,
-                    inspect.stack()[0][3],
-                    libs.cfg.document_id,
-                    libs.db.cfg.JOURNAL_ACTION_21_002.replace(
-                        "{file_name}", libs.cfg.document_file_name
-                    ).replace("{child_no}", str(libs.cfg.document_child_child_no)),
-                ),
-            )
-    # not testable
-    except PDFPopplerTimeoutError as err:
-        libs.cfg.total_erroneous += 1
-
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_PDF2IMAGE,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_21_901.replace(
-                    "{file_name}", libs.cfg.document_file_name
-                ).replace("{error_msg}", str(err)),
-            ),
-        )
-
-
-# -----------------------------------------------------------------------------
 # Create a new file directory if it does not already exist..
 # -----------------------------------------------------------------------------
 def create_directory(directory_type: str, directory_name: str) -> None:
@@ -344,28 +67,6 @@ def create_directory(directory_type: str, directory_name: str) -> None:
             + "newly created under the name "
             + directory_name,
         )
-        # not testable
-        # try:
-        #     os.mkdir(directory_name)
-        #     libs.utils.progress_msg(
-        #         "The file directory for "
-        #         + directory_type
-        #         + " was "
-        #         + "newly created under the name "
-        #         + directory_name,
-        #     )
-        # except OSError as err:
-        #     libs.utils.terminate_fatal(
-        #         " : The file directory for "
-        #         + directory_type
-        #         + " can "
-        #         + "not be created under the name "
-        #         + directory_name
-        #         + " - error code="
-        #         + str(err.errno)
-        #         + " message="
-        #         + err.strerror,
-        #     )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -416,49 +117,6 @@ def initialise_document_base(file: pathlib.Path) -> None:
         inspect.stack()[0][3],
         libs.cfg.document_id,
         libs.db.cfg.JOURNAL_ACTION_01_001.replace("{file_name}", libs.cfg.document_file_name),
-    )
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Initialise a new child document of the base document.
-# -----------------------------------------------------------------------------
-def initialise_document_child(journal_action: str) -> None:
-    """Initialise a new child document of the base document.
-
-    Prepares a new document for one of the file directories
-    'inbox_accepted' or 'inbox_rejected'.
-
-    Args:
-        journal_action (str): Journal action data.
-    """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    libs.cfg.document_child_id = libs.db.orm.insert_dbt_row(
-        libs.db.cfg.DBT_DOCUMENT,
-        {
-            libs.db.cfg.DBC_CHILD_NO: libs.cfg.document_child_child_no,
-            libs.db.cfg.DBC_DIRECTORY_NAME: str(libs.cfg.document_child_directory_name),
-            libs.db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_child_directory_type,
-            libs.db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_child_id_base,
-            libs.db.cfg.DBC_DOCUMENT_ID_PARENT: libs.cfg.document_child_id_parent,
-            libs.db.cfg.DBC_ERROR_CODE: libs.cfg.document_child_error_code,
-            libs.db.cfg.DBC_FILE_NAME: libs.cfg.document_child_file_name,
-            libs.db.cfg.DBC_FILE_TYPE: libs.cfg.document_child_file_type,
-            libs.db.cfg.DBC_NEXT_STEP: libs.cfg.document_child_next_step,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.cfg.document_child_status,
-            libs.db.cfg.DBC_STEM_NAME: libs.cfg.document_child_stem_name,
-        },
-    )
-
-    # pylint: disable=expression-not-assigned
-    libs.db.orm.insert_journal(
-        __name__,
-        inspect.stack()[0][3],
-        libs.cfg.document_child_id,
-        journal_action,
     )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -521,32 +179,11 @@ def prepare_document_child_accepted() -> None:
     libs.cfg.document_child_id_base = libs.cfg.document_id
     libs.cfg.document_child_id_parent = libs.cfg.document_id
     libs.cfg.document_child_next_step = None
-    libs.cfg.document_child_sha256 = None
     libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
 
     libs.cfg.document_child_stem_name = (
         libs.cfg.document_stem_name + "_" + str(libs.cfg.document_id)
     )
-
-
-# -----------------------------------------------------------------------------
-# Prepare the base child document data - pdf2image.
-# -----------------------------------------------------------------------------
-def prepare_document_child_pdf2image() -> None:
-    """Prepare the base child document data - pdf2image."""
-    libs.cfg.document_child_child_no = 0
-    libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
-    libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
-    libs.cfg.document_child_error_code = None
-
-    libs.cfg.document_child_file_type = libs.cfg.pdf2image_type
-
-    libs.cfg.document_child_id_base = libs.cfg.document_id_base
-    libs.cfg.document_child_id_parent = libs.cfg.document_id
-
-    libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT
-    libs.cfg.document_child_sha256 = None
-    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
 
 
 # -----------------------------------------------------------------------------
@@ -580,7 +217,7 @@ def prepare_pdf(file: pathlib.Path) -> None:
             "{source_file}", libs.cfg.document_file_name
         ).replace("{error_msg}", str(err))
         process_inbox_rejected(
-            libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_NO_PDF_FORMAT,
+            libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
             journal_action,
         )
 
@@ -665,95 +302,48 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
         libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name
     )
 
-    shutil.move(source_file, target_file)
+    if os.path.exists(target_file):
+        # pylint: disable=expression-not-assigned
+        libs.db.orm.update_document_status(
+            {
+                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+            },
+            libs.db.orm.insert_journal(
+                __name__,
+                inspect.stack()[0][3],
+                libs.cfg.document_id,
+                libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", target_file),
+            ),
+        )
 
-    initialise_document_child(journal_action)
+        libs.cfg.total_erroneous += 1
+    else:
+        shutil.move(source_file, target_file)
 
-    libs.db.orm.update_dbt_id(
-        libs.db.cfg.DBT_DOCUMENT,
-        libs.cfg.document_id,
-        {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
-        },
-    )
+        libs.utils.initialise_document_child(journal_action)
 
-    # pylint: disable=expression-not-assigned
-    libs.db.orm.insert_journal(
-        __name__,
-        inspect.stack()[0][3],
-        libs.cfg.document_id,
-        libs.db.cfg.JOURNAL_ACTION_01_002.replace("{source_file}", source_file).replace(
-            "{target_file}", target_file
-        ),
-    )
+        libs.db.orm.update_dbt_id(
+            libs.db.cfg.DBT_DOCUMENT,
+            libs.cfg.document_id,
+            {
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
+            },
+        )
 
-    libs.cfg.total_ok_processed += 1
+        # pylint: disable=expression-not-assigned
+        libs.db.orm.insert_journal(
+            __name__,
+            inspect.stack()[0][3],
+            libs.cfg.document_id,
+            libs.db.cfg.JOURNAL_ACTION_01_002.replace("{source_file}", source_file).replace(
+                "{target_file}", target_file
+            ),
+        )
+
+        libs.cfg.total_ok_processed += 1
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-    # not testable
-    # try:
-    #     shutil.move(source_file, target_file)
-    #
-    #     initialise_document_child(journal_action)
-    #
-    #     libs.db.orm.update_dbt_id(
-    #         libs.db.cfg.DBT_DOCUMENT,
-    #         libs.cfg.document_id,
-    #         {
-    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
-    #         },
-    #     )
-    #
-    #     # pylint: disable=expression-not-assigned
-    #     libs.db.orm.insert_journal(
-    #         __name__,
-    #         inspect.stack()[0][3],
-    #         libs.cfg.document_id,
-    #         libs.db.cfg.JOURNAL_ACTION_01_002.replace("{source_file}", source_file).replace(
-    #             "{target_file}", target_file
-    #         ),
-    #     )
-    #
-    #     libs.cfg.total_ok_processed += 1
-    #
-    #     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-    #
-    #     return
-    # except PermissionError as err:
-    #     # pylint: disable=expression-not-assigned
-    #     libs.db.orm.update_document_status(
-    #         {
-    #             libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_RIGHTS,
-    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
-    #         },
-    #         libs.db.orm.insert_journal(
-    #             __name__,
-    #             inspect.stack()[0][3],
-    #             libs.cfg.document_id,
-    #             libs.db.cfg.JOURNAL_ACTION_01_904.replace("{source_file}", source_file)
-    #             .replace("{error_code}", str(err.errno))
-    #             .replace("{error_msg}", err.strerror),
-    #         ),
-    #     )
-    # except shutil.Error as err:
-    #     # pylint: disable=expression-not-assigned
-    #     libs.db.orm.update_document_status(
-    #         {
-    #             libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_MOVE,
-    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
-    #         },
-    #         libs.db.orm.insert_journal(
-    #             __name__,
-    #             inspect.stack()[0][3],
-    #             libs.cfg.document_id,
-    #             libs.db.cfg.JOURNAL_ACTION_01_902.replace("{source_file}", source_file)
-    #             .replace("{target_file}", target_file)
-    #             .replace("{error_code}", str(err.errno))
-    #             .replace("{error_msg}", err.strerror),
-    #         ),
-    #     )
-    #
-    # libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -778,7 +368,7 @@ def process_inbox_file(file: pathlib.Path) -> None:
 
     if file_name is not None:
         process_inbox_rejected(
-            libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_DUPL,
+            libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             libs.db.cfg.JOURNAL_ACTION_01_905.replace("{file_name}", file_name),
         )
     elif libs.cfg.document_file_type == libs.db.cfg.DOCUMENT_FILE_TYPE_PDF:
@@ -795,7 +385,7 @@ def process_inbox_file(file: pathlib.Path) -> None:
         )
     else:
         process_inbox_rejected(
-            libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_EXT,
+            libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
             libs.db.cfg.JOURNAL_ACTION_01_901.replace("{extension}", file.suffix[1:]),
         )
 
@@ -828,76 +418,27 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
 
     libs.cfg.total_erroneous += 1
 
-    shutil.move(source_file, target_file)
+    if os.path.exists(target_file):
+        libs.db.orm.insert_journal(
+            __name__,
+            inspect.stack()[0][3],
+            libs.cfg.document_id,
+            libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", target_file),
+        )
+    else:
+        shutil.move(source_file, target_file)
 
-    initialise_document_child(journal_action)
+        libs.utils.initialise_document_child(journal_action)
 
-    libs.db.orm.update_dbt_id(
-        libs.db.cfg.DBT_DOCUMENT,
-        libs.cfg.document_id,
-        {
-            libs.db.cfg.DBC_ERROR_CODE: error_code,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-        },
-    )
+        libs.db.orm.update_dbt_id(
+            libs.db.cfg.DBT_DOCUMENT,
+            libs.cfg.document_id,
+            {
+                libs.db.cfg.DBC_ERROR_CODE: error_code,
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+            },
+        )
 
     libs.cfg.total_rejected += 1
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-    # not testable
-    # try:
-    #     libs.cfg.total_erroneous += 1
-    #
-    #     shutil.move(source_file, target_file)
-    #
-    #     initialise_document_child(journal_action)
-    #
-    #     libs.db.orm.update_dbt_id(
-    #         libs.db.cfg.DBT_DOCUMENT,
-    #         libs.cfg.document_id,
-    #         {
-    #             libs.db.cfg.DBC_ERROR_CODE: error_code,
-    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-    #         },
-    #     )
-    #
-    #     libs.cfg.total_rejected += 1
-    #
-    #     return
-    # except PermissionError as err:
-    #     # pylint: disable=expression-not-assigned
-    #     libs.db.orm.update_document_status(
-    #         {
-    #             libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_RIGHTS,
-    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
-    #         },
-    #         libs.db.orm.insert_journal(
-    #             __name__,
-    #             inspect.stack()[0][3],
-    #             libs.cfg.document_id,
-    #             libs.db.cfg.JOURNAL_ACTION_01_904.replace("{source_file}", source_file)
-    #             .replace("{error_code}", str(err.errno))
-    #             .replace("{error_msg}", err.strerror),
-    #         ),
-    #     )
-    # except shutil.Error as err:
-    #     # pylint: disable=expression-not-assigned
-    #     libs.db.orm.update_document_status(
-    #         {
-    #             libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJECTED_FILE_MOVE,
-    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ABORT,
-    #         },
-    #         libs.db.orm.insert_journal(
-    #             __name__,
-    #             inspect.stack()[0][3],
-    #             libs.cfg.document_id,
-    #             libs.db.cfg.JOURNAL_ACTION_01_902.replace("{source_file}", source_file).replace(
-    #                 "{target_file}",
-    #                 target_file.replace("{error_code}", str(err.errno)).replace(
-    #                     "{error_msg}", err.strerror
-    #                 ),
-    #             ),
-    #         ),
-    #     )
-    #
-    # libs.cfg.logger.debug(libs.cfg.LOGGER_END)

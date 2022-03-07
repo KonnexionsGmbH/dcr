@@ -1,6 +1,7 @@
 """Module libs.utils: Helper functions."""
 import datetime
 import hashlib
+import inspect
 import os
 import pathlib
 import sys
@@ -9,7 +10,34 @@ import traceback
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver
+import libs.db.orm
 import libs.utils
+from sqlalchemy import Table
+from sqlalchemy import and_
+from sqlalchemy import engine
+from sqlalchemy import select
+from sqlalchemy.engine import Connection
+
+
+# -----------------------------------------------------------------------------
+# Check the inbox file directories.
+# -----------------------------------------------------------------------------
+def check_directories() -> None:
+    """Check the inbox file directories.
+
+    The file directory inbox_accepted must exist.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    if not os.path.isdir(libs.cfg.directory_inbox_accepted):
+        libs.utils.terminate_fatal(
+            "The inbox_accepted directory with the name "
+            + str(libs.cfg.directory_inbox_accepted)
+            + " does not exist - error="
+            + str(OSError),
+        )
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -36,6 +64,49 @@ def get_sha256(file: pathlib.Path) -> str:
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return sha256_hash.hexdigest()
+
+
+# -----------------------------------------------------------------------------
+# Initialise a new child document of the base document.
+# -----------------------------------------------------------------------------
+def initialise_document_child(journal_action: str) -> None:
+    """Initialise a new child document of the base document.
+
+    Prepares a new document for one of the file directories
+    'inbox_accepted' or 'inbox_rejected'.
+
+    Args:
+        journal_action (str): Journal action data.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    libs.cfg.document_child_id = libs.db.orm.insert_dbt_row(
+        libs.db.cfg.DBT_DOCUMENT,
+        {
+            libs.db.cfg.DBC_CHILD_NO: libs.cfg.document_child_child_no,
+            libs.db.cfg.DBC_DIRECTORY_NAME: str(libs.cfg.document_child_directory_name),
+            libs.db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_child_directory_type,
+            libs.db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_child_id_base,
+            libs.db.cfg.DBC_DOCUMENT_ID_PARENT: libs.cfg.document_child_id_parent,
+            libs.db.cfg.DBC_ERROR_CODE: libs.cfg.document_child_error_code,
+            libs.db.cfg.DBC_FILE_NAME: libs.cfg.document_child_file_name,
+            libs.db.cfg.DBC_FILE_TYPE: libs.cfg.document_child_file_type,
+            libs.db.cfg.DBC_NEXT_STEP: libs.cfg.document_child_next_step,
+            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            libs.db.cfg.DBC_STATUS: libs.cfg.document_child_status,
+            libs.db.cfg.DBC_STEM_NAME: libs.cfg.document_child_stem_name,
+        },
+    )
+
+    # pylint: disable=expression-not-assigned
+    libs.db.orm.insert_journal(
+        __name__,
+        inspect.stack()[0][3],
+        libs.cfg.document_child_id,
+        journal_action,
+    )
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -110,6 +181,47 @@ def progress_msg_empty_before(msg: str) -> None:
     if libs.cfg.is_verbose:
         print("")
         progress_msg(msg)
+
+
+# -----------------------------------------------------------------------------
+# Select the documents to be processed.
+# -----------------------------------------------------------------------------
+def select_documents(conn: Connection, dbt: Table, next_step: str) -> engine.CursorResult:
+    """Select the documents to be processed.
+
+    Args:
+        conn (Connection): Database connection.
+        dbt (Table): database table documents.
+        next_step (str): Next processing step.
+
+    Returns:
+        engine.CursorResult: The documents found.
+    """
+    return conn.execute(
+        select(
+            dbt.c.id,
+            dbt.c.directory_name,
+            dbt.c.directory_type,
+            dbt.c.document_id_base,
+            dbt.c.document_id_parent,
+            dbt.c.file_name,
+            dbt.c.file_type,
+            dbt.c.status,
+            dbt.c.stem_name,
+        )
+        .where(
+            and_(
+                dbt.c.next_step == next_step,
+                dbt.c.status.in_(
+                    [
+                        libs.db.cfg.DOCUMENT_STATUS_ERROR,
+                        libs.db.cfg.DOCUMENT_STATUS_START,
+                    ]
+                ),
+            )
+        )
+        .order_by(dbt.c.id.desc())
+    )
 
 
 # -----------------------------------------------------------------------------

@@ -15,6 +15,8 @@ import libs.db.cfg
 import libs.db.driver
 import libs.db.orm
 import libs.inbox
+import libs.pandoc
+import libs.pdf2image
 import libs.utils
 import yaml
 
@@ -274,7 +276,7 @@ def process_documents(args: dict[str, bool]) -> None:
                 libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
             },
         )
-        libs.inbox.convert_pdf_2_image()
+        libs.pdf2image.convert_pdf_2_image()
         libs.db.orm.update_dbt_id(
             libs.db.cfg.DBT_RUN,
             libs.cfg.run_id,
@@ -286,7 +288,6 @@ def process_documents(args: dict[str, bool]) -> None:
             },
         )
         libs.utils.progress_msg("End  : Convert pdf documents to image files ...")
-
 
     # Convert the non-pdf documents to pdf files.
     if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
@@ -300,7 +301,7 @@ def process_documents(args: dict[str, bool]) -> None:
                 libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
             },
         )
-        libs.inbox.convert_non_pdf_2_pdf()
+        libs.pandoc.convert_non_pdf_2_pdf()
         libs.db.orm.update_dbt_id(
             libs.db.cfg.DBT_RUN,
             libs.cfg.run_id,

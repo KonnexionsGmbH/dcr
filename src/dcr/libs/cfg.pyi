@@ -1,8 +1,4 @@
-"""Library Stub.
-
-Returns:
-    [type]: None.
-"""
+"""Library Stub."""
 import logging
 from os import PathLike
 from typing import Dict
@@ -99,7 +95,6 @@ document_child_id: sqlalchemy.Integer
 document_child_id_base: sqlalchemy.Integer | None
 document_child_id_parent: sqlalchemy.Integer | None
 document_child_next_step: str | None
-document_child_sha256: str | None
 document_child_status: str
 document_child_stem_name: str
 

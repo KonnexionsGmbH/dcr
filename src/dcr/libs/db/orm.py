@@ -1,6 +1,4 @@
 """Module libs.db.orm: Database Manipulation Management."""
-# not testable
-# from sqlite3 import Error
 from typing import Callable
 from typing import Dict
 from typing import List
@@ -21,14 +19,7 @@ from sqlalchemy import func
 from sqlalchemy import insert
 from sqlalchemy import select
 from sqlalchemy import update
-
-# not testable
-# from sqlalchemy.exc import InternalError
-# from sqlalchemy.exc import OperationalError
 from sqlalchemy.pool import NullPool
-
-# not testable
-# from sqlalchemy.engine import Connection
 
 
 # -----------------------------------------------------------------------------
@@ -75,13 +66,6 @@ def connect_db() -> None:
     prepare_connect_db()
 
     libs.db.cfg.db_orm_metadata = MetaData()
-    # not testable
-    # try:
-    #     libs.db.cfg.db_orm_metadata = MetaData()
-    # except Error as err:
-    #     libs.utils.terminate_fatal(
-    #         "SQLAlchemy metadata not accessible - error=" + str(err),
-    #     )
 
     libs.db.cfg.db_orm_engine = sqlalchemy.create_engine(
         libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PREFIX]
@@ -97,45 +81,8 @@ def connect_db() -> None:
         poolclass=NullPool,
     )
     libs.db.cfg.db_orm_engine.connect()
-    # not testable
-    # try:
-    #     libs.db.cfg.db_orm_engine = sqlalchemy.create_engine(
-    #         libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PREFIX]
-    #         + libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST]
-    #         + ":"
-    #         + libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT]
-    #         + "/"
-    #         + libs.db.cfg.db_current_database
-    #         + "?user="
-    #         + libs.db.cfg.db_current_user
-    #         + "&password="
-    #         + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD],
-    #         poolclass=NullPool,
-    #     )
-    #
-    #     conn: Connection | None = None
-    #
-    #     try:
-    #         conn = libs.db.cfg.db_orm_engine.connect()
-    #     except OperationalError as err:
-    #         libs.utils.terminate_fatal(
-    #             "No database connection possible - error=" + str(err),
-    #         )
-    #
-    #     conn.close()
-    # except InternalError as err:
-    #     libs.utils.terminate_fatal(
-    #         "SQLAlchemy engine not accessible - error=" + str(err),
-    #     )
 
     libs.db.cfg.db_orm_metadata.bind = libs.db.cfg.db_orm_engine
-    # not testable
-    # try:
-    #     libs.db.cfg.db_orm_metadata.bind = libs.db.cfg.db_orm_engine
-    # except Error as err:
-    #     libs.utils.terminate_fatal(
-    #         "SQLAlchemy metadata not connectable with engine - error=" + str(err),
-    #     )
 
     libs.utils.progress_msg_connected()
 
@@ -558,28 +505,10 @@ def disconnect_db() -> None:
     if libs.db.cfg.db_orm_metadata is not None:
         libs.db.cfg.db_orm_metadata.clear()
         libs.db.cfg.db_orm_metadata = None
-        # not testable
-        # try:
-        #     libs.db.cfg.db_orm_metadata.clear()
-        # except Error as err:
-        #     libs.utils.terminate_fatal(
-        #         "SQLAlchemy metadata could not be cleared - error=" + str(err),
-        #     )
-        # finally:
-        #     libs.db.cfg.db_orm_metadata = None
 
     if libs.db.cfg.db_orm_engine is not None:
         libs.db.cfg.db_orm_engine.dispose()
         libs.db.cfg.db_orm_engine = None
-        # not testable
-        # try:
-        #     libs.db.cfg.db_orm_engine.dispose()
-        # except Error as err:
-        #     libs.utils.terminate_fatal(
-        #         "SQLAlchemy engine could not be disposed - error=" + str(err),
-        #     )
-        # finally:
-        #     libs.db.cfg.db_orm_engine = None
 
     libs.utils.progress_msg_disconnected()
 

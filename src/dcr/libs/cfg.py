@@ -96,7 +96,6 @@ document_child_id_base: sqlalchemy.Integer | None
 document_child_id_parent: sqlalchemy.Integer | None
 document_child_next_step: str | None
 document_child_no: sqlalchemy.Integer
-document_child_sha256: str | None
 document_child_status: str
 document_child_stem_name: str
 

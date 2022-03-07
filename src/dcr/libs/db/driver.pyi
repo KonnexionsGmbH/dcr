@@ -1,8 +1,4 @@
-"""Library Stub.
-
-Returns:
-    [type]: None.
-"""
+"""Library Stub."""
 
 def connect_db() -> None: ...
 def connect_db_admin() -> None: ...

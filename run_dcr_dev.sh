@@ -69,7 +69,6 @@ case "${DCR_CHOICE_ACTION}" in
     make compileall
     ;;
   db_c)
-    rm -f data/dcr.db
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   db_u|n_2_p|p_2_i)

@@ -1,6 +1,7 @@
 name: Continuous Integration
 
 on:
+# wwe
 #  push:
 #    branches: [ '**' ]
   pull_request:

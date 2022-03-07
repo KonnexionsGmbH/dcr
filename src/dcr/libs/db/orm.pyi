@@ -1,8 +1,4 @@
-"""Library Stub.
-
-Returns:
-    [type]: None.
-"""
+"""Library Stub."""
 from typing import Callable
 from typing import Dict
 
