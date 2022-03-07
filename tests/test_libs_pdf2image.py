@@ -131,13 +131,11 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
         file_ext_2,
     )
 
-    files_to_be_checked = [
-        file_1,
-        file_2,
-    ]
-
     pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
+        [
+            file_1,
+            file_2,
+        ],
         no_files_expected,
     )
 

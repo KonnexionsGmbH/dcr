@@ -17,6 +17,7 @@ from sqlalchemy import and_
 from sqlalchemy import engine
 from sqlalchemy import select
 from sqlalchemy.engine import Connection
+from sqlalchemy.engine import Row
 
 
 # -----------------------------------------------------------------------------
@@ -222,6 +223,47 @@ def select_documents(conn: Connection, dbt: Table, next_step: str) -> engine.Cur
         )
         .order_by(dbt.c.id.desc())
     )
+
+
+# -----------------------------------------------------------------------------
+# Start document processing.
+# -----------------------------------------------------------------------------
+def start_document_processing(document: Row, journal_action: str) -> None:
+    """Start document processing.
+
+    Args:
+        document (Row): Database row document.
+        journal_action (str): Journal action.
+    """
+    libs.cfg.total_to_be_processed += 1
+
+    libs.cfg.document_directory_name = document.directory_name
+    libs.cfg.document_directory_type = document.directory_type
+    libs.cfg.document_file_name = document.file_name
+    libs.cfg.document_file_type = document.file_type
+    libs.cfg.document_id = document.id
+    libs.cfg.document_id_base = document.document_id_base
+    libs.cfg.document_id_parent = document.document_id_parent
+    libs.cfg.document_status = document.status
+    libs.cfg.document_stem_name = document.stem_name
+
+    libs.db.orm.update_document_status(
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_START,
+        },
+        libs.db.orm.insert_journal(
+            __name__,
+            inspect.stack()[0][3],
+            libs.cfg.document_id,
+            journal_action.replace("{file_name}", libs.cfg.document_file_name),
+        ),
+    )
+
+    if libs.cfg.document_status == libs.db.cfg.DOCUMENT_STATUS_START:
+        libs.cfg.total_status_ready += 1
+    else:
+        # not testable
+        libs.cfg.total_status_error += 1
 
 
 # -----------------------------------------------------------------------------

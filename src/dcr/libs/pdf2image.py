@@ -54,37 +54,7 @@ def convert_pdf_2_image() -> None:
         rows = libs.utils.select_documents(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PDF2IMAGE)
 
         for row in rows:
-            libs.cfg.total_to_be_processed += 1
-
-            libs.cfg.document_directory_name = row.directory_name
-            libs.cfg.document_directory_type = row.directory_type
-            libs.cfg.document_file_name = row.file_name
-            libs.cfg.document_file_type = row.file_type
-            libs.cfg.document_id = row.id
-            libs.cfg.document_id_base = row.document_id_base
-            libs.cfg.document_id_parent = row.document_id_parent
-            libs.cfg.document_status = row.status
-            libs.cfg.document_stem_name = row.stem_name
-
-            libs.db.orm.update_document_status(
-                {
-                    libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_START,
-                },
-                libs.db.orm.insert_journal(
-                    __name__,
-                    inspect.stack()[0][3],
-                    libs.cfg.document_id,
-                    libs.db.cfg.JOURNAL_ACTION_21_001.replace(
-                        "{file_name}", libs.cfg.document_file_name
-                    ),
-                ),
-            )
-
-            if libs.cfg.document_status == libs.db.cfg.DOCUMENT_STATUS_START:
-                libs.cfg.total_status_ready += 1
-            else:
-                # not testable
-                libs.cfg.total_status_error += 1
+            libs.utils.start_document_processing(row, libs.db.cfg.JOURNAL_ACTION_21_001)
 
             convert_pdf_2_image_file()
 

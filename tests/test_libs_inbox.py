@@ -47,13 +47,8 @@ def test_run_action_all_normal(fxtr_setup_empty_db_and_inbox):
         libs.cfg.pdf2image_type,
     )
 
-    files_to_be_checked = [
-        file_1,
-        file_2,
-    ]
-
     pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
+        [file_1, file_2],
         no_files_expected,
     )
 
