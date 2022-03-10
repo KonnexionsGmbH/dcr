@@ -53,14 +53,12 @@ Document files with the following file extensions are moved to the file director
 - **`csv`**
 - **`docx`**
 - **`epub`**
-- **`htm`**
 - **`html`**
 - **`json`**
 - **`md`**
 - **`odt`**
 - **`rst`**
 - **`rtf`**
-- **`txt`**
 
 An exception are files with the file name **`README.md`**, which are ignored and not processed.
 
