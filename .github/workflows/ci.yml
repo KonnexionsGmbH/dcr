@@ -52,8 +52,7 @@ jobs:
                                      texlive-full \
                                      wget
             wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
-            dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
-            rm -f pandoc-${VERSION_PANDOC}-1-amd64.deb && echo " "
+            sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
       - name: Publish the code coverage to coveralls.io
         run: make coveralls
 
@@ -93,8 +92,7 @@ jobs:
                                      texlive-full \
                                      wget
             wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
-            dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
-            rm -f pandoc-${VERSION_PANDOC}-1-amd64.deb && echo " "
+            sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
       - name: Run pytest for writing better program
         run: make pytest
 
@@ -134,7 +132,6 @@ jobs:
                                      texlive-full \
                                      wget
             wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
-            dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
-            rm -f pandoc-${VERSION_PANDOC}-1-amd64.deb && echo " "
+            sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
       - name: Run pytest for writing better program
         run: make pytest-ci
