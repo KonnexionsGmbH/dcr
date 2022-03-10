@@ -1,4 +1,4 @@
-# DCR Document Content Recognition
+# DCR - Document Content Recognition - README
 
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
