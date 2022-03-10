@@ -54,7 +54,7 @@ DOCUMENT_ERROR_CODE_REJ_FILE_EXT: str = "Unknown file extension"
 DOCUMENT_ERROR_CODE_REJ_FILE_MOVE: str = "Issue with file move"
 DOCUMENT_ERROR_CODE_REJ_FILE_RIGHTS: str = "Issue with file permissions"
 DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT: str = "No 'pdf' format"
-DOCUMENT_ERROR_CODE_REJ_PANDOC: str = "Issue with Pandoc"
+DOCUMENT_ERROR_CODE_REJ_PANDOC: str = "Issue with Pandoc and TeX Live"
 DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE: str = "Issue with pdf2image"
 
 DOCUMENT_FILE_TYPE_JPG: str = "jpg"
@@ -63,8 +63,6 @@ DOCUMENT_FILE_TYPE_PANDOC: List[str] = [
     "docx",
     "epub",
     "html",
-    "json",
-    "md",
     "odt",
     "rst",
     "rtf",
@@ -87,7 +85,7 @@ DOCUMENT_FILE_TYPE_TESSERACT: List[str] = [
     "webp",
 ]
 
-DOCUMENT_NEXT_STEP_PANDOC: str = "Pandoc"
+DOCUMENT_NEXT_STEP_PANDOC: str = "Pandoc & TeX Live"
 DOCUMENT_NEXT_STEP_PDF2IMAGE: str = "pdf2image"
 DOCUMENT_NEXT_STEP_PDFLIB: str = "PDFlib TET"
 DOCUMENT_NEXT_STEP_TESSERACT: str = "Tesseract OCR"
@@ -127,7 +125,7 @@ JOURNAL_ACTION_01_905: str = (
     + "once under the file name '{file_name}'."
 )
 JOURNAL_ACTION_01_906: str = "01.906 The target file '{file_name}' already exists."
-JOURNAL_ACTION_11_001: str = "11.001 Ready to convert the document to 'pdf' format using Pandoc."
+JOURNAL_ACTION_11_001: str = "11.001 Ready to convert the document to 'pdf' format using Pandoc and TeX Live."
 JOURNAL_ACTION_11_002: str = (
     "11.002 Ready to convert the document to 'pdf' format using Tesseract OCR."
 )
@@ -167,7 +165,7 @@ JOURNAL_ACTION_31_003: str = (
 )
 JOURNAL_ACTION_31_901: str = (
     "31.901 Issue (n_2_p): Converting the file '{source_file}' to the file "
-    + "'{target_file}' with Pandoc failed - output='{output}'."
+    + "'{target_file}' with Pandoc and TeX Live failed - output='{output}'."
 )
 
 RUN_STATUS_END: str = "end"

@@ -10,7 +10,7 @@
 ## 1. Introduction
 
 Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](research_notes.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
-Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org){:target="_blank"}. 
+Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
 Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to PDF format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. 
 This process applies to all image format files e.g. jpeg, tiff etc., as well as scanned images in PDF format.  
 
@@ -46,16 +46,15 @@ A **`pdf`** document consisting of a scanned image is marked for conversion from
 Other **`pdf`** documents are marked for further processing with the **`pdf`** parser and then also moved to the file directory **`ìnbox_accepted`**.
 If, however, when checking the **`pdf`** document with **`fitz`**, it turns out that the document with the file extension **`pdf`** is not really a **`pdf`** document, then the document is moved to the file directory **`inbox_rejected`**.
 
-#### 2.1.2 File extensions of documents for processing with Pandoc
+#### 2.1.2 File extensions of documents for processing with Pandoc and TeX Live
 
-Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"}:
+Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and 
+marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}:
 
 - **`csv`**
 - **`docx`**
 - **`epub`**
 - **`html`**
-- **`json`**
-- **`md`**
 - **`odt`**
 - **`rst`**
 - **`rtf`**
@@ -84,12 +83,13 @@ Document files that do not fall into one of the previous categories are marked a
 
 pdf documents consisting of scanned images must first be processed with OCR software in order to extract the text they contain. 
 Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} does not support the pdf file format, such a pdf document must first be converted into one or more image files. 
-This is done with the software [pdf2image](https://pypi.org/project/pdf2image/){:target="_blank"}, which in turn is based on the [Poppler](https://poppler.freedesktop.org){:target="_blank"} software.
+This is done with the software [pdf2image](https://pypi.org/project/pdf2image){:target="_blank"}, which in turn is based on the [Poppler](https://poppler.freedesktop.org){:target="_blank"} software.
 The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image files (child document(s)).
 
 ### 2.3 Convert appropriate non-pdf documents to pdf files (step: **`n_2_p`**)
 
-In this processing step, the document types listed in section 2.1.2 are converted to pdf format using [Pandoc](https://pandoc.org){:target="_blank"}.
+In this processing step, the document types listed in section 2.1.2 are converted to pdf format 
+using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created pdf file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
@@ -101,9 +101,11 @@ Continuous delivery / integration (CD/CI) runs on **`Ubunto 18.04`**, **`Ubuntu 
 This means that **`DCR`** also runs under **`Windows 10`** and **`Windows 11`**. 
 In this case, only the functionality of the **`grep`**, **`make`**  and **`sed`** tools must be made available, e.g. via [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm){:target="_blank"}, [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} or [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}.
 
-### 3.2 Pandoc
+### 3.2 Pandoc & TeX Live
 
-To convert the non-PDF documents (see 2.1.2) into pdf files for PDFlib TET processing, the universal document converter [Pandoc](https://pandoc.org){:target="_blank"} is used and must therefore also be installed.
+To convert the non-PDF documents (see 2.1.2) into pdf files for PDFlib TET processing, 
+the universal document converter [Pandoc](https://pandoc.org){:target="_blank"} 
+and [TeX Live](https://www.tug.org/texlive){:target="_blank"} are used and must therefore also be installed.
 
 ### 3.3 Poppler
 

@@ -96,11 +96,11 @@ In this format, the API documentation can then be integrated into the user docum
     rejected file directories depending on the result of the check.
     Depending on the file format, the accepted documents are then
     converted into the pdf file format either with the help of Pandoc
-    or with the help of Tesseract OCR.
+    and TeX Live or with the help of Tesseract OCR.
 
 **Function  Documentation**:
 
-    Load the command line arguments into memory.
+    Load the command line arguments into memory.Pandoc and TeX Live
 
     The command line arguments define the process steps to be executed.
     The valid arguments are:
@@ -225,7 +225,7 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 |-----------|--------------------------------------|
 | ~~0.5.0~~ | ~~Inbox processing~~                 |
 | ~~0.6.0~~ | ~~pdf for Tesseract OCR processing~~ |
-| 0.6.5     | Pandoc processing                    |
+| ~~0.6.5~~ | ~~Pandoc processing~~                |
 | 0.7.0     | Tesseract OCR processing             |
 | 0.8.0     | PDFlib TET processing                |
 | 0.9.0     | Parser                               |
@@ -234,7 +234,7 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 **1<sup>st</sup> Priority:**
 
-- convert the appropriate documents into the `pdf` format with Pandoc.
+- ~~convert the appropriate documents into the `pdf` format with Pandoc and TeX Live~~
 - test cases for file duplicate
 - tools.py - verify the content of the inbox directories
 - ~~API Documentation~~

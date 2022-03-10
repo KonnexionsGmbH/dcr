@@ -118,10 +118,10 @@ def convert_non_pdf_2_pdf_file() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Prepare the base child document data - pandoc.
+# Prepare the base child document data - Pandoc and TeX Live.
 # -----------------------------------------------------------------------------
 def prepare_document_pandoc() -> None:
-    """Prepare the child document data - Pandoc."""
+    """Prepare the child document data - Pandoc and TeX Live."""
     libs.cfg.document_child_child_no = None
     libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
     libs.cfg.document_child_directory_type = libs.cfg.document_directory_type

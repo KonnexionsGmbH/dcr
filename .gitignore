@@ -13,8 +13,10 @@
 /src/dcr/*/__pycache__/
 /src/dcr/__pycache__/
 /tests/__pycache__/
+/tests/inbox/*.csv
 /tests/inbox/*.doc
 /tests/inbox/*.docx
+/tests/inbox/*.epub
 /tests/inbox/*.htm
 /tests/inbox/*.html
 /tests/inbox/*.jpeg
@@ -22,9 +24,9 @@
 /tests/inbox/*.odt
 /tests/inbox/*.pdf
 /tests/inbox/*.png
+/tests/inbox/*.rst
 /tests/inbox/*.rtf
 /tests/inbox/*.tiff
 /tests/inbox/*.txt
 /tests/inbox/*.xxx
-/tests/inbox/htm_ok_files/
 /tests/inbox/html_ok_files/
