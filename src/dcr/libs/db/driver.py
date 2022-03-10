@@ -6,8 +6,6 @@ import libs.utils
 import psycopg2
 
 # pylint: disable=no-name-in-module
-# not testable
-# from psycopg2.errors import ObjectInUse
 from psycopg2.errors import OperationalError
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
@@ -196,12 +194,6 @@ def drop_database_postgresql() -> None:
 
     libs.db.cfg.db_driver_cur.execute("DROP DATABASE IF EXISTS " + database)
 
-    # not testable
-    # try:
-    #     libs.db.cfg.db_driver_cur.execute("DROP DATABASE IF EXISTS " + database)
-    # except ObjectInUse as err:
-    #     libs.utils.terminate_fatal("The database cannot be dropped - error=" + str(err))
-
     libs.utils.progress_msg("If existing, the database '" + database + "' has now been dropped")
 
     libs.db.cfg.db_driver_cur.execute("DROP USER IF EXISTS " + user)
@@ -281,12 +273,6 @@ def upgrade_database() -> None:
     else:
         while select_version_version_unique() != libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]:
             upgrade_database_version()
-
-        # not testable
-        # libs.utils.progress_msg(
-        #     "The database has been successfully upgraded, version number="
-        #     + select_version_version_unique(),
-        # )
 
     disconnect_db()
 

@@ -64,6 +64,7 @@ OS_POSIX: str = "posix"
 
 RUN_ACTION_ALL_COMPLETE: str = "all"
 RUN_ACTION_CREATE_DB: str = "db_c"
+RUN_ACTION_NON_PDF_2_PDF: str = "n_2_p"
 RUN_ACTION_PDF_2_IMAGE: str = "p_2_i"
 RUN_ACTION_PROCESS_INBOX: str = "p_i"
 RUN_ACTION_UPGRADE_DB: str = "db_u"
@@ -95,7 +96,6 @@ document_child_id_base: sqlalchemy.Integer | None
 document_child_id_parent: sqlalchemy.Integer | None
 document_child_next_step: str | None
 document_child_no: sqlalchemy.Integer
-document_child_sha256: str | None
 document_child_status: str
 document_child_stem_name: str
 

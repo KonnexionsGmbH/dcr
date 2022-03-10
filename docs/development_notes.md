@@ -3,7 +3,7 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.5)
 
 ----
 
@@ -96,11 +96,11 @@ In this format, the API documentation can then be integrated into the user docum
     rejected file directories depending on the result of the check.
     Depending on the file format, the accepted documents are then
     converted into the pdf file format either with the help of Pandoc
-    or with the help of Tesseract OCR.
+    and TeX Live or with the help of Tesseract OCR.
 
 **Function  Documentation**:
 
-    Load the command line arguments into memory.
+    Load the command line arguments into memory.Pandoc and TeX Live
 
     The command line arguments define the process steps to be executed.
     The valid arguments are:
@@ -108,6 +108,7 @@ In this format, the API documentation can then be integrated into the user docum
         all   - Run the complete processing of all new documents.
         db_c  - Create the database.
         db_u  - Upgrade the database.
+        n_2_p - Convert non-pdf docuents to pdf files.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
 
@@ -116,6 +117,7 @@ In this format, the API documentation can then be integrated into the user docum
 
         1. p_i
         2. p_2_i
+        3. n_2_p
 
     Args:
         argv (List[str]): Command line arguments.
@@ -210,8 +212,8 @@ When selecting the Docker image, care must be taken to select the appropriate ve
 
 Alternatively, for a **`Ubuntu 20.04 LTS`** environment that is as unspoiled as possible, the following two scripts are available in the **`scripts`** file directory:
 
-- **`scripts/0.6.0/run_install_4-vm_wsl2_1.sh`**
-- **`scripts/0.6.0/run_install_4-vm_wsl2_2.sh`**
+- **`scripts/0.6.5/run_install_4-vm_wsl2_1.sh`**
+- **`scripts/0.6.5/run_install_4-vm_wsl2_2.sh`**
 
 After a **`cd scripts`** command in a terminal window, the script **`run_install_4-vm_wsl2_1.sh`** must first be executed. 
 Administration rights (**`sudo`**) are required for this. 
@@ -223,7 +225,7 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 |-----------|--------------------------------------|
 | ~~0.5.0~~ | ~~Inbox processing~~                 |
 | ~~0.6.0~~ | ~~pdf for Tesseract OCR processing~~ |
-| 0.6.5     | Pandoc processing                    |
+| ~~0.6.5~~ | ~~Pandoc processing~~                |
 | 0.7.0     | Tesseract OCR processing             |
 | 0.8.0     | PDFlib TET processing                |
 | 0.9.0     | Parser                               |
@@ -232,7 +234,7 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 **1<sup>st</sup> Priority:**
 
-- convert the appropriate documents into the `pdf` format with Pandoc.
+- ~~convert the appropriate documents into the `pdf` format with Pandoc and TeX Live~~
 - test cases for file duplicate
 - tools.py - verify the content of the inbox directories
 - ~~API Documentation~~

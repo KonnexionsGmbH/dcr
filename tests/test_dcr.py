@@ -25,8 +25,9 @@ def test_get_args(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     args = dcr.get_args([libs.cfg.DCR_ARGV_0, "AlL"])
 
-    assert len(args) == 4, "arg: all"
+    assert len(args) == 5, "arg: all"
     assert not args[libs.cfg.RUN_ACTION_CREATE_DB], "arg: all"
+    assert args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF], "arg: all"
     assert args[libs.cfg.RUN_ACTION_PDF_2_IMAGE], "arg: all"
     assert args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_UPGRADE_DB], "arg: all"
@@ -35,6 +36,7 @@ def test_get_args(fxtr_setup_logger_environment):
     args = dcr.get_args([libs.cfg.DCR_ARGV_0, "Db_C"])
 
     assert args[libs.cfg.RUN_ACTION_CREATE_DB], "arg: db_c"
+    assert not args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_PDF_2_IMAGE], "arg: db_c"
     assert not args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: db_c"
     assert not args[libs.cfg.RUN_ACTION_UPGRADE_DB], "arg: db_c"
@@ -43,6 +45,7 @@ def test_get_args(fxtr_setup_logger_environment):
     args = dcr.get_args([libs.cfg.DCR_ARGV_0, "Db_U"])
 
     assert not args[libs.cfg.RUN_ACTION_CREATE_DB], "arg: db_u"
+    assert not args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_PDF_2_IMAGE], "arg: db_u"
     assert not args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: db_u"
     assert args[libs.cfg.RUN_ACTION_UPGRADE_DB], "arg: db_u"

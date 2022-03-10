@@ -1,6 +1,7 @@
 """Module libs.utils: Helper functions."""
 import datetime
 import hashlib
+import inspect
 import os
 import pathlib
 import sys
@@ -9,7 +10,85 @@ import traceback
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver
+import libs.db.orm
 import libs.utils
+from sqlalchemy import Table
+from sqlalchemy import and_
+from sqlalchemy import engine
+from sqlalchemy import select
+from sqlalchemy.engine import Connection
+from sqlalchemy.engine import Row
+
+
+# -----------------------------------------------------------------------------
+# Check the inbox file directories.
+# -----------------------------------------------------------------------------
+def check_directories() -> None:
+    """Check the inbox file directories.
+
+    The file directory inbox_accepted must exist.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    if not os.path.isdir(libs.cfg.directory_inbox_accepted):
+        libs.utils.terminate_fatal(
+            "The inbox_accepted directory with the name "
+            + str(libs.cfg.directory_inbox_accepted)
+            + " does not exist - error="
+            + str(OSError),
+        )
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Duplicate file error.
+# -----------------------------------------------------------------------------
+def duplicate_file_error(file_name: str) -> None:
+    """Duplicate file error.
+
+    Args:
+        file_name (_type_): File name.
+    """
+    # pylint: disable=expression-not-assigned
+    libs.db.orm.update_document_status(
+        {
+            libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+        },
+        libs.db.orm.insert_journal(
+            __name__,
+            inspect.stack()[0][3],
+            libs.cfg.document_id,
+            libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", file_name),
+        ),
+    )
+
+    libs.cfg.total_erroneous += 1
+
+
+# -----------------------------------------------------------------------------
+# Finalise the file conversion.
+# -----------------------------------------------------------------------------
+def finalize_file_conversion(journal_action: str) -> None:
+    """Finalise the file conversion.
+
+    Args:
+        journal_action (str): journal action.
+    """
+    libs.cfg.total_ok_processed += 1
+
+    libs.db.orm.update_document_status(
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
+        },
+        libs.db.orm.insert_journal(
+            __name__,
+            inspect.stack()[0][3],
+            libs.cfg.document_id,
+            journal_action,
+        ),
+    )
 
 
 # -----------------------------------------------------------------------------
@@ -36,6 +115,49 @@ def get_sha256(file: pathlib.Path) -> str:
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return sha256_hash.hexdigest()
+
+
+# -----------------------------------------------------------------------------
+# Initialise a new child document of the base document.
+# -----------------------------------------------------------------------------
+def initialise_document_child(journal_action: str) -> None:
+    """Initialise a new child document of the base document.
+
+    Prepares a new document for one of the file directories
+    'inbox_accepted' or 'inbox_rejected'.
+
+    Args:
+        journal_action (str): Journal action data.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    libs.cfg.document_child_id = libs.db.orm.insert_dbt_row(
+        libs.db.cfg.DBT_DOCUMENT,
+        {
+            libs.db.cfg.DBC_CHILD_NO: libs.cfg.document_child_child_no,
+            libs.db.cfg.DBC_DIRECTORY_NAME: str(libs.cfg.document_child_directory_name),
+            libs.db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_child_directory_type,
+            libs.db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_child_id_base,
+            libs.db.cfg.DBC_DOCUMENT_ID_PARENT: libs.cfg.document_child_id_parent,
+            libs.db.cfg.DBC_ERROR_CODE: libs.cfg.document_child_error_code,
+            libs.db.cfg.DBC_FILE_NAME: libs.cfg.document_child_file_name,
+            libs.db.cfg.DBC_FILE_TYPE: libs.cfg.document_child_file_type,
+            libs.db.cfg.DBC_NEXT_STEP: libs.cfg.document_child_next_step,
+            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            libs.db.cfg.DBC_STATUS: libs.cfg.document_child_status,
+            libs.db.cfg.DBC_STEM_NAME: libs.cfg.document_child_stem_name,
+        },
+    )
+
+    # pylint: disable=expression-not-assigned
+    libs.db.orm.insert_journal(
+        __name__,
+        inspect.stack()[0][3],
+        libs.cfg.document_child_id,
+        journal_action,
+    )
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -110,6 +232,113 @@ def progress_msg_empty_before(msg: str) -> None:
     if libs.cfg.is_verbose:
         print("")
         progress_msg(msg)
+
+
+# -----------------------------------------------------------------------------
+# Select the documents to be processed.
+# -----------------------------------------------------------------------------
+def select_document(conn: Connection, dbt: Table, next_step: str) -> engine.CursorResult:
+    """Select the documents to be processed.
+
+    Args:
+        conn (Connection): Database connection.
+        dbt (Table): database table documents.
+        next_step (str): Next processing step.
+
+    Returns:
+        engine.CursorResult: The documents found.
+    """
+    return conn.execute(
+        select(
+            dbt.c.id,
+            dbt.c.directory_name,
+            dbt.c.directory_type,
+            dbt.c.document_id_base,
+            dbt.c.document_id_parent,
+            dbt.c.file_name,
+            dbt.c.file_type,
+            dbt.c.status,
+            dbt.c.stem_name,
+        )
+        .where(
+            and_(
+                dbt.c.next_step == next_step,
+                dbt.c.status.in_(
+                    [
+                        libs.db.cfg.DOCUMENT_STATUS_ERROR,
+                        libs.db.cfg.DOCUMENT_STATUS_START,
+                    ]
+                ),
+            )
+        )
+        .order_by(dbt.c.id.desc())
+    )
+
+
+# -----------------------------------------------------------------------------
+# Prepare the selection of the documents to be processed.
+# -----------------------------------------------------------------------------
+def select_document_prepare() -> Table:
+    """Prepare the selection of the documents to be processed.
+
+    Returns:
+        Table: Database table document,
+    """
+    libs.cfg.total_erroneous = 0
+    libs.cfg.total_ok_processed = 0
+    libs.cfg.total_status_error = 0
+    libs.cfg.total_status_ready = 0
+    libs.cfg.total_to_be_processed = 0
+
+    # Check the inbox file directories.
+    libs.utils.check_directories()
+
+    return Table(
+        libs.db.cfg.DBT_DOCUMENT,
+        libs.db.cfg.db_orm_metadata,
+        autoload_with=libs.db.cfg.db_orm_engine,
+    )
+
+
+# -----------------------------------------------------------------------------
+# Start document processing.
+# -----------------------------------------------------------------------------
+def start_document_processing(document: Row, journal_action: str) -> None:
+    """Start document processing.
+
+    Args:
+        document (Row): Database row document.
+        journal_action (str): Journal action.
+    """
+    libs.cfg.total_to_be_processed += 1
+
+    libs.cfg.document_directory_name = document.directory_name
+    libs.cfg.document_directory_type = document.directory_type
+    libs.cfg.document_file_name = document.file_name
+    libs.cfg.document_file_type = document.file_type
+    libs.cfg.document_id = document.id
+    libs.cfg.document_id_base = document.document_id_base
+    libs.cfg.document_id_parent = document.document_id_parent
+    libs.cfg.document_status = document.status
+    libs.cfg.document_stem_name = document.stem_name
+
+    libs.db.orm.update_document_status(
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_START,
+        },
+        libs.db.orm.insert_journal(
+            __name__,
+            inspect.stack()[0][3],
+            libs.cfg.document_id,
+            journal_action.replace("{file_name}", libs.cfg.document_file_name),
+        ),
+    )
+
+    if libs.cfg.document_status == libs.db.cfg.DOCUMENT_STATUS_START:
+        libs.cfg.total_status_ready += 1
+    else:
+        # not testable
+        libs.cfg.total_status_error += 1
 
 
 # -----------------------------------------------------------------------------

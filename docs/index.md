@@ -3,14 +3,14 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.0)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.5)
 
 ----
 
 ## 1. Introduction
 
 Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](research_notes.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
-Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org){:target="_blank"}. 
+Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
 Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to PDF format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. 
 This process applies to all image format files e.g. jpeg, tiff etc., as well as scanned images in PDF format.  
 
@@ -41,33 +41,29 @@ The new document files are processed based on their file extension as follows:
 
 #### 2.1.1 File extension **`pdf`**
 
-The module **`fitz`** from package [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/module.html) is used to check whether the **`pdf`** document is a scanned image or not. 
+The module **`fitz`** from package [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/module.html){:target="_blank"} is used to check whether the **`pdf`** document is a scanned image or not. 
 A **`pdf`** document consisting of a scanned image is marked for conversion from **`pdf`** format to an image format and moved to the file directory **`ìnbox_accepted`**.
 Other **`pdf`** documents are marked for further processing with the **`pdf`** parser and then also moved to the file directory **`ìnbox_accepted`**.
 If, however, when checking the **`pdf`** document with **`fitz`**, it turns out that the document with the file extension **`pdf`** is not really a **`pdf`** document, then the document is moved to the file directory **`inbox_rejected`**.
 
-#### 2.1.2 File extensions of documents for processing with Pandoc
+#### 2.1.2 File extensions of documents for processing with Pandoc and TeX Live
 
-Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org):
+Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and 
+marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}:
 
 - **`csv`**
-- **`doc`**
 - **`docx`**
 - **`epub`**
-- **`htm`**
 - **`html`**
-- **`json`**
-- **`md`**
 - **`odt`**
 - **`rst`**
 - **`rtf`**
-- **`txt`**
 
 An exception are files with the file name **`README.md`**, which are ignored and not processed.
 
 #### 2.1.3 File extensions of documents for processing with Tesseract OCR
 
-Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract):
+Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}:
 
 - **`bmp`**
 - **`gif`**
@@ -86,9 +82,16 @@ Document files that do not fall into one of the previous categories are marked a
 ### 2.2 Convert pdf documents to image files (step: **`p_2_i`**)
 
 pdf documents consisting of scanned images must first be processed with OCR software in order to extract the text they contain. 
-Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) does not support the pdf file format, such a pdf document must first be converted into one or more image files. 
-This is done with the software [pdf2image](https://pypi.org/project/pdf2image/), which in turn is based on the [Poppler](https://poppler.freedesktop.org) software.
+Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} does not support the pdf file format, such a pdf document must first be converted into one or more image files. 
+This is done with the software [pdf2image](https://pypi.org/project/pdf2image){:target="_blank"}, which in turn is based on the [Poppler](https://poppler.freedesktop.org){:target="_blank"} software.
 The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image files (child document(s)).
+
+### 2.3 Convert appropriate non-pdf documents to pdf files (step: **`n_2_p`**)
+
+In this processing step, the document types listed in section 2.1.2 are converted to pdf format 
+using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created pdf file (child document).
+In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
 ## 3. Requirements
 
@@ -96,15 +99,21 @@ The processing of the original document (parent document) is then completed and 
 
 Continuous delivery / integration (CD/CI) runs on **`Ubunto 18.04`**, **`Ubuntu 20.04`**~~, **`Windows Server 2019`** and **`Windows Server 2022`**~~.
 This means that **`DCR`** also runs under **`Windows 10`** and **`Windows 11`**. 
-In this case, only the functionality of the **`grep`**, **`make`**  and **`sed`** tools must be made available, e.g. via [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm), [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm) or [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm).
+In this case, only the functionality of the **`grep`**, **`make`**  and **`sed`** tools must be made available, e.g. via [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm){:target="_blank"}, [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} or [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}.
 
-### 3.2 Python
+### 3.2 Pandoc & TeX Live
 
-Because of the use of the new typing features, **`Python`** version [3.10](https://docs.python.org/3/whatsnew/3.10.html){:target="_blank"} or higher is required.
+To convert the non-PDF documents (see 2.1.2) into pdf files for PDFlib TET processing, 
+the universal document converter [Pandoc](https://pandoc.org){:target="_blank"} 
+and [TeX Live](https://www.tug.org/texlive){:target="_blank"} are used and must therefore also be installed.
 
 ### 3.3 Poppler
 
-To convert the scanned PDF documents into image files for Tesseract OCR, the rendering library [Poppler](https://poppler.freedesktop.org) is used and must therefore also be installed.
+To convert the scanned PDF documents into image files for Tesseract OCR, the rendering library [Poppler](https://poppler.freedesktop.org){:target="_blank"} is used and must therefore also be installed.
+
+### 3.4 Python
+
+Because of the use of the new typing features, **`Python`** version [3.10](https://docs.python.org/3/whatsnew/3.10.html){:target="_blank"} or higher is required.
 
 ## 4. Installation
 
@@ -144,7 +153,7 @@ The customisable entries are:
       db_schema = dcr_schema
       db_user = dcr_user
       db_user_admin = dcr_user_admin
-      dcr_version = 0.6.0
+      dcr_version = 0.6.5
       directory_inbox = data/inbox
       directory_inbox_accepted = data/inbox_accepted
       directory_inbox_rejected = data/inbox_rejected
@@ -165,7 +174,7 @@ The customisable entries are:
 | db_schema                | **`dcr_schema`**             | database schema name                                                          |
 | db_user                  | **`postgresql`**             | DCR database user name                                                        |
 | db_user_admin            | **`postgresql`**             | administrative database user name                                             |
-| dcr_version              | **`0.6.0`**                  | current version number of the DCR application                                 |
+| dcr_version              | **`0.6.5`**                  | current version number of the DCR application                                 |
 | directory_inbox          | **`data/inbox`**             | directory for the new documents received                                      |
 | directory_inbox_accepted | **`data/inbox_accepted`**    | directory for the accepted documents                                          |
 | directory_inbox_rejected | **`data/inbox_rejected`**    | directory for the rejected documents                                          |
@@ -197,12 +206,13 @@ The configuration parameters can be set differently for the individual environme
 **`DCR`** should be operated via the script **`run_dcr_prod`**. 
 The following actions are available:
 
-| Action      | Process                                                                                                       |
-|-------------|---------------------------------------------------------------------------------------------------------------|
-| **`all`**   | Run the complete processing of all new documents.                                                             |
-| **`db_c`**  | Create the database.                                                                                          |
-| **`db_u`**  | Upgrade the database.                                                                                       |
-| **`m_d`**   | Run the installation of the necessary 3rd party packages for development and run the development ecosystem.   |
-| **`m_p`**   | Run the installation of the necessary 3rd party packages for production and compile all packages and modules. |
-| **`p_i`**   | Process the inbox directory.                                                                                  |
-| **`p_2_i`** | Convert pdf documents to image files.                                                                         |
+| Action      | Process                                                                                                            |
+|-------------|--------------------------------------------------------------------------------------------------------------------|
+| **`all`**   | Run the complete processing of all new documents.                                                                  |
+| **`db_c`**  | Create the database.                                                                                               |
+| **`db_u`**  | Upgrade the database.                                                                                              |
+| **`m_d`**   | Run the installation of the necessary 3rd party packages <br/>for development and run the development ecosystem.   |
+| **`m_p`**   | Run the installation of the necessary 3rd party packages <br/>for production and compile all packages and modules. |
+| **`n_2_p`** | Convert appropriate non-pdf documents to pdf files.                                                                |
+| **`p_i`**   | Process the inbox directory.                                                                                       |
+| **`p_2_i`** | Convert pdf documents to image files.                                                                              |

@@ -304,6 +304,81 @@ def fxtr_setup_logger_environment():
 
 
 # -----------------------------------------------------------------------------
+# Help RUN_ACTION_NON_PDF_2_PDF - normal.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def help_run_action_pdf_2_image_normal(file_ext, stem_name):
+    """Help RUN_ACTION_NON_PDF_2_PDF - normal."""
+    pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
+
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+    # -------------------------------------------------------------------------
+    document_id: int = 1
+
+    no_files_expected = (0, 1, 0)
+
+    file_p_i = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id)],
+        file_ext,
+    )
+
+    files_to_be_checked = [
+        file_p_i,
+    ]
+
+    pytest.helpers.verify_content_inboxes(
+        files_to_be_checked,
+        no_files_expected,
+    )
+
+    return document_id, file_p_i
+
+
+# -----------------------------------------------------------------------------
+# Help RUN_ACTION_NON_PDF_2_PDF - normal - duplicate.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def help_run_action_pdf_2_image_normal_jpeg_duplicate(
+    file_ext_1: str, file_ext_2: str, stem_name_1: str, stem_name_2: str
+) -> None:
+    """Help RUN_ACTION_NON_PDF_2_PDF - normal - duplicate."""
+    pytest.helpers.copy_files_from_pytest_2_dir(
+        [(stem_name_1, file_ext_1)], libs.cfg.directory_inbox_accepted
+    )
+
+    os.rename(
+        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
+        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
+    )
+
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
+    # -------------------------------------------------------------------------
+    no_files_expected = (0, 2, 0)
+
+    file_1 = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name_1 + "_1"],
+        file_ext_1,
+    )
+    file_2 = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name_2],
+        file_ext_2,
+    )
+
+    pytest.helpers.verify_content_inboxes(
+        [
+            file_1,
+            file_2,
+        ],
+        no_files_expected,
+    )
+
+
+# -----------------------------------------------------------------------------
 # Restore the original configuration parameter value.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register

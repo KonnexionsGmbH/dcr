@@ -47,29 +47,25 @@ DOCUMENT_DIRECTORY_TYPE_INBOX: str = "inbox"
 DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED: str = "inbox_accepted"
 DOCUMENT_DIRECTORY_TYPE_INBOX_REJECTED: str = "inbox_rejected"
 
-DOCUMENT_ERROR_CODE_REJECTED_ERROR: str = "rejected_error"
-DOCUMENT_ERROR_CODE_REJECTED_FILE_DUPL: str = "Duplicate file"
-DOCUMENT_ERROR_CODE_REJECTED_FILE_ERROR: str = "rejected_file_error"
-DOCUMENT_ERROR_CODE_REJECTED_FILE_EXT: str = "Unknown file extension"
-DOCUMENT_ERROR_CODE_REJECTED_FILE_MOVE: str = "Issue with file move"
-DOCUMENT_ERROR_CODE_REJECTED_FILE_RIGHTS: str = "Issue with file permissions"
-DOCUMENT_ERROR_CODE_REJECTED_NO_PDF_FORMAT: str = "No 'pdf' format"
-DOCUMENT_ERROR_CODE_REJECTED_PDF2IMAGE: str = "Issue with pdf2image"
+DOCUMENT_ERROR_CODE_REJ_ERROR: str = "rejected_error"
+DOCUMENT_ERROR_CODE_REJ_FILE_DUPL: str = "Duplicate file"
+DOCUMENT_ERROR_CODE_REJ_FILE_ERROR: str = "rejected_file_error"
+DOCUMENT_ERROR_CODE_REJ_FILE_EXT: str = "Unknown file extension"
+DOCUMENT_ERROR_CODE_REJ_FILE_MOVE: str = "Issue with file move"
+DOCUMENT_ERROR_CODE_REJ_FILE_RIGHTS: str = "Issue with file permissions"
+DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT: str = "No 'pdf' format"
+DOCUMENT_ERROR_CODE_REJ_PANDOC: str = "Issue with Pandoc and TeX Live"
+DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE: str = "Issue with pdf2image"
 
 DOCUMENT_FILE_TYPE_JPG: str = "jpg"
 DOCUMENT_FILE_TYPE_PANDOC: List[str] = [
     "csv",
-    "doc",
     "docx",
     "epub",
-    "htm",
     "html",
-    "json",
-    "md",
     "odt",
     "rst",
     "rtf",
-    "txt",
 ]
 DOCUMENT_FILE_TYPE_PDF: str = "pdf"
 DOCUMENT_FILE_TYPE_PNG: str = "png"
@@ -89,7 +85,7 @@ DOCUMENT_FILE_TYPE_TESSERACT: List[str] = [
     "webp",
 ]
 
-DOCUMENT_NEXT_STEP_PANDOC: str = "Pandoc"
+DOCUMENT_NEXT_STEP_PANDOC: str = "Pandoc & TeX Live"
 DOCUMENT_NEXT_STEP_PDF2IMAGE: str = "pdf2image"
 DOCUMENT_NEXT_STEP_PDFLIB: str = "PDFlib TET"
 DOCUMENT_NEXT_STEP_TESSERACT: str = "Tesseract OCR"
@@ -128,7 +124,8 @@ JOURNAL_ACTION_01_905: str = (
     "01.905 Issue (p_i): The same file has probably already been processed "
     + "once under the file name '{file_name}'."
 )
-JOURNAL_ACTION_11_001: str = "11.001 Ready to convert the document to 'pdf' format using Pandoc."
+JOURNAL_ACTION_01_906: str = "01.906 The target file '{file_name}' already exists."
+JOURNAL_ACTION_11_001: str = "11.001 Ready to convert the document to 'pdf' format using Pandoc and TeX Live."
 JOURNAL_ACTION_11_002: str = (
     "11.002 Ready to convert the document to 'pdf' format using Tesseract OCR."
 )
@@ -153,6 +150,22 @@ JOURNAL_ACTION_21_902: str = (
     "21.902 Issue (p_2_i): The child image file number '{child_no}' with file name "
     + "'{file_name}' cannot be stored "
     + "- error: code='{error_code}' msg='{error_msg}'."
+)
+JOURNAL_ACTION_31_001: str = (
+    "31.001 Start (n_2_p): The document file '{file_name}' must be converted into a 'pdf' file "
+    + "for further processing."
+)
+JOURNAL_ACTION_31_002: str = (
+    "31.002 End   (n_2_p): The document file '{source_file}' has been successfully converted "
+    + "to {target_file}."
+)
+JOURNAL_ACTION_31_003: str = (
+    "31.003 Next  (n_2_p): The created image file '{file_name}' "
+    + "is ready to be processed with PDFlib TET."
+)
+JOURNAL_ACTION_31_901: str = (
+    "31.901 Issue (n_2_p): Converting the file '{source_file}' to the file "
+    + "'{target_file}' with Pandoc and TeX Live failed - output='{output}'."
 )
 
 RUN_STATUS_END: str = "end"

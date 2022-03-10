@@ -1,8 +1,4 @@
-"""Library Stub.
-
-Returns:
-    [type]: None.
-"""
+"""Library Stub."""
 from typing import List
 
 def get_args(argv: List[str]) -> dict[str, bool]: ...

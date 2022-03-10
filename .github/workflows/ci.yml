@@ -8,6 +8,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  VERSION_PANDOC: 2.17.1.1
 
 jobs:
   standards:
@@ -43,11 +44,15 @@ jobs:
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
-      - name: Install Poppler
+      - name: Install Pandoc & Poppler & TeX Live
         run: |
             sudo apt-get update -qy
             sudo apt-get upgrade -qy
-            sudo apt-get install -qy poppler-utils
+            sudo apt-get install -qy poppler-utils \
+                                     texlive-full \
+                                     wget
+            wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
+            sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
       - name: Publish the code coverage to coveralls.io
         run: make coveralls
 
@@ -79,11 +84,15 @@ jobs:
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
-      - name: Install Poppler
+      - name: Install Pandoc & Poppler & TeX Live
         run: |
             sudo apt-get update -qy
             sudo apt-get upgrade -qy
-            sudo apt-get install -qy poppler-utils
+            sudo apt-get install -qy poppler-utils \
+                                     texlive-full \
+                                     wget
+            wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
+            sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
       - name: Run pytest for writing better program
         run: make pytest
 
@@ -115,10 +124,14 @@ jobs:
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
-      - name: Install Poppler
+      - name: Install Pandoc & Poppler & TeX Live
         run: |
             sudo apt-get update -qy
             sudo apt-get upgrade -qy
-            sudo apt-get install -qy poppler-utils
+            sudo apt-get install -qy poppler-utils \
+                                     texlive-full \
+                                     wget
+            wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
+            sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
       - name: Run pytest for writing better program
         run: make pytest-ci
