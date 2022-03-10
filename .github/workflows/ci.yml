@@ -1,9 +1,8 @@
 name: Continuous Integration
 
 on:
-# wwe
-#  push:
-#    branches: [ '**' ]
+  push:
+    branches: [ '**' ]
   pull_request:
     branches: [ master ]
 
