@@ -51,7 +51,6 @@ If, however, when checking the **`pdf`** document with **`fitz`**, it turns out 
 Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"}:
 
 - **`csv`**
-- **`doc`**
 - **`docx`**
 - **`epub`**
 - **`htm`**

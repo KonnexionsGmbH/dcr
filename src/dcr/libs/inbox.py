@@ -230,7 +230,7 @@ def prepare_pdf(file: pathlib.Path) -> None:
 def process_inbox() -> None:
     """Process the files found in the inbox file directory.
 
-    1. Documents of type doc, docx or txt are converted to pdf format
+    1. Documents of type docx or txt are converted to pdf format
        and copied to the inbox_accepted directory.
     2. Documents of type pdf that do not consist only of a scanned image are
        copied unchanged to the inbox_accepted directory.

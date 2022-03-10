@@ -26,7 +26,6 @@ def convert_non_pdf_2_pdf() -> None:
 
         for row in rows:
             libs.utils.start_document_processing(row, libs.db.cfg.JOURNAL_ACTION_31_001)
-
             convert_non_pdf_2_pdf_file()
 
         conn.close()
@@ -37,10 +36,10 @@ def convert_non_pdf_2_pdf() -> None:
 
     if libs.cfg.total_to_be_processed > 0:
         libs.utils.progress_msg(
-            f"Number status pdflib_tet_ready:    {libs.cfg.total_status_ready:6d}"
+            f"Number status pandoc_ready:        {libs.cfg.total_status_ready:6d}"
         )
         libs.utils.progress_msg(
-            f"Number status pdflib_tet_error:    {libs.cfg.total_status_error:6d}"
+            f"Number status pandoc_error:        {libs.cfg.total_status_error:6d}"
         )
         libs.utils.progress_msg(
             f"Number documents converted:        {libs.cfg.total_ok_processed:6d}"
@@ -70,46 +69,52 @@ def convert_non_pdf_2_pdf_file() -> None:
         libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
     )
 
-    # Convert the document
-    output = pypandoc.convert_file(
-        source_file, libs.db.cfg.DOCUMENT_FILE_TYPE_PDF, outputfile=target_file
-    )
-
-    if output != "":
-        libs.cfg.total_erroneous += 1
-
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PANDOC,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_31_901.replace("{source_file}", source_file)
-                .replace("{target_file}", target_file)
-                .replace("{output}", output),
-            ),
-        )
+    if os.path.exists(target_file):
+        libs.utils.duplicate_file_error(target_file)
     else:
-        prepare_document_pandoc()
-
-        libs.cfg.document_child_file_name = target_file
-        libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
-
-        journal_action: str = libs.db.cfg.JOURNAL_ACTION_31_003.replace(
-            "{file_name}", libs.cfg.document_child_file_name
+        # Convert the document
+        output = pypandoc.convert_file(
+            source_file, libs.db.cfg.DOCUMENT_FILE_TYPE_PDF, outputfile=target_file
         )
 
-        libs.utils.initialise_document_child(journal_action)
+        # not testable
+        if output != "":
+            libs.cfg.total_erroneous += 1
 
-        # Document successfully converted to pdf format
-        journal_action = libs.db.cfg.JOURNAL_ACTION_31_002.replace(
-            "{source_file}", source_file
-        ).replace(f"{target_file}", target_file)
+            libs.db.orm.update_document_status(
+                {
+                    libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PANDOC,
+                    libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+                },
+                libs.db.orm.insert_journal(
+                    __name__,
+                    inspect.stack()[0][3],
+                    libs.cfg.document_id,
+                    libs.db.cfg.JOURNAL_ACTION_31_901.replace("{source_file}", source_file)
+                    .replace("{target_file}", target_file)
+                    .replace("{output}", output),
+                ),
+            )
+        else:
+            prepare_document_pandoc()
 
-        libs.utils.finalize_file_conversion(journal_action)
+            libs.cfg.document_child_file_name = (
+                libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF
+            )
+            libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
+
+            journal_action: str = libs.db.cfg.JOURNAL_ACTION_31_003.replace(
+                "{file_name}", libs.cfg.document_child_file_name
+            )
+
+            libs.utils.initialise_document_child(journal_action)
+
+            # Document successfully converted to pdf format
+            journal_action = libs.db.cfg.JOURNAL_ACTION_31_002.replace(
+                "{source_file}", source_file
+            ).replace("{target_file}", target_file)
+
+            libs.utils.finalize_file_conversion(journal_action)
 
 
 # -----------------------------------------------------------------------------

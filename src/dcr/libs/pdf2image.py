@@ -42,7 +42,6 @@ def convert_pdf_2_image() -> None:
 
         for row in rows:
             libs.utils.start_document_processing(row, libs.db.cfg.JOURNAL_ACTION_21_001)
-
             convert_pdf_2_image_file()
 
         conn.close()
@@ -53,10 +52,10 @@ def convert_pdf_2_image() -> None:
 
     if libs.cfg.total_to_be_processed > 0:
         libs.utils.progress_msg(
-            f"Number status tesseract_pdf_ready: {libs.cfg.total_status_ready:6d}"
+            f"Number status pdf2image_ready:     {libs.cfg.total_status_ready:6d}"
         )
         libs.utils.progress_msg(
-            f"Number status tesseract_pdf_error: {libs.cfg.total_status_error:6d}"
+            f"Number status pdf2image_error:     {libs.cfg.total_status_error:6d}"
         )
         libs.utils.progress_msg(
             f"Number documents converted:        {libs.cfg.total_ok_processed:6d}"

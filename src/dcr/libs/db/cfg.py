@@ -60,17 +60,14 @@ DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE: str = "Issue with pdf2image"
 DOCUMENT_FILE_TYPE_JPG: str = "jpg"
 DOCUMENT_FILE_TYPE_PANDOC: List[str] = [
     "csv",
-    "doc",
     "docx",
     "epub",
-    "htm",
     "html",
     "json",
     "md",
     "odt",
     "rst",
     "rtf",
-    "txt",
 ]
 DOCUMENT_FILE_TYPE_PDF: str = "pdf"
 DOCUMENT_FILE_TYPE_PNG: str = "png"
@@ -161,7 +158,7 @@ JOURNAL_ACTION_31_001: str = (
     + "for further processing."
 )
 JOURNAL_ACTION_31_002: str = (
-    "31.002 End   (n_2_p): The document file '{source_name}' has been successfully converted "
+    "31.002 End   (n_2_p): The document file '{source_file}' has been successfully converted "
     + "to {target_file}."
 )
 JOURNAL_ACTION_31_003: str = (

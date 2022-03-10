@@ -1,7 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.inbox."""
-import os
-
+"""Testing Module libs.pdf2image."""
 import libs.cfg
 import libs.db
 import pytest
@@ -25,29 +23,7 @@ def test_run_action_pdf_2_image_normal_jpeg(fxtr_rmdir_opt, fxtr_setup_empty_db_
     stem_name: str = "pdf_scanned_ok"
     file_ext: str = "pdf"
 
-    pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
-
-    # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-
-    # -------------------------------------------------------------------------
-    document_id: int = 1
-    no_files_expected = (0, 1, 0)
-
-    file_p_i = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name, str(document_id)],
-        file_ext,
-    )
-
-    files_to_be_checked = [
-        file_p_i,
-    ]
-
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
-    )
+    document_id, file_p_i = pytest.helpers.help_run_action_pdf_2_image_normal(file_ext, stem_name)
 
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
@@ -88,7 +64,6 @@ def test_run_action_pdf_2_image_normal_jpeg(fxtr_rmdir_opt, fxtr_setup_empty_db_
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PDF_2_IMAGE - normal - jpeg - duplicate.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PDF_2_IMAGE - normal - jpeg - duplicate."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
@@ -104,39 +79,8 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
     stem_name_2: str = "pdf_scanned_ok_1_1"
     file_ext_2: str = "jpeg"
 
-    pytest.helpers.copy_files_from_pytest_2_dir(
-        [(stem_name_1, file_ext_1)], libs.cfg.directory_inbox_accepted
-    )
-
-    os.rename(
-        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
-        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
-    )
-
-    # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
-
-    # -------------------------------------------------------------------------
-    no_files_expected = (0, 2, 0)
-
-    file_1 = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name_1 + "_1"],
-        file_ext_1,
-    )
-
-    file_2 = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name_2],
-        file_ext_2,
-    )
-
-    pytest.helpers.verify_content_inboxes(
-        [
-            file_1,
-            file_2,
-        ],
-        no_files_expected,
+    pytest.helpers.help_run_action_pdf_2_image_normal_jpeg_duplicate(
+        file_ext_1, file_ext_2, stem_name_1, stem_name_2
     )
 
 
@@ -151,29 +95,7 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     stem_name: str = "pdf_scanned_ok"
     file_ext: str = "pdf"
 
-    pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
-
-    # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-
-    # -------------------------------------------------------------------------
-    document_id: int = 1
-    no_files_expected = (0, 1, 0)
-
-    file_p_i = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name, str(document_id)],
-        file_ext,
-    )
-
-    files_to_be_checked = [
-        file_p_i,
-    ]
-
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
-    )
+    document_id, file_p_i = pytest.helpers.help_run_action_pdf_2_image_normal(file_ext, stem_name)
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(

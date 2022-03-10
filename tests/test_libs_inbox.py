@@ -63,7 +63,6 @@ def test_run_action_process_inbox_accepted(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_from_pytest_2_dir(
         [
-            ("doc_ok", "doc"),
             ("docx_ok", "docx"),
             ("jpeg_pdf_text_ok_1", "jpeg"),
             ("jpg_pdf_text_ok_1", "jpg"),
@@ -73,7 +72,6 @@ def test_run_action_process_inbox_accepted(fxtr_setup_empty_db_and_inbox):
             ("README.md", None),
             ("rtf_ok", "rtf"),
             ("tiff_pdf_text_ok_2", "tiff"),
-            ("txt_ok", "txt"),
         ],
         libs.cfg.directory_inbox,
     )
@@ -82,42 +80,37 @@ def test_run_action_process_inbox_accepted(fxtr_setup_empty_db_and_inbox):
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     # -------------------------------------------------------------------------
-    no_files_expected = (1, 10, 0)
+    no_files_expected = (1, 8, 0)
 
     files_to_be_checked = [
         (
             libs.cfg.directory_inbox_accepted,
-            ["doc_ok", "1"],
-            "doc",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["docx_ok", "3"],
+            ["docx_ok", "1"],
             "docx",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["jpeg_pdf_text_ok_1", "5"],
+            ["jpeg_pdf_text_ok_1", "3"],
             "jpeg",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["jpg_pdf_text_ok_1", "7"],
+            ["jpg_pdf_text_ok_1", "5"],
             "jpg",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["odt_ok", "9"],
+            ["odt_ok", "7"],
             "odt",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_text_ok", "11"],
+            ["pdf_text_ok", "9"],
             "pdf",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["png_pdf_text_ok_1", "13"],
+            ["png_pdf_text_ok_1", "11"],
             "png",
         ),
         (
@@ -127,18 +120,13 @@ def test_run_action_process_inbox_accepted(fxtr_setup_empty_db_and_inbox):
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["rtf_ok", "15"],
+            ["rtf_ok", "13"],
             "rtf",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["tiff_pdf_text_ok_2", "17"],
+            ["tiff_pdf_text_ok_2", "15"],
             "tiff",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["txt_ok", "19"],
-            "txt",
         ),
     ]
 
@@ -259,7 +247,6 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_INBOX - rejected.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_INBOX - rejected."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
