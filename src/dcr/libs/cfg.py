@@ -1,5 +1,6 @@
 """Module libs.cfg: DCR Configuration Data."""
 import logging
+from decimal import Decimal
 from os import PathLike
 from typing import Dict
 from typing import TypeAlias
@@ -39,6 +40,7 @@ DCR_CFG_SECTION: str = "dcr"
 DCR_CFG_SECTION_DEV: str = "dcr_dev"
 DCR_CFG_SECTION_PROD: str = "dcr_prod"
 DCR_CFG_SECTION_TEST: str = "dcr_test"
+DCR_CFG_TESSERACT_TIMEOUT: str = "tesseract_timeout"
 DCR_CFG_VERBOSE: str = "verbose"
 
 DCR_ENVIRONMENT_TYPE: str = "DCR_ENVIRONMENT_TYPE"
@@ -64,6 +66,7 @@ OS_POSIX: str = "posix"
 
 RUN_ACTION_ALL_COMPLETE: str = "all"
 RUN_ACTION_CREATE_DB: str = "db_c"
+RUN_ACTION_IMAGE_2_PDF: str = "ocr"
 RUN_ACTION_NON_PDF_2_PDF: str = "n_2_p"
 RUN_ACTION_PDF_2_IMAGE: str = "p_2_i"
 RUN_ACTION_PROCESS_INBOX: str = "p_i"
@@ -126,10 +129,11 @@ run_action: str
 run_id: sqlalchemy.Integer
 run_run_id: sqlalchemy.Integer
 
+tesseract_timeout: Decimal
+
 total_erroneous: int
 total_generated: int
 total_ok_processed: int
-total_rejected: int
 total_status_error: int
 total_status_ready: int
 total_to_be_processed: int

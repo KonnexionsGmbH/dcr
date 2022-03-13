@@ -4,6 +4,7 @@ import os.path
 
 import libs.cfg
 import libs.db
+import libs.db.cfg
 import pytest
 
 import dcr
@@ -33,7 +34,7 @@ def test_run_action_all_normal(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     child_no: int = 1
     document_id: int = 1
-    no_files_expected = (0, 2, 0)
+    no_files_expected = (0, 3, 0)
 
     file_1 = (
         libs.cfg.directory_inbox_accepted,
@@ -47,8 +48,14 @@ def test_run_action_all_normal(fxtr_setup_empty_db_and_inbox):
         libs.cfg.pdf2image_type,
     )
 
+    file_3 = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id), str(child_no)],
+        libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
+    )
+
     pytest.helpers.verify_content_inboxes(
-        [file_1, file_2],
+        [file_1, file_2, file_3],
         no_files_expected,
     )
 
@@ -164,26 +171,26 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     no_files_expected = (1, 1, 0)
 
-    file_1 = (
+    file_inbox_1 = (
         libs.cfg.directory_inbox,
         [stem_name_1],
         file_ext,
     )
 
-    file_2 = (
+    file_inbox_2 = (
         libs.cfg.directory_inbox_accepted,
         [stem_name_2],
         file_ext,
     )
 
     files_to_be_checked = [
-        file_1,
-        file_2,
+        file_inbox_1,
+        file_inbox_2,
     ]
 
     pytest.helpers.verify_content_inboxes(
@@ -268,8 +275,15 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "false"
+    )
+
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
+    )
     # -------------------------------------------------------------------------
     no_files_expected = (0, 1, 4)
 
@@ -344,7 +358,7 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     no_files_expected = (1, 0, 1)

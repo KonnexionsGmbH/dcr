@@ -6,6 +6,7 @@ import os
 import pathlib
 import sys
 import traceback
+from typing import Tuple
 
 import libs.cfg
 import libs.db.cfg
@@ -39,6 +40,32 @@ def check_directories() -> None:
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Compute the SHA256 hash string of a file.
+# -----------------------------------------------------------------------------
+def compute_sha256(file: pathlib.Path) -> str:
+    """Compute the SHA256 hash string of a file.
+
+    Args:
+        file (: pathlib.Path): File.
+
+    Returns:
+        str: SHA256 hash string.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    sha256_hash = hashlib.sha256()
+
+    with open(file, "rb") as file_content:
+        # Read and update hash string value in blocks of 4K
+        for byte_block in iter(lambda: file_content.read(4096), b""):
+            sha256_hash.update(byte_block)
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+    return sha256_hash.hexdigest()
 
 
 # -----------------------------------------------------------------------------
@@ -92,32 +119,6 @@ def finalize_file_conversion(journal_action: str) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Get the SHA256 hash string of a file.
-# -----------------------------------------------------------------------------
-def get_sha256(file: pathlib.Path) -> str:
-    """Get the SHA256 hash string of a file.
-
-    Args:
-        file (: pathlib.Path): File.
-
-    Returns:
-        str: SHA256 hash string.
-    """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    sha256_hash = hashlib.sha256()
-
-    with open(file, "rb") as file_content:
-        # Read and update hash string value in blocks of 4K
-        for byte_block in iter(lambda: file_content.read(4096), b""):
-            sha256_hash.update(byte_block)
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-    return sha256_hash.hexdigest()
-
-
-# -----------------------------------------------------------------------------
 # Initialise a new child document of the base document.
 # -----------------------------------------------------------------------------
 def initialise_document_child(journal_action: str) -> None:
@@ -158,6 +159,62 @@ def initialise_document_child(journal_action: str) -> None:
     )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Prepare the base child document data - next step PDFlib.
+# -----------------------------------------------------------------------------
+def prepare_document_4_pdflib() -> None:
+    """Prepare the child document data - next step PDFlib."""
+    libs.cfg.document_child_child_no = None
+    libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
+    libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
+    libs.cfg.document_child_error_code = None
+
+    libs.cfg.document_child_file_type = libs.db.cfg.DOCUMENT_FILE_TYPE_PDF
+
+    libs.cfg.document_child_id_base = libs.cfg.document_id_base
+    libs.cfg.document_child_id_parent = libs.cfg.document_id
+
+    libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB
+    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
+
+
+# -----------------------------------------------------------------------------
+# Prepare the base child document data - next step Tesseract OCR.
+# -----------------------------------------------------------------------------
+def prepare_document_4_tesseract() -> None:
+    """Prepare the child document data - next step Tesseract OCR."""
+    libs.cfg.document_child_child_no = 0
+    libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
+    libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
+    libs.cfg.document_child_error_code = None
+
+    libs.cfg.document_child_file_type = libs.cfg.pdf2image_type
+
+    libs.cfg.document_child_id_base = libs.cfg.document_id_base
+    libs.cfg.document_child_id_parent = libs.cfg.document_id
+
+    libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT
+    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
+
+
+# -----------------------------------------------------------------------------
+# Prepare the source and target file names.
+# -----------------------------------------------------------------------------
+def prepare_file_names() -> Tuple[str, str]:
+    """Prepare the source and target file names."""
+    source_file = os.path.join(
+        libs.cfg.document_directory_name,
+        libs.cfg.document_file_name,
+    )
+
+    target_file = os.path.join(
+        libs.cfg.document_directory_name,
+        libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
+    )
+
+    return source_file, target_file
 
 
 # -----------------------------------------------------------------------------
@@ -235,6 +292,19 @@ def progress_msg_empty_before(msg: str) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Reset the statistic counters.
+# -----------------------------------------------------------------------------
+def reset_statistics() -> None:
+    """Reset the statistic counters."""
+    libs.cfg.total_erroneous = 0
+    libs.cfg.total_generated = 0
+    libs.cfg.total_ok_processed = 0
+    libs.cfg.total_status_error = 0
+    libs.cfg.total_status_ready = 0
+    libs.cfg.total_to_be_processed = 0
+
+
+# -----------------------------------------------------------------------------
 # Select the documents to be processed.
 # -----------------------------------------------------------------------------
 def select_document(conn: Connection, dbt: Table, next_step: str) -> engine.CursorResult:
@@ -284,12 +354,6 @@ def select_document_prepare() -> Table:
     Returns:
         Table: Database table document,
     """
-    libs.cfg.total_erroneous = 0
-    libs.cfg.total_ok_processed = 0
-    libs.cfg.total_status_error = 0
-    libs.cfg.total_status_ready = 0
-    libs.cfg.total_to_be_processed = 0
-
     # Check the inbox file directories.
     libs.utils.check_directories()
 
@@ -298,6 +362,55 @@ def select_document_prepare() -> Table:
         libs.db.cfg.db_orm_metadata,
         autoload_with=libs.db.cfg.db_orm_engine,
     )
+
+
+# -----------------------------------------------------------------------------
+# Show the statistics of the run.
+# -----------------------------------------------------------------------------
+def show_statistics() -> None:
+    """Show the statistics of the run."""
+    libs.utils.progress_msg(
+        f"Number documents to be processed:  {libs.cfg.total_to_be_processed:6d}"
+    )
+
+    if libs.cfg.total_to_be_processed > 0:
+        if libs.cfg.total_status_ready > 0 or libs.cfg.total_status_error > 0:
+            libs.utils.progress_msg(
+                f"Number with document status ready: {libs.cfg.total_status_ready:6d}"
+            )
+            libs.utils.progress_msg(
+                f"Number with document status error: {libs.cfg.total_status_error:6d}"
+            )
+
+        if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX:
+            libs.utils.progress_msg(
+                f"Number documents accepted:         {libs.cfg.total_ok_processed:6d}"
+            )
+        else:
+            libs.utils.progress_msg(
+                f"Number documents converted:        {libs.cfg.total_ok_processed:6d}"
+            )
+
+        if libs.cfg.total_generated > 0:
+            libs.utils.progress_msg(
+                f"Number documents generated:        {libs.cfg.total_generated:6d}"
+            )
+
+        if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX:
+            libs.utils.progress_msg(
+                f"Number documents rejected:         {libs.cfg.total_erroneous:6d}"
+            )
+        else:
+            libs.utils.progress_msg(
+                f"Number documents erroneous:        {libs.cfg.total_erroneous:6d}"
+            )
+
+        if libs.cfg.run_action != libs.cfg.RUN_ACTION_PROCESS_INBOX:
+            libs.utils.progress_msg(
+                "The error-free documents in the file directory "
+                + "'inbox_accepted' are now converted to a pdf format "
+                + "for further processing",
+            )
 
 
 # -----------------------------------------------------------------------------

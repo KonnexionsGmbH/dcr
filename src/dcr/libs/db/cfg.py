@@ -56,6 +56,7 @@ DOCUMENT_ERROR_CODE_REJ_FILE_RIGHTS: str = "Issue with file permissions"
 DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT: str = "No 'pdf' format"
 DOCUMENT_ERROR_CODE_REJ_PANDOC: str = "Issue with Pandoc and TeX Live"
 DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE: str = "Issue with pdf2image"
+DOCUMENT_ERROR_CODE_REJ_TESSERACT: str = "Issue with Tesseract OCR"
 
 DOCUMENT_FILE_TYPE_JPG: str = "jpg"
 DOCUMENT_FILE_TYPE_PANDOC: List[str] = [
@@ -72,15 +73,11 @@ DOCUMENT_FILE_TYPE_PNG: str = "png"
 DOCUMENT_FILE_TYPE_TESSERACT: List[str] = [
     "bmp",
     "gif",
-    "jfif",
-    "jiff",
+    "jp2",
     "jpeg",
     "jpg",
-    "pip",
-    "pjpeg",
-    "pmn",
     "png",
-    "tif",
+    "pnm",
     "tiff",
     "webp",
 ]
@@ -125,7 +122,9 @@ JOURNAL_ACTION_01_905: str = (
     + "once under the file name '{file_name}'."
 )
 JOURNAL_ACTION_01_906: str = "01.906 The target file '{file_name}' already exists."
-JOURNAL_ACTION_11_001: str = "11.001 Ready to convert the document to 'pdf' format using Pandoc and TeX Live."
+JOURNAL_ACTION_11_001: str = (
+    "11.001 Ready to convert the document to 'pdf' format using Pandoc and TeX Live."
+)
 JOURNAL_ACTION_11_002: str = (
     "11.002 Ready to convert the document to 'pdf' format using Tesseract OCR."
 )
@@ -166,6 +165,28 @@ JOURNAL_ACTION_31_003: str = (
 JOURNAL_ACTION_31_901: str = (
     "31.901 Issue (n_2_p): Converting the file '{source_file}' to the file "
     + "'{target_file}' with Pandoc and TeX Live failed - output='{output}'."
+)
+JOURNAL_ACTION_41_001: str = (
+    "41.001 Start (ocr): The document file '{file_name}' must be converted into a 'pdf' file "
+    + "for further processing."
+)
+JOURNAL_ACTION_41_002: str = (
+    "41.002 End   (ocr): The document file '{source_file}' has been successfully converted "
+    + "to {target_file}."
+)
+JOURNAL_ACTION_41_003: str = (
+    "41.003 Next  (ocr): The created image file '{file_name}' "
+    + "is ready to be processed with PDFlib TET."
+)
+JOURNAL_ACTION_41_901: str = (
+    "41.901 Issue (ocr): Converting the file '{source_file}' to the file "
+    + "'{target_file}' with Tesseract OCR failed - "
+    + "error type: '{error_type}' - error: '{error}'."
+)
+JOURNAL_ACTION_41_902: str = (
+    "41.902 Issue (ocr): Converting the file '{source_file}' to the file "
+    + "'{target_file}' with Tesseract OCR failed - "
+    + "error status: '{error_status}' - error: '{error}'."
 )
 
 RUN_STATUS_END: str = "end"

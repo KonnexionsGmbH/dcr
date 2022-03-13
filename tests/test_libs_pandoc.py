@@ -24,7 +24,7 @@ def test_run_action_non_pdf_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     stem_name: str = "docx_ok"
     file_ext: str = "docx"
 
-    document_id, file_p_i = pytest.helpers.help_run_action_pdf_2_image_normal(file_ext, stem_name)
+    document_id, file_p_i = pytest.helpers.help_run_action_process_inbox_normal(file_ext, stem_name)
 
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_NON_PDF_2_PDF])
@@ -79,6 +79,6 @@ def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox
     stem_name_2: str = "docx_ok_1"
     file_ext_2: str = "pdf"
 
-    pytest.helpers.help_run_action_pdf_2_image_normal_jpeg_duplicate(
+    pytest.helpers.help_run_action_all_complete_duplicate_file(
         file_ext_1, file_ext_2, stem_name_1, stem_name_2
     )

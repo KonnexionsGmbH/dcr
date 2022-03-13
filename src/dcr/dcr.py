@@ -17,6 +17,7 @@ import libs.db.orm
 import libs.inbox
 import libs.pandoc
 import libs.pdf2image
+import libs.tesseract
 import libs.utils
 import yaml
 
@@ -34,6 +35,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         db_c  - Create the database.
         db_u  - Upgrade the database.
         n_2_p - Convert non-pdf documents to pdf files.
+        ocr   - Convert image documents to pdf files.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
 
@@ -43,6 +45,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         1. p_i
         2. p_2_i
         3. n_2_p
+        4. ocr
 
     Args:
         argv (List[str]): Command line arguments.
@@ -62,6 +65,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
 
     args = {
         libs.cfg.RUN_ACTION_CREATE_DB: False,
+        libs.cfg.RUN_ACTION_IMAGE_2_PDF: False,
         libs.cfg.RUN_ACTION_NON_PDF_2_PDF: False,
         libs.cfg.RUN_ACTION_PDF_2_IMAGE: False,
         libs.cfg.RUN_ACTION_PROCESS_INBOX: False,
@@ -71,11 +75,13 @@ def get_args(argv: List[str]) -> dict[str, bool]:
     for i in range(1, num):
         arg = argv[i].lower()
         if arg == libs.cfg.RUN_ACTION_ALL_COMPLETE:
+            args[libs.cfg.RUN_ACTION_IMAGE_2_PDF] = True
             args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF] = True
             args[libs.cfg.RUN_ACTION_PDF_2_IMAGE] = True
             args[libs.cfg.RUN_ACTION_PROCESS_INBOX] = True
         elif arg in (
             libs.cfg.RUN_ACTION_CREATE_DB,
+            libs.cfg.RUN_ACTION_IMAGE_2_PDF,
             libs.cfg.RUN_ACTION_NON_PDF_2_PDF,
             libs.cfg.RUN_ACTION_PDF_2_IMAGE,
             libs.cfg.RUN_ACTION_PROCESS_INBOX,
@@ -314,6 +320,31 @@ def process_documents(args: dict[str, bool]) -> None:
         )
         libs.utils.progress_msg("End  : Convert non-pdf documents to pdf files ...")
 
+    # Convert the image documents to pdf files.
+    if args[libs.cfg.RUN_ACTION_IMAGE_2_PDF]:
+        libs.cfg.run_action = libs.cfg.RUN_ACTION_IMAGE_2_PDF
+        libs.utils.progress_msg_empty_before("Start: Convert image documents to pdf files ...")
+        libs.cfg.run_id = libs.db.orm.insert_dbt_row(
+            libs.db.cfg.DBT_RUN,
+            {
+                libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
+                libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            },
+        )
+        libs.tesseract.convert_image_2_pdf()
+        libs.db.orm.update_dbt_id(
+            libs.db.cfg.DBT_RUN,
+            libs.cfg.run_id,
+            {
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
+                libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+                libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+                libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            },
+        )
+        libs.utils.progress_msg("End  : Convert image documents to pdf files ...")
+
     # Disconnect from the database.
     libs.db.orm.disconnect_db()
 
@@ -326,8 +357,20 @@ def process_documents(args: dict[str, bool]) -> None:
 def validate_config() -> None:
     """Validate the configuration parameters."""
     # -------------------------------------------------------------------------
-    # Parameter: directory_inbox
-    #
+    validate_config_directory_inbox()
+    validate_config_directory_inbox_accepted()
+    validate_config_directory_inbox_rejected()
+    validate_config_ignore_duplicates()
+    validate_config_pdf2image_type()
+    validate_config_tesseract_timeout()
+    validate_config_verbose()
+
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - directory_inbox
+# -----------------------------------------------------------------------------
+def validate_config_directory_inbox() -> None:
+    """Validate the configuration parameters - directory_inbox."""
     if libs.cfg.DCR_CFG_DIRECTORY_INBOX in libs.cfg.config:
         libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX] = libs.utils.str_2_path(
             libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
@@ -339,9 +382,12 @@ def validate_config() -> None:
             "Missing configuration parameter '" + libs.cfg.DCR_CFG_DIRECTORY_INBOX + "'"
         )
 
-    # -------------------------------------------------------------------------
-    # Parameter: directory_inbox_accepted
-    #
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - directory_inbox_accepted
+# -----------------------------------------------------------------------------
+def validate_config_directory_inbox_accepted() -> None:
+    """Validate the configuration parameters - directory_inbox_accepted."""
     if libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED in libs.cfg.config:
         libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED] = libs.utils.str_2_path(
             libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
@@ -355,9 +401,12 @@ def validate_config() -> None:
             "Missing configuration parameter '" + libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED + "'"
         )
 
-    # -------------------------------------------------------------------------
-    # Parameter: directory_inbox_rejected
-    #
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - directory_inbox_rejected
+# -----------------------------------------------------------------------------
+def validate_config_directory_inbox_rejected() -> None:
+    """Validate the configuration parameters - directory_inbox_rejected."""
     if libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED in libs.cfg.config:
         libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED] = libs.utils.str_2_path(
             libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
@@ -371,18 +420,24 @@ def validate_config() -> None:
             "Missing configuration parameter '" + libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED + "'"
         )
 
-    # -------------------------------------------------------------------------
-    # Parameter: ignore_duplicates
-    #
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - ignore_duplicates
+# -----------------------------------------------------------------------------
+def validate_config_ignore_duplicates() -> None:
+    """Validate the configuration parameters - ignore_duplicates."""
     libs.cfg.is_ignore_duplicates = False
 
     if libs.cfg.DCR_CFG_IGNORE_DUPLICATES in libs.cfg.config:
         if libs.cfg.config[libs.cfg.DCR_CFG_IGNORE_DUPLICATES].lower() == "true":
             libs.cfg.is_ignore_duplicates = True
 
-    # -------------------------------------------------------------------------
-    # Parameter: pdf2image_type
-    #
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - pdf2image_type
+# -----------------------------------------------------------------------------
+def validate_config_pdf2image_type() -> None:
+    """Validate the configuration parameters - pdf2image_type."""
     libs.cfg.pdf2image_type = libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
 
     if libs.cfg.DCR_CFG_PDF2IMAGE_TYPE in libs.cfg.config:
@@ -398,9 +453,23 @@ def validate_config() -> None:
                 + "'"
             )
 
-    # -------------------------------------------------------------------------
-    # Parameter: verbose
-    #
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - tesseract_timeout
+# -----------------------------------------------------------------------------
+def validate_config_tesseract_timeout() -> None:
+    """Validate the configuration parameters - tesseract_timeout."""
+    libs.cfg.tesseract_timeout = 30
+
+    if libs.cfg.DCR_CFG_TESSERACT_TIMEOUT in libs.cfg.config:
+        libs.cfg.tesseract_timeout = int(libs.cfg.config[libs.cfg.DCR_CFG_TESSERACT_TIMEOUT])
+
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - verbose
+# -----------------------------------------------------------------------------
+def validate_config_verbose() -> None:
+    """Validate the configuration parameters - verbose."""
     libs.cfg.is_verbose = True
 
     if libs.cfg.DCR_CFG_VERBOSE in libs.cfg.config:

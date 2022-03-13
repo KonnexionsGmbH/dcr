@@ -33,7 +33,7 @@ def convert_pdf_2_image() -> None:
     else:
         libs.cfg.document_child_file_type = libs.db.cfg.DOCUMENT_FILE_TYPE_JPG
 
-    libs.cfg.total_generated = 0
+    libs.utils.reset_statistics()
 
     dbt = libs.utils.select_document_prepare()
 
@@ -46,27 +46,7 @@ def convert_pdf_2_image() -> None:
 
         conn.close()
 
-    libs.utils.progress_msg(
-        f"Number documents to be processed:  {libs.cfg.total_to_be_processed:6d}"
-    )
-
-    if libs.cfg.total_to_be_processed > 0:
-        libs.utils.progress_msg(
-            f"Number status pdf2image_ready:     {libs.cfg.total_status_ready:6d}"
-        )
-        libs.utils.progress_msg(
-            f"Number status pdf2image_error:     {libs.cfg.total_status_error:6d}"
-        )
-        libs.utils.progress_msg(
-            f"Number documents converted:        {libs.cfg.total_ok_processed:6d}"
-        )
-        libs.utils.progress_msg(f"Number documents generated:        {libs.cfg.total_generated:6d}")
-        libs.utils.progress_msg(f"Number documents erroneous:        {libs.cfg.total_erroneous:6d}")
-        libs.utils.progress_msg(
-            "The involved 'pdf' documents in the file directory "
-            + "'inbox_accepted' are converted to an image format "
-            + "for further processing",
-        )
+    libs.utils.show_statistics()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -85,7 +65,7 @@ def convert_pdf_2_image_file() -> None:
         # Convert the 'pdf' document
         images = pdf2image.convert_from_path(file_name_parent)
 
-        prepare_document_child_pdf2image()
+        libs.utils.prepare_document_4_tesseract()
 
         # Store the image pages
         for img in images:
@@ -144,22 +124,3 @@ def convert_pdf_2_image_file() -> None:
                 ).replace("{error_msg}", str(err)),
             ),
         )
-
-
-# -----------------------------------------------------------------------------
-# Prepare the base child document data - pdf2image.
-# -----------------------------------------------------------------------------
-def prepare_document_child_pdf2image() -> None:
-    """Prepare the base child document data - pdf2image."""
-    libs.cfg.document_child_child_no = 0
-    libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
-    libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
-    libs.cfg.document_child_error_code = None
-
-    libs.cfg.document_child_file_type = libs.cfg.pdf2image_type
-
-    libs.cfg.document_child_id_base = libs.cfg.document_id_base
-    libs.cfg.document_child_id_parent = libs.cfg.document_id
-
-    libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT
-    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START

@@ -3,7 +3,7 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.5)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.7.0)
 
 ----
 
@@ -70,8 +70,8 @@ Document files with the following file extensions are moved to the file director
 - **`jp2`**
 - **`jpeg`**
 - **`jpg`**
-- **`pmn`**
 - **`png`**
+- **`pnm`**
 - **`tiff`**
 - **`webp`**
 
@@ -106,6 +106,7 @@ In this case, only the functionality of the **`grep`**, **`make`**  and **`sed`*
 To convert the non-PDF documents (see 2.1.2) into pdf files for PDFlib TET processing, 
 the universal document converter [Pandoc](https://pandoc.org){:target="_blank"} 
 and [TeX Live](https://www.tug.org/texlive){:target="_blank"} are used and must therefore also be installed.
+The installation of the TeX Live Frontend is not required.
 
 ### 3.3 Poppler
 
@@ -114,6 +115,10 @@ To convert the scanned PDF documents into image files for Tesseract OCR, the ren
 ### 3.4 Python
 
 Because of the use of the new typing features, **`Python`** version [3.10](https://docs.python.org/3/whatsnew/3.10.html){:target="_blank"} or higher is required.
+
+### 3.5 Tesseract OCR
+
+To convert image documents into 'pdf' files, **`Tesseract OCR`** version [5.10](https://github.com/tesseract-ocr/tesseract){:target="_blank"} or higher is required.
 
 ## 4. Installation
 
@@ -153,7 +158,7 @@ The customisable entries are:
       db_schema = dcr_schema
       db_user = dcr_user
       db_user_admin = dcr_user_admin
-      dcr_version = 0.6.5
+      dcr_version = 0.7.0
       directory_inbox = data/inbox
       directory_inbox_accepted = data/inbox_accepted
       directory_inbox_rejected = data/inbox_rejected
@@ -174,7 +179,7 @@ The customisable entries are:
 | db_schema                | **`dcr_schema`**             | database schema name                                                          |
 | db_user                  | **`postgresql`**             | DCR database user name                                                        |
 | db_user_admin            | **`postgresql`**             | administrative database user name                                             |
-| dcr_version              | **`0.6.5`**                  | current version number of the DCR application                                 |
+| dcr_version              | **`0.7.0`**                  | current version number of the DCR application                                 |
 | directory_inbox          | **`data/inbox`**             | directory for the new documents received                                      |
 | directory_inbox_accepted | **`data/inbox_accepted`**    | directory for the accepted documents                                          |
 | directory_inbox_rejected | **`data/inbox_rejected`**    | directory for the rejected documents                                          |
