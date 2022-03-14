@@ -44,50 +44,7 @@ jobs:
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
-      - name: Supplement necessary system software - 1. Step
-        run: |
-            sudo apt-get update  -y
-            sudo apt-get install -y software-properties-common  
-            sudo apt-get update  -y
-      - name: Supplement necessary system software - 2.1 Step
-        run: |
-            sudo apt-get install -y ca-certificates
-      - name: Supplement necessary system software - 2.2 Step
-        run: |
-            sudo apt-get install -y gnupg
-      - name: Supplement necessary system software - 2.3 Step
-        run: |
-            sudo apt-get install -y poppler-utils
-      - name: Supplement necessary system software - 2.4 Step
-        run: |
-            sudo apt-get install -y texlive-full
-      - name: Supplement necessary system software - 2.5 Step
-        run: |
-            sudo apt-get install -y wget
-      - name: Supplement necessary system software - 3. Step
-        run: |
-            sudo apt-get install -y libgif-dev
-      - name: Supplement necessary system software - 4. Step
-        run: |
-            sudo apt-get install -y libjpeg-dev \
-                                    libjpeg-turbo8
-      - name: Supplement necessary system software - 5. Step
-        run: |
-            sudo apt-get install -y libopenjp2-7
-      - name: Supplement necessary system software - 6. Step
-        run: |
-            sudo apt-get install -y libpng-dev
-      - name: Supplement necessary system software - 7. Step
-        run: |
-            sudo apt-get install -y libtiff-dev
-      - name: Supplement necessary system software - 8. Step
-        run: |
-            sudo apt-get install -y libwebp-dev
-      - name: Supplement necessary system software - 9. Step
-        run: |
-            sudo apt-get install -y libz-dev
-            sudo apt-get update  -y
-      - name: Supplement necessary system software including Poppler & TeX Live
+      - name: Install Step 1 - Supplement necessary system software
         run: |
             sudo apt-get update  -y
             sudo apt-get install -y software-properties-common  
@@ -102,20 +59,23 @@ jobs:
                                     libtiff-dev \
                                     libwebp-dev \
                                     libz-dev \
-                                    poppler-utils \
-                                    texlive-full \
                                     wget
-            sudo apt-get update  -y
-      - name: Install Pandoc
+      - name: Install Step 2 - Pandoc
         run: |
             wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
             sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
-      - name: Install Tesseract
+      - name: Install Step 3 - Poppler
+        run: |
+            sudo apt-get install -y poppler-utils
+      - name: Install Step 4 - Tesseract
         run: |
             sudo apt-get install -y apt-transport-https
             echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
             wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
             sudo apt-get update  -y
             sudo apt-get install -y tesseract-ocr
+      - name: Install Step 5 - TeX Live
+        run: |
+            sudo apt-get install -y texlive-full
       - name: Publish the code coverage to coveralls.io
         run: make coveralls
