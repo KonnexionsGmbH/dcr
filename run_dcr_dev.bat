@@ -95,7 +95,8 @@ echo.
             rd /s /q data\inbox
         )
         mkdir data\inbox
-        xcopy /E /I tests\inbox data\inbox
+        xcopy /E /I /Q tests\inbox data\inbox
+        dir data\inbox
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
@@ -119,7 +120,8 @@ echo.
             rd /s /q data\inbox
         )
         mkdir data\inbox
-        xcopy /E /I tests\inbox data\inbox
+        xcopy /E /I /Q tests\inbox data\inbox
+        dir data\inbox
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"]   (

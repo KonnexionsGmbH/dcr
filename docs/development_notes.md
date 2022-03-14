@@ -226,31 +226,34 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 ## 9. Version Planning
 
-| Version   | Feature(s)                           |
-|-----------|--------------------------------------|
-| ~~0.5.0~~ | ~~Inbox processing~~                 |
-| ~~0.6.0~~ | ~~pdf for Tesseract OCR processing~~ |
-| ~~0.6.5~~ | ~~Pandoc processing~~                |
-| 0.7.0     | Tesseract OCR processing             |
-| 0.8.0     | PDFlib TET processing                |
-| 0.9.0     | Parser                               |
+| Version    | Feature(s)                           |
+|------------|--------------------------------------|
+| ~~0.5.0~~  | ~~Inbox processing~~                 |
+| ~~0.6.0~~  | ~~pdf for Tesseract OCR processing~~ |
+| ~~0.6.5~~  | ~~Pandoc processing~~                |
+| ~~0.7.0~~  | ~~Tesseract OCR processing~~         |
+| 0.8.0      | PDFlib TET processing                |
+| 0.9.0      | Parser                               |
 
 ## 10. Next Development Steps
 
 **1<sup>st</sup> Priority:**
 
-- ~~convert the appropriate documents into the `pdf` format with Pandoc and TeX Live~~
-- test cases for file duplicate
+- API documentation: Content improvement
+- PDFlib TET processing
 - tools.py - verify the content of the inbox directories
 - ~~API Documentation~~
+- ~~convert the appropriate documents into the `pdf` format with Pandoc and TeX Live~~
 - ~~duplicate handling~~ 
 - ~~error handling - highly defensive~~
 - ~~inbox.py - process_inbox() - processing ocr & non-ocr in the same method~~
+- ~~test cases for file duplicate~~
 
 **2<sup>nd</sup> Priority:** 
 
-- Layout improvement API documentation
-- Tesseract OCR - Installation  
+- API documentation: Layout improvement
+- Google Styleguide implementation
+- ~~Tesseract OCR - Installation~~  
 
 **3<sup>rd</sup> Priority**
 

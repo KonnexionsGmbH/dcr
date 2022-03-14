@@ -79,6 +79,7 @@ case "${DCR_CHOICE_ACTION}" in
     rm -rf data/inbox
     mkdir data/inbox
     cp -r tests/inbox/* data/inbox
+    ls -ll data/inbox
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)

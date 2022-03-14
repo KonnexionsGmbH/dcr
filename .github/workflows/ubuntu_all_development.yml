@@ -39,34 +39,34 @@ jobs:
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
-      - name: Supplement necessary system software including Poppler & TeX Live
+      - name: Install Step 1 - Necessary system software (incl. Poppler & TeX Live)
         run: |
-            sudo apt-get update -qy
-            sudo apt-get upgrade -qy
-            sudo apt-get install -qy ca-certificates \ 
-                                     gnupg \
-                                     libgif-dev \
-                                     libjpeg-dev \
-                                     libjpeg-turbo8 \
-                                     libopenjp2-7 \
-                                     libpng-dev \
-                                     libtiff-dev \
-                                     libwebp-dev \
-                                     libz-dev \
-                                     poppler-utils \
-                                     software-properties-common \
-                                     texlive-full \
-                                     wget
-      - name: Install Pandoc
+            sudo apt-get update  -y
+            sudo apt-get install -y software-properties-common  
+            sudo apt-get update  -y
+            sudo apt-get install -y ca-certificates
+            sudo apt-get install -y gnupg
+            sudo apt-get install -y libgif-dev
+            sudo apt-get install -y libjpeg-dev
+            sudo apt-get install -y libjpeg-turbo8
+            sudo apt-get install -y libopenjp2-7
+            sudo apt-get install -y libpng-dev
+            sudo apt-get install -y libtiff-dev
+            sudo apt-get install -y libwebp-dev
+            sudo apt-get install -y libz-dev
+            sudo apt-get install -y poppler-utils
+            sudo apt-get install -y texlive-full
+            sudo apt-get install -y wget
+      - name: Install Step 2 - Pandoc
         run: |
             wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
             sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
-      - name: Install Tesseract
+      - name: Install Step 3 - Tesseract OCR
         run: |
-            sudo apt-get install -qy apt-transport-https
+            sudo apt-get install -y apt-transport-https
             echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
             wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
-            sudo apt-get update -qy
-            sudo apt-get install -qy tesseract-ocr
+            sudo apt-get update  -y
+            sudo apt-get install -y tesseract-ocr
       - name: Run pytest for writing better program
         run: make pytest

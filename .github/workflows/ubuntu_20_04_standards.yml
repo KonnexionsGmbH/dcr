@@ -44,14 +44,12 @@ jobs:
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
-      - name: Install Step 1.1 - Necessary system software 1/2
+      - name: Install Step 1 - Necessary system software (incl. Poppler & TeX Live)
         run: |
             sudo apt-get update  -y
             sudo apt-get install -y software-properties-common  
             sudo apt-get update  -y
-      - name: Install Step 1.2 - Necessary system software 2/2
-        run: |
-            sudo apt-get install -y ca-certificates
+            sudo apt-get install -y xxx
             sudo apt-get install -y gnupg
             sudo apt-get install -y libgif-dev
             sudo apt-get install -y libjpeg-dev
@@ -61,23 +59,19 @@ jobs:
             sudo apt-get install -y libtiff-dev
             sudo apt-get install -y libwebp-dev
             sudo apt-get install -y libz-dev
+            sudo apt-get install -y poppler-utils
+            sudo apt-get install -y texlive-full
             sudo apt-get install -y wget
       - name: Install Step 2 - Pandoc
         run: |
             wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
             sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
-      - name: Install Step 3 - Poppler
-        run: |
-            sudo apt-get install -y poppler-utils
-      - name: Install Step 4 - Tesseract OCR
+      - name: Install Step 3 - Tesseract OCR
         run: |
             sudo apt-get install -y apt-transport-https
             echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
             wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
             sudo apt-get update  -y
             sudo apt-get install -y tesseract-ocr
-      - name: Install Step 5 - TeX Live
-        run: |
-            sudo apt-get install -y texlive-full
       - name: Publish the code coverage to coveralls.io
         run: make coveralls

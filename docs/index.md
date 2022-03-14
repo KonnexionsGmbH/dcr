@@ -10,9 +10,13 @@
 ## 1. Introduction
 
 Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](research_notes.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
-Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
-Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to PDF format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. 
-This process applies to all image format files e.g. jpeg, tiff etc., as well as scanned images in PDF format.  
+
+The processing logic is as follows:
+
+- New documents are made available in the file directory **ìnbox`**.
+- Documents in a file format accepted by DCR are registered and moved to the file directory **`ìnbox_accepted`**. All other documents are registered and moved to the file directory **`ìnbox_rejected`**.
+- Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
+- Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to PDF format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. jpeg, tiff etc., as well as scanned images in PDF format.  
 
 ### 1.1 Rahman & Finin Paper
 
@@ -69,7 +73,6 @@ Document files with the following file extensions are moved to the file director
 - **`gif`**
 - **`jp2`**
 - **`jpeg`**
-- **`jpg`**
 - **`png`**
 - **`pnm`**
 - **`tiff`**
@@ -90,6 +93,13 @@ The processing of the original document (parent document) is then completed and 
 
 In this processing step, the document types listed in section 2.1.2 are converted to pdf format 
 using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created pdf file (child document).
+In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
+
+### 2.4 Convert appropriate image documents to pdf files (step: **`ocr`**)
+
+In this processing step, the document types listed in section 2.1.3 are converted to pdf format 
+using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created pdf file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
@@ -132,7 +142,7 @@ To convert image documents into 'pdf' files, **`Tesseract OCR`** version [5.10](
 
     **`make pipenv-prod`**
 
-4. Create a PostgreSQL database container with the script **`scripts/run_setup_postgresql`**.
+4. Create a PostgreSQL database container with the script **`scripts/run_setup_postgresql`** and action **`prod`**.
 
 5. Create the **`DCR`** database with the script **`run_dcr_prod`** and action **`db_c`**.
 
@@ -164,6 +174,7 @@ The customisable entries are:
       directory_inbox_rejected = data/inbox_rejected
       ignore_duplicates = false
       pdf2image_type = jpeg
+      tesseract_timeout = 10
       verbose = true
 
 | Parameter                | Default value                | Description                                                                   |
@@ -185,6 +196,7 @@ The customisable entries are:
 | directory_inbox_rejected | **`data/inbox_rejected`**    | directory for the rejected documents                                          |
 | ignore_duplicates        | **`false`**                  | accept presumably duplicated documents <br/>based on a SHA256 hash key        |
 | pdfimage_type            | **`jpeg`**                   | format of the image files for the scanned <br/>`pdf` document: `jpeg`or `pdf` |
+| tesseract_timeout        | **`10`**                     | terminate the tesseract job after a period of time (seconds)                  |
 | verbose                  | **`true`**                   | display progress messages for processing                                      |
 
 The configuration parameters can be set differently for the individual environments (`dev`, `prod` and `test`).
@@ -219,5 +231,6 @@ The following actions are available:
 | **`m_d`**   | Run the installation of the necessary 3rd party packages <br/>for development and run the development ecosystem.   |
 | **`m_p`**   | Run the installation of the necessary 3rd party packages <br/>for production and compile all packages and modules. |
 | **`n_2_p`** | Convert appropriate non-pdf documents to pdf files.                                                                |
+| **`ocr`**   | Convert appropriate image documents to pdf files.                                                                  |
 | **`p_i`**   | Process the inbox directory.                                                                                       |
 | **`p_2_i`** | Convert pdf documents to image files.                                                                              |
