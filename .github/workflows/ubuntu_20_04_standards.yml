@@ -51,17 +51,17 @@ jobs:
             sudo apt-get update  -y
       - name: Install Step 1.2 - Necessary system software 2/2
         run: |
-            sudo apt-get install -y ca-certificates \ 
-                                    gnupg \
-                                    libgif-dev \
-                                    libjpeg-dev \
-                                    libjpeg-turbo8 \
-                                    libopenjp2-7 \
-                                    libpng-dev \
-                                    libtiff-dev \
-                                    libwebp-dev \
-                                    libz-dev \
-                                    wget
+            sudo apt-get install -y ca-certificates
+            sudo apt-get install -y gnupg
+            sudo apt-get install -y libgif-dev
+            sudo apt-get install -y libjpeg-dev
+            sudo apt-get install -y libjpeg-turbo8
+            sudo apt-get install -y libopenjp2-7
+            sudo apt-get install -y libpng-dev
+            sudo apt-get install -y libtiff-dev
+            sudo apt-get install -y libwebp-dev
+            sudo apt-get install -y libz-dev
+            sudo apt-get install -y wget
       - name: Install Step 2 - Pandoc
         run: |
             wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb

@@ -171,32 +171,35 @@ The GitHub Actions are used to enforce the following good practices of the softw
 - execution of the software testing framework, and
 - creation of up-to-date user documentation.
 
-The branch **`Development Standards`** in the GitHub Actions guarantees compliance with the required standards, the branch **`Production`** ensures error-free compilation for production use and the branch **`Test Framework`** runs the tests against various operating system and **`Python`** versions.
-The branches **`Production`** and **`Test Framework`** must be able to run error-free on operating systems **`Ubuntu 18.04`**, **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`2022`** and with **`Python`** version **`3.10`**, the branch **`Development Standards`** is only required error-free for the latest versions of **`Ubuntu`** and **`Python`**.
+The action **`ubuntu_20_04_standards`** in the GitHub Actions guarantees compliance with the required standards, the action **`ubuntu_all_production`** ensures error-free compilation for production use and the action **`ubuntu_all_development`** runs the tests against various operating system and **`Python`** versions.
+The actions **`ubuntu_all_development`** and **`ubuntu_all_production`** must be able to run error-free on operating systems **`Ubuntu 18.04`** and **`Ubuntu 20.04`**~~, **`Micrsoft Windows Server 2019`** and **`2022`**~~ and with **`Python`** version **`3.10`**, the action **`ubuntu_20_04_standards`** is only required error-free for the latest versions of **`Ubuntu`** and **`Python`**.
 
 The individual steps to be carried out 
 
-1. in the branch **`standards`** are:
+1. in the action **`ubuntu_20_04_standards`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
-    1. install the development specific packages with **`pipenv`**
-    1. compile the **`Python`** code
-    1. format the code with isort, Black and docformatter
-    1. lint the code with Bandit, Flake8, Mypy and Pylint
-    1. check the API docs with pydocstyle
-    1. create and upload the user docs with Pydoc-Markdown and Mkdocs
-    1. publish the code coverage results to **`coveralls.io`**
+    2. install the development specific packages with **`pipenv`**
+    3. compile the **`Python`** code
+    4. format the code with isort, Black and docformatter
+    5. lint the code with Bandit, Flake8, Mypy and Pylint
+    6. check the API docs with pydocstyle
+    7. create and upload the user docs with Pydoc-Markdown and Mkdocs
+    8. install Pandoc, Poppler, Tesseract OCR and TeX Live
+    9. publish the code coverage results to **`coveralls.io`**
 
-1. in the branch **`development`** are:
+1. in the action **`ubuntu_all_development`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
-    1. install the `**development**` specific packages with **`pipenv`**
-    1. compile the **`Python`** code
-    1. run pytest for writing better program
+    2. install the `**development**` specific packages with **`pipenv`**
+    3. compile the **`Python`** code
+    4. install Pandoc, Poppler, Tesseract OCR and TeX Live
+    5. run pytest for writing better program
 
-1. in the branch **`production`** are:
+1. in the action **`ubuntu_all_productionubuntu_all_production`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
-    1. install the `**production**` specific packages with **`pipenv`**
-    1. compile the **`Python`** code
-    1. run pytest for writing better program
+    2. install the `**production**` specific packages with **`pipenv`**
+    3. compile the **`Python`** code
+    4. install Pandoc, Poppler, Tesseract OCR and TeX Live
+    5. run pytest for writing better program
 
 ## 8. Development Environment
 
