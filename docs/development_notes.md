@@ -13,7 +13,7 @@
 Ubuntu is used here via the **`VM Workstation Player 16`**.
 **`Ubuntu`** can also be used in conjunction with the **`Windows Subsystem for Linux (WSL2)`**.
 
-The GitHub actions for continuous integration run on **`Ubuntu 18.04`**, **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`Micrsoft Windows Server 2022`**.
+The GitHub actions for continuous integration run on **`Ubuntu 18.04`** and **`Ubuntu 20.04`**~~, **`Micrsoft Windows Server 2019`** and **`Micrsoft Windows Server 2022`**~~.
 
 Version **`3.10`** is used for the **`Python`** programming language.
 
@@ -76,7 +76,7 @@ The creation of API documentation for functions, modules and packages is mandato
 **`pydocstyle`** is a static analysis tool for checking compliance with **`Python`** **`Docstring`** conventions.
 **`pydocstyle`** can be executed individually with **`make pydocstyle`** and is also included in both calls **`make docs`** and  **`make dev`**.
 
-The **`Docstring`** format used in **`DCR`** is that of type Google. 
+The **`Docstring`** format used in **`DCR`** is that of [type Google](https://github.com/google/styleguide/blob/gh-pages/pyguide.md#383-functions-and-methods){:target="_blank"}. 
 For Visual Studio Code, the extension [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring){:target="_blank"} can be used when creating API documentation.  
 With the [Pydoc-Markdown](https://github.com/NiklasRosenstein/pydoc-markdown){:target="_blank"} tool, the API documentation is extracted from the source files and put into Markdown format. 
 In this format, the API documentation can then be integrated into the user documentation.
