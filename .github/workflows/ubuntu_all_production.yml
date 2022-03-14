@@ -39,7 +39,7 @@ jobs:
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
-      - name: Install Pandoc, Poppler, Tesseract OCR & TeX Live
+      - name: Supplement necessary system software including Poppler & TeX Live
         run: |
             sudo apt-get update -qy
             sudo apt-get upgrade -qy
@@ -57,13 +57,16 @@ jobs:
                                      software-properties-common \
                                      texlive-full \
                                      wget
+      - name: Install Pandoc
+        run: |
             wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
             sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
+      - name: Install Tesseract
+        run: |
             sudo apt-get install -qy apt-transport-https
             echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
             wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
             sudo apt-get update -qy
             sudo apt-get install -qy tesseract-ocr
-            sudo apt-get install -qy tesseract-ocr-deu
       - name: Run pytest for writing better program
         run: make pytest-ci
