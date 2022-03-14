@@ -46,22 +46,21 @@ jobs:
             ./scripts/run_setup_postgresql.sh test
       - name: Supplement necessary system software including Poppler & TeX Live
         run: |
-            sudo apt-get update -qy
-            sudo apt-get upgrade -qy
-            sudo apt-get install -qy ca-certificates \ 
-                                     gnupg \
-                                     libgif-dev \
-                                     libjpeg-dev \
-                                     libjpeg-turbo8 \
-                                     libopenjp2-7 \
-                                     libpng-dev \
-                                     libtiff-dev \
-                                     libwebp-dev \
-                                     libz-dev \
-                                     poppler-utils \
-                                     software-properties-common \
-                                     texlive-full \
-                                     wget
+            sudo apt-get update
+            sudo apt-get install ca-certificates \ 
+                                 gnupg \
+                                 libgif-dev \
+                                 libjpeg-dev \
+                                 libjpeg-turbo8 \
+                                 libopenjp2-7 \
+                                 libpng-dev \
+                                 libtiff-dev \
+                                 libwebp-dev \
+                                 libz-dev \
+                                 poppler-utils \
+                                 software-properties-common \
+                                 texlive-full \
+                                 wget
       - name: Install Pandoc
         run: |
             wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
@@ -71,7 +70,7 @@ jobs:
             sudo apt-get install -qy apt-transport-https
             echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
             wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
-            sudo apt-get update -qy
-            sudo apt-get install -qy tesseract-ocr
+            sudo apt-get update
+            sudo apt-get install tesseract-ocr
       - name: Publish the code coverage to coveralls.io
         run: make coveralls
