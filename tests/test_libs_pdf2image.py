@@ -83,6 +83,9 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
         file_ext_1, file_ext_2, stem_name_1, stem_name_2
     )
 
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PDF_2_IMAGE - normal - png.

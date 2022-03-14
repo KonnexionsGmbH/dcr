@@ -325,9 +325,7 @@ def test_main_all(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -338,9 +336,7 @@ def test_main_db_c(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -351,9 +347,7 @@ def test_main_p_i(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -364,9 +358,7 @@ def test_main_p_2_i(fxtr_mkdir, fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -377,9 +369,7 @@ def test_main_db_u(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

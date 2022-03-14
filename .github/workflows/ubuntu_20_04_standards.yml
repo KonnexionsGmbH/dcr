@@ -1,0 +1,74 @@
+name: Ubuntu - 20.04 - Standards
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  VERSION_PANDOC: 2.17.1.1
+
+jobs:
+  ubuntu_20_04_standards:
+    # --------------------------------------------------------------------------
+    # Perform all development-specific tools, including formatting, static code
+    # analysis, style enforcement and documentation creation. Changes in the code
+    # or in the documentation are also replicated in the repository.
+    # --------------------------------------------------------------------------
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development Standards
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 1
+      matrix:
+        os: ["ubuntu-20.04"]
+        python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1  # no history, just HEAD
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dcr dependencies
+        run: make pipenv-dev
+      - name: Run the formatting tools
+        run: make format
+      - name: Run the Lint software tools
+        run: make lint
+      - name: Create the documentation and upload it
+        run: make docs
+      - name: Create a PostgreSQL container
+        run: |
+            chmod +x ./scripts/run_setup_postgresql.sh
+            ./scripts/run_setup_postgresql.sh test
+      - name: Install Pandoc, Poppler, Tesseract OCR & TeX Live
+        run: |
+            sudo apt-get update -qy
+            sudo apt-get upgrade -qy
+            sudo apt-get install -qy ca-certificates \ 
+                                     gnupg \
+                                     libgif-dev \
+                                     libjpeg-dev \
+                                     libjpeg-turbo8 \
+                                     libopenjp2-7 \
+                                     libpng-dev \
+                                     libtiff-dev \
+                                     libwebp-dev \
+                                     libz-dev \
+                                     poppler-utils \
+                                     software-properties-common \
+                                     texlive-full \
+                                     wget
+            wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
+            sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
+            sudo apt-get install -qy apt-transport-https
+            echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
+            wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
+            sudo apt-get update -qy
+            sudo apt-get install -qy tesseract-ocr
+            sudo apt-get install -qy tesseract-ocr-deu
+      - name: Publish the code coverage to coveralls.io
+        run: make coveralls

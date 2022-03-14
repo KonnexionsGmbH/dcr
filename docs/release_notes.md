@@ -9,25 +9,26 @@
 
 ## 1. Version 0.7.0
 
-Release Date: dd.mm.2022
+Release Date: 14.03.2022
 
 ### 1.1 New Features
 
-- processing step **`n_2_p`**: Convert appropriate non-pdf documents to pdf files.
+- processing step **`ocr`**: Convert appropriate image documents to pdf files.
 
 ### 1.2 Applied Software
 
-| Software                                                     | Version                | Remark                              | Status |
-|:-------------------------------------------------------------|:-----------------------|:------------------------------------|--------|
-| DBeaver                                                      | 22.0.0                 | for virtual machine only [optional] |        |
-| Docker Desktop                                               | 20.10.12               | base version [Docker Image & VM]    |        | 
-| Git                                                          | 2.25.1                 | base version                        |        |
-| [Pandoc](https://pandoc.org){:target="_blank"}               | 2.17.1.1               |                                     |        |
-| [Poppler](https://poppler.freedesktop.org){:target="_blank"} | 0.86.1                 | base version                        |        |
-| Python3                                                      | 3.10.2                 |                                     |        |
-| Python3 - pip                                                | 22.0.4                 |                                     |        |
-| [TeX Live](https://www.tug.org/texlive){:target="_blank"}    | 2019                   | base version                        |        |
-| TeX Live - pdfTeX                                            | 3.14159265-2.6-1.40.20 | base version                        |        |
+| Software                                                                       | Version                | Remark                              | Status  |
+|:-------------------------------------------------------------------------------|:-----------------------|:------------------------------------|---------|
+| DBeaver                                                                        | 22.0.0                 | for virtual machine only [optional] |         |
+| Docker Desktop                                                                 | 20.10.13               | base version [Docker Image & VM]    | upgrade | 
+| Git                                                                            | 2.25.1                 | base version                        |         |
+| [Pandoc](https://pandoc.org){:target="_blank"}                                 | 2.17.1.1               |                                     |         |
+| [Poppler](https://poppler.freedesktop.org){:target="_blank"}                   | 0.86.1                 | base version                        |         |
+| Python3                                                                        | 3.10.2                 |                                     |         |
+| Python3 - pip                                                                  | 22.0.4                 |                                     |         |
+| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}  | 5.10.0                 | base version                        | new     |
+| [TeX Live](https://www.tug.org/texlive){:target="_blank"}                      | 2019                   | base version                        |         |
+| TeX Live - pdfTeX                                                              | 3.14159265-2.6-1.40.20 | base version                        |         |
 
 #### 1.2.1 Unix-specific Software
 
@@ -64,6 +65,8 @@ Release Date: dd.mm.2022
 1. Microsoft Windows Server 2019: (see [here](#issues_windows_2019){:target="_blank"}) 
 
 2. Pydoc-Markdown: (see [here](#issues_pydoc_markdown){:target="_blank"})
+
+3. Tesseract OCR: (see [here](#issues_tesseract_ocr){:target="_blank"})
 
 ----
 
@@ -129,4 +132,18 @@ Release Date: dd.mm.2022
       File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\codecs.py", line 319, in decode
         def decode(self, input, final=False):
     KeyboardInterrupt
+```
+
+### <a name="issues_tesseract_ocr"></a> 2.3 Tesseract OCR
+
+- Issue: Images of type 'bmp': Error in pixReadMemBmp: cannot read compressed BMP files ...
+
+```
+Issue (ocr): Converting the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_01_ok_1.bmp' to the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_01_ok_1.pdf' with Tesseract OCR failed - error status: '1' - error: 'Error in pixReadMemBmp: cannot read compressed BMP files Error in pixReadStream: bmp: no pix returned Error in pixRead: pix not read Error during processing.'.
+```
+
+- Issue: Images of type 'jp2': Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 ...
+
+```
+Issue (ocr): Converting the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_03_ok_5.jp2' to the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_03_ok_5.pdf' with Tesseract OCR failed - error status: '1' - error: 'Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 Error in pixReadStream: jp2: no pix returned Error in pixRead: pix not read Error during processing.'.
 ```

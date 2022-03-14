@@ -16,12 +16,10 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_IMAGE_2_PDF - normal.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_IMAGE_2_PDF - normal."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    # -------------------------------------------------------------------------
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_from_pytest_2_dir(
         [
@@ -38,7 +36,9 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
     # -------------------------------------------------------------------------
     no_files_expected = (0, 14, 0)
@@ -171,7 +171,11 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "1"
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, value_original

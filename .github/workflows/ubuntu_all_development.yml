@@ -1,0 +1,69 @@
+name: Ubuntu - All - Development
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  VERSION_PANDOC: 2.17.1.1
+
+jobs:
+  ubuntu_all_development:
+    # --------------------------------------------------------------------------
+    # Install the development environment and run all tests based on pytest.
+    # --------------------------------------------------------------------------
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Test Framework
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 4
+      matrix:
+#       os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
+        os: ["ubuntu-18.04", "ubuntu-20.04"]
+        python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1  # no history, just HEAD
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dcr dependencies
+        run: make pipenv-dev
+      - name: Compile the Python code
+        run: make compileall
+      - name: Create a PostgreSQL container
+        run: |
+            chmod +x ./scripts/run_setup_postgresql.sh
+            ./scripts/run_setup_postgresql.sh test
+      - name: Install Pandoc, Poppler, Tesseract OCR & TeX Live
+        run: |
+            sudo apt-get update -qy
+            sudo apt-get upgrade -qy
+            sudo apt-get install -qy ca-certificates \ 
+                                     gnupg \
+                                     libgif-dev \
+                                     libjpeg-dev \
+                                     libjpeg-turbo8 \
+                                     libopenjp2-7 \
+                                     libpng-dev \
+                                     libtiff-dev \
+                                     libwebp-dev \
+                                     libz-dev \
+                                     poppler-utils \
+                                     software-properties-common \
+                                     texlive-full \
+                                     wget
+            wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
+            sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
+            sudo apt-get install -qy apt-transport-https
+            echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
+            wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
+            sudo apt-get update -qy
+            sudo apt-get install -qy tesseract-ocr
+            sudo apt-get install -qy tesseract-ocr-deu
+      - name: Run pytest for writing better program
+        run: make pytest

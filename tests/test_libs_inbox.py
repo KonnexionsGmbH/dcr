@@ -16,10 +16,10 @@ import dcr
 
 
 # -----------------------------------------------------------------------------
-# Test RUN_ACTION_ALL_COMPLETE - normal.
+# Test RUN_ACTION_PROCESS_INBOX - normal.
 # -----------------------------------------------------------------------------
-def test_run_action_all_normal(fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_ALL_COMPLETE - normal."""
+def test_run_action_process_inbox_normal(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PROCESS_INBOX - normal."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -29,7 +29,11 @@ def test_run_action_all_normal(fxtr_setup_empty_db_and_inbox):
     pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
 
     # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
     # -------------------------------------------------------------------------
     child_no: int = 1
@@ -58,6 +62,9 @@ def test_run_action_all_normal(fxtr_setup_empty_db_and_inbox):
         [file_1, file_2, file_3],
         no_files_expected,
     )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -171,7 +178,7 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     # -------------------------------------------------------------------------
     no_files_expected = (1, 1, 0)
@@ -197,6 +204,9 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
         files_to_be_checked,
         no_files_expected,
     )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -358,7 +368,7 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     # -------------------------------------------------------------------------
     no_files_expected = (1, 0, 1)
@@ -384,3 +394,6 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
         files_to_be_checked,
         no_files_expected,
     )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
