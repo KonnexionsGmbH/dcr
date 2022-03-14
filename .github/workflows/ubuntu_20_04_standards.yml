@@ -49,13 +49,21 @@ jobs:
             sudo apt-get update  -y
             sudo apt-get install -y software-properties-common  
             sudo apt-get update  -y
-      - name: Supplement necessary system software - 2. Step
+      - name: Supplement necessary system software - 2.1 Step
         run: |
-            sudo apt-get install -y ca-certificates \ 
-                                    gnupg \
-                                    poppler-utils \
-                                    texlive-full \
-                                    wget
+            sudo apt-get install -y ca-certificates
+      - name: Supplement necessary system software - 2.2 Step
+        run: |
+            sudo apt-get install -y gnupg
+      - name: Supplement necessary system software - 2.3 Step
+        run: |
+            sudo apt-get install -y poppler-utils
+      - name: Supplement necessary system software - 2.4 Step
+        run: |
+            sudo apt-get install -y texlive-full
+      - name: Supplement necessary system software - 2.5 Step
+        run: |
+            sudo apt-get install -y wget
       - name: Supplement necessary system software - 3. Step
         run: |
             sudo apt-get install -y libgif-dev
