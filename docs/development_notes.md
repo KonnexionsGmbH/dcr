@@ -109,6 +109,7 @@ In this format, the API documentation can then be integrated into the user docum
         db_c  - Create the database.
         db_u  - Upgrade the database.
         n_2_p - Convert non-pdf docuents to pdf files.
+        ocr   - Convert image docuents to pdf files.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
 
@@ -118,6 +119,7 @@ In this format, the API documentation can then be integrated into the user docum
         1. p_i
         2. p_2_i
         3. n_2_p
+        4. ocr
 
     Args:
         argv (List[str]): Command line arguments.

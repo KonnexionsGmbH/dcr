@@ -44,11 +44,13 @@ jobs:
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
             ./scripts/run_setup_postgresql.sh test
-      - name: Install Step 1 - Supplement necessary system software
+      - name: Install Step 1.1 - Necessary system software 1/2
         run: |
             sudo apt-get update  -y
             sudo apt-get install -y software-properties-common  
             sudo apt-get update  -y
+      - name: Install Step 1.2 - Necessary system software 2/2
+        run: |
             sudo apt-get install -y ca-certificates \ 
                                     gnupg \
                                     libgif-dev \
@@ -67,7 +69,7 @@ jobs:
       - name: Install Step 3 - Poppler
         run: |
             sudo apt-get install -y poppler-utils
-      - name: Install Step 4 - Tesseract
+      - name: Install Step 4 - Tesseract OCR
         run: |
             sudo apt-get install -y apt-transport-https
             echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
