@@ -62,17 +62,48 @@ Release Date: 15.03.2022
 
 ### 1.3 Open issues
 
-1. Microsoft Windows Server 2019: (see [here](#issues_windows_2019){:target="_blank"}) 
+1. Del/Ins Extension for Python-Markdown: (see [here](#issues_mdx_del_ins){:target="_blank"})
 
-2. Pydoc-Markdown: (see [here](#issues_pydoc_markdown){:target="_blank"})
+2. Microsoft Windows Server 2019: (see [here](#issues_windows_2019){:target="_blank"}) 
 
-3. Tesseract OCR: (see [here](#issues_tesseract_ocr){:target="_blank"})
+3. Pydoc-Markdown: (see [here](#issues_pydoc_markdown){:target="_blank"})
+
+4. Tesseract OCR: (see [here](#issues_tesseract_ocr){:target="_blank"})
 
 ----
 
 ## 2. Detailed Open Issues
 
-### <a name="issues_windows_2019"></a> 2.1 Microsoft Windows Server 2019
+### <a name="issues_mdx_del_ins"></a> 2.1 Del/Ins Extension for Python-Markdown
+
+- Issue: The unauthenticated git protocol on port 9418 is no longer supported. [see #3](https://github.com/aleray/mdx_del_ins/issues/3)
+
+```
+    ...>pip install git+git://github.com/aleray/mdx_del_ins.git
+    Collecting git+git://github.com/aleray/mdx_del_ins.git
+      Cloning git://github.com/aleray/mdx_del_ins.git to c:\users\walte\appdata\local\temp\pip-req-build-z_lh5zkh
+      Running command git clone --filter=blob:none --quiet git://github.com/aleray/mdx_del_ins.git 'C:\Users\walte\AppData\Local\Temp\pip-req-build-z_lh5zkh'
+      fatal: remote error:
+        The unauthenticated git protocol on port 9418 is no longer supported.
+      Please see https://github.blog/2021-09-01-improving-git-protocol-security-github/ for more information.
+      error: subprocess-exited-with-error
+    
+      × git clone --filter=blob:none --quiet git://github.com/aleray/mdx_del_ins.git 'C:\Users\walte\AppData\Local\Temp\pip-req-build-z_lh5zkh' did not run successfully.
+      │ exit code: 128
+      ╰─> See above for output.
+    
+      note: This error originates from a subprocess, and is likely not a problem with pip.
+    error: subprocess-exited-with-error
+    
+    × git clone --filter=blob:none --quiet git://github.com/aleray/mdx_del_ins.git 'C:\Users\walte\AppData\Local\Temp\pip-req-build-z_lh5zkh' did not run successfully.
+    │ exit code: 128
+    ╰─> See above for output.
+    
+    note: This error originates from a subprocess, and is likely not a problem with pip.
+```
+
+
+### <a name="issues_windows_2019"></a> 2.2 Microsoft Windows Server 2019
 
 - Issue: File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\codecs.py", line 319, in decode
     def decode(self, input, final=False)
@@ -117,7 +148,7 @@ Release Date: 15.03.2022
     Aborted!
 ```
 
-### <a name="issues_pydoc_markdown"></a> 2.2 Pydoc-Markdown
+### <a name="issues_pydoc_markdown"></a> 2.3 Pydoc-Markdown
 
 - Issue: Please help me with combined Pydoc-Markdown and MKDocs (see [here](https://github.com/NiklasRosenstein/pydoc-markdown/discussions/243){:target="_blank"}).
 
@@ -134,15 +165,15 @@ Release Date: 15.03.2022
     KeyboardInterrupt
 ```
 
-### <a name="issues_tesseract_ocr"></a> 2.3 Tesseract OCR
+### <a name="issues_tesseract_ocr"></a> 2.4 Tesseract OCR
 
-- Issue: Images of type 'bmp': Error in pixReadMemBmp: cannot read compressed BMP files ... [#56](https://github.com/UB-Mannheim/tesseract/issues/56)
+- Issue: Images of type 'bmp': Error in pixReadMemBmp: cannot read compressed BMP files ... [see #56](https://github.com/UB-Mannheim/tesseract/issues/56)
 
 ```
 Issue (ocr): Converting the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_01_ok_1.bmp' to the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_01_ok_1.pdf' with Tesseract OCR failed - error status: '1' - error: 'Error in pixReadMemBmp: cannot read compressed BMP files Error in pixReadStream: bmp: no pix returned Error in pixRead: pix not read Error during processing.'.
 ```
 
-- Issue: Images of type 'jp2': Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 ... (**Windows 10 only**) [#57](https://github.com/UB-Mannheim/tesseract/issues/57)
+- Issue: Images of type 'jp2': Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 ... (**Windows 10 only**) [see #57](https://github.com/UB-Mannheim/tesseract/issues/57)
 
 ```
 Issue (ocr): Converting the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_03_ok_5.jp2' to the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_03_ok_5.pdf' with Tesseract OCR failed - error status: '1' - error: 'Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 Error in pixReadStream: jp2: no pix returned Error in pixRead: pix not read Error during processing.'.

@@ -3,7 +3,7 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.5)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.7.0)
 
 ----
 
@@ -11,11 +11,11 @@
 
 Release Date: 10.03.2022
 
-### 1 New Features
+### 1. New Features
 
 - processing step **`n_2_p`**: Convert appropriate non-pdf documents to pdf files.
 
-### 2 Applied Software
+### 2. Applied Software
 
 | Software                                                     | Version                | Remark                              | Status  |
 |:-------------------------------------------------------------|:-----------------------|:------------------------------------|---------|
