@@ -1,0 +1,72 @@
+name: Ubuntu - All - Production
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  VERSION_PANDOC: 2.17.1.1
+
+jobs:
+  ubuntu_all_production:
+    # --------------------------------------------------------------------------
+    # Install the productive environment and run all tests based on pytest.
+    # --------------------------------------------------------------------------
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production
+    runs-on: ${{ matrix.os }}
+    #   env:
+    strategy:
+      max-parallel: 4
+      matrix:
+#       os: ["ubuntu-18.04", "ubuntu-20.04", "windows-2019", "windows-2022"]
+        os: ["ubuntu-18.04", "ubuntu-20.04"]
+        python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1  # no history, just HEAD
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install prod dependencies
+        run: make pipenv-prod
+      - name: Compile the Python code
+        run: make compileall
+      - name: Create a PostgreSQL container
+        run: |
+            chmod +x ./scripts/run_setup_postgresql.sh
+            ./scripts/run_setup_postgresql.sh test
+      - name: Install Step 1 - Necessary system software (incl. Poppler & TeX Live)
+        run: |
+            sudo apt-get update  -y
+            sudo apt-get install -y software-properties-common  
+            sudo apt-get update  -y
+            sudo apt-get install -y ca-certificates
+            sudo apt-get install -y gnupg
+            sudo apt-get install -y libgif-dev
+            sudo apt-get install -y libjpeg-dev
+            sudo apt-get install -y libjpeg-turbo8
+            sudo apt-get install -y libopenjp2-7
+            sudo apt-get install -y libpng-dev
+            sudo apt-get install -y libtiff-dev
+            sudo apt-get install -y libwebp-dev
+            sudo apt-get install -y libz-dev
+            sudo apt-get install -y poppler-utils
+            sudo apt-get install -y texlive-full
+            sudo apt-get install -y wget
+      - name: Install Step 2 - Pandoc
+        run: |
+            wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
+            sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
+      - name: Install Step 3 - Tesseract OCR
+        run: |
+            sudo apt-get install -y apt-transport-https
+            echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
+            wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
+            sudo apt-get update  -y
+            sudo apt-get install -y tesseract-ocr
+      - name: Run pytest for writing better program
+        run: make pytest-ci

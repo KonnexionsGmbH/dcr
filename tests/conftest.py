@@ -102,9 +102,13 @@ def copy_files_from_pytest_2_dir(
         source_files: List[Tuple[str, str | None]]: Source file name.
         target_dir: Path: Target directory.
     """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     for source_file in source_files:
         (source_stem, source_ext) = source_file
         copy_files_from_pytest([(source_file, (target_dir, [source_stem], source_ext))])
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -143,6 +147,8 @@ def delete_config_param(config_section: str, config_param: str) -> str:
 @pytest.helpers.register
 def delete_version_version():
     """Delete all entries in the database table 'version'."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     libs.db.orm.connect_db()
 
     with libs.db.cfg.db_orm_engine.begin() as conn:
@@ -154,6 +160,8 @@ def delete_version_version():
         conn.execute(delete(version))
 
     libs.db.orm.disconnect_db()
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -304,11 +312,60 @@ def fxtr_setup_logger_environment():
 
 
 # -----------------------------------------------------------------------------
-# Help RUN_ACTION_NON_PDF_2_PDF - normal.
+# Help RUN_ACTION_ALL_COMPLETE - duplicate file.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def help_run_action_pdf_2_image_normal(file_ext, stem_name):
-    """Help RUN_ACTION_NON_PDF_2_PDF - normal."""
+def help_run_action_all_complete_duplicate_file(
+    file_ext_1: str, file_ext_2: str, stem_name_1: str, stem_name_2: str
+) -> None:
+    """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    pytest.helpers.copy_files_from_pytest_2_dir(
+        [(stem_name_1, file_ext_1)], libs.cfg.directory_inbox_accepted
+    )
+
+    os.rename(
+        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
+        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
+    )
+
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
+
+    # -------------------------------------------------------------------------
+    no_files_expected = (0, 2, 0)
+
+    file_1 = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name_1 + "_1"],
+        file_ext_1,
+    )
+    file_2 = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name_2],
+        file_ext_2,
+    )
+
+    pytest.helpers.verify_content_inboxes(
+        [
+            file_1,
+            file_2,
+        ],
+        no_files_expected,
+    )
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Help RUN_ACTION_PROCESS_INBOX - normal.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def help_run_action_process_inbox_normal(file_ext, stem_name):
+    """Help RUN_ACTION_PROCESS_INBOX - normal."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
 
     # -------------------------------------------------------------------------
@@ -333,49 +390,9 @@ def help_run_action_pdf_2_image_normal(file_ext, stem_name):
         no_files_expected,
     )
 
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
     return document_id, file_p_i
-
-
-# -----------------------------------------------------------------------------
-# Help RUN_ACTION_NON_PDF_2_PDF - normal - duplicate.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def help_run_action_pdf_2_image_normal_jpeg_duplicate(
-    file_ext_1: str, file_ext_2: str, stem_name_1: str, stem_name_2: str
-) -> None:
-    """Help RUN_ACTION_NON_PDF_2_PDF - normal - duplicate."""
-    pytest.helpers.copy_files_from_pytest_2_dir(
-        [(stem_name_1, file_ext_1)], libs.cfg.directory_inbox_accepted
-    )
-
-    os.rename(
-        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
-        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
-    )
-
-    # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
-    # -------------------------------------------------------------------------
-    no_files_expected = (0, 2, 0)
-
-    file_1 = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name_1 + "_1"],
-        file_ext_1,
-    )
-    file_2 = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name_2],
-        file_ext_2,
-    )
-
-    pytest.helpers.verify_content_inboxes(
-        [
-            file_1,
-            file_2,
-        ],
-        no_files_expected,
-    )
 
 
 # -----------------------------------------------------------------------------

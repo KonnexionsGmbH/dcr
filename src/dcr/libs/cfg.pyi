@@ -1,5 +1,6 @@
 """Library Stub."""
 import logging
+from decimal import Decimal
 from os import PathLike
 from typing import Dict
 from typing import TypeAlias
@@ -39,6 +40,7 @@ DCR_CFG_SECTION: str
 DCR_CFG_SECTION_DEV: str
 DCR_CFG_SECTION_PROD: str
 DCR_CFG_SECTION_TEST: str
+DCR_CFG_TESSERACT_TIMEOUT: str
 DCR_CFG_VERBOSE: str
 
 DCR_ENVIRONMENT_TYPE: str
@@ -64,6 +66,7 @@ OS_POSIX: str
 
 RUN_ACTION_ALL_COMPLETE: str
 RUN_ACTION_CREATE_DB: str
+RUN_ACTION_IMAGE_2_PDF: str
 RUN_ACTION_NON_PDF_2_PDF: str
 RUN_ACTION_PDF_2_IMAGE: str
 RUN_ACTION_PROCESS_INBOX: str
@@ -125,10 +128,11 @@ run_action: str
 run_id: sqlalchemy.Integer
 run_run_id: sqlalchemy.Integer
 
+tesseract_timeout: Decimal
+
 total_erroneous: int
 total_generated: int
 total_ok_processed: int
-total_rejected: int
 total_status_error: int
 total_status_ready: int
 total_to_be_processed: int

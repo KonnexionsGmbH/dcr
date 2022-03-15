@@ -12,7 +12,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # @pytest.mark.issue
 
-CONFIG_PARAM_NO: int = 19
+CONFIG_PARAM_NO: int = 20
 
 
 # -----------------------------------------------------------------------------
@@ -25,8 +25,9 @@ def test_get_args(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     args = dcr.get_args([libs.cfg.DCR_ARGV_0, "AlL"])
 
-    assert len(args) == 5, "arg: all"
+    assert len(args) == 6, "arg: all"
     assert not args[libs.cfg.RUN_ACTION_CREATE_DB], "arg: all"
+    assert args[libs.cfg.RUN_ACTION_IMAGE_2_PDF], "arg: all"
     assert args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF], "arg: all"
     assert args[libs.cfg.RUN_ACTION_PDF_2_IMAGE], "arg: all"
     assert args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: all"
@@ -36,6 +37,7 @@ def test_get_args(fxtr_setup_logger_environment):
     args = dcr.get_args([libs.cfg.DCR_ARGV_0, "Db_C"])
 
     assert args[libs.cfg.RUN_ACTION_CREATE_DB], "arg: db_c"
+    assert not args[libs.cfg.RUN_ACTION_IMAGE_2_PDF], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_PDF_2_IMAGE], "arg: db_c"
     assert not args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: db_c"
@@ -45,6 +47,7 @@ def test_get_args(fxtr_setup_logger_environment):
     args = dcr.get_args([libs.cfg.DCR_ARGV_0, "Db_U"])
 
     assert not args[libs.cfg.RUN_ACTION_CREATE_DB], "arg: db_u"
+    assert not args[libs.cfg.RUN_ACTION_IMAGE_2_PDF], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_PDF_2_IMAGE], "arg: db_u"
     assert not args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: db_u"
@@ -83,6 +86,8 @@ def test_get_config(fxtr_setup_logger_environment):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
+    libs.cfg.is_ignore_duplicates = False
+
     dcr.get_config()
 
     assert len(libs.cfg.config) == CONFIG_PARAM_NO, "config:: complete"
@@ -91,6 +96,8 @@ def test_get_config(fxtr_setup_logger_environment):
     value_original = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "n/a"
     )
+
+    libs.cfg.is_ignore_duplicates = False
 
     dcr.get_config()
 
@@ -104,6 +111,8 @@ def test_get_config(fxtr_setup_logger_environment):
     value_original = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "TruE"
     )
+
+    libs.cfg.is_ignore_duplicates = False
 
     dcr.get_config()
 
@@ -133,6 +142,8 @@ def test_get_config(fxtr_setup_logger_environment):
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, "FalsE"
     )
 
+    libs.cfg.is_verbose = True
+
     dcr.get_config()
 
     assert not libs.cfg.is_verbose, "DCR_CFG_VERBOSE: false"
@@ -145,6 +156,8 @@ def test_get_config(fxtr_setup_logger_environment):
     value_original = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, "n/a"
     )
+
+    libs.cfg.is_verbose = True
 
     dcr.get_config()
 
@@ -220,6 +233,10 @@ def test_get_config_missing(fxtr_setup_logger_environment):
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES
     )
 
+    libs.cfg.is_ignore_duplicates = False
+
+    dcr.get_config()
+
     assert not libs.cfg.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: false (missing)"
 
     pytest.helpers.restore_config_param(
@@ -230,6 +247,8 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     value_original = pytest.helpers.delete_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE
     )
+
+    libs.cfg.pdf2image_type = libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
 
     dcr.get_config()
 
@@ -245,6 +264,10 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     value_original = pytest.helpers.delete_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE
     )
+
+    libs.cfg.is_verbose = True
+
+    dcr.get_config()
 
     assert libs.cfg.is_verbose, "DCR_CFG_VERBOSE: true (missing)"
 
@@ -302,9 +325,7 @@ def test_main_all(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -315,9 +336,7 @@ def test_main_db_c(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -328,9 +347,7 @@ def test_main_p_i(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -341,9 +358,7 @@ def test_main_p_2_i(fxtr_mkdir, fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -354,9 +369,7 @@ def test_main_db_u(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
-    libs.cfg.logger.info(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

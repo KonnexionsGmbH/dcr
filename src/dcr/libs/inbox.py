@@ -151,7 +151,7 @@ def prepare_document_base(file: pathlib.Path) -> None:
     if libs.cfg.is_ignore_duplicates:
         libs.cfg.document_sha256 = None
     else:
-        libs.cfg.document_sha256 = libs.utils.get_sha256(file)
+        libs.cfg.document_sha256 = libs.utils.compute_sha256(file)
 
     libs.cfg.document_status = libs.db.cfg.DOCUMENT_STATUS_START
 
@@ -240,13 +240,15 @@ def process_inbox() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.cfg.total_erroneous = 0
-    libs.cfg.total_ok_processed = 0
-    libs.cfg.total_rejected = 0
-    libs.cfg.total_to_be_processed = 0
+    if libs.cfg.is_ignore_duplicates:
+        libs.utils.progress_msg("Configuration: File duplicates are allowed!")
+    else:
+        libs.utils.progress_msg("Configuration: File duplicates are not allowed!")
 
     # Check the inbox file directories and create the missing ones.
     check_and_create_directories()
+
+    libs.utils.reset_statistics()
 
     for file in sorted(pathlib.Path(libs.cfg.directory_inbox).iterdir()):
         if file.is_file():
@@ -260,20 +262,7 @@ def process_inbox() -> None:
 
             process_inbox_file(file)
 
-    libs.utils.progress_msg(
-        f"Number documents to be processed:  {libs.cfg.total_to_be_processed:6d}"
-    )
-
-    if libs.cfg.total_to_be_processed > 0:
-        libs.utils.progress_msg(
-            f"Number documents accepted:         {libs.cfg.total_ok_processed:6d}"
-        )
-        libs.utils.progress_msg(f"Number documents erroneous:        {libs.cfg.total_erroneous:6d}")
-        libs.utils.progress_msg(f"Number documents rejected:         {libs.cfg.total_rejected:6d}")
-        libs.utils.progress_msg(
-            "The new documents in the file directory 'inbox' are checked and "
-            + "prepared for further processing",
-        )
+    libs.utils.show_statistics()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -402,8 +391,6 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
         libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name
     )
 
-    libs.cfg.total_erroneous += 1
-
     if os.path.exists(target_file):
         libs.db.orm.insert_journal(
             __name__,
@@ -425,6 +412,6 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
             },
         )
 
-    libs.cfg.total_rejected += 1
+    libs.cfg.total_erroneous += 1
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

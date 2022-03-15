@@ -3,7 +3,7 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.6.5)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.7.0)
 
 ----
 
@@ -13,7 +13,7 @@
 Ubuntu is used here via the **`VM Workstation Player 16`**.
 **`Ubuntu`** can also be used in conjunction with the **`Windows Subsystem for Linux (WSL2)`**.
 
-The GitHub actions for continuous integration run on **`Ubuntu 18.04`**, **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`Micrsoft Windows Server 2022`**.
+The GitHub actions for continuous integration run on **`Ubuntu 18.04`** and **`Ubuntu 20.04`**~~, **`Micrsoft Windows Server 2019`** and **`Micrsoft Windows Server 2022`**~~.
 
 Version **`3.10`** is used for the **`Python`** programming language.
 
@@ -76,7 +76,7 @@ The creation of API documentation for functions, modules and packages is mandato
 **`pydocstyle`** is a static analysis tool for checking compliance with **`Python`** **`Docstring`** conventions.
 **`pydocstyle`** can be executed individually with **`make pydocstyle`** and is also included in both calls **`make docs`** and  **`make dev`**.
 
-The **`Docstring`** format used in **`DCR`** is that of type Google. 
+The **`Docstring`** format used in **`DCR`** is that of [type Google](https://github.com/google/styleguide/blob/gh-pages/pyguide.md#383-functions-and-methods){:target="_blank"}. 
 For Visual Studio Code, the extension [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring){:target="_blank"} can be used when creating API documentation.  
 With the [Pydoc-Markdown](https://github.com/NiklasRosenstein/pydoc-markdown){:target="_blank"} tool, the API documentation is extracted from the source files and put into Markdown format. 
 In this format, the API documentation can then be integrated into the user documentation.
@@ -109,6 +109,7 @@ In this format, the API documentation can then be integrated into the user docum
         db_c  - Create the database.
         db_u  - Upgrade the database.
         n_2_p - Convert non-pdf docuents to pdf files.
+        ocr   - Convert image docuents to pdf files.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
 
@@ -118,6 +119,7 @@ In this format, the API documentation can then be integrated into the user docum
         1. p_i
         2. p_2_i
         3. n_2_p
+        4. ocr
 
     Args:
         argv (List[str]): Command line arguments.
@@ -169,32 +171,35 @@ The GitHub Actions are used to enforce the following good practices of the softw
 - execution of the software testing framework, and
 - creation of up-to-date user documentation.
 
-The branch **`Development Standards`** in the GitHub Actions guarantees compliance with the required standards, the branch **`Production`** ensures error-free compilation for production use and the branch **`Test Framework`** runs the tests against various operating system and **`Python`** versions.
-The branches **`Production`** and **`Test Framework`** must be able to run error-free on operating systems **`Ubuntu 18.04`**, **`Ubuntu 20.04`**, **`Micrsoft Windows Server 2019`** and **`2022`** and with **`Python`** version **`3.10`**, the branch **`Development Standards`** is only required error-free for the latest versions of **`Ubuntu`** and **`Python`**.
+The action **`ubuntu_20_04_standards`** in the GitHub Actions guarantees compliance with the required standards, the action **`ubuntu_all_production`** ensures error-free compilation for production use and the action **`ubuntu_all_development`** runs the tests against various operating system and **`Python`** versions.
+The actions **`ubuntu_all_development`** and **`ubuntu_all_production`** must be able to run error-free on operating systems **`Ubuntu 18.04`** and **`Ubuntu 20.04`**~~, **`Micrsoft Windows Server 2019`** and **`2022`**~~ and with **`Python`** version **`3.10`**, the action **`ubuntu_20_04_standards`** is only required error-free for the latest versions of **`Ubuntu`** and **`Python`**.
 
 The individual steps to be carried out 
 
-1. in the branch **`standards`** are:
+1. in the action **`ubuntu_20_04_standards`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
-    1. install the development specific packages with **`pipenv`**
-    1. compile the **`Python`** code
-    1. format the code with isort, Black and docformatter
-    1. lint the code with Bandit, Flake8, Mypy and Pylint
-    1. check the API docs with pydocstyle
-    1. create and upload the user docs with Pydoc-Markdown and Mkdocs
-    1. publish the code coverage results to **`coveralls.io`**
+    2. install the development specific packages with **`pipenv`**
+    3. compile the **`Python`** code
+    4. format the code with isort, Black and docformatter
+    5. lint the code with Bandit, Flake8, Mypy and Pylint
+    6. check the API docs with pydocstyle
+    7. create and upload the user docs with Pydoc-Markdown and Mkdocs
+    8. install Pandoc, Poppler, Tesseract OCR and TeX Live
+    9. publish the code coverage results to **`coveralls.io`**
 
-1. in the branch **`development`** are:
+1. in the action **`ubuntu_all_development`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
-    1. install the `**development**` specific packages with **`pipenv`**
-    1. compile the **`Python`** code
-    1. run pytest for writing better program
+    2. install the `**development**` specific packages with **`pipenv`**
+    3. compile the **`Python`** code
+    4. install Pandoc, Poppler, Tesseract OCR and TeX Live
+    5. run pytest for writing better program
 
-1. in the branch **`production`** are:
+1. in the action **`ubuntu_all_productionubuntu_all_production`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
-    1. install the `**production**` specific packages with **`pipenv`**
-    1. compile the **`Python`** code
-    1. run pytest for writing better program
+    2. install the `**production**` specific packages with **`pipenv`**
+    3. compile the **`Python`** code
+    4. install Pandoc, Poppler, Tesseract OCR and TeX Live
+    5. run pytest for writing better program
 
 ## 8. Development Environment
 
@@ -212,8 +217,8 @@ When selecting the Docker image, care must be taken to select the appropriate ve
 
 Alternatively, for a **`Ubuntu 20.04 LTS`** environment that is as unspoiled as possible, the following two scripts are available in the **`scripts`** file directory:
 
-- **`scripts/0.6.5/run_install_4-vm_wsl2_1.sh`**
-- **`scripts/0.6.5/run_install_4-vm_wsl2_2.sh`**
+- **`scripts/0.7.0/run_install_4-vm_wsl2_1.sh`**
+- **`scripts/0.7.0/run_install_4-vm_wsl2_2.sh`**
 
 After a **`cd scripts`** command in a terminal window, the script **`run_install_4-vm_wsl2_1.sh`** must first be executed. 
 Administration rights (**`sudo`**) are required for this. 
@@ -221,31 +226,34 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 ## 9. Version Planning
 
-| Version   | Feature(s)                           |
-|-----------|--------------------------------------|
-| ~~0.5.0~~ | ~~Inbox processing~~                 |
-| ~~0.6.0~~ | ~~pdf for Tesseract OCR processing~~ |
-| ~~0.6.5~~ | ~~Pandoc processing~~                |
-| 0.7.0     | Tesseract OCR processing             |
-| 0.8.0     | PDFlib TET processing                |
-| 0.9.0     | Parser                               |
+| Version    | Feature(s)                           |
+|------------|--------------------------------------|
+| ~~0.5.0~~  | ~~Inbox processing~~                 |
+| ~~0.6.0~~  | ~~pdf for Tesseract OCR processing~~ |
+| ~~0.6.5~~  | ~~Pandoc processing~~                |
+| ~~0.7.0~~  | ~~Tesseract OCR processing~~         |
+| 0.8.0      | PDFlib TET processing                |
+| 0.9.0      | Parser                               |
 
 ## 10. Next Development Steps
 
 **1<sup>st</sup> Priority:**
 
-- ~~convert the appropriate documents into the `pdf` format with Pandoc and TeX Live~~
-- test cases for file duplicate
+- API documentation: Content improvement
+- PDFlib TET processing
 - tools.py - verify the content of the inbox directories
 - ~~API Documentation~~
+- ~~convert the appropriate documents into the `pdf` format with Pandoc and TeX Live~~
 - ~~duplicate handling~~ 
 - ~~error handling - highly defensive~~
 - ~~inbox.py - process_inbox() - processing ocr & non-ocr in the same method~~
+- ~~test cases for file duplicate~~
 
 **2<sup>nd</sup> Priority:** 
 
-- Layout improvement API documentation
-- Tesseract OCR - Installation  
+- API documentation: Layout improvement
+- Google Styleguide implementation
+- ~~Tesseract OCR - Installation~~  
 
 **3<sup>rd</sup> Priority**
 

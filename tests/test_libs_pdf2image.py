@@ -23,7 +23,7 @@ def test_run_action_pdf_2_image_normal_jpeg(fxtr_rmdir_opt, fxtr_setup_empty_db_
     stem_name: str = "pdf_scanned_ok"
     file_ext: str = "pdf"
 
-    document_id, file_p_i = pytest.helpers.help_run_action_pdf_2_image_normal(file_ext, stem_name)
+    document_id, file_p_i = pytest.helpers.help_run_action_process_inbox_normal(file_ext, stem_name)
 
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
@@ -79,9 +79,12 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
     stem_name_2: str = "pdf_scanned_ok_1_1"
     file_ext_2: str = "jpeg"
 
-    pytest.helpers.help_run_action_pdf_2_image_normal_jpeg_duplicate(
+    pytest.helpers.help_run_action_all_complete_duplicate_file(
         file_ext_1, file_ext_2, stem_name_1, stem_name_2
     )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -95,7 +98,9 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     stem_name: str = "pdf_scanned_ok"
     file_ext: str = "pdf"
 
-    document_id, file_p_i = pytest.helpers.help_run_action_pdf_2_image_normal(file_ext, stem_name)
+    document_id, file_pdf2image_1 = pytest.helpers.help_run_action_process_inbox_normal(
+        file_ext, stem_name
+    )
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(
@@ -107,22 +112,22 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
 
     pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original
     )
 
     # -------------------------------------------------------------------------
     child_no: int = 1
     no_files_expected = (0, 2, 0)
 
-    file_p_2_i = (
+    file_pdf2image_2 = (
         libs.cfg.directory_inbox_accepted,
         [stem_name, str(document_id), str(child_no)],
-        libs.cfg.pdf2image_type,
+        libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG,
     )
 
     files_to_be_checked = [
-        file_p_i,
-        file_p_2_i,
+        file_pdf2image_1,
+        file_pdf2image_2,
     ]
 
     pytest.helpers.verify_content_inboxes(
