@@ -7,6 +7,7 @@ extra:
 
 markdown_extensions:
   - attr_list
+  - del_ins
 
 nav:
   - Home: index.md

@@ -9,7 +9,7 @@
 
 ## 1. Version 0.7.0
 
-Release Date: 14.03.2022
+Release Date: 15.03.2022
 
 ### 1.1 New Features
 
@@ -136,13 +136,13 @@ Release Date: 14.03.2022
 
 ### <a name="issues_tesseract_ocr"></a> 2.3 Tesseract OCR
 
-- Issue: Images of type 'bmp': Error in pixReadMemBmp: cannot read compressed BMP files ...
+- Issue: Images of type 'bmp': Error in pixReadMemBmp: cannot read compressed BMP files ... [#56](https://github.com/UB-Mannheim/tesseract/issues/56)
 
 ```
 Issue (ocr): Converting the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_01_ok_1.bmp' to the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_01_ok_1.pdf' with Tesseract OCR failed - error status: '1' - error: 'Error in pixReadMemBmp: cannot read compressed BMP files Error in pixReadStream: bmp: no pix returned Error in pixRead: pix not read Error during processing.'.
 ```
 
-- Issue: Images of type 'jp2': Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 ... (**Windows 10 only**)
+- Issue: Images of type 'jp2': Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 ... (**Windows 10 only**) [#57](https://github.com/UB-Mannheim/tesseract/issues/57)
 
 ```
 Issue (ocr): Converting the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_03_ok_5.jp2' to the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_03_ok_5.pdf' with Tesseract OCR failed - error status: '1' - error: 'Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 Error in pixReadStream: jp2: no pix returned Error in pixRead: pix not read Error during processing.'.

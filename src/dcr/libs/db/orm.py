@@ -562,6 +562,13 @@ def insert_journal(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
+    libs.cfg.logger.debug(
+        "Document: %6d - ActionCode: %s - ActionText: %s",
+        document_id,
+        journal_action[0:7],
+        journal_action[7:],
+    )
+
     insert_dbt_row(
         libs.db.cfg.DBT_JOURNAL,
         {
