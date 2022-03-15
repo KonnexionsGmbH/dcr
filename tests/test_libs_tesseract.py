@@ -1,5 +1,7 @@
 # pylint: disable=unused-argument
 """Testing Module libs.tesseract."""
+import platform
+
 import libs.cfg
 import libs.db
 import libs.db.cfg
@@ -43,7 +45,10 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     # -------------------------------------------------------------------------
     # TBD
     # no_files_expected = (0, 16, 0)
-    no_files_expected = (0, 14, 0)
+    if platform.system() == "Windows":
+        no_files_expected = (0, 14, 0)
+    else:
+        no_files_expected = (0, 15, 0)
 
     files_to_be_checked = [
         (
@@ -129,6 +134,16 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
             "pdf",
         ),
     ]
+
+    # TBD
+    if platform.system() != "Windows":
+        files_to_be_checked.append(
+            (
+                libs.cfg.directory_inbox_accepted,
+                ["pdf_scanned_03_ok", "5"],
+                "pdf",
+            ),
+        )
 
     pytest.helpers.verify_content_inboxes(
         files_to_be_checked,
