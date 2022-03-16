@@ -192,7 +192,10 @@ JOURNAL_ACTION_51_001: str = (
     "51.001 Start (tet): The text from pdf document file '{file_name}' must be extracted "
     + "for further processing."
 )
-JOURNAL_ACTION_51_002: str = "51.002 End   (tet): The text from pdf document file '{file_name}' has been successfully extracted."
+JOURNAL_ACTION_51_002: str = (
+    "51.002 End   (tet): The text from pdf document file "
+    + "'{file_name}' has been successfully extracted."
+)
 
 RUN_STATUS_END: str = "end"
 RUN_STATUS_START: str = "start"
