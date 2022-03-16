@@ -25,7 +25,10 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_from_pytest_2_dir(
         [
-            ("pdf_scanned_01_ok", "bmp"),
+            ("pdf_scanned_01_ok_16_c", "bmp"),
+            ("pdf_scanned_01_ok_24", "bmp"),
+            ("pdf_scanned_01_ok_256_c", "bmp"),
+            ("pdf_scanned_01_ok_m", "bmp"),
             ("pdf_scanned_02_ok", "gif"),
             ("pdf_scanned_03_ok", "jp2"),
             ("pdf_scanned_04_ok", "jpeg"),
@@ -46,91 +49,120 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     # TBD
     # no_files_expected = (0, 16, 0)
     if platform.system() == "Windows":
-        no_files_expected = (0, 14, 0)
+        no_files_expected = (0, 21, 0)
     else:
-        no_files_expected = (0, 15, 0)
+        no_files_expected = (0, 22, 0)
 
     files_to_be_checked = [
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_01_ok", "1"],
+            ["pdf_scanned_01_ok_16_c", "1"],
             "bmp",
         ),
-        # TBD
-        # (
-        #     libs.cfg.directory_inbox_accepted,
-        #     ["pdf_scanned_01_ok", "1"],
-        #     "pdf",
-        # ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_02_ok", "3"],
-            "gif",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_02_ok", "3"],
+            ["pdf_scanned_01_ok_16_c", "1"],
             "pdf",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_03_ok", "5"],
+            ["pdf_scanned_01_ok_24", "3"],
+            "bmp",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_scanned_01_ok_24", "3"],
+            "pdf",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_scanned_01_ok_256_c", "5"],
+            "bmp",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_scanned_01_ok_256_c", "5"],
+            "pdf",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_scanned_01_ok_m", "7"],
+            "bmp",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_scanned_01_ok_m", "7"],
+            "pdf",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_scanned_02_ok", "9"],
+            "gif",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_scanned_02_ok", "9"],
+            "pdf",
+        ),
+        (
+            libs.cfg.directory_inbox_accepted,
+            ["pdf_scanned_03_ok", "11"],
             "jp2",
         ),
         # TBD
         # (
         #     libs.cfg.directory_inbox_accepted,
-        #     ["pdf_scanned_03_ok", "5"],
+        #     ["pdf_scanned_03_ok", "11"],
         #     "pdf",
         # ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_04_ok", "7"],
+            ["pdf_scanned_04_ok", "13"],
             "jpeg",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_04_ok", "7"],
+            ["pdf_scanned_04_ok", "13"],
             "pdf",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_05_ok", "9"],
+            ["pdf_scanned_05_ok", "15"],
             "png",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_05_ok", "9"],
+            ["pdf_scanned_05_ok", "15"],
             "pdf",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_06_ok", "11"],
+            ["pdf_scanned_06_ok", "17"],
             "pnm",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_06_ok", "11"],
+            ["pdf_scanned_06_ok", "17"],
             "pdf",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_07_ok", "13"],
+            ["pdf_scanned_07_ok", "19"],
             "tiff",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_07_ok", "13"],
+            ["pdf_scanned_07_ok", "19"],
             "pdf",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_08_ok", "15"],
+            ["pdf_scanned_08_ok", "21"],
             "webp",
         ),
         (
             libs.cfg.directory_inbox_accepted,
-            ["pdf_scanned_08_ok", "15"],
+            ["pdf_scanned_08_ok", "21"],
             "pdf",
         ),
     ]
@@ -140,7 +172,7 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
         files_to_be_checked.append(
             (
                 libs.cfg.directory_inbox_accepted,
-                ["pdf_scanned_03_ok", "5"],
+                ["pdf_scanned_03_ok", "11"],
                 "pdf",
             ),
         )

@@ -23,6 +23,7 @@ if ["%1"] EQU [""] (
     echo ocr   - Convert image documents to pdf files.
     echo p_i   - Process the inbox directory.
     echo p_2_i - Convert pdf documents to image files.
+    echo tet   - Extract text from pdf documents.
     echo ---------------------------------------------------------
     set /P DCR_CHOICE_ACTION="Enter the desired action [default: %DCR_CHOICE_ACTION_DEFAULT%] "
 
@@ -116,7 +117,12 @@ echo.
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"] (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
+
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
+
+    if ["%DCR_CHOICE_ACTION%"] EQU ["tet"] (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
@@ -129,7 +135,7 @@ echo.
         goto normal_exit
     )
 
-    echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i"
+    echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | tet"
     exit -1073741510
 
     :normal_exit

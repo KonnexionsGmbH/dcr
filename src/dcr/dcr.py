@@ -38,6 +38,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         ocr   - Convert image documents to pdf files.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
+        tet   - Extract text from pdf documents.
 
     With the option all, the following process steps are executed
     in this order:
@@ -46,6 +47,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         2. p_2_i
         3. n_2_p
         4. ocr
+        5. tet
 
     Args:
         argv (List[str]): Command line arguments.

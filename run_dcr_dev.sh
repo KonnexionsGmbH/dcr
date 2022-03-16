@@ -23,6 +23,7 @@ if [ -z "$1" ]; then
     echo "ocr   - Convert image documents to pdf files."
     echo "p_i   - Process the inbox directory."
     echo "p_2_i - Convert pdf documents to image files."
+    echo "tet   - Extract text from pdf documents."
     echo "------------------------------------------------------------------------------"
     read -rp "Enter the desired action [default: ${DCR_CHOICE_ACTION_DEFAULT}] " DCR_CHOICE_ACTION
     export DCR_CHOICE_ACTION=${DCR_CHOICE_ACTION:-$DCR_CHOICE_ACTION_DEFAULT}
@@ -72,7 +73,7 @@ case "${DCR_CHOICE_ACTION}" in
   db_c)
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
-  db_u|n_2_p|ocr|p_2_i)
+  db_u|n_2_p|ocr|p_2_i|tet)
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   all|p_i)
@@ -83,7 +84,7 @@ case "${DCR_CHOICE_ACTION}" in
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
-    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p | ocr | p_i | p_2_i"
+    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p | ocr | p_i | p_2_i | tet"
     ;;
 esac
 
