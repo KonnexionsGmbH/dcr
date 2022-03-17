@@ -386,6 +386,10 @@ def show_statistics() -> None:
             libs.utils.progress_msg(
                 f"Number documents accepted:         {libs.cfg.total_ok_processed:6d}"
             )
+        elif libs.cfg.run_action == libs.cfg.RUN_ACTION_TEXT_FROM_PDF:
+                libs.utils.progress_msg(
+                    f"Number documents extracted:        {libs.cfg.total_ok_processed:6d}"
+                )
         else:
             libs.utils.progress_msg(
                 f"Number documents converted:        {libs.cfg.total_ok_processed:6d}"
@@ -405,7 +409,12 @@ def show_statistics() -> None:
                 f"Number documents erroneous:        {libs.cfg.total_erroneous:6d}"
             )
 
-        if libs.cfg.run_action != libs.cfg.RUN_ACTION_PROCESS_INBOX:
+        if libs.cfg.run_action == libs.cfg.RUN_ACTION_TEXT_FROM_PDF:
+            libs.utils.progress_msg(
+                "The text from the error-free pdf documents in the file directory "
+                + "'inbox_accepted' is now extracted for further processing",
+            )
+        elif libs.cfg.run_action != libs.cfg.RUN_ACTION_PROCESS_INBOX:
             libs.utils.progress_msg(
                 "The error-free documents in the file directory "
                 + "'inbox_accepted' are now converted to a pdf format "

@@ -39,7 +39,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         ocr   - Convert image documents to pdf files.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
-        tet   - Extract text from pdf documents.
+        tet   - Extract the text from pdf documents.
 
     With the option all, the following process steps are executed
     in this order:
@@ -354,7 +354,7 @@ def process_documents(args: dict[str, bool]) -> None:
     if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
         process_convert_non_pdf_2_pdf()
 
-    # Extract text fro pdf documents.
+    # Extract the text fro pdf documents.
     if args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF]:
         process_extract_text_from_pdf()
 
@@ -365,12 +365,12 @@ def process_documents(args: dict[str, bool]) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Extract text from pdf documents.
+# Extract the text from pdf documents.
 # -----------------------------------------------------------------------------
 def process_extract_text_from_pdf():
-    """Extract text from pdf documents."""
+    """Extract the text from pdf documents."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_TEXT_FROM_PDF
-    libs.utils.progress_msg_empty_before("Start: Extract text from pdf documents ...")
+    libs.utils.progress_msg_empty_before("Start: Extract the text from pdf documents ...")
     libs.cfg.run_id = libs.db.orm.insert_dbt_row(
         libs.db.cfg.DBT_RUN,
         {
@@ -390,7 +390,7 @@ def process_extract_text_from_pdf():
             libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
         },
     )
-    libs.utils.progress_msg("End  : Extract text from pdf documents ...")
+    libs.utils.progress_msg("End  : Extract the text from pdf documents ...")
 
 
 # -----------------------------------------------------------------------------

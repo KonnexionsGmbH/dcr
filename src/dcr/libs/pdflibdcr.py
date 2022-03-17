@@ -1,4 +1,4 @@
-"""Module libs.pdflibdcr: Extract text from pdf files."""
+"""Module libs.pdflibdcr: Extract the text from pdf documents."""
 
 import libs.cfg
 import libs.db.cfg
@@ -24,10 +24,10 @@ SEPARATOR = "\n"
 
 
 # -----------------------------------------------------------------------------
-# Extract text from pdf files (step: tet).
+# Extract the text from pdf documents (step: tet).
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf() -> None:
-    """Extract text from pdf files.
+    """Extract the text from pdf documents.
 
     TBD
     """
@@ -52,16 +52,16 @@ def extract_text_from_pdf() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Extract text from a pdf file (step: tet).
+# Extract the text from a pdf document (step: tet).
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf_file() -> None:
-    """Extract text from a pdf file."""
+    """Extract the text from a pdf document."""
     tet = None
 
     # page_no = 0
 
     try:
-        tet = libs.TET()
+        tet = libs.TET.TET()
     # except PDFlib.TETException as ex:
     #     if page_no == 0:
     #         print("Error %d in %s(): %s" % (ex.errnum, ex.apiname, ex.errmsg))

@@ -112,7 +112,7 @@ In this format, the API documentation can then be integrated into the user docum
         ocr   - Convert image docuents to pdf files.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
-        tet   - Extract text from pdf documents.
+        tet   - Extract the text from pdf documents.
 
     With the option all, the following process steps are executed
     in this order:

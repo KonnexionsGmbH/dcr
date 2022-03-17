@@ -104,7 +104,7 @@ using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blan
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created pdf file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
-### 2.5 Extract text from pdf documents (step: **`tet`**)
+### 2.5 Extract the text from pdf documents (step: **`tet`**)
 
 TBD_TET
 
@@ -245,4 +245,4 @@ The following actions are available:
 | **`ocr`**   | Convert appropriate image documents to pdf files.                                                                  |
 | **`p_i`**   | Process the inbox directory.                                                                                       |
 | **`p_2_i`** | Convert pdf documents to image files.                                                                              |
-| **`tet`**   | Extract text from pdf documents.                                                             |
+| **`tet`**   | Extract the text from pdf documents.                                                                               |
