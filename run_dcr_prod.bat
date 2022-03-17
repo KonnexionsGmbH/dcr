@@ -10,20 +10,23 @@ setlocal EnableDelayedExpansion
 
 set DCR_CHOICE_ACTION_DEFAULT=db_u
 set DCR_ENVIRONMENT_TYPE=prod
-set PYTHONPATH=src/dcr
+set PYTHONPATH=%PYTHONPATH%;src\dcr;src\dcr\libs
 
 if ["%1"] EQU [""] (
     echo =========================================================
     echo all   - Run the complete processing of all new documents.
+    echo ---------------------------------------------------------
+    echo p_i   - 1. Process the inbox directory.
+    echo n_2_p - 2. Convert non-pdf documents to pdf files: Pandoc
+    echo p_2_i - 2. Convert pdf documents to image files:   Poppler.
+    echo ocr   - 3. Convert image documents to pdf files:   Tesseract OCR.
+    echo tet   - 4. Extract text from pdf documents:        PDFlib TET.
+    echo ---------------------------------------------------------
     echo db_c  - Create the database.
     echo db_u  - Upgrade the database.
+    echo ---------------------------------------------------------
     echo m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem.
     echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules.
-    echo n_2_p - Convert non-pdf documents to pdf files.
-    echo ocr   - Convert image documents to pdf files.
-    echo p_i   - Process the inbox directory.
-    echo p_2_i - Convert pdf documents to image files.
-    echo tet   - Extract text from pdf documents.
     echo ---------------------------------------------------------
     set /P DCR_CHOICE_ACTION="Enter the desired action [default: %DCR_CHOICE_ACTION_DEFAULT%] "
 

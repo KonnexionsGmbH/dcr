@@ -196,6 +196,15 @@ JOURNAL_ACTION_51_002: str = (
     "51.002 End   (tet): The text from pdf document file "
     + "'{file_name}' has been successfully extracted."
 )
+JOURNAL_ACTION_51_003: str = (
+    "51.003 Next  (tet): The text from 'pdf' file '{file_name}' "
+    + "is extracted and ready to be parsed."
+)
+JOURNAL_ACTION_51_901: str = (
+    "51.901 Issue (tet): Extracting the text from 'pdf' file '{file_name}' "
+    + "with PDFlib TET failed - "
+    + "error type: '{error_type}' - error: '{error}'."
+)
 
 RUN_STATUS_END: str = "end"
 RUN_STATUS_START: str = "start"

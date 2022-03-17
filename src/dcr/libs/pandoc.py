@@ -38,10 +38,10 @@ def convert_non_pdf_2_pdf() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Convert non-pdf documents to pdf files (step: n_2_p).
+# Convert a non-pdf document to a pdf file (step: n_2_p).
 # -----------------------------------------------------------------------------
 def convert_non_pdf_2_pdf_file() -> None:
-    """Convert scanned image pdf documents to image files."""
+    """Convert a non-pdf document to a pdf file."""
     source_file, target_file = libs.utils.prepare_file_names()
 
     if os.path.exists(target_file):

@@ -19,7 +19,7 @@ from pdf2image.exceptions import PDFPopplerTimeoutError
 
 
 # -----------------------------------------------------------------------------
-# Convert pdf documents to image files (step: p_2_i).
+# Convert scanned image pdf documents to image files (step: p_2_i).
 # -----------------------------------------------------------------------------
 def convert_pdf_2_image() -> None:
     """Convert scanned image pdf documents to image files.
@@ -52,10 +52,10 @@ def convert_pdf_2_image() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Convert pdf documents to image files (step: p_2_i).
+# Convert a scanned image pdf document to an image file (step: p_2_i).
 # -----------------------------------------------------------------------------
 def convert_pdf_2_image_file() -> None:
-    """Convert scanned image pdf documents to image files."""
+    """Convert a scanned image pdf document to an image file."""
     file_name_parent = os.path.join(
         libs.cfg.document_directory_name,
         libs.cfg.document_file_name,
