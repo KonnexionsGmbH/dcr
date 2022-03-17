@@ -1,4 +1,4 @@
-"""Module libs.pandoc: Convert non-pdf documents to pdf files."""
+"""Module libs.pandocdcr: Convert non-pdf documents to pdf files."""
 import inspect
 import os
 

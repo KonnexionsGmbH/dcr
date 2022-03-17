@@ -1,11 +1,4 @@
-"""Module libs.inbox: Check, distribute and process incoming documents.
-
-New documents are made available in the file directory inbox. These are
-then checked and moved to the accepted or rejected file directories
-depending on the result of the check. Depending on the file format, the
-accepted documents are then converted into the pdf file format either
-with the help of Pandoc and TeX Live or with the help of Tesseract OCR.
-"""
+"""Module libs.pdf2imagedcr: Convert scanned image pdf documents to image files."""
 import inspect
 import os
 

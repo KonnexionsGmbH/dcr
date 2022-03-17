@@ -1,4 +1,4 @@
-"""Module libs.pdflib: Extract text from pdf files."""
+"""Module libs.pdflibdcr: Extract text from pdf files."""
 
 import libs.cfg
 import libs.db.cfg

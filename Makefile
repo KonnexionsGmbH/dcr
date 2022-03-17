@@ -31,12 +31,12 @@ export DCR_ENVIRONMENT_TYPE=test
 
 ifeq ($(OS),Windows_NT)
 	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
-    export MYPYPATH=src\\dcr
-    export PYTHONPATH=src\\dcr
+    export MYPYPATH=src\\dcr;src\\dcr\\libs
+    export PYTHONPATH=src\\dcr;src\\dcr\\libs
 else
 	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
-    export MYPYPATH=src/dcr
-    export PYTHONPATH=src/dcr:src/dcr
+    export MYPYPATH=src/dcr:src/dcr/libs
+    export PYTHONPATH=src/dcr:src/dcr:src/dcr/libs
 endif
 
 # Bandit is a tool designed to find common security issues in Python code.

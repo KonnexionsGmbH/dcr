@@ -15,10 +15,10 @@ import libs.db.cfg
 import libs.db.driver
 import libs.db.orm
 import libs.inbox
-import libs.pandoc
-import libs.pdf2image
-import libs.pdflib
-import libs.tesseract
+import libs.pandocdcr
+import libs.pdf2imagedcr
+import libs.pdflibdcr
+import libs.tesseractdcr
 import libs.utils
 import yaml
 
@@ -247,7 +247,7 @@ def process_convert_image_2_pdf():
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.tesseract.convert_image_2_pdf()
+    libs.tesseractdcr.convert_image_2_pdf()
     libs.db.orm.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -276,7 +276,7 @@ def process_convert_non_pdf_2_pdf():
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.pandoc.convert_non_pdf_2_pdf()
+    libs.pandocdcr.convert_non_pdf_2_pdf()
     libs.db.orm.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -305,7 +305,7 @@ def process_convert_pdf_2_image():
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.pdf2image.convert_pdf_2_image()
+    libs.pdf2imagedcr.convert_pdf_2_image()
     libs.db.orm.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -379,7 +379,7 @@ def process_extract_text_from_pdf():
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.pdflib.extract_text_from_pdf()
+    libs.pdflibdcr.extract_text_from_pdf()
     libs.db.orm.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
