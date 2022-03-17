@@ -1,4 +1,5 @@
-"""Module libs.pdf2imagedcr: Convert scanned image pdf documents to image files."""
+"""Module libs.pdf2imagedcr: Convert scanned image pdf documents to image
+files."""
 import inspect
 import os
 
@@ -58,7 +59,7 @@ def convert_pdf_2_image_file() -> None:
         # Convert the 'pdf' document
         images = pdf2image.convert_from_path(file_name_parent)
 
-        libs.utils.prepare_document_4_tesseract()
+        prepare_document_4_tesseract()
 
         # Store the image pages
         for img in images:
@@ -117,3 +118,14 @@ def convert_pdf_2_image_file() -> None:
                 ).replace("{error_msg}", str(err)),
             ),
         )
+
+
+# -----------------------------------------------------------------------------
+# Prepare the base child document data - next step Tesseract OCR.
+# -----------------------------------------------------------------------------
+def prepare_document_4_tesseract() -> None:
+    """Prepare the child document data - next step Tesseract OCR."""
+    libs.utils.prepare_document_4_parser_tesseract()
+
+    libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT
+    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START

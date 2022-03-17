@@ -56,6 +56,7 @@ DOCUMENT_ERROR_CODE_REJ_FILE_RIGHTS: str = "Issue with file permissions"
 DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT: str = "No 'pdf' format"
 DOCUMENT_ERROR_CODE_REJ_PANDOC: str = "Issue with Pandoc and TeX Live"
 DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE: str = "Issue with pdf2image"
+DOCUMENT_ERROR_CODE_REJ_PDFLIB: str = "Issue with PDFlib TET"
 DOCUMENT_ERROR_CODE_REJ_TESSERACT: str = "Issue with Tesseract OCR"
 
 DOCUMENT_FILE_TYPE_JPG: str = "jpg"
@@ -81,8 +82,10 @@ DOCUMENT_FILE_TYPE_TESSERACT: List[str] = [
     "tiff",
     "webp",
 ]
+DOCUMENT_FILE_TYPE_TXT: str = "txt"
 
 DOCUMENT_NEXT_STEP_PANDOC: str = "Pandoc & TeX Live"
+DOCUMENT_NEXT_STEP_PARSER: str = "Parser"
 DOCUMENT_NEXT_STEP_PDF2IMAGE: str = "pdf2image"
 DOCUMENT_NEXT_STEP_PDFLIB: str = "PDFlib TET"
 DOCUMENT_NEXT_STEP_TESSERACT: str = "Tesseract OCR"
@@ -134,7 +137,7 @@ JOURNAL_ACTION_21_001: str = (
     + "for further processing."
 )
 JOURNAL_ACTION_21_002: str = (
-    "21.002 End   (p_2_i): The document file '{file_name}' has been successfully converted "
+    "21.002 End   (p_2_i): The document file '{file_name}' was successfully converted "
     + "to {child_no} image file(s)."
 )
 JOURNAL_ACTION_21_003: str = (
@@ -155,7 +158,7 @@ JOURNAL_ACTION_31_001: str = (
     + "for further processing."
 )
 JOURNAL_ACTION_31_002: str = (
-    "31.002 End   (n_2_p): The document file '{source_file}' has been successfully converted "
+    "31.002 End   (n_2_p): The document file '{source_file}' was successfully converted "
     + "to {target_file}."
 )
 JOURNAL_ACTION_31_003: str = (
@@ -171,7 +174,7 @@ JOURNAL_ACTION_41_001: str = (
     + "for further processing."
 )
 JOURNAL_ACTION_41_002: str = (
-    "41.002 End   (ocr): The document file '{source_file}' has been successfully converted "
+    "41.002 End   (ocr): The document file '{source_file}' was successfully converted "
     + "to {target_file}."
 )
 JOURNAL_ACTION_41_003: str = (
@@ -193,17 +196,33 @@ JOURNAL_ACTION_51_001: str = (
     + "for further processing."
 )
 JOURNAL_ACTION_51_002: str = (
-    "51.002 End   (tet): The text from pdf document file "
-    + "'{file_name}' has been successfully extracted."
+    "51.002 End   (tet): The text in pdf document "
+    + "'{file_name}' was successfully extracted into file {target_file}."
 )
 JOURNAL_ACTION_51_003: str = (
-    "51.003 Next  (tet): The text from 'pdf' file '{file_name}' "
-    + "is extracted and ready to be parsed."
+    "51.003 Next  (tet): The created text file '{file_name}' " + "is ready to be parsed."
 )
 JOURNAL_ACTION_51_901: str = (
-    "51.901 Issue (tet): Extracting the text from 'pdf' file '{file_name}' "
-    + "with PDFlib TET failed - "
-    + "error type: '{error_type}' - error: '{error}'."
+    "51.901 Issue (tet): Extracting the text of file '{source_file}' to the file "
+    + "'{target_file}' page {page_no} failed - "
+    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
+)
+JOURNAL_ACTION_51_902: str = (
+    "51.902 Issue (tet): Issues with opening the output file '{file_name}' - "
+    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
+)
+JOURNAL_ACTION_51_903: str = (
+    "51.903 Issue (tet): Issues with opening file '{file_name}' page {page_no} - "
+    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
+)
+JOURNAL_ACTION_51_904: str = (
+    "51.904 Issue (tet): Issues with processing file '{file_name}' page {page_no} - "
+    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
+)
+JOURNAL_ACTION_51_905: str = (
+    "51.905 Issue (tet): Extracting the text of file '{source_file}' to the file "
+    + "'{target_file}' failed - "
+    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
 
 RUN_STATUS_END: str = "end"

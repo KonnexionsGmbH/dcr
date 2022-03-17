@@ -1,26 +1,13 @@
 """Module libs.pdflibdcr: Extract the text from pdf documents."""
+import inspect
+import os
 
 import libs.cfg
 import libs.db.cfg
 import libs.db.orm
-import libs.TET
 import libs.utils
-
-# -----------------------------------------------------------------------------
-# Global Constants.
-# -----------------------------------------------------------------------------
-# global option list */
-GLOBAL_OPT_LIST = "searchpath={{../data} {../../../resource/cmap}}"
-
-# document-specific option list */
-DOC_OPT_LIST = ""
-
-# page-specific option list */
-PAGE_OPT_LIST = "granularity=page"
-
-# separator to emit after each chunk of text. This depends on the
-# application's needs; for granularity=word a space character may be useful.
-SEPARATOR = "\n"
+import tetlib_py
+from PDFlib.TET import TET
 
 
 # -----------------------------------------------------------------------------
@@ -56,64 +43,174 @@ def extract_text_from_pdf() -> None:
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf_file() -> None:
     """Extract the text from a pdf document."""
+    source_file_name, target_file_name = libs.utils.prepare_file_names(
+        libs.db.cfg.DOCUMENT_FILE_TYPE_TXT
+    )
+
     tet = None
 
-    # page_no = 0
-
     try:
-        tet = libs.TET.TET()
-    # except PDFlib.TETException as ex:
-    #     if page_no == 0:
-    #         print("Error %d in %s(): %s" % (ex.errnum, ex.apiname, ex.errmsg))
-    #     else:
-    #         print("Error %d in %s() on page %d: %s" % (ex.errnum, ex.apiname, page_no, ex.errmsg))
+        tet = TET()
+
+        with open(target_file_name, "w", 2, "utf-8") as target_file:
+            source_file = tet.open_document(source_file_name, "")
+
+            if source_file == -1:
+                libs.cfg.total_erroneous += 1
+
+                libs.db.orm.update_document_status(
+                    {
+                        libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
+                        libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+                    },
+                    libs.db.orm.insert_journal(
+                        __name__,
+                        inspect.stack()[0][3],
+                        libs.cfg.document_id,
+                        libs.db.cfg.JOURNAL_ACTION_51_902.replace("{file_name}", target_file_name)
+                        .replace("{err_num}", repr(tet.get_errnum()))
+                        .replace("{api_name}", tet.get_apiname() + "()")
+                        .replace("{err_msg}", tet.get_errmsg()),
+                    ),
+                )
+                return
+
+            # get number of pages in the document */
+            no_pages = tet.pcos_get_number(source_file, "length:pages")
+
+            # loop over pages in the document */
+            for page_no in range(1, int(no_pages) + 1):
+                page = tet.open_page(source_file, page_no, "granularity=page")
+
+                if page == -1:
+                    libs.cfg.total_erroneous += 1
+
+                    libs.db.orm.update_document_status(
+                        {
+                            libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
+                            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+                        },
+                        libs.db.orm.insert_journal(
+                            __name__,
+                            inspect.stack()[0][3],
+                            libs.cfg.document_id,
+                            libs.db.cfg.JOURNAL_ACTION_51_903.replace(
+                                "{file_name}", source_file_name
+                            )
+                            .replace("{err_num}", repr(tet.get_errnum()))
+                            .replace("{api_name}", tet.get_apiname() + "()")
+                            .replace("{err_msg}", tet.get_errmsg()),
+                        ),
+                    )
+                    return
+
+                # Retrieve all text fragments; This is actually not required
+                # for granularity=page, but must be used for other granularities.
+                text = tet.get_text(page)
+
+                while text is not None:
+                    target_file.write(text)  # print the retrieved text
+
+                    # print a separator between chunks of text
+                    target_file.write(os.linesep)
+
+                    text = tet.get_text(page)
+
+                if tet.get_errnum() != 0:
+                    libs.cfg.total_erroneous += 1
+
+                    libs.db.orm.update_document_status(
+                        {
+                            libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
+                            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+                        },
+                        libs.db.orm.insert_journal(
+                            __name__,
+                            inspect.stack()[0][3],
+                            libs.cfg.document_id,
+                            libs.db.cfg.JOURNAL_ACTION_51_904.replace(
+                                "{file_name}", source_file_name
+                            )
+                            .replace("{page_no}", repr(page_no))
+                            .replace("{err_num}", repr(tet.get_errnum()))
+                            .replace("{api_name}", tet.get_apiname() + "()")
+                            .replace("{err_msg}", tet.get_errmsg()),
+                        ),
+                    )
+                    return
+
+                tet.close_page(page)
+
+            tet.close_document(source_file)
+
+            prepare_document_4_parser()
+
+            libs.cfg.document_child_file_name = (
+                libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_TXT
+            )
+            libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
+
+            journal_action: str = libs.db.cfg.JOURNAL_ACTION_51_003.replace(
+                "{file_name}", libs.cfg.document_child_file_name
+            )
+
+            libs.utils.initialise_document_child(journal_action)
+
+            # Text from Document successfully extracted to txt format
+            journal_action = libs.db.cfg.JOURNAL_ACTION_51_002.replace(
+                "{source_file}", source_file_name
+            ).replace("{target_file}", target_file_name)
+
+            libs.utils.finalize_file_conversion(journal_action)
+    except tetlib_py.TETException as err:
+        libs.cfg.total_erroneous += 1
+
+        if page_no == 0:
+            libs.db.orm.update_document_status(
+                {
+                    libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
+                    libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+                },
+                libs.db.orm.insert_journal(
+                    __name__,
+                    inspect.stack()[0][3],
+                    libs.cfg.document_id,
+                    libs.db.cfg.JOURNAL_ACTION_51_905.replace("{file_name}", source_file_name)
+                    .replace("{target_name}", target_file_name)
+                    .replace("{err_num}", repr(err.errnum()))
+                    .replace("{api_name}", err.apiname() + "()")
+                    .replace("{err_msg}", err.errmsg()),
+                ),
+            )
+        else:
+            libs.db.orm.update_document_status(
+                {
+                    libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
+                    libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+                },
+                libs.db.orm.insert_journal(
+                    __name__,
+                    inspect.stack()[0][3],
+                    libs.cfg.document_id,
+                    libs.db.cfg.JOURNAL_ACTION_51_901.replace("{file_name}", source_file_name)
+                    .replace("{target_name}", target_file_name)
+                    .replace("{page_no}", repr(page_no))
+                    .replace("{err_num}", repr(err.errnum()))
+                    .replace("{api_name}", err.apiname() + "()")
+                    .replace("{err_msg}", err.errmsg()),
+                ),
+            )
     finally:
         if tet:
             tet.delete()
 
-    # file = open(os.path.join(
-    #     libs.cfg.document_directory_name,
-    #     libs.cfg.document_file_name,
-    # ), 'w', 2, 'utf-8')
-    #
-    # # Convert the document
-    # output = pypandoc.convert_file(
-    #     source_file, libs.db.cfg.DOCUMENT_FILE_TYPE_PDF, outputfile=target_file
-    # )
-    #
-    # # not testable
-    # if output != "":
-    #     libs.cfg.total_erroneous += 1
-    #
-    #     libs.db.orm.update_document_status(
-    #         {
-    #             libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PANDOC,
-    #             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-    #         },
-    #         libs.db.orm.insert_journal(
-    #             __name__,
-    #             inspect.stack()[0][3],
-    #             libs.cfg.document_id,
-    #             libs.db.cfg.JOURNAL_ACTION_51_901.replace("{file_name}", source_file)
-    #             .replace("{target_file}", target_file)
-    #             .replace("{output}", output),
-    #         ),
-    #     )
-    # else:
-    #     libs.utils.prepare_document_4_pdflib()
-    #
-    #     libs.cfg.document_child_file_name = (
-    #         libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF
-    #     )
-    #     libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
-    #
-    #     journal_action: str = libs.db.cfg.JOURNAL_ACTION_51_003.replace(
-    #         "{file_name}", libs.cfg.document_child_file_name
-    #     )
-    #
-    #     libs.utils.initialise_document_child(journal_action)
-    #
-    #     # Document successfully converted to pdf format
-    #     journal_action = libs.db.cfg.JOURNAL_ACTION_51_002.replace("{file_name}", source_file)
-    #
-    #     libs.utils.finalize_file_conversion(journal_action)
+
+# -----------------------------------------------------------------------------
+# Prepare the text document data - next step Parser.
+# -----------------------------------------------------------------------------
+def prepare_document_4_parser() -> None:
+    """Prepare the text document data - next step Parser."""
+    libs.utils.prepare_document_4_parser_tesseract()
+
+    libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_PARSER
+    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
