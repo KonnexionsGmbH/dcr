@@ -125,19 +125,15 @@ the universal document converter [Pandoc](https://pandoc.org){:target="_blank"}
 and [TeX Live](https://www.tug.org/texlive){:target="_blank"} are used and must therefore also be installed.
 The installation of the TeX Live Frontend is not required.
 
-### 3.3 PDFlib TET
-
-TBD_TET
-
-### 3.4 Poppler
+### 3.3 Poppler
 
 To convert the scanned PDF documents into image files for Tesseract OCR, the rendering library [Poppler](https://poppler.freedesktop.org){:target="_blank"} is used and must therefore also be installed.
 
-### 3.5 Python
+### 3.4 Python
 
 Because of the use of the new typing features, **`Python`** version [3.10](https://docs.python.org/3/whatsnew/3.10.html){:target="_blank"} or higher is required.
 
-### 3.6 Tesseract OCR
+### 3.5 Tesseract OCR
 
 To convert image documents into 'pdf' files, **`Tesseract OCR`** version [5.10](https://github.com/tesseract-ocr/tesseract){:target="_blank"} or higher is required.
 

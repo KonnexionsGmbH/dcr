@@ -18,6 +18,7 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for mor
 - Converting scanned image 'pdf' documents to a series of 'jpeg' or 'png' files using [pdf2image](https://pypi.org/project/pdf2image).
 - Convert 'csv', 'docx', 'epub', 'html', 'odt', 'rst' or 'rtf' type documents to 'pdf' format using [Pandoc](https://pandoc.org) and [TeX Live](https://www.tug.org/texlive).
 - Convert 'bmp', 'gif', 'jp2', 'jpeg', 'png', 'pnm', 'tiff' or 'webp' type documents to 'pdf' format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract).
+- Extract the text from 'pdf' documents using [PDFlib TET](https://www.pdflib.com/products/tet/).
 - Much more!
 
 ## Support

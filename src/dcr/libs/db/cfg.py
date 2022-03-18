@@ -82,7 +82,7 @@ DOCUMENT_FILE_TYPE_TESSERACT: List[str] = [
     "tiff",
     "webp",
 ]
-DOCUMENT_FILE_TYPE_TXT: str = "txt"
+DOCUMENT_FILE_TYPE_XML: str = "xml"
 
 DOCUMENT_NEXT_STEP_PANDOC: str = "Pandoc & TeX Live"
 DOCUMENT_NEXT_STEP_PARSER: str = "Parser"
@@ -203,25 +203,16 @@ JOURNAL_ACTION_51_003: str = (
     "51.003 Next  (tet): The created text file '{file_name}' " + "is ready to be parsed."
 )
 JOURNAL_ACTION_51_901: str = (
-    "51.901 Issue (tet): Extracting the text of file '{source_file}' to the file "
-    + "'{target_file}' page {page_no} failed - "
+    "51.901 Issue (tet): Issues with opening document '{file_name}' - "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
 JOURNAL_ACTION_51_902: str = (
-    "51.902 Issue (tet): Issues with opening the output file '{file_name}' - "
+    "51.902 Issue (tet): TETML data could not be retrieved from document '{file_name}' - "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
 JOURNAL_ACTION_51_903: str = (
-    "51.903 Issue (tet): Issues with opening file '{file_name}' page {page_no} - "
-    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-)
-JOURNAL_ACTION_51_904: str = (
-    "51.904 Issue (tet): Issues with processing file '{file_name}' page {page_no} - "
-    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-)
-JOURNAL_ACTION_51_905: str = (
-    "51.905 Issue (tet): Extracting the text of file '{source_file}' to the file "
-    + "'{target_file}' failed - "
+    "51.903 Issue (tet): Extracting the text of file '{file_name}' to file "
+    + "'{target_file}' failed: "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
 

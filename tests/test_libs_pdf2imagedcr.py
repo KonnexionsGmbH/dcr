@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.pdf2image."""
+"""Testing Module libs.pdf2imagedcr."""
 import libs.cfg
 import libs.db
 import pytest

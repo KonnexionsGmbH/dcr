@@ -38,7 +38,7 @@ def update_dbt_id(
 ) -> None: ...
 def update_document_status(
     document_columns: libs.cfg.Columns,
-    insert_journal: Callable[[str, str, sqlalchemy.Integer, str], None],
+    insert_journal: None,
 ) -> None: ...
 def update_version_version(
     version: str,
