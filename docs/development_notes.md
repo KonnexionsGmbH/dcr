@@ -34,8 +34,8 @@ Version **`3.10`** is used for the **`Python`** programming language.
 - In the event of an error, the execution of the script must be terminated immediately.
 - Apart from the main scripts, all other scripts should be present in the **`scripts`** file directory.
 - The main scripts are:
-    - `run_dcr_dev` - Running the DCR functionality for development purposes.
-    - `run_dcr_prod` - Performing the DCR functionality for productive operation.
+    - **`run_dcr_dev`** - Running the DCR functionality for development purposes.
+    - **`run_dcr_prod`** - Performing the DCR functionality for productive operation.
 
 ## 3. Code Formatting
 
@@ -112,7 +112,7 @@ In this format, the API documentation can then be integrated into the user docum
         ocr   - Convert image docuents to pdf files.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
-        tet   - Extract the text from pdf documents.
+        tet   - Extract text and metadata from pdf documents.
 
     With the option all, the following process steps are executed
     in this order:
@@ -228,22 +228,22 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 ## 9. Version Planning
 
-| Version    | Feature(s)                           |
-|------------|--------------------------------------|
-| ~~0.5.0~~  | ~~Inbox processing~~                 |
-| ~~0.6.0~~  | ~~pdf for Tesseract OCR processing~~ |
-| ~~0.6.5~~  | ~~Pandoc processing~~                |
-| ~~0.7.0~~  | ~~Tesseract OCR processing~~         |
-| 0.8.0      | PDFlib TET processing                |
-| 0.9.0      | Parser                               |
+| Version   | Feature(s)                           |
+|-----------|--------------------------------------|
+| ~~0.5.0~~ | ~~Inbox processing~~                 |
+| ~~0.6.0~~ | ~~pdf for Tesseract OCR processing~~ |
+| ~~0.6.5~~ | ~~Pandoc processing~~                |
+| ~~0.7.0~~ | ~~Tesseract OCR processing~~         |
+| ~~0.8.0~~ | ~~PDFlib TET processing~~            |
+| 0.9.0     | Parser                               |
 
 ## 10. Next Development Steps
 
 **1<sup>st</sup> Priority:**
 
 - API documentation: Content improvement
-- PDFlib TET processing
-- tools.py - verify the content of the inbox directories
+- API documentation: Layout improvement
+- ~~PDFlib TET processing~~
 - ~~API Documentation~~
 - ~~convert the appropriate documents into the `pdf` format with Pandoc and TeX Live~~
 - ~~duplicate handling~~ 
@@ -253,14 +253,7 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 **2<sup>nd</sup> Priority:** 
 
-- API documentation: Layout improvement
 - Google Styleguide implementation
+- tools.py - delete helper document files
+- tools.py - verify the content of the inbox directories
 - ~~Tesseract OCR - Installation~~  
-
-**3<sup>rd</sup> Priority**
-
-- n/a
-
-**No Priority (yet)**
-
-- n/a

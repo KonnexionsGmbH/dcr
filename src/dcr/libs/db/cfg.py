@@ -192,15 +192,16 @@ JOURNAL_ACTION_41_902: str = (
     + "error status: '{error_status}' - error: '{error}'."
 )
 JOURNAL_ACTION_51_001: str = (
-    "51.001 Start (tet): The text from pdf document file '{file_name}' must be extracted "
-    + "for further processing."
+    "51.001 Start (tet): The text and metadata from pdf document file '{file_name}' "
+    + "must be extracted for further processing."
 )
 JOURNAL_ACTION_51_002: str = (
-    "51.002 End   (tet): The text in pdf document "
-    + "'{file_name}' was successfully extracted into file {target_file}."
+    "51.002 End   (tet): The text and metadata from pdf document "
+    + "'{file_name}' were successfully extracted into file {target_file}."
 )
 JOURNAL_ACTION_51_003: str = (
-    "51.003 Next  (tet): The created text file '{file_name}' " + "is ready to be parsed."
+    "51.003 Next  (tet): The created text and metadata file '{file_name}' "
+    + "is ready to be parsed."
 )
 JOURNAL_ACTION_51_901: str = (
     "51.901 Issue (tet): Issues with opening document '{file_name}' - "
@@ -211,7 +212,7 @@ JOURNAL_ACTION_51_902: str = (
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
 JOURNAL_ACTION_51_903: str = (
-    "51.903 Issue (tet): Extracting the text of file '{file_name}' to file "
+    "51.903 Issue (tet): Extracting the text and metadata from file '{file_name}' to file "
     + "'{target_file}' failed: "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )

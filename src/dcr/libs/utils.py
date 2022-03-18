@@ -415,8 +415,8 @@ def show_statistics() -> None:
 
         if libs.cfg.run_action == libs.cfg.RUN_ACTION_TEXT_FROM_PDF:
             libs.utils.progress_msg(
-                "The text from the error-free pdf documents in the file directory "
-                + "'inbox_accepted' is now extracted for further processing",
+                "The text and metadata from the error-free pdf documents in the file directory "
+                + "'inbox_accepted' are now extracted for further processing",
             )
         elif libs.cfg.run_action != libs.cfg.RUN_ACTION_PROCESS_INBOX:
             libs.utils.progress_msg(

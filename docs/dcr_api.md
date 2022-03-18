@@ -132,7 +132,7 @@ n_2_p - Convert non-pdf documents to pdf files.
 ocr   - Convert image documents to pdf files.
 p_i   - Process the inbox directory.
 p_2_i - Convert pdf documents to image files.
-tet   - Extract the text from pdf documents.
+tet   - Extract text and metadata from pdf documents.
 
 With the option all, the following process steps are executed
 in this order:
@@ -253,7 +253,7 @@ Process the documents.
 def process_extract_text_from_pdf()
 ```
 
-Extract the text from pdf documents.
+Extract text and metadata from pdf documents.
 
 <a id="dcr.process_inbox_directory"></a>
 
@@ -1035,7 +1035,7 @@ Prepare the child document data - next step Tesseract OCR.
 
 # libs.pdflibdcr
 
-Module libs.pdflibdcr: Extract the text from pdf documents.
+Module libs.pdflibdcr: Extract text and metadata from pdf documents.
 
 <a id="libs.pdflibdcr.extract_text_from_pdf"></a>
 
@@ -1045,7 +1045,7 @@ Module libs.pdflibdcr: Extract the text from pdf documents.
 def extract_text_from_pdf() -> None
 ```
 
-Extract the text from pdf documents.
+Extract text and metadata  from pdf documents.
 
 TBD
 
@@ -1057,7 +1057,7 @@ TBD
 def extract_text_from_pdf_file() -> None
 ```
 
-Extract the text from a pdf document.
+Extract text and metadata  from a pdf document.
 
 <a id="libs.pdflibdcr.prepare_document_4_parser"></a>
 

@@ -1,4 +1,4 @@
-"""Module libs.pdflibdcr: Extract the text from pdf documents."""
+"""Module libs.pdflibdcr: Extract text and metadata from pdf documents."""
 import inspect
 
 import libs.cfg
@@ -12,20 +12,20 @@ from tetlib_py import TETException
 # Global Constants.
 # -----------------------------------------------------------------------------
 # document-specific option list
-BASE_DOC_OPT_LIST = ""
+BASE_DOC_OPT_LIST = "engines={notextcolor}"
 
 # global option list */
 GLOBAL_OPT_LIST = ""
 
 # page-specific option list */
-PAGE_OPT_LIST = "granularity=word tetml={elements={line notextcolor}}"
+PAGE_OPT_LIST = "granularity=word tetml={elements={line}}"
 
 
 # -----------------------------------------------------------------------------
-# Extract the text from pdf documents (step: tet).
+# Extract text and metadata from pdf documents (step: tet).
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf() -> None:
-    """Extract the text from pdf documents.
+    """Extract text and metadata  from pdf documents.
 
     TBD
     """
@@ -50,10 +50,10 @@ def extract_text_from_pdf() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Extract the text from a pdf document (step: tet).
+# Extract text and metadata  from a pdf document (step: tet).
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf_file() -> None:
-    """Extract the text from a pdf document."""
+    """Extract text and metadata  from a pdf document."""
     source_file_name, target_file_name = libs.utils.prepare_file_names(
         libs.db.cfg.DOCUMENT_FILE_TYPE_XML
     )
@@ -65,7 +65,9 @@ def extract_text_from_pdf_file() -> None:
 
         tet.set_option(GLOBAL_OPT_LIST)
 
-        doc_opt_list = f"tetml={{filename={target_file_name}}} {BASE_DOC_OPT_LIST}"
+        doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {BASE_DOC_OPT_LIST}"
+
+        print("wwe doc_opt_list=",doc_opt_list)
 
         source_file = tet.open_document(source_file_name, doc_opt_list)
 
@@ -115,7 +117,7 @@ def extract_text_from_pdf_file() -> None:
 
         libs.utils.initialise_document_child(journal_action)
 
-        # Text from Document successfully extracted to txt format
+        # Text and metadata from Document successfully extracted to xml format
         journal_action = libs.db.cfg.JOURNAL_ACTION_51_002.replace(
             "{source_file}", source_file_name
         ).replace("{target_file}", target_file_name)

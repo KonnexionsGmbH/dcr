@@ -17,10 +17,10 @@ if ["%1"] EQU [""] (
     echo all   - Run the complete processing of all new documents.
     echo ---------------------------------------------------------
     echo p_i   - 1. Process the inbox directory.
-    echo n_2_p - 2. Convert non-pdf documents to pdf files: Pandoc
-    echo p_2_i - 2. Convert pdf documents to image files:   Poppler.
-    echo ocr   - 3. Convert image documents to pdf files:   Tesseract OCR.
-    echo tet   - 4. Extract the text from pdf documents:    PDFlib TET.
+    echo n_2_p - 2. Convert non-pdf documents to pdf files:      Pandoc
+    echo p_2_i - 2. Convert pdf documents to image files:        Poppler.
+    echo ocr   - 3. Convert image documents to pdf files:        Tesseract OCR.
+    echo tet   - 4. Extract text and metdata from pdf documents: PDFlib TET.
     echo ---------------------------------------------------------
     echo db_c  - Create the database.
     echo db_u  - Upgrade the database.

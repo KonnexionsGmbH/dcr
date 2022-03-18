@@ -558,7 +558,7 @@ def insert_journal(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    if journal_action[0:7] == "9":
+    if journal_action[3:4] == "9":
         libs.cfg.logger.info(
             "Document: %6d - ActionCode: %s - ActionText: %s",
             document_id,
