@@ -43,20 +43,20 @@ def convert_image_2_pdf() -> None:
 # -----------------------------------------------------------------------------
 def convert_image_2_pdf_file() -> None:
     """Convert scanned image pdf documents to image files."""
-    source_file, target_file = libs.utils.prepare_file_names()
+    source_file_name, target_file_name = libs.utils.prepare_file_names()
 
-    if os.path.exists(target_file):
-        libs.utils.duplicate_file_error(target_file)
+    if os.path.exists(target_file_name):
+        libs.utils.duplicate_file_error(target_file_name)
         return
 
     # Convert the document
     try:
         pdf = pytesseract.image_to_pdf_or_hocr(
-            source_file, extension="pdf", timeout=libs.cfg.tesseract_timeout
+            source_file_name, extension="pdf", timeout=libs.cfg.tesseract_timeout
         )
-        with open(target_file, "w+b") as file:
+        with open(target_file_name, "w+b") as target_file:
             # pdf type is bytes by default
-            file.write(pdf)
+            target_file.write(pdf)
 
         libs.utils.prepare_document_4_pdflib()
 
@@ -73,8 +73,8 @@ def convert_image_2_pdf_file() -> None:
 
         # Document successfully converted to pdf format
         journal_action = libs.db.cfg.JOURNAL_ACTION_41_002.replace(
-            "{source_file}", source_file
-        ).replace("{target_file}", target_file)
+            "{source_file}", source_file_name
+        ).replace("{target_file}", target_file_name)
 
         libs.utils.finalize_file_conversion(journal_action)
     except TesseractError as err_t:
@@ -89,8 +89,8 @@ def convert_image_2_pdf_file() -> None:
                 __name__,
                 inspect.stack()[0][3],
                 libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_41_902.replace("{source_file}", source_file)
-                .replace("{target_file}", target_file)
+                libs.db.cfg.JOURNAL_ACTION_41_902.replace("{source_file}", source_file_name)
+                .replace("{target_file}", target_file_name)
                 .replace("{error_status}", str(err_t.status))
                 .replace("{error}", err_t.message),
             ),
@@ -107,8 +107,8 @@ def convert_image_2_pdf_file() -> None:
                 __name__,
                 inspect.stack()[0][3],
                 libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_41_901.replace("{source_file}", source_file)
-                .replace("{target_file}", target_file)
+                libs.db.cfg.JOURNAL_ACTION_41_901.replace("{source_file}", source_file_name)
+                .replace("{target_file}", target_file_name)
                 .replace("{type_error}", str(type(err)))
                 .replace("{error}", str(err)),
             ),

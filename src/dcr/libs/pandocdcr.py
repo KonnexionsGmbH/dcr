@@ -42,15 +42,15 @@ def convert_non_pdf_2_pdf() -> None:
 # -----------------------------------------------------------------------------
 def convert_non_pdf_2_pdf_file() -> None:
     """Convert a non-pdf document to a pdf file."""
-    source_file, target_file = libs.utils.prepare_file_names()
+    source_file_name, target_file_name = libs.utils.prepare_file_names()
 
-    if os.path.exists(target_file):
-        libs.utils.duplicate_file_error(target_file)
+    if os.path.exists(target_file_name):
+        libs.utils.duplicate_file_error(target_file_name)
         return
 
     # Convert the document
     output = pypandoc.convert_file(
-        source_file, libs.db.cfg.DOCUMENT_FILE_TYPE_PDF, outputfile=target_file
+        source_file_name, libs.db.cfg.DOCUMENT_FILE_TYPE_PDF, outputfile=target_file_name
     )
 
     # not testable
@@ -66,8 +66,8 @@ def convert_non_pdf_2_pdf_file() -> None:
                 __name__,
                 inspect.stack()[0][3],
                 libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_31_901.replace("{source_file}", source_file)
-                .replace("{target_file}", target_file)
+                libs.db.cfg.JOURNAL_ACTION_31_901.replace("{source_file}", source_file_name)
+                .replace("{target_file}", target_file_name)
                 .replace("{output}", output),
             ),
         )
@@ -87,7 +87,7 @@ def convert_non_pdf_2_pdf_file() -> None:
 
         # Document successfully converted to pdf format
         journal_action = libs.db.cfg.JOURNAL_ACTION_31_002.replace(
-            "{source_file}", source_file
-        ).replace("{target_file}", target_file)
+            "{source_file}", source_file_name
+        ).replace("{target_file}", target_file_name)
 
         libs.utils.finalize_file_conversion(journal_action)

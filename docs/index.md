@@ -17,7 +17,7 @@ The processing logic is as follows:
 - Documents in a file format accepted by DCR are registered and moved to the file directory **`ìnbox_accepted`**. All other documents are registered and moved to the file directory **`ìnbox_rejected`**.
 - Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
 - Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to PDF format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. jpeg, tiff etc., as well as scanned images in PDF format.  
-- TBD_TET
+- From all 'pdf' documents, the text and associated metadata is extracted into a document-specific 'xml' file using [PDFlib TET](https://www.pdflib.com/products/tet/).
 
 ### 1.1 Rahman & Finin Paper
 
@@ -106,9 +106,10 @@ In the event of an error, the original document is marked as erroneous and an ex
 
 ### 2.5 Extract the text from pdf documents (step: **`tet`**)
 
-TBD_TET
-
-TBD_TET
+In this processing step, the document types listed in section 2.1.3 are converted to pdf format 
+using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created pdf file (child document).
+In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
 ## 3. Requirements
 
