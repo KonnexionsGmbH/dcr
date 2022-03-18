@@ -3,20 +3,21 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.7.0)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.8.0)
 
 ----
 
 ## 1. Introduction
 
-Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](research_notes.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary PDF documents and thus make them more searchable in a more qualified manner.
+Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](research_notes.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary **`pdf`** documents and thus make them more searchable in a more qualified manner.
 
 The processing logic is as follows:
 
-- New documents are made available in the file directory **ìnbox`**.
+- New documents are made available in the file directory **`ìnbox`**.
 - Documents in a file format accepted by DCR are registered and moved to the file directory **`ìnbox_accepted`**. All other documents are registered and moved to the file directory **`ìnbox_rejected`**.
-- Documents not in PDF format are converted to PDF format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
-- Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to PDF format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. jpeg, tiff etc., as well as scanned images in PDF format.  
+- Documents not in **`pdf`** format are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
+- Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to **`pdf`** format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. **`jpeg`**, **`tiff`** etc., as well as scanned images in **`pdf`** format.  
+- From all **`pdf`** documents, the text and associated metadata is extracted into a document-specific **`xml`** file using [PDFlib TET](https://www.pdflib.com/products/tet/).
 
 ### 1.1 Rahman & Finin Paper
 
@@ -82,25 +83,32 @@ Document files with the following file extensions are moved to the file director
 
 Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejected`**.
 
-### 2.2 Convert pdf documents to image files (step: **`p_2_i`**)
+### 2.2 Convert **`pdf`** documents to image files (step: **`p_2_i`**)
 
-pdf documents consisting of scanned images must first be processed with OCR software in order to extract the text they contain. 
-Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} does not support the pdf file format, such a pdf document must first be converted into one or more image files. 
+pdf documents consisting of scanned images must first be processed with OCR software in order to extract text and metadata they contain. 
+Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} does not support the **`pdf`** file format, such a **`pdf`** document must first be converted into one or more image files. 
 This is done with the software [pdf2image](https://pypi.org/project/pdf2image){:target="_blank"}, which in turn is based on the [Poppler](https://poppler.freedesktop.org){:target="_blank"} software.
 The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image files (child document(s)).
 
-### 2.3 Convert appropriate non-pdf documents to pdf files (step: **`n_2_p`**)
+### 2.3 Convert appropriate non-pdf documents to **`pdf`** files (step: **`n_2_p`**)
 
-In this processing step, the document types listed in section 2.1.2 are converted to pdf format 
+In this processing step, the document types listed in section 2.1.2 are converted to **`pdf`** format 
 using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
-In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created pdf file (child document).
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
-### 2.4 Convert appropriate image documents to pdf files (step: **`ocr`**)
+### 2.4 Convert appropriate image documents to **`pdf`** files (step: **`ocr`**)
 
-In this processing step, the document types listed in section 2.1.3 are converted to pdf format 
+In this processing step, the document types listed in section 2.1.3 are converted to **`pdf`** format 
 using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
-In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created pdf file (child document).
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
+In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
+
+### 2.5 Extract text and metadata from **`pdf`** documents (step: **`tet`**)
+
+In this processing step, the text and metadata of the **`pdf`** documents from 2.1.1, 2.3 and 2.4 are extracted and written to an **`xml`** file in **`tetml`** format for each document.
+The [PDFlib TET](https://www.pdflib.com/products/tet/) library is used for this purpose.
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`xml`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
 ## 3. Requirements
@@ -113,7 +121,7 @@ In this case, only the functionality of the **`grep`**, **`make`**  and **`sed`*
 
 ### 3.2 Pandoc & TeX Live
 
-To convert the non-PDF documents (see 2.1.2) into pdf files for PDFlib TET processing, 
+To convert the non-PDF documents (see 2.1.2) into **`pdf`** files for PDFlib TET processing, 
 the universal document converter [Pandoc](https://pandoc.org){:target="_blank"} 
 and [TeX Live](https://www.tug.org/texlive){:target="_blank"} are used and must therefore also be installed.
 The installation of the TeX Live Frontend is not required.
@@ -168,7 +176,7 @@ The customisable entries are:
       db_schema = dcr_schema
       db_user = dcr_user
       db_user_admin = dcr_user_admin
-      dcr_version = 0.7.0
+      dcr_version = 0.8.0
       directory_inbox = data/inbox
       directory_inbox_accepted = data/inbox_accepted
       directory_inbox_rejected = data/inbox_rejected
@@ -190,7 +198,7 @@ The customisable entries are:
 | db_schema                | **`dcr_schema`**             | database schema name                                                          |
 | db_user                  | **`postgresql`**             | DCR database user name                                                        |
 | db_user_admin            | **`postgresql`**             | administrative database user name                                             |
-| dcr_version              | **`0.7.0`**                  | current version number of the DCR application                                 |
+| dcr_version              | **`0.8.0`**                  | current version number of the DCR application                                 |
 | directory_inbox          | **`data/inbox`**             | directory for the new documents received                                      |
 | directory_inbox_accepted | **`data/inbox_accepted`**    | directory for the accepted documents                                          |
 | directory_inbox_rejected | **`data/inbox_rejected`**    | directory for the rejected documents                                          |
@@ -230,7 +238,8 @@ The following actions are available:
 | **`db_u`**  | Upgrade the database.                                                                                              |
 | **`m_d`**   | Run the installation of the necessary 3rd party packages <br/>for development and run the development ecosystem.   |
 | **`m_p`**   | Run the installation of the necessary 3rd party packages <br/>for production and compile all packages and modules. |
-| **`n_2_p`** | Convert appropriate non-pdf documents to pdf files.                                                                |
-| **`ocr`**   | Convert appropriate image documents to pdf files.                                                                  |
+| **`n_2_p`** | Convert appropriate non-pdf documents to **`pdf`** files.                                                                |
+| **`ocr`**   | Convert appropriate image documents to **`pdf`** files.                                                                  |
+| **`p_2_i`** | Convert **`pdf`** documents to image files.                                                                              |
 | **`p_i`**   | Process the inbox directory.                                                                                       |
-| **`p_2_i`** | Convert pdf documents to image files.                                                                              |
+| **`tet`**   | Extract text and metadata from **`pdf`** documents.                                                                      |

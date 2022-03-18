@@ -31,12 +31,12 @@ export DCR_ENVIRONMENT_TYPE=test
 
 ifeq ($(OS),Windows_NT)
 	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
-    export MYPYPATH=src\\dcr
-    export PYTHONPATH=src\\dcr
+    export MYPYPATH=src\\dcr;src\\dcr\\libs
+    export PYTHONPATH=src\\dcr;src\\dcr\\libs
 else
 	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
-    export MYPYPATH=src/dcr
-    export PYTHONPATH=src/dcr:src/dcr
+    export MYPYPATH=src/dcr:src/dcr/libs
+    export PYTHONPATH=src/dcr:src/dcr:src/dcr/libs
 endif
 
 # Bandit is a tool designed to find common security issues in Python code.
@@ -94,7 +94,7 @@ docformatter:       ## Format the docstrings with docformatter.
 flake8:             ## Enforce the Python Style Guides with Flake8.
 	@echo "Info **********  Start: Flake8 **************************************"
 	pipenv run flake8 --version
-	pipenv run flake8 src tests
+	pipenv run flake8 --exclude TET.py src tests
 	@echo "Info **********  End:   Flake8 **************************************"
 
 # isort your imports, so you don't have to.
@@ -123,7 +123,7 @@ mypy:               ## Find typing issues with Mypy.
 	@echo MYPYPATH=${MYPYPATH}
 	pipenv run pip freeze | grep mypy
 	pipenv run mypy --version
-	pipenv run mypy src
+	pipenv run mypy --exclude TET.py src
 	@echo "Info **********  End:   Mypy ****************************************"
 
 # pip is the package installer for Python.

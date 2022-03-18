@@ -12,7 +12,6 @@ from sqlalchemy import DDL
 from sqlalchemy import ForeignKey
 from sqlalchemy import MetaData
 from sqlalchemy import Table
-from sqlalchemy import UniqueConstraint
 from sqlalchemy import and_
 from sqlalchemy import event
 from sqlalchemy import func
@@ -324,9 +323,6 @@ def create_dbt_journal(table_name: str) -> None:
             ForeignKey(libs.db.cfg.DBT_RUN + "." + libs.db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
-        UniqueConstraint(
-            libs.db.cfg.DBC_DOCUMENT_ID, libs.db.cfg.DBC_ACTION_CODE, name="unique_key_1"
-        ),
     )
 
     libs.utils.progress_msg("The database table '" + table_name + "' has now been created")
@@ -562,7 +558,7 @@ def insert_journal(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    if journal_action[0:7] == "9":
+    if journal_action[3:4] == "9":
         libs.cfg.logger.info(
             "Document: %6d - ActionCode: %s - ActionText: %s",
             document_id,

@@ -77,6 +77,8 @@ def duplicate_file_error(file_name: str) -> None:
     Args:
         file_name (_type_): File name.
     """
+    libs.cfg.total_erroneous += 1
+
     # pylint: disable=expression-not-assigned
     libs.db.orm.update_document_status(
         {
@@ -90,8 +92,6 @@ def duplicate_file_error(file_name: str) -> None:
             libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", file_name),
         ),
     )
-
-    libs.cfg.total_erroneous += 1
 
 
 # -----------------------------------------------------------------------------
@@ -162,6 +162,22 @@ def initialise_document_child(journal_action: str) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Prepare the base child document data - next step parser or Tesseract OCR.
+# -----------------------------------------------------------------------------
+def prepare_document_4_parser_tesseract() -> None:
+    """Prepare the child document data - next step parser or Tesseract OCR."""
+    libs.cfg.document_child_child_no = 0
+    libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
+    libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
+    libs.cfg.document_child_error_code = None
+
+    libs.cfg.document_child_file_type = libs.cfg.pdf2image_type
+
+    libs.cfg.document_child_id_base = libs.cfg.document_id_base
+    libs.cfg.document_child_id_parent = libs.cfg.document_id
+
+
+# -----------------------------------------------------------------------------
 # Prepare the base child document data - next step PDFlib.
 # -----------------------------------------------------------------------------
 def prepare_document_4_pdflib() -> None:
@@ -181,29 +197,17 @@ def prepare_document_4_pdflib() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Prepare the base child document data - next step Tesseract OCR.
-# -----------------------------------------------------------------------------
-def prepare_document_4_tesseract() -> None:
-    """Prepare the child document data - next step Tesseract OCR."""
-    libs.cfg.document_child_child_no = 0
-    libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
-    libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
-    libs.cfg.document_child_error_code = None
-
-    libs.cfg.document_child_file_type = libs.cfg.pdf2image_type
-
-    libs.cfg.document_child_id_base = libs.cfg.document_id_base
-    libs.cfg.document_child_id_parent = libs.cfg.document_id
-
-    libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT
-    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
-
-
-# -----------------------------------------------------------------------------
 # Prepare the source and target file names.
 # -----------------------------------------------------------------------------
-def prepare_file_names() -> Tuple[str, str]:
-    """Prepare the source and target file names."""
+def prepare_file_names(file_extension: str = libs.db.cfg.DOCUMENT_FILE_TYPE_PDF) -> Tuple[str, str]:
+    """Prepare the source and target file names.
+
+    Args:
+        file_extension (str): File extension, default value 'pdf'.
+
+    Returns:
+        Tuple(str,str): Source file name and target file name.
+    """
     source_file = os.path.join(
         libs.cfg.document_directory_name,
         libs.cfg.document_file_name,
@@ -211,7 +215,7 @@ def prepare_file_names() -> Tuple[str, str]:
 
     target_file = os.path.join(
         libs.cfg.document_directory_name,
-        libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
+        libs.cfg.document_stem_name + "." + file_extension,
     )
 
     return source_file, target_file
@@ -386,6 +390,10 @@ def show_statistics() -> None:
             libs.utils.progress_msg(
                 f"Number documents accepted:         {libs.cfg.total_ok_processed:6d}"
             )
+        elif libs.cfg.run_action == libs.cfg.RUN_ACTION_TEXT_FROM_PDF:
+            libs.utils.progress_msg(
+                f"Number documents extracted:        {libs.cfg.total_ok_processed:6d}"
+            )
         else:
             libs.utils.progress_msg(
                 f"Number documents converted:        {libs.cfg.total_ok_processed:6d}"
@@ -405,7 +413,12 @@ def show_statistics() -> None:
                 f"Number documents erroneous:        {libs.cfg.total_erroneous:6d}"
             )
 
-        if libs.cfg.run_action != libs.cfg.RUN_ACTION_PROCESS_INBOX:
+        if libs.cfg.run_action == libs.cfg.RUN_ACTION_TEXT_FROM_PDF:
+            libs.utils.progress_msg(
+                "The text and metadata from the error-free pdf documents in the file directory "
+                + "'inbox_accepted' are now extracted for further processing",
+            )
+        elif libs.cfg.run_action != libs.cfg.RUN_ACTION_PROCESS_INBOX:
             libs.utils.progress_msg(
                 "The error-free documents in the file directory "
                 + "'inbox_accepted' are now converted to a pdf format "

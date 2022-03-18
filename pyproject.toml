@@ -53,6 +53,7 @@ name = "index"
 title = "API Documentation"
 
 [tool.pydocstyle]
+match='((?!test_).*\.py)((?!TET).*\.py)'
 
 [tool.pytest.ini_options]
 console_output_style = "count"

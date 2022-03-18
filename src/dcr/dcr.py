@@ -15,9 +15,10 @@ import libs.db.cfg
 import libs.db.driver
 import libs.db.orm
 import libs.inbox
-import libs.pandoc
-import libs.pdf2image
-import libs.tesseract
+import libs.pandocdcr
+import libs.pdf2imagedcr
+import libs.pdflibdcr
+import libs.tesseractdcr
 import libs.utils
 import yaml
 
@@ -38,6 +39,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         ocr   - Convert image documents to pdf files.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
+        tet   - Extract text and metadata from pdf documents.
 
     With the option all, the following process steps are executed
     in this order:
@@ -46,6 +48,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         2. p_2_i
         3. n_2_p
         4. ocr
+        5. tet
 
     Args:
         argv (List[str]): Command line arguments.
@@ -69,6 +72,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         libs.cfg.RUN_ACTION_NON_PDF_2_PDF: False,
         libs.cfg.RUN_ACTION_PDF_2_IMAGE: False,
         libs.cfg.RUN_ACTION_PROCESS_INBOX: False,
+        libs.cfg.RUN_ACTION_TEXT_FROM_PDF: False,
         libs.cfg.RUN_ACTION_UPGRADE_DB: False,
     }
 
@@ -78,6 +82,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
             args[libs.cfg.RUN_ACTION_IMAGE_2_PDF] = True
             args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF] = True
             args[libs.cfg.RUN_ACTION_PDF_2_IMAGE] = True
+            args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF] = True
             args[libs.cfg.RUN_ACTION_PROCESS_INBOX] = True
         elif arg in (
             libs.cfg.RUN_ACTION_CREATE_DB,
@@ -85,6 +90,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
             libs.cfg.RUN_ACTION_NON_PDF_2_PDF,
             libs.cfg.RUN_ACTION_PDF_2_IMAGE,
             libs.cfg.RUN_ACTION_PROCESS_INBOX,
+            libs.cfg.RUN_ACTION_TEXT_FROM_PDF,
             libs.cfg.RUN_ACTION_UPGRADE_DB,
         ):
             args[arg] = True
@@ -227,6 +233,93 @@ def main(argv: List[str]) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Convert image documents to pdf files.
+# -----------------------------------------------------------------------------
+def process_convert_image_2_pdf():
+    """Convert image documents to pdf files."""
+    libs.cfg.run_action = libs.cfg.RUN_ACTION_IMAGE_2_PDF
+    libs.utils.progress_msg_empty_before("Start: Convert image documents to pdf files ...")
+    libs.cfg.run_id = libs.db.orm.insert_dbt_row(
+        libs.db.cfg.DBT_RUN,
+        {
+            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
+            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+        },
+    )
+    libs.tesseractdcr.convert_image_2_pdf()
+    libs.db.orm.update_dbt_id(
+        libs.db.cfg.DBT_RUN,
+        libs.cfg.run_id,
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
+            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+        },
+    )
+    libs.utils.progress_msg("End  : Convert image documents to pdf files ...")
+
+
+# -----------------------------------------------------------------------------
+# Convert non-pdf documents to pdf files.
+# -----------------------------------------------------------------------------
+def process_convert_non_pdf_2_pdf():
+    """Convert non-pdf documents to pdf files."""
+    libs.cfg.run_action = libs.cfg.RUN_ACTION_NON_PDF_2_PDF
+    libs.utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ...")
+    libs.cfg.run_id = libs.db.orm.insert_dbt_row(
+        libs.db.cfg.DBT_RUN,
+        {
+            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
+            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+        },
+    )
+    libs.pandocdcr.convert_non_pdf_2_pdf()
+    libs.db.orm.update_dbt_id(
+        libs.db.cfg.DBT_RUN,
+        libs.cfg.run_id,
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
+            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+        },
+    )
+    libs.utils.progress_msg("End  : Convert non-pdf documents to pdf files ...")
+
+
+# -----------------------------------------------------------------------------
+# Convert pdf documents to image files.
+# -----------------------------------------------------------------------------
+def process_convert_pdf_2_image():
+    """Convert pdf documents to image files."""
+    libs.cfg.run_action = libs.cfg.RUN_ACTION_PDF_2_IMAGE
+    libs.utils.progress_msg_empty_before("Start: Convert pdf documents to image files ...")
+    libs.cfg.run_id = libs.db.orm.insert_dbt_row(
+        libs.db.cfg.DBT_RUN,
+        {
+            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
+            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+        },
+    )
+    libs.pdf2imagedcr.convert_pdf_2_image()
+    libs.db.orm.update_dbt_id(
+        libs.db.cfg.DBT_RUN,
+        libs.cfg.run_id,
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
+            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+        },
+    )
+    libs.utils.progress_msg("End  : Convert pdf documents to image files ...")
+
+
+# -----------------------------------------------------------------------------
 # Process the documents.
 # -----------------------------------------------------------------------------
 def process_documents(args: dict[str, bool]) -> None:
@@ -247,108 +340,91 @@ def process_documents(args: dict[str, bool]) -> None:
 
     # Process the documents in the inbox file directory.
     if args[libs.cfg.RUN_ACTION_PROCESS_INBOX]:
-        libs.cfg.run_action = libs.cfg.RUN_ACTION_PROCESS_INBOX
-        libs.utils.progress_msg_empty_before("Start: Process the inbox directory ...")
-        libs.cfg.run_id = libs.db.orm.insert_dbt_row(
-            libs.db.cfg.DBT_RUN,
-            {
-                libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-                libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
-            },
-        )
-        libs.inbox.process_inbox()
-        libs.db.orm.update_dbt_id(
-            libs.db.cfg.DBT_RUN,
-            libs.cfg.run_id,
-            {
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-                libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-                libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-                libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
-            },
-        )
-        libs.utils.progress_msg("End  : Process the inbox directory ...")
+        process_inbox_directory()
 
     # Convert the scanned image pdf documents to image files.
     if args[libs.cfg.RUN_ACTION_PDF_2_IMAGE]:
-        libs.cfg.run_action = libs.cfg.RUN_ACTION_PDF_2_IMAGE
-        libs.utils.progress_msg_empty_before("Start: Convert pdf documents to image files ...")
-        libs.cfg.run_id = libs.db.orm.insert_dbt_row(
-            libs.db.cfg.DBT_RUN,
-            {
-                libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-                libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
-            },
-        )
-        libs.pdf2image.convert_pdf_2_image()
-        libs.db.orm.update_dbt_id(
-            libs.db.cfg.DBT_RUN,
-            libs.cfg.run_id,
-            {
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-                libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-                libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-                libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
-            },
-        )
-        libs.utils.progress_msg("End  : Convert pdf documents to image files ...")
-
-    # Convert the non-pdf documents to pdf files.
-    if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
-        libs.cfg.run_action = libs.cfg.RUN_ACTION_NON_PDF_2_PDF
-        libs.utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ...")
-        libs.cfg.run_id = libs.db.orm.insert_dbt_row(
-            libs.db.cfg.DBT_RUN,
-            {
-                libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-                libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
-            },
-        )
-        libs.pandoc.convert_non_pdf_2_pdf()
-        libs.db.orm.update_dbt_id(
-            libs.db.cfg.DBT_RUN,
-            libs.cfg.run_id,
-            {
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-                libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-                libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-                libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
-            },
-        )
-        libs.utils.progress_msg("End  : Convert non-pdf documents to pdf files ...")
+        process_convert_pdf_2_image()
 
     # Convert the image documents to pdf files.
     if args[libs.cfg.RUN_ACTION_IMAGE_2_PDF]:
-        libs.cfg.run_action = libs.cfg.RUN_ACTION_IMAGE_2_PDF
-        libs.utils.progress_msg_empty_before("Start: Convert image documents to pdf files ...")
-        libs.cfg.run_id = libs.db.orm.insert_dbt_row(
-            libs.db.cfg.DBT_RUN,
-            {
-                libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-                libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
-            },
-        )
-        libs.tesseract.convert_image_2_pdf()
-        libs.db.orm.update_dbt_id(
-            libs.db.cfg.DBT_RUN,
-            libs.cfg.run_id,
-            {
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-                libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-                libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-                libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
-            },
-        )
-        libs.utils.progress_msg("End  : Convert image documents to pdf files ...")
+        process_convert_image_2_pdf()
+
+    # Convert the non-pdf documents to pdf files.
+    if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
+        process_convert_non_pdf_2_pdf()
+
+    # Extract text and metadata from pdf documents.
+    if args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF]:
+        process_extract_text_from_pdf()
 
     # Disconnect from the database.
     libs.db.orm.disconnect_db()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Extract text and metadata from pdf documents.
+# -----------------------------------------------------------------------------
+def process_extract_text_from_pdf():
+    """Extract text and metadata from pdf documents."""
+    libs.cfg.run_action = libs.cfg.RUN_ACTION_TEXT_FROM_PDF
+    libs.utils.progress_msg_empty_before("Start: Extract text and metadata from pdf documents ...")
+    libs.cfg.run_id = libs.db.orm.insert_dbt_row(
+        libs.db.cfg.DBT_RUN,
+        {
+            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
+            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+        },
+    )
+    libs.pdflibdcr.extract_text_from_pdf()
+    libs.db.orm.update_dbt_id(
+        libs.db.cfg.DBT_RUN,
+        libs.cfg.run_id,
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
+            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+        },
+    )
+    libs.utils.progress_msg("End  : Extract text and metadata from pdf documents ...")
+
+
+# -----------------------------------------------------------------------------
+# Process the inbox directory.
+# -----------------------------------------------------------------------------
+def process_inbox_directory() -> None:
+    """Process the inbox directory."""
+    libs.cfg.run_action = libs.cfg.RUN_ACTION_PROCESS_INBOX
+
+    libs.utils.progress_msg_empty_before("Start: Process the inbox directory ...")
+
+    libs.cfg.run_id = libs.db.orm.insert_dbt_row(
+        libs.db.cfg.DBT_RUN,
+        {
+            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
+            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+        },
+    )
+
+    libs.inbox.process_inbox()
+
+    libs.db.orm.update_dbt_id(
+        libs.db.cfg.DBT_RUN,
+        libs.cfg.run_id,
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
+            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+        },
+    )
+
+    libs.utils.progress_msg("End  : Process the inbox directory ...")
 
 
 # -----------------------------------------------------------------------------

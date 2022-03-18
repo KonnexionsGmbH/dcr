@@ -10,19 +10,23 @@ setlocal EnableDelayedExpansion
 
 set DCR_CHOICE_ACTION_DEFAULT=db_u
 set DCR_ENVIRONMENT_TYPE=dev
-set PYTHONPATH=src/dcr
+set PYTHONPATH=%PYTHONPATH%;src\dcr;src\dcr\libs
 
 if ["%1"] EQU [""] (
     echo =========================================================
     echo all   - Run the complete processing of all new documents.
+    echo ---------------------------------------------------------
+    echo p_i   - 1. Process the inbox directory.
+    echo n_2_p - 2. Convert non-pdf documents to pdf files:      Pandoc
+    echo p_2_i - 2. Convert pdf documents to image files:        Poppler.
+    echo ocr   - 3. Convert image documents to pdf files:        Tesseract OCR.
+    echo tet   - 4. Extract text and metdata from pdf documents: PDFlib TET.
+    echo ---------------------------------------------------------
     echo db_c  - Create the database.
     echo db_u  - Upgrade the database.
+    echo ---------------------------------------------------------
     echo m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem.
     echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules.
-    echo n_2_p - Convert non-pdf documents to pdf files.
-    echo ocr   - Convert image documents to pdf files.
-    echo p_i   - Process the inbox directory.
-    echo p_2_i - Convert pdf documents to image files.
     echo ---------------------------------------------------------
     set /P DCR_CHOICE_ACTION="Enter the desired action [default: %DCR_CHOICE_ACTION_DEFAULT%] "
 
@@ -124,7 +128,12 @@ echo.
         dir data\inbox
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
+
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"]   (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
+
+    if ["%DCR_CHOICE_ACTION%"] EQU ["tet"]   (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
@@ -136,7 +145,7 @@ echo.
         goto normal_exit
     )
 
-    echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i"
+    echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | tet"
 
     :normal_exit
     echo -----------------------------------------------------------------------
