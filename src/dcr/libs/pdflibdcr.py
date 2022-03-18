@@ -119,7 +119,7 @@ def extract_text_from_pdf_file() -> None:
 
         # Text and metadata from Document successfully extracted to xml format
         journal_action = libs.db.cfg.JOURNAL_ACTION_51_002.replace(
-            "{source_file}", source_file_name
+            "{file_name}", source_file_name
         ).replace("{target_file}", target_file_name)
 
         libs.utils.finalize_file_conversion(journal_action)

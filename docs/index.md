@@ -83,32 +83,32 @@ Document files with the following file extensions are moved to the file director
 
 Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejected`**.
 
-### 2.2 Convert pdf documents to image files (step: **`p_2_i`**)
+### 2.2 Convert **`pdf`** documents to image files (step: **`p_2_i`**)
 
-pdf documents consisting of scanned images must first be processed with OCR software in order to extract the text they contain. 
-Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} does not support the pdf file format, such a pdf document must first be converted into one or more image files. 
+pdf documents consisting of scanned images must first be processed with OCR software in order to extract text and metadata they contain. 
+Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} does not support the **`pdf`** file format, such a **`pdf`** document must first be converted into one or more image files. 
 This is done with the software [pdf2image](https://pypi.org/project/pdf2image){:target="_blank"}, which in turn is based on the [Poppler](https://poppler.freedesktop.org){:target="_blank"} software.
 The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image files (child document(s)).
 
-### 2.3 Convert appropriate non-pdf documents to pdf files (step: **`n_2_p`**)
+### 2.3 Convert appropriate non-pdf documents to **`pdf`** files (step: **`n_2_p`**)
 
-In this processing step, the document types listed in section 2.1.2 are converted to pdf format 
+In this processing step, the document types listed in section 2.1.2 are converted to **`pdf`** format 
 using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
-In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created pdf file (child document).
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
-### 2.4 Convert appropriate image documents to pdf files (step: **`ocr`**)
+### 2.4 Convert appropriate image documents to **`pdf`** files (step: **`ocr`**)
 
-In this processing step, the document types listed in section 2.1.3 are converted to pdf format 
+In this processing step, the document types listed in section 2.1.3 are converted to **`pdf`** format 
 using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
-In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created pdf file (child document).
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
-### 2.5 Extract the text from pdf documents (step: **`tet`**)
+### 2.5 Extract text and metadata from **`pdf`** documents (step: **`tet`**)
 
-In this processing step, the document types listed in section 2.1.3 are converted to pdf format 
-using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
-In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created pdf file (child document).
+In this processing step, the text and metadata of the **`pdf`** documents from 2.1.1, 2.3 and 2.4 are extracted and written to an **`xml`** file in **`tetml`** format for each document.
+The [PDFlib TET](https://www.pdflib.com/products/tet/) library is used for this purpose.
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`xml`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
 ## 3. Requirements
@@ -121,7 +121,7 @@ In this case, only the functionality of the **`grep`**, **`make`**  and **`sed`*
 
 ### 3.2 Pandoc & TeX Live
 
-To convert the non-PDF documents (see 2.1.2) into pdf files for PDFlib TET processing, 
+To convert the non-PDF documents (see 2.1.2) into **`pdf`** files for PDFlib TET processing, 
 the universal document converter [Pandoc](https://pandoc.org){:target="_blank"} 
 and [TeX Live](https://www.tug.org/texlive){:target="_blank"} are used and must therefore also be installed.
 The installation of the TeX Live Frontend is not required.
@@ -238,8 +238,8 @@ The following actions are available:
 | **`db_u`**  | Upgrade the database.                                                                                              |
 | **`m_d`**   | Run the installation of the necessary 3rd party packages <br/>for development and run the development ecosystem.   |
 | **`m_p`**   | Run the installation of the necessary 3rd party packages <br/>for production and compile all packages and modules. |
-| **`n_2_p`** | Convert appropriate non-pdf documents to pdf files.                                                                |
-| **`ocr`**   | Convert appropriate image documents to pdf files.                                                                  |
+| **`n_2_p`** | Convert appropriate non-pdf documents to **`pdf`** files.                                                                |
+| **`ocr`**   | Convert appropriate image documents to **`pdf`** files.                                                                  |
+| **`p_2_i`** | Convert **`pdf`** documents to image files.                                                                              |
 | **`p_i`**   | Process the inbox directory.                                                                                       |
-| **`p_2_i`** | Convert pdf documents to image files.                                                                              |
-| **`tet`**   | Extract the text from pdf documents.                                                                               |
+| **`tet`**   | Extract text and metadata from **`pdf`** documents.                                                                      |

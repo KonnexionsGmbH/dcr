@@ -9,7 +9,7 @@
 
 ## 1. Version 0.8.0
 
-Release Date: dd.mm.2022
+Release Date: 18.03.2022
 
 ### 1.1 New Features
 
@@ -17,19 +17,19 @@ Release Date: dd.mm.2022
 
 ### 1.2 Applied Software
 
-| Software                                                                      | Version                | Remark                              | Status |
-|:------------------------------------------------------------------------------|:-----------------------|:------------------------------------|--------|
-| DBeaver                                                                       | 22.0.0                 | for virtual machine only [optional] |        |
-| Docker Desktop                                                                | 20.10.13               | base version [Docker Image & VM]    |        | 
-| Git                                                                           | 2.25.1                 | base version                        |        |
-| [Pandoc](https://pandoc.org){:target="_blank"}                                | 2.17.1.1               |                                     |        |
-| [PFlib TET](https://www.pdflib.com/products/tet){:target="_blank"}            | 5.3                    |                                     | new    |
-| [Poppler](https://poppler.freedesktop.org){:target="_blank"}                  | 0.86.1                 | base version                        |        |
-| Python3                                                                       | 3.10.2                 |                                     |        |
-| Python3 - pip                                                                 | 22.0.4                 |                                     |        |
-| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} | 5.10.0                 | base version                        |        |
-| [TeX Live](https://www.tug.org/texlive){:target="_blank"}                     | 2019                   | base version                        |        |
-| TeX Live - pdfTeX                                                             | 3.14159265-2.6-1.40.20 | base version                        |        |
+| Software                                                                      | Version                | Remark                              | Status    |
+|:------------------------------------------------------------------------------|:-----------------------|:------------------------------------|-----------|
+| DBeaver                                                                       | 22.0.0                 | for virtual machine only [optional] |           |
+| Docker Desktop                                                                | 20.10.13               | base version [Docker Image & VM]    |           | 
+| Git                                                                           | 2.25.1                 | base version                        |           |
+| [Pandoc](https://pandoc.org){:target="_blank"}                                | 2.17.1.1               |                                     |           |
+| [PFlib TET](https://www.pdflib.com/products/tet){:target="_blank"}            | 5.3                    |                                     | new       |
+| [Poppler](https://poppler.freedesktop.org){:target="_blank"}                  | 0.86.1                 | base version                        |           |
+| Python3                                                                       | 3.10.3                 |                                     | upgrade   |
+| Python3 - pip                                                                 | 22.0.4                 |                                     |           |
+| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} | 5.10.0                 | base version                        |           |
+| [TeX Live](https://www.tug.org/texlive){:target="_blank"}                     | 2019                   | base version                        |           |
+| TeX Live - pdfTeX                                                             | 3.14159265-2.6-1.40.20 | base version                        |           |
 
 #### 1.2.1 Unix-specific Software
 
