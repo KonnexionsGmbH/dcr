@@ -37,8 +37,9 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         db_u  - Upgrade the database.
         n_2_p - Convert non-pdf documents to pdf files.
         ocr   - Convert image documents to pdf files.
-        p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
+        p_i   - Process the inbox directory.
+        s_f_p - Store document structure from parser result.
         tet   - Extract text and metadata from pdf documents.
 
     With the option all, the following process steps are executed
@@ -49,6 +50,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         3. n_2_p
         4. ocr
         5. tet
+        6. s_f_p
 
     Args:
         argv (List[str]): Command line arguments.
@@ -72,6 +74,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         libs.cfg.RUN_ACTION_NON_PDF_2_PDF: False,
         libs.cfg.RUN_ACTION_PDF_2_IMAGE: False,
         libs.cfg.RUN_ACTION_PROCESS_INBOX: False,
+        libs.cfg.RUN_ACTION_STORE_FROM_PARSER: False,
         libs.cfg.RUN_ACTION_TEXT_FROM_PDF: False,
         libs.cfg.RUN_ACTION_UPGRADE_DB: False,
     }
@@ -82,14 +85,16 @@ def get_args(argv: List[str]) -> dict[str, bool]:
             args[libs.cfg.RUN_ACTION_IMAGE_2_PDF] = True
             args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF] = True
             args[libs.cfg.RUN_ACTION_PDF_2_IMAGE] = True
-            args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF] = True
             args[libs.cfg.RUN_ACTION_PROCESS_INBOX] = True
+            args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER] = True
+            args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF] = True
         elif arg in (
             libs.cfg.RUN_ACTION_CREATE_DB,
             libs.cfg.RUN_ACTION_IMAGE_2_PDF,
             libs.cfg.RUN_ACTION_NON_PDF_2_PDF,
             libs.cfg.RUN_ACTION_PDF_2_IMAGE,
             libs.cfg.RUN_ACTION_PROCESS_INBOX,
+            libs.cfg.RUN_ACTION_STORE_FROM_PARSER,
             libs.cfg.RUN_ACTION_TEXT_FROM_PDF,
             libs.cfg.RUN_ACTION_UPGRADE_DB,
         ):
@@ -235,7 +240,7 @@ def main(argv: List[str]) -> None:
 # -----------------------------------------------------------------------------
 # Convert image documents to pdf files.
 # -----------------------------------------------------------------------------
-def process_convert_image_2_pdf():
+def process_convert_image_2_pdf() -> None:
     """Convert image documents to pdf files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_IMAGE_2_PDF
     libs.utils.progress_msg_empty_before("Start: Convert image documents to pdf files ...")
@@ -264,7 +269,7 @@ def process_convert_image_2_pdf():
 # -----------------------------------------------------------------------------
 # Convert non-pdf documents to pdf files.
 # -----------------------------------------------------------------------------
-def process_convert_non_pdf_2_pdf():
+def process_convert_non_pdf_2_pdf() -> None:
     """Convert non-pdf documents to pdf files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_NON_PDF_2_PDF
     libs.utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ...")
@@ -293,7 +298,7 @@ def process_convert_non_pdf_2_pdf():
 # -----------------------------------------------------------------------------
 # Convert pdf documents to image files.
 # -----------------------------------------------------------------------------
-def process_convert_pdf_2_image():
+def process_convert_pdf_2_image() -> None:
     """Convert pdf documents to image files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_PDF_2_IMAGE
     libs.utils.progress_msg_empty_before("Start: Convert pdf documents to image files ...")
@@ -358,6 +363,10 @@ def process_documents(args: dict[str, bool]) -> None:
     if args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF]:
         process_extract_text_from_pdf()
 
+    # Store document structure from parser result.
+    if args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER]:
+        process_store_from_parser()
+
     # Disconnect from the database.
     libs.db.orm.disconnect_db()
 
@@ -367,7 +376,7 @@ def process_documents(args: dict[str, bool]) -> None:
 # -----------------------------------------------------------------------------
 # Extract text and metadata from pdf documents.
 # -----------------------------------------------------------------------------
-def process_extract_text_from_pdf():
+def process_extract_text_from_pdf() -> None:
     """Extract text and metadata from pdf documents."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_TEXT_FROM_PDF
     libs.utils.progress_msg_empty_before("Start: Extract text and metadata from pdf documents ...")
@@ -425,6 +434,40 @@ def process_inbox_directory() -> None:
     )
 
     libs.utils.progress_msg("End  : Process the inbox directory ...")
+
+
+# -----------------------------------------------------------------------------
+# Store document structure from parser result.
+# -----------------------------------------------------------------------------
+def process_store_from_parser() -> None:
+    """Store document structure from parser result."""
+    libs.cfg.run_action = libs.cfg.RUN_ACTION_STORE_FROM_PARSER
+
+    libs.utils.progress_msg_empty_before("Start: Store document structure ...")
+
+    libs.cfg.run_id = libs.db.orm.insert_dbt_row(
+        libs.db.cfg.DBT_RUN,
+        {
+            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
+            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+        },
+    )
+
+    libs.parser.parse_tetml_filrs()
+
+    libs.db.orm.update_dbt_id(
+        libs.db.cfg.DBT_RUN,
+        libs.cfg.run_id,
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
+            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+        },
+    )
+
+    libs.utils.progress_msg("End  : Store document structure ...")
 
 
 # -----------------------------------------------------------------------------

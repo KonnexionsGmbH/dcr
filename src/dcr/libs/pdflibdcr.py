@@ -25,7 +25,7 @@ PAGE_OPT_LIST = "granularity=word tetml={elements={line}}"
 # Extract text and metadata from pdf documents (step: tet).
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf() -> None:
-    """Extract text and metadata  from pdf documents.
+    """Extract text and metadata from pdf documents.
 
     TBD
     """
@@ -53,7 +53,7 @@ def extract_text_from_pdf() -> None:
 # Extract text and metadata  from a pdf document (step: tet).
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf_file() -> None:
-    """Extract text and metadata  from a pdf document."""
+    """Extract text and metadata from a pdf document."""
     source_file_name, target_file_name = libs.utils.prepare_file_names(
         libs.db.cfg.DOCUMENT_FILE_TYPE_XML
     )
@@ -67,7 +67,7 @@ def extract_text_from_pdf_file() -> None:
 
         doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {BASE_DOC_OPT_LIST}"
 
-        print("wwe doc_opt_list=",doc_opt_list)
+        print("wwe doc_opt_list=", doc_opt_list)
 
         source_file = tet.open_document(source_file_name, doc_opt_list)
 
@@ -122,7 +122,7 @@ def extract_text_from_pdf_file() -> None:
             "{file_name}", source_file_name
         ).replace("{target_file}", target_file_name)
 
-        libs.utils.finalize_file_conversion(journal_action)
+        libs.utils.finalize_file_processing(journal_action)
     except TETException:
         # not testable
         libs.cfg.total_erroneous += 1

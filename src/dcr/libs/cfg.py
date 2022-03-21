@@ -70,6 +70,7 @@ RUN_ACTION_IMAGE_2_PDF: str = "ocr"
 RUN_ACTION_NON_PDF_2_PDF: str = "n_2_p"
 RUN_ACTION_PDF_2_IMAGE: str = "p_2_i"
 RUN_ACTION_PROCESS_INBOX: str = "p_i"
+RUN_ACTION_STORE_FROM_PARSER: str = "s_f_p"
 RUN_ACTION_TEXT_FROM_PDF: str = "tet"
 RUN_ACTION_UPGRADE_DB: str = "db_u"
 

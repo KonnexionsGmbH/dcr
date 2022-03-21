@@ -76,7 +76,7 @@ def convert_image_2_pdf_file() -> None:
             "{source_file}", source_file_name
         ).replace("{target_file}", target_file_name)
 
-        libs.utils.finalize_file_conversion(journal_action)
+        libs.utils.finalize_file_processing(journal_action)
     except TesseractError as err_t:
         libs.cfg.total_erroneous += 1
 

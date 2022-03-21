@@ -95,10 +95,10 @@ def duplicate_file_error(file_name: str) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Finalise the file conversion.
+# Finalise the file processing.
 # -----------------------------------------------------------------------------
-def finalize_file_conversion(journal_action: str) -> None:
-    """Finalise the file conversion.
+def finalize_file_processing(journal_action: str) -> None:
+    """Finalise the file processing.
 
     Args:
         journal_action (str): journal action.

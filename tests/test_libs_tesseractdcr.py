@@ -5,6 +5,7 @@ import platform
 import libs.cfg
 import libs.db
 import libs.db.cfg
+import libs.parser
 import pytest
 
 import dcr
