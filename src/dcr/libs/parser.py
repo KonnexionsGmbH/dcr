@@ -318,12 +318,11 @@ def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
             function_name=inspect.stack()[0][3],
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
             journal_action=libs.db.cfg.JOURNAL_ACTION_61_903.replace(
-                "{document_id}", libs.cfg.document_id_base
+                "{document_id}", str(libs.cfg.document_id_base)
             )
             .replace("{page_no}", str(libs.cfg.parse_result_page_in_document))
             .replace("{para_no}", str(libs.cfg.parse_result_para_in_page))
-            .replace("{line_no}", str(libs.cfg.parse_result_token_in_line))
-            .replace("{current_tag}", parent.text),
+            .replace("{line_no}", str(libs.cfg.parse_result_token_in_line)),
         )
     else:
         libs.cfg.parse_result_token_in_line += 1
@@ -476,7 +475,7 @@ def parse_tetml_file() -> None:
                         error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                         journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                             "{child_tag}", child_tag
-                        ).replace("{parent_tag}", parent_tag),
+                        ),
                     )
 
         # Text and metadata from Document successfully extracted to xml format

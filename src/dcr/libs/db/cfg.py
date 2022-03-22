@@ -255,8 +255,8 @@ JOURNAL_ACTION_61_902: str = (
     "61.902 Issue (s_f_p): Expected tag '{expected_tag}' - " + " but found tag '{found_tag}'."
 )
 JOURNAL_ACTION_61_903: str = (
-    "61.903 Issue (s_f_p): Token missing: document id={document_id} - page={page_no} - "
-    + "para={para_no} line={line_no} tag='{current_tag}'."
+    "61.903 Issue (s_f_p): Token missing: document {document_id} page {page_no} "
+    + "paragraph {para_no} line {line_no}."
 )
 
 RUN_STATUS_END: str = "end"
