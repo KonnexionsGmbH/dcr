@@ -46,7 +46,6 @@ if exist run_dcr_dev_debug.log (
 )
 
 set LOG_FILE=run_dcr_dev.log
-
 if exist run_dcr_dev.log (
     del /f /q run_dcr_dev.log
 )
@@ -99,6 +98,12 @@ echo.
         if exist data\inbox (
             rd /s /q data\inbox
         )
+        if exist data\inbox_accepted (
+            rd /s /q data\inbox_accepted
+        )
+        if exist data\inbox_rejected (
+            rd /s /q data\inbox_rejected
+        )
         mkdir data\inbox
         xcopy /E /I /Q tests\inbox data\inbox
         dir data\inbox
@@ -124,6 +129,12 @@ echo.
         if exist data\inbox (
             rd /s /q data\inbox
         )
+        if exist data\inbox_accepted (
+            rd /s /q data\inbox_accepted
+        )
+        if exist data\inbox_rejected (
+            rd /s /q data\inbox_rejected
+        )
         mkdir data\inbox
         xcopy /E /I /Q tests\inbox data\inbox
         dir data\inbox
@@ -142,7 +153,7 @@ echo.
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
-    if ["%_CHOICE%"] EQU ["%DCR_CHOICE_ACTION%"] (
+    if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
         pipenv run python src\dcr\dcr.py %DCR_CHOICE_ACTION%
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted

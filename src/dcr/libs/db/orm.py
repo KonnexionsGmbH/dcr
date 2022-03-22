@@ -1,5 +1,4 @@
 """Module libs.db.orm: Database Manipulation Management."""
-from typing import Callable
 from typing import Dict
 from typing import List
 
@@ -215,6 +214,81 @@ def create_db_triggers(table_names: List[str]) -> None:
         create_db_trigger_created_at(table_name)
         if table_name != libs.db.cfg.DBT_JOURNAL:
             create_db_trigger_modified_at(table_name)
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Create the database table content.
+# -----------------------------------------------------------------------------
+def create_dbt_content(table_name: str) -> None:
+    """Create the database table content.
+
+    Args:
+        table_name (str): Table name.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    sqlalchemy.Table(
+        table_name,
+        libs.db.cfg.db_orm_metadata,
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_ID,
+            sqlalchemy.Integer,
+            autoincrement=True,
+            nullable=False,
+            primary_key=True,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_CREATED_AT,
+            sqlalchemy.DateTime,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_MODIFIED_AT,
+            sqlalchemy.DateTime,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_DOCUMENT_ID,
+            sqlalchemy.Integer,
+            ForeignKey(libs.db.cfg.DBT_DOCUMENT + "." + libs.db.cfg.DBC_ID, ondelete="CASCADE"),
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_PAGE_IN_DOCUMENT,
+            sqlalchemy.Integer,
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_PARA_IN_PAGE,
+            sqlalchemy.Integer,
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_LINE_IN_PARA,
+            sqlalchemy.Integer,
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_TOKEN_IN_LINE,
+            sqlalchemy.Integer,
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_SENTENCE_IN_PARA,
+            sqlalchemy.Integer,
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_TOKEN_IN_SENTENCE,
+            sqlalchemy.Integer,
+            nullable=False,
+        ),
+        sqlalchemy.Column(libs.db.cfg.DBC_TOKEN_PARSED, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_TOKEN_STEM, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(libs.db.cfg.DBC_TOKEN_LEMMA, sqlalchemy.String, nullable=True),
+    )
+
+    libs.utils.progress_msg("The database table '" + table_name + "' has now been created")
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -459,12 +533,14 @@ def create_schema() -> None:
     create_dbt_run(libs.db.cfg.DBT_RUN)
     create_dbt_version(libs.db.cfg.DBT_VERSION)
     # FK: document
+    create_dbt_content(libs.db.cfg.DBT_CONTENT)
     # FK: run
     create_dbt_journal(libs.db.cfg.DBT_JOURNAL)
 
     # Create the database triggers.
     create_db_triggers(
         [
+            libs.db.cfg.DBT_CONTENT,
             libs.db.cfg.DBT_DOCUMENT,
             libs.db.cfg.DBT_JOURNAL,
             libs.db.cfg.DBT_RUN,
@@ -558,21 +634,6 @@ def insert_journal(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    if journal_action[3:4] == "9":
-        libs.cfg.logger.info(
-            "Document: %6d - ActionCode: %s - ActionText: %s",
-            document_id,
-            journal_action[0:7],
-            journal_action[7:],
-        )
-    else:
-        libs.cfg.logger.debug(
-            "Document: %6d - ActionCode: %s - ActionText: %s",
-            document_id,
-            journal_action[0:7],
-            journal_action[7:],
-        )
-
     insert_dbt_row(
         libs.db.cfg.DBT_JOURNAL,
         {
@@ -584,6 +645,22 @@ def insert_journal(
             libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
         },
     )
+
+    if journal_action[3:4] == "9":
+        if libs.cfg.is_verbose:
+            libs.cfg.logger.info(
+                "Document: %6d - ActionCode: %s - ActionText: %s",
+                libs.cfg.document_id,
+                journal_action[0:7],
+                journal_action[7:],
+            )
+        else:
+            libs.cfg.logger.debug(
+                "Document: %6d - ActionCode: %s - ActionText: %s",
+                libs.cfg.document_id,
+                journal_action[0:7],
+                journal_action[7:],
+            )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -716,35 +793,6 @@ def update_dbt_id(
     with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(update(dbt).where(dbt.c.id == id_where).values(columns))
         conn.close()
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Update the document and create a new journal entry.
-# -----------------------------------------------------------------------------
-def update_document_status(
-    document_columns: libs.cfg.Columns,
-    call_insert_journal: Callable[[str, str, sqlalchemy.Integer, str], None],
-) -> None:
-    """Update the document and create a new journal entry.
-
-    Args:
-        document_columns (libs.cfg.Columns): Columns regarding
-                                        database table document.
-        call_insert_journal (Callable[[str, str, sqlalchemy.Integer, str], None]): New entry in
-                                        database table journal.
-    """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    update_dbt_id(
-        libs.db.cfg.DBT_DOCUMENT,
-        libs.cfg.document_id,
-        document_columns,
-    )
-
-    # pylint: disable=pointless-statement
-    call_insert_journal
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 

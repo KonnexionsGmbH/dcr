@@ -8,6 +8,7 @@ import logging
 import logging.config
 import os
 import sys
+import time
 from typing import List
 
 import libs.cfg
@@ -16,6 +17,7 @@ import libs.db.driver
 import libs.db.orm
 import libs.inbox
 import libs.pandocdcr
+import libs.parser
 import libs.pdf2imagedcr
 import libs.pdflibdcr
 import libs.tesseractdcr
@@ -243,7 +245,9 @@ def main(argv: List[str]) -> None:
 def process_convert_image_2_pdf() -> None:
     """Convert image documents to pdf files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_IMAGE_2_PDF
-    libs.utils.progress_msg_empty_before("Start: Convert image documents to pdf files ...")
+    libs.utils.progress_msg_empty_before(
+        "Start: Convert image documents to pdf files ... Tesseeract OCR"
+    )
     libs.cfg.run_id = libs.db.orm.insert_dbt_row(
         libs.db.cfg.DBT_RUN,
         {
@@ -272,7 +276,9 @@ def process_convert_image_2_pdf() -> None:
 def process_convert_non_pdf_2_pdf() -> None:
     """Convert non-pdf documents to pdf files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_NON_PDF_2_PDF
-    libs.utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ...")
+    libs.utils.progress_msg_empty_before(
+        "Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]"
+    )
     libs.cfg.run_id = libs.db.orm.insert_dbt_row(
         libs.db.cfg.DBT_RUN,
         {
@@ -301,7 +307,9 @@ def process_convert_non_pdf_2_pdf() -> None:
 def process_convert_pdf_2_image() -> None:
     """Convert pdf documents to image files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_PDF_2_IMAGE
-    libs.utils.progress_msg_empty_before("Start: Convert pdf documents to image files ...")
+    libs.utils.progress_msg_empty_before(
+        "Start: Convert pdf documents to image files ... pdf2image [Poppler]"
+    )
     libs.cfg.run_id = libs.db.orm.insert_dbt_row(
         libs.db.cfg.DBT_RUN,
         {
@@ -345,27 +353,39 @@ def process_documents(args: dict[str, bool]) -> None:
 
     # Process the documents in the inbox file directory.
     if args[libs.cfg.RUN_ACTION_PROCESS_INBOX]:
+        start_time: int = time.time()
         process_inbox_directory()
+        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
     # Convert the scanned image pdf documents to image files.
     if args[libs.cfg.RUN_ACTION_PDF_2_IMAGE]:
+        start_time: int = time.time()
         process_convert_pdf_2_image()
+        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
     # Convert the image documents to pdf files.
     if args[libs.cfg.RUN_ACTION_IMAGE_2_PDF]:
+        start_time: int = time.time()
         process_convert_image_2_pdf()
+        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
     # Convert the non-pdf documents to pdf files.
     if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
+        start_time: int = time.time()
         process_convert_non_pdf_2_pdf()
+        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
     # Extract text and metadata from pdf documents.
     if args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF]:
+        start_time: int = time.time()
         process_extract_text_from_pdf()
+        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
     # Store document structure from parser result.
     if args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER]:
+        start_time: int = time.time()
         process_store_from_parser()
+        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
     # Disconnect from the database.
     libs.db.orm.disconnect_db()
@@ -379,7 +399,9 @@ def process_documents(args: dict[str, bool]) -> None:
 def process_extract_text_from_pdf() -> None:
     """Extract text and metadata from pdf documents."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_TEXT_FROM_PDF
-    libs.utils.progress_msg_empty_before("Start: Extract text and metadata from pdf documents ...")
+    libs.utils.progress_msg_empty_before(
+        "Start: Extract text and metadata from pdf documents ... PDFlib TET"
+    )
     libs.cfg.run_id = libs.db.orm.insert_dbt_row(
         libs.db.cfg.DBT_RUN,
         {
@@ -409,7 +431,7 @@ def process_inbox_directory() -> None:
     """Process the inbox directory."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_PROCESS_INBOX
 
-    libs.utils.progress_msg_empty_before("Start: Process the inbox directory ...")
+    libs.utils.progress_msg_empty_before("Start: Process the inbox directory ... PyMuPDF [fitz]")
 
     libs.cfg.run_id = libs.db.orm.insert_dbt_row(
         libs.db.cfg.DBT_RUN,
@@ -443,7 +465,9 @@ def process_store_from_parser() -> None:
     """Store document structure from parser result."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_STORE_FROM_PARSER
 
-    libs.utils.progress_msg_empty_before("Start: Store document structure ...")
+    libs.utils.progress_msg_empty_before(
+        "Start: Store document structure ... defusedxml [xml.etree.ElementTree]"
+    )
 
     libs.cfg.run_id = libs.db.orm.insert_dbt_row(
         libs.db.cfg.DBT_RUN,
@@ -454,7 +478,7 @@ def process_store_from_parser() -> None:
         },
     )
 
-    libs.parser.parse_tetml_filrs()
+    libs.parser.parse_tetml()
 
     libs.db.orm.update_dbt_id(
         libs.db.cfg.DBT_RUN,

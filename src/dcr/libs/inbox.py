@@ -172,7 +172,11 @@ def prepare_document_child_accepted() -> None:
         + "_"
         + str(libs.cfg.document_id)
         + "."
-        + libs.cfg.document_file_type
+        + (
+            libs.cfg.document_file_type
+            if libs.cfg.document_file_type != libs.db.cfg.DOCUMENT_FILE_TYPE_TIF
+            else libs.db.cfg.DOCUMENT_FILE_TYPE_TIFF
+        )
     )
 
     libs.cfg.document_child_file_type = libs.cfg.document_file_type
@@ -213,12 +217,11 @@ def prepare_pdf(file: pathlib.Path) -> None:
 
         process_inbox_accepted(next_step, journal_action)
     except RuntimeError as err:
-        journal_action: str = libs.db.cfg.JOURNAL_ACTION_01_903.replace(
-            "{source_file}", libs.cfg.document_file_name
-        ).replace("{error_msg}", str(err))
         process_inbox_rejected(
             libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
-            journal_action,
+            libs.db.cfg.JOURNAL_ACTION_01_903.replace(
+                "{source_file}", libs.cfg.document_file_name
+            ).replace("{error_msg}", str(err)),
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -292,7 +295,12 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
     )
 
     if os.path.exists(target_file):
-        libs.utils.duplicate_file_error(target_file)
+        libs.utils.report_document_error(
+            module_name=__name__,
+            function_name=inspect.stack()[0][3],
+            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            journal_action=libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", target_file),
+        )
     else:
         shutil.move(source_file, target_file)
 
@@ -372,7 +380,7 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
     """Reject a new document that is faulty.
 
     Args:
-        error_code (str): Error code.
+        error_code (str):     Error code.
         journal_action (str): Journal action data.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
@@ -412,6 +420,11 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
             },
         )
 
-    libs.cfg.total_erroneous += 1
+        libs.utils.report_document_error(
+            module_name=__name__,
+            function_name=inspect.stack()[0][3],
+            error_code=None,
+            journal_action=journal_action,
+        )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

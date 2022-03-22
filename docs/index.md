@@ -76,6 +76,7 @@ Document files with the following file extensions are moved to the file director
 - **`jpeg`**
 - **`png`**
 - **`pnm`**
+- **`tif`**
 - **`tiff`**
 - **`webp`**
 

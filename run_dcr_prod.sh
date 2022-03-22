@@ -39,14 +39,14 @@ echo ""
 echo "Script $0 is now running"
 
 rm -f run_dcr_prod_debug.log
-export LOG_FILE=run_dcr_prod.log
-rm -f run_dcr_prod.log
+export LOG_FILE=run_dcr_prod_${DCR_CHOICE_ACTION}.log
+rm -f run_dcr_prod_${DCR_CHOICE_ACTION}.log
 
 echo ""
-echo "You can find the run log in the file $LOG_FILE"
+echo "You can find the run log in the file ${LOG_FILE}"
 echo ""
 
-exec &> >(tee -i $LOG_FILE) 2>&1
+exec &> >(tee -i ${LOG_FILE}) 2>&1
 sleep .1
 
 echo "=============================================================================="

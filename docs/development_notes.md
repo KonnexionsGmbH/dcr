@@ -236,24 +236,31 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 | ~~0.7.0~~ | ~~Tesseract OCR processing~~         |
 | ~~0.8.0~~ | ~~PDFlib TET processing~~            |
 | 0.9.0     | Parser                               |
+| 0.9.1     | Text preprocessing and wrangling     |
 
 ## 10. Next Development Steps
 
 **1<sup>st</sup> Priority:**
 
-- API documentation: Content improvement
-- API documentation: Layout improvement
-- ~~PDFlib TET processing~~
+- check the content of the file directory against the database
+- clean up the auxiliary files in file directory inbox_accepted - keep the base document
+- clean up the database before the next process retry - delete existing data
+- combine 'pdf' files - scanned 'pdf' documents
+- convert 'doc' documents to 'docx'
+- introduce document language - eventually inbox subfolder per language
 - ~~API Documentation~~
+- ~~PDFlib TET processing~~
 - ~~convert the appropriate documents into the `pdf` format with Pandoc and TeX Live~~
 - ~~duplicate handling~~ 
 - ~~error handling - highly defensive~~
 - ~~inbox.py - process_inbox() - processing ocr & non-ocr in the same method~~
+- ~~optionally save the original document in the database~~
+- ~~replace TeX Live by LuaLaTeX or XeLuTeX (Unicode)~~
 - ~~test cases for file duplicate~~
 
 **2<sup>nd</sup> Priority:** 
 
+- API documentation: Content improvement
+- API documentation: Layout improvement
 - Google Styleguide implementation
-- tools.py - delete helper document files
-- tools.py - verify the content of the inbox directories
 - ~~Tesseract OCR - Installation~~  

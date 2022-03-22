@@ -26,18 +26,28 @@ DBC_FILE_NAME: str = "file_name"
 DBC_FILE_TYPE: str = "file_type"
 DBC_FUNCTION_NAME: str = "function_name"
 DBC_ID: str = "id"
+DBC_LINE_IN_PARA: str = "line_in_para"
 DBC_MODIFIED_AT: str = "modified_at"
 DBC_MODULE_NAME: str = "module_name"
 DBC_NEXT_STEP: str = "next_step"
+DBC_PAGE_IN_DOCUMENT: str = "page_in_document"
+DBC_PARA_IN_PAGE: str = "para_in_page"
 DBC_RUN_ID: str = "run_id"
+DBC_SENTENCE_IN_PARA: str = "sentence_in_para"
 DBC_SHA256: str = "sha256"
 DBC_STATUS: str = "status"
 DBC_STEM_NAME: str = "stem_name"
+DBC_TOKEN_IN_LINE: str = "token_in_line"
+DBC_TOKEN_IN_SENTENCE: str = "token_in_sentence"
+DBC_TOKEN_LEMMA: str = "token_lemma"
+DBC_TOKEN_PARSED: str = "token_parsed"
+DBC_TOKEN_STEM: str = "token_stem"
 DBC_TOTAL_ERRONEOUS: str = "total_erroneous"
 DBC_TOTAL_OK_PROCESSED: str = "total_ok_processed"
 DBC_TOTAL_TO_BE_PROCESSED: str = "total_to_be_processed"
 DBC_VERSION: str = "version"
 
+DBT_CONTENT: str = "content"
 DBT_DOCUMENT: str = "document"
 DBT_JOURNAL: str = "journal"
 DBT_RUN: str = "run"
@@ -55,6 +65,7 @@ DOCUMENT_ERROR_CODE_REJ_FILE_MOVE: str = "Issue with file move"
 DOCUMENT_ERROR_CODE_REJ_FILE_RIGHTS: str = "Issue with file permissions"
 DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT: str = "No 'pdf' format"
 DOCUMENT_ERROR_CODE_REJ_PANDOC: str = "Issue with Pandoc and TeX Live"
+DOCUMENT_ERROR_CODE_REJ_PARSER: str = "Issue with parser"
 DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE: str = "Issue with pdf2image"
 DOCUMENT_ERROR_CODE_REJ_PDFLIB: str = "Issue with PDFlib TET"
 DOCUMENT_ERROR_CODE_REJ_TESSERACT: str = "Issue with Tesseract OCR"
@@ -79,9 +90,12 @@ DOCUMENT_FILE_TYPE_TESSERACT: List[str] = [
     "jpg",
     "png",
     "pnm",
+    "tif",
     "tiff",
     "webp",
 ]
+DOCUMENT_FILE_TYPE_TIF: str = "tif"
+DOCUMENT_FILE_TYPE_TIFF: str = "tiff"
 DOCUMENT_FILE_TYPE_XML: str = "xml"
 
 DOCUMENT_NEXT_STEP_PANDOC: str = "Pandoc & TeX Live"
@@ -124,14 +138,16 @@ JOURNAL_ACTION_01_905: str = (
     "01.905 Issue (p_i): The same file has probably already been processed "
     + "once under the file name '{file_name}'."
 )
-JOURNAL_ACTION_01_906: str = "01.906 The target file '{file_name}' already exists."
+JOURNAL_ACTION_01_906: str = "01.906 Issue (p_i): The target file '{file_name}' already exists."
 JOURNAL_ACTION_11_001: str = (
-    "11.001 Ready to convert the document to 'pdf' format using Pandoc and TeX Live."
+    "11.001 Next  (p_i) Ready to convert the document to 'pdf' format using Pandoc and TeX Live."
 )
 JOURNAL_ACTION_11_002: str = (
-    "11.002 Ready to convert the document to 'pdf' format using Tesseract OCR."
+    "11.002 Next  (p_i) Ready to convert the document to 'pdf' format using Tesseract OCR."
 )
-JOURNAL_ACTION_11_003: str = "11.003 Ready to process the 'pdf' document using PDFlib TET."
+JOURNAL_ACTION_11_003: str = (
+    "11.003 Next  (p_i) Ready to process the 'pdf' document using PDFlib TET."
+)
 JOURNAL_ACTION_21_001: str = (
     "21.001 Start (p_2_i): The document file '{file_name}' must be converted into image file(s) "
     + "for further processing."
@@ -153,6 +169,7 @@ JOURNAL_ACTION_21_902: str = (
     + "'{file_name}' cannot be stored "
     + "- error: code='{error_code}' msg='{error_msg}'."
 )
+JOURNAL_ACTION_21_903: str = "21.903 Issue (p_2_i): The target file '{file_name}' already exists."
 JOURNAL_ACTION_31_001: str = (
     "31.001 Start (n_2_p): The document file '{file_name}' must be converted into a 'pdf' file "
     + "for further processing."
@@ -169,6 +186,11 @@ JOURNAL_ACTION_31_901: str = (
     "31.901 Issue (n_2_p): Converting the file '{source_file}' to the file "
     + "'{target_file}' with Pandoc and TeX Live failed - output='{output}'."
 )
+JOURNAL_ACTION_31_902: str = (
+    "31.902 Issue (n_2_p): The file '{file_name}' cannot be converted to an "
+    + "'pdf' document - error: '{error_msg}'."
+)
+JOURNAL_ACTION_31_903: str = "31.903 Issue (n_2_p): The target file '{file_name}' already exists."
 JOURNAL_ACTION_41_001: str = (
     "41.001 Start (ocr): The document file '{file_name}' must be converted into a 'pdf' file "
     + "for further processing."
@@ -191,6 +213,7 @@ JOURNAL_ACTION_41_902: str = (
     + "'{target_file}' with Tesseract OCR failed - "
     + "error status: '{error_status}' - error: '{error}'."
 )
+JOURNAL_ACTION_41_903: str = "41.903 Issue (ocr): The target file '{file_name}' already exists."
 JOURNAL_ACTION_51_001: str = (
     "51.001 Start (tet): The text and metadata from pdf document file '{file_name}' "
     + "must be extracted for further processing."
@@ -215,6 +238,25 @@ JOURNAL_ACTION_51_903: str = (
     "51.903 Issue (tet): Extracting the text and metadata from file '{file_name}' to file "
     + "'{target_file}' failed: "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
+)
+JOURNAL_ACTION_61_001: str = (
+    "61.001 Start (s_f_p): The content of the TETML file '{file_name}' "
+    + "must be parsed to store the document structure in the database."
+)
+JOURNAL_ACTION_61_002: str = (
+    "61.002 End   (s_f_p): The content of the TETML file '{file_name}' "
+    + "has been successfully parsed and the document structure is now "
+    + "stored in the database."
+)
+JOURNAL_ACTION_61_901: str = (
+    "61.901 Issue (s_f_p): Unknown child tag '{child_tag}' - " + "in parent tag '{parent_tag}'."
+)
+JOURNAL_ACTION_61_902: str = (
+    "61.902 Issue (s_f_p): Expected tag '{expected_tag}' - " + " but found tag '{found_tag}'."
+)
+JOURNAL_ACTION_61_903: str = (
+    "61.903 Issue (s_f_p): Token missing: document id={document_id} - page={page_no} - "
+    + "para={para_no} line={line_no} tag='{current_tag}'."
 )
 
 RUN_STATUS_END: str = "end"
