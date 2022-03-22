@@ -3,7 +3,7 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.8.0)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.0)
 
 Based on the paper "Unfolding the Structure of a Document using Deep Learning" (**[Rahman and Finin, 2019](https://konnexionsgmbh.github.io/dcr/research/#rahman-m-finin-t-2019)**), this software project attempts to automatically recognize the structure in arbitrary **`pdf`** documents and thus make them more searchable in a more qualified manner.
 Documents not in **`pdf`** format are converted in advance to **`pdf`** format using **[Pandoc](https://pandoc.org)** and **[TeX Live](https://www.tug.org/texlive)** .
@@ -16,7 +16,7 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for mor
 - Identifying scanned image **`pdf`** documents using [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/module.html).
 - Converting scanned image **`pdf`** documents to a series of **`jpeg`** or **`png`** files using [pdf2image](https://pypi.org/project/pdf2image).
 - Converting **`csv`**, **`docx`**, **`epub`**, **`html`**, **`odt`**, **`rst`** or **`rtf`** type documents to **`pdf`** format using [Pandoc](https://pandoc.org) and [TeX Live](https://www.tug.org/texlive).
-- Converting **`bmp`**, **`gif`**, **`jp2`**, **`jpeg`**, **`png`**, **`pnm`**, **`tiff`** or **`webp`** type documents to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract).
+- Converting **`bmp`**, **`gif`**, **`jp2`**, **`jpeg`**, **`png`**, **`pnm`**, **`tif`**, **`tiff`** or **`webp`** type documents to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract).
 - Extracting text and metadata from **`pdf`** documents using [PDFlib TET](https://www.pdflib.com/products/tet/).
 - Much more!
 

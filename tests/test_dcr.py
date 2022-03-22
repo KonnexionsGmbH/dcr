@@ -3,6 +3,7 @@
 import os
 
 import libs.cfg
+import libs.parser
 import pytest
 
 import dcr
@@ -25,11 +26,12 @@ def test_get_args(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     args = dcr.get_args([libs.cfg.DCR_ARGV_0, "AlL"])
 
-    assert len(args) == 7, "arg: all"
+    assert len(args) == 8, "arg: all"
     assert args[libs.cfg.RUN_ACTION_IMAGE_2_PDF], "arg: all"
     assert args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF], "arg: all"
     assert args[libs.cfg.RUN_ACTION_PDF_2_IMAGE], "arg: all"
     assert args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: all"
+    assert args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER], "arg: all"
     assert args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_CREATE_DB], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_UPGRADE_DB], "arg: all"
@@ -42,6 +44,7 @@ def test_get_args(fxtr_setup_logger_environment):
     assert not args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_PDF_2_IMAGE], "arg: db_c"
     assert not args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: db_c"
+    assert not args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER], "arg: db_c"
     assert not args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF], "arg: db_c"
     assert not args[libs.cfg.RUN_ACTION_UPGRADE_DB], "arg: db_c"
 
@@ -54,6 +57,7 @@ def test_get_args(fxtr_setup_logger_environment):
     assert not args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_PDF_2_IMAGE], "arg: db_u"
     assert not args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: db_u"
+    assert not args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER], "arg: db_u"
     assert not args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF], "arg: db_u"
 
     # -------------------------------------------------------------------------

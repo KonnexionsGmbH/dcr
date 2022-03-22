@@ -21,6 +21,7 @@ if [ -z "$1" ]; then
     echo "p_2_i - 2. Convert pdf documents to image files:         Poppler."
     echo "ocr   - 3. Convert image documents to pdf files:         Tesseract OCR."
     echo "tet   - 4. Extract text and metadata from pdf documents: PDFlib TET."
+    echo "s_f_p - 5. Store document structure from parser result"
     echo "------------------------------------------------------------------------------"
     echo "db_c  - Create the database."
     echo "db_u  - Upgrade the database."
@@ -76,7 +77,7 @@ case "${DCR_CHOICE_ACTION}" in
   db_c)
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
-  db_u|n_2_p|ocr|p_2_i|tet)
+  db_u|n_2_p|ocr|p_2_i|s_f_p|tet)
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   all|p_i)
@@ -87,7 +88,7 @@ case "${DCR_CHOICE_ACTION}" in
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
-    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p | ocr | p_i | p_2_i | tet"
+    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p | ocr | p_i | p_2_i | s_f_p | tet"
     ;;
 esac
 

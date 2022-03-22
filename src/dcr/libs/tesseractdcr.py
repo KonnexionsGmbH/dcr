@@ -28,7 +28,13 @@ def convert_image_2_pdf() -> None:
         rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT)
 
         for row in rows:
-            libs.utils.start_document_processing(row, libs.db.cfg.JOURNAL_ACTION_41_001)
+            libs.utils.start_document_processing(
+                module_name=__name__,
+                function_name=inspect.stack()[0][3],
+                document=row,
+                journal_action=libs.db.cfg.JOURNAL_ACTION_41_001,
+            )
+
             convert_image_2_pdf_file()
 
         conn.close()
@@ -46,7 +52,14 @@ def convert_image_2_pdf_file() -> None:
     source_file_name, target_file_name = libs.utils.prepare_file_names()
 
     if os.path.exists(target_file_name):
-        libs.utils.duplicate_file_error(target_file_name)
+        libs.utils.report_document_error(
+            module_name=__name__,
+            function_name=inspect.stack()[0][3],
+            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            journal_action=libs.db.cfg.JOURNAL_ACTION_41_903.replace(
+                "{file_name}", target_file_name
+            ),
+        )
         return
 
     # Convert the document
@@ -72,44 +85,34 @@ def convert_image_2_pdf_file() -> None:
         libs.utils.initialise_document_child(journal_action)
 
         # Document successfully converted to pdf format
-        journal_action = libs.db.cfg.JOURNAL_ACTION_41_002.replace(
-            "{source_file}", source_file_name
-        ).replace("{target_file}", target_file_name)
-
-        libs.utils.finalize_file_conversion(journal_action)
+        libs.utils.finalize_file_processing(
+            module_name=__name__,
+            function_name=inspect.stack()[0][3],
+            journal_action=libs.db.cfg.JOURNAL_ACTION_41_002.replace(
+                "{source_file}", source_file_name
+            ).replace("{target_file}", target_file_name),
+        )
     except TesseractError as err_t:
-        libs.cfg.total_erroneous += 1
-
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_41_902.replace("{source_file}", source_file_name)
-                .replace("{target_file}", target_file_name)
-                .replace("{error_status}", str(err_t.status))
-                .replace("{error}", err_t.message),
-            ),
+        libs.utils.report_document_error(
+            module_name=__name__,
+            function_name=inspect.stack()[0][3],
+            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
+            journal_action=libs.db.cfg.JOURNAL_ACTION_41_902.replace(
+                "{source_file}", source_file_name
+            )
+            .replace("{target_file}", target_file_name)
+            .replace("{error_status}", str(err_t.status))
+            .replace("{error}", err_t.message),
         )
     except RuntimeError as err:
-        libs.cfg.total_erroneous += 1
-
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_41_901.replace("{source_file}", source_file_name)
-                .replace("{target_file}", target_file_name)
-                .replace("{type_error}", str(type(err)))
-                .replace("{error}", str(err)),
-            ),
+        libs.utils.report_document_error(
+            module_name=__name__,
+            function_name=inspect.stack()[0][3],
+            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
+            journal_action=libs.db.cfg.JOURNAL_ACTION_41_901.replace(
+                "{source_file}", source_file_name
+            )
+            .replace("{target_file}", target_file_name)
+            .replace("{type_error}", str(type(err)))
+            .replace("{error}", str(err)),
         )

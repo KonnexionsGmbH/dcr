@@ -21,6 +21,7 @@ if ["%1"] EQU [""] (
     echo p_2_i - 2. Convert pdf documents to image files:        Poppler.
     echo ocr   - 3. Convert image documents to pdf files:        Tesseract OCR.
     echo tet   - 4. Extract text and metdata from pdf documents: PDFlib TET.
+    echo s_f_p - 5. Store document structure from parser result
     echo ---------------------------------------------------------
     echo db_c  - Create the database.
     echo db_u  - Upgrade the database.
@@ -43,9 +44,10 @@ echo Script %0 is now running
 if exist run_dcr_prod_debug.log (
     del /f /q run_dcr_prod_debug.log
 )
-set LOG_FILE=run_dcr_prod.log
-if exist run_dcr_prod.log (
-    del /f /q run_dcr_prod.log
+
+set LOG_FILE=run_dcr_prod_%DCR_CHOICE_ACTION%.log
+if exist run_dcr_prod_%DCR_CHOICE_ACTION%.log (
+    del /f /q run_dcr_prod_%DCR_CHOICE_ACTION%.log
 )
 
 echo.
@@ -54,7 +56,7 @@ echo.
 echo Please wait ...
 echo.
 
-%LOG_FILE% 2>&1 (
+> %LOG_FILE% 2>&1 (
 
     echo =======================================================================
     echo Start %0
@@ -125,11 +127,15 @@ echo.
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
+    if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
+
     if ["%DCR_CHOICE_ACTION%"] EQU ["tet"] (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
-    if ["%_CHOICE%"] EQU ["%DCR_CHOICE_ACTION%"] (
+    if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
         pipenv run python src\dcr\dcr.py %DCR_CHOICE_ACTION%
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
@@ -138,7 +144,7 @@ echo.
         goto normal_exit
     )
 
-    echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | tet"
+    echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | s_f_p | tet"
     exit -1073741510
 
     :normal_exit
@@ -147,4 +153,4 @@ echo.
     echo -----------------------------------------------------------------------
     echo End   %0
     echo =======================================================================
-REM )
+)

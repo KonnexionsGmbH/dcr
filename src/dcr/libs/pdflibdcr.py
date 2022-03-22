@@ -25,7 +25,7 @@ PAGE_OPT_LIST = "granularity=word tetml={elements={line}}"
 # Extract text and metadata from pdf documents (step: tet).
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf() -> None:
-    """Extract text and metadata  from pdf documents.
+    """Extract text and metadata from pdf documents.
 
     TBD
     """
@@ -39,7 +39,13 @@ def extract_text_from_pdf() -> None:
         rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB)
 
         for row in rows:
-            libs.utils.start_document_processing(row, libs.db.cfg.JOURNAL_ACTION_51_001)
+            libs.utils.start_document_processing(
+                module_name=__name__,
+                function_name=inspect.stack()[0][3],
+                document=row,
+                journal_action=libs.db.cfg.JOURNAL_ACTION_51_001,
+            )
+
             extract_text_from_pdf_file()
 
         conn.close()
@@ -53,7 +59,7 @@ def extract_text_from_pdf() -> None:
 # Extract text and metadata  from a pdf document (step: tet).
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf_file() -> None:
-    """Extract text and metadata  from a pdf document."""
+    """Extract text and metadata from a pdf document."""
     source_file_name, target_file_name = libs.utils.prepare_file_names(
         libs.db.cfg.DOCUMENT_FILE_TYPE_XML
     )
@@ -67,28 +73,20 @@ def extract_text_from_pdf_file() -> None:
 
         doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {BASE_DOC_OPT_LIST}"
 
-        print("wwe doc_opt_list=",doc_opt_list)
-
         source_file = tet.open_document(source_file_name, doc_opt_list)
 
         # not testable
         if source_file == -1:
-            libs.cfg.total_erroneous += 1
-
-            libs.db.orm.update_document_status(
-                {
-                    libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
-                    libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-                },
-                libs.db.orm.insert_journal(
-                    __name__,
-                    inspect.stack()[0][3],
-                    libs.cfg.document_id,
-                    libs.db.cfg.JOURNAL_ACTION_51_901.replace("{file_name}", source_file_name)
-                    .replace("{error_no}", str(tet.get_errnum()))
-                    .replace("{api_name}", tet.get_apiname() + "()")
-                    .replace("{error}", tet.get_errmsg()),
-                ),
+            libs.utils.report_document_error(
+                module_name=__name__,
+                function_name=inspect.stack()[0][3],
+                error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
+                journal_action=libs.db.cfg.JOURNAL_ACTION_51_901.replace(
+                    "{file_name}", source_file_name
+                )
+                .replace("{error_no}", str(tet.get_errnum()))
+                .replace("{api_name}", tet.get_apiname() + "()")
+                .replace("{error}", tet.get_errmsg()),
             )
             return
 
@@ -118,30 +116,26 @@ def extract_text_from_pdf_file() -> None:
         libs.utils.initialise_document_child(journal_action)
 
         # Text and metadata from Document successfully extracted to xml format
-        journal_action = libs.db.cfg.JOURNAL_ACTION_51_002.replace(
-            "{file_name}", source_file_name
-        ).replace("{target_file}", target_file_name)
-
-        libs.utils.finalize_file_conversion(journal_action)
+        libs.utils.finalize_file_processing(
+            module_name=__name__,
+            function_name=inspect.stack()[0][3],
+            journal_action=libs.db.cfg.JOURNAL_ACTION_51_002.replace(
+                "{file_name}", source_file_name
+            ).replace("{target_file}", target_file_name),
+        )
     except TETException:
         # not testable
-        libs.cfg.total_erroneous += 1
-
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_51_903.replace("{file_name}", source_file_name)
-                .replace("{target_file}", target_file_name)
-                .replace("{error_no}", str(tet.get_errnum()))
-                .replace("{api_name}", tet.get_apiname() + "()")
-                .replace("{error}", tet.get_errmsg()),
-            ),
+        libs.utils.report_document_error(
+            module_name=__name__,
+            function_name=inspect.stack()[0][3],
+            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
+            journal_action=libs.db.cfg.JOURNAL_ACTION_51_903.replace(
+                "{file_name}", source_file_name
+            )
+            .replace("{target_file}", target_file_name)
+            .replace("{error_no}", str(tet.get_errnum()))
+            .replace("{api_name}", tet.get_apiname() + "()")
+            .replace("{error}", tet.get_errmsg()),
         )
     finally:
         if tet:

@@ -21,6 +21,7 @@ if ["%1"] EQU [""] (
     echo p_2_i - 2. Convert pdf documents to image files:        Poppler.
     echo ocr   - 3. Convert image documents to pdf files:        Tesseract OCR.
     echo tet   - 4. Extract text and metdata from pdf documents: PDFlib TET.
+    echo s_f_p - 5. Store document structure from parser result
     echo ---------------------------------------------------------
     echo db_c  - Create the database.
     echo db_u  - Upgrade the database.
@@ -45,7 +46,6 @@ if exist run_dcr_dev_debug.log (
 )
 
 set LOG_FILE=run_dcr_dev.log
-
 if exist run_dcr_dev.log (
     del /f /q run_dcr_dev.log
 )
@@ -94,9 +94,15 @@ echo.
         goto normal_exit
     )
 
-    if ["%DCR_CHOICE_ACTION%"] EQU ["all"]   (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["all"] (
         if exist data\inbox (
             rd /s /q data\inbox
+        )
+        if exist data\inbox_accepted (
+            rd /s /q data\inbox_accepted
+        )
+        if exist data\inbox_rejected (
+            rd /s /q data\inbox_rejected
         )
         mkdir data\inbox
         xcopy /E /I /Q tests\inbox data\inbox
@@ -104,24 +110,30 @@ echo.
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
-    if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"]  (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"] (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
-    if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"]  (
-        set _CHOICE=%DCR_CHOICE_ACTION%
-    )
-
-    if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p"]   (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"] (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
-    if ["%DCR_CHOICE_ACTION%"] EQU ["ocr"]   (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p"] (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
-    if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"]   (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["ocr"] (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
+
+    if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"] (
         if exist data\inbox (
             rd /s /q data\inbox
+        )
+        if exist data\inbox_accepted (
+            rd /s /q data\inbox_accepted
+        )
+        if exist data\inbox_rejected (
+            rd /s /q data\inbox_rejected
         )
         mkdir data\inbox
         xcopy /E /I /Q tests\inbox data\inbox
@@ -129,15 +141,19 @@ echo.
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
-    if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"]   (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
-    if ["%DCR_CHOICE_ACTION%"] EQU ["tet"]   (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
-    if ["%_CHOICE%"] EQU ["%DCR_CHOICE_ACTION%"] (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["tet"] (
+        set _CHOICE=%DCR_CHOICE_ACTION%
+    )
+
+    if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
         pipenv run python src\dcr\dcr.py %DCR_CHOICE_ACTION%
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
@@ -145,7 +161,7 @@ echo.
         goto normal_exit
     )
 
-    echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | tet"
+    echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | s_f_p | tet"
 
     :normal_exit
     echo -----------------------------------------------------------------------

@@ -2,6 +2,7 @@
 """Testing Module libs.pdf2imagedcr."""
 import libs.cfg
 import libs.db
+import libs.parser
 import pytest
 
 import dcr

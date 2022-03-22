@@ -3,13 +3,13 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.8.0)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.0)
 
 ----
 
-## 1. Version 0.8.0
+## 1. Version 0.9.0
 
-Release Date: 18.03.2022
+Release Date: dd.mm.2022
 
 ### 1.1 New Features
 
@@ -17,19 +17,19 @@ Release Date: 18.03.2022
 
 ### 1.2 Applied Software
 
-| Software                                                                      | Version                | Remark                              | Status    |
-|:------------------------------------------------------------------------------|:-----------------------|:------------------------------------|-----------|
-| DBeaver                                                                       | 22.0.0                 | for virtual machine only [optional] |           |
-| Docker Desktop                                                                | 20.10.13               | base version [Docker Image & VM]    |           | 
-| Git                                                                           | 2.25.1                 | base version                        |           |
-| [Pandoc](https://pandoc.org){:target="_blank"}                                | 2.17.1.1               |                                     |           |
-| [PFlib TET](https://www.pdflib.com/products/tet){:target="_blank"}            | 5.3                    |                                     | new       |
-| [Poppler](https://poppler.freedesktop.org){:target="_blank"}                  | 0.86.1                 | base version                        |           |
-| Python3                                                                       | 3.10.3                 |                                     | upgrade   |
-| Python3 - pip                                                                 | 22.0.4                 |                                     |           |
-| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} | 5.10.0                 | base version                        |           |
-| [TeX Live](https://www.tug.org/texlive){:target="_blank"}                     | 2019                   | base version                        |           |
-| TeX Live - pdfTeX                                                             | 3.14159265-2.6-1.40.20 | base version                        |           |
+| Software                                                                      | Version                | Remark                              | Status |
+|:------------------------------------------------------------------------------|:-----------------------|:------------------------------------|--------|
+| DBeaver                                                                       | 22.0.0                 | for virtual machine only [optional] |        |
+| Docker Desktop                                                                | 20.10.13               | base version [Docker Image & VM]    |        | 
+| Git                                                                           | 2.25.1                 | base version                        |        |
+| [Pandoc](https://pandoc.org){:target="_blank"}                                | 2.17.1.1               |                                     |        |
+| [PFlib TET](https://www.pdflib.com/products/tet){:target="_blank"}            | 5.3                    |                                     |        |
+| [Poppler](https://poppler.freedesktop.org){:target="_blank"}                  | 0.86.1                 | base version                        |        |
+| Python3                                                                       | 3.10.3                 |                                     |        |
+| Python3 - pip                                                                 | 22.0.4                 |                                     |        |
+| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} | 5.10.0                 | base version                        |        |
+| [TeX Live](https://www.tug.org/texlive){:target="_blank"}                     | 2019                   | base version                        |        |
+| TeX Live - pdfTeX                                                             | 3.14159265-2.6-1.40.20 | base version                        |        |
 
 #### 1.2.1 Unix-specific Software
 
@@ -165,6 +165,60 @@ Release Date: 18.03.2022
         def decode(self, input, final=False):
     KeyboardInterrupt
 ```
+
+new:
+
+"Info **********  Start: Pydoc-Markdown ******************************"
+pipenv run pydoc-markdown --version
+python -m pydoc-markdown, version 4.6.3
+pipenv run pydoc-markdown -I src/dcr --render-toc > docs/dcr_api.md
+Traceback (most recent call last):
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\parser.py", line 88, in parse_to_ast
+    return RefactoringTool([], options).refactor_string(code + '\n', filename)
+  File "C:\Software\Python\Python310\lib\lib2to3\refactor.py", line 364, in refactor_string
+    self.log_error("Can't parse %s: %s: %s",
+  File "C:\Software\Python\Python310\lib\lib2to3\refactor.py", line 362, in refactor_string
+    tree = self.driver.parse_string(data)
+  File "C:\Software\Python\Python310\lib\lib2to3\pgen2\driver.py", line 103, in parse_string
+    return self.parse_tokens(tokens, debug)
+  File "C:\Software\Python\Python310\lib\lib2to3\pgen2\driver.py", line 71, in parse_tokens
+    if p.addtoken(type, value, (prefix, start)):
+  File "C:\Software\Python\Python310\lib\lib2to3\pgen2\parse.py", line 162, in addtoken
+    raise ParseError("bad input", type, value, context)
+lib2to3.pgen2.parse.ParseError: bad input: type=1, value='child_tag', context=(' ', (66, 14))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Software\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Software\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\Scripts\pydoc-markdown.EXE\__main__.py", line 7, in <module>
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\click\core.py", line 1128, in __call__
+    return self.main(*args, **kwargs)
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\click\core.py", line 1053, in main
+    rv = self.invoke(ctx)
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\click\core.py", line 1395, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\click\core.py", line 754, in invoke
+    return __callback(*args, **kwargs)
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\pydoc_markdown\main.py", line 344, in cli
+    session.render(pydocmd)
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\pydoc_markdown\main.py", line 136, in render
+    modules = config.load_modules()
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\pydoc_markdown\__init__.py", line 154, in load_modules
+    modules.extend(loader.load())
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\__init__.py", line 87, in load_python_modules
+    yield parse_python_module(filename, module_name=module_name, options=options, encoding=encoding)
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\__init__.py", line 128, in parse_python_module
+    return parse_python_module(fpobj, fp, module_name, options, encoding)
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\__init__.py", line 132, in parse_python_module
+    ast = parser.parse_to_ast(fp.read(), filename)
+  File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\parser.py", line 90, in parse_to_ast
+    raise ParseError(exc.msg, exc.type, exc.value, tuple(exc.context) + (filename,))
+lib2to3.pgen2.parse.ParseError: bad input: type=1, value='child_tag', context=(' ', (66, 14), 'src\\dcr\\libs\\parser.py')
+make: *** [pydoc-markdown] Fehler 1
 
 ### <a name="issues_tesseract_ocr"></a> 2.4 Tesseract OCR
 

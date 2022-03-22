@@ -6,6 +6,8 @@ import os
 import pathlib
 import sys
 import traceback
+from typing import Dict
+from typing import Iterable
 from typing import Tuple
 
 import libs.cfg
@@ -69,52 +71,73 @@ def compute_sha256(file: pathlib.Path) -> str:
 
 
 # -----------------------------------------------------------------------------
-# Duplicate file error.
+# Debug an XML element.
 # -----------------------------------------------------------------------------
-def duplicate_file_error(file_name: str) -> None:
-    """Duplicate file error.
+def debug_xml_element(
+    is_info: bool, parent_tag: str, attrib: Dict[str, str], text: Iterable[str]
+) -> None:
+    """Debug an XML element.
 
     Args:
-        file_name (_type_): File name.
+        is_info (bool): is info (True) or debug (else).
+        parent_tag (str): Parent tag.
+        attrib (Dict[str,str]): Attributes.
+        text (Iterable[str]): XML element.
     """
-    libs.cfg.total_erroneous += 1
-
-    # pylint: disable=expression-not-assigned
-    libs.db.orm.update_document_status(
-        {
-            libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-        },
-        libs.db.orm.insert_journal(
-            __name__,
-            inspect.stack()[0][3],
-            libs.cfg.document_id,
-            libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", file_name),
-        ),
-    )
+    if is_info:
+        libs.cfg.logger.info(
+            "tag   =%s",
+            parent_tag,
+        )
+        libs.cfg.logger.info(
+            "attrib=%s",
+            attrib,
+        )
+        libs.cfg.logger.info(
+            "text  =%s",
+            text,
+        )
+    else:
+        libs.cfg.logger.debug(
+            "tag   =%s",
+            parent_tag,
+        )
+        libs.cfg.logger.debug(
+            "attrib=%s",
+            attrib,
+        )
+        libs.cfg.logger.debug(
+            "text  =%s",
+            text,
+        )
 
 
 # -----------------------------------------------------------------------------
-# Finalise the file conversion.
+# Finalise the file processing.
 # -----------------------------------------------------------------------------
-def finalize_file_conversion(journal_action: str) -> None:
-    """Finalise the file conversion.
+def finalize_file_processing(module_name: str, function_name: str, journal_action: str) -> None:
+    """Finalise the file processing.
 
     Args:
-        journal_action (str): journal action.
+        module_name (str):    Module name.
+        function_name (str):  Function nmae.
+        journal_action (str): Journal action.
     """
     libs.cfg.total_ok_processed += 1
 
-    libs.db.orm.update_document_status(
+    libs.db.orm.update_dbt_id(
+        libs.db.cfg.DBT_DOCUMENT,
+        libs.cfg.document_id,
         {
             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
         },
-        libs.db.orm.insert_journal(
-            __name__,
-            inspect.stack()[0][3],
-            libs.cfg.document_id,
-            journal_action,
-        ),
+    )
+
+    libs.db.orm.insert_journal(
+        module_name,
+        function_name,
+        libs.cfg.document_id,
+        journal_action,
     )
 
 
@@ -296,6 +319,40 @@ def progress_msg_empty_before(msg: str) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Report a document error.
+# -----------------------------------------------------------------------------
+def report_document_error(
+    module_name: str, function_name: str, error_code: str | None, journal_action: str
+) -> None:
+    """Report a document error.
+
+    Args:
+        module_name (str):     Module name.
+        function_name (str):   Function trace.
+        error_code (str|None): Error code.
+        journal_action (str):  Jourmal action text.
+    """
+    libs.cfg.total_erroneous += 1
+
+    if error_code is not None:
+        libs.db.orm.update_dbt_id(
+            libs.db.cfg.DBT_DOCUMENT,
+            libs.cfg.document_id,
+            {
+                libs.db.cfg.DBC_ERROR_CODE: error_code,
+                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+            },
+        )
+
+    libs.db.orm.insert_journal(
+        module_name=module_name,
+        function_name=function_name,
+        document_id=libs.cfg.document_id,
+        journal_action=journal_action,
+    )
+
+
+# -----------------------------------------------------------------------------
 # Reset the statistic counters.
 # -----------------------------------------------------------------------------
 def reset_statistics() -> None:
@@ -429,11 +486,15 @@ def show_statistics() -> None:
 # -----------------------------------------------------------------------------
 # Start document processing.
 # -----------------------------------------------------------------------------
-def start_document_processing(document: Row, journal_action: str) -> None:
+def start_document_processing(
+    module_name: str, function_name: str, document: Row, journal_action: str
+) -> None:
     """Start document processing.
 
     Args:
-        document (Row): Database row document.
+        module_name (str):    Module name.
+        function_name (str):  Function name.
+        document (Row):       Database row document.
         journal_action (str): Journal action.
     """
     libs.cfg.total_to_be_processed += 1
@@ -448,16 +509,19 @@ def start_document_processing(document: Row, journal_action: str) -> None:
     libs.cfg.document_status = document.status
     libs.cfg.document_stem_name = document.stem_name
 
-    libs.db.orm.update_document_status(
+    libs.db.orm.update_dbt_id(
+        libs.db.cfg.DBT_DOCUMENT,
+        libs.cfg.document_id,
         {
             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_START,
         },
-        libs.db.orm.insert_journal(
-            __name__,
-            inspect.stack()[0][3],
-            libs.cfg.document_id,
-            journal_action.replace("{file_name}", libs.cfg.document_file_name),
-        ),
+    )
+
+    libs.db.orm.insert_journal(
+        module_name,
+        function_name,
+        libs.cfg.document_id,
+        journal_action.replace("{file_name}", libs.cfg.document_file_name),
     )
 
     if libs.cfg.document_status == libs.db.cfg.DOCUMENT_STATUS_START:

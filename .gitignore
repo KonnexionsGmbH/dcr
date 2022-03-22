@@ -9,9 +9,11 @@
 /coverage.xml
 /data/
 /docs/*.pdf
+/setup.cfg_backup
 /site/
 /src/dcr/*/__pycache__/
 /src/dcr/__pycache__/
+/tests/Riverus_Original/
 /tests/__pycache__/
 /tests/inbox/*.bmp
 /tests/inbox/*.csv
@@ -30,8 +32,11 @@
 /tests/inbox/*.pnm
 /tests/inbox/*.rst
 /tests/inbox/*.rtf
+/tests/inbox/*.tif
 /tests/inbox/*.tiff
 /tests/inbox/*.txt
 /tests/inbox/*.webp
+/tests/inbox/*.xls
 /tests/inbox/*.xxx
+/tests/inbox/*.zip
 /tests/inbox/html_ok_files/

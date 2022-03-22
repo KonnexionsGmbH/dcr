@@ -3,7 +3,7 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.8.0)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.0)
 
 ----
 
@@ -76,6 +76,7 @@ Document files with the following file extensions are moved to the file director
 - **`jpeg`**
 - **`png`**
 - **`pnm`**
+- **`tif`**
 - **`tiff`**
 - **`webp`**
 
@@ -176,7 +177,7 @@ The customisable entries are:
       db_schema = dcr_schema
       db_user = dcr_user
       db_user_admin = dcr_user_admin
-      dcr_version = 0.8.0
+      dcr_version = 0.9.0
       directory_inbox = data/inbox
       directory_inbox_accepted = data/inbox_accepted
       directory_inbox_rejected = data/inbox_rejected
@@ -198,7 +199,7 @@ The customisable entries are:
 | db_schema                | **`dcr_schema`**             | database schema name                                                          |
 | db_user                  | **`postgresql`**             | DCR database user name                                                        |
 | db_user_admin            | **`postgresql`**             | administrative database user name                                             |
-| dcr_version              | **`0.8.0`**                  | current version number of the DCR application                                 |
+| dcr_version              | **`09.0`**                   | current version number of the DCR application                                 |
 | directory_inbox          | **`data/inbox`**             | directory for the new documents received                                      |
 | directory_inbox_accepted | **`data/inbox_accepted`**    | directory for the accepted documents                                          |
 | directory_inbox_rejected | **`data/inbox_rejected`**    | directory for the rejected documents                                          |

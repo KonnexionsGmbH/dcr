@@ -35,7 +35,13 @@ def convert_pdf_2_image() -> None:
         rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PDF2IMAGE)
 
         for row in rows:
-            libs.utils.start_document_processing(row, libs.db.cfg.JOURNAL_ACTION_21_001)
+            libs.utils.start_document_processing(
+                module_name=__name__,
+                function_name=inspect.stack()[0][3],
+                document=row,
+                journal_action=libs.db.cfg.JOURNAL_ACTION_21_001,
+            )
+
             convert_pdf_2_image_file()
 
         conn.close()
@@ -61,9 +67,11 @@ def convert_pdf_2_image_file() -> None:
 
         prepare_document_4_tesseract()
 
+        libs.cfg.document_child_child_no = 0
+
         # Store the image pages
         for img in images:
-            libs.cfg.document_child_child_no = +1
+            libs.cfg.document_child_child_no += 1
 
             libs.cfg.document_child_stem_name = (
                 libs.cfg.document_stem_name + "_" + str(libs.cfg.document_child_child_no)
@@ -79,7 +87,14 @@ def convert_pdf_2_image_file() -> None:
             )
 
             if os.path.exists(file_name_child):
-                libs.utils.duplicate_file_error(file_name_child)
+                libs.utils.report_document_error(
+                    module_name=__name__,
+                    function_name=inspect.stack()[0][3],
+                    error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+                    journal_action=libs.db.cfg.JOURNAL_ACTION_21_903.replace(
+                        "{file_name}", file_name_child
+                    ),
+                )
             else:
                 img.save(
                     file_name_child,
@@ -95,28 +110,22 @@ def convert_pdf_2_image_file() -> None:
                 libs.cfg.total_generated += 1
 
                 # Document successfully converted to image format
-                journal_action = libs.db.cfg.JOURNAL_ACTION_21_002.replace(
-                    "{file_name}", libs.cfg.document_file_name
-                ).replace("{child_no}", str(libs.cfg.document_child_child_no))
-
-                libs.utils.finalize_file_conversion(journal_action)
+                libs.utils.finalize_file_processing(
+                    module_name=__name__,
+                    function_name=inspect.stack()[0][3],
+                    journal_action=libs.db.cfg.JOURNAL_ACTION_21_002.replace(
+                        "{file_name}", libs.cfg.document_file_name
+                    ).replace("{child_no}", str(libs.cfg.document_child_child_no)),
+                )
     # not testable
     except PDFPopplerTimeoutError as err:
-        libs.cfg.total_erroneous += 1
-
-        libs.db.orm.update_document_status(
-            {
-                libs.db.cfg.DBC_ERROR_CODE: libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
-            },
-            libs.db.orm.insert_journal(
-                __name__,
-                inspect.stack()[0][3],
-                libs.cfg.document_id,
-                libs.db.cfg.JOURNAL_ACTION_21_901.replace(
-                    "{file_name}", libs.cfg.document_file_name
-                ).replace("{error_msg}", str(err)),
-            ),
+        libs.utils.report_document_error(
+            module_name=__name__,
+            function_name=inspect.stack()[0][3],
+            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
+            journal_action=libs.db.cfg.JOURNAL_ACTION_21_901.replace(
+                "{file_name}", libs.cfg.document_file_name
+            ).replace("{error_msg}", str(err)),
         )
 
 
