@@ -14,7 +14,7 @@ Based on the paper "Unfolding the Structure of a Document using Deep Learning" (
 The processing logic is as follows:
 
 - New documents are made available in the file directory **`ìnbox`**.
-- Documents in a file format accepted by DCR are registered and moved to the file directory **`ìnbox_accepted`**. All other documents are registered and moved to the file directory **`ìnbox_rejected`**.
+- Documents in a file format accepted by **DCR** are registered and moved to the file directory **`ìnbox_accepted`**. All other documents are registered and moved to the file directory **`ìnbox_rejected`**.
 - Documents not in **`pdf`** format are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
 - Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to **`pdf`** format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. **`jpeg`**, **`tiff`** etc., as well as scanned images in **`pdf`** format.  
 - From all **`pdf`** documents, the text and associated metadata is extracted into a document-specific **`xml`** file using [PDFlib TET](https://www.pdflib.com/products/tet/).
@@ -117,7 +117,7 @@ In the event of an error, the original document is marked as erroneous and an ex
 ### 3.1 Operating System
 
 Continuous delivery / integration (CD/CI) runs on **`Ubunto 18.04`**, **`Ubuntu 20.04`**~~, **`Windows Server 2019`** and **`Windows Server 2022`**~~.
-This means that **`DCR`** also runs under **`Windows 10`** and **`Windows 11`**. 
+This means that **DCR** also runs under **`Windows 10`** and **`Windows 11`**. 
 In this case, only the functionality of the **`grep`**, **`make`**  and **`sed`** tools must be made available, e.g. via [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm){:target="_blank"}, [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} or [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}.
 
 ### 3.2 Pandoc & TeX Live
@@ -127,23 +127,31 @@ the universal document converter [Pandoc](https://pandoc.org){:target="_blank"}
 and [TeX Live](https://www.tug.org/texlive){:target="_blank"} are used and must therefore also be installed.
 The installation of the TeX Live Frontend is not required.
 
-### 3.3 Poppler
+### 3.3 PDFlib TET
+
+The software library [PDFlib TET](https://www.pdflib.com/products/tet/) is used to tokenise the 'pdf' documents. 
+**DCR** contains the free version of PDFlib TET. 
+This free version is limited to files with a maximum size of 1 MB and a maximum number of pages of 10. 
+If larger files are to be processed, a licence must be purchased from PDFlib GmbH. 
+Details on the conditions can be found [here](https://www.pdflib.com/buy/).
+
+### 3.4 Poppler
 
 To convert the scanned PDF documents into image files for Tesseract OCR, the rendering library [Poppler](https://poppler.freedesktop.org){:target="_blank"} is used and must therefore also be installed.
 
-### 3.4 Python
+### 3.5 Python
 
 Because of the use of the new typing features, **`Python`** version [3.10](https://docs.python.org/3/whatsnew/3.10.html){:target="_blank"} or higher is required.
 
-### 3.5 Tesseract OCR
+### 3.6 Tesseract OCR
 
 To convert image documents into 'pdf' files, **`Tesseract OCR`** version [5.10](https://github.com/tesseract-ocr/tesseract){:target="_blank"} or higher is required.
 
 ## 4. Installation
 
-1. Clone or copy the **`DCR`** repository from [here](https://github.com/KonnexionsGmbH/dcr){:target="_blank"}.
+1. Clone or copy the **DCR** repository from [here](https://github.com/KonnexionsGmbH/dcr){:target="_blank"}.
 
-2. Switch to **`DCR`**:
+2. Switch to **DCR**:
 
     **`cd dcr`**
 
@@ -153,13 +161,13 @@ To convert image documents into 'pdf' files, **`Tesseract OCR`** version [5.10](
 
 4. Create a PostgreSQL database container with the script **`scripts/run_setup_postgresql`** and action **`prod`**.
 
-5. Create the **`DCR`** database with the script **`run_dcr_prod`** and action **`db_c`**.
+5. Create the **DCR** database with the script **`run_dcr_prod`** and action **`db_c`**.
 
 6. Optionally, adjustments can be made in the following configuration files:
 
    - **`logging_cfg.yaml`**: for the logging functionality
 
-   - **`setup.cfg`**: for the **`DCR`** application in section **`dcr`**
+   - **`setup.cfg`**: for the **DCR** application in section **DCR**
 
 ### 4.1 **`setup.cfg`**
 
@@ -190,16 +198,16 @@ The customisable entries are:
 |--------------------------|------------------------------|-------------------------------------------------------------------------------|
 | db_connection_port       | environment specific         | port number the DBMS server is listening on                                   |
 | db_connection_prefix     | **`postgresql+psycopg2://`** | front part of the database URL                                                |
-| db_database              | environment specific         | DCR database name                                                             |
+| db_database              | environment specific         | **DCR** database name                                                             |
 | db_database_admin        | environment specific         | administrative database name                                                  |
 | db_dialect               | **`postgresql`**             | DBMS used, currently: only PostgreSQL allowed                                 |
 | db_host                  | **`localhost`**              | host name of the DBMS server                                                  |
-| db_password              | **`postgresql`**             | DCR database user password                                                    |
+| db_password              | **`postgresql`**             | **DCR** database user password                                                    |
 | db_password_admin        | **`postgresql`**             | administrative database password                                              |
 | db_schema                | **`dcr_schema`**             | database schema name                                                          |
-| db_user                  | **`postgresql`**             | DCR database user name                                                        |
+| db_user                  | **`postgresql`**             | **DCR** database user name                                                        |
 | db_user_admin            | **`postgresql`**             | administrative database user name                                             |
-| dcr_version              | **`09.0`**                   | current version number of the DCR application                                 |
+| dcr_version              | **`09.0`**                   | current version number of the **DCR** application                                 |
 | directory_inbox          | **`data/inbox`**             | directory for the new documents received                                      |
 | directory_inbox_accepted | **`data/inbox_accepted`**    | directory for the accepted documents                                          |
 | directory_inbox_rejected | **`data/inbox_rejected`**    | directory for the rejected documents                                          |
@@ -229,7 +237,7 @@ The configuration parameters can be set differently for the individual environme
 
 ## 5. Operation
 
-**`DCR`** should be operated via the script **`run_dcr_prod`**. 
+**DCR** should be operated via the script **`run_dcr_prod`**. 
 The following actions are available:
 
 | Action      | Process                                                                                                            |

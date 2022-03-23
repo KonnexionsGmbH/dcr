@@ -9,7 +9,7 @@
 
 ## 1. System Environment
 
-**`DCR`** is developed on the operating systems **`Ubuntu 20.04 LTS`** and **`Microsoft Windows 10`**.
+**DCR** is developed on the operating systems **`Ubuntu 20.04 LTS`** and **`Microsoft Windows 10`**.
 Ubuntu is used here via the **`VM Workstation Player 16`**.
 **`Ubuntu`** can also be used in conjunction with the **`Windows Subsystem for Linux (WSL2)`**.
 
@@ -76,7 +76,7 @@ The creation of API documentation for functions, modules and packages is mandato
 **`pydocstyle`** is a static analysis tool for checking compliance with **`Python`** **`Docstring`** conventions.
 **`pydocstyle`** can be executed individually with **`make pydocstyle`** and is also included in both calls **`make docs`** and  **`make dev`**.
 
-The **`Docstring`** format used in **`DCR`** is that of [type Google](https://github.com/google/styleguide/blob/gh-pages/pyguide.md#383-functions-and-methods){:target="_blank"}. 
+The **`Docstring`** format used in **DCR** is that of [type Google](https://github.com/google/styleguide/blob/gh-pages/pyguide.md#383-functions-and-methods){:target="_blank"}. 
 For Visual Studio Code, the extension [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring){:target="_blank"} can be used when creating API documentation.  
 With the [Pydoc-Markdown](https://github.com/NiklasRosenstein/pydoc-markdown){:target="_blank"} tool, the API documentation is extracted from the source files and put into Markdown format. 
 In this format, the API documentation can then be integrated into the user documentation.
@@ -242,12 +242,14 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 
 **1<sup>st</sup> Priority:**
 
-- check the content of the file directory against the database
-- clean up the auxiliary files in file directory inbox_accepted - keep the base document
-- clean up the database before the next process retry - delete existing data
-- combine 'pdf' files - scanned 'pdf' documents
-- convert 'doc' documents to 'docx'
-- introduce document language - eventually inbox subfolder per language
+- ~~error correction version 0.9.0~~
+- 2 introduce document language - eventually inbox subfolder per language
+- 3 clean up the database before the next process retry - delete existing data
+- 4 clean up the auxiliary files in file directory inbox_accepted - keep the base document
+- 5 combine 'pdf' files - scanned 'pdf' documents - after Tesseract OCR
+- 6 reconstruct original document
+- 7 convert 'doc' documents to 'docx'
+- 8 check the content of the file directory against the database
 - ~~API Documentation~~
 - ~~PDFlib TET processing~~
 - ~~convert the appropriate documents into the `pdf` format with Pandoc and TeX Live~~
