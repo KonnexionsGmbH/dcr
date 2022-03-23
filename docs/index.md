@@ -17,7 +17,7 @@ The processing logic is as follows:
 - Documents in a file format accepted by **DCR** are registered and moved to the file directory **`ìnbox_accepted`**. All other documents are registered and moved to the file directory **`ìnbox_rejected`**.
 - Documents not in **`pdf`** format are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
 - Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to **`pdf`** format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. **`jpeg`**, **`tiff`** etc., as well as scanned images in **`pdf`** format.  
-- From all **`pdf`** documents, the text and associated metadata is extracted into a document-specific **`xml`** file using [PDFlib TET](https://www.pdflib.com/products/tet/).
+- From all **`pdf`** documents, the text and associated metadata is extracted into a document-specific **`xml`** file using [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"}.
 
 ### 1.1 Rahman & Finin Paper
 
@@ -108,7 +108,7 @@ In the event of an error, the original document is marked as erroneous and an ex
 ### 2.5 Extract text and metadata from **`pdf`** documents (step: **`tet`**)
 
 In this processing step, the text and metadata of the **`pdf`** documents from 2.1.1, 2.3 and 2.4 are extracted and written to an **`xml`** file in **`tetml`** format for each document.
-The [PDFlib TET](https://www.pdflib.com/products/tet/) library is used for this purpose.
+The [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} library is used for this purpose.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`xml`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
@@ -129,11 +129,11 @@ The installation of the TeX Live Frontend is not required.
 
 ### 3.3 PDFlib TET
 
-The software library [PDFlib TET](https://www.pdflib.com/products/tet/) is used to tokenise the 'pdf' documents. 
+The software library [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} is used to tokenise the 'pdf' documents. 
 **DCR** contains the free version of PDFlib TET. 
 This free version is limited to files with a maximum size of 1 MB and a maximum number of pages of 10. 
 If larger files are to be processed, a licence must be purchased from PDFlib GmbH. 
-Details on the conditions can be found [here](https://www.pdflib.com/buy/).
+Details on the conditions can be found [here](https://www.pdflib.com/buy/){:target="_blank"}.
 
 ### 3.4 Poppler
 

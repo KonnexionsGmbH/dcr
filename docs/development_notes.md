@@ -243,13 +243,16 @@ Afterwards, the second script **`run_install_4-vm_wsl2_2.sh`** must be executed 
 **1<sup>st</sup> Priority:**
 
 - ~~error correction version 0.9.0~~
-- 2 introduce document language - eventually inbox subfolder per language
-- 3 clean up the database before the next process retry - delete existing data
-- 4 clean up the auxiliary files in file directory inbox_accepted - keep the base document
-- 5 combine 'pdf' files - scanned 'pdf' documents - after Tesseract OCR
-- 6 reconstruct original document
-- 7 convert 'doc' documents to 'docx'
-- 8 check the content of the file directory against the database
+- 0 parser result with JSON 
+- 1 introduce document language - eventually inbox subfolder per language
+- 2 load initialisation data 
+- 3 introduce default language
+- 4 clean up the database before the next process retry - delete existing data
+- 5 clean up the auxiliary files in file directory inbox_accepted - keep the base document
+- 6 combine 'pdf' files - scanned 'pdf' documents - after Tesseract OCR
+- 7 reconstruct original document
+- 8 convert 'doc' documents to 'docx'
+- 9 check the content of the file directory against the database
 - ~~API Documentation~~
 - ~~PDFlib TET processing~~
 - ~~convert the appropriate documents into the `pdf` format with Pandoc and TeX Live~~
