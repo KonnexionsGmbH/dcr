@@ -209,11 +209,13 @@ def prepare_pdf(file: pathlib.Path) -> None:
         if bool(extracted_text):
             journal_action: str = libs.db.cfg.JOURNAL_ACTION_11_003
             next_step: str = libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB
+            libs.cfg.total_ok_processed_pdflib += 1
         else:
             journal_action: str = libs.db.cfg.JOURNAL_ACTION_01_003.replace(
                 "{file_name}", libs.cfg.document_child_file_name
             ).replace("{type}", libs.cfg.pdf2image_type)
             next_step: str = libs.db.cfg.DOCUMENT_NEXT_STEP_PDF2IMAGE
+            libs.cfg.total_ok_processed_pdf2image += 1
 
         process_inbox_accepted(next_step, journal_action)
     except RuntimeError as err:
@@ -361,11 +363,13 @@ def process_inbox_file(file: pathlib.Path) -> None:
         process_inbox_accepted(
             libs.db.cfg.DOCUMENT_NEXT_STEP_PANDOC, libs.db.cfg.JOURNAL_ACTION_11_001
         )
+        libs.cfg.total_ok_processed_pandoc += 1
     elif libs.cfg.document_file_type in libs.db.cfg.DOCUMENT_FILE_TYPE_TESSERACT:
         prepare_document_child_accepted()
         process_inbox_accepted(
             libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT, libs.db.cfg.JOURNAL_ACTION_11_002
         )
+        libs.cfg.total_ok_processed_tesseract += 1
     else:
         process_inbox_rejected(
             libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
@@ -420,11 +424,6 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
             },
         )
 
-        libs.utils.report_document_error(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
-            error_code=None,
-            journal_action=journal_action,
-        )
+        libs.cfg.total_erroneous += 1
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

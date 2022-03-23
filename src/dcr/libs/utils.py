@@ -360,6 +360,10 @@ def reset_statistics() -> None:
     libs.cfg.total_erroneous = 0
     libs.cfg.total_generated = 0
     libs.cfg.total_ok_processed = 0
+    libs.cfg.total_ok_processed_pandoc = 0
+    libs.cfg.total_ok_processed_pdf2image = 0
+    libs.cfg.total_ok_processed_pdflib = 0
+    libs.cfg.total_ok_processed_tesseract = 0
     libs.cfg.total_status_error = 0
     libs.cfg.total_status_ready = 0
     libs.cfg.total_to_be_processed = 0
@@ -431,43 +435,63 @@ def select_document_prepare() -> Table:
 def show_statistics() -> None:
     """Show the statistics of the run."""
     libs.utils.progress_msg(
-        f"Number documents to be processed:  {libs.cfg.total_to_be_processed:6d}"
+        f"Number documents to be processed:          {libs.cfg.total_to_be_processed:6d}"
     )
 
     if libs.cfg.total_to_be_processed > 0:
         if libs.cfg.total_status_ready > 0 or libs.cfg.total_status_error > 0:
             libs.utils.progress_msg(
-                f"Number with document status ready: {libs.cfg.total_status_ready:6d}"
+                f"Number with document status ready:         {libs.cfg.total_status_ready:6d}"
             )
             libs.utils.progress_msg(
-                f"Number with document status error: {libs.cfg.total_status_error:6d}"
+                f"Number with document status error:         {libs.cfg.total_status_error:6d}"
             )
 
         if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX:
             libs.utils.progress_msg(
-                f"Number documents accepted:         {libs.cfg.total_ok_processed:6d}"
+                "Number documents accepted - "
+                + f"Pandoc:        {libs.cfg.total_ok_processed_pandoc:6d}"
             )
+            libs.utils.progress_msg(
+                "Number documents accepted - "
+                + f"pdf2image:     {libs.cfg.total_ok_processed_pdf2image:6d}"
+            )
+            libs.utils.progress_msg(
+                "Number documents accepted - "
+                + f"PDFlib TET:    {libs.cfg.total_ok_processed_pdflib:6d}"
+            )
+            libs.utils.progress_msg(
+                "Number documents accepted - "
+                + f"Tesseract OCR: {libs.cfg.total_ok_processed_tesseract:6d}"
+            )
+            libs.utils.progress_msg(
+                "Number documents accepted - " + f"Total:         {libs.cfg.total_ok_processed:6d}"
+            )
+            libs.cfg.total_ok_processed_pandoc = 0
+            libs.cfg.total_ok_processed_pdf2image = 0
+            libs.cfg.total_ok_processed_pdflib = 0
+            libs.cfg.total_ok_processed_tesseract = 0
         elif libs.cfg.run_action == libs.cfg.RUN_ACTION_TEXT_FROM_PDF:
             libs.utils.progress_msg(
-                f"Number documents extracted:        {libs.cfg.total_ok_processed:6d}"
+                f"Number documents extracted:                {libs.cfg.total_ok_processed:6d}"
             )
         else:
             libs.utils.progress_msg(
-                f"Number documents converted:        {libs.cfg.total_ok_processed:6d}"
+                f"Number documents converted:                {libs.cfg.total_ok_processed:6d}"
             )
 
         if libs.cfg.total_generated > 0:
             libs.utils.progress_msg(
-                f"Number documents generated:        {libs.cfg.total_generated:6d}"
+                f"Number documents generated:                {libs.cfg.total_generated:6d}"
             )
 
         if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX:
             libs.utils.progress_msg(
-                f"Number documents rejected:         {libs.cfg.total_erroneous:6d}"
+                f"Number documents rejected:                 {libs.cfg.total_erroneous:6d}"
             )
         else:
             libs.utils.progress_msg(
-                f"Number documents erroneous:        {libs.cfg.total_erroneous:6d}"
+                f"Number documents erroneous:                {libs.cfg.total_erroneous:6d}"
             )
 
         if libs.cfg.run_action == libs.cfg.RUN_ACTION_TEXT_FROM_PDF:

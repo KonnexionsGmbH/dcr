@@ -181,6 +181,10 @@ tesseract_timeout: Decimal
 total_erroneous: int
 total_generated: int
 total_ok_processed: int
+total_ok_processed_pandoc: int
+total_ok_processed_pdf2image: int
+total_ok_processed_pdflib: int
+total_ok_processed_tesseract: int
 total_status_error: int
 total_status_ready: int
 total_to_be_processed: int
