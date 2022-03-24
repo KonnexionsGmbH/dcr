@@ -34,6 +34,7 @@ DCR_CFG_DIRECTORY_INBOX_ACCEPTED: str
 DCR_CFG_DIRECTORY_INBOX_REJECTED: str
 DCR_CFG_FILE: str
 DCR_CFG_IGNORE_DUPLICATES: str
+DCR_CFG_INITIAL_DATABASE_DATA: str
 DCR_CFG_PDF2IMAGE_TYPE: str
 DCR_CFG_PDF2IMAGE_TYPE_JPEG: str
 DCR_CFG_PDF2IMAGE_TYPE_PNG: str
@@ -43,6 +44,7 @@ DCR_CFG_SECTION_PROD: str
 DCR_CFG_SECTION_TEST: str
 DCR_CFG_TESSERACT_TIMEOUT: str
 DCR_CFG_VERBOSE: str
+DCR_CFG_VERBOSE_PARSER: str
 
 DCR_ENVIRONMENT_TYPE: str
 
@@ -146,6 +148,7 @@ document_file_type: str
 document_id: sqlalchemy.Integer
 document_id_base: sqlalchemy.Integer | None
 document_id_parent: sqlalchemy.Integer | None
+document_language_id: sqlalchemy.Integer
 document_next_step: str | None
 document_sha256: str | None
 document_status: str
@@ -155,6 +158,10 @@ environment_type: str
 
 is_ignore_duplicates: bool
 is_verbose: bool
+is_verbose_parser: bool
+
+language_id: sqlalchemy.Integer
+language_directory_inbox: PathLike[str]
 
 logger: logging.Logger
 

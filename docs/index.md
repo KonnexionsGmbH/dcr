@@ -190,31 +190,35 @@ The customisable entries are:
       directory_inbox_accepted = data/inbox_accepted
       directory_inbox_rejected = data/inbox_rejected
       ignore_duplicates = false
+      initial_database_data=data/initial_database_data.json
       pdf2image_type = jpeg
       tesseract_timeout = 10
       verbose = true
+      verbose_parser = false
 
-| Parameter                | Default value                | Description                                                                   |
-|--------------------------|------------------------------|-------------------------------------------------------------------------------|
-| db_connection_port       | environment specific         | port number the DBMS server is listening on                                   |
-| db_connection_prefix     | **`postgresql+psycopg2://`** | front part of the database URL                                                |
-| db_database              | environment specific         | **DCR** database name                                                             |
-| db_database_admin        | environment specific         | administrative database name                                                  |
-| db_dialect               | **`postgresql`**             | DBMS used, currently: only PostgreSQL allowed                                 |
-| db_host                  | **`localhost`**              | host name of the DBMS server                                                  |
-| db_password              | **`postgresql`**             | **DCR** database user password                                                    |
-| db_password_admin        | **`postgresql`**             | administrative database password                                              |
-| db_schema                | **`dcr_schema`**             | database schema name                                                          |
-| db_user                  | **`postgresql`**             | **DCR** database user name                                                        |
-| db_user_admin            | **`postgresql`**             | administrative database user name                                             |
-| dcr_version              | **`09.0`**                   | current version number of the **DCR** application                                 |
-| directory_inbox          | **`data/inbox`**             | directory for the new documents received                                      |
-| directory_inbox_accepted | **`data/inbox_accepted`**    | directory for the accepted documents                                          |
-| directory_inbox_rejected | **`data/inbox_rejected`**    | directory for the rejected documents                                          |
-| ignore_duplicates        | **`false`**                  | accept presumably duplicated documents <br/>based on a SHA256 hash key        |
-| pdfimage_type            | **`jpeg`**                   | format of the image files for the scanned <br/>`pdf` document: `jpeg`or `pdf` |
-| tesseract_timeout        | **`10`**                     | terminate the tesseract job after a period of time (seconds)                  |
-| verbose                  | **`true`**                   | display progress messages for processing                                      |
+| Parameter                | Default value                         | Description                                                                            |
+|--------------------------|---------------------------------------|----------------------------------------------------------------------------------------|
+| db_connection_port       | environment specific                  | port number the DBMS server is listening on                                            |
+| db_connection_prefix     | **`postgresql+psycopg2://`**          | front part of the database URL                                                         |
+| db_database              | environment specific                  | **DCR** database name                                                                  |
+| db_database_admin        | environment specific                  | administrative database name                                                           |
+| db_dialect               | **`postgresql`**                      | DBMS used, currently: only PostgreSQL allowed                                          |
+| db_host                  | **`localhost`**                       | host name of the DBMS server                                                           |
+| db_password              | **`postgresql`**                      | **DCR** database user password                                                         |
+| db_password_admin        | **`postgresql`**                      | administrative database password                                                       |
+| db_schema                | **`dcr_schema`**                      | database schema name                                                                   |
+| db_user                  | **`postgresql`**                      | **DCR** database user name                                                             |
+| db_user_admin            | **`postgresql`**                      | administrative database user name                                                      |
+| dcr_version              | **`09.0`**                            | current version number of the **DCR** application                                      |
+| directory_inbox          | **`data/inbox`**                      | directory for the new documents received                                               |
+| directory_inbox_accepted | **`data/inbox_accepted`**             | directory for the accepted documents                                                   |
+| directory_inbox_rejected | **`data/initial_database_data.json`** | Complete file name for the JSON file with the database initialisation data             |
+| ignore_duplicates        | **`false`**                           | accept presumably duplicated documents <br/>based on a SHA256 hash key                 |
+| initial_database_data    | **`false`**                           | accept presumably duplicated documents <br/>based on a SHA256 hash key                 |
+| pdfimage_type            | **`jpeg`**                            | format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`** |
+| tesseract_timeout        | **`10`**                              | terminate the tesseract job after a period of time (seconds)                           |
+| verbose                  | **`true`**                            | display progress messages for processing                                               |
+| verbose_parser           | **`false`**                           | display progress messages for parsing xml (TETML)                                      |
 
 The configuration parameters can be set differently for the individual environments (`dev`, `prod` and `test`).
 

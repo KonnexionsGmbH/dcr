@@ -104,6 +104,20 @@ def test_create_database(fxtr_setup_logger_environment):
     pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
     # -------------------------------------------------------------------------
+    config_section = libs.cfg.DCR_CFG_SECTION
+    config_param = libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA
+
+    value_original = pytest.helpers.store_config_param(config_section, config_param, "unknown_file")
+
+    with pytest.raises(SystemExit) as expt:
+        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+
+    assert expt.type == SystemExit, "DCR_CFG_INITIAL_DATABASE_DATA: unknown file"
+    assert expt.value.code == 1, "DCR_CFG_INITIAL_DATABASE_DATA: unknown file"
+
+    pytest.helpers.restore_config_param(config_section, config_param, value_original)
+
+    # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 

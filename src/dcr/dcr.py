@@ -246,7 +246,7 @@ def process_convert_image_2_pdf() -> None:
     """Convert image documents to pdf files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_IMAGE_2_PDF
     libs.utils.progress_msg_empty_before(
-        "Start: Convert image documents to pdf files ... Tesseeract OCR"
+        "Start: Convert image documents to pdf files ... Tesseract OCR"
     )
     libs.cfg.run_id = libs.db.orm.insert_dbt_row(
         libs.db.cfg.DBT_RUN,
@@ -353,37 +353,37 @@ def process_documents(args: dict[str, bool]) -> None:
 
     # Process the documents in the inbox file directory.
     if args[libs.cfg.RUN_ACTION_PROCESS_INBOX]:
-        start_time: int = time.time()
+        start_time: float = time.time()
         process_inbox_directory()
         libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
     # Convert the scanned image pdf documents to image files.
     if args[libs.cfg.RUN_ACTION_PDF_2_IMAGE]:
-        start_time: int = time.time()
+        start_time: float = time.time()
         process_convert_pdf_2_image()
         libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
     # Convert the image documents to pdf files.
     if args[libs.cfg.RUN_ACTION_IMAGE_2_PDF]:
-        start_time: int = time.time()
+        start_time: float = time.time()
         process_convert_image_2_pdf()
         libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
     # Convert the non-pdf documents to pdf files.
     if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
-        start_time: int = time.time()
+        start_time: float = time.time()
         process_convert_non_pdf_2_pdf()
         libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
     # Extract text and metadata from pdf documents.
     if args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF]:
-        start_time: int = time.time()
+        start_time: float = time.time()
         process_extract_text_from_pdf()
         libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
     # Store document structure from parser result.
     if args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER]:
-        start_time: int = time.time()
+        start_time: float = time.time()
         process_store_from_parser()
         libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
@@ -507,6 +507,7 @@ def validate_config() -> None:
     validate_config_pdf2image_type()
     validate_config_tesseract_timeout()
     validate_config_verbose()
+    validate_config_verbose_parser()
 
 
 # -----------------------------------------------------------------------------
@@ -618,6 +619,18 @@ def validate_config_verbose() -> None:
     if libs.cfg.DCR_CFG_VERBOSE in libs.cfg.config:
         if libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE].lower() == "false":
             libs.cfg.is_verbose = False
+
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - verbose_parser
+# -----------------------------------------------------------------------------
+def validate_config_verbose_parser() -> None:
+    """Validate the configuration parameters - verbose_parser."""
+    libs.cfg.is_verbose_parser = False
+
+    if libs.cfg.DCR_CFG_VERBOSE_PARSER in libs.cfg.config:
+        if libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE_PARSER].lower() == "true":
+            libs.cfg.is_verbose_parser = True
 
 
 # -----------------------------------------------------------------------------

@@ -136,7 +136,7 @@ def convert_pdf_2_image_file() -> None:
 # -----------------------------------------------------------------------------
 def prepare_document_4_tesseract() -> None:
     """Prepare the child document data - next step Tesseract OCR."""
-    libs.utils.prepare_document_4_parser_tesseract()
+    libs.utils.prepare_document_4_tesseract()
 
     libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT
     libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START

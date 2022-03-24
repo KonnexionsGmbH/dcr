@@ -13,7 +13,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # @pytest.mark.issue
 
-CONFIG_PARAM_NO: int = 20
+CONFIG_PARAM_NO: int = 22
 
 
 # -----------------------------------------------------------------------------
@@ -175,6 +175,36 @@ def test_get_config(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "TrUe"
+    )
+
+    libs.cfg.is_verbose_parser = False
+
+    dcr.get_config()
+
+    assert libs.cfg.is_verbose_parser, "DCR_CFG_VERBOSE_PARSER: true"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "n/a"
+    )
+
+    libs.cfg.is_verbose_parser = False
+
+    dcr.get_config()
+
+    assert not libs.cfg.is_verbose_parser, "DCR_CFG_VERBOSE_PARSER: false (not true)"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
+    )
+
+    # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
@@ -280,6 +310,21 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER
+    )
+
+    libs.cfg.is_verbose_parser = False
+
+    dcr.get_config()
+
+    assert not libs.cfg.is_verbose_parser, "DCR_CFG_VERBOSE_PARSER: false (missing)"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
     )
 
     # -------------------------------------------------------------------------

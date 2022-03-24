@@ -1,4 +1,7 @@
 """Module libs.db.orm: Database Manipulation Management."""
+import json
+import os
+from pathlib import Path
 from typing import Dict
 from typing import List
 
@@ -344,6 +347,12 @@ def create_dbt_document(table_name: str) -> None:
         sqlalchemy.Column(libs.db.cfg.DBC_ERROR_CODE, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(libs.db.cfg.DBC_FILE_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(libs.db.cfg.DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_LANGUAGE_ID,
+            sqlalchemy.Integer,
+            ForeignKey(libs.db.cfg.DBT_LANGUAGE + "." + libs.db.cfg.DBC_ID, ondelete="CASCADE"),
+            nullable=False,
+        ),
         sqlalchemy.Column(libs.db.cfg.DBC_NEXT_STEP, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(libs.db.cfg.DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
         sqlalchemy.Column(libs.db.cfg.DBC_SHA256, sqlalchemy.String, nullable=True),
@@ -397,6 +406,50 @@ def create_dbt_journal(table_name: str) -> None:
             ForeignKey(libs.db.cfg.DBT_RUN + "." + libs.db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
+    )
+
+    libs.utils.progress_msg("The database table '" + table_name + "' has now been created")
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Create the database table language.
+# -----------------------------------------------------------------------------
+def create_dbt_language(table_name: str) -> None:
+    """Create the database table language.
+
+    Args:
+        table_name (str): Table name.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    sqlalchemy.Table(
+        table_name,
+        libs.db.cfg.db_orm_metadata,
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_ID,
+            sqlalchemy.Integer,
+            autoincrement=True,
+            nullable=False,
+            primary_key=True,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_CREATED_AT,
+            sqlalchemy.DateTime,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_MODIFIED_AT,
+            sqlalchemy.DateTime,
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_ACTIVE, sqlalchemy.Boolean, default=False, nullable=False
+        ),
+        sqlalchemy.Column(libs.db.cfg.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_CODE_SPACY, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(libs.db.cfg.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False),
     )
 
     libs.utils.progress_msg("The database table '" + table_name + "' has now been created")
@@ -529,9 +582,11 @@ def create_schema() -> None:
 
         conn.close()
 
-    create_dbt_document(libs.db.cfg.DBT_DOCUMENT)
+    create_dbt_language(libs.db.cfg.DBT_LANGUAGE)
     create_dbt_run(libs.db.cfg.DBT_RUN)
     create_dbt_version(libs.db.cfg.DBT_VERSION)
+    # FK: language
+    create_dbt_document(libs.db.cfg.DBT_DOCUMENT)
     # FK: document
     create_dbt_content(libs.db.cfg.DBT_CONTENT)
     # FK: run
@@ -543,6 +598,7 @@ def create_schema() -> None:
             libs.db.cfg.DBT_CONTENT,
             libs.db.cfg.DBT_DOCUMENT,
             libs.db.cfg.DBT_JOURNAL,
+            libs.db.cfg.DBT_LANGUAGE,
             libs.db.cfg.DBT_RUN,
             libs.db.cfg.DBT_VERSION,
         ],
@@ -551,9 +607,36 @@ def create_schema() -> None:
     libs.db.cfg.db_orm_metadata.create_all(libs.db.cfg.db_orm_engine)
 
     insert_dbt_row(
-        libs.db.cfg.DBT_VERSION,
-        {libs.db.cfg.DBC_VERSION: libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]},
+        libs.db.cfg.DBT_LANGUAGE,
+        {
+            libs.db.cfg.DBC_ACTIVE: True,
+            libs.db.cfg.DBC_CODE_ISO_639_3: "eng",
+            libs.db.cfg.DBC_CODE_SPACY: "en",
+            libs.db.cfg.DBC_CODE_TESSERACT: "eng",
+            libs.db.cfg.DBC_DIRECTORY_NAME_INBOX: str(
+                libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
+            ),
+            libs.db.cfg.DBC_ISO_LANGUAGE_NAME: "English",
+        },
     )
+
+    insert_dbt_row(
+        libs.db.cfg.DBT_VERSION,
+        {
+            libs.db.cfg.DBC_VERSION: libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION],
+        },
+    )
+
+    if libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]:
+        initial_database_data = Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA])
+        if os.path.isfile(initial_database_data):
+            load_db_data_from_json(initial_database_data)
+        else:
+            libs.utils.terminate_fatal(
+                "File with initial database data is missing - file name '"
+                + libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]
+                + "'"
+            )
 
     # Disconnect from the database.
     disconnect_db()
@@ -663,6 +746,33 @@ def insert_journal(
             )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Load database data from a JSON file.
+# -----------------------------------------------------------------------------
+def load_db_data_from_json(initial_database_data: Path) -> None:
+    """Load database data from a JSON file.
+
+    Args:
+        initial_database_data (Path): JSON file.
+    """
+    with open(initial_database_data, "r", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as json_file:
+        json_data = json.load(json_file)
+        for json_table in json_data[libs.db.cfg.JSON_NAME_TABLES]:
+            table_name = json_table[libs.db.cfg.JSON_NAME_TABLE]
+            for json_row in json_table[libs.db.cfg.JSON_NAME_ROWS]:
+                db_columns = {}
+
+                for json_column in json_row[libs.db.cfg.JSON_NAME_COLUMNS]:
+                    db_columns[json_column[libs.db.cfg.JSON_NAME_COLUMN]] = json_column[
+                        libs.db.cfg.JSON_NAME_VALUE
+                    ]
+
+                insert_dbt_row(
+                    table_name,
+                    db_columns,
+                )
 
 
 # -----------------------------------------------------------------------------

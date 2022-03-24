@@ -16,6 +16,7 @@ import libs.cfg
 import libs.db.cfg
 import libs.db.orm
 import libs.utils
+from sqlalchemy import Table
 from sqlalchemy.orm import Session
 
 
@@ -30,14 +31,6 @@ def check_and_create_directories() -> None:
     exist.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    if not os.path.isdir(libs.cfg.directory_inbox):
-        libs.utils.terminate_fatal(
-            "The inbox directory with the name "
-            + str(libs.cfg.directory_inbox)
-            + " does not exist - error="
-            + str(OSError),
-        )
 
     create_directory("the accepted documents", str(libs.cfg.directory_inbox_accepted))
 
@@ -94,6 +87,7 @@ def initialise_document_base(file: pathlib.Path) -> None:
             libs.db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_directory_type,
             libs.db.cfg.DBC_FILE_NAME: libs.cfg.document_file_name,
             libs.db.cfg.DBC_FILE_TYPE: libs.cfg.document_file_type,
+            libs.db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id,
             libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
             libs.db.cfg.DBC_SHA256: libs.cfg.document_sha256,
             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_START,
@@ -255,17 +249,28 @@ def process_inbox() -> None:
 
     libs.utils.reset_statistics()
 
-    for file in sorted(pathlib.Path(libs.cfg.directory_inbox).iterdir()):
-        if file.is_file():
-            if file.name == "README.md":
-                libs.utils.progress_msg(
-                    "Attention: All files with the file name 'README.md' " + "are ignored"
+    dbt = Table(
+        libs.db.cfg.DBT_LANGUAGE,
+        libs.db.cfg.db_orm_metadata,
+        autoload_with=libs.db.cfg.db_orm_engine,
+    )
+
+    with libs.db.cfg.db_orm_engine.connect() as conn:
+        for row in libs.utils.select_language(conn, dbt):
+            if not os.path.isdir(row.directory_name_inbox):
+                libs.utils.terminate_fatal(
+                    "The inbox directory with the name "
+                    + str(row.directory_name_inbox)
+                    + " does not exist - error="
+                    + str(OSError),
                 )
-                continue
 
-            libs.cfg.total_to_be_processed += 1
+            libs.cfg.language_id = row.id
+            libs.cfg.language_directory_inbox = row.directory_name_inbox
 
-            process_inbox_file(file)
+            process_inbox_language()
+
+        conn.close()
 
     libs.utils.show_statistics()
 
@@ -375,6 +380,33 @@ def process_inbox_file(file: pathlib.Path) -> None:
             libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
             libs.db.cfg.JOURNAL_ACTION_01_901.replace("{extension}", file.suffix[1:]),
         )
+
+
+# -----------------------------------------------------------------------------
+# Process the inbox directory (step: p_i).
+# -----------------------------------------------------------------------------
+def process_inbox_language() -> None:
+    """Process the files found in the inbox file directory.
+
+    1. Documents of type docx are converted to pdf format
+       and copied to the inbox_accepted directory.
+    2. Documents of type pdf that do not consist only of a scanned image are
+       copied unchanged to the inbox_accepted directory.
+    3. Documents of type pdf consisting only of a scanned image are copied
+       unchanged to the inbox_ocr directory.
+    4. All other documents are copied to the inbox_rejected directory.
+    """
+    for file in sorted(pathlib.Path(libs.cfg.language_directory_inbox).iterdir()):
+        if file.is_file():
+            if file.name == "README.md":
+                libs.utils.progress_msg(
+                    "Attention: All files with the file name 'README.md' " + "are ignored"
+                )
+                continue
+
+            libs.cfg.total_to_be_processed += 1
+
+            process_inbox_file(file)
 
 
 # -----------------------------------------------------------------------------

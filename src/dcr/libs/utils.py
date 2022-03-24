@@ -73,18 +73,15 @@ def compute_sha256(file: pathlib.Path) -> str:
 # -----------------------------------------------------------------------------
 # Debug an XML element.
 # -----------------------------------------------------------------------------
-def debug_xml_element(
-    is_info: bool, parent_tag: str, attrib: Dict[str, str], text: Iterable[str]
-) -> None:
+def debug_xml_element(parent_tag: str, attrib: Dict[str, str], text: Iterable[str]) -> None:
     """Debug an XML element.
 
     Args:
-        is_info (bool): is info (True) or debug (else).
         parent_tag (str): Parent tag.
         attrib (Dict[str,str]): Attributes.
         text (Iterable[str]): XML element.
     """
-    if is_info:
+    if libs.cfg.is_verbose_parser:
         libs.cfg.logger.info(
             "tag   =%s",
             parent_tag,
@@ -94,19 +91,6 @@ def debug_xml_element(
             attrib,
         )
         libs.cfg.logger.info(
-            "text  =%s",
-            text,
-        )
-    else:
-        libs.cfg.logger.debug(
-            "tag   =%s",
-            parent_tag,
-        )
-        libs.cfg.logger.debug(
-            "attrib=%s",
-            attrib,
-        )
-        libs.cfg.logger.debug(
             "text  =%s",
             text,
         )
@@ -120,7 +104,7 @@ def finalize_file_processing(module_name: str, function_name: str, journal_actio
 
     Args:
         module_name (str):    Module name.
-        function_name (str):  Function nmae.
+        function_name (str):  Function name.
         journal_action (str): Journal action.
     """
     libs.cfg.total_ok_processed += 1
@@ -167,6 +151,7 @@ def initialise_document_child(journal_action: str) -> None:
             libs.db.cfg.DBC_FILE_NAME: libs.cfg.document_child_file_name,
             libs.db.cfg.DBC_FILE_TYPE: libs.cfg.document_child_file_type,
             libs.db.cfg.DBC_NEXT_STEP: libs.cfg.document_child_next_step,
+            libs.db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id,
             libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
             libs.db.cfg.DBC_STATUS: libs.cfg.document_child_status,
             libs.db.cfg.DBC_STEM_NAME: libs.cfg.document_child_stem_name,
@@ -185,16 +170,15 @@ def initialise_document_child(journal_action: str) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Prepare the base child document data - next step parser or Tesseract OCR.
+# Prepare the base child document data - next step parser.
 # -----------------------------------------------------------------------------
-def prepare_document_4_parser_tesseract() -> None:
-    """Prepare the child document data - next step parser or Tesseract OCR."""
-    libs.cfg.document_child_child_no = 0
+def prepare_document_4_parser() -> None:
+    """Prepare the child document data - next step parser."""
     libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
     libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
     libs.cfg.document_child_error_code = None
 
-    libs.cfg.document_child_file_type = libs.cfg.pdf2image_type
+    libs.cfg.document_child_file_type = libs.db.cfg.DOCUMENT_FILE_TYPE_XML
 
     libs.cfg.document_child_id_base = libs.cfg.document_id_base
     libs.cfg.document_child_id_parent = libs.cfg.document_id
@@ -205,7 +189,6 @@ def prepare_document_4_parser_tesseract() -> None:
 # -----------------------------------------------------------------------------
 def prepare_document_4_pdflib() -> None:
     """Prepare the child document data - next step PDFlib."""
-    libs.cfg.document_child_child_no = None
     libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
     libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
     libs.cfg.document_child_error_code = None
@@ -217,6 +200,21 @@ def prepare_document_4_pdflib() -> None:
 
     libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB
     libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
+
+
+# -----------------------------------------------------------------------------
+# Prepare the base child document data - next step Tesseract OCR.
+# -----------------------------------------------------------------------------
+def prepare_document_4_tesseract() -> None:
+    """Prepare the child document data - next step Tesseract OCR."""
+    libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
+    libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
+    libs.cfg.document_child_error_code = None
+
+    libs.cfg.document_child_file_type = libs.cfg.pdf2image_type
+
+    libs.cfg.document_child_id_base = libs.cfg.document_id_base
+    libs.cfg.document_child_id_parent = libs.cfg.document_id
 
 
 # -----------------------------------------------------------------------------
@@ -330,7 +328,7 @@ def report_document_error(
         module_name (str):     Module name.
         function_name (str):   Function trace.
         error_code (str|None): Error code.
-        journal_action (str):  Jourmal action text.
+        journal_action (str):  Journal action text.
     """
     libs.cfg.total_erroneous += 1
 
@@ -377,7 +375,7 @@ def select_document(conn: Connection, dbt: Table, next_step: str) -> engine.Curs
 
     Args:
         conn (Connection): Database connection.
-        dbt (Table): database table documents.
+        dbt (Table): database table document.
         next_step (str): Next processing step.
 
     Returns:
@@ -386,12 +384,14 @@ def select_document(conn: Connection, dbt: Table, next_step: str) -> engine.Curs
     return conn.execute(
         select(
             dbt.c.id,
+            dbt.c.child_no,
             dbt.c.directory_name,
             dbt.c.directory_type,
             dbt.c.document_id_base,
             dbt.c.document_id_parent,
             dbt.c.file_name,
             dbt.c.file_type,
+            dbt.c.language_id,
             dbt.c.status,
             dbt.c.stem_name,
         )
@@ -426,6 +426,31 @@ def select_document_prepare() -> Table:
         libs.db.cfg.DBT_DOCUMENT,
         libs.db.cfg.db_orm_metadata,
         autoload_with=libs.db.cfg.db_orm_engine,
+    )
+
+
+# -----------------------------------------------------------------------------
+# Select the languages to be processed.
+# -----------------------------------------------------------------------------
+def select_language(conn: Connection, dbt: Table) -> engine.CursorResult:
+    """Select the documents to be processed.
+
+    Args:
+        conn (Connection): Database connection.
+        dbt (Table): database table language.
+
+    Returns:
+        engine.CursorResult: The languages found.
+    """
+    return conn.execute(
+        select(
+            dbt.c.id,
+            dbt.c.directory_name_inbox,
+        )
+        .where(
+            dbt.c.active,
+        )
+        .order_by(dbt.c.id.asc())
     )
 
 
@@ -523,6 +548,7 @@ def start_document_processing(
     """
     libs.cfg.total_to_be_processed += 1
 
+    libs.cfg.document_child_child_no = document.child_no
     libs.cfg.document_directory_name = document.directory_name
     libs.cfg.document_directory_type = document.directory_type
     libs.cfg.document_file_name = document.file_name
@@ -530,6 +556,7 @@ def start_document_processing(
     libs.cfg.document_id = document.id
     libs.cfg.document_id_base = document.document_id_base
     libs.cfg.document_id_parent = document.document_id_parent
+    libs.cfg.document_language_id = document.language_id
     libs.cfg.document_status = document.status
     libs.cfg.document_stem_name = document.stem_name
 

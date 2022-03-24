@@ -16,58 +16,6 @@ import dcr
 
 
 # -----------------------------------------------------------------------------
-# Test RUN_ACTION_PROCESS_INBOX - normal.
-# -----------------------------------------------------------------------------
-def test_run_action_process_inbox_normal(fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_PROCESS_INBOX - normal."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    stem_name: str = "pdf_scanned_ok"
-    file_ext: str = "pdf"
-
-    pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
-
-    # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
-
-    # -------------------------------------------------------------------------
-    child_no: int = 1
-    document_id: int = 1
-    no_files_expected = (0, 3, 0)
-
-    file_1 = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name, str(document_id)],
-        file_ext,
-    )
-
-    file_2 = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name, str(document_id), str(child_no)],
-        libs.cfg.pdf2image_type,
-    )
-
-    file_3 = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name, str(document_id), str(child_no)],
-        libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
-    )
-
-    pytest.helpers.verify_content_inboxes(
-        [file_1, file_2, file_3],
-        no_files_expected,
-    )
-
-    # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_INBOX - accepted.
 # -----------------------------------------------------------------------------
 def test_run_action_process_inbox_accepted(fxtr_setup_empty_db_and_inbox):
@@ -210,6 +158,57 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
 
 
 # -----------------------------------------------------------------------------
+# Test RUN_ACTION_PROCESS_INBOX - french.
+# -----------------------------------------------------------------------------
+@pytest.mark.issue
+def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PROCESS_INBOX - french."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    stem_name: str = "pdf_french_ok"
+    file_ext: str = "pdf"
+
+    # Create language subdirectory
+    # TBD
+
+    pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
+
+    # -------------------------------------------------------------------------
+    # Activate language French
+    # TBD
+
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    # -------------------------------------------------------------------------
+    document_id: int = 1
+    no_files_expected = (0, 1, 0)
+
+    file_1 = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id)],
+        file_ext,
+    )
+
+    pytest.helpers.verify_content_inboxes(
+        [file_1],
+        no_files_expected,
+    )
+
+    # -------------------------------------------------------------------------
+    # Check empty language subdirectory
+    # TBD
+
+    # -------------------------------------------------------------------------
+    # Test not language English in document
+    # TBD
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_INBOX - ignore duplicates.
 # -----------------------------------------------------------------------------
 def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbox):
@@ -254,6 +253,58 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
 
     pytest.helpers.verify_content_inboxes(
         files_to_be_checked,
+        no_files_expected,
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_PROCESS_INBOX - normal.
+# -----------------------------------------------------------------------------
+def test_run_action_process_inbox_normal(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PROCESS_INBOX - normal."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    stem_name: str = "pdf_scanned_ok"
+    file_ext: str = "pdf"
+
+    pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
+
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
+
+    # -------------------------------------------------------------------------
+    child_no: int = 1
+    document_id: int = 1
+    no_files_expected = (0, 3, 0)
+
+    file_1 = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id)],
+        file_ext,
+    )
+
+    file_2 = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id), str(child_no)],
+        libs.cfg.pdf2image_type,
+    )
+
+    file_3 = (
+        libs.cfg.directory_inbox_accepted,
+        [stem_name, str(document_id), str(child_no)],
+        libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
+    )
+
+    pytest.helpers.verify_content_inboxes(
+        [file_1, file_2, file_3],
         no_files_expected,
     )
 

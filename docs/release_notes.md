@@ -13,7 +13,7 @@ Release Date: dd.mm.2022
 
 ### 1.1 New Features
 
-- processing step **`tet`**: Extract text and metadata from pdf files.
+- processing step **`tet`**: Extract text and metadata from **`pdf`** files.
 
 ### 1.2 Applied Software
 

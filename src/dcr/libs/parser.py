@@ -32,7 +32,7 @@ def parse_tag_box(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(False, parent_tag, parent.attrib, parent.text)
+    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -62,7 +62,7 @@ def parse_tag_content(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(False, parent_tag, parent.attrib, parent.text)
+    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -92,7 +92,7 @@ def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(False, parent_tag, parent.attrib, parent.text)
+    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -132,7 +132,7 @@ def parse_tag_document(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(False, parent_tag, parent.attrib, parent.text)
+    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -166,7 +166,7 @@ def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(False, parent_tag, parent.attrib, parent.text)
+    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     libs.cfg.parse_result_line_in_para += 1
     libs.cfg.parse_result_token_in_line = 0
@@ -174,6 +174,8 @@ def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
         match child_tag:
+            case libs.cfg.PARSE_TAG_A:
+                pass
             case libs.cfg.PARSE_TAG_WORD:
                 parse_tag_word(child_tag, child)
             case _:
@@ -197,7 +199,7 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(False, parent_tag, parent.attrib, parent.text)
+    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     libs.cfg.parse_result_page_in_document = int(parent.attrib["number"])
     libs.cfg.parse_result_para_in_page = 0
@@ -232,7 +234,7 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(False, parent_tag, parent.attrib, parent.text)
+    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -262,7 +264,7 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(False, parent_tag, parent.attrib, parent.text)
+    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     libs.cfg.parse_result_line_in_para = 0
     libs.cfg.parse_result_para_in_page += 1
@@ -297,7 +299,7 @@ def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(False, parent_tag, parent.attrib, parent.text)
+    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -369,7 +371,7 @@ def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(False, parent_tag, parent.attrib, parent.text)
+    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -448,7 +450,7 @@ def parse_tetml_file() -> None:
 
     parent_tag = root.tag[libs.cfg.PARSE_TAG_FROM :]
 
-    libs.utils.debug_xml_element(False, parent_tag, root.attrib, root.text)
+    libs.utils.debug_xml_element(parent_tag, root.attrib, root.text)
 
     if parent_tag != libs.cfg.PARSE_TAG_TET:
         libs.utils.report_document_error(
@@ -462,7 +464,7 @@ def parse_tetml_file() -> None:
     else:
         for child in root:
             child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
-            libs.utils.debug_xml_element(False, child_tag, child.attrib, child.text)
+            libs.utils.debug_xml_element(child_tag, child.attrib, child.text)
             match child_tag:
                 case libs.cfg.PARSE_TAG_DOCUMENT:
                     parse_tag_document(child_tag, child)

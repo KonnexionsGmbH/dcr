@@ -147,7 +147,7 @@ def extract_text_from_pdf_file() -> None:
 # -----------------------------------------------------------------------------
 def prepare_document_4_parser() -> None:
     """Prepare the text document data - next step Parser."""
-    libs.utils.prepare_document_4_parser_tesseract()
+    libs.utils.prepare_document_4_parser()
 
     libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_PARSER
     libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
