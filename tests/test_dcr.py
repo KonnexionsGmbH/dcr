@@ -13,7 +13,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # @pytest.mark.issue
 
-CONFIG_PARAM_NO: int = 22
+CONFIG_PARAM_NO: int = 23
 
 
 # -----------------------------------------------------------------------------
@@ -289,9 +289,9 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     dcr.get_config()
 
-    assert (
-        libs.cfg.pdf2image_type == libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
-    ), "DCR_CFG_PDF2IMAGE_TYPE: default"
+    assert libs.cfg.pdf2image_type == libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG, (
+        "DCR_CFG_PDF2IMAGE_TYPE: default should not be '" + libs.cfg.pdf2image_type + "'"
+    )
 
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original

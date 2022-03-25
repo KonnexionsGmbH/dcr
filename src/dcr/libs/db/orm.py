@@ -442,9 +442,7 @@ def create_dbt_language(table_name: str) -> None:
             libs.db.cfg.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
         ),
-        sqlalchemy.Column(
-            libs.db.cfg.DBC_ACTIVE, sqlalchemy.Boolean, default=False, nullable=False
-        ),
+        sqlalchemy.Column(libs.db.cfg.DBC_ACTIVE, sqlalchemy.Boolean, default=True, nullable=False),
         sqlalchemy.Column(libs.db.cfg.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(libs.db.cfg.DBC_CODE_SPACY, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(libs.db.cfg.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False),
@@ -609,7 +607,6 @@ def create_schema() -> None:
     insert_dbt_row(
         libs.db.cfg.DBT_LANGUAGE,
         {
-            libs.db.cfg.DBC_ACTIVE: True,
             libs.db.cfg.DBC_CODE_ISO_639_3: "eng",
             libs.db.cfg.DBC_CODE_SPACY: "en",
             libs.db.cfg.DBC_CODE_TESSERACT: "eng",
@@ -628,9 +625,9 @@ def create_schema() -> None:
     )
 
     if libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]:
-        initial_database_data = Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA])
-        if os.path.isfile(initial_database_data):
-            load_db_data_from_json(initial_database_data)
+        initial_database_data_path = Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA])
+        if os.path.isfile(initial_database_data_path):
+            load_db_data_from_json(initial_database_data_path)
         else:
             libs.utils.terminate_fatal(
                 "File with initial database data is missing - file name '"

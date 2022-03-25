@@ -136,6 +136,7 @@ document_child_file_type: str
 document_child_id: sqlalchemy.Integer
 document_child_id_base: sqlalchemy.Integer | None
 document_child_id_parent: sqlalchemy.Integer | None
+document_child_language_id: sqlalchemy.Integer
 document_child_next_step: str | None
 document_child_no: sqlalchemy.Integer | None
 document_child_status: str
@@ -160,8 +161,16 @@ is_ignore_duplicates: bool
 is_verbose: bool
 is_verbose_parser: bool
 
-language_id: sqlalchemy.Integer
 language_directory_inbox: PathLike[str]
+language_erroneous: int
+language_id: sqlalchemy.Integer
+language_iso_language_name: str
+language_ok_processed: int
+language_ok_processed_pandoc: int
+language_ok_processed_pdf2image: int
+language_ok_processed_pdflib: int
+language_ok_processed_tesseract: int
+language_to_be_processed: int
 
 logger: logging.Logger
 

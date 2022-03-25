@@ -27,7 +27,7 @@ def convert_pdf_2_image() -> None:
     else:
         libs.cfg.document_child_file_type = libs.db.cfg.DOCUMENT_FILE_TYPE_JPG
 
-    libs.utils.reset_statistics()
+    libs.utils.reset_statistics_total()
 
     dbt = libs.utils.select_document_prepare()
 
@@ -46,7 +46,7 @@ def convert_pdf_2_image() -> None:
 
         conn.close()
 
-    libs.utils.show_statistics()
+    libs.utils.show_statistics_total()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -65,7 +65,10 @@ def convert_pdf_2_image_file() -> None:
         # Convert the 'pdf' document
         images = pdf2image.convert_from_path(file_name_parent)
 
-        prepare_document_4_tesseract()
+        libs.utils.prepare_document_4_next_step(
+            next_file_type=libs.cfg.pdf2image_type,
+            next_step=libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT,
+        )
 
         libs.cfg.document_child_child_no = 0
 
@@ -129,14 +132,3 @@ def convert_pdf_2_image_file() -> None:
                 "{file_name}", libs.cfg.document_file_name
             ).replace("{error_msg}", str(err)),
         )
-
-
-# -----------------------------------------------------------------------------
-# Prepare the base child document data - next step Tesseract OCR.
-# -----------------------------------------------------------------------------
-def prepare_document_4_tesseract() -> None:
-    """Prepare the child document data - next step Tesseract OCR."""
-    libs.utils.prepare_document_4_tesseract()
-
-    libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT
-    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START

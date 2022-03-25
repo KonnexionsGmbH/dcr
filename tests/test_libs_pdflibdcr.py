@@ -21,7 +21,7 @@ def test_run_action_extract_text_from_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empt
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.copy_files_from_pytest_2_dir(
+    pytest.helpers.copy_files_4_pytest_2_dir(
         [
             ("pdf_text_ok_protected", "pdf"),
         ],

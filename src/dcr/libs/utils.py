@@ -151,7 +151,9 @@ def initialise_document_child(journal_action: str) -> None:
             libs.db.cfg.DBC_FILE_NAME: libs.cfg.document_child_file_name,
             libs.db.cfg.DBC_FILE_TYPE: libs.cfg.document_child_file_type,
             libs.db.cfg.DBC_NEXT_STEP: libs.cfg.document_child_next_step,
-            libs.db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id,
+            libs.db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id
+            if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX
+            else libs.cfg.document_child_language_id,
             libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
             libs.db.cfg.DBC_STATUS: libs.cfg.document_child_status,
             libs.db.cfg.DBC_STEM_NAME: libs.cfg.document_child_stem_name,
@@ -170,51 +172,24 @@ def initialise_document_child(journal_action: str) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Prepare the base child document data - next step parser.
+# Prepare the document data for the next step.
 # -----------------------------------------------------------------------------
-def prepare_document_4_parser() -> None:
-    """Prepare the child document data - next step parser."""
+def prepare_document_4_next_step(next_file_type: str, next_step: str) -> None:
+    """Prepare the document data for the next step.
+
+    Args:
+        next_file_type (str): File type of next document
+        next_step (str): Next processing step
+    """
     libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
     libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
     libs.cfg.document_child_error_code = None
-
-    libs.cfg.document_child_file_type = libs.db.cfg.DOCUMENT_FILE_TYPE_XML
-
+    libs.cfg.document_child_file_type = next_file_type
     libs.cfg.document_child_id_base = libs.cfg.document_id_base
     libs.cfg.document_child_id_parent = libs.cfg.document_id
-
-
-# -----------------------------------------------------------------------------
-# Prepare the base child document data - next step PDFlib.
-# -----------------------------------------------------------------------------
-def prepare_document_4_pdflib() -> None:
-    """Prepare the child document data - next step PDFlib."""
-    libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
-    libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
-    libs.cfg.document_child_error_code = None
-
-    libs.cfg.document_child_file_type = libs.db.cfg.DOCUMENT_FILE_TYPE_PDF
-
-    libs.cfg.document_child_id_base = libs.cfg.document_id_base
-    libs.cfg.document_child_id_parent = libs.cfg.document_id
-
-    libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB
+    libs.cfg.document_child_language_id = libs.cfg.document_language_id
+    libs.cfg.document_child_next_step = next_step
     libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
-
-
-# -----------------------------------------------------------------------------
-# Prepare the base child document data - next step Tesseract OCR.
-# -----------------------------------------------------------------------------
-def prepare_document_4_tesseract() -> None:
-    """Prepare the child document data - next step Tesseract OCR."""
-    libs.cfg.document_child_directory_name = libs.cfg.document_directory_name
-    libs.cfg.document_child_directory_type = libs.cfg.document_directory_type
-    libs.cfg.document_child_error_code = None
-
-    libs.cfg.document_child_file_type = libs.cfg.pdf2image_type
-
-    libs.cfg.document_child_id_base = libs.cfg.document_id_base
-    libs.cfg.document_child_id_parent = libs.cfg.document_id
 
 
 # -----------------------------------------------------------------------------
@@ -351,10 +326,24 @@ def report_document_error(
 
 
 # -----------------------------------------------------------------------------
-# Reset the statistic counters.
+# Reset the language related statistic counters.
 # -----------------------------------------------------------------------------
-def reset_statistics() -> None:
-    """Reset the statistic counters."""
+def reset_statistics_language() -> None:
+    """Reset the language related statistic counters."""
+    libs.cfg.language_erroneous = 0
+    libs.cfg.language_ok_processed = 0
+    libs.cfg.language_ok_processed_pandoc = 0
+    libs.cfg.language_ok_processed_pdf2image = 0
+    libs.cfg.language_ok_processed_pdflib = 0
+    libs.cfg.language_ok_processed_tesseract = 0
+    libs.cfg.language_to_be_processed = 0
+
+
+# -----------------------------------------------------------------------------
+# Reset the total statistic counters.
+# -----------------------------------------------------------------------------
+def reset_statistics_total() -> None:
+    """Reset the total statistic counters."""
     libs.cfg.total_erroneous = 0
     libs.cfg.total_generated = 0
     libs.cfg.total_ok_processed = 0
@@ -446,6 +435,7 @@ def select_language(conn: Connection, dbt: Table) -> engine.CursorResult:
         select(
             dbt.c.id,
             dbt.c.directory_name_inbox,
+            dbt.c.iso_language_name,
         )
         .where(
             dbt.c.active,
@@ -455,10 +445,46 @@ def select_language(conn: Connection, dbt: Table) -> engine.CursorResult:
 
 
 # -----------------------------------------------------------------------------
-# Show the statistics of the run.
+# Show the language related statistics of the run.
 # -----------------------------------------------------------------------------
-def show_statistics() -> None:
-    """Show the statistics of the run."""
+def show_statistics_language() -> None:
+    """Show the language related statistics of the run."""
+    libs.utils.progress_msg("===============================> Summary Language")
+    libs.utils.progress_msg(
+        f"Number documents to be processed:          {libs.cfg.language_to_be_processed:6d}"
+    )
+
+    if libs.cfg.language_to_be_processed > 0:
+        libs.utils.progress_msg(
+            "Number documents accepted - "
+            + f"Pandoc:        {libs.cfg.language_ok_processed_pandoc:6d}"
+        )
+        libs.utils.progress_msg(
+            "Number documents accepted - "
+            + f"pdf2image:     {libs.cfg.language_ok_processed_pdf2image:6d}"
+        )
+        libs.utils.progress_msg(
+            "Number documents accepted - "
+            + f"PDFlib TET:    {libs.cfg.language_ok_processed_pdflib:6d}"
+        )
+        libs.utils.progress_msg(
+            "Number documents accepted - "
+            + f"Tesseract OCR: {libs.cfg.language_ok_processed_tesseract:6d}"
+        )
+        libs.utils.progress_msg(
+            "Number documents accepted - " + f"Total:         {libs.cfg.language_ok_processed:6d}"
+        )
+        libs.utils.progress_msg(
+            f"Number documents rejected:                 {libs.cfg.language_erroneous:6d}"
+        )
+
+
+# -----------------------------------------------------------------------------
+# Show the total statistics of the run.
+# -----------------------------------------------------------------------------
+def show_statistics_total() -> None:
+    """Show the total statistics of the run."""
+    libs.utils.progress_msg("==================================> Summary Total")
     libs.utils.progress_msg(
         f"Number documents to be processed:          {libs.cfg.total_to_be_processed:6d}"
     )
@@ -492,10 +518,6 @@ def show_statistics() -> None:
             libs.utils.progress_msg(
                 "Number documents accepted - " + f"Total:         {libs.cfg.total_ok_processed:6d}"
             )
-            libs.cfg.total_ok_processed_pandoc = 0
-            libs.cfg.total_ok_processed_pdf2image = 0
-            libs.cfg.total_ok_processed_pdflib = 0
-            libs.cfg.total_ok_processed_tesseract = 0
         elif libs.cfg.run_action == libs.cfg.RUN_ACTION_TEXT_FROM_PDF:
             libs.utils.progress_msg(
                 f"Number documents extracted:                {libs.cfg.total_ok_processed:6d}"

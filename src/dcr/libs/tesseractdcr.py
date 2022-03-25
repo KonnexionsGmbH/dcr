@@ -22,7 +22,7 @@ def convert_image_2_pdf() -> None:
 
     dbt = libs.utils.select_document_prepare()
 
-    libs.utils.reset_statistics()
+    libs.utils.reset_statistics_total()
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
         rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT)
@@ -39,7 +39,7 @@ def convert_image_2_pdf() -> None:
 
         conn.close()
 
-    libs.utils.show_statistics()
+    libs.utils.show_statistics_total()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -71,7 +71,10 @@ def convert_image_2_pdf_file() -> None:
             # pdf type is bytes by default
             target_file.write(pdf)
 
-        libs.utils.prepare_document_4_pdflib()
+        libs.utils.prepare_document_4_next_step(
+            next_file_type=libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
+            next_step=libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB,
+        )
 
         libs.cfg.document_child_file_name = (
             libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF

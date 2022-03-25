@@ -12,15 +12,29 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - API Documentation: dcr_api.md
-  - Code of Conduct: code_of_conduct.md
-  - Contributing Guide: contributing.md
-  - Development Notes: development_notes.md
-  - License: license.md
+  - Running DCR:
+      - Requirementes: running_requirements.md
+      - Installaion: running_installation.md
+      - Configuration: running_configuration.md
+      - Operation: running_operation.md
   - Release Documents:
     - Release Notes: release_notes.md
     - Release History: release_history.md
-  - Research Notes: research_notes.md
+  - Developing DCR:
+      - Research Notes: developing_research_notes.md
+      - System Environment: developing_system_environment.md
+      - Coding Standards: developing_coding_standards.md
+      - Code Formatting: developing_code_formatting.md
+      - Static Code Analysis: developing_static_code_analysis.md
+      - Software Documentation: developing_software_documentation.md
+      - API Documentation: developing_api_documentation.md
+      - Software Testing: developing_software_testing.md
+      - Continouos Delivery: developing_continouos_delivery.md
+      - Development Environment: developing_development_environment.md
+      - Version Planning: developing_version_planning.md
+  - Code of Conduct: code_of_conduct.md
+  - Contributing Guide: contributing.md
+  - License: license.md
 
 plugins:
   - search

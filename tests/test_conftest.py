@@ -20,16 +20,16 @@ def test_mkdir_rmdir_rmdir_opt(fxtr_mkdir, fxtr_rmdir, fxtr_rmdir_opt):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    directory_name: os.PathLike = Path("tmp")
+    directory_path: os.PathLike = Path("tmp")
 
-    fxtr_rmdir_opt(directory_name)
+    fxtr_rmdir_opt(directory_path)
 
-    fxtr_mkdir(directory_name)
-    fxtr_rmdir(directory_name)
+    fxtr_mkdir(directory_path)
+    fxtr_rmdir(directory_path)
 
-    fxtr_mkdir(directory_name)
-    fxtr_rmdir_opt(directory_name)
-    fxtr_rmdir_opt(directory_name)
+    fxtr_mkdir(directory_path)
+    fxtr_rmdir_opt(directory_path)
+    fxtr_rmdir_opt(directory_path)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

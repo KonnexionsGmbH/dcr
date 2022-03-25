@@ -403,7 +403,7 @@ def parse_tetml() -> None:
 
     dbt = libs.utils.select_document_prepare()
 
-    libs.utils.reset_statistics()
+    libs.utils.reset_statistics_total()
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
         rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PARSER)
@@ -420,7 +420,7 @@ def parse_tetml() -> None:
 
         conn.close()
 
-    libs.utils.show_statistics()
+    libs.utils.show_statistics_total()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 

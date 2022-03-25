@@ -203,12 +203,14 @@ def prepare_pdf(file: pathlib.Path) -> None:
         if bool(extracted_text):
             journal_action: str = libs.db.cfg.JOURNAL_ACTION_11_003
             next_step: str = libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB
+            libs.cfg.language_ok_processed_pdflib += 1
             libs.cfg.total_ok_processed_pdflib += 1
         else:
             journal_action: str = libs.db.cfg.JOURNAL_ACTION_01_003.replace(
                 "{file_name}", libs.cfg.document_child_file_name
             ).replace("{type}", libs.cfg.pdf2image_type)
             next_step: str = libs.db.cfg.DOCUMENT_NEXT_STEP_PDF2IMAGE
+            libs.cfg.language_ok_processed_pdf2image += 1
             libs.cfg.total_ok_processed_pdf2image += 1
 
         process_inbox_accepted(next_step, journal_action)
@@ -247,7 +249,7 @@ def process_inbox() -> None:
     # Check the inbox file directories and create the missing ones.
     check_and_create_directories()
 
-    libs.utils.reset_statistics()
+    libs.utils.reset_statistics_total()
 
     dbt = Table(
         libs.db.cfg.DBT_LANGUAGE,
@@ -257,22 +259,21 @@ def process_inbox() -> None:
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
         for row in libs.utils.select_language(conn, dbt):
-            if not os.path.isdir(row.directory_name_inbox):
-                libs.utils.terminate_fatal(
-                    "The inbox directory with the name "
-                    + str(row.directory_name_inbox)
-                    + " does not exist - error="
-                    + str(OSError),
-                )
-
             libs.cfg.language_id = row.id
             libs.cfg.language_directory_inbox = row.directory_name_inbox
+            libs.cfg.language_iso_language_name = row.iso_language_name
 
-            process_inbox_language()
+            if libs.cfg.language_directory_inbox is None:
+                libs.cfg.language_directory_inbox = pathlib.Path(
+                    str(libs.cfg.directory_inbox), libs.cfg.language_iso_language_name.lower()
+                )
+
+            if os.path.isdir(pathlib.Path(str(libs.cfg.language_directory_inbox))):
+                process_inbox_language()
 
         conn.close()
 
-    libs.utils.show_statistics()
+    libs.utils.show_statistics_total()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -308,6 +309,7 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             journal_action=libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", target_file),
         )
+        libs.cfg.language_erroneous += 1
     else:
         shutil.move(source_file, target_file)
 
@@ -331,6 +333,7 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
             ),
         )
 
+        libs.cfg.language_ok_processed += 1
         libs.cfg.total_ok_processed += 1
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -368,12 +371,14 @@ def process_inbox_file(file: pathlib.Path) -> None:
         process_inbox_accepted(
             libs.db.cfg.DOCUMENT_NEXT_STEP_PANDOC, libs.db.cfg.JOURNAL_ACTION_11_001
         )
+        libs.cfg.language_ok_processed_pandoc += 1
         libs.cfg.total_ok_processed_pandoc += 1
     elif libs.cfg.document_file_type in libs.db.cfg.DOCUMENT_FILE_TYPE_TESSERACT:
         prepare_document_child_accepted()
         process_inbox_accepted(
             libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT, libs.db.cfg.JOURNAL_ACTION_11_002
         )
+        libs.cfg.language_ok_processed_tesseract += 1
         libs.cfg.total_ok_processed_tesseract += 1
     else:
         process_inbox_rejected(
@@ -396,6 +401,12 @@ def process_inbox_language() -> None:
        unchanged to the inbox_ocr directory.
     4. All other documents are copied to the inbox_rejected directory.
     """
+    libs.utils.progress_msg(
+        "Start of processing for language " + libs.cfg.language_iso_language_name,
+    )
+
+    libs.utils.reset_statistics_language()
+
     for file in sorted(pathlib.Path(libs.cfg.language_directory_inbox).iterdir()):
         if file.is_file():
             if file.name == "README.md":
@@ -404,9 +415,16 @@ def process_inbox_language() -> None:
                 )
                 continue
 
+            libs.cfg.language_to_be_processed += 1
             libs.cfg.total_to_be_processed += 1
 
             process_inbox_file(file)
+
+    libs.utils.show_statistics_language()
+
+    libs.utils.progress_msg(
+        "End   of processing for language " + libs.cfg.language_iso_language_name,
+    )
 
 
 # -----------------------------------------------------------------------------
@@ -442,6 +460,7 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
             libs.cfg.document_id,
             libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", target_file),
         )
+        libs.cfg.language_erroneous += 1
     else:
         shutil.move(source_file, target_file)
 
@@ -456,6 +475,7 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
             },
         )
 
+        libs.cfg.language_erroneous += 1
         libs.cfg.total_erroneous += 1
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

@@ -33,7 +33,7 @@ def extract_text_from_pdf() -> None:
 
     dbt = libs.utils.select_document_prepare()
 
-    libs.utils.reset_statistics()
+    libs.utils.reset_statistics_total()
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
         rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB)
@@ -50,7 +50,7 @@ def extract_text_from_pdf() -> None:
 
         conn.close()
 
-    libs.utils.show_statistics()
+    libs.utils.show_statistics_total()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -102,7 +102,10 @@ def extract_text_from_pdf_file() -> None:
 
         tet.close_document(source_file)
 
-        prepare_document_4_parser()
+        libs.utils.prepare_document_4_next_step(
+            next_file_type=libs.db.cfg.DOCUMENT_FILE_TYPE_XML,
+            next_step=libs.db.cfg.DOCUMENT_NEXT_STEP_PARSER,
+        )
 
         libs.cfg.document_child_file_name = (
             libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_XML
@@ -140,14 +143,3 @@ def extract_text_from_pdf_file() -> None:
     finally:
         if tet:
             tet.delete()
-
-
-# -----------------------------------------------------------------------------
-# Prepare the text document data - next step Parser.
-# -----------------------------------------------------------------------------
-def prepare_document_4_parser() -> None:
-    """Prepare the text document data - next step Parser."""
-    libs.utils.prepare_document_4_parser()
-
-    libs.cfg.document_child_next_step = libs.db.cfg.DOCUMENT_NEXT_STEP_PARSER
-    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START

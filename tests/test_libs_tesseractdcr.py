@@ -24,7 +24,7 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.copy_files_from_pytest_2_dir(
+    pytest.helpers.copy_files_4_pytest_2_dir(
         [
             ("pdf_scanned_01_ok_16_c", "bmp"),
             ("pdf_scanned_01_ok_24", "bmp"),
@@ -198,9 +198,7 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     stem_name_1: str = "tiff_pdf_text_ok_1"
     file_ext_1: str = "tiff"
 
-    pytest.helpers.copy_files_from_pytest_2_dir(
-        [(stem_name_1, file_ext_1)], libs.cfg.directory_inbox
-    )
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.directory_inbox)
 
     stem_name_2: str = "tiff_pdf_text_ok_1_1"
     file_ext_2: str = "pdf"

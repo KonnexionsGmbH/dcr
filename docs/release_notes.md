@@ -14,6 +14,7 @@ Release Date: dd.mm.2022
 ### 1.1 New Features
 
 - processing step **`tet`**: Extract text and metadata from **`pdf`** files.
+- support for documents in different languages - English, French, German and Italian as standard
 
 ### 1.2 Applied Software
 
@@ -171,7 +172,7 @@ new:
 "Info **********  Start: Pydoc-Markdown ******************************"
 pipenv run pydoc-markdown --version
 python -m pydoc-markdown, version 4.6.3
-pipenv run pydoc-markdown -I src/dcr --render-toc > docs/dcr_api.md
+pipenv run pydoc-markdown -I src/dcr --render-toc > docs/developing_api_documentation.md
 Traceback (most recent call last):
   File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\parser.py", line 88, in parse_to_ast
     return RefactoringTool([], options).refactor_string(code + '\n', filename)

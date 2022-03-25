@@ -73,9 +73,7 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
     stem_name_1: str = "pdf_scanned_ok"
     file_ext_1: str = "pdf"
 
-    pytest.helpers.copy_files_from_pytest_2_dir(
-        [(stem_name_1, file_ext_1)], libs.cfg.directory_inbox
-    )
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.directory_inbox)
 
     stem_name_2: str = "pdf_scanned_ok_1_1"
     file_ext_2: str = "jpeg"
