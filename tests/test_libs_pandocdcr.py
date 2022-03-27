@@ -41,84 +41,39 @@ def test_run_action_non_pdf_2_pdf_normal(fxtr_setup_empty_db_and_inbox):
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_NON_PDF_2_PDF])
 
     # -------------------------------------------------------------------------
-    no_files_expected = (0, 14, 0)
+    libs.cfg.logger.info("=========> test_run_action_non_pdf_2_pdf_normal <=========")
 
-    files_to_be_checked = [
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["csv_ok", "1"],
-            "csv",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["csv_ok", "1"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["docx_ok", "3"],
-            "docx",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["docx_ok", "3"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["epub_ok", "5"],
-            "epub",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["epub_ok", "5"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["html_ok", "7"],
-            "html",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["html_ok", "7"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["odt_ok", "9"],
-            "odt",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["odt_ok", "9"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["rst_ok", "11"],
-            "rst",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["rst_ok", "11"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["rtf_ok", "13"],
-            "rtf",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["rtf_ok", "13"],
-            "pdf",
-        ),
-    ]
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
+    )
 
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [
+            "csv_ok_1.csv",
+            "csv_ok_1.pdf",
+            "docx_ok_3.docx",
+            "docx_ok_3.pdf",
+            "epub_ok_5.epub",
+            "epub_ok_5.pdf",
+            "html_ok_7.html",
+            "html_ok_7.pdf",
+            "odt_ok_9.odt",
+            "odt_ok_9.pdf",
+            "rst_ok_11.rst",
+            "rst_ok_11.pdf",
+            "rtf_ok_13.rtf",
+            "rtf_ok_13.pdf",
+        ],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
     )
 
     # -------------------------------------------------------------------------
@@ -133,6 +88,8 @@ def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
+    libs.cfg.logger.info("=========> test_run_action_non_pdf_2_pdf_normal_duplicate <=========")
+
     stem_name_1: str = "docx_ok"
     file_ext_1: str = "docx"
 

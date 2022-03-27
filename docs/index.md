@@ -113,3 +113,6 @@ In this processing step, the text and metadata of the **`pdf`** documents from 2
 The [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} library is used for this purpose.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`xml`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
+
+### 2.2 TBD ...
+

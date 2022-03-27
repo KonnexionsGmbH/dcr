@@ -21,32 +21,41 @@ def test_run_action_pdf_2_image_normal_jpeg(fxtr_rmdir_opt, fxtr_setup_empty_db_
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
+    libs.cfg.logger.info("=========> test_run_action_pdf_2_image_normal_jpeg 1/2 <=========")
+
     stem_name: str = "pdf_scanned_ok"
     file_ext: str = "pdf"
 
-    document_id, file_p_i = pytest.helpers.help_run_action_process_inbox_normal(file_ext, stem_name)
+    document_id, _file_p_i = pytest.helpers.help_run_action_process_inbox_normal(
+        stem_name,
+        file_ext,
+    )
 
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
 
     # -------------------------------------------------------------------------
-    child_no: int = 1
-    no_files_expected = (0, 2, 0)
+    libs.cfg.logger.info("=========> test_run_action_pdf_2_image_normal_jpeg 2/2 <=========")
 
-    file_p_2_i = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name, str(document_id), str(child_no)],
-        libs.cfg.pdf2image_type,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
     )
 
-    files_to_be_checked = [
-        file_p_i,
-        file_p_2_i,
-    ]
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [
+            stem_name + "_" + str(document_id) + "." + file_ext,
+            stem_name + "_" + str(document_id) + "_1." + libs.cfg.pdf2image_type,
+        ],
+    )
 
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
     )
 
     # -------------------------------------------------------------------------
@@ -70,6 +79,8 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
+    libs.cfg.logger.info("=========> test_run_action_pdf_2_image_normal_jpeg_duplicate <=========")
+
     stem_name_1: str = "pdf_scanned_ok"
     file_ext_1: str = "pdf"
 
@@ -94,11 +105,14 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
+    libs.cfg.logger.info("=========> test_run_action_pdf_2_image_normal_png 1/2 <=========")
+
     stem_name: str = "pdf_scanned_ok"
     file_ext: str = "pdf"
 
-    document_id, file_pdf2image_1 = pytest.helpers.help_run_action_process_inbox_normal(
-        file_ext, stem_name
+    document_id, _file_pdf2image_1 = pytest.helpers.help_run_action_process_inbox_normal(
+        stem_name,
+        file_ext,
     )
 
     # -------------------------------------------------------------------------
@@ -115,23 +129,27 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
-    child_no: int = 1
-    no_files_expected = (0, 2, 0)
+    libs.cfg.logger.info("=========> test_run_action_pdf_2_image_normal_png 2/2 <=========")
 
-    file_pdf2image_2 = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name, str(document_id), str(child_no)],
-        libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
     )
 
-    files_to_be_checked = [
-        file_pdf2image_1,
-        file_pdf2image_2,
-    ]
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [
+            stem_name + "_" + str(document_id) + "." + file_ext,
+            stem_name + "_" + str(document_id) + "_1." + libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG,
+        ],
+    )
 
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
     )
 
     # -------------------------------------------------------------------------

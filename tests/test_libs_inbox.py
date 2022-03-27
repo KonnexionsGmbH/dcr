@@ -43,59 +43,33 @@ def test_run_action_process_inbox_accepted(fxtr_setup_empty_db_and_inbox):
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     # -------------------------------------------------------------------------
-    no_files_expected = (1, 8, 0)
+    libs.cfg.logger.info("=========> test_run_action_process_inbox_accepted <=========")
 
-    files_to_be_checked = [
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["docx_ok", "1"],
-            "docx",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["jpeg_pdf_text_ok_1", "3"],
-            "jpeg",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["jpg_pdf_text_ok_1", "5"],
-            "jpg",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["odt_ok", "7"],
-            "odt",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["pdf_text_ok", "9"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["png_pdf_text_ok_1", "11"],
-            "png",
-        ),
-        (
-            libs.cfg.directory_inbox,
-            ["README.md"],
-            None,
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["rtf_ok", "13"],
-            "rtf",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["tiff_pdf_text_ok_2", "15"],
-            "tiff",
-        ),
-    ]
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        ["README.md"],
+    )
 
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [
+            "docx_ok_1.docx",
+            "jpeg_pdf_text_ok_1_3.jpeg",
+            "jpg_pdf_text_ok_1_5.jpg",
+            "odt_ok_7.odt",
+            "pdf_text_ok_9.pdf",
+            "png_pdf_text_ok_1_11.png",
+            "rtf_ok_13.rtf",
+            "tiff_pdf_text_ok_2_15.tiff",
+        ],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
     )
 
     # -------------------------------------------------------------------------
@@ -130,28 +104,24 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     # -------------------------------------------------------------------------
-    no_files_expected = (1, 1, 0)
+    libs.cfg.logger.info("=========> test_run_action_process_inbox_accepted_duplicate <=========")
 
-    file_inbox_1 = (
+    pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox,
-        [stem_name_1],
-        file_ext,
+        [],
+        [stem_name_1 + "." + file_ext],
     )
 
-    file_inbox_2 = (
+    pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox_accepted,
-        [stem_name_2],
-        file_ext,
+        [],
+        [stem_name_2 + "." + file_ext],
     )
 
-    files_to_be_checked = [
-        file_inbox_1,
-        file_inbox_2,
-    ]
-
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
     )
 
     # -------------------------------------------------------------------------
@@ -162,7 +132,7 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
 # Test RUN_ACTION_PROCESS_INBOX - french.
 # -----------------------------------------------------------------------------
 def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_PROCESS_INBOX - french."""
+    """Test RUN_ACTION_PROCESS_INBOX - French."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -173,32 +143,29 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     # -------------------------------------------------------------------------
-    no_files_expected = (1, 4, 0)
+    libs.cfg.logger.info("=========> test_run_action_process_inbox_french <=========")
 
-    file_1 = (
-        libs.cfg.directory_inbox_accepted,
-        ["docx_french_ok_1"],
-        "docx",
-    )
-    file_2 = (
-        libs.cfg.directory_inbox_accepted,
-        ["pdf_french_ok_3"],
-        "jpg",
-    )
-    file_3 = (
-        libs.cfg.directory_inbox_accepted,
-        ["pdf_french_ok_5"],
-        "pdf",
-    )
-    file_4 = (
-        libs.cfg.directory_inbox_accepted,
-        ["pdf_french_scanned_7"],
-        "pdf",
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        ["french"],
+        [],
     )
 
-    pytest.helpers.verify_content_inboxes(
-        [file_1, file_2, file_3, file_4],
-        no_files_expected,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [
+            "docx_french_ok_1.docx",
+            "pdf_french_ok_3.jpg",
+            "pdf_french_ok_5.pdf",
+            "pdf_french_scanned_7.pdf",
+        ],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
     )
 
     # -------------------------------------------------------------------------
@@ -257,24 +224,27 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
     )
 
     # -------------------------------------------------------------------------
-    no_files_expected = (0, 2, 0)
+    libs.cfg.logger.info("=========> test_run_action_process_inbox_ignore_duplicates <=========")
 
-    files_to_be_checked = [
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["pdf_text_ok", "1"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["pdf_text_ok_protected", "3"],
-            "pdf",
-        ),
-    ]
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
+    )
 
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [
+            "pdf_text_ok_1.pdf",
+            "pdf_text_ok_protected_3.pdf",
+        ],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
     )
 
     # -------------------------------------------------------------------------
@@ -302,31 +272,28 @@ def test_run_action_process_inbox_normal(fxtr_setup_empty_db_and_inbox):
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
     # -------------------------------------------------------------------------
-    child_no: int = 1
-    document_id: int = 1
-    no_files_expected = (0, 3, 0)
+    libs.cfg.logger.info("=========> test_run_action_process_inbox_normal <=========")
 
-    file_1 = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name, str(document_id)],
-        file_ext,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
     )
 
-    file_2 = (
+    pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox_accepted,
-        [stem_name, str(document_id), str(child_no)],
-        libs.cfg.pdf2image_type,
+        [],
+        [
+            stem_name + "_1." + file_ext,
+            stem_name + "_1_1." + libs.cfg.pdf2image_type,
+            stem_name + "_1_1." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
+        ],
     )
 
-    file_3 = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name, str(document_id), str(child_no)],
-        libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
-    )
-
-    pytest.helpers.verify_content_inboxes(
-        [file_1, file_2, file_3],
-        no_files_expected,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
     )
 
     # -------------------------------------------------------------------------
@@ -367,39 +334,31 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
     )
     # -------------------------------------------------------------------------
-    no_files_expected = (0, 1, 4)
+    libs.cfg.logger.info("=========> test_run_action_process_inbox_rejected <=========")
 
-    files_to_be_checked = [
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["pdf_text_ok", "1"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_rejected,
-            ["pdf_text_ok_protected", "3"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_rejected,
-            ["pdf_wrong_format", "5"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_rejected,
-            ["unknown_file_extension", "7"],
-            "xxx",
-        ),
-        (
-            libs.cfg.directory_inbox_rejected,
-            ["unknown_file_extension_protected", "9"],
-            "xxx",
-        ),
-    ]
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
+    )
 
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [
+            "pdf_text_ok_1.pdf",
+        ],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [
+            "pdf_text_ok_protected_3.pdf",
+            "pdf_wrong_format_5.pdf",
+            "unknown_file_extension_7.xxx",
+            "unknown_file_extension_protected_9.xxx",
+        ],
     )
 
     # -------------------------------------------------------------------------
@@ -434,28 +393,28 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     # -------------------------------------------------------------------------
-    no_files_expected = (1, 0, 1)
+    libs.cfg.logger.info("=========> test_run_action_process_inbox_rejected_duplicate <=========")
 
-    file_1 = (
+    pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox,
-        [stem_name_1],
-        file_ext,
+        [],
+        [
+            stem_name_1 + "." + file_ext,
+        ],
     )
 
-    file_2 = (
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [],
+    )
+
+    pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox_rejected,
-        [stem_name_2],
-        file_ext,
-    )
-
-    files_to_be_checked = [
-        file_1,
-        file_2,
-    ]
-
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
+        [],
+        [
+            stem_name_2 + "." + file_ext,
+        ],
     )
 
     # -------------------------------------------------------------------------

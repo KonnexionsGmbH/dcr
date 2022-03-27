@@ -34,24 +34,27 @@ def test_run_action_extract_text_from_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empt
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
 
     # -------------------------------------------------------------------------
-    no_files_expected = (0, 2, 0)
+    libs.cfg.logger.info("=========> test_run_action_extract_text_from_pdf_normal <=========")
 
-    files_to_be_checked = [
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["pdf_text_ok_protected", "1"],
-            "pdf",
-        ),
-        (
-            libs.cfg.directory_inbox_accepted,
-            ["pdf_text_ok_protected", "1"],
-            "xml",
-        ),
-    ]
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
+    )
 
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [
+            "pdf_text_ok_protected_1.pdf",
+            "pdf_text_ok_protected_1.xml",
+        ],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
     )
 
     # -------------------------------------------------------------------------
