@@ -7,36 +7,75 @@
 
 ----
 
-## 1. Operating System
+## 1. Overview
 
-Continuous delivery / integration (CD/CI) runs on **`Ubunto 18.04`**, **`Ubuntu 20.04`**~~, **`Windows Server 2019`** and **`Windows Server 2022`**~~.
-This means that **DCR** also runs under **`Windows 10`** and **`Windows 11`**. 
-In this case, only the functionality of the **`grep`**, **`make`**  and **`sed`** tools must be made available, e.g. via [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm){:target="_blank"}, [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} or [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}.
+**`DCR`** supports the processing of documents in different languages. 
+The supported languages must be accepted by both [SpaCy](https://spacy.io/usage/models) and [Tesseract OCR](https://tesseract-ocr.github.io/tessdoc/Data-Files-in-different-versions.html). 
+Furthermore, for each of the languages in question there must be a corresponding entry in the database table **`language`**.
 
-## 2. Pandoc & TeX Live
+## 2. Database Table **`language`**
 
-To convert the non-PDF documents (see 2.1.2) into **`pdf`** files for PDFlib TET processing, 
-the universal document converter [Pandoc](https://pandoc.org){:target="_blank"} 
-and [TeX Live](https://www.tug.org/texlive){:target="_blank"} are used and must therefore also be installed.
-The installation of the TeX Live Frontend is not required.
+![dbt_language.png](img/dbt_language.png)
 
-## 3. PDFlib TET
+The active languages in the database table **`language`** control the allocation of the documents to a language. 
+Each document language must have its own entry in this table. 
+The documents in a particular language are expected in the subdirectory to the **`nbox`** defined in the **`directory_name_inbox`** column.
 
-The software library [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} is used to tokenise the 'pdf' documents. 
-**DCR** contains the free version of PDFlib TET. 
-This free version is limited to files with a maximum size of 1 MB and a maximum number of pages of 10. 
-If larger files are to be processed, a licence must be purchased from PDFlib GmbH. 
-Details on the conditions can be found [here](https://www.pdflib.com/buy/){:target="_blank"}.
+The entry for the standard language **`English`** is created automatically when the database is set up. 
+In the JSON file **`initial_database_data`**, the languages German, French and Italian are also predefined in the inactive state. 
+The chosen document languages must now either be activated in this file or, if not yet available, added here. 
 
-## 4. Poppler
+Example entry for the document language French:
 
-To convert the scanned PDF documents into image files for Tesseract OCR, the rendering library [Poppler](https://poppler.freedesktop.org){:target="_blank"} is used and must therefore also be installed.
+    {
+      "row": [
+        {
+          "columnName": "active",
+          "columnValue": false
+        },
+        {
+          "columnName": "code_iso_639_3",
+          "columnValue": "fra"
+        },
+        {
+          "columnName": "code_spacy",
+          "columnValue": "fr"
+        },
+        {                                   
+          "columnName": "code_tesseract",
+          "columnValue": "fra"
+        },
+        {
+          "columnName": "directory_name_inbox",
+          "columnValue": null
+        },
+        {
+          "columnName": "iso_language_name",
+          "columnValue": "French"
+        }
+      ]
+    },
 
-## 5. Python
 
-Because of the use of the new typing features, **`Python`** version [3.10](https://docs.python.org/3/whatsnew/3.10.html){:target="_blank"} or higher is required.
+| Column               | Description                                                                                                                                    |
+|----------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| active               | active language - true or false                                                                                                                |
+| code_iso_639_3       | three-letter codes, the same as 639-2/T for languages, <br>but with distinct codes for each variety of an ISO 639 macrolanguage                |
+| code_space           | the language code as used in SpaCy                                                                                                             |
+| code_tesseract       | the language code as used in Tesseract OCR                                                                                                     |
+| directory_name_inbox | optional the name of the file directory relative to the **`inbox`** - <br>if missing the content of the column **`iso_language_name`** is used |
+| iso_language_name    | the name of the language according to **`ISO 639-1`**                                                                                          |
 
-## 6. Tesseract OCR
+## 3. Default Document Language
 
-To convert image documents into 'pdf' files, **`Tesseract OCR`** version [5.10](https://github.com/tesseract-ocr/tesseract){:target="_blank"} or higher is required.
+The default document language is English. 
+The corresponding entry in the database table language is created internally with the following contents:
 
+| Column               | Content             |
+|----------------------|---------------------|
+| active               | true                |
+| code_iso_639_3       | eng                 |
+| code_space           | en                  |
+| code_tesseract       | eng                 |
+| directory_name_inbox | the inbox directory |
+| iso_language_name    | English             |

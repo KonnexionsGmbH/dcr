@@ -21,7 +21,7 @@ if ["%1"] EQU [""] (
     echo p_2_i - 2. Convert pdf documents to image files:               Poppler.
     echo ocr   - 3. Convert image documents to pdf files:               Tesseract OCR.
     echo tet   - 4. Extract text and metdata from pdf documents:        PDFlib TET.
-    echo s_f_p - 5. Store the document structure from the parser result
+    echo s_f_p - 5. Store the document structure from the parser result.
     echo ---------------------------------------------------------
     echo db_c  - Create the database.
     echo db_u  - Upgrade the database.

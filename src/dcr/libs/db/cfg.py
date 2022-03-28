@@ -118,12 +118,14 @@ DOCUMENT_STATUS_END: str = "end"
 DOCUMENT_STATUS_ERROR: str = "error"
 DOCUMENT_STATUS_START: str = "start"
 
-JSON_NAME_COLUMN: str = "column"
-JSON_NAME_COLUMNS: str = "columns"
+JSON_NAME_API_VERSION: str = "apiVersion"
+JSON_NAME_COLUMN_NAME: str = "columnName"
+JSON_NAME_COLUMN_VALUE: str = "columnValue"
+JSON_NAME_DATA: str = "data"
+JSON_NAME_ROW: str = "row"
 JSON_NAME_ROWS: str = "rows"
-JSON_NAME_TABLE: str = "table"
 JSON_NAME_TABLES: str = "tables"
-JSON_NAME_VALUE: str = "value"
+JSON_NAME_TABLE_NAME: str = "tableName"
 
 JOURNAL_ACTION_01_001: str = (
     "01.001 Start (p_i): Document file '{file_name}' detected " + "in the 'inbox' file directory."

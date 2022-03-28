@@ -1,4 +1,4 @@
-# DCR - Running - Operation
+# DCR - Running - Operations
 
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
@@ -24,7 +24,7 @@ The following actions are available:
 | **`s_f_p`** | Store the document structure from the parser result.                                                               |
 | **`tet`**   | Extract text and metadata from **`pdf`** documents.                                                                |
 
-The action **`all`** - run the complete processing of all new documents - includes the following processes in the order given:
+The action **`all - run the complete processing of all new documents`** includes the following processes in the order given:
 
 | Action      | Process                                                                                                            |
 |-------------|--------------------------------------------------------------------------------------------------------------------|
@@ -35,4 +35,8 @@ The action **`all`** - run the complete processing of all new documents - includ
 | **`tet`**   | Extract text and metadata from **`pdf`** documents.                                                                |
 | **`s_f_p`** | Store the document structure from the parser result.                                                               |
 
-The action **`db_c`** - create the database - is only required once when installing **`DCR`**.  
+The action **`db_c - create the database`** is only required once when installing **`DCR`**.  
+
+The action **`db_u - upgrade the database`** is necessary once for each version change of **`DCR`**.  
+
+The actions **`m_d`** and **`m_p`** correspond to the commands **`make pipenv-dev`** and **`make pipenv-prod`** for installing or updating the necessary Python libraries. 

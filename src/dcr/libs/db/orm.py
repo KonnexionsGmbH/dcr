@@ -454,7 +454,7 @@ def create_dbt_language(table_name: str) -> None:
         sqlalchemy.Column(
             libs.db.cfg.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True
         ),
-        sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True),
         sqlalchemy.Column(
             libs.db.cfg.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True
         ),
@@ -778,8 +778,10 @@ def load_db_data_from_json(initial_database_data: Path) -> None:
     """
     with open(initial_database_data, "r", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as json_file:
         json_data = json.load(json_file)
-        for json_table in json_data[libs.db.cfg.JSON_NAME_TABLES]:
-            table_name = json_table[libs.db.cfg.JSON_NAME_TABLE].lower()
+        api_version = json_data[libs.db.cfg.JSON_NAME_API_VERSION]
+        data = json_data[libs.db.cfg.JSON_NAME_DATA]
+        for json_table in data[libs.db.cfg.JSON_NAME_TABLES]:
+            table_name = json_table[libs.db.cfg.JSON_NAME_TABLE_NAME].lower()
 
             if table_name not in ["language"]:
                 if table_name in ["content", "document", "journal", "run", "version"]:
@@ -796,9 +798,9 @@ def load_db_data_from_json(initial_database_data: Path) -> None:
             for json_row in json_table[libs.db.cfg.JSON_NAME_ROWS]:
                 db_columns = {}
 
-                for json_column in json_row[libs.db.cfg.JSON_NAME_COLUMNS]:
-                    db_columns[json_column[libs.db.cfg.JSON_NAME_COLUMN]] = json_column[
-                        libs.db.cfg.JSON_NAME_VALUE
+                for json_column in json_row[libs.db.cfg.JSON_NAME_ROW]:
+                    db_columns[json_column[libs.db.cfg.JSON_NAME_COLUMN_NAME]] = json_column[
+                        libs.db.cfg.JSON_NAME_COLUMN_VALUE
                     ]
 
                 insert_dbt_row(

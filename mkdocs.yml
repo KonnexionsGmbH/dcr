@@ -16,7 +16,7 @@ nav:
       - Requirementes: running_requirements.md
       - Installaion: running_installation.md
       - Configuration: running_configuration.md
-      - Operation: running_operation.md
+      - Operations: running_operations.md
       - Document Language: running_document_language.md
   - Release Documents:
     - Release Notes: release_notes.md

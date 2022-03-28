@@ -1,77 +1,96 @@
 {
-  "comment_1": "================================================================",
-  "comment_2": "Initialisation data for the database",
-  "comment_3": "----------------------------------------------------------------",
-  "comment_4": " ",
-  "tables": [
-    {
-      "comment_1": "================================================================",
-      "comment_2": "Database table 'language'",
-      "comment_3": "----------------------------------------------------------------",
-      "comment_4": " ",
-      "table": "language",
-      "rows": [
-        {
-          "columns": [
-            {
-              "column": "code_iso_639_3",
-              "value": "deu"
-            },
-            {
-              "column": "code_spacy",
-              "value": "de"
-            },
-            {
-              "column": "code_tesseract",
-              "value": "deu"
-            },
-            {
-              "column": "iso_language_name",
-              "value": "Deutsch"
-            }
-          ]
-        },
-        {
-          "columns": [
-            {
-              "column": "code_iso_639_3",
-              "value": "fra"
-            },
-            {
-              "column": "code_spacy",
-              "value": "fr"
-            },
-            {
-              "column": "code_tesseract",
-              "value": "fra"
-            },
-            {
-              "column": "iso_language_name",
-              "value": "French"
-            }
-          ]
-        },
-        {
-          "columns": [
-            {
-              "column": "code_iso_639_3",
-              "value": "ita"
-            },
-            {
-              "column": "code_spacy",
-              "value": "it"
-            },
-            {
-              "column": "code_tesseract",
-              "value": "ita"
-            },
-            {
-              "column": "iso_language_name",
-              "value": "Italian"
-            }
-          ]
-        }
-      ]
-    }
-  ]
+  "apiVersion": "0.9.0",
+  "data": {
+    "tables": [
+      {
+        "tableName": "language",
+        "rows": [
+          {
+            "row": [
+              {
+                "columnName": "active",
+                "columnValue": false
+              },
+              {
+                "columnName": "code_iso_639_3",
+                "columnValue": "deu"
+              },
+              {
+                "columnName": "code_spacy",
+                "columnValue": "de"
+              },
+              {
+                "columnName": "code_tesseract",
+                "columnValue": "deu"
+              },
+              {
+                "columnName": "directory_name_inbox",
+                "columnValue": null
+              },
+              {
+                "columnName": "iso_language_name",
+                "columnValue": "Deutsch"
+              }
+            ]
+          },
+          {
+            "row": [
+              {
+                "columnName": "active",
+                "columnValue": false
+              },
+              {
+                "columnName": "code_iso_639_3",
+                "columnValue": "fra"
+              },
+              {
+                "columnName": "code_spacy",
+                "columnValue": "fr"
+              },
+              {
+                "columnName": "code_tesseract",
+                "columnValue": "fra"
+              },
+              {
+                "columnName": "directory_name_inbox",
+                "columnValue": null
+              },
+              {
+                "columnName": "iso_language_name",
+                "columnValue": "French"
+              }
+            ]
+          },
+          {
+            "row": [
+              {
+                "columnName": "active",
+                "columnValue": false
+              },
+              {
+                "columnName": "code_iso_639_3",
+                "columnValue": "ita"
+              },
+              {
+                "columnName": "code_spacy",
+                "columnValue": "it"
+              },
+              {
+                "columnName": "code_tesseract",
+                "columnValue": "ita"
+              },
+              {
+                "columnName": "directory_name_inbox",
+                "columnValue": null
+              },
+              {
+                "columnName": "iso_language_name",
+                "columnValue": "Italian"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }

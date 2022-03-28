@@ -7,7 +7,15 @@
 
 ----
 
-## 1. **`setup.cfg`**
+## 1. **`data/initial_database_dat.json`**
+
+The customisable entries are:
+
+## 2. **`logging_cfg.yaml`**
+
+The customisable entries are:
+
+## 3. **`setup.cfg`**
 
 The customisable entries are:
 
