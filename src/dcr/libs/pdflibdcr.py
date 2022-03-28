@@ -1,5 +1,6 @@
 """Module libs.pdflibdcr: Extract text and metadata from pdf documents."""
 import inspect
+import time
 
 import libs.cfg
 import libs.db.cfg
@@ -39,6 +40,8 @@ def extract_text_from_pdf() -> None:
         rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB)
 
         for row in rows:
+            libs.cfg.start_time_document = time.perf_counter_ns()
+
             libs.utils.start_document_processing(
                 module_name=__name__,
                 function_name=inspect.stack()[0][3],

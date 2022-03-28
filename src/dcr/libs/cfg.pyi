@@ -99,6 +99,7 @@ PARSE_TAG_RESOURCES: str
 PARSE_TAG_TABLE: str
 PARSE_TAG_TET: str
 PARSE_TAG_TEXT: str
+PARSE_TAG_TITLE: str
 PARSE_TAG_WORD: str
 
 RUN_ACTION_ALL_COMPLETE: str
@@ -189,6 +190,8 @@ pdf2image_type: str
 run_action: str
 run_id: sqlalchemy.Integer
 run_run_id: sqlalchemy.Integer
+
+start_time_document: sqlalchemy.BigInteger
 
 tesseract_timeout: Decimal
 

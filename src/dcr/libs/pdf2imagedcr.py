@@ -2,6 +2,7 @@
 files."""
 import inspect
 import os
+import time
 
 import libs.cfg
 import libs.db.cfg
@@ -35,6 +36,8 @@ def convert_pdf_2_image() -> None:
         rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PDF2IMAGE)
 
         for row in rows:
+            libs.cfg.start_time_document = time.perf_counter_ns()
+
             libs.utils.start_document_processing(
                 module_name=__name__,
                 function_name=inspect.stack()[0][3],

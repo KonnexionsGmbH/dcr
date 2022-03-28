@@ -353,39 +353,51 @@ def process_documents(args: dict[str, bool]) -> None:
 
     # Process the documents in the inbox file directory.
     if args[libs.cfg.RUN_ACTION_PROCESS_INBOX]:
-        start_time: float = time.time()
+        start_time_process = time.perf_counter_ns()
         process_inbox_directory()
-        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
+        libs.utils.progress_msg(
+            f"Time : {((time.perf_counter_ns() - start_time_process)/1000000000) :10.2f} s"
+        )
 
     # Convert the scanned image pdf documents to image files.
     if args[libs.cfg.RUN_ACTION_PDF_2_IMAGE]:
-        start_time: float = time.time()
+        start_time_process = time.perf_counter_ns()
         process_convert_pdf_2_image()
-        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
+        libs.utils.progress_msg(
+            f"Time : {((time.perf_counter_ns() - start_time_process)/1000000000) :10.2f} s"
+        )
 
     # Convert the image documents to pdf files.
     if args[libs.cfg.RUN_ACTION_IMAGE_2_PDF]:
-        start_time: float = time.time()
+        start_time_process = time.perf_counter_ns()
         process_convert_image_2_pdf()
-        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
+        libs.utils.progress_msg(
+            f"Time : {((time.perf_counter_ns() - start_time_process)/1000000000) :10.2f} s"
+        )
 
     # Convert the non-pdf documents to pdf files.
     if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
-        start_time: float = time.time()
+        start_time_process = time.perf_counter_ns()
         process_convert_non_pdf_2_pdf()
-        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
+        libs.utils.progress_msg(
+            f"Time : {((time.perf_counter_ns() - start_time_process)/1000000000) :10.2f} s"
+        )
 
     # Extract text and metadata from pdf documents.
     if args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF]:
-        start_time: float = time.time()
+        start_time_process = time.perf_counter_ns()
         process_extract_text_from_pdf()
-        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
+        libs.utils.progress_msg(
+            f"Time : {((time.perf_counter_ns() - start_time_process)/1000000000) :10.2f} s"
+        )
 
     # Store the document structure from the parser result.
     if args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER]:
-        start_time: float = time.time()
+        start_time_process = time.perf_counter_ns()
         process_store_from_parser()
-        libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
+        libs.utils.progress_msg(
+            f"Time : {((time.perf_counter_ns() - start_time_process)/1000000000) :10.2f} s"
+        )
 
     # Disconnect from the database.
     libs.db.orm.disconnect_db()

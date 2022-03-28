@@ -1,6 +1,7 @@
 """Module libs.parser: Store the document structure from the parser result."""
 import inspect
 import os
+import time
 from datetime import datetime
 from typing import Iterable
 
@@ -105,7 +106,7 @@ def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
                 )
             case libs.cfg.PARSE_TAG_CREATOR | libs.cfg.PARSE_TAG_PRODUCER:
                 pass
-            case libs.cfg.PARSE_TAG_CUSTOM:
+            case libs.cfg.PARSE_TAG_CUSTOM | libs.cfg.PARSE_TAG_TITLE:
                 pass
             case libs.cfg.PARSE_TAG_MOD_DATE:
                 libs.cfg.parse_result_mod_date = datetime.strptime(
@@ -409,6 +410,8 @@ def parse_tetml() -> None:
         rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PARSER)
 
         for row in rows:
+            libs.cfg.start_time_document = time.perf_counter_ns()
+
             libs.utils.start_document_processing(
                 module_name=__name__,
                 function_name=inspect.stack()[0][3],

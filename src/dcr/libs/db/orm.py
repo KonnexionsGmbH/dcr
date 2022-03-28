@@ -1,6 +1,7 @@
 """Module libs.db.orm: Database Manipulation Management."""
 import json
 import os
+import time
 from pathlib import Path
 from typing import Dict
 from typing import List
@@ -398,6 +399,7 @@ def create_dbt_journal(table_name: str) -> None:
             ForeignKey(libs.db.cfg.DBT_DOCUMENT + "." + libs.db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
+        sqlalchemy.Column(libs.db.cfg.DBC_DURATION_NS, sqlalchemy.BigInteger, nullable=True),
         sqlalchemy.Column(libs.db.cfg.DBC_FUNCTION_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(libs.db.cfg.DBC_MODULE_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
@@ -722,12 +724,24 @@ def insert_journal(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
+    action_code = journal_action[0:6]
+
+    if action_code in ["01.002", "11.003", "21.003", "31.003", "41.003", "51.003", "61.002"]:
+        duration_ns = time.perf_counter_ns() - libs.cfg.start_time_document
+        libs.utils.progress_msg(
+            f"Time : {duration_ns / 1000000000 :10.2f} s - processing duration "
+            + f"of document {libs.cfg.document_file_name}",
+        )
+    else:
+        duration_ns = 0
+
     insert_dbt_row(
         libs.db.cfg.DBT_JOURNAL,
         {
-            libs.db.cfg.DBC_ACTION_CODE: journal_action[0:7],
+            libs.db.cfg.DBC_ACTION_CODE: action_code,
             libs.db.cfg.DBC_ACTION_TEXT: journal_action[7:],
             libs.db.cfg.DBC_DOCUMENT_ID: document_id,
+            libs.db.cfg.DBC_DURATION_NS: duration_ns,
             libs.db.cfg.DBC_FUNCTION_NAME: function_name,
             libs.db.cfg.DBC_MODULE_NAME: module_name,
             libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
@@ -765,7 +779,20 @@ def load_db_data_from_json(initial_database_data: Path) -> None:
     with open(initial_database_data, "r", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as json_file:
         json_data = json.load(json_file)
         for json_table in json_data[libs.db.cfg.JSON_NAME_TABLES]:
-            table_name = json_table[libs.db.cfg.JSON_NAME_TABLE]
+            table_name = json_table[libs.db.cfg.JSON_NAME_TABLE].lower()
+
+            if table_name not in ["language"]:
+                if table_name in ["content", "document", "journal", "run", "version"]:
+                    libs.utils.terminate_fatal(
+                        "The database table '"
+                        + table_name
+                        + "' must not be changed via the JSON file."
+                    )
+                else:
+                    libs.utils.terminate_fatal(
+                        "The database table '" + table_name + "' does not exist in the database."
+                    )
+
             for json_row in json_table[libs.db.cfg.JSON_NAME_ROWS]:
                 db_columns = {}
 

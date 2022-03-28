@@ -10,6 +10,7 @@ import inspect
 import os
 import pathlib
 import shutil
+import time
 
 import fitz
 import libs.cfg
@@ -418,6 +419,7 @@ def process_inbox_language() -> None:
             libs.cfg.language_to_be_processed += 1
             libs.cfg.total_to_be_processed += 1
 
+            libs.cfg.start_time_document = time.perf_counter_ns()
             process_inbox_file(file)
 
     libs.utils.show_statistics_language()

@@ -17,6 +17,7 @@ nav:
       - Installaion: running_installation.md
       - Configuration: running_configuration.md
       - Operation: running_operation.md
+      - Document Language: running_document_language.md
   - Release Documents:
     - Release Notes: release_notes.md
     - Release History: release_history.md

@@ -9,7 +9,7 @@
 
 1. Clone or copy the **DCR** repository from [here](https://github.com/KonnexionsGmbH/dcr){:target="_blank"}.
 
-2. Switch to **DCR**:
+2. Switch to the file directory **DCR**:
 
     **`cd dcr`**
 
