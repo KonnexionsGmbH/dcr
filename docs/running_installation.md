@@ -17,13 +17,12 @@
 
     **`make pipenv-prod`**
 
-4. Create a PostgreSQL database container with the script **`scripts/run_setup_postgresql`** and action **`prod`**.
+4. Optionally, adjustments can be made in the following configuration files:
 
-5. Create the **DCR** database with the script **`run_dcr_prod`** and action **`db_c`**.
+    - **`data/initial_database_data.json`**: to configure the document languages to be used
+    - **`logging_cfg.yaml`**: for the logging functionality
+    - **`setup.cfg`**: for the **DCR** application in section **DCR**
+ 
+5. Create a PostgreSQL database container with the script **`scripts/run_setup_postgresql`** and action **`prod`**.
 
-6. Optionally, adjustments can be made in the following configuration files:
-
-   - **`logging_cfg.yaml`**: for the logging functionality
-
-   - **`setup.cfg`**: for the **DCR** application in section **DCR**
-
+6. Create the **DCR** database with the script **`run_dcr_prod`** and action **`db_c`**.
