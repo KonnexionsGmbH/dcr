@@ -18,6 +18,7 @@ The processing logic is as follows:
 - Documents not in **`pdf`** format are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
 - Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to **`pdf`** format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. **`jpeg`**, **`tiff`** etc., as well as scanned images in **`pdf`** format.  
 - From all **`pdf`** documents, the text and associated metadata is extracted into a document-specific **`xml`** file using [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"}.
+- The document-specific **`xml`** files are then parsed and the DCR-relevant contents are written to the database table **`content`**. 
 
 ### 1.1 Rahman & Finin Paper
 
@@ -44,6 +45,11 @@ The processing logic is as follows:
 In the first step, the file directory **`inbox`** is checked for new document files. 
 An entry is created in the **`document`** database table for each new document, showing the current processing status of the document. 
 In addition, each processing step of a document is recorded in the database table **`journal`**.
+
+The association of document and language is managed via subdirectories of the file folder **`inbox`**. 
+In the database table **`language`**, the column **`directory_name_inbox`** specifies per language in which subdirectory the documents in this language are to be supplied. 
+Detailed information on this can be found in the chapter Running **DCR** in the section **Document Language**.
+
 The new document files are processed based on their file extension as follows:
 
 #### 2.1.1.1 File extension **`pdf`**
@@ -113,6 +119,10 @@ In this processing step, the text and metadata of the **`pdf`** documents from 2
 The [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} library is used for this purpose.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`xml`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
+
+### 2.1.6 Store the document structure from the parser result (step: **`s_f_p`**)
+
+The output of [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} is parsed for document metadata relevant to **DCR** and the metadata thus found is written to the database table **content** together with the original document text for further processing. 
 
 ### 2.2 TBD ...
 

@@ -443,11 +443,19 @@ def create_dbt_language(table_name: str) -> None:
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(libs.db.cfg.DBC_ACTIVE, sqlalchemy.Boolean, default=True, nullable=False),
-        sqlalchemy.Column(libs.db.cfg.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(libs.db.cfg.DBC_CODE_SPACY, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(libs.db.cfg.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False, unique=True
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_CODE_SPACY, sqlalchemy.String, nullable=False, unique=True
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True
+        ),
         sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(libs.db.cfg.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True
+        ),
     )
 
     libs.utils.progress_msg("The database table '" + table_name + "' has now been created")

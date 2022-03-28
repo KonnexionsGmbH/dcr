@@ -805,9 +805,7 @@
             "version": "==0.4.4"
         },
         "coverage": {
-            "extras": [
-                "toml"
-            ],
+            "extras": [],
             "hashes": [
                 "sha256:03e2a7826086b91ef345ff18742ee9fc47a6839ccd517061ef8fa1976e652ce9",
                 "sha256:07e6db90cd9686c767dcc593dff16c8c09f9814f5e9c51034066cad3373b914d",
@@ -1105,11 +1103,11 @@
         },
         "jinja2": {
             "hashes": [
-                "sha256:077ce6014f7b40d03b47d1f1ca4b0fc8328a692bd284016f806ed0eaca390ad8",
-                "sha256:611bb273cd68f3b993fabdc4064fc858c5b47a973cb5aa7999ec1ba405c87cd7"
+                "sha256:539835f51a74a69f41b848a9645dbdc35b4f20a3b601e2d9a7e22947b15ff119",
+                "sha256:640bed4bb501cbd17194b3cace1dc2126f5b619cf068a726b98192a0fde74ae9"
             ],
-            "markers": "python_version >= '3.6'",
-            "version": "==3.0.3"
+            "markers": "python_version >= '3.7'",
+            "version": "==3.1.1"
         },
         "lazy-object-proxy": {
             "hashes": [
@@ -1241,11 +1239,11 @@
         },
         "mkdocs-material": {
             "hashes": [
-                "sha256:20c13aa0a54841e1f1c080edb0e3573407884e4abea51ee25573061189bec83e",
-                "sha256:3314d94ccc11481b1a3aa4f7babb4fb2bc47daa2fa8ace2463665952116f409b"
+                "sha256:16ccd382431d5148a4bdbc37c949d0ea5f80e3e9bcce3bd0d774716e5aad9dff",
+                "sha256:f0696538929b3778b064f650589eb2027e4a2c0b3ab37afa8900de7924100901"
             ],
             "index": "pypi",
-            "version": "==8.2.7"
+            "version": "==8.2.8"
         },
         "mkdocs-material-extensions": {
             "hashes": [
@@ -1514,11 +1512,11 @@
         },
         "pylint": {
             "hashes": [
-                "sha256:7d5ea593303cf5ca567c60a8d475056825c7373f493ddb16308f09f5fe47f8f4",
-                "sha256:cdd2cb558a974d0c0b426b44474884aa4a2d8cb9aae037b88476b45333b40ea3"
+                "sha256:0c6dd0e53e6e17f2d0d62660905f3868611e734e9d9b310dc651a4b9f3dc70da",
+                "sha256:3cd8eb401c6aa6c66b614d72cf0c54a02d6bf7752aa9890fc41de71030f3c81a"
             ],
             "index": "pypi",
-            "version": "==2.13.1"
+            "version": "==2.13.2"
         },
         "pymdown-extensions": {
             "hashes": [

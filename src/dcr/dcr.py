@@ -41,7 +41,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         ocr   - Convert image documents to pdf files.
         p_2_i - Convert pdf documents to image files.
         p_i   - Process the inbox directory.
-        s_f_p - Store document structure from parser result.
+        s_f_p - Store the document structure from the parser result.
         tet   - Extract text and metadata from pdf documents.
 
     With the option all, the following process steps are executed
@@ -381,7 +381,7 @@ def process_documents(args: dict[str, bool]) -> None:
         process_extract_text_from_pdf()
         libs.utils.progress_msg(f"Time : {(time.time() - start_time) :10.2f} s")
 
-    # Store document structure from parser result.
+    # Store the document structure from the parser result.
     if args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER]:
         start_time: float = time.time()
         process_store_from_parser()
@@ -459,10 +459,10 @@ def process_inbox_directory() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Store document structure from parser result.
+# Store the document structure from the parser result.
 # -----------------------------------------------------------------------------
 def process_store_from_parser() -> None:
-    """Store document structure from parser result."""
+    """Store the document structure from the parser result."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_STORE_FROM_PARSER
 
     libs.utils.progress_msg_empty_before(
