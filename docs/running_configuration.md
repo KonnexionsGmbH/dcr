@@ -9,13 +9,119 @@
 
 ## 1. **`data/initial_database_dat.json`**
 
-The customisable entries are:
+This file contains the initial values relating to the database table language.
+The existing entries can be modified or deleted, but new entries can also be added.
+
+**Syntax**:
+
+    {
+      "apiVersion": "9.9.9",
+      "data": {
+        "tables": [
+          {
+            "tableName": "language",
+            "rows": [
+              {
+                "row": [
+                  {
+                    "columnName": "active",
+                    "columnValue": true | false
+                  },
+                  {
+                    "columnName": "code_iso_639_3",
+                    "columnValue": "deu"
+                  },
+                  {
+                    "columnName": "code_spacy",
+                    "columnValue": "..."
+                  },
+                  {
+                    "columnName": "code_tesseract",
+                    "columnValue": "..."
+                  },
+                  {
+                    "columnName": "directory_name_inbox",
+                    "columnValue": null | "..."
+                  },
+                  {
+                    "columnName": "iso_language_name",
+                    "columnValue": "..."
+                  }
+                ]
+              },
+              ...
+            ]
+          }
+        ]
+      }
+    }
+
+**Example entry for a language**:
+
+    {
+      "row": [
+        {
+          "columnName": "active",
+          "columnValue": false
+        },
+        {
+          "columnName": "code_iso_639_3",
+          "columnValue": "fra"
+        },
+        {
+          "columnName": "code_spacy",
+          "columnValue": "fr"
+        },
+        {
+          "columnName": "code_tesseract",
+          "columnValue": "fra"
+        },
+        {
+          "columnName": "directory_name_inbox",
+          "columnValue": null
+        },
+        {
+          "columnName": "iso_language_name",
+          "columnValue": "French"
+        }
+      ]
+    },
 
 ## 2. **`logging_cfg.yaml`**
 
-The customisable entries are:
+This file controls the logging behaviour of the application. 
+
+**Deault content**:
+
+    version: 1
+    
+    formatters:
+      simple:
+        format: "%(asctime)s [%(module)s.py  ] %(levelname)-5s %(funcName)s:%(lineno)d %(message)s"
+      extended:
+        format: "%(asctime)s [%(module)s.py  ] %(levelname)-5s %(funcName)s:%(lineno)d \n%(message)s"
+    
+    handlers:
+      console:
+        class: logging.StreamHandler
+        level: INFO
+        formatter: simple
+    
+      file_handler:
+        class: logging.FileHandler
+        level: INFO
+        filename: run_dcr_debug.log
+        formatter: extended
+    
+    loggers:
+      dcr.py:
+        handlers: [ console ]
+    root:
+      handlers: [ file_handler ]
 
 ## 3. **`setup.cfg`**
+
+This file controls the behaviour of the **DCR** application. 
 
 The customisable entries are:
 
@@ -58,9 +164,9 @@ The customisable entries are:
 | dcr_version              | **`09.0`**                            | current version number of the **DCR** application                                      |
 | directory_inbox          | **`data/inbox`**                      | directory for the new documents received                                               |
 | directory_inbox_accepted | **`data/inbox_accepted`**             | directory for the accepted documents                                                   |
-| directory_inbox_rejected | **`data/initial_database_data.json`** | Complete file name for the JSON file with the database initialisation data             |
+| directory_inbox_rejected | **`data/inbox_rejected`**             | Complete file name for the JSON file with the database initialisation data             |
 | ignore_duplicates        | **`false`**                           | accept presumably duplicated documents <br/>based on a SHA256 hash key                 |
-| initial_database_data    | **`false`**                           | accept presumably duplicated documents <br/>based on a SHA256 hash key                 |
+| initial_database_data    | **`data/initial_database_data.json`** | file with initial database contents                                                    |
 | pdfimage_type            | **`jpeg`**                            | format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`** |
 | tesseract_timeout        | **`10`**                              | terminate the tesseract job after a period of time (seconds)                           |
 | verbose                  | **`true`**                            | display progress messages for processing                                               |

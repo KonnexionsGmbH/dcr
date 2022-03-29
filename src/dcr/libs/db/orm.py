@@ -454,7 +454,9 @@ def create_dbt_language(table_name: str) -> None:
         sqlalchemy.Column(
             libs.db.cfg.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True
         ),
-        sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True
+        ),
         sqlalchemy.Column(
             libs.db.cfg.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True
         ),
@@ -778,7 +780,14 @@ def load_db_data_from_json(initial_database_data: Path) -> None:
     """
     with open(initial_database_data, "r", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as json_file:
         json_data = json.load(json_file)
+
         api_version = json_data[libs.db.cfg.JSON_NAME_API_VERSION]
+        if api_version != libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]:
+            libs.utils.terminate_fatal(
+                f"Expected api version is {libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]} "
+                + f"- got {api_version}"
+            )
+
         data = json_data[libs.db.cfg.JSON_NAME_DATA]
         for json_table in data[libs.db.cfg.JSON_NAME_TABLES]:
             table_name = json_table[libs.db.cfg.JSON_NAME_TABLE_NAME].lower()
