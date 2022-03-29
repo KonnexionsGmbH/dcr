@@ -1,9 +1,9 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.pandocdcr."""
+"""Testing Module libs.preprocessor.pandocdcr."""
 import libs.cfg
 import libs.db
 import libs.db.cfg
-import libs.parser
+import libs.preprocessor.parser
 import pytest
 
 import dcr
@@ -45,7 +45,9 @@ def test_run_action_non_pdf_2_pdf_normal(fxtr_setup_empty_db_and_inbox):
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_NON_PDF_2_PDF])
 
     pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original_delete_auxiliary_files
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
+        value_original_delete_auxiliary_files,
     )
 
     # -------------------------------------------------------------------------

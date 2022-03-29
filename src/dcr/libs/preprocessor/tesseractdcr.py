@@ -1,4 +1,5 @@
-"""Module libs.tesseractdcr: Convert image documents to pdf files."""
+"""Module libs.preprocessor.tesseractdcr: Convert image documents to pdf
+files."""
 import inspect
 import os
 import time

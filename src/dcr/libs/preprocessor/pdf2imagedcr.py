@@ -1,5 +1,5 @@
-"""Module libs.pdf2imagedcr: Convert scanned image pdf documents to image
-files."""
+"""Module libs.preprocessor.pdf2imagedcr: Convert scanned image pdf documents
+to image files."""
 import inspect
 import os
 import time
@@ -7,7 +7,7 @@ import time
 import libs.cfg
 import libs.db.cfg
 import libs.db.orm
-import libs.inbox
+import libs.preprocessor.inbox
 import libs.utils
 import pdf2image
 from pdf2image.exceptions import PDFPopplerTimeoutError

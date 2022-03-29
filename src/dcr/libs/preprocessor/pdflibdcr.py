@@ -1,4 +1,5 @@
-"""Module libs.pdflibdcr: Extract text and metadata from pdf documents."""
+"""Module libs.preprocessor.pdflibdcr: Extract text and metadata from pdf
+documents."""
 import inspect
 import time
 

@@ -15,12 +15,12 @@ import libs.cfg
 import libs.db.cfg
 import libs.db.driver
 import libs.db.orm
-import libs.inbox
-import libs.pandocdcr
-import libs.parser
-import libs.pdf2imagedcr
-import libs.pdflibdcr
-import libs.tesseractdcr
+import libs.preprocessor.inbox
+import libs.preprocessor.pandocdcr
+import libs.preprocessor.parser
+import libs.preprocessor.pdf2imagedcr
+import libs.preprocessor.pdflibdcr
+import libs.preprocessor.tesseractdcr
 import libs.utils
 import yaml
 
@@ -256,7 +256,7 @@ def process_convert_image_2_pdf() -> None:
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.tesseractdcr.convert_image_2_pdf()
+    libs.preprocessor.tesseractdcr.convert_image_2_pdf()
     libs.db.orm.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -287,7 +287,7 @@ def process_convert_non_pdf_2_pdf() -> None:
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.pandocdcr.convert_non_pdf_2_pdf()
+    libs.preprocessor.pandocdcr.convert_non_pdf_2_pdf()
     libs.db.orm.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -318,7 +318,7 @@ def process_convert_pdf_2_image() -> None:
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.pdf2imagedcr.convert_pdf_2_image()
+    libs.preprocessor.pdf2imagedcr.convert_pdf_2_image()
     libs.db.orm.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -422,7 +422,7 @@ def process_extract_text_from_pdf() -> None:
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.pdflibdcr.extract_text_from_pdf()
+    libs.preprocessor.pdflibdcr.extract_text_from_pdf()
     libs.db.orm.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -454,7 +454,7 @@ def process_inbox_directory() -> None:
         },
     )
 
-    libs.inbox.process_inbox()
+    libs.preprocessor.inbox.process_inbox()
 
     libs.db.orm.update_dbt_id(
         libs.db.cfg.DBT_RUN,
@@ -490,7 +490,7 @@ def process_store_from_parser() -> None:
         },
     )
 
-    libs.parser.parse_tetml()
+    libs.preprocessor.parser.parse_tetml()
 
     libs.db.orm.update_dbt_id(
         libs.db.cfg.DBT_RUN,

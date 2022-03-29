@@ -1,12 +1,12 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.tesseractdcr."""
+"""Testing Module libs.preprocessor.tesseractdcr."""
 import platform
 from typing import List
 
 import libs.cfg
 import libs.db
 import libs.db.cfg
-import libs.parser
+import libs.preprocessor.parser
 import pytest
 
 import dcr
@@ -52,7 +52,9 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original_delete_auxiliary_files
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
+        value_original_delete_auxiliary_files,
     )
 
     # -------------------------------------------------------------------------
@@ -172,11 +174,15 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original_delete_auxiliary_files
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
+        value_original_delete_auxiliary_files,
     )
 
     pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, value_original_tesseract_timeout
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
+        value_original_tesseract_timeout,
     )
 
     # -------------------------------------------------------------------------

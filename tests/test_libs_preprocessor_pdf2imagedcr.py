@@ -1,8 +1,8 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.pdf2imagedcr."""
+"""Testing Module libs.preprocessor.pdf2imagedcr."""
 import libs.cfg
 import libs.db
-import libs.parser
+import libs.preprocessor.parser
 import pytest
 
 import dcr
@@ -39,7 +39,9 @@ def test_run_action_pdf_2_image_normal_jpeg(fxtr_rmdir_opt, fxtr_setup_empty_db_
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
 
     pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original_delete_auxiliary_files
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
+        value_original_delete_auxiliary_files,
     )
 
     # -------------------------------------------------------------------------
@@ -108,7 +110,9 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
 
     # -------------------------------------------------------------------------
     pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original_delete_auxiliary_files
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
+        value_original_delete_auxiliary_files,
     )
 
     # -------------------------------------------------------------------------
@@ -147,7 +151,9 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
 
     pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original_delete_auxiliary_files
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
+        value_original_delete_auxiliary_files,
     )
 
     pytest.helpers.restore_config_param(

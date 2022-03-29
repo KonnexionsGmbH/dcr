@@ -3,7 +3,7 @@
 import os
 
 import libs.cfg
-import libs.parser
+import libs.preprocessor.parser
 import pytest
 
 import dcr

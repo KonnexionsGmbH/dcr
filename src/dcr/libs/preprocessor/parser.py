@@ -1,4 +1,5 @@
-"""Module libs.parser: Store the document structure from the parser result."""
+"""Module libs.preprocessor.parser: Store the document structure from the
+parser result."""
 import inspect
 import os
 import time

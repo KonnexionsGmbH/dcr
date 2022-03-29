@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.pdflibdcr."""
+"""Testing Module libs.preprocessor.pdflibdcr."""
 import libs.cfg
 import libs.db
 import libs.db.cfg
@@ -38,7 +38,9 @@ def test_run_action_extract_text_from_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empt
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
 
     pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original_delete_auxiliary_files
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
+        value_original_delete_auxiliary_files,
     )
 
     # -------------------------------------------------------------------------
