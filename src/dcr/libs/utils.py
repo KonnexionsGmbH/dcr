@@ -31,8 +31,6 @@ def check_directories() -> None:
 
     The file directory inbox_accepted must exist.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     if not os.path.isdir(libs.cfg.directory_inbox_accepted):
         libs.utils.terminate_fatal(
             "The inbox_accepted directory with the name "
@@ -40,8 +38,6 @@ def check_directories() -> None:
             + " does not exist - error="
             + str(OSError),
         )
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -56,16 +52,12 @@ def compute_sha256(file: pathlib.Path) -> str:
     Returns:
         str: SHA256 hash string.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     sha256_hash = hashlib.sha256()
 
     with open(file, "rb") as file_content:
         # Read and update hash string value in blocks of 4K
         for byte_block in iter(lambda: file_content.read(4096), b""):
             sha256_hash.update(byte_block)
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return sha256_hash.hexdigest()
 
@@ -94,6 +86,21 @@ def debug_xml_element(parent_tag: str, attrib: Dict[str, str], text: Iterable[st
             "text  =%s",
             text,
         )
+
+
+# -----------------------------------------------------------------------------
+# Delete the given auxiliary file.
+# -----------------------------------------------------------------------------
+def delete_auxiliary_file(file_name: str) -> None:
+    """Delete the given auxiliary file.
+
+    Args:
+        file_name (str): File name.
+    """
+    if libs.cfg.is_delete_auxiliary_files:
+        if os.path.isfile(file_name):
+            os.remove(file_name)
+            libs.cfg.logger.debug("Auxiliary file '%s' deleted", file_name)
 
 
 # -----------------------------------------------------------------------------
@@ -137,8 +144,6 @@ def initialise_document_child(journal_action: str) -> None:
     Args:
         journal_action (str): Journal action data.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     libs.cfg.document_child_id = libs.db.orm.insert_dbt_row(
         libs.db.cfg.DBT_DOCUMENT,
         {
@@ -167,8 +172,6 @@ def initialise_document_child(journal_action: str) -> None:
         libs.cfg.document_child_id,
         journal_action,
     )
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -628,8 +631,6 @@ def terminate_fatal(error_msg: str) -> None:
     Args:
         error_msg (str): Error message.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     print("")
     print(libs.cfg.LOGGER_FATAL_HEAD)
     print(libs.cfg.LOGGER_FATAL_HEAD, error_msg, libs.cfg.LOGGER_FATAL_TAIL, sep="")
@@ -639,8 +640,6 @@ def terminate_fatal(error_msg: str) -> None:
     )
 
     traceback.print_exc(chain=True)
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     libs.db.driver.disconnect_db()
 

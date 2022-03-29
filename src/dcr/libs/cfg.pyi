@@ -29,6 +29,7 @@ DCR_CFG_DB_SCHEMA: str
 DCR_CFG_DB_USER: str
 DCR_CFG_DB_USER_ADMIN: str
 DCR_CFG_DCR_VERSION: str
+DCR_CFG_DELETE_AUXILIARY_FILES: str
 DCR_CFG_DIRECTORY_INBOX: str
 DCR_CFG_DIRECTORY_INBOX_ACCEPTED: str
 DCR_CFG_DIRECTORY_INBOX_REJECTED: str
@@ -158,6 +159,7 @@ document_stem_name: str
 
 environment_type: str
 
+is_delete_auxiliary_files: bool
 is_ignore_duplicates: bool
 is_verbose: bool
 is_verbose_parser: bool

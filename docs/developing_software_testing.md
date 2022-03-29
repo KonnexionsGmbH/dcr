@@ -7,8 +7,6 @@
 
 ----
 
-## 6. Software Testing
-
 [pytest](https://github.com/pytest-dev/pytest){:target="_blank"} is used as a software testing framework with the following plugins::
 
 - [pytest-cov](https://github.com/pytest-dev/pytest-cov){:target="_blank"} for coverage reporting,

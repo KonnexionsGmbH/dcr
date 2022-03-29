@@ -512,6 +512,7 @@ def process_store_from_parser() -> None:
 def validate_config() -> None:
     """Validate the configuration parameters."""
     # -------------------------------------------------------------------------
+    validate_config_delete_auxiliary_files()
     validate_config_directory_inbox()
     validate_config_directory_inbox_accepted()
     validate_config_directory_inbox_rejected()
@@ -520,6 +521,18 @@ def validate_config() -> None:
     validate_config_tesseract_timeout()
     validate_config_verbose()
     validate_config_verbose_parser()
+
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - delete_auxiliary_files
+# -----------------------------------------------------------------------------
+def validate_config_delete_auxiliary_files() -> None:
+    """Validate the configuration parameters - delete_auxiliary_files."""
+    libs.cfg.is_delete_auxiliary_files = True
+
+    if libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES in libs.cfg.config:
+        if libs.cfg.config[libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES].lower() == "false":
+            libs.cfg.is_delete_auxiliary_files = False
 
 
 # -----------------------------------------------------------------------------

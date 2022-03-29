@@ -43,9 +43,17 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     )
 
     # -------------------------------------------------------------------------
+    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
+    )
+
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original_delete_auxiliary_files
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal <=========")
@@ -149,7 +157,11 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.store_config_param(
+    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
+    )
+
+    value_original_tesseract_timeout = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "1"
     )
 
@@ -160,7 +172,11 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, value_original
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original_delete_auxiliary_files
+    )
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, value_original_tesseract_timeout
     )
 
     # -------------------------------------------------------------------------

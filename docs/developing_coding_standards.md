@@ -1,4 +1,4 @@
-# DCR - Developing - Cpding Standards
+# DCR - Developing - Coding Standards
 
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
@@ -7,9 +7,7 @@
 
 ----
 
-## 2. Coding Standards
-
-### 2.1 **`Python`**
+### 1. **`Python`**
 
 - The [PEP 8](https://www.python.org/dev/peps/pep-0008){:target="_blank"} style guide for **`Python`** code is strictly applied and enforced with static analysis tools.
 - All program code must be commented with type hinting instructions.
@@ -17,7 +15,7 @@
 - The program code must be covered as far as possible with appropriate tests - the aim is always 100 % test coverage.
 - The successful execution of **`make dev`** ensures that the program code meets the required standards.
 
-### 2.2. Scripts
+### 2. Scripts
 
 - Scripts must always be available in identical functionality for both the Unix shell **`bash`** and the Windows command interpreter **`cmd.exe`**.
 - The most important dynamic parameters of a script should be requested from the user in a dialogue.

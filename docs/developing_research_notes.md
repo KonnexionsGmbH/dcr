@@ -7,9 +7,9 @@
 
 ----
 
-## Papers
+Ideas from the following research papers have influenced the development of DCR.
 
-#### Hegghammer, T. (2021)
+### Hegghammer, T. (2021)
 **OCR with Tesseract, Amazon Textract, and Google Document AI: a benchmarking experiment.**
 Journal of Computational Social Science, 2021, pp. 2432-2725 [Online]
 Available at [https://doi.org/10.1007/s42001-021-00149-1](https://doi.org/10.1007/s42001-021-00149-1){:target="_blank"}
@@ -23,7 +23,7 @@ Accuracy for English was considerably higher than for Arabic.
 Specifying the relative performance of three leading OCR products and the differential effects of commonly found noise types can help scholars identify better OCR solutions for their research needs.
 The test materials have been preserved in the openly available “Noisy OCR Dataset” (NOD) for reuse in future benchmarking studies.
 
-#### Minaee, S. et al. (2021)
+### Minaee, S. et al. (2021)
 **Deep Learning Based Text Classification: A Comprehensive Review.**
 arXiv [Online]
 Available at [https://arxiv.org/abs/2004.03705](https://arxiv.org/abs/2004.03705){:target="_blank"}
@@ -34,7 +34,7 @@ In this paper, we provide a comprehensive review of more than 150 deep learning 
 We also provide a summary of more than 40 popular datasets widely used for text classification. 
 Finally, we provide a quantitative analysis of the performance of different deep learning models on popular benchmarks, and discuss future research directions.
 
-#### Paaß G., Konya I. (2011)
+### Paaß G., Konya I. (2011)
 **Machine Learning for Document Structure Recognition.** 
 In: Mehler A., Kühnberger KU., Lobin H., Lüngen H., Storrer A., Witt A. (eds) Modeling, Learning, and Processing of Text Technological Data Structures. 
 Studies in Computational Intelligence, vol 370. 
@@ -52,7 +52,7 @@ In the second part we introduce several machine learning approaches exploring la
 They can be adapted to geometrical models of the document structure, which may be set up as a linear sequence or a general graph. 
 These advanced models require far more computational resources but show a better performance than simpler alternatives and might be used in future.
 
-#### Power R., Scott D., Bouayad-Agha, N. (2003)
+### Power R., Scott D., Bouayad-Agha, N. (2003)
 **Document Structure.**
 Computational Linguistics, 2003, Volume 29, Issue 2, pp. 211-260 [Online]
 The MIT Press, Cambridge, USA.
@@ -64,7 +64,7 @@ The purpose of this representation is to mediate between the message of a text (
 Abstract document structure can be seen as an extension of Nunberg's “text-grammar” it is also closely related to “logical” markup in languages like HTML and LaTEX. 
 We show that by using this intermediate representation, several subtasks in language generation and language understanding can be defined more cleanly.
 
-#### Rahman, M., Finin, T. (2019)
+### Rahman, M., Finin, T. (2019)
 _Unfolding the Structure of a Document using Deep Learning._
 arXiv [Online]
 Available at [https://arxiv.org/abs/1910.03678](https://arxiv.org/abs/1910.03678){:target="_blank"}

@@ -7,8 +7,6 @@
 
 ----
 
-## 1. System Environment
-
 **DCR** is developed on the operating systems **`Ubuntu 20.04 LTS`** and **`Microsoft Windows 10`**.
 Ubuntu is used here via the **`VM Workstation Player 16`**.
 **`Ubuntu`** can also be used in conjunction with the **`Windows Subsystem for Linux (WSL2)`**.

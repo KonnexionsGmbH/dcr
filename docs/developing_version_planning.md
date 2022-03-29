@@ -7,7 +7,7 @@
 
 ----
 
-## 9. Version Planning
+## 1. Version Planning
 
 | Version   | Feature(s)                           |
 |-----------|--------------------------------------|
@@ -19,21 +19,21 @@
 | 0.9.0     | Parser                               |
 | 0.9.1     | Text preprocessing and wrangling     |
 
-## 10. Next Development Steps
+## 2. Next Development Steps
 
-- 0 parser result with JSON 
-- 1 clean up the database before the next process retry - delete existing data
-- 2 clean up the auxiliary files in file directory inbox_accepted - keep the base document
-- 3 combine **`pdf`** files - scanned **`pdf`** documents - after Tesseract OCR
-- 4 reconstruct original document
-- 5 convert 'doc' documents to 'docx'
-- 6 check the content of the file directory against the database
-- 7 API documentation: Content improvement
-- 8 API documentation: Layout improvement
+- 2 combine **`pdf`** files - scanned **`pdf`** documents - after Tesseract OCR
+- 9 API documentation: Content improvement
+- 9 API documentation: Layout improvement
 - 9 Google Styleguide implementation
+- 9 check the content of the file directory against the database
+- 9 convert 'doc' documents to 'docx'
+- 9 parser result with JSON 
+- 9 reconstruct original document
+- 9 reset a list of documents: clean up the database before the next process retry - delete existing data
 - ~~API Documentation~~
 - ~~PDFlib TET processing~~
 - ~~Tesseract OCR - Installation~~  
+- ~~clean up the auxiliary files in file directory inbox_accepted - keep the base document~~
 - ~~convert the appropriate documents into the **`pdf`** format with Pandoc and TeX Live~~
 - ~~duplicate handling~~ 
 - ~~error correction version 0.9.0~~

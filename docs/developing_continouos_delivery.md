@@ -7,8 +7,6 @@
 
 ----
 
-## 7. Continuous Delivery
-
 The GitHub Actions are used to enforce the following good practices of the software engineering process in the CI/CD process:
 
 - uniform formatting of all source code,

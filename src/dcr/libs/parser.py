@@ -483,6 +483,8 @@ def parse_tetml_file() -> None:
                         ),
                     )
 
+        libs.utils.delete_auxiliary_file(file_name)
+
         # Text and metadata from Document successfully extracted to xml format
         libs.utils.finalize_file_processing(
             module_name=__name__,

@@ -7,8 +7,6 @@
 
 ----
 
-## 3. Code Formatting
-
 The tools **`Black`**, **`docformatter`** and **`isort`** are used for formatting the programme code:
 
 - [Black](https://black.readthedocs.io/en/stable){:target="_blank"} - The uncompromising **`Python`** code formatter.

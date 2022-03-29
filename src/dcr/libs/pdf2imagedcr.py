@@ -124,6 +124,9 @@ def convert_pdf_2_image_file() -> None:
                     ).replace("{child_no}", str(libs.cfg.document_child_child_no)),
                 )
                 libs.cfg.total_ok_processed -= 1
+
+        libs.utils.delete_auxiliary_file(file_name_parent)
+
         libs.cfg.total_ok_processed += 1
     # not testable
     except PDFPopplerTimeoutError as err:

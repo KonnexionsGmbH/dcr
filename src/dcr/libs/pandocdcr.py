@@ -102,6 +102,8 @@ def convert_non_pdf_2_pdf_file() -> None:
 
             libs.utils.initialise_document_child(journal_action)
 
+            libs.utils.delete_auxiliary_file(source_file_name)
+
             # Document successfully converted to pdf format
             libs.utils.finalize_file_processing(
                 module_name=__name__,

@@ -9,7 +9,7 @@
 
 ## 1. **`data/initial_database_dat.json`**
 
-This file contains the initial values relating to the database table language.
+This file contains the initial values relating to the database table **`language`**.
 The existing entries can be modified or deleted, but new entries can also be added.
 
 **Syntax**:
@@ -162,13 +162,14 @@ The customisable entries are:
 | db_user                  | **`postgresql`**                      | **DCR** database user name                                                             |
 | db_user_admin            | **`postgresql`**                      | administrative database user name                                                      |
 | dcr_version              | **`09.0`**                            | current version number of the **DCR** application                                      |
+| delete_auxiliary_files   | **`true`**                            | delete the auxiliary files after a successful <br>processing step                      |
 | directory_inbox          | **`data/inbox`**                      | directory for the new documents received                                               |
 | directory_inbox_accepted | **`data/inbox_accepted`**             | directory for the accepted documents                                                   |
-| directory_inbox_rejected | **`data/inbox_rejected`**             | Complete file name for the JSON file with the database initialisation data             |
+| directory_inbox_rejected | **`data/inbox_rejected`**             | Complete file name for the JSON file with the <br>database initialisation data         |
 | ignore_duplicates        | **`false`**                           | accept presumably duplicated documents <br/>based on a SHA256 hash key                 |
 | initial_database_data    | **`data/initial_database_data.json`** | file with initial database contents                                                    |
 | pdfimage_type            | **`jpeg`**                            | format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`** |
-| tesseract_timeout        | **`10`**                              | terminate the tesseract job after a period of time (seconds)                           |
+| tesseract_timeout        | **`10`**                              | terminate the tesseract job after a <br>period of time (seconds)                       |
 | verbose                  | **`true`**                            | display progress messages for processing                                               |
 | verbose_parser           | **`false`**                           | display progress messages for parsing xml (TETML)                                      |
 

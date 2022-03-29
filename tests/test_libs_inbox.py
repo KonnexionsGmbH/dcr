@@ -3,9 +3,12 @@
 import os.path
 from pathlib import Path
 
+from sqlalchemy import Table, update
+
 import libs.cfg
 import libs.db
 import libs.db.cfg
+import libs.db.orm
 import pytest
 
 import dcr
@@ -140,6 +143,16 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
     pytest.helpers.copy_directories_4_pytest_2_dir(["french"], str(libs.cfg.directory_inbox))
 
     # -------------------------------------------------------------------------
+    # Connect to the database.
+    libs.db.orm.connect_db()
+
+    dbt = Table(libs.db.cfg.DBT_LANGUAGE, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine)
+
+    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
+        conn.execute(update(dbt).where(dbt.c.iso_language_name == "French").values({libs.db.cfg.DBC_ACTIVE: True}))
+        conn.close()
+
+    # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     # -------------------------------------------------------------------------
@@ -265,11 +278,19 @@ def test_run_action_process_inbox_normal(fxtr_setup_empty_db_and_inbox):
     pytest.helpers.copy_files_4_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
 
     # -------------------------------------------------------------------------
+    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
+    )
+
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original_delete_auxiliary_files
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.info("=========> test_run_action_process_inbox_normal <=========")
