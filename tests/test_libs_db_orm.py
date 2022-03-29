@@ -13,8 +13,6 @@ from sqlalchemy import Table
 # -----------------------------------------------------------------------------
 # @pytest.mark.issue
 
-TESTS_INBOX = "tests/__PYTEST_FILES__/"
-
 
 # -----------------------------------------------------------------------------
 # Test Database Version - Wrong version number in configuration.

@@ -113,6 +113,8 @@ RUN_ACTION_STORE_FROM_PARSER: str = "s_f_p"
 RUN_ACTION_TEXT_FROM_PDF: str = "tet"
 RUN_ACTION_UPGRADE_DB: str = "db_u"
 
+TESTS_INBOX_NAME: str = "tests/__PYTEST_FILES__/"
+
 VERBOSE_TRUE: str = "true"
 
 # -----------------------------------------------------------------------------

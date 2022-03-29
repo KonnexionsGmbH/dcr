@@ -20,8 +20,60 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_IMAGE_2_PDF - normal.
 # -----------------------------------------------------------------------------
+@pytest.mark.issue
 def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_IMAGE_2_PDF - normal."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        [
+            ("pdf_scanned_ok", "pdf"),
+        ],
+        libs.cfg.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal <=========")
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
+    )
+
+    files_expected: List = [
+        "pdf_scanned_ok_1_1.pdf",
+    ]
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        files_expected,
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_IMAGE_2_PDF - normal - keep.
+# -----------------------------------------------------------------------------
+def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_IMAGE_2_PDF - normal - keep."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------

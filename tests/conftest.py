@@ -32,8 +32,6 @@ CONFIG_PARSER: configparser.ConfigParser = configparser.ConfigParser()
 FILE_NAME_SETUP_CFG: str = "setup.cfg"
 FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
 
-TESTS_INBOX = libs.utils.str_2_path("tests/__PYTEST_FILES__/")
-
 
 # -----------------------------------------------------------------------------
 # Backup the 'setup.cfg' file.
@@ -59,11 +57,13 @@ def copy_directories_4_pytest_2_dir(
         source_directories: List[str]: Source directory names.
         target_dir: str: Target directory.
     """
-    assert os.path.isdir(TESTS_INBOX), "source base directory '" + str(TESTS_INBOX) + "' missing"
+    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), (
+        "source base directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
+    )
 
     for source in source_directories:
-        source_dir = str(TESTS_INBOX) + "/" + source
-        source_path = os.path.join(TESTS_INBOX, Path(source))
+        source_dir = libs.cfg.TESTS_INBOX_NAME + "/" + source
+        source_path = os.path.join(libs.cfg.TESTS_INBOX_NAME, Path(source))
         assert os.path.isdir(source_path), (
             "source language directory '" + str(source_path) + "' missing"
         )
@@ -84,11 +84,13 @@ def copy_files_4_pytest(
         file_list (List[Tuple[Tuple[str, str | None], Tuple[Path, List[str], str | None]]]):
                   List of files to be copied.
     """
-    assert os.path.isdir(TESTS_INBOX), "source directory '" + str(TESTS_INBOX) + "' missing"
+    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), (
+        "source directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
+    )
 
     for ((source_stem, source_ext), (target_dir, target_file_comp, target_ext)) in file_list:
         source_file_name = source_stem if source_ext is None else source_stem + "." + source_ext
-        source_file = os.path.join(TESTS_INBOX, source_file_name)
+        source_file = os.path.join(libs.cfg.TESTS_INBOX_NAME, source_file_name)
         assert os.path.isfile(source_file), "source file '" + str(source_file) + "' missing"
 
         assert os.path.isdir(target_dir), "target directory '" + target_dir + "' missing"

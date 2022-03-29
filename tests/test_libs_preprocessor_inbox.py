@@ -132,6 +132,58 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
 
 
 # -----------------------------------------------------------------------------
+# Test RUN_ACTION_PROCESS_INBOX - accepted - duplicate - verbosew.
+# -----------------------------------------------------------------------------
+def test_run_action_process_inbox_accepted_duplicate_verbose(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PROCESS_INBOX - accepted duplicate verbose."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    stem_name_1: str = "pdf_text_ok"
+    file_ext: str = "pdf"
+
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext)], libs.cfg.directory_inbox)
+
+    stem_name_2: str = "pdf_text_ok_1"
+
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        [(stem_name_1, file_ext)], libs.cfg.directory_inbox_accepted
+    )
+
+    os.rename(
+        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_1 + "." + file_ext),
+        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_2 + "." + file_ext),
+    )
+
+    # -------------------------------------------------------------------------
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.info("=========> test_run_action_process_inbox_accepted_duplicate <=========")
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [stem_name_1 + "." + file_ext],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [stem_name_2 + "." + file_ext],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_INBOX - french.
 # -----------------------------------------------------------------------------
 def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
@@ -161,7 +213,17 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
         conn.close()
 
     # -------------------------------------------------------------------------
+    value_original_verbose = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, "false"
+    )
+
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_VERBOSE,
+        value_original_verbose,
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.info("=========> test_run_action_process_inbox_french <=========")

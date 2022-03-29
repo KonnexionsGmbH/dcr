@@ -14,10 +14,10 @@ import dcr
 
 
 # -----------------------------------------------------------------------------
-# Test RUN_ACTION_PDF_2_IMAGE - normal - jpeg.
+# Test RUN_ACTION_PDF_2_IMAGE - normal - jpeg - keep.
 # -----------------------------------------------------------------------------
-def test_run_action_pdf_2_image_normal_jpeg(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_PDF_2_IMAGE - normal - jpeg."""
+def test_run_action_pdf_2_image_normal_jpeg_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PDF_2_IMAGE - normal - jpeg - keep."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------

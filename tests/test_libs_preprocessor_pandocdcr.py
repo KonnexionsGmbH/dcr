@@ -15,10 +15,10 @@ import dcr
 
 
 # -----------------------------------------------------------------------------
-# Test RUN_ACTION_NON_PDF_2_PDF - normal.
+# Test RUN_ACTION_NON_PDF_2_PDF - normal -keep.
 # -----------------------------------------------------------------------------
-def test_run_action_non_pdf_2_pdf_normal(fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_NON_PDF_2_PDF - normal."""
+def test_run_action_non_pdf_2_pdf_normal_keep(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_NON_PDF_2_PDF - normal - keep."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------

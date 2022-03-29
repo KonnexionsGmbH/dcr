@@ -113,6 +113,8 @@ RUN_ACTION_STORE_FROM_PARSER: str
 RUN_ACTION_TEXT_FROM_PDF: str
 RUN_ACTION_UPGRADE_DB: str
 
+TESTS_INBOX_NAME: str
+
 VERBOSE_TRUE: str
 
 # -----------------------------------------------------------------------------
