@@ -176,12 +176,12 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal_duplicate <=========")
 
-    stem_name_1: str = "tiff_pdf_text_ok_1"
+    stem_name_1: str = "tiff_pdf_text_ok"
     file_ext_1: str = "tiff"
 
     pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.directory_inbox)
 
-    stem_name_2: str = "tiff_pdf_text_ok_1_1"
+    stem_name_2: str = "tiff_pdf_text_ok_1"
     file_ext_2: str = "pdf"
 
     pytest.helpers.help_run_action_all_complete_duplicate_file(

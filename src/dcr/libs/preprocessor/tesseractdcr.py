@@ -159,7 +159,7 @@ def reunite_pdfs() -> None:
                     .where(dbt.c.status == libs.db.cfg.DOCUMENT_STATUS_START)
                     .where(dbt.c.next_step == libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB)
                     .group_by(dbt.c.document_id_base)
-                    .having(func.count(dbt.c.document_id_base) > 1)
+                    .having(func.count(dbt.c.document_id_base) > 1).scalar_subquery()
                 )
             )
         )
@@ -189,7 +189,7 @@ def reunite_pdfs() -> None:
 def reunite_pdfs_file() -> None:
     """Reunite the related pdf documents of a specific base document."""
     target_file_path = os.path.join(
-        libs.cfg.document_directory_name,
+        libs.cfg.directory_inbox_accepted,
         libs.cfg.document_stem_name + "_0." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
     )
 
@@ -204,7 +204,7 @@ def reunite_pdfs_file() -> None:
             select(dbt)
             .where(dbt.c.status == libs.db.cfg.DOCUMENT_STATUS_START)
             .where(dbt.c.next_step == libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB)
-            .where(dbt.c.document_id_base == libs.cfg.document_id_base)
+            .where(dbt.c.document_id_base == libs.cfg.document_id_base).order_by(dbt.c.id)
         )
 
         for row in rows:

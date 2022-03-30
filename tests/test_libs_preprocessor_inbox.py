@@ -30,14 +30,14 @@ def test_run_action_process_inbox_accepted(fxtr_setup_empty_db_and_inbox):
     pytest.helpers.copy_files_4_pytest_2_dir(
         [
             ("docx_ok", "docx"),
-            ("jpeg_pdf_text_ok_1", "jpeg"),
-            ("jpg_pdf_text_ok_1", "jpg"),
+            ("jpeg_pdf_text_ok", "jpeg"),
+            ("jpg_pdf_text_ok", "jpg"),
             ("odt_ok", "odt"),
             ("pdf_text_ok", "pdf"),
-            ("png_pdf_text_ok_1", "png"),
+            ("png_pdf_text_ok", "png"),
             ("README.md", None),
             ("rtf_ok", "rtf"),
-            ("tiff_pdf_text_ok_2", "tiff"),
+            ("tiff_pdf_text_ok", "tiff"),
         ],
         libs.cfg.directory_inbox,
     )
@@ -59,13 +59,13 @@ def test_run_action_process_inbox_accepted(fxtr_setup_empty_db_and_inbox):
         [],
         [
             "docx_ok_1.docx",
-            "jpeg_pdf_text_ok_1_3.jpeg",
-            "jpg_pdf_text_ok_1_5.jpg",
+            "jpeg_pdf_text_ok_3.jpeg",
+            "jpg_pdf_text_ok_5.jpg",
             "odt_ok_7.odt",
             "pdf_text_ok_9.pdf",
-            "png_pdf_text_ok_1_11.png",
+            "png_pdf_text_ok_11.png",
             "rtf_ok_13.rtf",
-            "tiff_pdf_text_ok_2_15.tiff",
+            "tiff_pdf_text_ok_15.tiff",
         ],
     )
 

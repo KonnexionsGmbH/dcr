@@ -398,7 +398,7 @@ def select_document(conn: Connection, dbt: Table, next_step: str) -> engine.Curs
                 ),
             )
         )
-        .order_by(dbt.c.id.desc())
+        .order_by(dbt.c.id.asc())
     )
 
 
