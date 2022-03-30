@@ -15,7 +15,7 @@ Furthermore, for each of the languages in question there must be a corresponding
 
 ## 2. Database Table **`language`**
 
-![dbt_language.png](img/dbt_language.png)
+![](img/dbt_language.png)
 
 The active languages in the database table **`language`** control the allocation of the documents to a language. 
 Each document language must have its own entry in this table. 

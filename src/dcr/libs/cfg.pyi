@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 from decimal import Decimal
 from os import PathLike
-from typing import Dict
+from typing import Dict, List, Tuple
 from typing import TypeAlias
 from typing import Union
 
@@ -158,6 +158,8 @@ document_next_step: str | None
 document_sha256: str | None
 document_status: str
 document_stem_name: str
+
+documents_to_be_reunited: List[Tuple[str, str]]
 
 environment_type: str
 

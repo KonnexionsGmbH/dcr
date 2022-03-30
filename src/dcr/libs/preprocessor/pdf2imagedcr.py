@@ -151,5 +151,8 @@ def convert_pdf_2_image_file() -> None:
         __name__,
         inspect.stack()[0][3],
         libs.cfg.document_id,
-        journal_action.replace("{file_name}", libs.cfg.document_file_name,
-    ))
+        journal_action.replace(
+            "{file_name}",
+            libs.cfg.document_file_name,
+        ),
+    )

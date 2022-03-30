@@ -245,6 +245,7 @@ def main(argv: List[str]) -> None:
 def process_convert_image_2_pdf() -> None:
     """Convert image documents to pdf files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_IMAGE_2_PDF
+
     libs.utils.progress_msg_empty_before(
         "Start: Convert image documents to pdf files ... Tesseract OCR"
     )
@@ -268,6 +269,28 @@ def process_convert_image_2_pdf() -> None:
         },
     )
     libs.utils.progress_msg("End  : Convert image documents to pdf files ...")
+
+    libs.utils.progress_msg_empty_before("Start: Reunite the related pdf files ... Tesseract OCR")
+    libs.cfg.run_id = libs.db.orm.insert_dbt_row(
+        libs.db.cfg.DBT_RUN,
+        {
+            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
+            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+        },
+    )
+    libs.preprocessor.tesseractdcr.reunite_pdfs()
+    libs.db.orm.update_dbt_id(
+        libs.db.cfg.DBT_RUN,
+        libs.cfg.run_id,
+        {
+            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
+            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+        },
+    )
+    libs.utils.progress_msg("End  : Reunite the related pdf files ...")
 
 
 # -----------------------------------------------------------------------------

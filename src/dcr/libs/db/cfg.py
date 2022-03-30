@@ -175,8 +175,17 @@ JOURNAL_ACTION_21_002: str = (
     + "to {child_no} image file(s)."
 )
 JOURNAL_ACTION_21_003: str = (
-    "21.003 Next  (p_2_i): The created image file '{file_name}' "
+    "21.003 Next  (p_2_i): The scanned pdf file '{file_name}' "
+    + "has been completely converted into the required image format."
+)
+JOURNAL_ACTION_21_004: str = (
+    "21.004 Next  (p_2_i): The created image file '{file_name}' "
     + "is ready to be processed with Tesseract OCR."
+)
+JOURNAL_ACTION_21_005: str = (
+    "21.005 Next  (p_2_i): The scanned pdf file '{file_name}' "
+    + "has only been incompletely converted into the desired "
+    + "image format due to errors that occurred."
 )
 JOURNAL_ACTION_21_901: str = (
     "21.901 Issue (p_2_i): The 'pdf' document '{file_name}' cannot be converted to an "
@@ -218,7 +227,19 @@ JOURNAL_ACTION_41_002: str = (
     + "to {target_file}."
 )
 JOURNAL_ACTION_41_003: str = (
-    "41.003 Next  (ocr): The created image file '{file_name}' "
+    "41.003 Next  (ocr): The created 'pdf' file '{file_name}' "
+    + "is ready to be processed with PDFlib TET."
+)
+JOURNAL_ACTION_41_051: str = (
+    "41.051 Start (ocr): The child documents from the document file '{file_name}' "
+    + "must be reunited in one 'pdf' file for further processing."
+)
+JOURNAL_ACTION_41_052: str = (
+    "41.052 End   (ocr): The child documents from the document file '{file_name}' "
+    +"file '{source_file}' were successfully reunited in the document {target_file}."
+)
+JOURNAL_ACTION_41_053: str = (
+    "41.053 Next  (ocr): The created 'pdf' file '{file_name}' "
     + "is ready to be processed with PDFlib TET."
 )
 JOURNAL_ACTION_41_901: str = (
