@@ -505,7 +505,6 @@ def test_wrong_api_version(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 # Test Function - wrong dbt.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_wrong_dbt(fxtr_setup_empty_db_and_inbox):
     """Test: main() - RUN_ACTION_CREATE_DB."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)

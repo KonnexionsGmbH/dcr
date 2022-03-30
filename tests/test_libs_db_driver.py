@@ -1,11 +1,12 @@
 # pylint: disable=unused-argument
 """Testing Module libs.db.driver."""
-
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver
 import libs.db.orm
 import pytest
+from sqlalchemy import Table
+from sqlalchemy import update
 
 import dcr
 
@@ -221,7 +222,7 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     libs.db.orm.connect_db()
 
-    libs.db.orm.update_version_version("0.5.0")
+    update_version_version("0.5.0")
 
     libs.db.orm.disconnect_db()
 
@@ -236,7 +237,7 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     libs.db.orm.connect_db()
 
-    libs.db.orm.update_version_version("0.0.0")
+    update_version_version("0.0.0")
 
     libs.db.orm.disconnect_db()
 
@@ -247,4 +248,36 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Version unknown"
 
     # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Update the database version number.
+# -----------------------------------------------------------------------------
+def update_version_version(
+    version: str,
+) -> None:
+    """Update the database version number in database table version.
+
+    Args:
+        version (str): New version number.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    dbt = Table(
+        libs.db.cfg.DBT_VERSION,
+        libs.db.cfg.db_orm_metadata,
+        autoload_with=libs.db.cfg.db_orm_engine,
+    )
+
+    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
+        conn.execute(
+            update(dbt).values(
+                {
+                    libs.db.cfg.DBC_VERSION: version,
+                }
+            )
+        )
+        conn.close()
+
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

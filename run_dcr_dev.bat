@@ -118,11 +118,11 @@ echo.
     )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p"] (
-        set _CHOICE="p_i" "%DCR_CHOICE_ACTION%
+        set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["ocr"] (
-        set _CHOICE="p_i" "n_2_p" "p_2_i" %DCR_CHOICE_ACTION%
+        set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"] (
@@ -142,19 +142,34 @@ echo.
     )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
-        set _CHOICE="p_i" "n_2_p" "%DCR_CHOICE_ACTION%
+        set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
-        set _CHOICE="p_i" "n_2_p" "p_2_i" "ocr" "tet" ""%DCR_CHOICE_ACTION%
+        set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["tet"] (
-        set _CHOICE="p_i" "n_2_p" "p_2_i" "ocr" %DCR_CHOICE_ACTION%
+        set _CHOICE=%DCR_CHOICE_ACTION%
     )
 
     if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
-        pipenv run python src\dcr\dcr.py %DCR_CHOICE_ACTION%
+        if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
+            set DCR_CHOICE_ACTION=p_i %DCR_CHOICE_ACTION%
+        )
+        if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p"] (
+            set DCR_CHOICE_ACTION=p_i p_2_i %DCR_CHOICE_ACTION%
+        )
+        if ["%DCR_CHOICE_ACTION%"] EQU ["ocr"] (
+            set DCR_CHOICE_ACTION=p_i p_2_i n_2_p %DCR_CHOICE_ACTION%
+        )
+        if ["%DCR_CHOICE_ACTION%"] EQU ["tet"] (
+            set DCR_CHOICE_ACTION=p_i p_2_i n_2_p ocr %DCR_CHOICE_ACTION%
+        )
+        if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
+            set DCR_CHOICE_ACTION=p_i p_2_i n_2_p ocr tet %DCR_CHOICE_ACTION%
+        )
+        pipenv run python src\dcr\dcr.py !DCR_CHOICE_ACTION!
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
         )

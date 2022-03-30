@@ -8,6 +8,8 @@ import libs.utils
 import pytest
 from sqlalchemy import Table
 
+import dcr
+
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
@@ -23,7 +25,7 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        libs.db.orm.check_db_up_to_date()
+        dcr.check_db_up_to_date()
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
@@ -35,7 +37,7 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
 
     with pytest.raises(SystemExit) as expt:
         libs.db.orm.connect_db()
-        libs.db.orm.check_db_up_to_date()
+        dcr.check_db_up_to_date()
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
@@ -54,7 +56,7 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     dbt.drop()
 
     with pytest.raises(SystemExit) as expt:
-        libs.db.orm.check_db_up_to_date()
+        dcr.check_db_up_to_date()
 
     assert expt.type == SystemExit
     assert expt.value.code == 1

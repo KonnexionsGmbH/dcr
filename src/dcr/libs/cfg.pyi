@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 from decimal import Decimal
 from os import PathLike
-from typing import Dict, List, Tuple
+from typing import Dict
 from typing import TypeAlias
 from typing import Union
 
@@ -159,8 +159,6 @@ document_sha256: str | None
 document_status: str
 document_stem_name: str
 
-documents_to_be_reunited: List[Tuple[str, str]]
-
 environment_type: str
 
 is_delete_auxiliary_files: bool
@@ -178,6 +176,8 @@ language_ok_processed_pdf2image: int
 language_ok_processed_pdflib: int
 language_ok_processed_tesseract: int
 language_to_be_processed: int
+
+languages_tesseract: Dict[sqlalchemy.Integer, str]
 
 logger: logging.Logger
 

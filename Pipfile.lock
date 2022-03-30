@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7b1028a15845d9574af24bca9e20ccf72b93b128445abeaebf7258ad184e13c5"
+            "sha256": "47eaa0990084cf735ebcd6b0f00eeedf25551f94b8a41a08a1da35e83ce90502"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -801,7 +801,7 @@
                 "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b",
                 "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"
             ],
-            "markers": "python_full_version >= '3.5.0'",
+            "markers": "python_version >= '3.5'",
             "version": "==0.4.4"
         },
         "coverage": {
@@ -1293,11 +1293,11 @@
         },
         "nr.util": {
             "hashes": [
-                "sha256:882123edc0b3275d2c6132e96bf8ef554b3c204ae4b37736f5f78da8d80b0592",
-                "sha256:d27e07755d7bc4c3adc042c9e792cdd1b03b9b85cde55a95068ebd4c37729f9b"
+                "sha256:4a8b3966058d4f8820e1fe16547e9bd87ec900fec9177e65d1e8f1b8def4f97c",
+                "sha256:4d33640b2f6d93eedeebc2cc781aab141bf5b8ecfc649d6e349175cbcbde516c"
             ],
             "markers": "python_version >= '3.7' and python_version < '4.0'",
-            "version": "==0.8.7"
+            "version": "==0.8.8"
         },
         "packaging": {
             "hashes": [
@@ -1509,7 +1509,7 @@
                 "sha256:44238f1b60a76d78fc8ca0528ee429702aae011c265fe6a8dd8b63049ae41c65",
                 "sha256:4e426f72023d88d03b2fa258de560726ce890ff3b630f88c21cbb8b2503b8c6a"
             ],
-            "markers": "python_full_version >= '3.5.0'",
+            "markers": "python_version >= '3.5'",
             "version": "==2.11.2"
         },
         "pylint": {
@@ -1569,6 +1569,13 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==3.0.7"
+        },
+        "pypdf4": {
+            "hashes": [
+                "sha256:7c932441146d205572f96254d53c79ea2c30c9e11df55a5cf87e056c7b3d7f89"
+            ],
+            "index": "pypi",
+            "version": "==1.27.0"
         },
         "pyphen": {
             "hashes": [

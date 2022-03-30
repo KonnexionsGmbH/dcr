@@ -20,7 +20,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_IMAGE_2_PDF - normal.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_IMAGE_2_PDF - normal."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
@@ -50,6 +49,7 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     )
 
     files_expected: List = [
+        "pdf_scanned_ok_1.pdf",
         "pdf_scanned_ok_1_1.pdf",
     ]
 

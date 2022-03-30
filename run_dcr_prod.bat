@@ -17,8 +17,8 @@ if ["%1"] EQU [""] (
     echo all   - Run the complete processing of all new documents.
     echo ---------------------------------------------------------
     echo p_i   - 1. Process the inbox directory.
-    echo n_2_p - 2. Convert non-pdf documents to pdf files:             Pandoc
     echo p_2_i - 2. Convert pdf documents to image files:               Poppler.
+    echo n_2_p - 2. Convert non-pdf documents to pdf files:             Pandoc
     echo ocr   - 3. Convert image documents to pdf files:               Tesseract OCR.
     echo tet   - 4. Extract text and metdata from pdf documents:        PDFlib TET.
     echo s_f_p - 5. Store the document structure from the parser result.
@@ -136,7 +136,22 @@ echo.
     )
 
     if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
-        pipenv run python src\dcr\dcr.py %DCR_CHOICE_ACTION%
+        if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
+            set DCR_CHOICE_ACTION=p_i %DCR_CHOICE_ACTION%
+        )
+        if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p"] (
+            set DCR_CHOICE_ACTION=p_i p_2_i %DCR_CHOICE_ACTION%
+        )
+        if ["%DCR_CHOICE_ACTION%"] EQU ["ocr"] (
+            set DCR_CHOICE_ACTION=p_i p_2_i n_2_p %DCR_CHOICE_ACTION%
+        )
+        if ["%DCR_CHOICE_ACTION%"] EQU ["tet"] (
+            set DCR_CHOICE_ACTION=p_i p_2_i n_2_p ocr %DCR_CHOICE_ACTION%
+        )
+        if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
+            set DCR_CHOICE_ACTION=p_i p_2_i n_2_p ocr tet %DCR_CHOICE_ACTION%
+        )
+        pipenv run python src\dcr\dcr.py !DCR_CHOICE_ACTION!
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
             exit -1073741510

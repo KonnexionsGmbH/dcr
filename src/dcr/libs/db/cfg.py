@@ -236,7 +236,7 @@ JOURNAL_ACTION_41_051: str = (
 )
 JOURNAL_ACTION_41_052: str = (
     "41.052 End   (ocr): The child documents from the document file '{file_name}' "
-    +"file '{source_file}' were successfully reunited in the document {target_file}."
+    + "file '{source_file}' were successfully reunited in the document {target_file}."
 )
 JOURNAL_ACTION_41_053: str = (
     "41.053 Next  (ocr): The created 'pdf' file '{file_name}' "

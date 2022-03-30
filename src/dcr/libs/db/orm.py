@@ -25,40 +25,6 @@ from sqlalchemy.pool import NullPool
 
 
 # -----------------------------------------------------------------------------
-# Check that the database version is up to date.
-# -----------------------------------------------------------------------------
-def check_db_up_to_date() -> None:
-    """Check that the database version is up-to-date."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    if libs.db.cfg.db_orm_engine is None:
-        libs.utils.terminate_fatal(
-            "The database does not yet exist.",
-        )
-
-    if not sqlalchemy.inspect(libs.db.cfg.db_orm_engine).has_table(libs.db.cfg.DBT_VERSION):
-        libs.utils.terminate_fatal(
-            "The database table 'version' does not yet exist.",
-        )
-
-    current_version = select_version_version_unique()
-
-    if libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION] != current_version:
-        libs.utils.terminate_fatal(
-            "Current database version is "
-            + current_version
-            + " - but expected version is "
-            + str(libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]),
-        )
-
-    libs.utils.progress_msg(
-        "The current version of database is " + current_version,
-    )
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
 # Connect to the database.
 # -----------------------------------------------------------------------------
 def connect_db() -> None:
@@ -954,38 +920,6 @@ def update_dbt_id(
 
     with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(update(dbt).where(dbt.c.id == id_where).values(columns))
-        conn.close()
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Update the database version number.
-# -----------------------------------------------------------------------------
-def update_version_version(
-    version: str,
-) -> None:
-    """Update the database version number in database table version.
-
-    Args:
-        version (str): New version number.
-    """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    dbt = Table(
-        libs.db.cfg.DBT_VERSION,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
-    )
-
-    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
-        conn.execute(
-            update(dbt).values(
-                {
-                    libs.db.cfg.DBC_VERSION: version,
-                }
-            )
-        )
         conn.close()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

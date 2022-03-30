@@ -22,7 +22,44 @@ import libs.preprocessor.pdf2imagedcr
 import libs.preprocessor.pdflibdcr
 import libs.preprocessor.tesseractdcr
 import libs.utils
+import sqlalchemy
 import yaml
+from sqlalchemy import Table
+from sqlalchemy import select
+
+
+# -----------------------------------------------------------------------------
+# Check that the database version is up to date.
+# -----------------------------------------------------------------------------
+def check_db_up_to_date() -> None:
+    """Check that the database version is up-to-date."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    if libs.db.cfg.db_orm_engine is None:
+        libs.utils.terminate_fatal(
+            "The database does not yet exist.",
+        )
+
+    if not sqlalchemy.inspect(libs.db.cfg.db_orm_engine).has_table(libs.db.cfg.DBT_VERSION):
+        libs.utils.terminate_fatal(
+            "The database table 'version' does not yet exist.",
+        )
+
+    current_version = libs.db.orm.select_version_version_unique()
+
+    if libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION] != current_version:
+        libs.utils.terminate_fatal(
+            "Current database version is "
+            + current_version
+            + " - but expected version is "
+            + str(libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]),
+        )
+
+    libs.utils.progress_msg(
+        "The current version of database is " + current_version,
+    )
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -187,6 +224,40 @@ def initialise_logger() -> None:
     libs.cfg.logger.setLevel(logging.DEBUG)
 
     libs.utils.progress_msg("The logger is configured and ready")
+
+
+# -----------------------------------------------------------------------------
+# Load the data from the database table 'language'.
+# -----------------------------------------------------------------------------
+def load_data_from_dbt_language() -> None:
+    """Load the data from the database table 'language'."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    dbt = Table(
+        libs.db.cfg.DBT_LANGUAGE,
+        libs.db.cfg.db_orm_metadata,
+        autoload_with=libs.db.cfg.db_orm_engine,
+    )
+
+    libs.cfg.languages_tesseract = {}
+
+    with libs.db.cfg.db_orm_engine.connect() as conn:
+        rows = conn.execute(
+            select(dbt.c.id, dbt.c.code_spacy, dbt.c.code_tesseract).where(
+                dbt.c.active,
+            )
+        )
+
+        for row in rows:
+            libs.cfg.languages_tesseract[row.id] = row.code_tesseract
+
+        conn.close()
+
+    libs.utils.progress_msg(
+        f"Available languages for Tesseract OCR '{libs.cfg.languages_tesseract}'"
+    )
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -370,9 +441,12 @@ def process_documents(args: dict[str, bool]) -> None:
     libs.db.orm.connect_db()
 
     # Check the version of the database.
-    libs.db.orm.check_db_up_to_date()
+    check_db_up_to_date()
 
     libs.cfg.run_run_id = libs.db.orm.select_run_run_id_last() + 1
+
+    # Load the data from the database table 'language'.
+    load_data_from_dbt_language()
 
     # Process the documents in the inbox file directory.
     if args[libs.cfg.RUN_ACTION_PROCESS_INBOX]:

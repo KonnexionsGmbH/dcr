@@ -17,8 +17,8 @@ if [ -z "$1" ]; then
     echo "all   - Run the complete processing of all new documents."
     echo "------------------------------------------------------------------------------"
     echo "p_i   - 1. Process the inbox directory."
-    echo "n_2_p - 2. Convert non-pdf documents to pdf files:             Pandoc."
     echo "p_2_i - 2. Convert pdf documents to image files:               Poppler."
+    echo "n_2_p - 2. Convert non-pdf documents to pdf files:             Pandoc."
     echo "ocr   - 3. Convert image documents to pdf files:               Tesseract OCR."
     echo "tet   - 4. Extract text and metadata from pdf documents:       PDFlib TET."
     echo "s_f_p - 5. Store the document structure from the parser result."
@@ -78,6 +78,24 @@ case "${DCR_CHOICE_ACTION}" in
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   db_u|n_2_p|ocr|p_2_i|s_f_p|tet)
+    case "${DCR_CHOICE_ACTION}" in
+      p_2_i)
+        export DCR_CHOICE_ACTION=p_i ${DCR_CHOICE_ACTION}
+        ;;
+      n_2_p)
+        export DCR_CHOICE_ACTION=p_i p_2_i ${DCR_CHOICE_ACTION}
+        ;;
+      tet)
+        export DCR_CHOICE_ACTION=p_i p_2_i ${DCR_CHOICE_ACTION}
+        ;;
+      tet)
+        export DCR_CHOICE_ACTION=p_i p_2_i n_2_p ocr ${DCR_CHOICE_ACTION}
+        ;;
+      s_f_p)
+        export DCR_CHOICE_ACTION=p_i p_2_i n_2_p ocr tet ${DCR_CHOICE_ACTION}
+        ;;
+      *)
+        ;;
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   all|p_i)
