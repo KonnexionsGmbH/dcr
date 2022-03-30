@@ -728,7 +728,7 @@ def insert_journal(
 
     action_code = journal_action[0:6]
 
-    if action_code in ["01.002", "11.003", "21.003", "31.003", "41.003", "51.003", "61.002"]:
+    if action_code in ["01.002", "11.003", "21.003", "21.005", "31.003", "41.003", "51.003", "61.002"]:
         duration_ns = time.perf_counter_ns() - libs.cfg.start_time_document
         libs.utils.progress_msg(
             f"Time : {duration_ns / 1000000000 :10.2f} s - processing duration "

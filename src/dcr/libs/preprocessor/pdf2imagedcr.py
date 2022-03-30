@@ -64,6 +64,8 @@ def convert_pdf_2_image_file() -> None:
         libs.cfg.document_file_name,
     )
 
+    number_errors = 0
+
     try:
         # Convert the 'pdf' document
         images = pdf2image.convert_from_path(file_name_parent)
@@ -107,7 +109,7 @@ def convert_pdf_2_image_file() -> None:
                     libs.cfg.pdf2image_type,
                 )
 
-                journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_003.replace(
+                journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_004.replace(
                     "{file_name}", libs.cfg.document_child_file_name
                 )
 
@@ -125,11 +127,11 @@ def convert_pdf_2_image_file() -> None:
                 )
                 libs.cfg.total_ok_processed -= 1
 
-        libs.utils.delete_auxiliary_file(file_name_parent)
-
         libs.cfg.total_ok_processed += 1
+
     # not testable
     except PDFPopplerTimeoutError as err:
+        number_errors += 1
         libs.utils.report_document_error(
             module_name=__name__,
             function_name=inspect.stack()[0][3],
@@ -138,3 +140,16 @@ def convert_pdf_2_image_file() -> None:
                 "{file_name}", libs.cfg.document_file_name
             ).replace("{error_msg}", str(err)),
         )
+
+    # _pylint: disable=expression-not-assigned
+    if number_errors == 0:
+        journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_003
+    else:
+        journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_005
+
+    libs.db.orm.insert_journal(
+        __name__,
+        inspect.stack()[0][3],
+        libs.cfg.document_id,
+        journal_action.replace("{file_name}", libs.cfg.document_file_name,
+    ))
