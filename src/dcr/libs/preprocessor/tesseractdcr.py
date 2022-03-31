@@ -5,7 +5,7 @@ import time
 
 import libs.cfg
 import libs.db.cfg
-import libs.db.orm
+import libs.db.orm.dml
 import libs.utils
 import PyPDF4
 import pytesseract
@@ -29,7 +29,7 @@ def convert_image_2_pdf() -> None:
     libs.utils.reset_statistics_total()
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT)
+        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_STEP_TESSERACT)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -76,7 +76,7 @@ def convert_image_2_pdf_file() -> None:
 
         libs.utils.prepare_document_4_next_step(
             next_file_type=libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
-            next_step=libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB,
+            next_step=libs.db.cfg.DOCUMENT_STEP_PDFLIB,
         )
 
         libs.cfg.document_child_file_name = (
@@ -131,7 +131,7 @@ def reunite_pdfs() -> None:
                 == (
                     select(dbt.c.document_id_base)
                     .where(dbt.c.status == libs.db.cfg.DOCUMENT_STATUS_START)
-                    .where(dbt.c.next_step == libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB)
+                    .where(dbt.c.next_step == libs.db.cfg.DOCUMENT_STEP_PDFLIB)
                     .group_by(dbt.c.document_id_base)
                     .having(func.count(dbt.c.document_id_base) > 1)
                     .scalar_subquery()
@@ -165,6 +165,13 @@ def reunite_pdfs_file() -> None:
         libs.cfg.document_stem_name + "_0." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
     )
 
+    if os.path.exists(target_file_path):
+        libs.utils.report_document_error(
+            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            error=libs.db.cfg.ERROR_41_904.replace("{file_name}", str(target_file_path)),
+        )
+        return
+
     pdf_writer = PyPDF4.PdfFileWriter()
 
     libs.cfg.documents_to_be_reunited = []
@@ -175,7 +182,7 @@ def reunite_pdfs_file() -> None:
         rows = conn.execute(
             select(dbt)
             .where(dbt.c.status == libs.db.cfg.DOCUMENT_STATUS_START)
-            .where(dbt.c.next_step == libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB)
+            .where(dbt.c.next_step == libs.db.cfg.DOCUMENT_STEP_PDFLIB)
             .where(dbt.c.document_id_base == libs.cfg.document_id_base)
             .order_by(dbt.c.id)
         )
@@ -190,14 +197,13 @@ def reunite_pdfs_file() -> None:
 
             libs.utils.delete_auxiliary_file(str(source_file_path))
 
-            # libs.cfg.start_time_document = time.perf_counter_ns()
-            #
-            # libs.utils.start_document_processing(
-            #     document=row,
-            # )
-
         conn.close()
 
     # Write out the merged PDF
     with open(target_file_path, "wb") as out:
         pdf_writer.write(out)
+
+    # Child document successfully reunited to one pdf document
+    libs.utils.finalize_file_processing()
+
+    libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)

@@ -5,7 +5,7 @@ import time
 
 import libs.cfg
 import libs.db.cfg
-import libs.db.orm
+import libs.db.orm.dml
 import libs.preprocessor.inbox
 import libs.utils
 import pdf2image
@@ -32,7 +32,7 @@ def convert_pdf_2_image() -> None:
     dbt = libs.utils.select_document_prepare()
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PDF2IMAGE)
+        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_STEP_PDF2IMAGE)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -68,7 +68,7 @@ def convert_pdf_2_image_file() -> None:
 
         libs.utils.prepare_document_4_next_step(
             next_file_type=libs.cfg.pdf2image_type,
-            next_step=libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT,
+            next_step=libs.db.cfg.DOCUMENT_STEP_TESSERACT,
         )
 
         libs.cfg.document_child_child_no = 0
@@ -111,6 +111,7 @@ def convert_pdf_2_image_file() -> None:
 
         libs.cfg.total_ok_processed += 1
 
+        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     # not testable
     except PDFPopplerTimeoutError as err:
         number_errors += 1

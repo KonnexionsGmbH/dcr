@@ -15,7 +15,7 @@ import time
 import fitz
 import libs.cfg
 import libs.db.cfg
-import libs.db.orm
+import libs.db.orm.dml
 import libs.utils
 from sqlalchemy import Table
 from sqlalchemy.orm import Session
@@ -55,11 +55,8 @@ def create_directory(directory_type: str, directory_name: str) -> None:
     if not os.path.isdir(directory_name):
         os.mkdir(directory_name)
         libs.utils.progress_msg(
-            "The file directory for "
-            + directory_type
-            + " was "
-            + "newly created under the name "
-            + directory_name,
+            f"The file directory for '{directory_type}' "
+            f"was newly created under the name '{directory_name}'",
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -81,7 +78,7 @@ def initialise_document_base(file: pathlib.Path) -> None:
 
     prepare_document_base(file)
 
-    libs.cfg.document_id = libs.db.orm.insert_dbt_row(
+    libs.cfg.document_id = libs.db.orm.dml.insert_dbt_row(
         libs.db.cfg.DBT_DOCUMENT,
         {
             libs.db.cfg.DBC_DIRECTORY_NAME: libs.cfg.document_directory_name,
@@ -98,7 +95,7 @@ def initialise_document_base(file: pathlib.Path) -> None:
 
     libs.cfg.document_id_base = libs.cfg.document_id
 
-    libs.db.orm.update_dbt_id(
+    libs.db.orm.dml.update_dbt_id(
         libs.db.cfg.DBT_DOCUMENT,
         libs.cfg.document_id,
         {
@@ -194,11 +191,11 @@ def prepare_pdf(file: pathlib.Path) -> None:
         prepare_document_child_accepted()
 
         if bool(extracted_text):
-            next_step: str = libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB
+            next_step: str = libs.db.cfg.DOCUMENT_STEP_PDFLIB
             libs.cfg.language_ok_processed_pdflib += 1
             libs.cfg.total_ok_processed_pdflib += 1
         else:
-            next_step: str = libs.db.cfg.DOCUMENT_NEXT_STEP_PDF2IMAGE
+            next_step: str = libs.db.cfg.DOCUMENT_STEP_PDF2IMAGE
             libs.cfg.language_ok_processed_pdf2image += 1
             libs.cfg.total_ok_processed_pdf2image += 1
 
@@ -301,7 +298,7 @@ def process_inbox_accepted(next_step: str) -> None:
 
         libs.utils.initialise_document_child()
 
-        libs.db.orm.update_dbt_id(
+        libs.db.orm.dml.update_dbt_id(
             libs.db.cfg.DBT_DOCUMENT,
             libs.cfg.document_id,
             {
@@ -329,7 +326,7 @@ def process_inbox_file(file: pathlib.Path) -> None:
     initialise_document_base(file)
 
     if not libs.cfg.is_ignore_duplicates:
-        file_name = libs.db.orm.select_document_file_name_sha256(
+        file_name = libs.db.orm.dml.select_document_file_name_sha256(
             libs.cfg.document_id, libs.cfg.document_sha256
         )
     else:
@@ -342,16 +339,19 @@ def process_inbox_file(file: pathlib.Path) -> None:
         )
     elif libs.cfg.document_file_type == libs.db.cfg.DOCUMENT_FILE_TYPE_PDF:
         prepare_pdf(file)
+        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     elif libs.cfg.document_file_type in libs.db.cfg.DOCUMENT_FILE_TYPE_PANDOC:
         prepare_document_child_accepted()
-        process_inbox_accepted(libs.db.cfg.DOCUMENT_NEXT_STEP_PANDOC)
+        process_inbox_accepted(libs.db.cfg.DOCUMENT_STEP_PANDOC)
         libs.cfg.language_ok_processed_pandoc += 1
         libs.cfg.total_ok_processed_pandoc += 1
+        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     elif libs.cfg.document_file_type in libs.db.cfg.DOCUMENT_FILE_TYPE_TESSERACT:
         prepare_document_child_accepted()
-        process_inbox_accepted(libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT)
+        process_inbox_accepted(libs.db.cfg.DOCUMENT_STEP_TESSERACT)
         libs.cfg.language_ok_processed_tesseract += 1
         libs.cfg.total_ok_processed_tesseract += 1
+        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     else:
         process_inbox_rejected(
             libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
@@ -374,7 +374,7 @@ def process_inbox_language() -> None:
     4. All other documents are copied to the inbox_rejected directory.
     """
     libs.utils.progress_msg(
-        "Start of processing for language " + libs.cfg.language_iso_language_name,
+        f"Start of processing for language '{libs.cfg.language_iso_language_name}'"
     )
 
     libs.utils.reset_statistics_language()
@@ -383,7 +383,7 @@ def process_inbox_language() -> None:
         if file.is_file():
             if file.name == "README.md":
                 libs.utils.progress_msg(
-                    "Attention: All files with the file name 'README.md' " + "are ignored"
+                    "Attention: All files with the file name 'README.md' are ignored"
                 )
                 continue
 
@@ -396,7 +396,7 @@ def process_inbox_language() -> None:
     libs.utils.show_statistics_language()
 
     libs.utils.progress_msg(
-        "End   of processing for language " + libs.cfg.language_iso_language_name,
+        f"End   of processing for language '{libs.cfg.language_iso_language_name}'",
     )
 
 
@@ -428,7 +428,7 @@ def process_inbox_rejected(error_code: str, error: str) -> None:
 
     # Move the document file from directory inbox to directory inbox_rejected - if not yet existing
     if os.path.exists(target_file):
-        libs.db.orm.insert_journal(
+        libs.db.orm.dml.insert_journal_error(
             document_id=libs.cfg.document_id,
             error=libs.db.cfg.ERROR_01_906.replace("{file_name}", target_file),
         )
@@ -438,7 +438,7 @@ def process_inbox_rejected(error_code: str, error: str) -> None:
 
         libs.utils.initialise_document_child()
 
-        libs.db.orm.update_dbt_id(
+        libs.db.orm.dml.update_dbt_id(
             libs.db.cfg.DBT_DOCUMENT,
             libs.cfg.document_id,
             {
@@ -450,6 +450,6 @@ def process_inbox_rejected(error_code: str, error: str) -> None:
         libs.cfg.language_erroneous += 1
         libs.cfg.total_erroneous += 1
 
-    libs.db.orm.insert_journal(document_id=libs.cfg.document_id, error=error)
+    libs.db.orm.dml.insert_journal_error(document_id=libs.cfg.document_id, error=error)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

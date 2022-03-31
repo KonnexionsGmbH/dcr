@@ -6,7 +6,7 @@ from pathlib import Path
 import libs.cfg
 import libs.db
 import libs.db.cfg
-import libs.db.orm
+import libs.db.orm.connection
 import pytest
 from sqlalchemy import Table
 from sqlalchemy import update
@@ -132,7 +132,7 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
 
 
 # -----------------------------------------------------------------------------
-# Test RUN_ACTION_PROCESS_INBOX - accepted - duplicate - verbosew.
+# Test RUN_ACTION_PROCESS_INBOX - accepted - duplicate - verbose.
 # -----------------------------------------------------------------------------
 def test_run_action_process_inbox_accepted_duplicate_verbose(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_INBOX - accepted duplicate verbose."""
@@ -196,7 +196,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     # Connect to the database.
-    libs.db.orm.connect_db()
+    libs.db.orm.connection.connect_db()
 
     dbt = Table(
         libs.db.cfg.DBT_LANGUAGE,

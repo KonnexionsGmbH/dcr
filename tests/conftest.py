@@ -16,7 +16,7 @@ from typing import Tuple
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver
-import libs.db.orm
+import libs.db.orm.connection
 import libs.utils
 import pytest
 from sqlalchemy import Table
@@ -159,7 +159,7 @@ def delete_config_param(config_section: str, config_param: str) -> str:
 @pytest.helpers.register
 def delete_version_version():
     """Delete all entries in the database table 'version'."""
-    libs.db.orm.connect_db()
+    libs.db.orm.connection.connect_db()
 
     with libs.db.cfg.db_orm_engine.begin() as conn:
         version = Table(
@@ -169,7 +169,7 @@ def delete_version_version():
         )
         conn.execute(delete(version))
 
-    libs.db.orm.disconnect_db()
+    libs.db.orm.connection.disconnect_db()
 
 
 # -----------------------------------------------------------------------------

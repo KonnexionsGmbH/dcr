@@ -39,6 +39,7 @@ DBC_MODULE_NAME: str = "module_name"
 DBC_NEXT_STEP: str = "next_step"
 DBC_PAGE_IN_DOCUMENT: str = "page_in_document"
 DBC_PARA_IN_PAGE: str = "para_in_page"
+DBC_PROCESSING_STEP: str = "processing_step"
 DBC_RUN_ID: str = "run_id"
 DBC_SENTENCE_IN_PARA: str = "sentence_in_para"
 DBC_SHA256: str = "sha256"
@@ -106,16 +107,17 @@ DOCUMENT_FILE_TYPE_TIF: str = "tif"
 DOCUMENT_FILE_TYPE_TIFF: str = "tiff"
 DOCUMENT_FILE_TYPE_XML: str = "xml"
 
-DOCUMENT_NEXT_STEP_PANDOC: str = "Pandoc & TeX Live"
-DOCUMENT_NEXT_STEP_PARSER: str = "Parser"
-DOCUMENT_NEXT_STEP_PDF2IMAGE: str = "pdf2image"
-DOCUMENT_NEXT_STEP_PDFLIB: str = "PDFlib TET"
-DOCUMENT_NEXT_STEP_TESSERACT: str = "Tesseract OCR"
-
 DOCUMENT_STATUS_ABORT: str = "abort"
 DOCUMENT_STATUS_END: str = "end"
 DOCUMENT_STATUS_ERROR: str = "error"
 DOCUMENT_STATUS_START: str = "start"
+
+DOCUMENT_STEP_INBOX: str = "Inbox Processing"
+DOCUMENT_STEP_PANDOC: str = "Pandoc & TeX Live"
+DOCUMENT_STEP_PARSER: str = "Parser"
+DOCUMENT_STEP_PDF2IMAGE: str = "pdf2image"
+DOCUMENT_STEP_PDFLIB: str = "PDFlib TET"
+DOCUMENT_STEP_TESSERACT: str = "Tesseract OCR"
 
 ERROR_01_901: str = (
     "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
@@ -170,6 +172,7 @@ ERROR_41_902: str = (
     + "error status: '{error_status}' - error: '{error}'."
 )
 ERROR_41_903: str = "41.903 Issue (ocr): The target file '{file_name}' already exists."
+ERROR_41_904: str = "41.904 Issue (ocr): The target file '{file_name}' already exists."
 
 ERROR_51_901: str = (
     "51.901 Issue (tet): Issues with opening document '{file_name}' - "

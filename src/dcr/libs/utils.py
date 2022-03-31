@@ -12,7 +12,7 @@ from typing import Tuple
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver
-import libs.db.orm
+import libs.db.orm.dml
 import libs.utils
 from sqlalchemy import Table
 from sqlalchemy import and_
@@ -32,10 +32,9 @@ def check_directories() -> None:
     """
     if not os.path.isdir(libs.cfg.directory_inbox_accepted):
         libs.utils.terminate_fatal(
-            "The inbox_accepted directory with the name "
-            + str(libs.cfg.directory_inbox_accepted)
-            + " does not exist - error="
-            + str(OSError),
+            f"The inbox_accepted directory with the name "
+            f"'{str(libs.cfg.directory_inbox_accepted)}' "
+            f"does not exist - error={str(OSError)}",
         )
 
 
@@ -109,7 +108,7 @@ def finalize_file_processing() -> None:
     """Finalise the file processing."""
     libs.cfg.total_ok_processed += 1
 
-    libs.db.orm.update_dbt_id(
+    libs.db.orm.dml.update_dbt_id(
         libs.db.cfg.DBT_DOCUMENT,
         libs.cfg.document_id,
         {
@@ -127,7 +126,7 @@ def initialise_document_child() -> None:
     Prepares a new document for one of the file directories
     'inbox_accepted' or 'inbox_rejected'.
     """
-    libs.cfg.document_child_id = libs.db.orm.insert_dbt_row(
+    libs.cfg.document_child_id = libs.db.orm.dml.insert_dbt_row(
         libs.db.cfg.DBT_DOCUMENT,
         {
             libs.db.cfg.DBC_CHILD_NO: libs.cfg.document_child_child_no,
@@ -222,11 +221,8 @@ def progress_msg_connected() -> None:
     if libs.cfg.is_verbose:
         print("")
         progress_msg(
-            "User '"
-            + libs.db.cfg.db_current_user
-            + "' is now connected to database '"
-            + libs.db.cfg.db_current_database
-            + "'"
+            f"User '{libs.db.cfg.db_current_user}' is now connected "
+            f"to database '{libs.db.cfg.db_current_database}'"
         )
 
 
@@ -247,9 +243,7 @@ def progress_msg_disconnected() -> None:
         user = "n/a" if libs.db.cfg.db_current_user is None else libs.db.cfg.db_current_user
 
         print("")
-        libs.utils.progress_msg(
-            "User '" + user + "' is now disconnected from database '" + database + "'"
-        )
+        libs.utils.progress_msg(f"User '{user}' is now disconnected from database '{database}'")
 
         libs.db.cfg.db_current_database = None
         libs.db.cfg.db_current_user = None
@@ -272,17 +266,17 @@ def progress_msg_empty_before(msg: str) -> None:
 # -----------------------------------------------------------------------------
 # Report a document error.
 # -----------------------------------------------------------------------------
-def report_document_error(error_code: str | None, journal_action: str) -> None:
+def report_document_error(error_code: str | None, error: str) -> None:
     """Report a document error.
 
     Args:
         error_code (str|None): Error code.
-        journal_action (str):  Journal action text.
+        error (str):  Journal action text.
     """
     libs.cfg.total_erroneous += 1
 
     if error_code is not None:
-        libs.db.orm.update_dbt_id(
+        libs.db.orm.dml.update_dbt_id(
             libs.db.cfg.DBT_DOCUMENT,
             libs.cfg.document_id,
             {
@@ -291,9 +285,9 @@ def report_document_error(error_code: str | None, journal_action: str) -> None:
             },
         )
 
-    libs.db.orm.insert_journal(
+    libs.db.orm.dml.insert_journal_error(
         document_id=libs.cfg.document_id,
-        journal_action=journal_action,
+        error=error,
     )
 
 
@@ -428,23 +422,23 @@ def show_statistics_language() -> None:
 
     if libs.cfg.language_to_be_processed > 0:
         libs.utils.progress_msg(
-            "Number documents accepted - "
-            + f"Pandoc:        {libs.cfg.language_ok_processed_pandoc:6d}"
+            f"Number documents accepted - "
+            f"Pandoc:        {libs.cfg.language_ok_processed_pandoc:6d}"
         )
         libs.utils.progress_msg(
-            "Number documents accepted - "
-            + f"pdf2image:     {libs.cfg.language_ok_processed_pdf2image:6d}"
+            f"Number documents accepted - "
+            f"pdf2image:     {libs.cfg.language_ok_processed_pdf2image:6d}"
         )
         libs.utils.progress_msg(
-            "Number documents accepted - "
-            + f"PDFlib TET:    {libs.cfg.language_ok_processed_pdflib:6d}"
+            f"Number documents accepted - "
+            f"PDFlib TET:    {libs.cfg.language_ok_processed_pdflib:6d}"
         )
         libs.utils.progress_msg(
-            "Number documents accepted - "
-            + f"Tesseract OCR: {libs.cfg.language_ok_processed_tesseract:6d}"
+            f"Number documents accepted - "
+            f"Tesseract OCR: {libs.cfg.language_ok_processed_tesseract:6d}"
         )
         libs.utils.progress_msg(
-            "Number documents accepted - " + f"Total:         {libs.cfg.language_ok_processed:6d}"
+            f"Number documents accepted - " f"Total:         {libs.cfg.language_ok_processed:6d}"
         )
         libs.utils.progress_msg(
             f"Number documents rejected:                 {libs.cfg.language_erroneous:6d}"
@@ -472,20 +466,20 @@ def show_statistics_total() -> None:
 
         if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX:
             libs.utils.progress_msg(
-                "Number documents accepted - "
-                + f"Pandoc:        {libs.cfg.total_ok_processed_pandoc:6d}"
+                f"Number documents accepted - "
+                f"Pandoc:        {libs.cfg.total_ok_processed_pandoc:6d}"
             )
             libs.utils.progress_msg(
-                "Number documents accepted - "
-                + f"pdf2image:     {libs.cfg.total_ok_processed_pdf2image:6d}"
+                f"Number documents accepted - "
+                f"pdf2image:     {libs.cfg.total_ok_processed_pdf2image:6d}"
             )
             libs.utils.progress_msg(
-                "Number documents accepted - "
-                + f"PDFlib TET:    {libs.cfg.total_ok_processed_pdflib:6d}"
+                f"Number documents accepted - "
+                f"PDFlib TET:    {libs.cfg.total_ok_processed_pdflib:6d}"
             )
             libs.utils.progress_msg(
-                "Number documents accepted - "
-                + f"Tesseract OCR: {libs.cfg.total_ok_processed_tesseract:6d}"
+                f"Number documents accepted - "
+                f"Tesseract OCR: {libs.cfg.total_ok_processed_tesseract:6d}"
             )
             libs.utils.progress_msg(
                 "Number documents accepted - " + f"Total:         {libs.cfg.total_ok_processed:6d}"
@@ -549,7 +543,7 @@ def start_document_processing(document: Row) -> None:
     libs.cfg.document_status = document.status
     libs.cfg.document_stem_name = document.stem_name
 
-    libs.db.orm.update_dbt_id(
+    libs.db.orm.dml.update_dbt_id(
         libs.db.cfg.DBT_DOCUMENT,
         libs.cfg.document_id,
         {

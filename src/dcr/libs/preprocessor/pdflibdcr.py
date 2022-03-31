@@ -4,7 +4,7 @@ import time
 
 import libs.cfg
 import libs.db.cfg
-import libs.db.orm
+import libs.db.orm.dml
 import libs.utils
 from PDFlib.TET import TET
 from tetlib_py import TETException
@@ -37,7 +37,7 @@ def extract_text_from_pdf() -> None:
     libs.utils.reset_statistics_total()
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB)
+        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_STEP_PDFLIB)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -100,7 +100,7 @@ def extract_text_from_pdf_file() -> None:
 
         libs.utils.prepare_document_4_next_step(
             next_file_type=libs.db.cfg.DOCUMENT_FILE_TYPE_XML,
-            next_step=libs.db.cfg.DOCUMENT_NEXT_STEP_PARSER,
+            next_step=libs.db.cfg.DOCUMENT_STEP_PARSER,
         )
 
         libs.cfg.document_child_file_name = (
@@ -114,6 +114,8 @@ def extract_text_from_pdf_file() -> None:
 
         # Text and metadata from Document successfully extracted to xml format
         libs.utils.finalize_file_processing()
+
+        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     except TETException:
         # not testable
         libs.utils.report_document_error(

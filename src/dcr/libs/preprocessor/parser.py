@@ -8,7 +8,7 @@ from typing import Iterable
 import defusedxml.ElementTree
 import libs.cfg
 import libs.db.cfg
-import libs.db.orm
+import libs.db.orm.dml
 import libs.utils
 
 
@@ -321,7 +321,7 @@ def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
             parent.text,
         )
 
-        libs.db.orm.insert_dbt_row(
+        libs.db.orm.dml.insert_dbt_row(
             libs.db.cfg.DBT_CONTENT,
             {
                 libs.db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
@@ -383,7 +383,7 @@ def parse_tetml() -> None:
     libs.utils.reset_statistics_total()
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PARSER)
+        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_STEP_PARSER)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -454,5 +454,7 @@ def parse_tetml_file() -> None:
 
         # Text and metadata from Document successfully extracted to xml format
         libs.utils.finalize_file_processing()
+
+    libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

@@ -5,7 +5,7 @@ import time
 
 import libs.cfg
 import libs.db.cfg
-import libs.db.orm
+import libs.db.orm.dml
 import libs.utils
 import pypandoc
 
@@ -25,7 +25,7 @@ def convert_non_pdf_2_pdf() -> None:
     libs.utils.reset_statistics_total()
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_NEXT_STEP_PANDOC)
+        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_STEP_PANDOC)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -77,7 +77,7 @@ def convert_non_pdf_2_pdf_file() -> None:
         else:
             libs.utils.prepare_document_4_next_step(
                 next_file_type=libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
-                next_step=libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB,
+                next_step=libs.db.cfg.DOCUMENT_STEP_PDFLIB,
             )
 
             libs.cfg.document_child_file_name = (
@@ -91,6 +91,8 @@ def convert_non_pdf_2_pdf_file() -> None:
 
             # Document successfully converted to pdf format
             libs.utils.finalize_file_processing()
+
+            libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     # not testable
     except RuntimeError as err:
         libs.utils.report_document_error(

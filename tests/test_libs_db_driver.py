@@ -3,7 +3,8 @@
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver
-import libs.db.orm
+import libs.db.orm.connection
+import libs.db.orm.dml
 import pytest
 from sqlalchemy import Table
 from sqlalchemy import update
@@ -172,11 +173,11 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.db.orm.connect_db()
+    libs.db.orm.connection.connect_db()
 
-    libs.db.orm.insert_dbt_row(libs.db.cfg.DBT_VERSION, {libs.db.cfg.DBC_VERSION: "0.0.0"})
+    libs.db.orm.dml.insert_dbt_row(libs.db.cfg.DBT_VERSION, {libs.db.cfg.DBC_VERSION: "0.0.0"})
 
-    libs.db.orm.disconnect_db()
+    libs.db.orm.connection.disconnect_db()
 
     libs.db.driver.connect_db()
 
@@ -220,11 +221,11 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
 
     # -------------------------------------------------------------------------
-    libs.db.orm.connect_db()
+    libs.db.orm.connection.connect_db()
 
     update_version_version("0.5.0")
 
-    libs.db.orm.disconnect_db()
+    libs.db.orm.connection.disconnect_db()
 
     with pytest.raises(SystemExit) as expt:
         dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
@@ -232,14 +233,12 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     assert expt.type == SystemExit, "Version < '1.0.0' not supported"
     assert expt.value.code == 1, "Version < '1.0.0' not supported"
 
-    libs.db.orm.disconnect_db()
-
     # -------------------------------------------------------------------------
-    libs.db.orm.connect_db()
+    libs.db.orm.connection.connect_db()
 
     update_version_version("0.0.0")
 
-    libs.db.orm.disconnect_db()
+    libs.db.orm.connection.disconnect_db()
 
     with pytest.raises(SystemExit) as expt:
         dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
