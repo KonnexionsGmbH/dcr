@@ -1,11 +1,13 @@
 # pylint: disable=unused-argument
 """Testing Module libs.db.driver."""
-
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver
-import libs.db.orm
+import libs.db.orm.connection
+import libs.db.orm.dml
 import pytest
+from sqlalchemy import Table
+from sqlalchemy import update
 
 import dcr
 
@@ -104,6 +106,20 @@ def test_create_database(fxtr_setup_logger_environment):
     pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
     # -------------------------------------------------------------------------
+    config_section = libs.cfg.DCR_CFG_SECTION
+    config_param = libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA
+
+    value_original = pytest.helpers.store_config_param(config_section, config_param, "unknown_file")
+
+    with pytest.raises(SystemExit) as expt:
+        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+
+    assert expt.type == SystemExit, "DCR_CFG_INITIAL_DATABASE_DATA: unknown file"
+    assert expt.value.code == 1, "DCR_CFG_INITIAL_DATABASE_DATA: unknown file"
+
+    pytest.helpers.restore_config_param(config_section, config_param, value_original)
+
+    # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
@@ -157,11 +173,11 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.db.orm.connect_db()
+    libs.db.orm.connection.connect_db()
 
-    libs.db.orm.insert_dbt_row(libs.db.cfg.DBT_VERSION, {libs.db.cfg.DBC_VERSION: "0.0.0"})
+    libs.db.orm.dml.insert_dbt_row(libs.db.cfg.DBT_VERSION, {libs.db.cfg.DBC_VERSION: "0.0.0"})
 
-    libs.db.orm.disconnect_db()
+    libs.db.orm.connection.disconnect_db()
 
     libs.db.driver.connect_db()
 
@@ -205,11 +221,11 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
 
     # -------------------------------------------------------------------------
-    libs.db.orm.connect_db()
+    libs.db.orm.connection.connect_db()
 
-    libs.db.orm.update_version_version("0.5.0")
+    update_version_version("0.5.0")
 
-    libs.db.orm.disconnect_db()
+    libs.db.orm.connection.disconnect_db()
 
     with pytest.raises(SystemExit) as expt:
         dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
@@ -217,14 +233,12 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     assert expt.type == SystemExit, "Version < '1.0.0' not supported"
     assert expt.value.code == 1, "Version < '1.0.0' not supported"
 
-    libs.db.orm.disconnect_db()
-
     # -------------------------------------------------------------------------
-    libs.db.orm.connect_db()
+    libs.db.orm.connection.connect_db()
 
-    libs.db.orm.update_version_version("0.0.0")
+    update_version_version("0.0.0")
 
-    libs.db.orm.disconnect_db()
+    libs.db.orm.connection.disconnect_db()
 
     with pytest.raises(SystemExit) as expt:
         dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
@@ -233,4 +247,36 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Version unknown"
 
     # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Update the database version number.
+# -----------------------------------------------------------------------------
+def update_version_version(
+    version: str,
+) -> None:
+    """Update the database version number in database table version.
+
+    Args:
+        version (str): New version number.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    dbt = Table(
+        libs.db.cfg.DBT_VERSION,
+        libs.db.cfg.db_orm_metadata,
+        autoload_with=libs.db.cfg.db_orm_engine,
+    )
+
+    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
+        conn.execute(
+            update(dbt).values(
+                {
+                    libs.db.cfg.DBC_VERSION: version,
+                }
+            )
+        )
+        conn.close()
+
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

@@ -13,7 +13,7 @@ Release Date: 18.03.2022
 
 ### 1. New Features
 
-- processing step **`tet`**: Extract text and metadata from pdf files.
+- processing step **`tet`**: Extract text and metadata from **`pdf`** files.
 
 ### 2. Applied Software
 
@@ -67,7 +67,7 @@ Release Date: 15.03.2022
 
 ### 1. New Features
 
-- processing step **`ocr`**: Convert appropriate image documents to pdf files.
+- processing step **`ocr`**: Convert appropriate image documents to **`pdf`** files.
 
 ### 2. Applied Software
 
@@ -120,7 +120,7 @@ Release Date: 10.03.2022
 
 ### 1. New Features
 
-- processing step **`n_2_p`**: Convert appropriate non-pdf documents to pdf files.
+- processing step **`n_2_p`**: Convert appropriate non-pdf documents to **`pdf`** files.
 
 ### 2. Applied Software
 
@@ -173,7 +173,7 @@ Release Date: 04.03.2022
 ### 1. New Features
 
 - Processing step **`db_u`**: Upgrade the database.
-- Processing step **`p_2_i`**: Convert pdf documents into image files.
+- Processing step **`p_2_i`**: Convert **`pdf`** documents into image files.
 
 ### 2. Applied Software
 

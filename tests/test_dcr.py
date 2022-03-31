@@ -1,9 +1,11 @@
 # pylint: disable=unused-argument
 """Testing Module dcr."""
 import os
+import shutil
+from pathlib import Path
 
 import libs.cfg
-import libs.parser
+import libs.preprocessor.parser
 import pytest
 
 import dcr
@@ -13,7 +15,8 @@ import dcr
 # -----------------------------------------------------------------------------
 # @pytest.mark.issue
 
-CONFIG_PARAM_NO: int = 20
+
+CONFIG_PARAM_NO: int = 23
 
 
 # -----------------------------------------------------------------------------
@@ -175,6 +178,36 @@ def test_get_config(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "TrUe"
+    )
+
+    libs.cfg.is_verbose_parser = False
+
+    dcr.get_config()
+
+    assert libs.cfg.is_verbose_parser, "DCR_CFG_VERBOSE_PARSER: true"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "n/a"
+    )
+
+    libs.cfg.is_verbose_parser = False
+
+    dcr.get_config()
+
+    assert not libs.cfg.is_verbose_parser, "DCR_CFG_VERBOSE_PARSER: false (not true)"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
+    )
+
+    # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
@@ -259,9 +292,9 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     dcr.get_config()
 
-    assert (
-        libs.cfg.pdf2image_type == libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
-    ), "DCR_CFG_PDF2IMAGE_TYPE: default"
+    assert libs.cfg.pdf2image_type == libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG, (
+        "DCR_CFG_PDF2IMAGE_TYPE: default should not be '" + libs.cfg.pdf2image_type + "'"
+    )
 
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original
@@ -280,6 +313,21 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER
+    )
+
+    libs.cfg.is_verbose_parser = False
+
+    dcr.get_config()
+
+    assert not libs.cfg.is_verbose_parser, "DCR_CFG_VERBOSE_PARSER: false (missing)"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
     )
 
     # -------------------------------------------------------------------------
@@ -377,6 +425,113 @@ def test_main_db_u(fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - unknown dbt.
+# -----------------------------------------------------------------------------
+def test_unknown_dbt(fxtr_setup_empty_db_and_inbox):
+    """Test: main() - RUN_ACTION_CREATE_DB."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    shutil.move(
+        Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]),
+        os.path.join(libs.cfg.TESTS_INBOX_NAME, "initial_database_data.json"),
+    )
+
+    shutil.copyfile(
+        os.path.join(libs.cfg.TESTS_INBOX_NAME, "test_initial_database_data_unknown_dbt.json"),
+        Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]),
+    )
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+
+    assert expt.type == SystemExit, "api_version: wrong"
+    assert expt.value.code == 1, "api_version: wrong"
+
+    # -------------------------------------------------------------------------
+    shutil.move(
+        os.path.join(libs.cfg.TESTS_INBOX_NAME, "initial_database_data.json"),
+        Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]),
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - wrong api_version.
+# -----------------------------------------------------------------------------
+def test_wrong_api_version(fxtr_setup_empty_db_and_inbox):
+    """Test: main() - RUN_ACTION_CREATE_DB."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    shutil.move(
+        Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]),
+        os.path.join(libs.cfg.TESTS_INBOX_NAME, "initial_database_data.json"),
+    )
+
+    shutil.copyfile(
+        os.path.join(
+            libs.cfg.TESTS_INBOX_NAME, "test_initial_database_data_wrong_api_version.json"
+        ),
+        Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]),
+    )
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+
+    assert expt.type == SystemExit, "api_version: wrong"
+    assert expt.value.code == 1, "api_version: wrong"
+
+    # -------------------------------------------------------------------------
+    shutil.move(
+        os.path.join(libs.cfg.TESTS_INBOX_NAME, "initial_database_data.json"),
+        Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]),
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - wrong dbt.
+# -----------------------------------------------------------------------------
+def test_wrong_dbt(fxtr_setup_empty_db_and_inbox):
+    """Test: main() - RUN_ACTION_CREATE_DB."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    shutil.move(
+        Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]),
+        os.path.join(libs.cfg.TESTS_INBOX_NAME, "initial_database_data.json"),
+    )
+
+    shutil.copyfile(
+        os.path.join(libs.cfg.TESTS_INBOX_NAME, "test_initial_database_data_wrong_dbt.json"),
+        Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]),
+    )
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+
+    assert expt.type == SystemExit, "api_version: wrong"
+    assert expt.value.code == 1, "api_version: wrong"
+
+    # -------------------------------------------------------------------------
+    shutil.move(
+        os.path.join(libs.cfg.TESTS_INBOX_NAME, "initial_database_data.json"),
+        Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]),
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

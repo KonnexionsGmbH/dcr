@@ -29,11 +29,13 @@ DCR_CFG_DB_SCHEMA: str
 DCR_CFG_DB_USER: str
 DCR_CFG_DB_USER_ADMIN: str
 DCR_CFG_DCR_VERSION: str
+DCR_CFG_DELETE_AUXILIARY_FILES: str
 DCR_CFG_DIRECTORY_INBOX: str
 DCR_CFG_DIRECTORY_INBOX_ACCEPTED: str
 DCR_CFG_DIRECTORY_INBOX_REJECTED: str
 DCR_CFG_FILE: str
 DCR_CFG_IGNORE_DUPLICATES: str
+DCR_CFG_INITIAL_DATABASE_DATA: str
 DCR_CFG_PDF2IMAGE_TYPE: str
 DCR_CFG_PDF2IMAGE_TYPE_JPEG: str
 DCR_CFG_PDF2IMAGE_TYPE_PNG: str
@@ -43,6 +45,7 @@ DCR_CFG_SECTION_PROD: str
 DCR_CFG_SECTION_TEST: str
 DCR_CFG_TESSERACT_TIMEOUT: str
 DCR_CFG_VERBOSE: str
+DCR_CFG_VERBOSE_PARSER: str
 
 DCR_ENVIRONMENT_TYPE: str
 
@@ -65,8 +68,8 @@ LOGGER_START: str
 OS_NT: str
 OS_POSIX: str
 
-PANDIOC_PDF_ENGINE_LULATEX: str
-PANDIOC_PDF_ENGINE_XELATEX: str
+PANDOC_PDF_ENGINE_LULATEX: str
+PANDOC_PDF_ENGINE_XELATEX: str
 
 PARSE_NAME_SPACE: str
 PARSE_TAG_A: str
@@ -97,6 +100,7 @@ PARSE_TAG_RESOURCES: str
 PARSE_TAG_TABLE: str
 PARSE_TAG_TET: str
 PARSE_TAG_TEXT: str
+PARSE_TAG_TITLE: str
 PARSE_TAG_WORD: str
 
 RUN_ACTION_ALL_COMPLETE: str
@@ -108,6 +112,8 @@ RUN_ACTION_PROCESS_INBOX: str
 RUN_ACTION_STORE_FROM_PARSER: str
 RUN_ACTION_TEXT_FROM_PDF: str
 RUN_ACTION_UPGRADE_DB: str
+
+TESTS_INBOX_NAME: str
 
 VERBOSE_TRUE: str
 
@@ -134,10 +140,12 @@ document_child_file_type: str
 document_child_id: sqlalchemy.Integer
 document_child_id_base: sqlalchemy.Integer | None
 document_child_id_parent: sqlalchemy.Integer | None
+document_child_language_id: sqlalchemy.Integer
 document_child_next_step: str | None
 document_child_no: sqlalchemy.Integer | None
 document_child_status: str
 document_child_stem_name: str
+document_current_step: str
 document_directory_name: str
 document_directory_type: str
 document_error_code: str | None
@@ -146,6 +154,7 @@ document_file_type: str
 document_id: sqlalchemy.Integer
 document_id_base: sqlalchemy.Integer | None
 document_id_parent: sqlalchemy.Integer | None
+document_language_id: sqlalchemy.Integer
 document_next_step: str | None
 document_sha256: str | None
 document_status: str
@@ -153,8 +162,23 @@ document_stem_name: str
 
 environment_type: str
 
+is_delete_auxiliary_files: bool
 is_ignore_duplicates: bool
 is_verbose: bool
+is_verbose_parser: bool
+
+language_directory_inbox: PathLike[str]
+language_erroneous: int
+language_id: sqlalchemy.Integer
+language_iso_language_name: str
+language_ok_processed: int
+language_ok_processed_pandoc: int
+language_ok_processed_pdf2image: int
+language_ok_processed_pdflib: int
+language_ok_processed_tesseract: int
+language_to_be_processed: int
+
+languages_tesseract: Dict[sqlalchemy.Integer, str]
 
 logger: logging.Logger
 
@@ -173,6 +197,8 @@ pdf2image_type: str
 run_action: str
 run_id: sqlalchemy.Integer
 run_run_id: sqlalchemy.Integer
+
+start_time_document: sqlalchemy.BigInteger
 
 tesseract_timeout: Decimal
 

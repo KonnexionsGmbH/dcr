@@ -1,7 +1,8 @@
 """Module libs.db.driver: Database Definition Management."""
 import libs.cfg
 import libs.db.cfg
-import libs.db.orm
+import libs.db.orm.connection
+import libs.db.orm.ddl
 import libs.utils
 import psycopg2
 
@@ -17,7 +18,7 @@ def connect_db() -> None:
     """Connect to the database."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.db.orm.prepare_connect_db()
+    libs.db.orm.connection.prepare_connect_db()
 
     try:
         libs.db.cfg.db_driver_conn = psycopg2.connect(
@@ -29,7 +30,7 @@ def connect_db() -> None:
         )
     except OperationalError as err:
         libs.utils.terminate_fatal(
-            "No database connection possible - error=" + str(err),
+            f"No database connection possible - error={str(err)}",
         )
 
     libs.db.cfg.db_driver_conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -58,7 +59,7 @@ def connect_db_admin() -> None:
         )
     except OperationalError as err:
         libs.utils.terminate_fatal(
-            "No database connection possible - error=" + str(err),
+            f"No database connection possible - error={str(err)}",
         )
 
     libs.db.cfg.db_driver_conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -81,9 +82,8 @@ def create_database() -> None:
         create_database_postgresql()
     else:
         libs.utils.terminate_fatal(
-            "A database dialect '"
-            + libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT]
-            + "' is not supported in DCR"
+            f"A database dialect '{libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT]}' "
+            f"is not supported in DCR"
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -109,25 +109,23 @@ def create_database_postgresql() -> None:
     libs.db.cfg.db_driver_cur.execute(
         "CREATE USER " + user + " WITH ENCRYPTED PASSWORD '" + password + "'"
     )
-    libs.utils.progress_msg("The user '" + user + "' has now been created")
+    libs.utils.progress_msg(f"The user '{user}' has now been created")
 
     libs.db.cfg.db_driver_cur.execute("CREATE DATABASE " + database + " WITH OWNER " + user)
-    libs.utils.progress_msg("The database '" + database + "' has now been created")
+    libs.utils.progress_msg("The database '{database}' has now been created")
 
     libs.db.cfg.db_driver_cur.execute(
         "GRANT ALL PRIVILEGES ON DATABASE " + database + " TO " + user
     )
-    libs.utils.progress_msg(
-        "The user '" + user + "' has now all privileges on database '" + database + "'"
-    )
+    libs.utils.progress_msg("The user '{user}' has now all privileges on database '{database}'")
 
     disconnect_db()
 
-    libs.db.orm.create_schema()
+    libs.db.orm.ddl.create_schema()
 
     libs.utils.progress_msg(
-        "The database has been successfully created, version number="
-        + libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION],
+        f"The database has been successfully created, "
+        f"version number='{libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]}"
     )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -170,9 +168,8 @@ def drop_database() -> None:
         drop_database_postgresql()
     else:
         libs.utils.terminate_fatal(
-            "A database dialect '"
-            + libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT]
-            + "' is not supported in DCR"
+            f"A database dialect '{libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT]}' "
+            f"is not supported in DCR"
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -194,10 +191,10 @@ def drop_database_postgresql() -> None:
 
     libs.db.cfg.db_driver_cur.execute("DROP DATABASE IF EXISTS " + database)
 
-    libs.utils.progress_msg("If existing, the database '" + database + "' has now been dropped")
+    libs.utils.progress_msg(f"If existing, the database '{database}' has now been dropped")
 
     libs.db.cfg.db_driver_cur.execute("DROP USER IF EXISTS " + user)
-    libs.utils.progress_msg("If existing, the user '" + user + "' has now been dropped")
+    libs.utils.progress_msg(f"If existing, the user '{user}' has now been dropped")
 
     disconnect_db()
 
@@ -268,7 +265,7 @@ def upgrade_database() -> None:
 
     if current_version == libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]:
         libs.utils.progress_msg(
-            "The database is already up to date, version number=" + current_version,
+            f"The database is already up to date, version number='{current_version}'"
         )
     else:
         while select_version_version_unique() != libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]:

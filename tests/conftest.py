@@ -16,7 +16,7 @@ from typing import Tuple
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver
-import libs.db.orm
+import libs.db.orm.connection
 import libs.utils
 import pytest
 from sqlalchemy import Table
@@ -32,8 +32,6 @@ CONFIG_PARSER: configparser.ConfigParser = configparser.ConfigParser()
 FILE_NAME_SETUP_CFG: str = "setup.cfg"
 FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
 
-TESTS_INBOX = libs.utils.str_2_path("tests/__PYTEST_FILES__/")
-
 
 # -----------------------------------------------------------------------------
 # Backup the 'setup.cfg' file.
@@ -41,19 +39,43 @@ TESTS_INBOX = libs.utils.str_2_path("tests/__PYTEST_FILES__/")
 @pytest.helpers.register
 def backup_setup_cfg() -> None:
     """Backup the 'setup.cfg' file."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     if not os.path.isfile(FILE_NAME_SETUP_CFG_BACKUP):
         shutil.copy2(FILE_NAME_SETUP_CFG, FILE_NAME_SETUP_CFG_BACKUP)
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+# -----------------------------------------------------------------------------
+# Copy directories from the sample test file directory.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def copy_directories_4_pytest_2_dir(
+    source_directories: List[str],
+    target_dir: str,
+) -> None:
+    """Copy directories from the sample test file directory.
+
+    Args:
+        source_directories: List[str]: Source directory names.
+        target_dir: str: Target directory.
+    """
+    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), (
+        "source base directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
+    )
+
+    for source in source_directories:
+        source_dir = libs.cfg.TESTS_INBOX_NAME + "/" + source
+        source_path = os.path.join(libs.cfg.TESTS_INBOX_NAME, Path(source))
+        assert os.path.isdir(source_path), (
+            "source language directory '" + str(source_path) + "' missing"
+        )
+        target_path = os.path.join(target_dir, Path(source))
+        shutil.copytree(source_dir, target_path)
 
 
 # -----------------------------------------------------------------------------
 # Copy files from the sample test file directory.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def copy_files_from_pytest(
+def copy_files_4_pytest(
     file_list: List[Tuple[Tuple[str, str | None], Tuple[Path, List[str], str | None]]]
 ) -> None:
     """Copy files from the sample test file directory.
@@ -62,53 +84,47 @@ def copy_files_from_pytest(
         file_list (List[Tuple[Tuple[str, str | None], Tuple[Path, List[str], str | None]]]):
                   List of files to be copied.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    assert os.path.isdir(TESTS_INBOX), "source directory missing"
+    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), (
+        "source directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
+    )
 
     for ((source_stem, source_ext), (target_dir, target_file_comp, target_ext)) in file_list:
         source_file_name = source_stem if source_ext is None else source_stem + "." + source_ext
-        source_file = os.path.join(TESTS_INBOX, source_file_name)
-        libs.cfg.logger.debug("source file=%s", source_file)
-        assert os.path.isfile(source_file), "source file missing"
+        source_file = os.path.join(libs.cfg.TESTS_INBOX_NAME, source_file_name)
+        assert os.path.isfile(source_file), "source file '" + str(source_file) + "' missing"
 
-        assert os.path.isdir(target_dir), "target directory missing"
+        assert os.path.isdir(target_dir), "target directory '" + target_dir + "' missing"
         target_file_name = (
             "_".join(target_file_comp)
             if target_ext is None
             else "_".join(target_file_comp) + "." + target_ext
         )
         target_file = os.path.join(target_dir, target_file_name)
-        libs.cfg.logger.debug("target file=%s", target_file)
-        assert os.path.isfile(target_file) is False, "target file already existing"
+        assert os.path.isfile(target_file) is False, (
+            "target file '" + str(target_file) + "' already existing"
+        )
 
         shutil.copy(source_file, target_file)
-        assert os.path.isfile(target_file), "target file missing"
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+        assert os.path.isfile(target_file), "target file '" + str(target_file) + "' is missing"
 
 
 # -----------------------------------------------------------------------------
 # Copy files from the sample test file directory.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def copy_files_from_pytest_2_dir(
+def copy_files_4_pytest_2_dir(
     source_files: List[Tuple[str, str | None]],
-    target_dir: Path,
+    target_path: Path,
 ) -> None:
     """Copy files from the sample test file directory.
 
     Args:
-        source_files: List[Tuple[str, str | None]]: Source file name.
-        target_dir: Path: Target directory.
+        source_files: List[Tuple[str, str | None]]: Source file names.
+        target_path: Path: Target directory.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     for source_file in source_files:
         (source_stem, source_ext) = source_file
-        copy_files_from_pytest([(source_file, (target_dir, [source_stem], source_ext))])
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+        copy_files_4_pytest([(source_file, (target_path, [source_stem], source_ext))])
 
 
 # -----------------------------------------------------------------------------
@@ -125,8 +141,6 @@ def delete_config_param(config_section: str, config_param: str) -> str:
     Returns:
         str: Original configuration parameter value.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     CONFIG_PARSER.read(libs.cfg.DCR_CFG_FILE)
 
     config_value_orig = CONFIG_PARSER[config_section][config_param]
@@ -135,8 +149,6 @@ def delete_config_param(config_section: str, config_param: str) -> str:
 
     with open(libs.cfg.DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return config_value_orig
 
@@ -147,9 +159,7 @@ def delete_config_param(config_section: str, config_param: str) -> str:
 @pytest.helpers.register
 def delete_version_version():
     """Delete all entries in the database table 'version'."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    libs.db.orm.connect_db()
+    libs.db.orm.connection.connect_db()
 
     with libs.db.cfg.db_orm_engine.begin() as conn:
         version = Table(
@@ -159,9 +169,7 @@ def delete_version_version():
         )
         conn.execute(delete(version))
 
-    libs.db.orm.disconnect_db()
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    libs.db.orm.connection.disconnect_db()
 
 
 # -----------------------------------------------------------------------------
@@ -178,13 +186,7 @@ def fxtr_mkdir():
         Args:
             directory_name (str): The directory name including path.
         """
-        libs.cfg.logger.debug("%s: directory_name=%s", libs.cfg.LOGGER_START, str(directory_name))
-        libs.cfg.logger.debug("current directory=%s", str(os.getcwd()))
-
         os.mkdir(directory_name)
-        libs.cfg.logger.debug("after:  listdir=%s", str(os.listdir(directory_name)))
-
-        libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return _fxtr_mkdir
 
@@ -203,13 +205,7 @@ def fxtr_rmdir():
         Args:
             directory_name (str): The directory name including path.
         """
-        libs.cfg.logger.debug("%s: directory_name=%s", libs.cfg.LOGGER_START, str(directory_name))
-        libs.cfg.logger.debug("current directory=%s", str(os.getcwd()))
-
-        libs.cfg.logger.debug("before: listdir=%s", str(os.listdir(directory_name)))
         shutil.rmtree(directory_name)
-
-        libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return _fxtr_rmdir
 
@@ -228,14 +224,8 @@ def fxtr_rmdir_opt(fxtr_rmdir):
         Args:
             directory_name (str): The directory name including path.
         """
-        libs.cfg.logger.debug("%s: directory_name=%s", libs.cfg.LOGGER_START, str(directory_name))
-        libs.cfg.logger.debug("current directory=%s", str(os.getcwd()))
-
         if os.path.isdir(directory_name):
-            libs.cfg.logger.debug("before: listdir=%s", str(os.listdir(directory_name)))
             fxtr_rmdir(directory_name)
-
-        libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return _fxtr_rmdir_opt
 
@@ -249,8 +239,6 @@ def fxtr_setup_empty_db_and_inbox(
     fxtr_rmdir_opt,
 ):
     """Fixture: Setup empty database and empty inboxes."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     backup_setup_cfg()
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
@@ -272,8 +260,6 @@ def fxtr_setup_empty_db_and_inbox(
 
     restore_setup_cfg()
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
 
 # -----------------------------------------------------------------------------
 # Fixture - Setup logger.
@@ -281,13 +267,9 @@ def fxtr_setup_empty_db_and_inbox(
 @pytest.fixture()
 def fxtr_setup_logger():
     """Fixture: Setup logger & environment."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     dcr.initialise_logger()
 
     yield
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -296,8 +278,6 @@ def fxtr_setup_logger():
 @pytest.fixture()
 def fxtr_setup_logger_environment():
     """Fixture: Setup logger & environment."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     libs.cfg.environment_type = libs.cfg.ENVIRONMENT_TYPE_TEST
 
     backup_setup_cfg()
@@ -308,8 +288,6 @@ def fxtr_setup_logger_environment():
 
     restore_setup_cfg()
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
 
 # -----------------------------------------------------------------------------
 # Help RUN_ACTION_ALL_COMPLETE - duplicate file.
@@ -319,9 +297,7 @@ def help_run_action_all_complete_duplicate_file(
     file_ext_1: str, file_ext_2: str, stem_name_1: str, stem_name_2: str
 ) -> None:
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    pytest.helpers.copy_files_from_pytest_2_dir(
+    pytest.helpers.copy_files_4_pytest_2_dir(
         [(stem_name_1, file_ext_1)], libs.cfg.directory_inbox_accepted
     )
 
@@ -334,46 +310,40 @@ def help_run_action_all_complete_duplicate_file(
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
-    no_files_expected = (0, 2, 0)
+    verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
+    )
 
-    file_1 = (
+    verify_content_of_directory(
         libs.cfg.directory_inbox_accepted,
-        [stem_name_1 + "_1"],
-        file_ext_1,
-    )
-    file_2 = (
-        libs.cfg.directory_inbox_accepted,
-        [stem_name_2],
-        file_ext_2,
+        [],
+        [stem_name_1 + "_1." + file_ext_1, stem_name_2 + "." + file_ext_2],
     )
 
-    pytest.helpers.verify_content_inboxes(
-        [
-            file_1,
-            file_2,
-        ],
-        no_files_expected,
+    verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
     )
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Help RUN_ACTION_PROCESS_INBOX - normal.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def help_run_action_process_inbox_normal(file_ext, stem_name):
+def help_run_action_process_inbox_normal(
+    stem_name,
+    file_ext,
+):
     """Help RUN_ACTION_PROCESS_INBOX - normal."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    pytest.helpers.copy_files_from_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
 
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
     # -------------------------------------------------------------------------
     document_id: int = 1
-
-    no_files_expected = (0, 1, 0)
 
     file_p_i = (
         libs.cfg.directory_inbox_accepted,
@@ -381,16 +351,23 @@ def help_run_action_process_inbox_normal(file_ext, stem_name):
         file_ext,
     )
 
-    files_to_be_checked = [
-        file_p_i,
-    ]
-
-    pytest.helpers.verify_content_inboxes(
-        files_to_be_checked,
-        no_files_expected,
+    verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
     )
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [stem_name + "_" + str(document_id) + "." + file_ext],
+    )
+
+    verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
+    )
 
     return document_id, file_p_i
 
@@ -411,16 +388,12 @@ def restore_config_param(
         config_param (str): Configuration parameter.
         config_value_orig (str): Original configuration parameter value.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     CONFIG_PARSER[config_section][config_param] = config_value_orig
 
     with open(libs.cfg.DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
     dcr.get_config()
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -429,13 +402,9 @@ def restore_config_param(
 @pytest.helpers.register
 def restore_setup_cfg():
     """Restore the 'setup.cfg' file."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     shutil.copy2(FILE_NAME_SETUP_CFG_BACKUP, FILE_NAME_SETUP_CFG)
 
     os.remove(FILE_NAME_SETUP_CFG_BACKUP)
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -466,8 +435,6 @@ def store_config_param(
     Returns:
         str: Original configuration parameter value.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     CONFIG_PARSER.read(libs.cfg.DCR_CFG_FILE)
 
     config_value_orig = CONFIG_PARSER[config_section][config_param]
@@ -477,81 +444,51 @@ def store_config_param(
     with open(libs.cfg.DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
     return config_value_orig
 
 
 # -----------------------------------------------------------------------------
-# Verify the contents of the inbox file directories.
+# Verify the content of a file directory.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def verify_content_inboxes(
-    file_list: List[Tuple[Path, List[str], str | None]],
-    no_of_files: Tuple[int | None, int | None, int | None],
+def verify_content_of_directory(
+    directory_name: str,
+    expected_directories: List[str],
+    expected_files: List[str],
 ) -> None:
-    """Verify the contents of the inbox file directories.
+    """Verify the content of a file directory.
 
     Args:
-        file_list: List[Tuple[Path, List[str], str | None]]:
-                   List of files to be checked.
-        no_of_files: Tuple[int | None, int | None, int | None]:
-                     Expected number of files in the file directories
-                     inbox, inbox_accepted and inbox_rejected
+        directory_name: str:
+                   Name of the file directory to be checked.
+        expected_directories: List[str]:
+                   List of the expected directory names.
+        expected_files: List[str]:
+                   List of the expected file names.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    libs.cfg.logger.info("directory name   =%s", directory_name)
 
-    libs.cfg.logger.info("files to be checked=%s", str(file_list))
+    directory_content = os.listdir(directory_name)
+    libs.cfg.logger.info("existing directory content=%s", str(directory_content))
+    libs.cfg.logger.info("expected directory content=%s", str(expected_directories))
+    libs.cfg.logger.info("expected file      content=%s", str(expected_files))
 
-    for (directory, file_comp, ext) in file_list:
-        assert os.path.isdir(directory), "directory to be checked missing"
-        file_name = "_".join(file_comp) if ext is None else "_".join(file_comp) + "." + ext
-        file = os.path.join(directory, file_name)
-        libs.cfg.logger.debug("file to be checked=%s", file)
-        assert os.path.isfile(file), "file to be checked is missing"
+    # check directory content against expectations
+    for elem in directory_content:
+        elem_path = os.path.join(directory_name, elem)
+        if os.path.isdir(elem_path):
+            assert elem in expected_directories, f"directory {elem} was not expected"
+        else:
+            assert elem in expected_files, f"file {elem} was not expected"
 
-    libs.cfg.logger.info("no. files expected =%s", str(no_of_files))
+    # check expected directories against directory content
+    for elem in expected_directories:
+        assert elem in directory_content, f"expected directory {elem} is missing"
+        elem_path = os.path.join(directory_name, elem)
+        assert os.path.isdir(elem_path), f"expected directory {elem} is a file"
 
-    (no_inbox, no_accepted, no_rejected) = no_of_files
-
-    if no_inbox is None:
-        assert os.path.isdir(libs.cfg.directory_inbox) is False, "directory inbox is existing"
-    else:
-        libs.cfg.logger.debug(
-            "content directory %s=%s",
-            libs.cfg.directory_inbox,
-            str(os.listdir(libs.cfg.directory_inbox)),
-        )
-        assert (
-            len(os.listdir(libs.cfg.directory_inbox)) == no_inbox
-        ), "no files in directory inbox is unexpected"
-
-    if no_accepted is None:
-        assert (
-            os.path.isdir(libs.cfg.directory_inbox_accepted) is False
-        ), "directory inbox_accepted is existing"
-    else:
-        libs.cfg.logger.debug(
-            "content directory %s=%s",
-            libs.cfg.directory_inbox_accepted,
-            str(os.listdir(libs.cfg.directory_inbox_accepted)),
-        )
-        assert (
-            len(os.listdir(libs.cfg.directory_inbox_accepted)) == no_accepted
-        ), "no files in directory inbox_accepted is unexpected"
-
-    if no_rejected is None:
-        assert (
-            os.path.isdir(libs.cfg.directory_inbox_rejected) is False
-        ), "directory inbox_rejected is existing"
-    else:
-        libs.cfg.logger.debug(
-            "content directory %s=%s",
-            libs.cfg.directory_inbox_rejected,
-            str(os.listdir(libs.cfg.directory_inbox_rejected)),
-        )
-        assert (
-            len(os.listdir(libs.cfg.directory_inbox_rejected)) == no_rejected
-        ), "no files in directory inbox_rejected is unexpected"
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    # check expected files against directory content
+    for elem in expected_files:
+        assert elem in directory_content, f"expected file {elem} is missing"
+        elem_path = os.path.join(directory_name, elem)
+        assert os.path.isfile(elem_path), f"expected file {elem} is a directory"

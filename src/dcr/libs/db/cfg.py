@@ -12,20 +12,28 @@ from sqlalchemy.engine import Engine
 DB_DIALECT_POSTGRESQL: str = "postgresql"
 
 DBC_ACTION: str = "action"
-DBC_ACTION_CODE: str = "action_code"
-DBC_ACTION_TEXT: str = "action_text"
+DBC_ACTIVE: str = "active"
 DBC_CHILD_NO: str = "child_no"
+DBC_CODE_ISO_639_3: str = "code_iso_639_3"
+DBC_CODE_SPACY: str = "code_spacy"
+DBC_CODE_TESSERACT: str = "code_tesseract"
 DBC_CREATED_AT: str = "created_at"
+DBC_CURRENT_STEP: str = "current_step"
 DBC_DIRECTORY_NAME: str = "directory_name"
+DBC_DIRECTORY_NAME_INBOX: str = "directory_name_inbox"
 DBC_DIRECTORY_TYPE: str = "directory_type"
 DBC_DOCUMENT_ID: str = "document_id"
 DBC_DOCUMENT_ID_BASE: str = "document_id_base"
 DBC_DOCUMENT_ID_PARENT: str = "document_id_parent"
+DBC_DURATION_NS: str = "duration_ns"
 DBC_ERROR_CODE: str = "error_code"
+DBC_ERROR_TEXT: str = "error_text"
 DBC_FILE_NAME: str = "file_name"
 DBC_FILE_TYPE: str = "file_type"
 DBC_FUNCTION_NAME: str = "function_name"
 DBC_ID: str = "id"
+DBC_ISO_LANGUAGE_NAME: str = "iso_language_name"
+DBC_LANGUAGE_ID: str = "language_id"
 DBC_LINE_IN_PARA: str = "line_in_para"
 DBC_MODIFIED_AT: str = "modified_at"
 DBC_MODULE_NAME: str = "module_name"
@@ -50,6 +58,7 @@ DBC_VERSION: str = "version"
 DBT_CONTENT: str = "content"
 DBT_DOCUMENT: str = "document"
 DBT_JOURNAL: str = "journal"
+DBT_LANGUAGE: str = "language"
 DBT_RUN: str = "run"
 DBT_VERSION: str = "version"
 
@@ -98,166 +107,107 @@ DOCUMENT_FILE_TYPE_TIF: str = "tif"
 DOCUMENT_FILE_TYPE_TIFF: str = "tiff"
 DOCUMENT_FILE_TYPE_XML: str = "xml"
 
-DOCUMENT_NEXT_STEP_PANDOC: str = "Pandoc & TeX Live"
-DOCUMENT_NEXT_STEP_PARSER: str = "Parser"
-DOCUMENT_NEXT_STEP_PDF2IMAGE: str = "pdf2image"
-DOCUMENT_NEXT_STEP_PDFLIB: str = "PDFlib TET"
-DOCUMENT_NEXT_STEP_TESSERACT: str = "Tesseract OCR"
-
 DOCUMENT_STATUS_ABORT: str = "abort"
 DOCUMENT_STATUS_END: str = "end"
 DOCUMENT_STATUS_ERROR: str = "error"
 DOCUMENT_STATUS_START: str = "start"
 
-JOURNAL_ACTION_01_001: str = (
-    "01.001 Start (p_i): Document file '{file_name}' detected " + "in the 'inbox' file directory."
-)
-JOURNAL_ACTION_01_002: str = (
-    "01.002 End   (p_i): Document file '{source_file}' successfully moved to file '{target_file}'."
-)
-JOURNAL_ACTION_01_003: str = (
-    "01.003 Next  (p_i): Ready to convert document file '{file_name}' "
-    + "to '{type}' format using pdf2image."
-)
-JOURNAL_ACTION_01_901: str = (
+DOCUMENT_STEP_INBOX: str = "Inbox"
+DOCUMENT_STEP_PANDOC: str = "Pandoc & TeX Live"
+DOCUMENT_STEP_PARSER: str = "Parser"
+DOCUMENT_STEP_PDF2IMAGE: str = "pdf2image"
+DOCUMENT_STEP_PDFLIB: str = "PDFlib TET"
+DOCUMENT_STEP_PYPDF4: str = "PyPDF4"
+DOCUMENT_STEP_TESSERACT: str = "Tesseract OCR"
+
+ERROR_01_901: str = (
     "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
 )
-JOURNAL_ACTION_01_902: str = (
+ERROR_01_902: str = (
     "01.902 Issue (p_i): Moving '{source_file}' to '{target_file}' "
     + "- error: code='{error_code}' msg='{error_msg}'."
 )
-JOURNAL_ACTION_01_903: str = (
+ERROR_01_903: str = (
     "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{source_file}' "
     + "- error: '{error_msg}'."
 )
-JOURNAL_ACTION_01_904: str = (
+ERROR_01_904: str = (
     "01.904 Issue (p_i): File permission with file '{source_file}' "
     + "- error: code='{error_code}' msg='{error_msg}'."
 )
-JOURNAL_ACTION_01_905: str = (
+ERROR_01_905: str = (
     "01.905 Issue (p_i): The same file has probably already been processed "
     + "once under the file name '{file_name}'."
 )
-JOURNAL_ACTION_01_906: str = "01.906 Issue (p_i): The target file '{file_name}' already exists."
-JOURNAL_ACTION_11_001: str = (
-    "11.001 Next  (p_i) Ready to convert the document to 'pdf' format using Pandoc and TeX Live."
-)
-JOURNAL_ACTION_11_002: str = (
-    "11.002 Next  (p_i) Ready to convert the document to 'pdf' format using Tesseract OCR."
-)
-JOURNAL_ACTION_11_003: str = (
-    "11.003 Next  (p_i) Ready to process the 'pdf' document using PDFlib TET."
-)
-JOURNAL_ACTION_21_001: str = (
-    "21.001 Start (p_2_i): The document file '{file_name}' must be converted into image file(s) "
-    + "for further processing."
-)
-JOURNAL_ACTION_21_002: str = (
-    "21.002 End   (p_2_i): The document file '{file_name}' was successfully converted "
-    + "to {child_no} image file(s)."
-)
-JOURNAL_ACTION_21_003: str = (
-    "21.003 Next  (p_2_i): The created image file '{file_name}' "
-    + "is ready to be processed with Tesseract OCR."
-)
-JOURNAL_ACTION_21_901: str = (
+ERROR_01_906: str = "01.906 Issue (p_i): The target file '{file_name}' already exists."
+
+ERROR_21_901: str = (
     "21.901 Issue (p_2_i): The 'pdf' document '{file_name}' cannot be converted to an "
     + "image format - error: '{error_msg}'."
 )
-JOURNAL_ACTION_21_902: str = (
+ERROR_21_902: str = (
     "21.902 Issue (p_2_i): The child image file number '{child_no}' with file name "
     + "'{file_name}' cannot be stored "
     + "- error: code='{error_code}' msg='{error_msg}'."
 )
-JOURNAL_ACTION_21_903: str = "21.903 Issue (p_2_i): The target file '{file_name}' already exists."
-JOURNAL_ACTION_31_001: str = (
-    "31.001 Start (n_2_p): The document file '{file_name}' must be converted into a 'pdf' file "
-    + "for further processing."
-)
-JOURNAL_ACTION_31_002: str = (
-    "31.002 End   (n_2_p): The document file '{source_file}' was successfully converted "
-    + "to {target_file}."
-)
-JOURNAL_ACTION_31_003: str = (
-    "31.003 Next  (n_2_p): The created image file '{file_name}' "
-    + "is ready to be processed with PDFlib TET."
-)
-JOURNAL_ACTION_31_901: str = (
+ERROR_21_903: str = "21.903 Issue (p_2_i): The target file '{file_name}' already exists."
+
+ERROR_31_901: str = (
     "31.901 Issue (n_2_p): Converting the file '{source_file}' to the file "
     + "'{target_file}' with Pandoc and TeX Live failed - output='{output}'."
 )
-JOURNAL_ACTION_31_902: str = (
+ERROR_31_902: str = (
     "31.902 Issue (n_2_p): The file '{file_name}' cannot be converted to an "
     + "'pdf' document - error: '{error_msg}'."
 )
-JOURNAL_ACTION_31_903: str = "31.903 Issue (n_2_p): The target file '{file_name}' already exists."
-JOURNAL_ACTION_41_001: str = (
-    "41.001 Start (ocr): The document file '{file_name}' must be converted into a 'pdf' file "
-    + "for further processing."
-)
-JOURNAL_ACTION_41_002: str = (
-    "41.002 End   (ocr): The document file '{source_file}' was successfully converted "
-    + "to {target_file}."
-)
-JOURNAL_ACTION_41_003: str = (
-    "41.003 Next  (ocr): The created image file '{file_name}' "
-    + "is ready to be processed with PDFlib TET."
-)
-JOURNAL_ACTION_41_901: str = (
+ERROR_31_903: str = "31.903 Issue (n_2_p): The target file '{file_name}' already exists."
+
+ERROR_41_901: str = (
     "41.901 Issue (ocr): Converting the file '{source_file}' to the file "
     + "'{target_file}' with Tesseract OCR failed - "
     + "error type: '{error_type}' - error: '{error}'."
 )
-JOURNAL_ACTION_41_902: str = (
+ERROR_41_902: str = (
     "41.902 Issue (ocr): Converting the file '{source_file}' to the file "
     + "'{target_file}' with Tesseract OCR failed - "
     + "error status: '{error_status}' - error: '{error}'."
 )
-JOURNAL_ACTION_41_903: str = "41.903 Issue (ocr): The target file '{file_name}' already exists."
-JOURNAL_ACTION_51_001: str = (
-    "51.001 Start (tet): The text and metadata from pdf document file '{file_name}' "
-    + "must be extracted for further processing."
-)
-JOURNAL_ACTION_51_002: str = (
-    "51.002 End   (tet): The text and metadata from pdf document "
-    + "'{file_name}' were successfully extracted into file {target_file}."
-)
-JOURNAL_ACTION_51_003: str = (
-    "51.003 Next  (tet): The created text and metadata file '{file_name}' "
-    + "is ready to be parsed."
-)
-JOURNAL_ACTION_51_901: str = (
-    "51.901 Issue (tet): Issues with opening document '{file_name}' - "
+ERROR_41_903: str = "41.903 Issue (ocr): The target file '{file_name}' already exists."
+ERROR_41_904: str = "41.904 Issue (ocr): The target file '{file_name}' already exists."
+
+ERROR_51_901: str = (
+    "51.901 Issue (tet): Opening document '{file_name}' - "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
-JOURNAL_ACTION_51_902: str = (
+ERROR_51_902: str = (
     "51.902 Issue (tet): TETML data could not be retrieved from document '{file_name}' - "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
-JOURNAL_ACTION_51_903: str = (
+ERROR_51_903: str = (
     "51.903 Issue (tet): Extracting the text and metadata from file '{file_name}' to file "
     + "'{target_file}' failed: "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
-JOURNAL_ACTION_61_001: str = (
-    "61.001 Start (s_f_p): The content of the TETML file '{file_name}' "
-    + "must be parsed to store the document structure in the database."
-)
-JOURNAL_ACTION_61_002: str = (
-    "61.002 End   (s_f_p): The content of the TETML file '{file_name}' "
-    + "has been successfully parsed and the document structure is now "
-    + "stored in the database."
-)
-JOURNAL_ACTION_61_901: str = (
+
+ERROR_61_901: str = (
     "61.901 Issue (s_f_p): Unknown child tag '{child_tag}' - " + "in parent tag '{parent_tag}'."
 )
-JOURNAL_ACTION_61_902: str = (
+ERROR_61_902: str = (
     "61.902 Issue (s_f_p): Expected tag '{expected_tag}' - " + " but found tag '{found_tag}'."
 )
-JOURNAL_ACTION_61_903: str = (
+ERROR_61_903: str = (
     "61.903 Issue (s_f_p): Token missing: document {document_id} page {page_no} "
     + "paragraph {para_no} line {line_no}."
 )
+
+JSON_NAME_API_VERSION: str = "apiVersion"
+JSON_NAME_COLUMN_NAME: str = "columnName"
+JSON_NAME_COLUMN_VALUE: str = "columnValue"
+JSON_NAME_DATA: str = "data"
+JSON_NAME_ROW: str = "row"
+JSON_NAME_ROWS: str = "rows"
+JSON_NAME_TABLES: str = "tables"
+JSON_NAME_TABLE_NAME: str = "tableName"
 
 RUN_STATUS_END: str = "end"
 RUN_STATUS_START: str = "start"

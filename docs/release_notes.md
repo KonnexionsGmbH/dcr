@@ -13,7 +13,8 @@ Release Date: dd.mm.2022
 
 ### 1.1 New Features
 
-- processing step **`tet`**: Extract text and metadata from pdf files.
+- processing step **`tet`**: Extract text and metadata from **`pdf`** files.
+- support for documents in different languages - English, French, German and Italian as standard
 
 ### 1.2 Applied Software
 
@@ -77,7 +78,7 @@ Release Date: dd.mm.2022
 
 ### <a name="issues_mdx_del_ins"></a> 2.1 Del/Ins Extension for Python-Markdown
 
-- Issue: The unauthenticated git protocol on port 9418 is no longer supported. [see #3](https://github.com/aleray/mdx_del_ins/issues/3)
+- Issue: The unauthenticated git protocol on port 9418 is no longer supported. [see #3](https://github.com/aleray/mdx_del_ins/issues/3){:target="_blank"}
 
 ```
     ...>pip install git+git://github.com/aleray/mdx_del_ins.git
@@ -171,7 +172,7 @@ new:
 "Info **********  Start: Pydoc-Markdown ******************************"
 pipenv run pydoc-markdown --version
 python -m pydoc-markdown, version 4.6.3
-pipenv run pydoc-markdown -I src/dcr --render-toc > docs/dcr_api.md
+pipenv run pydoc-markdown -I src/dcr --render-toc > docs/developing_api_documentation.md
 Traceback (most recent call last):
   File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\parser.py", line 88, in parse_to_ast
     return RefactoringTool([], options).refactor_string(code + '\n', filename)
@@ -222,7 +223,7 @@ make: *** [pydoc-markdown] Fehler 1
 
 ### <a name="issues_tesseract_ocr"></a> 2.4 Tesseract OCR
 
-- Issue: Images of type 'jp2': Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 ... (**Windows 10 only**) [see #57](https://github.com/UB-Mannheim/tesseract/issues/57)
+- Issue: Images of type 'jp2': Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 ... (**Windows 10 only**) [see #57](https://github.com/UB-Mannheim/tesseract/issues/57){:target="_blank"}
 
 ```
 Issue (ocr): Converting the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_03_ok_5.jp2' to the file 'D:\SoftDevelopment\Projects\dcr\data\inbox_accepted\pdf_scanned_03_ok_5.pdf' with Tesseract OCR failed - error status: '1' - error: 'Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 Error in pixReadStream: jp2: no pix returned Error in pixRead: pix not read Error during processing.'.
