@@ -7,7 +7,6 @@ depending on the result of the check. Depending on the file format, the
 accepted documents are then converted into the pdf file format either
 with the help of Pandoc and TeX Live or with the help of Tesseract OCR.
 """
-import inspect
 import os
 import pathlib
 import shutil
@@ -109,10 +108,10 @@ def initialise_document_base(file: pathlib.Path) -> None:
 
     # pylint: disable=expression-not-assigned
     libs.db.orm.insert_journal(
-        __name__,
-        inspect.stack()[0][3],
-        libs.cfg.document_id,
-        libs.db.cfg.JOURNAL_ACTION_01_001.replace("{file_name}", libs.cfg.document_file_name),
+        document_id=libs.cfg.document_id,
+        journal_action=libs.db.cfg.JOURNAL_ACTION_01_001.replace(
+            "{file_name}", libs.cfg.document_file_name
+        ),
     )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -306,8 +305,6 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
 
     if os.path.exists(target_file):
         libs.utils.report_document_error(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             journal_action=libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", target_file),
         )
@@ -327,12 +324,10 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
 
         # pylint: disable=expression-not-assigned
         libs.db.orm.insert_journal(
-            __name__,
-            inspect.stack()[0][3],
-            libs.cfg.document_id,
-            libs.db.cfg.JOURNAL_ACTION_01_002.replace("{source_file}", source_file).replace(
-                "{target_file}", target_file
-            ),
+            document_id=libs.cfg.document_id,
+            journal_action=libs.db.cfg.JOURNAL_ACTION_01_002.replace(
+                "{source_file}", source_file
+            ).replace("{target_file}", target_file),
         )
 
         libs.cfg.language_ok_processed += 1
@@ -458,10 +453,8 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
 
     if os.path.exists(target_file):
         libs.db.orm.insert_journal(
-            __name__,
-            inspect.stack()[0][3],
-            libs.cfg.document_id,
-            libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", target_file),
+            document_id=libs.cfg.document_id,
+            journal_action=libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", target_file),
         )
         libs.cfg.language_erroneous += 1
     else:

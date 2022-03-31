@@ -1,7 +1,6 @@
 """Module libs.utils: Helper functions."""
 import datetime
 import hashlib
-import inspect
 import os
 import pathlib
 import sys
@@ -106,12 +105,10 @@ def delete_auxiliary_file(file_name: str) -> None:
 # -----------------------------------------------------------------------------
 # Finalise the file processing.
 # -----------------------------------------------------------------------------
-def finalize_file_processing(module_name: str, function_name: str, journal_action: str) -> None:
+def finalize_file_processing(journal_action: str) -> None:
     """Finalise the file processing.
 
     Args:
-        module_name (str):    Module name.
-        function_name (str):  Function name.
         journal_action (str): Journal action.
     """
     libs.cfg.total_ok_processed += 1
@@ -125,10 +122,8 @@ def finalize_file_processing(module_name: str, function_name: str, journal_actio
     )
 
     libs.db.orm.insert_journal(
-        module_name,
-        function_name,
-        libs.cfg.document_id,
-        journal_action,
+        document_id=libs.cfg.document_id,
+        journal_action=journal_action,
     )
 
 
@@ -167,10 +162,8 @@ def initialise_document_child(journal_action: str) -> None:
 
     # pylint: disable=expression-not-assigned
     libs.db.orm.insert_journal(
-        __name__,
-        inspect.stack()[0][3],
-        libs.cfg.document_child_id,
-        journal_action,
+        document_id=libs.cfg.document_child_id,
+        journal_action=journal_action,
     )
 
 
@@ -297,14 +290,10 @@ def progress_msg_empty_before(msg: str) -> None:
 # -----------------------------------------------------------------------------
 # Report a document error.
 # -----------------------------------------------------------------------------
-def report_document_error(
-    module_name: str, function_name: str, error_code: str | None, journal_action: str
-) -> None:
+def report_document_error(error_code: str | None, journal_action: str) -> None:
     """Report a document error.
 
     Args:
-        module_name (str):     Module name.
-        function_name (str):   Function trace.
         error_code (str|None): Error code.
         journal_action (str):  Journal action text.
     """
@@ -321,8 +310,6 @@ def report_document_error(
         )
 
     libs.db.orm.insert_journal(
-        module_name=module_name,
-        function_name=function_name,
         document_id=libs.cfg.document_id,
         journal_action=journal_action,
     )
@@ -560,14 +547,10 @@ def show_statistics_total() -> None:
 # -----------------------------------------------------------------------------
 # Start document processing.
 # -----------------------------------------------------------------------------
-def start_document_processing(
-    module_name: str, function_name: str, document: Row, journal_action: str
-) -> None:
+def start_document_processing(document: Row, journal_action: str) -> None:
     """Start document processing.
 
     Args:
-        module_name (str):    Module name.
-        function_name (str):  Function name.
         document (Row):       Database row document.
         journal_action (str): Journal action.
     """
@@ -594,10 +577,8 @@ def start_document_processing(
     )
 
     libs.db.orm.insert_journal(
-        module_name,
-        function_name,
-        libs.cfg.document_id,
-        journal_action.replace("{file_name}", libs.cfg.document_file_name),
+        document_id=libs.cfg.document_id,
+        journal_action=journal_action.replace("{file_name}", libs.cfg.document_file_name),
     )
 
     if libs.cfg.document_status == libs.db.cfg.DOCUMENT_STATUS_START:

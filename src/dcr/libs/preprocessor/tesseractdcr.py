@@ -1,6 +1,5 @@
 """Module libs.preprocessor.tesseractdcr: Convert image documents to pdf
 files."""
-import inspect
 import os
 import time
 
@@ -36,8 +35,6 @@ def convert_image_2_pdf() -> None:
             libs.cfg.start_time_document = time.perf_counter_ns()
 
             libs.utils.start_document_processing(
-                module_name=__name__,
-                function_name=inspect.stack()[0][3],
                 document=row,
                 journal_action=libs.db.cfg.JOURNAL_ACTION_41_001,
             )
@@ -60,8 +57,6 @@ def convert_image_2_pdf_file() -> None:
 
     if os.path.exists(target_file_name):
         libs.utils.report_document_error(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             journal_action=libs.db.cfg.JOURNAL_ACTION_41_903.replace(
                 "{file_name}", target_file_name
@@ -104,16 +99,12 @@ def convert_image_2_pdf_file() -> None:
 
         # Document successfully converted to pdf format
         libs.utils.finalize_file_processing(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             journal_action=libs.db.cfg.JOURNAL_ACTION_41_002.replace(
                 "{source_file}", source_file_name
             ).replace("{target_file}", target_file_name),
         )
     except TesseractError as err_t:
         libs.utils.report_document_error(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
             journal_action=libs.db.cfg.JOURNAL_ACTION_41_902.replace(
                 "{source_file}", source_file_name
@@ -124,8 +115,6 @@ def convert_image_2_pdf_file() -> None:
         )
     except RuntimeError as err:
         libs.utils.report_document_error(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
             journal_action=libs.db.cfg.JOURNAL_ACTION_41_901.replace(
                 "{source_file}", source_file_name
@@ -159,7 +148,8 @@ def reunite_pdfs() -> None:
                     .where(dbt.c.status == libs.db.cfg.DOCUMENT_STATUS_START)
                     .where(dbt.c.next_step == libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB)
                     .group_by(dbt.c.document_id_base)
-                    .having(func.count(dbt.c.document_id_base) > 1).scalar_subquery()
+                    .having(func.count(dbt.c.document_id_base) > 1)
+                    .scalar_subquery()
                 )
             )
         )
@@ -168,8 +158,6 @@ def reunite_pdfs() -> None:
             libs.cfg.start_time_document = time.perf_counter_ns()
 
             libs.utils.start_document_processing(
-                module_name=__name__,
-                function_name=inspect.stack()[0][3],
                 document=row,
                 journal_action=libs.db.cfg.JOURNAL_ACTION_41_001,
             )
@@ -204,7 +192,8 @@ def reunite_pdfs_file() -> None:
             select(dbt)
             .where(dbt.c.status == libs.db.cfg.DOCUMENT_STATUS_START)
             .where(dbt.c.next_step == libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB)
-            .where(dbt.c.document_id_base == libs.cfg.document_id_base).order_by(dbt.c.id)
+            .where(dbt.c.document_id_base == libs.cfg.document_id_base)
+            .order_by(dbt.c.id)
         )
 
         for row in rows:
@@ -220,8 +209,6 @@ def reunite_pdfs_file() -> None:
             # libs.cfg.start_time_document = time.perf_counter_ns()
             #
             # libs.utils.start_document_processing(
-            #     module_name=__name__,
-            #     function_name=inspect.stack()[0][3],
             #     document=row,
             #     journal_action=libs.db.cfg.JOURNAL_ACTION_41_001,
             # )

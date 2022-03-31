@@ -68,8 +68,8 @@ LOGGER_START: str = "Start"
 OS_NT: str = "nt"
 OS_POSIX: str = "posix"
 
-PANDIOC_PDF_ENGINE_LULATEX: str = "lulatex"
-PANDIOC_PDF_ENGINE_XELATEX: str = "xelatex"
+PANDOC_PDF_ENGINE_LULATEX: str = "lulatex"
+PANDOC_PDF_ENGINE_XELATEX: str = "xelatex"
 
 PARSE_NAME_SPACE: str = "{http://www.pdflib.com/XML/TET5/TET-5.0}"
 PARSE_TAG_A: str = "A"

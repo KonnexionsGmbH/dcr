@@ -26,8 +26,6 @@ def insert_dbt_row(
     columns: libs.cfg.Columns,
 ) -> sqlalchemy.Integer: ...
 def insert_journal(
-    module_name: str,
-    function_name: str,
     document_id: sqlalchemy.Integer,
     journal_action: str,
 ) -> None: ...

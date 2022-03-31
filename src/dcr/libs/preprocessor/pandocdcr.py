@@ -1,6 +1,5 @@
 """Module libs.preprocessor.pandocdcr: Convert non-pdf documents to pdf
 files."""
-import inspect
 import os
 import time
 
@@ -32,8 +31,6 @@ def convert_non_pdf_2_pdf() -> None:
             libs.cfg.start_time_document = time.perf_counter_ns()
 
             libs.utils.start_document_processing(
-                module_name=__name__,
-                function_name=inspect.stack()[0][3],
                 document=row,
                 journal_action=libs.db.cfg.JOURNAL_ACTION_31_001,
             )
@@ -56,8 +53,6 @@ def convert_non_pdf_2_pdf_file() -> None:
 
     if os.path.exists(target_file_name):
         libs.utils.report_document_error(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             journal_action=libs.db.cfg.JOURNAL_ACTION_31_903.replace(
                 "{file_name}", target_file_name
@@ -70,15 +65,13 @@ def convert_non_pdf_2_pdf_file() -> None:
         output = pypandoc.convert_file(
             source_file_name,
             libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
-            extra_args=(["--pdf-engine=" + libs.cfg.PANDIOC_PDF_ENGINE_XELATEX]),
+            extra_args=(["--pdf-engine=" + libs.cfg.PANDOC_PDF_ENGINE_XELATEX]),
             outputfile=target_file_name,
         )
 
         # not testable
         if output != "":
             libs.utils.report_document_error(
-                module_name=__name__,
-                function_name=inspect.stack()[0][3],
                 error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PANDOC,
                 journal_action=libs.db.cfg.JOURNAL_ACTION_31_901.replace(
                     "{source_file}", source_file_name
@@ -107,8 +100,6 @@ def convert_non_pdf_2_pdf_file() -> None:
 
             # Document successfully converted to pdf format
             libs.utils.finalize_file_processing(
-                module_name=__name__,
-                function_name=inspect.stack()[0][3],
                 journal_action=libs.db.cfg.JOURNAL_ACTION_31_002.replace(
                     "{source_file}", source_file_name
                 ).replace("{target_file}", target_file_name),
@@ -116,8 +107,6 @@ def convert_non_pdf_2_pdf_file() -> None:
     # not testable
     except RuntimeError as err:
         libs.utils.report_document_error(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
             journal_action=libs.db.cfg.JOURNAL_ACTION_31_902.replace(
                 "{file_name}", source_file_name

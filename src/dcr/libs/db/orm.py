@@ -366,8 +366,6 @@ def create_dbt_journal(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(libs.db.cfg.DBC_DURATION_NS, sqlalchemy.BigInteger, nullable=True),
-        sqlalchemy.Column(libs.db.cfg.DBC_FUNCTION_NAME, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(libs.db.cfg.DBC_MODULE_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
             libs.db.cfg.DBC_RUN_ID,
             sqlalchemy.Integer,
@@ -677,16 +675,12 @@ def insert_dbt_row(
 # Insert a new row into a database table.
 # -----------------------------------------------------------------------------
 def insert_journal(
-    module_name: str,
-    function_name: str,
     document_id: sqlalchemy.Integer,
     journal_action: str,
 ) -> None:
     """Insert a new row into database table 'journal'.
 
     Args:
-        module_name (str): Module name.
-        function_name (str): Function name.
         document_id (sqlalchemy.Integer): Document id.
         journal_action (str): Journal action.
     """
@@ -719,8 +713,6 @@ def insert_journal(
             libs.db.cfg.DBC_ACTION_TEXT: journal_action[7:],
             libs.db.cfg.DBC_DOCUMENT_ID: document_id,
             libs.db.cfg.DBC_DURATION_NS: duration_ns,
-            libs.db.cfg.DBC_FUNCTION_NAME: function_name,
-            libs.db.cfg.DBC_MODULE_NAME: module_name,
             libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
         },
     )

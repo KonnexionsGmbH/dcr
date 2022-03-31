@@ -1,6 +1,5 @@
 """Module libs.preprocessor.parser: Store the document structure from the
 parser result."""
-import inspect
 import os
 import time
 from datetime import datetime
@@ -45,8 +44,6 @@ def parse_tag_box(parent_tag: str, parent: Iterable[str]) -> None:
                 parse_tag_line(child_tag, child)
             case _:
                 libs.utils.report_document_error(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                     journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                         "{child_tag}", child_tag
@@ -75,8 +72,6 @@ def parse_tag_content(parent_tag: str, parent: Iterable[str]) -> None:
                 pass
             case _:
                 libs.utils.report_document_error(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                     journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                         "{child_tag}", child_tag
@@ -115,8 +110,6 @@ def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
                 )
             case _:
                 libs.utils.report_document_error(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                     journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                         "{child_tag}", child_tag
@@ -149,8 +142,6 @@ def parse_tag_document(parent_tag: str, parent: Iterable[str]) -> None:
                 parse_tag_pages(child_tag, child)
             case _:
                 libs.utils.report_document_error(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                     journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                         "{child_tag}", child_tag
@@ -182,8 +173,6 @@ def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
                 parse_tag_word(child_tag, child)
             case _:
                 libs.utils.report_document_error(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                     journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                         "{child_tag}", child_tag
@@ -217,8 +206,6 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
                 pass
             case _:
                 libs.utils.report_document_error(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                     journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                         "{child_tag}", child_tag
@@ -247,8 +234,6 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
                 parse_tag_page(child_tag, child)
             case _:
                 libs.utils.report_document_error(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                     journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                         "{child_tag}", child_tag
@@ -282,8 +267,6 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
                 parse_tag_box(child_tag, child)
             case _:
                 libs.utils.report_document_error(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                     journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                         "{child_tag}", child_tag
@@ -308,8 +291,6 @@ def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
         match child_tag:
             case _:
                 libs.utils.report_document_error(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                     journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                         "{child_tag}", child_tag
@@ -318,8 +299,6 @@ def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
 
     if parent.text is None:
         libs.utils.report_document_error(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
             journal_action=libs.db.cfg.JOURNAL_ACTION_61_903.replace(
                 "{document_id}", str(libs.cfg.document_id_base)
@@ -384,8 +363,6 @@ def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
                 parse_tag_text(child_tag, child)
             case _:
                 libs.utils.report_document_error(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                     journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                         "{child_tag}", child_tag
@@ -414,8 +391,6 @@ def parse_tetml() -> None:
             libs.cfg.start_time_document = time.perf_counter_ns()
 
             libs.utils.start_document_processing(
-                module_name=__name__,
-                function_name=inspect.stack()[0][3],
                 document=row,
                 journal_action=libs.db.cfg.JOURNAL_ACTION_61_001,
             )
@@ -458,8 +433,6 @@ def parse_tetml_file() -> None:
 
     if parent_tag != libs.cfg.PARSE_TAG_TET:
         libs.utils.report_document_error(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
             journal_action=libs.db.cfg.JOURNAL_ACTION_61_902.replace(
                 "{expected_tag}", libs.cfg.PARSE_TAG_TET
@@ -476,8 +449,6 @@ def parse_tetml_file() -> None:
                     pass
                 case _:
                     libs.utils.report_document_error(
-                        module_name=__name__,
-                        function_name=inspect.stack()[0][3],
                         error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
                         journal_action=libs.db.cfg.JOURNAL_ACTION_61_901.replace(
                             "{child_tag}", child_tag
@@ -488,8 +459,6 @@ def parse_tetml_file() -> None:
 
         # Text and metadata from Document successfully extracted to xml format
         libs.utils.finalize_file_processing(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             journal_action=libs.db.cfg.JOURNAL_ACTION_61_002.replace("{file_name}", file_name),
         )
 

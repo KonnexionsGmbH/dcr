@@ -1,6 +1,5 @@
 """Module libs.preprocessor.pdf2imagedcr: Convert scanned image pdf documents
 to image files."""
-import inspect
 import os
 import time
 
@@ -39,8 +38,6 @@ def convert_pdf_2_image() -> None:
             libs.cfg.start_time_document = time.perf_counter_ns()
 
             libs.utils.start_document_processing(
-                module_name=__name__,
-                function_name=inspect.stack()[0][3],
                 document=row,
                 journal_action=libs.db.cfg.JOURNAL_ACTION_21_001,
             )
@@ -96,8 +93,6 @@ def convert_pdf_2_image_file() -> None:
 
             if os.path.exists(file_name_child):
                 libs.utils.report_document_error(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
                     journal_action=libs.db.cfg.JOURNAL_ACTION_21_903.replace(
                         "{file_name}", file_name_child
@@ -119,8 +114,6 @@ def convert_pdf_2_image_file() -> None:
 
                 # Document successfully converted to image format
                 libs.utils.finalize_file_processing(
-                    module_name=__name__,
-                    function_name=inspect.stack()[0][3],
                     journal_action=libs.db.cfg.JOURNAL_ACTION_21_002.replace(
                         "{file_name}", libs.cfg.document_file_name
                     ).replace("{child_no}", str(libs.cfg.document_child_child_no)),
@@ -133,8 +126,6 @@ def convert_pdf_2_image_file() -> None:
     except PDFPopplerTimeoutError as err:
         number_errors += 1
         libs.utils.report_document_error(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
             journal_action=libs.db.cfg.JOURNAL_ACTION_21_901.replace(
                 "{file_name}", libs.cfg.document_file_name
@@ -148,10 +139,8 @@ def convert_pdf_2_image_file() -> None:
         journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_005
 
     libs.db.orm.insert_journal(
-        __name__,
-        inspect.stack()[0][3],
-        libs.cfg.document_id,
-        journal_action.replace(
+        document_id=libs.cfg.document_id,
+        journal_action=journal_action.replace(
             "{file_name}",
             libs.cfg.document_file_name,
         ),

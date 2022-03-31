@@ -1,6 +1,5 @@
 """Module libs.preprocessor.pdflibdcr: Extract text and metadata from pdf
 documents."""
-import inspect
 import time
 
 import libs.cfg
@@ -44,8 +43,6 @@ def extract_text_from_pdf() -> None:
             libs.cfg.start_time_document = time.perf_counter_ns()
 
             libs.utils.start_document_processing(
-                module_name=__name__,
-                function_name=inspect.stack()[0][3],
                 document=row,
                 journal_action=libs.db.cfg.JOURNAL_ACTION_51_001,
             )
@@ -82,8 +79,6 @@ def extract_text_from_pdf_file() -> None:
         # not testable
         if source_file == -1:
             libs.utils.report_document_error(
-                module_name=__name__,
-                function_name=inspect.stack()[0][3],
                 error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
                 journal_action=libs.db.cfg.JOURNAL_ACTION_51_901.replace(
                     "{file_name}", source_file_name
@@ -126,8 +121,6 @@ def extract_text_from_pdf_file() -> None:
 
         # Text and metadata from Document successfully extracted to xml format
         libs.utils.finalize_file_processing(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             journal_action=libs.db.cfg.JOURNAL_ACTION_51_002.replace(
                 "{file_name}", source_file_name
             ).replace("{target_file}", target_file_name),
@@ -135,8 +128,6 @@ def extract_text_from_pdf_file() -> None:
     except TETException:
         # not testable
         libs.utils.report_document_error(
-            module_name=__name__,
-            function_name=inspect.stack()[0][3],
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
             journal_action=libs.db.cfg.JOURNAL_ACTION_51_903.replace(
                 "{file_name}", source_file_name
