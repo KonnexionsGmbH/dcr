@@ -44,7 +44,6 @@ def extract_text_from_pdf() -> None:
 
             libs.utils.start_document_processing(
                 document=row,
-                journal_action=libs.db.cfg.JOURNAL_ACTION_51_001,
             )
 
             extract_text_from_pdf_file()
@@ -111,20 +110,12 @@ def extract_text_from_pdf_file() -> None:
         )
         libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
-        journal_action: str = libs.db.cfg.JOURNAL_ACTION_51_003.replace(
-            "{file_name}", libs.cfg.document_child_file_name
-        )
-
-        libs.utils.initialise_document_child(journal_action)
+        libs.utils.initialise_document_child()
 
         libs.utils.delete_auxiliary_file(source_file_name)
 
         # Text and metadata from Document successfully extracted to xml format
-        libs.utils.finalize_file_processing(
-            journal_action=libs.db.cfg.JOURNAL_ACTION_51_002.replace(
-                "{file_name}", source_file_name
-            ).replace("{target_file}", target_file_name),
-        )
+        libs.utils.finalize_file_processing()
     except TETException:
         # not testable
         libs.utils.report_document_error(

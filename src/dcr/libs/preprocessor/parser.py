@@ -392,7 +392,6 @@ def parse_tetml() -> None:
 
             libs.utils.start_document_processing(
                 document=row,
-                journal_action=libs.db.cfg.JOURNAL_ACTION_61_001,
             )
 
             parse_tetml_file()
@@ -458,8 +457,6 @@ def parse_tetml_file() -> None:
         libs.utils.delete_auxiliary_file(file_name)
 
         # Text and metadata from Document successfully extracted to xml format
-        libs.utils.finalize_file_processing(
-            journal_action=libs.db.cfg.JOURNAL_ACTION_61_002.replace("{file_name}", file_name),
-        )
+        libs.utils.finalize_file_processing()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

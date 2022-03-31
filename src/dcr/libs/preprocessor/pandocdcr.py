@@ -32,7 +32,6 @@ def convert_non_pdf_2_pdf() -> None:
 
             libs.utils.start_document_processing(
                 document=row,
-                journal_action=libs.db.cfg.JOURNAL_ACTION_31_001,
             )
 
             convert_non_pdf_2_pdf_file()
@@ -90,20 +89,12 @@ def convert_non_pdf_2_pdf_file() -> None:
             )
             libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
-            journal_action: str = libs.db.cfg.JOURNAL_ACTION_31_003.replace(
-                "{file_name}", libs.cfg.document_child_file_name
-            )
-
-            libs.utils.initialise_document_child(journal_action)
+            libs.utils.initialise_document_child()
 
             libs.utils.delete_auxiliary_file(source_file_name)
 
             # Document successfully converted to pdf format
-            libs.utils.finalize_file_processing(
-                journal_action=libs.db.cfg.JOURNAL_ACTION_31_002.replace(
-                    "{source_file}", source_file_name
-                ).replace("{target_file}", target_file_name),
-            )
+            libs.utils.finalize_file_processing()
     # not testable
     except RuntimeError as err:
         libs.utils.report_document_error(

@@ -357,8 +357,6 @@ def create_dbt_journal(table_name: str) -> None:
             libs.db.cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
         ),
-        sqlalchemy.Column(libs.db.cfg.DBC_ACTION_CODE, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(libs.db.cfg.DBC_ACTION_TEXT, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
             libs.db.cfg.DBC_DOCUMENT_ID,
             sqlalchemy.Integer,
@@ -366,6 +364,8 @@ def create_dbt_journal(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(libs.db.cfg.DBC_DURATION_NS, sqlalchemy.BigInteger, nullable=True),
+        sqlalchemy.Column(libs.db.cfg.DBC_ERROR_CODE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(libs.db.cfg.DBC_ERROR_TEXT, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
             libs.db.cfg.DBC_RUN_ID,
             sqlalchemy.Integer,
@@ -709,8 +709,8 @@ def insert_journal(
     insert_dbt_row(
         libs.db.cfg.DBT_JOURNAL,
         {
-            libs.db.cfg.DBC_ACTION_CODE: action_code,
-            libs.db.cfg.DBC_ACTION_TEXT: journal_action[7:],
+            libs.db.cfg.DBC_ERROR_CODE: action_code,
+            libs.db.cfg.DBC_ERROR_TEXT: journal_action[7:],
             libs.db.cfg.DBC_DOCUMENT_ID: document_id,
             libs.db.cfg.DBC_DURATION_NS: duration_ns,
             libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,

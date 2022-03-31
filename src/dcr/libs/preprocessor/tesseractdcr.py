@@ -36,7 +36,6 @@ def convert_image_2_pdf() -> None:
 
             libs.utils.start_document_processing(
                 document=row,
-                journal_action=libs.db.cfg.JOURNAL_ACTION_41_001,
             )
 
             convert_image_2_pdf_file()
@@ -88,21 +87,13 @@ def convert_image_2_pdf_file() -> None:
 
         libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
-        journal_action: str = libs.db.cfg.JOURNAL_ACTION_41_003.replace(
-            "{file_name}", libs.cfg.document_child_file_name
-        )
-
-        libs.utils.initialise_document_child(journal_action)
+        libs.utils.initialise_document_child()
 
         if libs.cfg.document_id_base != libs.cfg.document_id_parent:
             libs.utils.delete_auxiliary_file(source_file_name)
 
         # Document successfully converted to pdf format
-        libs.utils.finalize_file_processing(
-            journal_action=libs.db.cfg.JOURNAL_ACTION_41_002.replace(
-                "{source_file}", source_file_name
-            ).replace("{target_file}", target_file_name),
-        )
+        libs.utils.finalize_file_processing()
     except TesseractError as err_t:
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
@@ -159,7 +150,6 @@ def reunite_pdfs() -> None:
 
             libs.utils.start_document_processing(
                 document=row,
-                journal_action=libs.db.cfg.JOURNAL_ACTION_41_001,
             )
 
             reunite_pdfs_file()
@@ -210,7 +200,6 @@ def reunite_pdfs_file() -> None:
             #
             # libs.utils.start_document_processing(
             #     document=row,
-            #     journal_action=libs.db.cfg.JOURNAL_ACTION_41_001,
             # )
 
         conn.close()

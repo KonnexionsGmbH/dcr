@@ -39,7 +39,6 @@ def convert_pdf_2_image() -> None:
 
             libs.utils.start_document_processing(
                 document=row,
-                journal_action=libs.db.cfg.JOURNAL_ACTION_21_001,
             )
 
             convert_pdf_2_image_file()
@@ -104,20 +103,12 @@ def convert_pdf_2_image_file() -> None:
                     libs.cfg.pdf2image_type,
                 )
 
-                journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_004.replace(
-                    "{file_name}", libs.cfg.document_child_file_name
-                )
-
-                libs.utils.initialise_document_child(journal_action)
+                libs.utils.initialise_document_child()
 
                 libs.cfg.total_generated += 1
 
                 # Document successfully converted to image format
-                libs.utils.finalize_file_processing(
-                    journal_action=libs.db.cfg.JOURNAL_ACTION_21_002.replace(
-                        "{file_name}", libs.cfg.document_file_name
-                    ).replace("{child_no}", str(libs.cfg.document_child_child_no)),
-                )
+                libs.utils.finalize_file_processing()
                 libs.cfg.total_ok_processed -= 1
 
         libs.cfg.total_ok_processed += 1
@@ -131,17 +122,3 @@ def convert_pdf_2_image_file() -> None:
                 "{file_name}", libs.cfg.document_file_name
             ).replace("{error_msg}", str(err)),
         )
-
-    # _pylint: disable=expression-not-assigned
-    if number_errors == 0:
-        journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_003
-    else:
-        journal_action: str = libs.db.cfg.JOURNAL_ACTION_21_005
-
-    libs.db.orm.insert_journal(
-        document_id=libs.cfg.document_id,
-        journal_action=journal_action.replace(
-            "{file_name}",
-            libs.cfg.document_file_name,
-        ),
-    )

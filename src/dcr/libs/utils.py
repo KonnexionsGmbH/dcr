@@ -105,12 +105,8 @@ def delete_auxiliary_file(file_name: str) -> None:
 # -----------------------------------------------------------------------------
 # Finalise the file processing.
 # -----------------------------------------------------------------------------
-def finalize_file_processing(journal_action: str) -> None:
-    """Finalise the file processing.
-
-    Args:
-        journal_action (str): Journal action.
-    """
+def finalize_file_processing() -> None:
+    """Finalise the file processing."""
     libs.cfg.total_ok_processed += 1
 
     libs.db.orm.update_dbt_id(
@@ -121,23 +117,15 @@ def finalize_file_processing(journal_action: str) -> None:
         },
     )
 
-    libs.db.orm.insert_journal(
-        document_id=libs.cfg.document_id,
-        journal_action=journal_action,
-    )
-
 
 # -----------------------------------------------------------------------------
 # Initialise a new child document of the base document.
 # -----------------------------------------------------------------------------
-def initialise_document_child(journal_action: str) -> None:
+def initialise_document_child() -> None:
     """Initialise a new child document of the base document.
 
     Prepares a new document for one of the file directories
     'inbox_accepted' or 'inbox_rejected'.
-
-    Args:
-        journal_action (str): Journal action data.
     """
     libs.cfg.document_child_id = libs.db.orm.insert_dbt_row(
         libs.db.cfg.DBT_DOCUMENT,
@@ -158,12 +146,6 @@ def initialise_document_child(journal_action: str) -> None:
             libs.db.cfg.DBC_STATUS: libs.cfg.document_child_status,
             libs.db.cfg.DBC_STEM_NAME: libs.cfg.document_child_stem_name,
         },
-    )
-
-    # pylint: disable=expression-not-assigned
-    libs.db.orm.insert_journal(
-        document_id=libs.cfg.document_child_id,
-        journal_action=journal_action,
     )
 
 
@@ -547,12 +529,11 @@ def show_statistics_total() -> None:
 # -----------------------------------------------------------------------------
 # Start document processing.
 # -----------------------------------------------------------------------------
-def start_document_processing(document: Row, journal_action: str) -> None:
+def start_document_processing(document: Row) -> None:
     """Start document processing.
 
     Args:
         document (Row):       Database row document.
-        journal_action (str): Journal action.
     """
     libs.cfg.total_to_be_processed += 1
 
@@ -574,11 +555,6 @@ def start_document_processing(document: Row, journal_action: str) -> None:
         {
             libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_START,
         },
-    )
-
-    libs.db.orm.insert_journal(
-        document_id=libs.cfg.document_id,
-        journal_action=journal_action.replace("{file_name}", libs.cfg.document_file_name),
     )
 
     if libs.cfg.document_status == libs.db.cfg.DOCUMENT_STATUS_START:

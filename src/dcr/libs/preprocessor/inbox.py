@@ -106,14 +106,6 @@ def initialise_document_base(file: pathlib.Path) -> None:
         },
     )
 
-    # pylint: disable=expression-not-assigned
-    libs.db.orm.insert_journal(
-        document_id=libs.cfg.document_id,
-        journal_action=libs.db.cfg.JOURNAL_ACTION_01_001.replace(
-            "{file_name}", libs.cfg.document_file_name
-        ),
-    )
-
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
@@ -202,19 +194,15 @@ def prepare_pdf(file: pathlib.Path) -> None:
         prepare_document_child_accepted()
 
         if bool(extracted_text):
-            journal_action: str = libs.db.cfg.JOURNAL_ACTION_11_003
             next_step: str = libs.db.cfg.DOCUMENT_NEXT_STEP_PDFLIB
             libs.cfg.language_ok_processed_pdflib += 1
             libs.cfg.total_ok_processed_pdflib += 1
         else:
-            journal_action: str = libs.db.cfg.JOURNAL_ACTION_01_003.replace(
-                "{file_name}", libs.cfg.document_child_file_name
-            ).replace("{type}", libs.cfg.pdf2image_type)
             next_step: str = libs.db.cfg.DOCUMENT_NEXT_STEP_PDF2IMAGE
             libs.cfg.language_ok_processed_pdf2image += 1
             libs.cfg.total_ok_processed_pdf2image += 1
 
-        process_inbox_accepted(next_step, journal_action)
+        process_inbox_accepted(next_step)
     except RuntimeError as err:
         process_inbox_rejected(
             libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
@@ -282,12 +270,11 @@ def process_inbox() -> None:
 # -----------------------------------------------------------------------------
 # Accept a new document.
 # -----------------------------------------------------------------------------
-def process_inbox_accepted(next_step: str, journal_action: str) -> None:
+def process_inbox_accepted(next_step: str) -> None:
     """Accept a new document.
 
     Args:
         next_step (str): Next processing step.
-        journal_action (str): Journal action data.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
@@ -312,7 +299,7 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
     else:
         shutil.move(source_file, target_file)
 
-        libs.utils.initialise_document_child(journal_action)
+        libs.utils.initialise_document_child()
 
         libs.db.orm.update_dbt_id(
             libs.db.cfg.DBT_DOCUMENT,
@@ -320,14 +307,6 @@ def process_inbox_accepted(next_step: str, journal_action: str) -> None:
             {
                 libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
             },
-        )
-
-        # pylint: disable=expression-not-assigned
-        libs.db.orm.insert_journal(
-            document_id=libs.cfg.document_id,
-            journal_action=libs.db.cfg.JOURNAL_ACTION_01_002.replace(
-                "{source_file}", source_file
-            ).replace("{target_file}", target_file),
         )
 
         libs.cfg.language_ok_processed += 1
@@ -365,16 +344,12 @@ def process_inbox_file(file: pathlib.Path) -> None:
         prepare_pdf(file)
     elif libs.cfg.document_file_type in libs.db.cfg.DOCUMENT_FILE_TYPE_PANDOC:
         prepare_document_child_accepted()
-        process_inbox_accepted(
-            libs.db.cfg.DOCUMENT_NEXT_STEP_PANDOC, libs.db.cfg.JOURNAL_ACTION_11_001
-        )
+        process_inbox_accepted(libs.db.cfg.DOCUMENT_NEXT_STEP_PANDOC)
         libs.cfg.language_ok_processed_pandoc += 1
         libs.cfg.total_ok_processed_pandoc += 1
     elif libs.cfg.document_file_type in libs.db.cfg.DOCUMENT_FILE_TYPE_TESSERACT:
         prepare_document_child_accepted()
-        process_inbox_accepted(
-            libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT, libs.db.cfg.JOURNAL_ACTION_11_002
-        )
+        process_inbox_accepted(libs.db.cfg.DOCUMENT_NEXT_STEP_TESSERACT)
         libs.cfg.language_ok_processed_tesseract += 1
         libs.cfg.total_ok_processed_tesseract += 1
     else:
@@ -451,6 +426,7 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
         libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name
     )
 
+    # Move the document file from directory inbox to directory inbox_rejected - if not yet existing
     if os.path.exists(target_file):
         libs.db.orm.insert_journal(
             document_id=libs.cfg.document_id,
@@ -460,7 +436,7 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
     else:
         shutil.move(source_file, target_file)
 
-        libs.utils.initialise_document_child(journal_action)
+        libs.utils.initialise_document_child()
 
         libs.db.orm.update_dbt_id(
             libs.db.cfg.DBT_DOCUMENT,
@@ -473,5 +449,7 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
 
         libs.cfg.language_erroneous += 1
         libs.cfg.total_erroneous += 1
+
+    libs.db.orm.insert_journal(document_id=libs.cfg.document_id, journal_action=journal_action)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
