@@ -18,6 +18,7 @@ DBC_CODE_ISO_639_3: str = "code_iso_639_3"
 DBC_CODE_SPACY: str = "code_spacy"
 DBC_CODE_TESSERACT: str = "code_tesseract"
 DBC_CREATED_AT: str = "created_at"
+DBC_CURRENT_STEP: str = "current_step"
 DBC_DIRECTORY_NAME: str = "directory_name"
 DBC_DIRECTORY_NAME_INBOX: str = "directory_name_inbox"
 DBC_DIRECTORY_TYPE: str = "directory_type"
@@ -39,7 +40,6 @@ DBC_MODULE_NAME: str = "module_name"
 DBC_NEXT_STEP: str = "next_step"
 DBC_PAGE_IN_DOCUMENT: str = "page_in_document"
 DBC_PARA_IN_PAGE: str = "para_in_page"
-DBC_PROCESSING_STEP: str = "processing_step"
 DBC_RUN_ID: str = "run_id"
 DBC_SENTENCE_IN_PARA: str = "sentence_in_para"
 DBC_SHA256: str = "sha256"
@@ -112,11 +112,12 @@ DOCUMENT_STATUS_END: str = "end"
 DOCUMENT_STATUS_ERROR: str = "error"
 DOCUMENT_STATUS_START: str = "start"
 
-DOCUMENT_STEP_INBOX: str = "Inbox Processing"
+DOCUMENT_STEP_INBOX: str = "Inbox"
 DOCUMENT_STEP_PANDOC: str = "Pandoc & TeX Live"
 DOCUMENT_STEP_PARSER: str = "Parser"
 DOCUMENT_STEP_PDF2IMAGE: str = "pdf2image"
 DOCUMENT_STEP_PDFLIB: str = "PDFlib TET"
+DOCUMENT_STEP_PYPDF4: str = "PyPDF4"
 DOCUMENT_STEP_TESSERACT: str = "Tesseract OCR"
 
 ERROR_01_901: str = (
@@ -175,7 +176,7 @@ ERROR_41_903: str = "41.903 Issue (ocr): The target file '{file_name}' already e
 ERROR_41_904: str = "41.904 Issue (ocr): The target file '{file_name}' already exists."
 
 ERROR_51_901: str = (
-    "51.901 Issue (tet): Issues with opening document '{file_name}' - "
+    "51.901 Issue (tet): Opening document '{file_name}' - "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
 ERROR_51_902: str = (

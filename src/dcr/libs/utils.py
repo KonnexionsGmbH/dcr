@@ -130,6 +130,7 @@ def initialise_document_child() -> None:
         libs.db.cfg.DBT_DOCUMENT,
         {
             libs.db.cfg.DBC_CHILD_NO: libs.cfg.document_child_child_no,
+            libs.db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
             libs.db.cfg.DBC_DIRECTORY_NAME: str(libs.cfg.document_child_directory_name),
             libs.db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_child_directory_type,
             libs.db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_child_id_base,

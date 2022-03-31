@@ -81,6 +81,7 @@ def initialise_document_base(file: pathlib.Path) -> None:
     libs.cfg.document_id = libs.db.orm.dml.insert_dbt_row(
         libs.db.cfg.DBT_DOCUMENT,
         {
+            libs.db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
             libs.db.cfg.DBC_DIRECTORY_NAME: libs.cfg.document_directory_name,
             libs.db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_directory_type,
             libs.db.cfg.DBC_FILE_NAME: libs.cfg.document_file_name,
@@ -200,6 +201,8 @@ def prepare_pdf(file: pathlib.Path) -> None:
             libs.cfg.total_ok_processed_pdf2image += 1
 
         process_inbox_accepted(next_step)
+
+        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     except RuntimeError as err:
         process_inbox_rejected(
             libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
@@ -339,7 +342,6 @@ def process_inbox_file(file: pathlib.Path) -> None:
         )
     elif libs.cfg.document_file_type == libs.db.cfg.DOCUMENT_FILE_TYPE_PDF:
         prepare_pdf(file)
-        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     elif libs.cfg.document_file_type in libs.db.cfg.DOCUMENT_FILE_TYPE_PANDOC:
         prepare_document_child_accepted()
         process_inbox_accepted(libs.db.cfg.DOCUMENT_STEP_PANDOC)

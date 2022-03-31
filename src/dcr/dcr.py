@@ -333,7 +333,9 @@ def process_convert_image_2_pdf() -> None:
     )
     libs.utils.progress_msg("End  : Convert image documents to pdf files ...")
 
-    libs.utils.progress_msg_empty_before("Start: Reunite the related pdf files ... Tesseract OCR")
+    libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PYPDF4
+
+    libs.utils.progress_msg_empty_before("Start: Reunite the related pdf files ... PyPDF4")
     libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
         libs.db.cfg.DBT_RUN,
         {
@@ -443,7 +445,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Process the documents in the inbox file directory.
     if args[libs.cfg.RUN_ACTION_PROCESS_INBOX]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_processing_step = libs.db.cfg.DOCUMENT_STEP_INBOX
+        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_INBOX
         process_inbox_directory()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
@@ -452,7 +454,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Convert the scanned image pdf documents to image files.
     if args[libs.cfg.RUN_ACTION_PDF_2_IMAGE]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_processing_step = libs.db.cfg.DOCUMENT_STEP_PDF2IMAGE
+        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PDF2IMAGE
         process_convert_pdf_2_image()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
@@ -461,7 +463,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Convert the image documents to pdf files.
     if args[libs.cfg.RUN_ACTION_IMAGE_2_PDF]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_processing_step = libs.db.cfg.DOCUMENT_STEP_TESSERACT
+        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_TESSERACT
         process_convert_image_2_pdf()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
@@ -470,7 +472,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Convert the non-pdf documents to pdf files.
     if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_processing_step = libs.db.cfg.DOCUMENT_STEP_PANDOC
+        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PANDOC
         process_convert_non_pdf_2_pdf()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
@@ -479,7 +481,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Extract text and metadata from pdf documents.
     if args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_processing_step = libs.db.cfg.DOCUMENT_STEP_PDFLIB
+        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PDFLIB
         process_extract_text_from_pdf()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
@@ -488,7 +490,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Store the document structure from the parser result.
     if args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_processing_step = libs.db.cfg.DOCUMENT_STEP_PARSER
+        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PARSER
         process_store_from_parser()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"

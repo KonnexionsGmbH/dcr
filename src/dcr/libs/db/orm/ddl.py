@@ -250,6 +250,7 @@ def create_dbt_document(table_name: str) -> None:
             sqlalchemy.Integer,
             nullable=True,
         ),
+        sqlalchemy.Column(libs.db.cfg.DBC_CURRENT_STEP, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_TYPE, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
@@ -310,6 +311,7 @@ def create_dbt_journal(table_name: str) -> None:
             libs.db.cfg.DBC_CREATED_AT,
             sqlalchemy.DateTime,
         ),
+        sqlalchemy.Column(libs.db.cfg.DBC_CURRENT_STEP, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
             libs.db.cfg.DBC_DOCUMENT_ID,
             sqlalchemy.Integer,
@@ -319,7 +321,6 @@ def create_dbt_journal(table_name: str) -> None:
         sqlalchemy.Column(libs.db.cfg.DBC_DURATION_NS, sqlalchemy.BigInteger, nullable=False),
         sqlalchemy.Column(libs.db.cfg.DBC_ERROR_CODE, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(libs.db.cfg.DBC_ERROR_TEXT, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(libs.db.cfg.DBC_PROCESSING_STEP, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
             libs.db.cfg.DBC_RUN_ID,
             sqlalchemy.Integer,

@@ -92,6 +92,8 @@ def convert_image_2_pdf_file() -> None:
 
         # Document successfully converted to pdf format
         libs.utils.finalize_file_processing()
+
+        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     except TesseractError as err_t:
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
@@ -160,9 +162,12 @@ def reunite_pdfs() -> None:
 # -----------------------------------------------------------------------------
 def reunite_pdfs_file() -> None:
     """Reunite the related pdf documents of a specific base document."""
+    libs.cfg.document_child_stem_name = libs.cfg.document_stem_name +"_"+ str(libs.cfg.document_id_base)+"_0"
+    libs.cfg.document_child_file_name = libs.cfg.document_stem_name + "." +  libs.db.cfg.DOCUMENT_FILE_TYPE_PDF
+
     target_file_path = os.path.join(
         libs.cfg.directory_inbox_accepted,
-        libs.cfg.document_stem_name + "_0." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
+        libs.cfg.document_child_file_name,
     )
 
     if os.path.exists(target_file_path):
@@ -187,7 +192,11 @@ def reunite_pdfs_file() -> None:
             .order_by(dbt.c.id)
         )
 
+        libs.cfg.document_child_id_parent = 0
+
         for row in rows:
+            libs.cfg.document_child_id_parent = row.id
+
             source_file_path = os.path.join(row.directory_name, row.file_name)
 
             pdf_reader = PyPDF4.PdfFileReader(source_file_path)
@@ -197,11 +206,22 @@ def reunite_pdfs_file() -> None:
 
             libs.utils.delete_auxiliary_file(str(source_file_path))
 
+            libs.db.orm.dml.update_dbt_id(
+                libs.db.cfg.DBT_DOCUMENT,
+                row.id,
+                {
+                    libs.db.cfg.DBC_NEXT_STEP: libs.db.cfg.DOCUMENT_STEP_PYPDF4,
+                    libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
+                },
+            )
+
         conn.close()
 
     # Write out the merged PDF
     with open(target_file_path, "wb") as out:
         pdf_writer.write(out)
+
+    libs.utils.initialise_document_child()
 
     # Child document successfully reunited to one pdf document
     libs.utils.finalize_file_processing()

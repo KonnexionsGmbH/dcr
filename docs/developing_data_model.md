@@ -29,7 +29,7 @@ This database table contains the document-related data:
 
 ### 2.3 Database Table **`journal`**
 
-This database table documents the document processing in detail:
+This database table contains document-related error message and performance data:
 
 ![](img/schema_dbt_journal.png)
 

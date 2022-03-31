@@ -21,7 +21,6 @@
 
 ## 2. Next Development Steps
 
-- 2 combine **`pdf`** files - scanned **`pdf`** documents - after Tesseract OCR
 - 9 API documentation: Content improvement
 - 9 API documentation: Layout improvement
 - 9 Google Styleguide implementation
@@ -34,6 +33,7 @@
 - ~~PDFlib TET processing~~
 - ~~Tesseract OCR - Installation~~  
 - ~~clean up the auxiliary files in file directory inbox_accepted - keep the base document~~
+- ~~combine **`pdf`** files - scanned **`pdf`** documents - after Tesseract OCR~~
 - ~~convert the appropriate documents into the **`pdf`** format with Pandoc and TeX Live~~
 - ~~duplicate handling~~ 
 - ~~error correction version 0.9.0~~

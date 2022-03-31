@@ -44,7 +44,7 @@ The processing logic is as follows:
 
 In the first step, the file directory **`inbox`** is checked for new document files. 
 An entry is created in the **`document`** database table for each new document, showing the current processing status of the document. 
-In addition, each processing step of a document is recorded in the database table **`journal`**.
+In addition, document-related error messages and performance data are recorded in the **`journal`** database table.
 
 The association of document and language is managed via subdirectories of the file folder **`inbox`**. 
 In the database table **`language`**, the column **`directory_name_inbox`** specifies per language in which subdirectory the documents in this language are to be supplied. 

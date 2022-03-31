@@ -63,11 +63,11 @@ def insert_journal_error(
     insert_dbt_row(
         libs.db.cfg.DBT_JOURNAL,
         {
-            libs.db.cfg.DBC_ERROR_CODE: error[0:6],
-            libs.db.cfg.DBC_ERROR_TEXT: error[7:],
+            libs.db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
             libs.db.cfg.DBC_DOCUMENT_ID: document_id,
             libs.db.cfg.DBC_DURATION_NS: duration_ns,
-            libs.db.cfg.DBC_PROCESSING_STEP: libs.cfg.document_processing_step,
+            libs.db.cfg.DBC_ERROR_CODE: error[0:6],
+            libs.db.cfg.DBC_ERROR_TEXT: error[7:],
             libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
         },
     )
@@ -97,9 +97,9 @@ def insert_journal_statistics(
     insert_dbt_row(
         libs.db.cfg.DBT_JOURNAL,
         {
+            libs.db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
             libs.db.cfg.DBC_DOCUMENT_ID: document_id,
             libs.db.cfg.DBC_DURATION_NS: duration_ns,
-            libs.db.cfg.DBC_PROCESSING_STEP: libs.cfg.document_processing_step,
             libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
         },
     )

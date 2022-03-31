@@ -145,6 +145,7 @@ document_child_next_step: str | None
 document_child_no: sqlalchemy.Integer | None
 document_child_status: str
 document_child_stem_name: str
+document_current_step: str
 document_directory_name: str
 document_directory_type: str
 document_error_code: str | None
@@ -155,7 +156,6 @@ document_id_base: sqlalchemy.Integer | None
 document_id_parent: sqlalchemy.Integer | None
 document_language_id: sqlalchemy.Integer
 document_next_step: str | None
-document_processing_step: str
 document_sha256: str | None
 document_status: str
 document_stem_name: str
