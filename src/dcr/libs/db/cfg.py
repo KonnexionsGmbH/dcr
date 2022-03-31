@@ -117,6 +117,85 @@ DOCUMENT_STATUS_END: str = "end"
 DOCUMENT_STATUS_ERROR: str = "error"
 DOCUMENT_STATUS_START: str = "start"
 
+ERROR_01_901: str = (
+    "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
+)
+ERROR_01_902: str = (
+    "01.902 Issue (p_i): Moving '{source_file}' to '{target_file}' "
+    + "- error: code='{error_code}' msg='{error_msg}'."
+)
+ERROR_01_903: str = (
+    "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{source_file}' "
+    + "- error: '{error_msg}'."
+)
+ERROR_01_904: str = (
+    "01.904 Issue (p_i): File permission with file '{source_file}' "
+    + "- error: code='{error_code}' msg='{error_msg}'."
+)
+ERROR_01_905: str = (
+    "01.905 Issue (p_i): The same file has probably already been processed "
+    + "once under the file name '{file_name}'."
+)
+ERROR_01_906: str = "01.906 Issue (p_i): The target file '{file_name}' already exists."
+
+ERROR_21_901: str = (
+    "21.901 Issue (p_2_i): The 'pdf' document '{file_name}' cannot be converted to an "
+    + "image format - error: '{error_msg}'."
+)
+ERROR_21_902: str = (
+    "21.902 Issue (p_2_i): The child image file number '{child_no}' with file name "
+    + "'{file_name}' cannot be stored "
+    + "- error: code='{error_code}' msg='{error_msg}'."
+)
+ERROR_21_903: str = "21.903 Issue (p_2_i): The target file '{file_name}' already exists."
+
+ERROR_31_901: str = (
+    "31.901 Issue (n_2_p): Converting the file '{source_file}' to the file "
+    + "'{target_file}' with Pandoc and TeX Live failed - output='{output}'."
+)
+ERROR_31_902: str = (
+    "31.902 Issue (n_2_p): The file '{file_name}' cannot be converted to an "
+    + "'pdf' document - error: '{error_msg}'."
+)
+ERROR_31_903: str = "31.903 Issue (n_2_p): The target file '{file_name}' already exists."
+
+ERROR_41_901: str = (
+    "41.901 Issue (ocr): Converting the file '{source_file}' to the file "
+    + "'{target_file}' with Tesseract OCR failed - "
+    + "error type: '{error_type}' - error: '{error}'."
+)
+ERROR_41_902: str = (
+    "41.902 Issue (ocr): Converting the file '{source_file}' to the file "
+    + "'{target_file}' with Tesseract OCR failed - "
+    + "error status: '{error_status}' - error: '{error}'."
+)
+ERROR_41_903: str = "41.903 Issue (ocr): The target file '{file_name}' already exists."
+
+ERROR_51_901: str = (
+    "51.901 Issue (tet): Issues with opening document '{file_name}' - "
+    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
+)
+ERROR_51_902: str = (
+    "51.902 Issue (tet): TETML data could not be retrieved from document '{file_name}' - "
+    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
+)
+ERROR_51_903: str = (
+    "51.903 Issue (tet): Extracting the text and metadata from file '{file_name}' to file "
+    + "'{target_file}' failed: "
+    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
+)
+
+ERROR_61_901: str = (
+    "61.901 Issue (s_f_p): Unknown child tag '{child_tag}' - " + "in parent tag '{parent_tag}'."
+)
+ERROR_61_902: str = (
+    "61.902 Issue (s_f_p): Expected tag '{expected_tag}' - " + " but found tag '{found_tag}'."
+)
+ERROR_61_903: str = (
+    "61.903 Issue (s_f_p): Token missing: document {document_id} page {page_no} "
+    + "paragraph {para_no} line {line_no}."
+)
+
 JSON_NAME_API_VERSION: str = "apiVersion"
 JSON_NAME_COLUMN_NAME: str = "columnName"
 JSON_NAME_COLUMN_VALUE: str = "columnValue"
@@ -125,85 +204,6 @@ JSON_NAME_ROW: str = "row"
 JSON_NAME_ROWS: str = "rows"
 JSON_NAME_TABLES: str = "tables"
 JSON_NAME_TABLE_NAME: str = "tableName"
-
-JOURNAL_ACTION_01_901: str = (
-    "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
-)
-JOURNAL_ACTION_01_902: str = (
-    "01.902 Issue (p_i): Moving '{source_file}' to '{target_file}' "
-    + "- error: code='{error_code}' msg='{error_msg}'."
-)
-JOURNAL_ACTION_01_903: str = (
-    "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{source_file}' "
-    + "- error: '{error_msg}'."
-)
-JOURNAL_ACTION_01_904: str = (
-    "01.904 Issue (p_i): File permission with file '{source_file}' "
-    + "- error: code='{error_code}' msg='{error_msg}'."
-)
-JOURNAL_ACTION_01_905: str = (
-    "01.905 Issue (p_i): The same file has probably already been processed "
-    + "once under the file name '{file_name}'."
-)
-JOURNAL_ACTION_01_906: str = "01.906 Issue (p_i): The target file '{file_name}' already exists."
-
-JOURNAL_ACTION_21_901: str = (
-    "21.901 Issue (p_2_i): The 'pdf' document '{file_name}' cannot be converted to an "
-    + "image format - error: '{error_msg}'."
-)
-JOURNAL_ACTION_21_902: str = (
-    "21.902 Issue (p_2_i): The child image file number '{child_no}' with file name "
-    + "'{file_name}' cannot be stored "
-    + "- error: code='{error_code}' msg='{error_msg}'."
-)
-JOURNAL_ACTION_21_903: str = "21.903 Issue (p_2_i): The target file '{file_name}' already exists."
-
-JOURNAL_ACTION_31_901: str = (
-    "31.901 Issue (n_2_p): Converting the file '{source_file}' to the file "
-    + "'{target_file}' with Pandoc and TeX Live failed - output='{output}'."
-)
-JOURNAL_ACTION_31_902: str = (
-    "31.902 Issue (n_2_p): The file '{file_name}' cannot be converted to an "
-    + "'pdf' document - error: '{error_msg}'."
-)
-JOURNAL_ACTION_31_903: str = "31.903 Issue (n_2_p): The target file '{file_name}' already exists."
-
-JOURNAL_ACTION_41_901: str = (
-    "41.901 Issue (ocr): Converting the file '{source_file}' to the file "
-    + "'{target_file}' with Tesseract OCR failed - "
-    + "error type: '{error_type}' - error: '{error}'."
-)
-JOURNAL_ACTION_41_902: str = (
-    "41.902 Issue (ocr): Converting the file '{source_file}' to the file "
-    + "'{target_file}' with Tesseract OCR failed - "
-    + "error status: '{error_status}' - error: '{error}'."
-)
-JOURNAL_ACTION_41_903: str = "41.903 Issue (ocr): The target file '{file_name}' already exists."
-
-JOURNAL_ACTION_51_901: str = (
-    "51.901 Issue (tet): Issues with opening document '{file_name}' - "
-    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-)
-JOURNAL_ACTION_51_902: str = (
-    "51.902 Issue (tet): TETML data could not be retrieved from document '{file_name}' - "
-    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-)
-JOURNAL_ACTION_51_903: str = (
-    "51.903 Issue (tet): Extracting the text and metadata from file '{file_name}' to file "
-    + "'{target_file}' failed: "
-    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-)
-
-JOURNAL_ACTION_61_901: str = (
-    "61.901 Issue (s_f_p): Unknown child tag '{child_tag}' - " + "in parent tag '{parent_tag}'."
-)
-JOURNAL_ACTION_61_902: str = (
-    "61.902 Issue (s_f_p): Expected tag '{expected_tag}' - " + " but found tag '{found_tag}'."
-)
-JOURNAL_ACTION_61_903: str = (
-    "61.903 Issue (s_f_p): Token missing: document {document_id} page {page_no} "
-    + "paragraph {para_no} line {line_no}."
-)
 
 RUN_STATUS_END: str = "end"
 RUN_STATUS_START: str = "start"

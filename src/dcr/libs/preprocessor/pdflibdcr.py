@@ -79,9 +79,7 @@ def extract_text_from_pdf_file() -> None:
         if source_file == -1:
             libs.utils.report_document_error(
                 error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
-                journal_action=libs.db.cfg.JOURNAL_ACTION_51_901.replace(
-                    "{file_name}", source_file_name
-                )
+                error=libs.db.cfg.ERROR_51_901.replace("{file_name}", source_file_name)
                 .replace("{error_no}", str(tet.get_errnum()))
                 .replace("{api_name}", tet.get_apiname() + "()")
                 .replace("{error}", tet.get_errmsg()),
@@ -120,9 +118,7 @@ def extract_text_from_pdf_file() -> None:
         # not testable
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
-            journal_action=libs.db.cfg.JOURNAL_ACTION_51_903.replace(
-                "{file_name}", source_file_name
-            )
+            error=libs.db.cfg.ERROR_51_903.replace("{file_name}", source_file_name)
             .replace("{target_file}", target_file_name)
             .replace("{error_no}", str(tet.get_errnum()))
             .replace("{api_name}", tet.get_apiname() + "()")

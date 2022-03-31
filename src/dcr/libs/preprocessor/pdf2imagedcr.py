@@ -93,9 +93,7 @@ def convert_pdf_2_image_file() -> None:
             if os.path.exists(file_name_child):
                 libs.utils.report_document_error(
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-                    journal_action=libs.db.cfg.JOURNAL_ACTION_21_903.replace(
-                        "{file_name}", file_name_child
-                    ),
+                    error=libs.db.cfg.ERROR_21_903.replace("{file_name}", file_name_child),
                 )
             else:
                 img.save(
@@ -118,7 +116,7 @@ def convert_pdf_2_image_file() -> None:
         number_errors += 1
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-            journal_action=libs.db.cfg.JOURNAL_ACTION_21_901.replace(
+            error=libs.db.cfg.ERROR_21_901.replace(
                 "{file_name}", libs.cfg.document_file_name
             ).replace("{error_msg}", str(err)),
         )

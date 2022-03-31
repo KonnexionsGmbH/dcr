@@ -53,9 +53,7 @@ def convert_non_pdf_2_pdf_file() -> None:
     if os.path.exists(target_file_name):
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            journal_action=libs.db.cfg.JOURNAL_ACTION_31_903.replace(
-                "{file_name}", target_file_name
-            ),
+            error=libs.db.cfg.ERROR_31_903.replace("{file_name}", target_file_name),
         )
         return
 
@@ -72,9 +70,7 @@ def convert_non_pdf_2_pdf_file() -> None:
         if output != "":
             libs.utils.report_document_error(
                 error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PANDOC,
-                journal_action=libs.db.cfg.JOURNAL_ACTION_31_901.replace(
-                    "{source_file}", source_file_name
-                )
+                error=libs.db.cfg.ERROR_31_901.replace("{source_file}", source_file_name)
                 .replace("{target_file}", target_file_name)
                 .replace("{output}", output),
             )
@@ -99,7 +95,7 @@ def convert_non_pdf_2_pdf_file() -> None:
     except RuntimeError as err:
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-            journal_action=libs.db.cfg.JOURNAL_ACTION_31_902.replace(
-                "{file_name}", source_file_name
-            ).replace("{error_msg}", str(str(err).encode("utf-8"))),
+            error=libs.db.cfg.ERROR_31_902.replace("{file_name}", source_file_name).replace(
+                "{error_msg}", str(str(err).encode("utf-8"))
+            ),
         )

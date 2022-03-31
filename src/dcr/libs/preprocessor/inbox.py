@@ -206,9 +206,9 @@ def prepare_pdf(file: pathlib.Path) -> None:
     except RuntimeError as err:
         process_inbox_rejected(
             libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
-            libs.db.cfg.JOURNAL_ACTION_01_903.replace(
-                "{source_file}", libs.cfg.document_file_name
-            ).replace("{error_msg}", str(err)),
+            libs.db.cfg.ERROR_01_903.replace("{source_file}", libs.cfg.document_file_name).replace(
+                "{error_msg}", str(err)
+            ),
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -293,7 +293,7 @@ def process_inbox_accepted(next_step: str) -> None:
     if os.path.exists(target_file):
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            journal_action=libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", target_file),
+            error=libs.db.cfg.ERROR_01_906.replace("{file_name}", target_file),
         )
         libs.cfg.language_erroneous += 1
     else:
@@ -338,7 +338,7 @@ def process_inbox_file(file: pathlib.Path) -> None:
     if file_name is not None:
         process_inbox_rejected(
             libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            libs.db.cfg.JOURNAL_ACTION_01_905.replace("{file_name}", file_name),
+            libs.db.cfg.ERROR_01_905.replace("{file_name}", file_name),
         )
     elif libs.cfg.document_file_type == libs.db.cfg.DOCUMENT_FILE_TYPE_PDF:
         prepare_pdf(file)
@@ -355,7 +355,7 @@ def process_inbox_file(file: pathlib.Path) -> None:
     else:
         process_inbox_rejected(
             libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
-            libs.db.cfg.JOURNAL_ACTION_01_901.replace("{extension}", file.suffix[1:]),
+            libs.db.cfg.ERROR_01_901.replace("{extension}", file.suffix[1:]),
         )
 
 
@@ -403,12 +403,12 @@ def process_inbox_language() -> None:
 # -----------------------------------------------------------------------------
 # Reject a new document that is faulty.
 # -----------------------------------------------------------------------------
-def process_inbox_rejected(error_code: str, journal_action: str) -> None:
+def process_inbox_rejected(error_code: str, error: str) -> None:
     """Reject a new document that is faulty.
 
     Args:
         error_code (str):     Error code.
-        journal_action (str): Journal action data.
+        error (str): Journal action data.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
@@ -430,7 +430,7 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
     if os.path.exists(target_file):
         libs.db.orm.insert_journal(
             document_id=libs.cfg.document_id,
-            journal_action=libs.db.cfg.JOURNAL_ACTION_01_906.replace("{file_name}", target_file),
+            error=libs.db.cfg.ERROR_01_906.replace("{file_name}", target_file),
         )
         libs.cfg.language_erroneous += 1
     else:
@@ -450,6 +450,6 @@ def process_inbox_rejected(error_code: str, journal_action: str) -> None:
         libs.cfg.language_erroneous += 1
         libs.cfg.total_erroneous += 1
 
-    libs.db.orm.insert_journal(document_id=libs.cfg.document_id, journal_action=journal_action)
+    libs.db.orm.insert_journal(document_id=libs.cfg.document_id, error=error)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

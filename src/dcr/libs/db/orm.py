@@ -676,19 +676,19 @@ def insert_dbt_row(
 # -----------------------------------------------------------------------------
 def insert_journal(
     document_id: sqlalchemy.Integer,
-    journal_action: str,
+    error: str,
 ) -> None:
     """Insert a new row into database table 'journal'.
 
     Args:
         document_id (sqlalchemy.Integer): Document id.
-        journal_action (str): Journal action.
+        error (str): Journal action.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    action_code = journal_action[0:6]
+    error_code = error[0:6]
 
-    if action_code in [
+    if error_code in [
         "01.002",
         "11.003",
         "21.003",
@@ -709,28 +709,28 @@ def insert_journal(
     insert_dbt_row(
         libs.db.cfg.DBT_JOURNAL,
         {
-            libs.db.cfg.DBC_ERROR_CODE: action_code,
-            libs.db.cfg.DBC_ERROR_TEXT: journal_action[7:],
+            libs.db.cfg.DBC_ERROR_CODE: error_code,
+            libs.db.cfg.DBC_ERROR_TEXT: error[7:],
             libs.db.cfg.DBC_DOCUMENT_ID: document_id,
             libs.db.cfg.DBC_DURATION_NS: duration_ns,
             libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
         },
     )
 
-    if journal_action[3:4] == "9":
+    if error[3:4] == "9":
         if libs.cfg.is_verbose:
             libs.cfg.logger.info(
                 "Document: %6d - ActionCode: %s - ActionText: %s",
                 libs.cfg.document_id,
-                journal_action[0:7],
-                journal_action[7:],
+                error[0:7],
+                error[7:],
             )
         else:
             libs.cfg.logger.debug(
                 "Document: %6d - ActionCode: %s - ActionText: %s",
                 libs.cfg.document_id,
-                journal_action[0:7],
-                journal_action[7:],
+                error[0:7],
+                error[7:],
             )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

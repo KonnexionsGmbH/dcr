@@ -57,9 +57,7 @@ def convert_image_2_pdf_file() -> None:
     if os.path.exists(target_file_name):
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            journal_action=libs.db.cfg.JOURNAL_ACTION_41_903.replace(
-                "{file_name}", target_file_name
-            ),
+            error=libs.db.cfg.ERROR_41_903.replace("{file_name}", target_file_name),
         )
         return
 
@@ -97,9 +95,7 @@ def convert_image_2_pdf_file() -> None:
     except TesseractError as err_t:
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-            journal_action=libs.db.cfg.JOURNAL_ACTION_41_902.replace(
-                "{source_file}", source_file_name
-            )
+            error=libs.db.cfg.ERROR_41_902.replace("{source_file}", source_file_name)
             .replace("{target_file}", target_file_name)
             .replace("{error_status}", str(err_t.status))
             .replace("{error}", err_t.message),
@@ -107,9 +103,7 @@ def convert_image_2_pdf_file() -> None:
     except RuntimeError as err:
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-            journal_action=libs.db.cfg.JOURNAL_ACTION_41_901.replace(
-                "{source_file}", source_file_name
-            )
+            error=libs.db.cfg.ERROR_41_901.replace("{source_file}", source_file_name)
             .replace("{target_file}", target_file_name)
             .replace("{type_error}", str(type(err)))
             .replace("{error}", str(err)),
