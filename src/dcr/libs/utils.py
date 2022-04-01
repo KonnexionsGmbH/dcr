@@ -5,8 +5,6 @@ import os
 import pathlib
 import sys
 import traceback
-from typing import Dict
-from typing import Iterable
 from typing import Tuple
 
 import libs.cfg
@@ -58,32 +56,6 @@ def compute_sha256(file: pathlib.Path) -> str:
             sha256_hash.update(byte_block)
 
     return sha256_hash.hexdigest()
-
-
-# -----------------------------------------------------------------------------
-# Debug an XML element.
-# -----------------------------------------------------------------------------
-def debug_xml_element(parent_tag: str, attrib: Dict[str, str], text: Iterable[str]) -> None:
-    """Debug an XML element.
-
-    Args:
-        parent_tag (str): Parent tag.
-        attrib (Dict[str,str]): Attributes.
-        text (Iterable[str]): XML element.
-    """
-    if libs.cfg.is_verbose_parser:
-        libs.cfg.logger.info(
-            "tag   =%s",
-            parent_tag,
-        )
-        libs.cfg.logger.info(
-            "attrib=%s",
-            attrib,
-        )
-        libs.cfg.logger.info(
-            "text  =%s",
-            text,
-        )
 
 
 # -----------------------------------------------------------------------------

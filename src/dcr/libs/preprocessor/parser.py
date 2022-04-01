@@ -3,6 +3,7 @@ parser result."""
 import os
 import time
 from datetime import datetime
+from typing import Dict
 from typing import Iterable
 
 import defusedxml.ElementTree
@@ -13,6 +14,36 @@ import libs.utils
 
 
 # -----------------------------------------------------------------------------
+# Debug an XML element.
+# -----------------------------------------------------------------------------
+def debug_xml_element(parent_tag: str, attrib: Dict[str, str], text: Iterable[str]) -> None:
+    """Debug an XML element.
+
+    Args:
+        parent_tag (str): Parent tag.
+        attrib (Dict[str,str]): Attributes.
+        text (Iterable[str]): XML element.
+    """
+    if libs.cfg.is_verbose_parser:
+        print(f"\ntag   ={parent_tag}")
+
+        if attrib != {} and parent_tag not in ["Box", "Line"]:
+            print(f"attrib={attrib}")
+
+        if str(text).strip() > "":
+            print(f"text  ='{text}'")
+    elif parent_tag == "Text":
+        print(
+            f"page={libs.cfg.parse_result_no_page:2d} "
+            f"paragraph={libs.cfg.parse_result_no_para:2d} "
+            f"sentence={libs.cfg.parse_result_no_sentence:2d} "
+            f"line={libs.cfg.parse_result_no_line:2d} "
+            f"word in sentence={libs.cfg.parse_result_no_word_in_sentence:3d} "
+            f"word in line={libs.cfg.parse_result_no_word_in_line:2d} text='{text}'"
+        )
+
+
+# -----------------------------------------------------------------------------
 # Initialize the parse result variables.
 # -----------------------------------------------------------------------------
 def init_parse_result() -> None:
@@ -20,7 +51,12 @@ def init_parse_result() -> None:
     libs.cfg.parse_result_author = None
     libs.cfg.parse_result_creation_date = None
     libs.cfg.parse_result_mod_date = None
-    libs.cfg.parse_result_page_in_document = 0
+    libs.cfg.parse_result_no_line = 0
+    libs.cfg.parse_result_no_page = 0
+    libs.cfg.parse_result_no_para = 0
+    libs.cfg.parse_result_no_sentence = 0
+    libs.cfg.parse_result_no_word_in_line = 0
+    libs.cfg.parse_result_no_word_in_sentence = 0
 
 
 # -----------------------------------------------------------------------------
@@ -33,7 +69,7 @@ def parse_tag_box(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
+    debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -61,7 +97,7 @@ def parse_tag_content(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
+    debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -89,7 +125,7 @@ def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
+    debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -127,7 +163,7 @@ def parse_tag_document(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
+    debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -159,10 +195,10 @@ def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
+    debug_xml_element(parent_tag, parent.attrib, parent.text)
 
-    libs.cfg.parse_result_line_in_para += 1
-    libs.cfg.parse_result_token_in_line = 0
+    libs.cfg.parse_result_no_line += 1
+    libs.cfg.parse_result_no_word_in_line = 0
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -190,10 +226,10 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
+    debug_xml_element(parent_tag, parent.attrib, parent.text)
 
-    libs.cfg.parse_result_page_in_document = int(parent.attrib["number"])
-    libs.cfg.parse_result_para_in_page = 0
+    libs.cfg.parse_result_no_page = int(parent.attrib["number"])
+    libs.cfg.parse_result_no_para = 0
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -223,7 +259,7 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
+    debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -251,12 +287,12 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
+    debug_xml_element(parent_tag, parent.attrib, parent.text)
 
-    libs.cfg.parse_result_line_in_para = 0
-    libs.cfg.parse_result_para_in_page += 1
-    libs.cfg.parse_result_sentence_in_para = 1
-    libs.cfg.parse_result_token_in_sentence = 0
+    libs.cfg.parse_result_no_line = 0
+    libs.cfg.parse_result_no_para += 1
+    libs.cfg.parse_result_no_sentence = 1
+    libs.cfg.parse_result_no_word_in_sentence = 0
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -284,7 +320,7 @@ def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
+    debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -301,23 +337,23 @@ def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
             error=libs.db.cfg.ERROR_61_903.replace("{document_id}", str(libs.cfg.document_id_base))
-            .replace("{page_no}", str(libs.cfg.parse_result_page_in_document))
-            .replace("{para_no}", str(libs.cfg.parse_result_para_in_page))
-            .replace("{line_no}", str(libs.cfg.parse_result_token_in_line)),
+            .replace("{page_no}", str(libs.cfg.parse_result_no_page))
+            .replace("{para_no}", str(libs.cfg.parse_result_no_para))
+            .replace("{line_no}", str(libs.cfg.parse_result_no_word_in_line)),
         )
     else:
-        libs.cfg.parse_result_token_in_line += 1
-        libs.cfg.parse_result_token_in_sentence += 1
+        libs.cfg.parse_result_no_word_in_line += 1
+        libs.cfg.parse_result_no_word_in_sentence += 1
 
         libs.cfg.logger.debug(
             "doc=%5d page=%2d para=%2d line=%2d tkn_lin=%2d sentence=%2d tkn_sen=%2d tkn='%s'",
             libs.cfg.document_id_base,
-            libs.cfg.parse_result_page_in_document,
-            libs.cfg.parse_result_para_in_page,
-            libs.cfg.parse_result_line_in_para,
-            libs.cfg.parse_result_token_in_line,
-            libs.cfg.parse_result_sentence_in_para,
-            libs.cfg.parse_result_token_in_sentence,
+            libs.cfg.parse_result_no_page,
+            libs.cfg.parse_result_no_para,
+            libs.cfg.parse_result_no_line,
+            libs.cfg.parse_result_no_word_in_line,
+            libs.cfg.parse_result_no_sentence,
+            libs.cfg.parse_result_no_word_in_sentence,
             parent.text,
         )
 
@@ -325,19 +361,19 @@ def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
             libs.db.cfg.DBT_CONTENT,
             {
                 libs.db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
-                libs.db.cfg.DBC_PAGE_IN_DOCUMENT: libs.cfg.parse_result_page_in_document,
-                libs.db.cfg.DBC_PARA_IN_PAGE: libs.cfg.parse_result_para_in_page,
-                libs.db.cfg.DBC_LINE_IN_PARA: libs.cfg.parse_result_line_in_para,
-                libs.db.cfg.DBC_TOKEN_IN_LINE: libs.cfg.parse_result_token_in_line,
-                libs.db.cfg.DBC_SENTENCE_IN_PARA: libs.cfg.parse_result_sentence_in_para,
-                libs.db.cfg.DBC_TOKEN_IN_SENTENCE: libs.cfg.parse_result_token_in_sentence,
+                libs.db.cfg.DBC_PAGE_IN_DOCUMENT: libs.cfg.parse_result_no_page,
+                libs.db.cfg.DBC_PARA_IN_PAGE: libs.cfg.parse_result_no_para,
+                libs.db.cfg.DBC_LINE_IN_PARA: libs.cfg.parse_result_no_line,
+                libs.db.cfg.DBC_TOKEN_IN_LINE: libs.cfg.parse_result_no_word_in_line,
+                libs.db.cfg.DBC_SENTENCE_IN_PARA: libs.cfg.parse_result_no_sentence,
+                libs.db.cfg.DBC_TOKEN_IN_SENTENCE: libs.cfg.parse_result_no_word_in_sentence,
                 libs.db.cfg.DBC_TOKEN_PARSED: parent.text,
             },
         )
 
         if parent.text == ".":
-            libs.cfg.parse_result_sentence_in_para += 1
-            libs.cfg.parse_result_token_in_sentence = 0
+            libs.cfg.parse_result_no_sentence += 1
+            libs.cfg.parse_result_no_word_in_sentence = 0
 
 
 # -----------------------------------------------------------------------------
@@ -350,7 +386,7 @@ def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
         parent_tag (str): Parent tag.
         parent (Iterable[str): Parent data structure.
     """
-    libs.utils.debug_xml_element(parent_tag, parent.attrib, parent.text)
+    debug_xml_element(parent_tag, parent.attrib, parent.text)
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -425,8 +461,7 @@ def parse_tetml_file() -> None:
     root = tree.getroot()
 
     parent_tag = root.tag[libs.cfg.PARSE_TAG_FROM :]
-
-    libs.utils.debug_xml_element(parent_tag, root.attrib, root.text)
+    debug_xml_element(parent_tag, root.attrib, root.text)
 
     if parent_tag != libs.cfg.PARSE_TAG_TET:
         libs.utils.report_document_error(
@@ -438,7 +473,7 @@ def parse_tetml_file() -> None:
     else:
         for child in root:
             child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
-            libs.utils.debug_xml_element(child_tag, child.attrib, child.text)
+            debug_xml_element(child_tag, child.attrib, child.text)
             match child_tag:
                 case libs.cfg.PARSE_TAG_DOCUMENT:
                     parse_tag_document(child_tag, child)

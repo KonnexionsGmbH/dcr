@@ -185,12 +185,12 @@ logger: logging.Logger
 parse_result_author: str
 parse_result_creation_date: datetime
 parse_result_mod_date: datetime
-parse_result_line_in_para: int
-parse_result_page_in_document: int
-parse_result_para_in_page: int
-parse_result_sentence_in_para: int
-parse_result_token_in_line: int
-parse_result_token_in_sentence: int
+parse_result_no_line: int
+parse_result_no_page: int
+parse_result_no_para: int
+parse_result_no_sentence: int
+parse_result_no_word_in_line: int
+parse_result_no_word_in_sentence: int
 
 pdf2image_type: str
 
