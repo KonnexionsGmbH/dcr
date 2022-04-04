@@ -190,7 +190,8 @@ ERROR_51_903: str = (
 )
 
 ERROR_61_901: str = (
-    "61.901 Issue (s_f_p): Unknown child tag '{child_tag}' - " + "in parent tag '{parent_tag}'."
+    "61.901 Issue (s_f_p): {function}: Unknown child tag '{child_tag}' - "
+    + "in parent tag '{parent_tag}'."
 )
 ERROR_61_902: str = (
     "61.902 Issue (s_f_p): Expected tag '{expected_tag}' - " + " but found tag '{found_tag}'."

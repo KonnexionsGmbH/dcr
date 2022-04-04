@@ -87,6 +87,7 @@ PARSE_TAG_DESTINATIONS: str = "Destinations"
 PARSE_TAG_DOCUMENT: str = "Document"
 PARSE_TAG_DOC_INFO: str = "DocInfo"
 PARSE_TAG_FROM: int = len(PARSE_NAME_SPACE)
+PARSE_TAG_GLYPH: str = "Glyph"
 PARSE_TAG_GRAPHICS: str = "Graphics"
 PARSE_TAG_LINE: str = "Line"
 PARSE_TAG_METADATA: str = "Metadata"

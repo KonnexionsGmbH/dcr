@@ -27,7 +27,7 @@ def debug_xml_element(parent_tag: str, attrib: Dict[str, str], text: Iterable[st
     if libs.cfg.verbose_parser == "all":
         print(f"\ntag   ={parent_tag}")
 
-        if attrib != {} and parent_tag not in ["Box", "Line"]:
+        if attrib != {}:
             print(f"attrib={attrib}")
 
         if str(text).strip() > "":
@@ -81,9 +81,9 @@ def parse_tag_box(parent_tag: str, parent: Iterable[str]) -> None:
             case _:
                 libs.utils.report_document_error(
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
-                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag).replace(
-                        "{parent_tag}", parent_tag
-                    ),
+                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag)
+                    .replace("{parent_tag}", parent_tag)
+                    .replace("{function}", parse_tag_box.__name__),
                 )
 
 
@@ -109,9 +109,9 @@ def parse_tag_content(parent_tag: str, parent: Iterable[str]) -> None:
             case _:
                 libs.utils.report_document_error(
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
-                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag).replace(
-                        "{parent_tag}", parent_tag
-                    ),
+                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag)
+                    .replace("{parent_tag}", parent_tag)
+                    .replace("{function}", parse_tag_content.__name__),
                 )
 
 
@@ -147,9 +147,9 @@ def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
             case _:
                 libs.utils.report_document_error(
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
-                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag).replace(
-                        "{parent_tag}", parent_tag
-                    ),
+                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag)
+                    .replace("{parent_tag}", parent_tag)
+                    .replace("{function}", parse_tag_doc_info.__name__),
                 )
 
 
@@ -179,9 +179,35 @@ def parse_tag_document(parent_tag: str, parent: Iterable[str]) -> None:
             case _:
                 libs.utils.report_document_error(
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
-                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag).replace(
-                        "{parent_tag}", parent_tag
-                    ),
+                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag)
+                    .replace("{parent_tag}", parent_tag)
+                    .replace("{function}", parse_tag_document.__name__),
+                )
+
+
+# -----------------------------------------------------------------------------
+# Processing tag Glyph.
+# -----------------------------------------------------------------------------
+def parse_tag_glyph(parent_tag: str, parent: Iterable[str]) -> None:
+    """Processing tag 'Glyph'.
+
+    Args:
+        parent_tag (str): Parent tag.
+        parent (Iterable[str): Parent data structure.
+    """
+    debug_xml_element(parent_tag, parent.attrib, parent.text)
+
+    for child in parent:
+        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        match child_tag:
+            case libs.cfg.PARSE_TAG_GLYPH:
+                pass
+            case _:
+                libs.utils.report_document_error(
+                    error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
+                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag)
+                    .replace("{parent_tag}", parent_tag)
+                    .replace("{function}", parse_tag_box.__name__),
                 )
 
 
@@ -210,9 +236,9 @@ def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
             case _:
                 libs.utils.report_document_error(
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
-                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag).replace(
-                        "{parent_tag}", parent_tag
-                    ),
+                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag)
+                    .replace("{parent_tag}", parent_tag)
+                    .replace("{function}", parse_tag_line.__name__),
                 )
 
 
@@ -243,9 +269,9 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
             case _:
                 libs.utils.report_document_error(
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
-                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag).replace(
-                        "{parent_tag}", parent_tag
-                    ),
+                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag)
+                    .replace("{parent_tag}", parent_tag)
+                    .replace("{function}", parse_tag_page.__name__),
                 )
 
 
@@ -271,9 +297,9 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
             case _:
                 libs.utils.report_document_error(
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
-                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag).replace(
-                        "{parent_tag}", parent_tag
-                    ),
+                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag)
+                    .replace("{parent_tag}", parent_tag)
+                    .replace("{function}", parse_tag_pages.__name__),
                 )
 
 
@@ -301,12 +327,14 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
                 pass
             case libs.cfg.PARSE_TAG_BOX:
                 parse_tag_box(child_tag, child)
+            case libs.cfg.PARSE_TAG_GLYPH:
+                parse_tag_glyph(child_tag, child)
             case _:
                 libs.utils.report_document_error(
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
-                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag).replace(
-                        "{parent_tag}", parent_tag
-                    ),
+                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag)
+                    .replace("{parent_tag}", parent_tag)
+                    .replace("{function}", parse_tag_para.__name__),
                 )
 
 
@@ -328,9 +356,9 @@ def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
             case _:
                 libs.utils.report_document_error(
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
-                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag).replace(
-                        "{parent_tag}", parent_tag
-                    ),
+                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag)
+                    .replace("{parent_tag}", parent_tag)
+                    .replace("{function}", parse_tag_text.__name__),
                 )
 
     if parent.text is None:
@@ -392,16 +420,14 @@ def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
         match child_tag:
-            case libs.cfg.PARSE_TAG_BOX:
-                pass
-            case libs.cfg.PARSE_TAG_TEXT:
+            case libs.cfg.PARSE_TAG_BOX | libs.cfg.PARSE_TAG_TEXT:
                 parse_tag_text(child_tag, child)
             case _:
                 libs.utils.report_document_error(
                     error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
-                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag).replace(
-                        "{parent_tag}", parent_tag
-                    ),
+                    error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag)
+                    .replace("{parent_tag}", parent_tag)
+                    .replace("{function}", parse_tag_word.__name__),
                 )
 
 
@@ -483,7 +509,9 @@ def parse_tetml_file() -> None:
                 case _:
                     libs.utils.report_document_error(
                         error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PARSER,
-                        error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag),
+                        error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag).replace(
+                            "{function}", __name__
+                        ),
                     )
 
             if not libs.cfg.is_simulate_parser:

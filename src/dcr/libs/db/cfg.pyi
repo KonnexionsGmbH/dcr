@@ -142,7 +142,7 @@ RUN_STATUS_END: str
 RUN_STATUS_START: str
 
 # -----------------------------------------------------------------------------
-# Global Constants.
+# Global Variables.
 # -----------------------------------------------------------------------------
 
 db_current_database: str
