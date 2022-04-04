@@ -24,7 +24,7 @@ def debug_xml_element(parent_tag: str, attrib: Dict[str, str], text: Iterable[st
         attrib (Dict[str,str]): Attributes.
         text (Iterable[str]): XML element.
     """
-    if libs.cfg.is_verbose_parser:
+    if libs.cfg.verbose_parser == "all":
         print(f"\ntag   ={parent_tag}")
 
         if attrib != {} and parent_tag not in ["Box", "Line"]:
@@ -32,7 +32,7 @@ def debug_xml_element(parent_tag: str, attrib: Dict[str, str], text: Iterable[st
 
         if str(text).strip() > "":
             print(f"text  ='{text}'")
-    elif parent_tag == "Text":
+    elif libs.cfg.verbose_parser == "text" and parent_tag == "Text":
         print(
             f"page={libs.cfg.parse_result_no_page:2d} "
             f"paragraph={libs.cfg.parse_result_no_para:2d} "
@@ -487,7 +487,8 @@ def parse_tetml_file() -> None:
 
         libs.utils.delete_auxiliary_file(file_name)
 
-        # Text and metadata from Document successfully extracted to xml format
+    # Text and metadata from Document successfully extracted to xml format
+    if not libs.cfg.is_simulate_parser:
         libs.utils.finalize_file_processing()
 
     libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)

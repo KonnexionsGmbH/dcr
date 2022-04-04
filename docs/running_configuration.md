@@ -144,34 +144,36 @@ The customisable entries are:
       ignore_duplicates = false
       initial_database_data=data/initial_database_data.json
       pdf2image_type = jpeg
+      simulate_parser = false
       tesseract_timeout = 10
       verbose = true
-      verbose_parser = false
+      verbose_parser = none
 
-| Parameter                | Default value                         | Description                                                                            |
-|--------------------------|---------------------------------------|----------------------------------------------------------------------------------------|
-| db_connection_port       | environment specific                  | port number the DBMS server is listening on                                            |
-| db_connection_prefix     | **`postgresql+psycopg2://`**          | front part of the database URL                                                         |
-| db_database              | environment specific                  | **DCR** database name                                                                  |
-| db_database_admin        | environment specific                  | administrative database name                                                           |
-| db_dialect               | **`postgresql`**                      | DBMS used, currently: only PostgreSQL allowed                                          |
-| db_host                  | **`localhost`**                       | host name of the DBMS server                                                           |
-| db_password              | **`postgresql`**                      | **DCR** database user password                                                         |
-| db_password_admin        | **`postgresql`**                      | administrative database password                                                       |
-| db_schema                | **`dcr_schema`**                      | database schema name                                                                   |
-| db_user                  | **`postgresql`**                      | **DCR** database user name                                                             |
-| db_user_admin            | **`postgresql`**                      | administrative database user name                                                      |
-| dcr_version              | **`09.0`**                            | current version number of the **DCR** application                                      |
-| delete_auxiliary_files   | **`true`**                            | delete the auxiliary files after a successful <br>processing step                      |
-| directory_inbox          | **`data/inbox`**                      | directory for the new documents received                                               |
-| directory_inbox_accepted | **`data/inbox_accepted`**             | directory for the accepted documents                                                   |
-| directory_inbox_rejected | **`data/inbox_rejected`**             | Complete file name for the JSON file with the <br>database initialisation data         |
-| ignore_duplicates        | **`false`**                           | accept presumably duplicated documents <br/>based on a SHA256 hash key                 |
-| initial_database_data    | **`data/initial_database_data.json`** | file with initial database contents                                                    |
-| pdfimage_type            | **`jpeg`**                            | format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`** |
-| tesseract_timeout        | **`10`**                              | terminate the tesseract job after a <br>period of time (seconds)                       |
-| verbose                  | **`true`**                            | display progress messages for processing                                               |
-| verbose_parser           | **`false`**                           | display progress messages for parsing xml (TETML)                                      |
+| Parameter                | Default value                         | Description                                                                                 |
+|--------------------------|---------------------------------------|---------------------------------------------------------------------------------------------|
+| db_connection_port       | environment specific                  | port number the DBMS server is listening on                                                 |
+| db_connection_prefix     | **`postgresql+psycopg2://`**          | front part of the database URL                                                              |
+| db_database              | environment specific                  | **DCR** database name                                                                       |
+| db_database_admin        | environment specific                  | administrative database name                                                                |
+| db_dialect               | **`postgresql`**                      | DBMS used, currently: only PostgreSQL allowed                                               |
+| db_host                  | **`localhost`**                       | host name of the DBMS server                                                                |
+| db_password              | **`postgresql`**                      | **DCR** database user password                                                              |
+| db_password_admin        | **`postgresql`**                      | administrative database password                                                            |
+| db_schema                | **`dcr_schema`**                      | database schema name                                                                        |
+| db_user                  | **`postgresql`**                      | **DCR** database user name                                                                  |
+| db_user_admin            | **`postgresql`**                      | administrative database user name                                                           |
+| dcr_version              | **`09.0`**                            | current version number of the **DCR** application                                           |
+| delete_auxiliary_files   | **`true`**                            | delete the auxiliary files after a successful <br>processing step                           |
+| directory_inbox          | **`data/inbox`**                      | directory for the new documents received                                                    |
+| directory_inbox_accepted | **`data/inbox_accepted`**             | directory for the accepted documents                                                        |
+| directory_inbox_rejected | **`data/inbox_rejected`**             | Complete file name for the JSON file with the <br>database initialisation data              |
+| ignore_duplicates        | **`false`**                           | accept presumably duplicated documents <br/>based on a SHA256 hash key                      |
+| initial_database_data    | **`data/initial_database_data.json`** | file with initial database contents                                                         |
+| pdfimage_type            | **`jpeg`**                            | format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**      |
+| simulate_parser          | **`false`**                           | simulate the parsing process for testing purposes                                                                 |
+| tesseract_timeout        | **`10`**                              | terminate the tesseract job after a <br>period of time (seconds)                            |
+| verbose                  | **`true`**                            | display progress messages for processing                                                    |
+| verbose_parser           | **`none`**                            | display progress messages for parsing xml (TETML) : <br>**`all`**, **`none`** or **`text`** |
 
 The configuration parameters can be set differently for the individual environments (`dev`, `prod` and `test`).
 

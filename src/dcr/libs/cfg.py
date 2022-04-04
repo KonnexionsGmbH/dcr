@@ -43,6 +43,7 @@ DCR_CFG_SECTION: str = "dcr"
 DCR_CFG_SECTION_DEV: str = "dcr_dev"
 DCR_CFG_SECTION_PROD: str = "dcr_prod"
 DCR_CFG_SECTION_TEST: str = "dcr_test"
+DCR_CFG_SIMULATE_PARSER: str = "simulate_parser"
 DCR_CFG_TESSERACT_TIMEOUT: str = "tesseract_timeout"
 DCR_CFG_VERBOSE: str = "verbose"
 DCR_CFG_VERBOSE_PARSER: str = "verbose_parser"
@@ -164,8 +165,8 @@ environment_type: str
 
 is_delete_auxiliary_files: bool = True
 is_ignore_duplicates: bool
+is_simulate_parser: bool = False
 is_verbose: bool = True
-is_verbose_parser: bool = False
 
 language_directory_inbox: PathLike[str]
 language_erroneous: int
@@ -212,3 +213,5 @@ total_ok_processed_tesseract: int
 total_status_error: int
 total_status_ready: int
 total_to_be_processed: int
+
+verbose_parser: str = "none"
