@@ -357,19 +357,20 @@ def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
             parent.text,
         )
 
-        libs.db.orm.dml.insert_dbt_row(
-            libs.db.cfg.DBT_CONTENT,
-            {
-                libs.db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
-                libs.db.cfg.DBC_PAGE_IN_DOCUMENT: libs.cfg.parse_result_no_page,
-                libs.db.cfg.DBC_PARA_IN_PAGE: libs.cfg.parse_result_no_para,
-                libs.db.cfg.DBC_LINE_IN_PARA: libs.cfg.parse_result_no_line,
-                libs.db.cfg.DBC_TOKEN_IN_LINE: libs.cfg.parse_result_no_word_in_line,
-                libs.db.cfg.DBC_SENTENCE_IN_PARA: libs.cfg.parse_result_no_sentence,
-                libs.db.cfg.DBC_TOKEN_IN_SENTENCE: libs.cfg.parse_result_no_word_in_sentence,
-                libs.db.cfg.DBC_TOKEN_PARSED: parent.text,
-            },
-        )
+        if not libs.cfg.is_simulate_parser:
+            libs.db.orm.dml.insert_dbt_row(
+                libs.db.cfg.DBT_CONTENT,
+                {
+                    libs.db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
+                    libs.db.cfg.DBC_PAGE_IN_DOCUMENT: libs.cfg.parse_result_no_page,
+                    libs.db.cfg.DBC_PARA_IN_PAGE: libs.cfg.parse_result_no_para,
+                    libs.db.cfg.DBC_LINE_IN_PARA: libs.cfg.parse_result_no_line,
+                    libs.db.cfg.DBC_TOKEN_IN_LINE: libs.cfg.parse_result_no_word_in_line,
+                    libs.db.cfg.DBC_SENTENCE_IN_PARA: libs.cfg.parse_result_no_sentence,
+                    libs.db.cfg.DBC_TOKEN_IN_SENTENCE: libs.cfg.parse_result_no_word_in_sentence,
+                    libs.db.cfg.DBC_TOKEN_PARSED: parent.text,
+                },
+            )
 
         if parent.text == ".":
             libs.cfg.parse_result_no_sentence += 1
@@ -485,7 +486,8 @@ def parse_tetml_file() -> None:
                         error=libs.db.cfg.ERROR_61_901.replace("{child_tag}", child_tag),
                     )
 
-        libs.utils.delete_auxiliary_file(file_name)
+            if not libs.cfg.is_simulate_parser:
+                libs.utils.delete_auxiliary_file(file_name)
 
     # Text and metadata from Document successfully extracted to xml format
     if not libs.cfg.is_simulate_parser:

@@ -19,7 +19,7 @@ BASE_DOC_OPT_LIST = "engines={notextcolor}"
 GLOBAL_OPT_LIST = ""
 
 # page-specific option list */
-PAGE_OPT_LIST = "granularity=wordplus tetml={elements={line}}"
+PAGE_OPT_LIST = "granularity=word tetml={glyphdetails={all} elements={line}}"
 
 
 # -----------------------------------------------------------------------------
