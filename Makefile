@@ -135,10 +135,10 @@ mypy:               ## Find typing issues with Mypy.
 # Configuration file: Pipfile
 pipenv-dev:         ## Install the package dependencies for development.
 	@echo "Info **********  Start: Installation of Development Packages ********"
-	python -m pipenv --rm
-	exit
 	python -m pip install --upgrade pip
 	python -m pip install --upgrade pipenv
+	python -m pipenv --rm
+	exit
 	python -m pipenv install --dev
 	python -m pipenv update --dev
 	pipenv run pip freeze
@@ -147,10 +147,10 @@ pipenv-dev:         ## Install the package dependencies for development.
 	@echo "Info **********  End:   Installation of Development Packages ********"
 pipenv-prod:        ## Install the package dependencies for production.
 	@echo "Info **********  Start: Installation of Production Packages *********"
-	python -m pipenv --rm
-	exit
 	python -m pip install --upgrade pip
 	python -m pip install --upgrade pipenv
+	python -m pipenv --rm
+	exit
 	python -m pipenv install
 	python -m pipenv update
 	pipenv run pip freeze
