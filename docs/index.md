@@ -145,27 +145,9 @@ The fonts used in the document are stored in the JSON column **`fonts`** of the 
 The JSON property **`noWords`** shows the word-related frequency of use of the font:
 
     [
-      {
-        "id": "F0",
-        "italicAngle": "0.00",
-        "name": "Arial-BoldMT",
-        "noWords": 5,
-        "weight": "700.00"
-      },
-      {
-        "id": "F1",
-        "italicAngle": "0.00",
-        "name": "ArialMT",
-        "noWords": 10,
-        "weight": "400.00"
-      },
-      {
-        "id": "F2",
-        "italicAngle": "0.00",
-        "name": "CourierNewPSMT",
-        "noWords": 40,
-        "weight": "400.00"
-      }
+      {"id": "F0", "italicAngle": "0.00", "name": "Arial-BoldMT",   "noWords": 5,  "weight": "700.00"},
+      {"id": "F1", "italicAngle": "0.00", "name": "ArialMT",        "noWords": 10, "weight": "400.00"},
+      {"id": "F2", "italicAngle": "0.00", "name": "CourierNewPSMT", "noWords": 40, "weight": "400.00"}
     ]
 
 #### 2. Database table **`content`**:
@@ -178,80 +160,22 @@ The main information about the respective sentence is in the JSON column **`sent
 
 ![](img/index_2.1.6_example_content_2.png)
 
+An example JSON column **`sentence`**:
+
     {
       "noSentenceInPara": 2,
       "noWords": 10,
       "words": [
-        {
-          "fontId": "F2",
-          "fontSize": "12.00",
-          "noWordLine": 11,
-          "noWordSentence": 1,
-          "wordParsed": "This"
-        },
-        {
-          "fontId": "F2",
-          "fontSize": "12.00",
-          "noWordLine": 12,
-          "noWordSentence": 2,
-          "wordParsed": "is"
-        },
-        {
-          "fontId": "F2",
-          "fontSize": "12.00",
-          "noWordLine": 13,
-          "noWordSentence": 3,
-          "wordParsed": "the"
-        },
-        {
-          "fontId": "F2",
-          "fontSize": "12.00",
-          "noWordLine": 1,
-          "noWordSentence": 4,
-          "wordParsed": "second"
-        },
-        {
-          "fontId": "F2",
-          "fontSize": "12.00",
-          "noWordLine": 2,
-          "noWordSentence": 5,
-          "wordParsed": "sentence"
-        },
-        {
-          "fontId": "F2",
-          "fontSize": "12.00",
-          "noWordLine": 3,
-          "noWordSentence": 6,
-          "wordParsed": "of"
-        },
-        {
-          "fontId": "F2",
-          "fontSize": "12.00",
-          "noWordLine": 4,
-          "noWordSentence": 7,
-          "wordParsed": "the"
-        },
-        {
-          "fontId": "F2",
-          "fontSize": "12.00",
-          "noWordLine": 5,
-          "noWordSentence": 8,
-          "wordParsed": "first"
-        },
-        {
-          "fontId": "F2",
-          "fontSize": "12.00",
-          "noWordLine": 6,
-          "noWordSentence": 9,
-          "wordParsed": "paragraph"
-        },
-        {
-          "fontId": "F2",
-          "fontSize": "12.00",
-          "noWordLine": 7,
-          "noWordSentence": 10,
-          "wordParsed": "."
-        }
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 11, "noWordSentence": 1,  "wordParsed": "This"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 12, "noWordSentence": 2,  "wordParsed": "is"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 13, "noWordSentence": 3,  "wordParsed": "the"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 1,  "noWordSentence": 4,  "wordParsed": "second"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 2,  "noWordSentence": 5,  "wordParsed": "sentence"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 3,  "noWordSentence": 6,  "wordParsed": "of"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 4,  "noWordSentence": 7,  "wordParsed": "the"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 5,  "noWordSentence": 8,  "wordParsed": "first"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 6,  "noWordSentence": 9,  "wordParsed": "paragraph"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 7,  "noWordSentence": 10, "wordParsed": "."}
       ]
     }
 
