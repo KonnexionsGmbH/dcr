@@ -54,3 +54,6 @@ types-PyYAML = "*"
 types-psycopg2 = "*"
 typing-extensions = "*"
 weasyprint = "*"
+
+[requires]
+python_version = "3.10.4"

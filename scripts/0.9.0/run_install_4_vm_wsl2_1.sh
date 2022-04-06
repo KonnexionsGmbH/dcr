@@ -16,10 +16,10 @@ export CURRENT_PATH=$(pwd)
 
 export VERSION_DCR_DEV=0.9.0
 
-export VERSION_DBEAVER=22.0.0
+export VERSION_DBEAVER=22.0.2
 export VERSION_HTOP=3.1.2
-export VERSION_PANDOC=2.17.1.1
-export VERSION_PYTHON3=3.10.3
+export VERSION_PANDOC=2.18
+export VERSION_PYTHON3=3.10.4
 export VERSION_TMUX=3.2a
 
 if [ -z "$1" ]; then
@@ -295,6 +295,9 @@ wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
 sudo apt-get update -qy
 sudo apt-get install -qy tesseract-ocr
 sudo apt-get install -qy tesseract-ocr-deu
+sudo apt-get install -qy tesseract-ocr-eng
+sudo apt-get install -qy tesseract-ocr-fra
+sudo apt-get install -qy tesseract-ocr-ita
 echo " "
 echo "=============================================================================> Version Tesseract OCR: "
 echo " "

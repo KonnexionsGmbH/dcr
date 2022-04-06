@@ -207,7 +207,7 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_store_from_parser_normal <=========")
+    libs.cfg.logger.info("=========> test_run_action_store_from_parser_normal_keep <=========")
 
     pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox,

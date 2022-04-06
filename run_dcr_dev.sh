@@ -65,8 +65,6 @@ case "${DCR_CHOICE_ACTION}" in
   m_d)
     # Development install packages
     make pipenv-dev
-    # Development ecosystem
-    make dev
     ;;
   m_p)
     # Production install packages
@@ -96,6 +94,7 @@ case "${DCR_CHOICE_ACTION}" in
         ;;
       *)
         ;;
+    esac
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   all|p_i)
