@@ -125,29 +125,28 @@ This file controls the behaviour of the **DCR** application.
 
 The customisable entries are:
 
-      [dcr]
-      db_connection_port = see environment
-      db_connection_prefix = postgresql+psycopg2://
-      db_database = see environment
-      db_database_admin = see environment
-      db_dialect = postgresql
-      db_host = localhost
-      db_password = postgresql
-      db_password_admin = postgresql
-      db_schema = dcr_schema
-      db_user = dcr_user
-      db_user_admin = dcr_user_admin
-      dcr_version = 0.9.0
-      directory_inbox = data/inbox
-      directory_inbox_accepted = data/inbox_accepted
-      directory_inbox_rejected = data/inbox_rejected
-      ignore_duplicates = false
-      initial_database_data=data/initial_database_data.json
-      pdf2image_type = jpeg
-      simulate_parser = false
-      tesseract_timeout = 10
-      verbose = true
-      verbose_parser = none
+    [dcr]
+    db_connection_prefix = postgresql+psycopg2://
+    db_container_port = 5432
+    db_dialect = postgresql
+    db_host = localhost
+    db_password = postgresql
+    db_password_admin = postgresql
+    db_schema = dcr_schema
+    db_user = dcr_user
+    db_user_admin = dcr_user_admin
+    dcr_version = 0.9.0
+    delete_auxiliary_files = false
+    directory_inbox = data/inbox
+    directory_inbox_accepted = data/inbox_accepted
+    directory_inbox_rejected = data/inbox_rejected
+    ignore_duplicates = false
+    initial_database_data = data/initial_database_data.json
+    pdf2image_type = jpeg
+    simulate_parser = false
+    tesseract_timeout = 10
+    verbose = true
+    verbose_parser = none
 
 | Parameter                | Default value                         | Description                                                                                 |
 |--------------------------|---------------------------------------|---------------------------------------------------------------------------------------------|

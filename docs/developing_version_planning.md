@@ -17,7 +17,8 @@
 | ~~0.7.0~~ | ~~Tesseract OCR processing~~         |
 | ~~0.8.0~~ | ~~PDFlib TET processing~~            |
 | 0.9.0     | Parser                               |
-| 0.9.1     | Text preprocessing and wrangling     |
+| 0.9.1     | UI based on Streamlit                |
+| 0.9.2     | Text preprocessing and wrangling     |
 
 ## 2. Next Development Steps
 
@@ -26,7 +27,6 @@
 - 9 Google Styleguide implementation
 - 9 check the content of the file directory against the database
 - 9 convert 'doc' documents to 'docx'
-- 9 parser result with JSON 
 - 9 reconstruct original document
 - 9 reset a list of documents: clean up the database before the next process retry - delete existing data
 - ~~API Documentation~~
@@ -43,5 +43,6 @@
 - ~~introduce document language - eventually inbox subfolder per language~~
 - ~~load initialisation data~~
 - ~~optionally save the original document in the database~~
+- ~~parser result with JSON~~ 
 - ~~replace TeX Live by LuaLaTeX or XeLuTeX (Unicode)~~
 - ~~test cases for file duplicate~~
