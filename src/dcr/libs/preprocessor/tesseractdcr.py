@@ -9,6 +9,7 @@ import libs.db.orm.dml
 import libs.utils
 import PyPDF4
 import pytesseract
+
 # not testable
 # from pytesseract import TesseractError
 from sqlalchemy import func

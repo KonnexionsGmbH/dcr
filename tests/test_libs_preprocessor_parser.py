@@ -1,6 +1,5 @@
 # pylint: disable=unused-argument
 """Testing Module libs.preprocessor.parser."""
-import platform
 from typing import List
 
 import libs.cfg
