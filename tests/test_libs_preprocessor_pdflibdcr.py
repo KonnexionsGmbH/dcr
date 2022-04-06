@@ -16,9 +16,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TEXT_FROM_PDF - normal - keep.
 # -----------------------------------------------------------------------------
-def test_run_action_extract_text_from_pdf_normal_keep(
-    fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
-):
+def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - normal - keep."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 

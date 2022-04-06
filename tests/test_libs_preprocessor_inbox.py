@@ -94,9 +94,7 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
 
     stem_name_2: str = "pdf_text_ok_1"
 
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        [(stem_name_1, file_ext)], libs.cfg.directory_inbox_accepted
-    )
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext)], libs.cfg.directory_inbox_accepted)
 
     os.rename(
         os.path.join(libs.cfg.directory_inbox_accepted, stem_name_1 + "." + file_ext),
@@ -146,9 +144,7 @@ def test_run_action_process_inbox_accepted_duplicate_verbose(fxtr_setup_empty_db
 
     stem_name_2: str = "pdf_text_ok_1"
 
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        [(stem_name_1, file_ext)], libs.cfg.directory_inbox_accepted
-    )
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext)], libs.cfg.directory_inbox_accepted)
 
     os.rename(
         os.path.join(libs.cfg.directory_inbox_accepted, stem_name_1 + "." + file_ext),
@@ -205,11 +201,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
     )
 
     with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
-        conn.execute(
-            update(dbt)
-            .where(dbt.c.iso_language_name == "French")
-            .values({libs.db.cfg.DBC_ACTIVE: True})
-        )
+        conn.execute(update(dbt).where(dbt.c.iso_language_name == "French").values({libs.db.cfg.DBC_ACTIVE: True}))
         conn.close()
 
     # -------------------------------------------------------------------------
@@ -255,9 +247,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
     base_directory = str(libs.cfg.directory_inbox)
     language_directory_name = str(os.path.join(base_directory, Path("french")))
 
-    assert os.path.isdir(base_directory), (
-        "base directory '" + base_directory + "' after processing missing"
-    )
+    assert os.path.isdir(base_directory), "base directory '" + base_directory + "' after processing missing"
 
     assert os.path.isdir(language_directory_name), (
         "language directory '" + language_directory_name + "' after processing missing"
@@ -302,9 +292,7 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
-    )
+    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.info("=========> test_run_action_process_inbox_ignore_duplicates <=========")
@@ -423,9 +411,7 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
-    )
+    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original)
     # -------------------------------------------------------------------------
     libs.cfg.logger.info("=========> test_run_action_process_inbox_rejected <=========")
 
@@ -473,9 +459,7 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
 
     stem_name_2: str = "pdf_wrong_format_1"
 
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        [(stem_name_1, file_ext)], libs.cfg.directory_inbox_rejected
-    )
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext)], libs.cfg.directory_inbox_rejected)
 
     os.rename(
         os.path.join(libs.cfg.directory_inbox_rejected, stem_name_1 + "." + file_ext),

@@ -4,6 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 from os import PathLike
 from typing import Dict
+from typing import List
 from typing import TypeAlias
 from typing import Union
 
@@ -72,12 +73,22 @@ OS_POSIX: str
 PANDOC_PDF_ENGINE_LULATEX: str
 PANDOC_PDF_ENGINE_XELATEX: str
 
+PARSE_ATTRIB_FONT: str
+PARSE_ATTRIB_ID: str
+PARSE_ATTRIB_ITALIC_ANGLE: str
+PARSE_ATTRIB_NAME: str
+PARSE_ATTRIB_SIZE: str
+PARSE_ATTRIB_WEIGHT: str
 PARSE_NAME_SPACE: str
+
 PARSE_TAG_A: str
+PARSE_TAG_ACTION: str
 PARSE_TAG_ANNOTATIONS: str
+PARSE_TAG_ATTACHMENTS: str
 PARSE_TAG_AUTHOR: str
 PARSE_TAG_BOOKMARKS: str
 PARSE_TAG_BOX: str
+PARSE_TAG_COLOR_SPACES: str
 PARSE_TAG_CONTENT: str
 PARSE_TAG_CREATION: str
 PARSE_TAG_CREATION_DATE: str
@@ -86,24 +97,35 @@ PARSE_TAG_CUSTOM: str
 PARSE_TAG_DESTINATIONS: str
 PARSE_TAG_DOCUMENT: str
 PARSE_TAG_DOC_INFO: str
+PARSE_TAG_ENCRYPTION: str
+PARSE_TAG_EXCEPTION: str
+PARSE_TAG_FIELDS: str
+PARSE_TAG_FONT: str
+PARSE_TAG_FONTS: str
 PARSE_TAG_FROM: int
 PARSE_TAG_GLYPH: str
 PARSE_TAG_GRAPHICS: str
+PARSE_TAG_IMAGES: str
+PARSE_TAG_JAVA_SCRIPTS: str
 PARSE_TAG_LINE: str
 PARSE_TAG_METADATA: str
 PARSE_TAG_MOD_DATE: str
 PARSE_TAG_OPTIONS: str
+PARSE_TAG_OUTPUT_INTENTS: str
 PARSE_TAG_PAGE: str
 PARSE_TAG_PAGES: str
 PARSE_TAG_PARA: str
+PARSE_TAG_PATTERNX: str
 PARSE_TAG_PLACED_IMAGE: str
 PARSE_TAG_PRODUCER: str
 PARSE_TAG_RESOURCES: str
+PARSE_TAG_SIGNATURE_FIELDS: str
 PARSE_TAG_TABLE: str
 PARSE_TAG_TET: str
 PARSE_TAG_TEXT: str
 PARSE_TAG_TITLE: str
 PARSE_TAG_WORD: str
+PARSE_TAG_XFA: str
 
 RUN_ACTION_ALL_COMPLETE: str
 RUN_ACTION_CREATE_DB: str
@@ -186,13 +208,25 @@ logger: logging.Logger
 
 parse_result_author: str
 parse_result_creation_date: datetime
+parse_result_font_id: str | None
+parse_result_font_size: str
+parse_result_fonts: List[Dict[str, str]]
+parse_result_fonts_no_words: Dict[str, int]
+parse_result_line_in_para_end: int
+parse_result_line_in_para_start: int
 parse_result_mod_date: datetime
 parse_result_no_line: int
 parse_result_no_page: int
 parse_result_no_para: int
 parse_result_no_sentence: int
-parse_result_no_word_in_line: int
-parse_result_no_word_in_sentence: int
+parse_result_no_word_line: int
+parse_result_no_word_sentence: int
+parse_result_page_in_document_end: int
+parse_result_page_in_document_start: int
+parse_result_para_in_page_end: int
+parse_result_para_in_page_start: int
+parse_result_sentence: Dict[str, int | List[Dict[str, str | int]]]
+parse_result_text: str
 
 pdf2image_type: str
 
@@ -215,4 +249,4 @@ total_status_error: int
 total_status_ready: int
 total_to_be_processed: int
 
-verbose_parser: bool
+verbose_parser: str

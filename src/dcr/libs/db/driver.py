@@ -82,8 +82,7 @@ def create_database() -> None:
         create_database_postgresql()
     else:
         libs.utils.terminate_fatal(
-            f"A database dialect '{libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT]}' "
-            f"is not supported in DCR"
+            f"A database dialect '{libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT]}' " f"is not supported in DCR"
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -106,17 +105,13 @@ def create_database_postgresql() -> None:
 
     libs.db.cfg.db_driver_cur = libs.db.cfg.db_driver_conn.cursor()
 
-    libs.db.cfg.db_driver_cur.execute(
-        "CREATE USER " + user + " WITH ENCRYPTED PASSWORD '" + password + "'"
-    )
+    libs.db.cfg.db_driver_cur.execute("CREATE USER " + user + " WITH ENCRYPTED PASSWORD '" + password + "'")
     libs.utils.progress_msg(f"The user '{user}' has now been created")
 
     libs.db.cfg.db_driver_cur.execute("CREATE DATABASE " + database + " WITH OWNER " + user)
     libs.utils.progress_msg("The database '{database}' has now been created")
 
-    libs.db.cfg.db_driver_cur.execute(
-        "GRANT ALL PRIVILEGES ON DATABASE " + database + " TO " + user
-    )
+    libs.db.cfg.db_driver_cur.execute("GRANT ALL PRIVILEGES ON DATABASE " + database + " TO " + user)
     libs.utils.progress_msg("The user '{user}' has now all privileges on database '{database}'")
 
     disconnect_db()
@@ -168,8 +163,7 @@ def drop_database() -> None:
         drop_database_postgresql()
     else:
         libs.utils.terminate_fatal(
-            f"A database dialect '{libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT]}' "
-            f"is not supported in DCR"
+            f"A database dialect '{libs.cfg.config[libs.cfg.DCR_CFG_DB_DIALECT]}' " f"is not supported in DCR"
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -264,9 +258,7 @@ def upgrade_database() -> None:
     current_version: str = select_version_version_unique()
 
     if current_version == libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]:
-        libs.utils.progress_msg(
-            f"The database is already up to date, version number='{current_version}'"
-        )
+        libs.utils.progress_msg(f"The database is already up to date, version number='{current_version}'")
     else:
         while select_version_version_unique() != libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]:
             upgrade_database_version()
@@ -287,8 +279,7 @@ def upgrade_database_version() -> None:
 
     if current_version == "0.5.0":
         libs.utils.terminate_fatal(
-            "An automatic upgrade of the database version is only "
-            + "supported from version 1.0.0."
+            "An automatic upgrade of the database version is only " + "supported from version 1.0.0."
         )
 
     # TBD: Template for migration from version 1.0.0 to version x.x.x

@@ -57,16 +57,12 @@ def copy_directories_4_pytest_2_dir(
         source_directories: List[str]: Source directory names.
         target_dir: str: Target directory.
     """
-    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), (
-        "source base directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
-    )
+    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), "source base directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
 
     for source in source_directories:
         source_dir = libs.cfg.TESTS_INBOX_NAME + "/" + source
         source_path = os.path.join(libs.cfg.TESTS_INBOX_NAME, Path(source))
-        assert os.path.isdir(source_path), (
-            "source language directory '" + str(source_path) + "' missing"
-        )
+        assert os.path.isdir(source_path), "source language directory '" + str(source_path) + "' missing"
         target_path = os.path.join(target_dir, Path(source))
         shutil.copytree(source_dir, target_path)
 
@@ -75,18 +71,14 @@ def copy_directories_4_pytest_2_dir(
 # Copy files from the sample test file directory.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def copy_files_4_pytest(
-    file_list: List[Tuple[Tuple[str, str | None], Tuple[Path, List[str], str | None]]]
-) -> None:
+def copy_files_4_pytest(file_list: List[Tuple[Tuple[str, str | None], Tuple[Path, List[str], str | None]]]) -> None:
     """Copy files from the sample test file directory.
 
     Args:
         file_list (List[Tuple[Tuple[str, str | None], Tuple[Path, List[str], str | None]]]):
                   List of files to be copied.
     """
-    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), (
-        "source directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
-    )
+    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), "source directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
 
     for ((source_stem, source_ext), (target_dir, target_file_comp, target_ext)) in file_list:
         source_file_name = source_stem if source_ext is None else source_stem + "." + source_ext
@@ -95,14 +87,10 @@ def copy_files_4_pytest(
 
         assert os.path.isdir(target_dir), "target directory '" + target_dir + "' missing"
         target_file_name = (
-            "_".join(target_file_comp)
-            if target_ext is None
-            else "_".join(target_file_comp) + "." + target_ext
+            "_".join(target_file_comp) if target_ext is None else "_".join(target_file_comp) + "." + target_ext
         )
         target_file = os.path.join(target_dir, target_file_name)
-        assert os.path.isfile(target_file) is False, (
-            "target file '" + str(target_file) + "' already existing"
-        )
+        assert os.path.isfile(target_file) is False, "target file '" + str(target_file) + "' already existing"
 
         shutil.copy(source_file, target_file)
         assert os.path.isfile(target_file), "target file '" + str(target_file) + "' is missing"
@@ -297,9 +285,7 @@ def help_run_action_all_complete_duplicate_file(
     file_ext_1: str, file_ext_2: str, stem_name_1: str, stem_name_2: str
 ) -> None:
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        [(stem_name_1, file_ext_1)], libs.cfg.directory_inbox_accepted
-    )
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.directory_inbox_accepted)
 
     os.rename(
         os.path.join(libs.cfg.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),

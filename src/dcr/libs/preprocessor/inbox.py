@@ -55,8 +55,7 @@ def create_directory(directory_type: str, directory_name: str) -> None:
     if not os.path.isdir(directory_name):
         os.mkdir(directory_name)
         libs.utils.progress_msg(
-            f"The file directory for '{directory_type}' "
-            f"was newly created under the name '{directory_name}'",
+            f"The file directory for '{directory_type}' " f"was newly created under the name '{directory_name}'",
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -170,9 +169,7 @@ def prepare_document_child_accepted() -> None:
     libs.cfg.document_child_next_step = None
     libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
 
-    libs.cfg.document_child_stem_name = (
-        libs.cfg.document_stem_name + "_" + str(libs.cfg.document_id)
-    )
+    libs.cfg.document_child_stem_name = libs.cfg.document_stem_name + "_" + str(libs.cfg.document_id)
 
 
 # -----------------------------------------------------------------------------
@@ -278,17 +275,13 @@ def process_inbox_accepted(next_step: str) -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.cfg.document_child_directory_name = libs.cfg.config[
-        libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED
-    ]
+    libs.cfg.document_child_directory_name = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
     libs.cfg.document_child_directory_type = libs.db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED
     libs.cfg.document_child_next_step = next_step
     libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
 
     source_file = os.path.join(libs.cfg.document_directory_name, libs.cfg.document_file_name)
-    target_file = os.path.join(
-        libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name
-    )
+    target_file = os.path.join(libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name)
 
     if os.path.exists(target_file):
         libs.utils.report_document_error(
@@ -329,9 +322,7 @@ def process_inbox_file(file: pathlib.Path) -> None:
     initialise_document_base(file)
 
     if not libs.cfg.is_ignore_duplicates:
-        file_name = libs.db.orm.dml.select_document_file_name_sha256(
-            libs.cfg.document_id, libs.cfg.document_sha256
-        )
+        file_name = libs.db.orm.dml.select_document_file_name_sha256(libs.cfg.document_id, libs.cfg.document_sha256)
     else:
         file_name = None
 
@@ -375,18 +366,14 @@ def process_inbox_language() -> None:
        unchanged to the inbox_ocr directory.
     4. All other documents are copied to the inbox_rejected directory.
     """
-    libs.utils.progress_msg(
-        f"Start of processing for language '{libs.cfg.language_iso_language_name}'"
-    )
+    libs.utils.progress_msg(f"Start of processing for language '{libs.cfg.language_iso_language_name}'")
 
     libs.utils.reset_statistics_language()
 
     for file in sorted(pathlib.Path(libs.cfg.language_directory_inbox).iterdir()):
         if file.is_file():
             if file.name == "README.md":
-                libs.utils.progress_msg(
-                    "Attention: All files with the file name 'README.md' are ignored"
-                )
+                libs.utils.progress_msg("Attention: All files with the file name 'README.md' are ignored")
                 continue
 
             libs.cfg.language_to_be_processed += 1
@@ -416,17 +403,13 @@ def process_inbox_rejected(error_code: str, error: str) -> None:
 
     prepare_document_child_accepted()
 
-    libs.cfg.document_child_directory_name = libs.cfg.config[
-        libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
-    ]
+    libs.cfg.document_child_directory_name = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
     libs.cfg.document_child_directory_type = libs.db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX_REJECTED
     libs.cfg.document_child_error_code = error_code
     libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_ERROR
 
     source_file = os.path.join(libs.cfg.document_directory_name, libs.cfg.document_file_name)
-    target_file = os.path.join(
-        libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name
-    )
+    target_file = os.path.join(libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name)
 
     # Move the document file from directory inbox to directory inbox_rejected - if not yet existing
     if os.path.exists(target_file):

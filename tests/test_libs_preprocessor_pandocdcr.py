@@ -108,9 +108,7 @@ def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox
     stem_name_2: str = "docx_ok_1"
     file_ext_2: str = "pdf"
 
-    pytest.helpers.help_run_action_all_complete_duplicate_file(
-        file_ext_1, file_ext_2, stem_name_1, stem_name_2
-    )
+    pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

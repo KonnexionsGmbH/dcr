@@ -4,6 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 from os import PathLike
 from typing import Dict
+from typing import List
 from typing import TypeAlias
 from typing import Union
 
@@ -72,12 +73,22 @@ OS_POSIX: str = "posix"
 PANDOC_PDF_ENGINE_LULATEX: str = "lulatex"
 PANDOC_PDF_ENGINE_XELATEX: str = "xelatex"
 
+PARSE_ATTRIB_FONT: str = "font"
+PARSE_ATTRIB_ID: str = "id"
+PARSE_ATTRIB_ITALIC_ANGLE: str = "italicangle"
+PARSE_ATTRIB_NAME: str = "name"
+PARSE_ATTRIB_SIZE: str = "size"
+PARSE_ATTRIB_WEIGHT: str = "weight"
 PARSE_NAME_SPACE: str = "{http://www.pdflib.com/XML/TET5/TET-5.0}"
+
 PARSE_TAG_A: str = "A"
+PARSE_TAG_ACTION: str = "Action"
 PARSE_TAG_ANNOTATIONS: str = "Annotations"
+PARSE_TAG_ATTACHMENTS: str = "Attachments"
 PARSE_TAG_AUTHOR: str = "Author"
 PARSE_TAG_BOOKMARKS: str = "Bookmarks"
 PARSE_TAG_BOX: str = "Box"
+PARSE_TAG_COLOR_SPACES: str = "ColorSpaces"
 PARSE_TAG_CONTENT: str = "Content"
 PARSE_TAG_CREATION: str = "Creation"
 PARSE_TAG_CREATION_DATE: str = "CreationDate"
@@ -86,24 +97,35 @@ PARSE_TAG_CUSTOM: str = "Custom"
 PARSE_TAG_DESTINATIONS: str = "Destinations"
 PARSE_TAG_DOCUMENT: str = "Document"
 PARSE_TAG_DOC_INFO: str = "DocInfo"
+PARSE_TAG_ENCRYPTION: str = "Encryption"
+PARSE_TAG_EXCEPTION: str = "Exception"
+PARSE_TAG_FIELDS: str = "Fields"
+PARSE_TAG_FONT: str = "Font"
+PARSE_TAG_FONTS: str = "Fonts"
 PARSE_TAG_FROM: int = len(PARSE_NAME_SPACE)
 PARSE_TAG_GLYPH: str = "Glyph"
 PARSE_TAG_GRAPHICS: str = "Graphics"
+PARSE_TAG_IMAGES: str = "Images"
+PARSE_TAG_JAVA_SCRIPTS: str = "JavaScripts"
 PARSE_TAG_LINE: str = "Line"
 PARSE_TAG_METADATA: str = "Metadata"
 PARSE_TAG_MOD_DATE: str = "ModDate"
 PARSE_TAG_OPTIONS: str = "Options"
+PARSE_TAG_OUTPUT_INTENTS: str = "OutputIntents"
 PARSE_TAG_PAGE: str = "Page"
 PARSE_TAG_PAGES: str = "Pages"
 PARSE_TAG_PARA: str = "Para"
+PARSE_TAG_PATTERNX: str = "Patternx"
 PARSE_TAG_PLACED_IMAGE: str = "PlacedImage"
 PARSE_TAG_PRODUCER: str = "Producer"
 PARSE_TAG_RESOURCES: str = "Resources"
+PARSE_TAG_SIGNATURE_FIELDS: str = "SignatureFields"
 PARSE_TAG_TABLE: str = "Table"
 PARSE_TAG_TET: str = "TET"
 PARSE_TAG_TEXT: str = "Text"
 PARSE_TAG_TITLE: str = "Title"
 PARSE_TAG_WORD: str = "Word"
+PARSE_TAG_XFA: str = "XFA"
 
 RUN_ACTION_ALL_COMPLETE: str = "all"
 RUN_ACTION_CREATE_DB: str = "db_c"
@@ -186,13 +208,25 @@ logger: logging.Logger
 
 parse_result_author: str
 parse_result_creation_date: datetime
+parse_result_font_id: str | None
+parse_result_font_size: str
+parse_result_fonts: List[Dict[str, str]]
+parse_result_fonts_no_words: Dict[str, int]
+parse_result_line_in_para_end: int
+parse_result_line_in_para_start: int
 parse_result_mod_date: datetime
 parse_result_no_line: int
 parse_result_no_page: int
 parse_result_no_para: int
 parse_result_no_sentence: int
-parse_result_no_word_in_line: int
-parse_result_no_word_in_sentence: int
+parse_result_no_word_line: int
+parse_result_no_word_sentence: int
+parse_result_page_in_document_end: int
+parse_result_page_in_document_start: int
+parse_result_para_in_page_end: int
+parse_result_para_in_page_start: int
+parse_result_sentence: Dict[str, int | List[Dict[str, int | str]]]
+parse_result_text: str
 
 pdf2image_type: str
 
