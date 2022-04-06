@@ -137,9 +137,9 @@ pipenv-dev:         ## Install the package dependencies for development.
 	@echo "Info **********  Start: Installation of Development Packages ********"
 	python -m pip install --upgrade pip
 	python -m pip install --upgrade pipenv
+	python -m pipenv install --dev
 	python -m pipenv --rm
 	exit
-	python -m pipenv install --dev
 	python -m pipenv update --dev
 	pipenv run pip freeze
 	python --version
@@ -149,9 +149,9 @@ pipenv-prod:        ## Install the package dependencies for production.
 	@echo "Info **********  Start: Installation of Production Packages *********"
 	python -m pip install --upgrade pip
 	python -m pip install --upgrade pipenv
+	python -m pipenv install
 	python -m pipenv --rm
 	exit
-	python -m pipenv install
 	python -m pipenv update
 	pipenv run pip freeze
 	python --version
