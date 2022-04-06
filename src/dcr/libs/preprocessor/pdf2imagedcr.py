@@ -80,9 +80,13 @@ def convert_pdf_2_image_file() -> None:
     for img in images:
         libs.cfg.document_child_child_no += 1
 
-        libs.cfg.document_child_stem_name = libs.cfg.document_stem_name + "_" + str(libs.cfg.document_child_child_no)
+        libs.cfg.document_child_stem_name = (
+            libs.cfg.document_stem_name + "_" + str(libs.cfg.document_child_child_no)
+        )
 
-        libs.cfg.document_child_file_name = libs.cfg.document_child_stem_name + "." + libs.cfg.document_child_file_type
+        libs.cfg.document_child_file_name = (
+            libs.cfg.document_child_stem_name + "." + libs.cfg.document_child_file_type
+        )
 
         file_name_child = os.path.join(
             libs.cfg.document_child_directory_name,
@@ -116,7 +120,7 @@ def convert_pdf_2_image_file() -> None:
     #     number_errors += 1
     #     libs.utils.report_document_error(
     #         error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-    #         error=libs.db.cfg.ERROR_21_901.replace("{file_name}", libs.cfg.document_file_name).replace(
-    #             "{error_msg}", str(err)
-    #         ),
+    #         error=libs.db.cfg.ERROR_21_901.replace(
+    #             "{file_name}", libs.cfg.document_file_name
+    #         ).replace("{error_msg}", str(err)),
     #     )

@@ -17,7 +17,9 @@ import libs.utils
 # -----------------------------------------------------------------------------
 # Debug an XML element detailed.
 # -----------------------------------------------------------------------------
-def debug_xml_element_all(event: str, parent_tag: str, attrib: Dict[str, str], text: Iterable[str | None]) -> None:
+def debug_xml_element_all(
+    event: str, parent_tag: str, attrib: Dict[str, str], text: Iterable[str | None]
+) -> None:
     """Debug an XML element detailed.
 
     Args:
@@ -97,7 +99,9 @@ def insert_content() -> None:
     if not libs.cfg.parse_result_sentence[libs.db.cfg.JSON_NAME_WORDS]:
         return
 
-    libs.cfg.parse_result_sentence[libs.db.cfg.JSON_NAME_NO_WORDS] = libs.cfg.parse_result_no_word_sentence
+    libs.cfg.parse_result_sentence[
+        libs.db.cfg.JSON_NAME_NO_WORDS
+    ] = libs.cfg.parse_result_no_word_sentence
 
     if not libs.cfg.is_simulate_parser:
         libs.db.orm.dml.insert_dbt_row(
@@ -106,8 +110,8 @@ def insert_content() -> None:
                 libs.db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
                 libs.db.cfg.DBC_LINE_IN_PARA_END: libs.cfg.parse_result_line_in_para_end,
                 libs.db.cfg.DBC_LINE_IN_PARA_START: libs.cfg.parse_result_line_in_para_start,
-                libs.db.cfg.DBC_PAGE_IN_DOCUMENT_END: libs.cfg.parse_result_page_in_document_end,
-                libs.db.cfg.DBC_PAGE_IN_DOCUMENT_START: libs.cfg.parse_result_page_in_document_start,
+                libs.db.cfg.DBC_PAGE_IN_DOC_END: libs.cfg.parse_result_page_in_doc_end,
+                libs.db.cfg.DBC_PAGE_IN_DOC_START: libs.cfg.parse_result_page_in_doc_start,
                 libs.db.cfg.DBC_PARA_IN_PAGE_END: libs.cfg.parse_result_para_in_page_end,
                 libs.db.cfg.DBC_PARA_IN_PAGE_START: libs.cfg.parse_result_para_in_page_start,
                 libs.db.cfg.DBC_SENTENCE: json.dumps(libs.cfg.parse_result_sentence),
@@ -118,7 +122,9 @@ def insert_content() -> None:
 
     libs.cfg.parse_result_no_sentence += 1
 
-    libs.cfg.parse_result_sentence[libs.db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA] = libs.cfg.parse_result_no_sentence
+    libs.cfg.parse_result_sentence[
+        libs.db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA
+    ] = libs.cfg.parse_result_no_sentence
 
 
 # -----------------------------------------------------------------------------
@@ -136,7 +142,9 @@ def parse_tag_box(parent_tag: str, parent: Iterable[str]) -> None:
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
         match child_tag:
-            case (libs.cfg.PARSE_TAG_A | libs.cfg.PARSE_TAG_PLACED_IMAGE | libs.cfg.PARSE_TAG_TABLE):
+            case (
+                libs.cfg.PARSE_TAG_A | libs.cfg.PARSE_TAG_PLACED_IMAGE | libs.cfg.PARSE_TAG_TABLE
+            ):
                 pass
             case libs.cfg.PARSE_TAG_GLYPH:
                 parse_tag_glyph(child_tag, child)
@@ -194,7 +202,9 @@ def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
             case libs.cfg.PARSE_TAG_AUTHOR:
                 libs.cfg.parse_result_author = child.text
             case libs.cfg.PARSE_TAG_CREATION_DATE:
-                libs.cfg.parse_result_creation_date = datetime.strptime(child.text, "%Y-%m-%dT%H:%M:%S%z")
+                libs.cfg.parse_result_creation_date = datetime.strptime(
+                    child.text, "%Y-%m-%dT%H:%M:%S%z"
+                )
             case (
                 libs.cfg.PARSE_TAG_CREATOR
                 | libs.cfg.PARSE_TAG_PRODUCER
@@ -203,7 +213,9 @@ def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
             ):
                 pass
             case libs.cfg.PARSE_TAG_MOD_DATE:
-                libs.cfg.parse_result_mod_date = datetime.strptime(child.text, "%Y-%m-%dT%H:%M:%S%z")
+                libs.cfg.parse_result_mod_date = datetime.strptime(
+                    child.text, "%Y-%m-%dT%H:%M:%S%z"
+                )
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -329,7 +341,7 @@ def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
     libs.cfg.parse_result_no_word_line = 0
 
     libs.cfg.parse_result_line_in_para_start = libs.cfg.parse_result_no_line
-    libs.cfg.parse_result_page_in_document_start = libs.cfg.parse_result_no_page
+    libs.cfg.parse_result_page_in_doc_start = libs.cfg.parse_result_no_page
     libs.cfg.parse_result_para_in_page_start = libs.cfg.parse_result_no_para
 
     for child in parent:
@@ -414,7 +426,9 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
     libs.cfg.parse_result_no_sentence = 1
     libs.cfg.parse_result_no_word_sentence = 0
 
-    libs.cfg.parse_result_sentence[libs.db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA] = libs.cfg.parse_result_no_sentence
+    libs.cfg.parse_result_sentence[
+        libs.db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA
+    ] = libs.cfg.parse_result_no_sentence
     libs.cfg.parse_result_sentence[libs.db.cfg.JSON_NAME_WORDS] = []
 
     for child in parent:
@@ -448,7 +462,11 @@ def parse_tag_resources(parent_tag: str, parent: Iterable[str]) -> None:
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
         match child_tag:
-            case (libs.cfg.PARSE_TAG_COLOR_SPACES | libs.cfg.PARSE_TAG_IMAGES | libs.cfg.PARSE_TAG_PATTERNX):
+            case (
+                libs.cfg.PARSE_TAG_COLOR_SPACES
+                | libs.cfg.PARSE_TAG_IMAGES
+                | libs.cfg.PARSE_TAG_PATTERNX
+            ):
                 pass
             case libs.cfg.PARSE_TAG_FONTS:
                 parse_tag_fonts(child_tag, child)
@@ -520,7 +538,7 @@ def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
         libs.cfg.parse_result_fonts_no_words[libs.cfg.parse_result_font_id] = 1
 
     libs.cfg.parse_result_line_in_para_end = libs.cfg.parse_result_no_line
-    libs.cfg.parse_result_page_in_document_end = libs.cfg.parse_result_no_page
+    libs.cfg.parse_result_page_in_doc_end = libs.cfg.parse_result_no_page
     libs.cfg.parse_result_para_in_page_end = libs.cfg.parse_result_no_para
 
     if libs.cfg.parse_result_text == ".":

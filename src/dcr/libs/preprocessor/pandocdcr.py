@@ -82,7 +82,9 @@ def convert_non_pdf_2_pdf_file() -> None:
         next_step=libs.db.cfg.DOCUMENT_STEP_PDFLIB,
     )
 
-    libs.cfg.document_child_file_name = libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF
+    libs.cfg.document_child_file_name = (
+        libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF
+    )
     libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
     libs.utils.initialise_document_child()

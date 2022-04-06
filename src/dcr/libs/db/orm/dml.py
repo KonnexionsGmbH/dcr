@@ -217,7 +217,9 @@ def select_run_run_id_last() -> int | sqlalchemy.Integer:
     Returns:
         sqlalchemy.Integer: The last run id found.
     """
-    dbt = Table(libs.db.cfg.DBT_RUN, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine)
+    dbt = Table(
+        libs.db.cfg.DBT_RUN, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine
+    )
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(select(func.max(dbt.c.run_id))).fetchone()

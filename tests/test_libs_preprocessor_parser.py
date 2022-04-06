@@ -256,7 +256,9 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - verbose_parser - all.
 # -----------------------------------------------------------------------------
-def test_run_action_store_from_parser_verbose_parser_all(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+def test_run_action_store_from_parser_verbose_parser_all(
+    fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
+):
     """Test RUN_ACTION_STORE_FROM_PARSER - verbose_parser - all."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
@@ -301,7 +303,9 @@ def test_run_action_store_from_parser_verbose_parser_all(fxtr_rmdir_opt, fxtr_se
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_store_from_parser_verbose_parser_all <=========")
+    libs.cfg.logger.info(
+        "=========> test_run_action_store_from_parser_verbose_parser_all <========="
+    )
 
     pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox,
@@ -332,7 +336,9 @@ def test_run_action_store_from_parser_verbose_parser_all(fxtr_rmdir_opt, fxtr_se
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - verbose_parser - text.
 # -----------------------------------------------------------------------------
-def test_run_action_store_from_parser_verbose_parser_text(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+def test_run_action_store_from_parser_verbose_parser_text(
+    fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
+):
     """Test RUN_ACTION_STORE_FROM_PARSER - verbose_parser - text."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
@@ -377,7 +383,9 @@ def test_run_action_store_from_parser_verbose_parser_text(fxtr_rmdir_opt, fxtr_s
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_store_from_parser_verbose_parser_text <=========")
+    libs.cfg.logger.info(
+        "=========> test_run_action_store_from_parser_verbose_parser_text <========="
+    )
 
     pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox,

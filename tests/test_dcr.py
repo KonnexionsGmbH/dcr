@@ -111,7 +111,9 @@ def test_get_config(fxtr_setup_logger_environment):
 
     assert not libs.cfg.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: false (any not true)"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
+    )
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(
@@ -122,10 +124,14 @@ def test_get_config(fxtr_setup_logger_environment):
 
     assert libs.cfg.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: true"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
+    )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.store_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, "n/a")
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, "n/a"
+    )
 
     with pytest.raises(SystemExit) as expt:
         dcr.get_config()
@@ -133,7 +139,9 @@ def test_get_config(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_PDF2IMAGE_TYPE: invalid"
     assert expt.value.code == 1, "DCR_CFG_PDF2IMAGE_TYPE: invalid"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -155,7 +163,9 @@ def test_get_config_simulate_parser(fxtr_setup_logger_environment):
 
     assert not libs.cfg.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: false (not true)"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, value_original
+    )
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(
@@ -166,7 +176,9 @@ def test_get_config_simulate_parser(fxtr_setup_logger_environment):
 
     assert libs.cfg.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: true"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, value_original
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -180,7 +192,9 @@ def test_get_config_verbose(fxtr_setup_logger_environment):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.store_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, "FalsE")
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, "FalsE"
+    )
 
     libs.cfg.is_verbose = True
 
@@ -188,10 +202,14 @@ def test_get_config_verbose(fxtr_setup_logger_environment):
 
     assert not libs.cfg.is_verbose, "DCR_CFG_VERBOSE: false"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, value_original
+    )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.store_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, "n/a")
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, "n/a"
+    )
 
     libs.cfg.is_verbose = True
 
@@ -199,7 +217,9 @@ def test_get_config_verbose(fxtr_setup_logger_environment):
 
     assert libs.cfg.is_verbose, "DCR_CFG_VERBOSE: true (not false)"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, value_original
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -213,22 +233,30 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.store_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "aLL")
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "aLL"
+    )
 
     dcr.get_config()
 
     assert libs.cfg.verbose_parser == "all", "DCR_CFG_VERBOSE_PARSER: all"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
+    )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.store_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "n/a")
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "n/a"
+    )
 
     dcr.get_config()
 
     assert libs.cfg.verbose_parser == "none", "DCR_CFG_VERBOSE_PARSER: none (not all or text)"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
+    )
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(
@@ -239,7 +267,9 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
 
     assert libs.cfg.verbose_parser == "text", "DCR_CFG_VERBOSE_PARSER: all"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -258,7 +288,9 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     assert len(libs.cfg.config) == CONFIG_PARAM_NO, "config:: complete"
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.delete_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DIRECTORY_INBOX)
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DIRECTORY_INBOX
+    )
 
     with pytest.raises(SystemExit) as expt:
         dcr.get_config()
@@ -266,7 +298,9 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_DIRECTORY_INBOX: missing"
     assert expt.value.code == 1, "DCR_CFG_DIRECTORY_INBOX: missing"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DIRECTORY_INBOX, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DIRECTORY_INBOX, value_original
+    )
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.delete_config_param(
@@ -299,7 +333,9 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.delete_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES)
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES
+    )
 
     libs.cfg.is_ignore_duplicates = False
 
@@ -307,10 +343,14 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     assert not libs.cfg.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: false (missing)"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
+    )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.delete_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE)
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE
+    )
 
     libs.cfg.pdf2image_type = libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
 
@@ -320,19 +360,27 @@ def test_get_config_missing(fxtr_setup_logger_environment):
         "DCR_CFG_PDF2IMAGE_TYPE: default should not be '" + libs.cfg.pdf2image_type + "'"
     )
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original
+    )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.delete_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER)
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER
+    )
 
     dcr.get_config()
 
     assert not libs.cfg.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: false (missing)"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, value_original
+    )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.delete_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE)
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE
+    )
 
     libs.cfg.is_verbose = True
 
@@ -340,16 +388,22 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     assert libs.cfg.is_verbose, "DCR_CFG_VERBOSE: true (missing)"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, value_original
+    )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.delete_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER)
+    value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER
+    )
 
     dcr.get_config()
 
     assert libs.cfg.verbose_parser == "none", "DCR_CFG_VERBOSE_PARSER: none (missing)"
 
-    pytest.helpers.restore_config_param(libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original)
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -500,7 +554,9 @@ def test_wrong_api_version(fxtr_setup_empty_db_and_inbox):
     )
 
     shutil.copyfile(
-        os.path.join(libs.cfg.TESTS_INBOX_NAME, "test_initial_database_data_wrong_api_version.json"),
+        os.path.join(
+            libs.cfg.TESTS_INBOX_NAME, "test_initial_database_data_wrong_api_version.json"
+        ),
         Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]),
     )
 

@@ -221,8 +221,8 @@ parse_result_no_para: int
 parse_result_no_sentence: int
 parse_result_no_word_line: int
 parse_result_no_word_sentence: int
-parse_result_page_in_document_end: int
-parse_result_page_in_document_start: int
+parse_result_page_in_doc_end: int
+parse_result_page_in_doc_start: int
 parse_result_para_in_page_end: int
 parse_result_para_in_page_start: int
 parse_result_sentence: Dict[str, int | List[Dict[str, str | int]]]

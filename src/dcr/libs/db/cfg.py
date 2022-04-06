@@ -40,8 +40,8 @@ DBC_LINE_IN_PARA_START: str = "line_in_para_start"
 DBC_MODIFIED_AT: str = "modified_at"
 DBC_MODULE_NAME: str = "module_name"
 DBC_NEXT_STEP: str = "next_step"
-DBC_PAGE_IN_DOCUMENT_END: str = "page_in_document_end"
-DBC_PAGE_IN_DOCUMENT_START: str = "page_in_document_start"
+DBC_PAGE_IN_DOC_END: str = "page_in_doc_end"
+DBC_PAGE_IN_DOC_START: str = "page_in_doc_start"
 DBC_PARA_IN_PAGE_END: str = "para_in_page_end"
 DBC_PARA_IN_PAGE_START: str = "para_in_page_start"
 DBC_RUN_ID: str = "run_id"
@@ -125,18 +125,24 @@ DOCUMENT_STEP_PDFLIB: str = "PDFlib TET"
 DOCUMENT_STEP_PYPDF4: str = "PyPDF4"
 DOCUMENT_STEP_TESSERACT: str = "Tesseract OCR"
 
-ERROR_01_901: str = "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
+ERROR_01_901: str = (
+    "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
+)
 ERROR_01_902: str = (
-    "01.902 Issue (p_i): Moving '{source_file}' to '{target_file}' " + "- error: code='{error_code}' msg='{error_msg}'."
+    "01.902 Issue (p_i): Moving '{source_file}' to '{target_file}' "
+    + "- error: code='{error_code}' msg='{error_msg}'."
 )
 ERROR_01_903: str = (
-    "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{source_file}' " + "- error: '{error_msg}'."
+    "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{source_file}' "
+    + "- error: '{error_msg}'."
 )
 ERROR_01_904: str = (
-    "01.904 Issue (p_i): File permission with file '{source_file}' " + "- error: code='{error_code}' msg='{error_msg}'."
+    "01.904 Issue (p_i): File permission with file '{source_file}' "
+    + "- error: code='{error_code}' msg='{error_msg}'."
 )
 ERROR_01_905: str = (
-    "01.905 Issue (p_i): The same file has probably already been processed " + "once under the file name '{file_name}'."
+    "01.905 Issue (p_i): The same file has probably already been processed "
+    + "once under the file name '{file_name}'."
 )
 ERROR_01_906: str = "01.906 Issue (p_i): The target file '{file_name}' already exists."
 
@@ -156,7 +162,8 @@ ERROR_31_901: str = (
     + "'{target_file}' with Pandoc and TeX Live failed - output='{output}'."
 )
 ERROR_31_902: str = (
-    "31.902 Issue (n_2_p): The file '{file_name}' cannot be converted to an " + "'pdf' document - error: '{error_msg}'."
+    "31.902 Issue (n_2_p): The file '{file_name}' cannot be converted to an "
+    + "'pdf' document - error: '{error_msg}'."
 )
 ERROR_31_903: str = "31.903 Issue (n_2_p): The target file '{file_name}' already exists."
 
@@ -188,11 +195,15 @@ ERROR_51_903: str = (
 )
 
 ERROR_61_901: str = (
-    "61.901 Issue (s_f_p): {function}: Unknown child tag '{child_tag}' - " + "in parent tag '{parent_tag}'."
+    "61.901 Issue (s_f_p): {function}: Unknown child tag '{child_tag}' - "
+    + "in parent tag '{parent_tag}'."
 )
-ERROR_61_902: str = "61.902 Issue (s_f_p): Expected tag '{expected_tag}' - " + " but found tag '{found_tag}'."
+ERROR_61_902: str = (
+    "61.902 Issue (s_f_p): Expected tag '{expected_tag}' - " + " but found tag '{found_tag}'."
+)
 ERROR_61_903: str = (
-    "61.903 Issue (s_f_p): Text missing: document {document_id} page {page_no} " + "paragraph {para_no} line {line_no}."
+    "61.903 Issue (s_f_p): Text missing: document {document_id} page {page_no} "
+    + "paragraph {para_no} line {line_no}."
 )
 
 JSON_NAME_API_VERSION: str = "apiVersion"

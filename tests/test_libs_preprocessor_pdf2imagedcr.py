@@ -104,7 +104,9 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
     stem_name_2: str = "pdf_scanned_ok_1_1"
     file_ext_2: str = "jpeg"
 
-    pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
+    pytest.helpers.help_run_action_all_complete_duplicate_file(
+        file_ext_1, file_ext_2, stem_name_1, stem_name_2
+    )
 
     # -------------------------------------------------------------------------
     pytest.helpers.restore_config_param(

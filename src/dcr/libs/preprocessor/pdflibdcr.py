@@ -62,7 +62,9 @@ def extract_text_from_pdf() -> None:
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf_file() -> None:
     """Extract text and metadata from a pdf document."""
-    source_file_name, target_file_name = libs.utils.prepare_file_names(libs.db.cfg.DOCUMENT_FILE_TYPE_XML)
+    source_file_name, target_file_name = libs.utils.prepare_file_names(
+        libs.db.cfg.DOCUMENT_FILE_TYPE_XML
+    )
 
     # not testable
     # tet = None
@@ -105,7 +107,9 @@ def extract_text_from_pdf_file() -> None:
         next_step=libs.db.cfg.DOCUMENT_STEP_PARSER,
     )
 
-    libs.cfg.document_child_file_name = libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_XML
+    libs.cfg.document_child_file_name = (
+        libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_XML
+    )
     libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
     libs.utils.initialise_document_child()

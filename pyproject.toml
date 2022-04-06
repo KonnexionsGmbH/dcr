@@ -2,7 +2,7 @@
 skips = ["B404", "B603", "B607", "B608"]
 
 [tool.black]
-line-length = 120
+line-length = 100
 
 [tool.isort]
 float_to_top = true

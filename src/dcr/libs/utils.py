@@ -183,7 +183,9 @@ def progress_msg(msg: str) -> None:
         msg (str): Progress message.
     """
     if libs.cfg.is_verbose:
-        final_msg: str = libs.cfg.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
+        final_msg: str = (
+            libs.cfg.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
+        )
 
         print(final_msg)
 
@@ -198,7 +200,8 @@ def progress_msg_connected() -> None:
     if libs.cfg.is_verbose:
         print("")
         progress_msg(
-            f"User '{libs.db.cfg.db_current_user}' is now connected " f"to database '{libs.db.cfg.db_current_database}'"
+            f"User '{libs.db.cfg.db_current_user}' is now connected "
+            f"to database '{libs.db.cfg.db_current_database}'"
         )
 
 
@@ -213,7 +216,9 @@ def progress_msg_disconnected() -> None:
             libs.utils.progress_msg("Database is now disconnected")
             return
 
-        database = "n/a" if libs.db.cfg.db_current_database is None else libs.db.cfg.db_current_database
+        database = (
+            "n/a" if libs.db.cfg.db_current_database is None else libs.db.cfg.db_current_database
+        )
         user = "n/a" if libs.db.cfg.db_current_user is None else libs.db.cfg.db_current_user
 
         print("")
@@ -390,23 +395,33 @@ def select_language(conn: Connection, dbt: Table) -> engine.CursorResult:
 def show_statistics_language() -> None:
     """Show the language related statistics of the run."""
     libs.utils.progress_msg("===============================> Summary Language")
-    libs.utils.progress_msg(f"Number documents to be processed:          {libs.cfg.language_to_be_processed:6d}")
+    libs.utils.progress_msg(
+        f"Number documents to be processed:          {libs.cfg.language_to_be_processed:6d}"
+    )
 
     if libs.cfg.language_to_be_processed > 0:
         libs.utils.progress_msg(
-            f"Number documents accepted - " f"Pandoc:        {libs.cfg.language_ok_processed_pandoc:6d}"
+            f"Number documents accepted - "
+            f"Pandoc:        {libs.cfg.language_ok_processed_pandoc:6d}"
         )
         libs.utils.progress_msg(
-            f"Number documents accepted - " f"pdf2image:     {libs.cfg.language_ok_processed_pdf2image:6d}"
+            f"Number documents accepted - "
+            f"pdf2image:     {libs.cfg.language_ok_processed_pdf2image:6d}"
         )
         libs.utils.progress_msg(
-            f"Number documents accepted - " f"PDFlib TET:    {libs.cfg.language_ok_processed_pdflib:6d}"
+            f"Number documents accepted - "
+            f"PDFlib TET:    {libs.cfg.language_ok_processed_pdflib:6d}"
         )
         libs.utils.progress_msg(
-            f"Number documents accepted - " f"Tesseract OCR: {libs.cfg.language_ok_processed_tesseract:6d}"
+            f"Number documents accepted - "
+            f"Tesseract OCR: {libs.cfg.language_ok_processed_tesseract:6d}"
         )
-        libs.utils.progress_msg(f"Number documents accepted - " f"Total:         {libs.cfg.language_ok_processed:6d}")
-        libs.utils.progress_msg(f"Number documents rejected:                 {libs.cfg.language_erroneous:6d}")
+        libs.utils.progress_msg(
+            f"Number documents accepted - " f"Total:         {libs.cfg.language_ok_processed:6d}"
+        )
+        libs.utils.progress_msg(
+            f"Number documents rejected:                 {libs.cfg.language_erroneous:6d}"
+        )
 
 
 # -----------------------------------------------------------------------------
@@ -415,39 +430,61 @@ def show_statistics_language() -> None:
 def show_statistics_total() -> None:
     """Show the total statistics of the run."""
     libs.utils.progress_msg("==================================> Summary Total")
-    libs.utils.progress_msg(f"Number documents to be processed:          {libs.cfg.total_to_be_processed:6d}")
+    libs.utils.progress_msg(
+        f"Number documents to be processed:          {libs.cfg.total_to_be_processed:6d}"
+    )
 
     if libs.cfg.total_to_be_processed > 0:
         if libs.cfg.total_status_ready > 0 or libs.cfg.total_status_error > 0:
-            libs.utils.progress_msg(f"Number with document status ready:         {libs.cfg.total_status_ready:6d}")
-            libs.utils.progress_msg(f"Number with document status error:         {libs.cfg.total_status_error:6d}")
+            libs.utils.progress_msg(
+                f"Number with document status ready:         {libs.cfg.total_status_ready:6d}"
+            )
+            libs.utils.progress_msg(
+                f"Number with document status error:         {libs.cfg.total_status_error:6d}"
+            )
 
         if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX:
             libs.utils.progress_msg(
-                f"Number documents accepted - " f"Pandoc:        {libs.cfg.total_ok_processed_pandoc:6d}"
+                f"Number documents accepted - "
+                f"Pandoc:        {libs.cfg.total_ok_processed_pandoc:6d}"
             )
             libs.utils.progress_msg(
-                f"Number documents accepted - " f"pdf2image:     {libs.cfg.total_ok_processed_pdf2image:6d}"
+                f"Number documents accepted - "
+                f"pdf2image:     {libs.cfg.total_ok_processed_pdf2image:6d}"
             )
             libs.utils.progress_msg(
-                f"Number documents accepted - " f"PDFlib TET:    {libs.cfg.total_ok_processed_pdflib:6d}"
+                f"Number documents accepted - "
+                f"PDFlib TET:    {libs.cfg.total_ok_processed_pdflib:6d}"
             )
             libs.utils.progress_msg(
-                f"Number documents accepted - " f"Tesseract OCR: {libs.cfg.total_ok_processed_tesseract:6d}"
+                f"Number documents accepted - "
+                f"Tesseract OCR: {libs.cfg.total_ok_processed_tesseract:6d}"
             )
-            libs.utils.progress_msg("Number documents accepted - " + f"Total:         {libs.cfg.total_ok_processed:6d}")
+            libs.utils.progress_msg(
+                "Number documents accepted - " + f"Total:         {libs.cfg.total_ok_processed:6d}"
+            )
         elif libs.cfg.run_action == libs.cfg.RUN_ACTION_TEXT_FROM_PDF:
-            libs.utils.progress_msg(f"Number documents extracted:                {libs.cfg.total_ok_processed:6d}")
+            libs.utils.progress_msg(
+                f"Number documents extracted:                {libs.cfg.total_ok_processed:6d}"
+            )
         else:
-            libs.utils.progress_msg(f"Number documents converted:                {libs.cfg.total_ok_processed:6d}")
+            libs.utils.progress_msg(
+                f"Number documents converted:                {libs.cfg.total_ok_processed:6d}"
+            )
 
         if libs.cfg.total_generated > 0:
-            libs.utils.progress_msg(f"Number documents generated:                {libs.cfg.total_generated:6d}")
+            libs.utils.progress_msg(
+                f"Number documents generated:                {libs.cfg.total_generated:6d}"
+            )
 
         if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX:
-            libs.utils.progress_msg(f"Number documents rejected:                 {libs.cfg.total_erroneous:6d}")
+            libs.utils.progress_msg(
+                f"Number documents rejected:                 {libs.cfg.total_erroneous:6d}"
+            )
         else:
-            libs.utils.progress_msg(f"Number documents erroneous:                {libs.cfg.total_erroneous:6d}")
+            libs.utils.progress_msg(
+                f"Number documents erroneous:                {libs.cfg.total_erroneous:6d}"
+            )
 
         if libs.cfg.run_action == libs.cfg.RUN_ACTION_TEXT_FROM_PDF:
             libs.utils.progress_msg(
@@ -528,7 +565,9 @@ def terminate_fatal(error_msg: str) -> None:
     print(libs.cfg.LOGGER_FATAL_HEAD)
     print(libs.cfg.LOGGER_FATAL_HEAD, error_msg, libs.cfg.LOGGER_FATAL_TAIL, sep="")
     print(libs.cfg.LOGGER_FATAL_HEAD)
-    libs.cfg.logger.critical("%s%s%s", libs.cfg.LOGGER_FATAL_HEAD, error_msg, libs.cfg.LOGGER_FATAL_TAIL)
+    libs.cfg.logger.critical(
+        "%s%s%s", libs.cfg.LOGGER_FATAL_HEAD, error_msg, libs.cfg.LOGGER_FATAL_TAIL
+    )
 
     traceback.print_exc(chain=True)
 

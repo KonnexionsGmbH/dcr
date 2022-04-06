@@ -187,12 +187,12 @@ def create_dbt_content(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(
-            libs.db.cfg.DBC_PAGE_IN_DOCUMENT_END,
+            libs.db.cfg.DBC_PAGE_IN_DOC_END,
             sqlalchemy.Integer,
             nullable=False,
         ),
         sqlalchemy.Column(
-            libs.db.cfg.DBC_PAGE_IN_DOCUMENT_START,
+            libs.db.cfg.DBC_PAGE_IN_DOC_START,
             sqlalchemy.Integer,
             nullable=False,
         ),
@@ -371,11 +371,21 @@ def create_dbt_language(table_name: str) -> None:
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(libs.db.cfg.DBC_ACTIVE, sqlalchemy.Boolean, default=True, nullable=False),
-        sqlalchemy.Column(libs.db.cfg.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False, unique=True),
-        sqlalchemy.Column(libs.db.cfg.DBC_CODE_SPACY, sqlalchemy.String, nullable=False, unique=True),
-        sqlalchemy.Column(libs.db.cfg.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True),
-        sqlalchemy.Column(libs.db.cfg.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True),
-        sqlalchemy.Column(libs.db.cfg.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False, unique=True
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_CODE_SPACY, sqlalchemy.String, nullable=False, unique=True
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True
+        ),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True
+        ),
     )
 
     libs.utils.progress_msg(f"The database table '{table_name}' has now been created")
@@ -536,7 +546,9 @@ def create_schema() -> None:
             libs.db.cfg.DBC_CODE_ISO_639_3: "eng",
             libs.db.cfg.DBC_CODE_SPACY: "en",
             libs.db.cfg.DBC_CODE_TESSERACT: "eng",
-            libs.db.cfg.DBC_DIRECTORY_NAME_INBOX: str(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]),
+            libs.db.cfg.DBC_DIRECTORY_NAME_INBOX: str(
+                libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
+            ),
             libs.db.cfg.DBC_ISO_LANGUAGE_NAME: "English",
         },
     )
@@ -579,7 +591,8 @@ def load_db_data_from_json(initial_database_data: Path) -> None:
         api_version = json_data[libs.db.cfg.JSON_NAME_API_VERSION]
         if api_version != libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]:
             libs.utils.terminate_fatal(
-                f"Expected api version is' {libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]}' " f"- got '{api_version}'"
+                f"Expected api version is' {libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]}' "
+                f"- got '{api_version}'"
             )
 
         data = json_data[libs.db.cfg.JSON_NAME_DATA]
@@ -592,7 +605,9 @@ def load_db_data_from_json(initial_database_data: Path) -> None:
                         f"The database table '{table_name}' must not be changed via the JSON file."
                     )
                 else:
-                    libs.utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
+                    libs.utils.terminate_fatal(
+                        f"The database table '{table_name}' does not exist in the database."
+                    )
 
             for json_row in json_table[libs.db.cfg.JSON_NAME_ROWS]:
                 db_columns = {}

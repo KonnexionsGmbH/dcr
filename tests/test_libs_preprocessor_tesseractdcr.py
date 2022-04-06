@@ -194,7 +194,9 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     stem_name_2: str = "tiff_pdf_text_ok_1"
     file_ext_2: str = "pdf"
 
-    pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
+    pytest.helpers.help_run_action_all_complete_duplicate_file(
+        file_ext_1, file_ext_2, stem_name_1, stem_name_2
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -280,7 +282,19 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     stem_name_2: str = "Translating_SQL_Into_Relational_Algebra_p01_02_1_0"
     file_ext_2: str = "pdf"
 
-    pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
+    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"
+    )
+
+    pytest.helpers.help_run_action_all_complete_duplicate_file(
+        file_ext_1, file_ext_2, stem_name_1, stem_name_2
+    )
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
+        value_original_delete_auxiliary_files,
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
