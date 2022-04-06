@@ -9,16 +9,16 @@
 
 ## 1. Introduction
 
-Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](developing_research_notes.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary **`pdf`** documents and thus make them more searchable in a more qualified manner.
+Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](developing_research_notes.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary **`pdf`** documents and thus make them better searchable in a more qualified manner.
 
 The processing logic is as follows:
 
-- New documents are made available in the file directory **`ìnbox`**.
+- New documents are made available in the file directory **` inbox`**. If required, other language-related file directories can also be used (see section [Document Language](https://konnexionsgmbh.github.io/dcr/running_document_language){:target="_blank"}).
 - Documents in a file format accepted by **DCR** are registered and moved to the file directory **`ìnbox_accepted`**. All other documents are registered and moved to the file directory **`ìnbox_rejected`**.
 - Documents not in **`pdf`** format are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
 - Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to **`pdf`** format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. **`jpeg`**, **`tiff`** etc., as well as scanned images in **`pdf`** format.  
 - From all **`pdf`** documents, the text and associated metadata is extracted into a document-specific **`xml`** file using [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"}.
-- The document-specific **`xml`** files are then parsed and the **DCR**-relevant contents are written to the database table **`content`**. 
+- The document-specific **`xml`** files are then parsed and the **DCR**-relevant contents are written to the database tables **`content`** and  **`document`**. 
 
 ### 1.1 Rahman & Finin Paper
 
@@ -74,7 +74,7 @@ marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:ta
 
 An exception are files with the file name **`README.md`**, which are ignored and not processed.
 
-#### 2.1.3 File extensions of documents for processing with Tesseract OCR
+#### 2.1.1.3 File extensions of documents for processing with Tesseract OCR
 
 Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}:
 
@@ -98,7 +98,7 @@ This processing step only has to be carried out if there are new **`pdf`** docum
 **`pdf`** documents consisting of scanned images must first be processed with OCR software in order to extract text and metadata they contain. 
 Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} does not support the **`pdf`** file format, such a **`pdf`** document must first be converted into one or more image files. 
 This is done with the software [pdf2image](https://pypi.org/project/pdf2image){:target="_blank"}, which in turn is based on the [Poppler](https://poppler.freedesktop.org){:target="_blank"} software.
-The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image files (child document(s)).
+The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image file(s) (child document(s)).
 
 Since an image file created here always contains only one page of a **`pdf`** document, a multi-page **`pdf`** document is distributed over several image files. 
 After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, these separated files are then combined into one **`pdf`** document.

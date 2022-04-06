@@ -9,7 +9,7 @@
 
 ## 1. Version 0.9.0
 
-Release Date: dd.mm.2022
+Release Date: 06.04.2022
 
 ### 1.1 New Features
 
