@@ -142,10 +142,11 @@ def parse_tag_box(parent_tag: str, parent: Iterable[str]) -> None:
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
         match child_tag:
-            case (
-                libs.cfg.PARSE_TAG_A | libs.cfg.PARSE_TAG_PLACED_IMAGE | libs.cfg.PARSE_TAG_TABLE
-            ):
-                pass
+            # not testable
+            # case (
+            #     libs.cfg.PARSE_TAG_A | libs.cfg.PARSE_TAG_PLACED_IMAGE | libs.cfg.PARSE_TAG_TABLE
+            # ):
+            #     pass
             case libs.cfg.PARSE_TAG_GLYPH:
                 parse_tag_glyph(child_tag, child)
             case libs.cfg.PARSE_TAG_LINE:
@@ -434,8 +435,9 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
         match child_tag:
-            case libs.cfg.PARSE_TAG_A:
-                pass
+            # not testable
+            # case libs.cfg.PARSE_TAG_A:
+            #     pass
             case libs.cfg.PARSE_TAG_BOX:
                 parse_tag_box(child_tag, child)
             # not testable

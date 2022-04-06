@@ -76,7 +76,7 @@ def delete_auxiliary_file(file_name: str) -> None:
 
     if os.path.isfile(file_name):
         os.remove(file_name)
-        libs.cfg.logger.debug("Auxiliary file '%s' deleted", file_name)
+        libs.utils.progress_msg(f"Auxiliary file '{file_name}' deleted")
 
 
 # -----------------------------------------------------------------------------
