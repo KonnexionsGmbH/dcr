@@ -5,8 +5,6 @@ import os
 import pathlib
 import sys
 import traceback
-from typing import Dict
-from typing import Iterable
 from typing import Tuple
 
 import libs.cfg
@@ -61,32 +59,6 @@ def compute_sha256(file: pathlib.Path) -> str:
 
 
 # -----------------------------------------------------------------------------
-# Debug an XML element.
-# -----------------------------------------------------------------------------
-def debug_xml_element(parent_tag: str, attrib: Dict[str, str], text: Iterable[str]) -> None:
-    """Debug an XML element.
-
-    Args:
-        parent_tag (str): Parent tag.
-        attrib (Dict[str,str]): Attributes.
-        text (Iterable[str]): XML element.
-    """
-    if libs.cfg.is_verbose_parser:
-        libs.cfg.logger.info(
-            "tag   =%s",
-            parent_tag,
-        )
-        libs.cfg.logger.info(
-            "attrib=%s",
-            attrib,
-        )
-        libs.cfg.logger.info(
-            "text  =%s",
-            text,
-        )
-
-
-# -----------------------------------------------------------------------------
 # Delete the given auxiliary file.
 # -----------------------------------------------------------------------------
 def delete_auxiliary_file(file_name: str) -> None:
@@ -95,10 +67,16 @@ def delete_auxiliary_file(file_name: str) -> None:
     Args:
         file_name (str): File name.
     """
-    if libs.cfg.is_delete_auxiliary_files:
-        if os.path.isfile(file_name):
-            os.remove(file_name)
-            libs.cfg.logger.debug("Auxiliary file '%s' deleted", file_name)
+    if not libs.cfg.is_delete_auxiliary_files:
+        return
+
+    # Don't remove the base document !!!
+    if file_name == libs.db.orm.dml.select_document_base_file_name():
+        return
+
+    if os.path.isfile(file_name):
+        os.remove(file_name)
+        libs.utils.progress_msg(f"Auxiliary file '{file_name}' deleted")
 
 
 # -----------------------------------------------------------------------------

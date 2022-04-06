@@ -16,7 +16,7 @@ import dcr
 # @pytest.mark.issue
 
 
-CONFIG_PARAM_NO: int = 23
+CONFIG_PARAM_NO: int = 24
 
 
 # -----------------------------------------------------------------------------
@@ -107,8 +107,6 @@ def test_get_config(fxtr_setup_logger_environment):
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "n/a"
     )
 
-    libs.cfg.is_ignore_duplicates = False
-
     dcr.get_config()
 
     assert not libs.cfg.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: false (any not true)"
@@ -121,8 +119,6 @@ def test_get_config(fxtr_setup_logger_environment):
     value_original = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "TruE"
     )
-
-    libs.cfg.is_ignore_duplicates = False
 
     dcr.get_config()
 
@@ -146,6 +142,54 @@ def test_get_config(fxtr_setup_logger_environment):
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original
     )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - get_config().
+# -----------------------------------------------------------------------------
+def test_get_config_simulate_parser(fxtr_setup_logger_environment):
+    """Test: test_get_config_simulate_parser()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, "n/a"
+    )
+
+    dcr.get_config()
+
+    assert not libs.cfg.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: false (not true)"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, "tRUE"
+    )
+
+    dcr.get_config()
+
+    assert libs.cfg.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: true"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - get_config().
+# -----------------------------------------------------------------------------
+def test_get_config_verbose(fxtr_setup_logger_environment):
+    """Test: get_config_verbose()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(
@@ -178,15 +222,24 @@ def test_get_config(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "TrUe"
-    )
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
-    libs.cfg.is_verbose_parser = False
+
+# -----------------------------------------------------------------------------
+# Test Function - get_config().
+# -----------------------------------------------------------------------------
+def test_get_config_verbose_parser(fxtr_setup_logger_environment):
+    """Test: get_config_verbose_parser()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "aLL"
+    )
 
     dcr.get_config()
 
-    assert libs.cfg.is_verbose_parser, "DCR_CFG_VERBOSE_PARSER: true"
+    assert libs.cfg.verbose_parser == "all", "DCR_CFG_VERBOSE_PARSER: all"
 
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
@@ -197,11 +250,22 @@ def test_get_config(fxtr_setup_logger_environment):
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "n/a"
     )
 
-    libs.cfg.is_verbose_parser = False
+    dcr.get_config()
+
+    assert libs.cfg.verbose_parser == "none", "DCR_CFG_VERBOSE_PARSER: none (not all or text)"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "tEXT"
+    )
 
     dcr.get_config()
 
-    assert not libs.cfg.is_verbose_parser, "DCR_CFG_VERBOSE_PARSER: false (not true)"
+    assert libs.cfg.verbose_parser == "text", "DCR_CFG_VERBOSE_PARSER: all"
 
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original
@@ -302,6 +366,19 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER
+    )
+
+    dcr.get_config()
+
+    assert not libs.cfg.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: false (missing)"
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.delete_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE
     )
 
@@ -320,11 +397,9 @@ def test_get_config_missing(fxtr_setup_logger_environment):
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER
     )
 
-    libs.cfg.is_verbose_parser = False
-
     dcr.get_config()
 
-    assert not libs.cfg.is_verbose_parser, "DCR_CFG_VERBOSE_PARSER: false (missing)"
+    assert libs.cfg.verbose_parser == "none", "DCR_CFG_VERBOSE_PARSER: none (missing)"
 
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, value_original

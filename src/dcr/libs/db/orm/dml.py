@@ -1,4 +1,5 @@
 """Module libs.db.orm.dml: Database Manipulation Management."""
+import os
 import time
 from typing import Dict
 
@@ -113,10 +114,36 @@ def insert_journal_statistics(
 
 
 # -----------------------------------------------------------------------------
-# Get the filename of a document based on the document_id.
+# Get the file name of the base document.
+# -----------------------------------------------------------------------------
+def select_document_base_file_name() -> str | None:
+    """Get the file name of the base document.
+
+    Returns:
+        str: The file name of the base document found.
+    """
+    dbt = Table(
+        libs.db.cfg.DBT_DOCUMENT,
+        libs.db.cfg.db_orm_metadata,
+        autoload_with=libs.db.cfg.db_orm_engine,
+    )
+
+    with libs.db.cfg.db_orm_engine.connect() as conn:
+        row = conn.execute(
+            select(dbt.c.directory_name, dbt.c.file_name).where(
+                dbt.c.document_id_parent == libs.cfg.document_id_base,
+            )
+        ).fetchone()
+        conn.close()
+
+    return str(os.path.join(row[0], row[1]))
+
+
+# -----------------------------------------------------------------------------
+# Get the file name of a document based on the document_id.
 # -----------------------------------------------------------------------------
 def select_document_file_name_id(document_id: sqlalchemy.Integer) -> str | None:
-    """Get the filename of a document based on the document_id.
+    """Get the file name of a document based on the document_id.
 
     Args:
         document_id (sqlalchemy.Integer): Document id.
@@ -132,7 +159,6 @@ def select_document_file_name_id(document_id: sqlalchemy.Integer) -> str | None:
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(
-            #           select(dbt.c.file_name).where(
             select(dbt.c.file_name).where(
                 and_(
                     dbt.c.id == document_id,
@@ -141,17 +167,14 @@ def select_document_file_name_id(document_id: sqlalchemy.Integer) -> str | None:
         ).fetchone()
         conn.close()
 
-    if row is None:
-        return row
-
     return row[0]
 
 
 # -----------------------------------------------------------------------------
-# Get the filename of an accepted document based on the hash key.
+# Get the file name of an accepted document based on the hash key.
 # -----------------------------------------------------------------------------
 def select_document_file_name_sha256(document_id: sqlalchemy.Integer, sha256: str) -> str | None:
-    """Get the filename of an accepted document based on the hash key.
+    """Get the file name of an accepted document based on the hash key.
 
     Args:
         document_id (sqlalchemy.Integer): Document id.
@@ -168,7 +191,6 @@ def select_document_file_name_sha256(document_id: sqlalchemy.Integer, sha256: st
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(
-            #           select(dbt.c.file_name).where(
             select(dbt.c.file_name).where(
                 and_(
                     dbt.c.id != document_id,

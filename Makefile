@@ -138,6 +138,8 @@ pipenv-dev:         ## Install the package dependencies for development.
 	python -m pip install --upgrade pip
 	python -m pip install --upgrade pipenv
 	python -m pipenv install --dev
+	python -m pipenv --rm
+	exit
 	python -m pipenv update --dev
 	pipenv run pip freeze
 	python --version
@@ -148,6 +150,8 @@ pipenv-prod:        ## Install the package dependencies for production.
 	python -m pip install --upgrade pip
 	python -m pip install --upgrade pipenv
 	python -m pipenv install
+	python -m pipenv --rm
+	exit
 	python -m pipenv update
 	pipenv run pip freeze
 	python --version

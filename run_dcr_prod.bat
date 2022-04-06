@@ -78,11 +78,7 @@ echo.
             echo Processing of the script: %0 - step: 'make inst_dev' was aborted
             exit -1073741510
         )
-        make dev
-        if ERRORLEVEL 1 (
-            echo Processing of the script: %0 - step: 'make eco_dev' was aborted
-            exit -1073741510
-        )
+
         goto normal_exit
     )
 
@@ -92,11 +88,13 @@ echo.
             echo Processing of the script: %0 - step: 'make prod' was aborted
             exit -1073741510
         )
+
         make compileall
         if ERRORLEVEL 1 (
             echo Processing of the script: %0 - step: 'make prod' was aborted
             exit -1073741510
         )
+
         goto normal_exit
     )
 

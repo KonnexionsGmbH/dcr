@@ -67,10 +67,6 @@ case "${DCR_CHOICE_ACTION}" in
     if ! ( make pipenv-dev ); then
         exit 255
     fi
-    # Development ecosystem
-    if ! ( make dev ); then
-        exit 255
-    fi
     ;;
   m_p)
     # Production install packages
@@ -101,6 +97,7 @@ case "${DCR_CHOICE_ACTION}" in
         ;;
       *)
         ;;
+    esac
     if ! ( pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}" ); then
         exit 255
     fi

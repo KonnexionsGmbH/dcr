@@ -177,38 +177,40 @@ def create_dbt_content(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(
-            libs.db.cfg.DBC_PAGE_IN_DOCUMENT,
+            libs.db.cfg.DBC_LINE_IN_PARA_END,
             sqlalchemy.Integer,
             nullable=False,
         ),
         sqlalchemy.Column(
-            libs.db.cfg.DBC_PARA_IN_PAGE,
+            libs.db.cfg.DBC_LINE_IN_PARA_START,
             sqlalchemy.Integer,
             nullable=False,
         ),
         sqlalchemy.Column(
-            libs.db.cfg.DBC_LINE_IN_PARA,
+            libs.db.cfg.DBC_PAGE_IN_DOC_END,
             sqlalchemy.Integer,
             nullable=False,
         ),
         sqlalchemy.Column(
-            libs.db.cfg.DBC_TOKEN_IN_LINE,
+            libs.db.cfg.DBC_PAGE_IN_DOC_START,
             sqlalchemy.Integer,
             nullable=False,
         ),
         sqlalchemy.Column(
-            libs.db.cfg.DBC_SENTENCE_IN_PARA,
+            libs.db.cfg.DBC_PARA_IN_PAGE_END,
             sqlalchemy.Integer,
             nullable=False,
         ),
         sqlalchemy.Column(
-            libs.db.cfg.DBC_TOKEN_IN_SENTENCE,
+            libs.db.cfg.DBC_PARA_IN_PAGE_START,
             sqlalchemy.Integer,
             nullable=False,
         ),
-        sqlalchemy.Column(libs.db.cfg.DBC_TOKEN_PARSED, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(libs.db.cfg.DBC_TOKEN_STEM, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(libs.db.cfg.DBC_TOKEN_LEMMA, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_SENTENCE,
+            sqlalchemy.JSON,
+            nullable=False,
+        ),
     )
 
     libs.utils.progress_msg(f"The database table '{table_name}' has now been created")
@@ -268,6 +270,11 @@ def create_dbt_document(table_name: str) -> None:
         sqlalchemy.Column(libs.db.cfg.DBC_ERROR_CODE, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(libs.db.cfg.DBC_FILE_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(libs.db.cfg.DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(
+            libs.db.cfg.DBC_FONTS,
+            sqlalchemy.JSON,
+            nullable=True,
+        ),
         sqlalchemy.Column(
             libs.db.cfg.DBC_LANGUAGE_ID,
             sqlalchemy.Integer,

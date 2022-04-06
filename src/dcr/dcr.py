@@ -615,6 +615,7 @@ def validate_config() -> None:
     validate_config_directory_inbox_rejected()
     validate_config_ignore_duplicates()
     validate_config_pdf2image_type()
+    validate_config_simulate_parser()
     validate_config_tesseract_timeout()
     validate_config_verbose()
     validate_config_verbose_parser()
@@ -719,6 +720,18 @@ def validate_config_pdf2image_type() -> None:
 
 
 # -----------------------------------------------------------------------------
+# validate the configuration parameters - simulate_parser
+# -----------------------------------------------------------------------------
+def validate_config_simulate_parser() -> None:
+    """Validate the configuration parameters - simulate_parser."""
+    libs.cfg.is_simulate_parser = False
+
+    if libs.cfg.DCR_CFG_SIMULATE_PARSER in libs.cfg.config:
+        if libs.cfg.config[libs.cfg.DCR_CFG_SIMULATE_PARSER].lower() == "true":
+            libs.cfg.is_simulate_parser = True
+
+
+# -----------------------------------------------------------------------------
 # validate the configuration parameters - tesseract_timeout
 # -----------------------------------------------------------------------------
 def validate_config_tesseract_timeout() -> None:
@@ -746,11 +759,11 @@ def validate_config_verbose() -> None:
 # -----------------------------------------------------------------------------
 def validate_config_verbose_parser() -> None:
     """Validate the configuration parameters - verbose_parser."""
-    libs.cfg.is_verbose_parser = False
+    libs.cfg.verbose_parser = "none"
 
     if libs.cfg.DCR_CFG_VERBOSE_PARSER in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE_PARSER].lower() == "true":
-            libs.cfg.is_verbose_parser = True
+        if libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE_PARSER].lower() in ["all", "text"]:
+            libs.cfg.verbose_parser = libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE_PARSER].lower()
 
 
 # -----------------------------------------------------------------------------

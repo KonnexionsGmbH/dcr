@@ -9,16 +9,16 @@
 
 ## 1. Introduction
 
-Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](developing_research_notes.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary **`pdf`** documents and thus make them more searchable in a more qualified manner.
+Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](developing_research_notes.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary **`pdf`** documents and thus make them better searchable in a more qualified manner.
 
 The processing logic is as follows:
 
-- New documents are made available in the file directory **`ìnbox`**.
+- New documents are made available in the file directory **` inbox`**. If required, other language-related file directories can also be used (see section [Document Language](https://konnexionsgmbh.github.io/dcr/running_document_language){:target="_blank"}).
 - Documents in a file format accepted by **DCR** are registered and moved to the file directory **`ìnbox_accepted`**. All other documents are registered and moved to the file directory **`ìnbox_rejected`**.
 - Documents not in **`pdf`** format are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
 - Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to **`pdf`** format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. **`jpeg`**, **`tiff`** etc., as well as scanned images in **`pdf`** format.  
 - From all **`pdf`** documents, the text and associated metadata is extracted into a document-specific **`xml`** file using [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"}.
-- The document-specific **`xml`** files are then parsed and the DCR-relevant contents are written to the database table **`content`**. 
+- The document-specific **`xml`** files are then parsed and the **DCR**-relevant contents are written to the database tables **`content`** and  **`document`**. 
 
 ### 1.1 Rahman & Finin Paper
 
@@ -74,7 +74,7 @@ marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:ta
 
 An exception are files with the file name **`README.md`**, which are ignored and not processed.
 
-#### 2.1.3 File extensions of documents for processing with Tesseract OCR
+#### 2.1.1.3 File extensions of documents for processing with Tesseract OCR
 
 Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}:
 
@@ -94,25 +94,30 @@ Document files that do not fall into one of the previous categories are marked a
 
 ### 2.1.2 Convert **`pdf`** documents to image files (step: **`p_2_i`**)
 
-This processing step only has to be carried out if there are new pdf documents in the document input that only consist of scanned images.
-pdf documents consisting of scanned images must first be processed with OCR software in order to extract text and metadata they contain. 
+This processing step only has to be carried out if there are new **`pdf`** documents in the document input that only consist of scanned images.
+**`pdf`** documents consisting of scanned images must first be processed with OCR software in order to extract text and metadata they contain. 
 Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} does not support the **`pdf`** file format, such a **`pdf`** document must first be converted into one or more image files. 
 This is done with the software [pdf2image](https://pypi.org/project/pdf2image){:target="_blank"}, which in turn is based on the [Poppler](https://poppler.freedesktop.org){:target="_blank"} software.
-The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image files (child document(s)).
+The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image file(s) (child document(s)).
 
-### 2.1.3 Convert appropriate non-pdf documents to **`pdf`** files (step: **`n_2_p`**)
+Since an image file created here always contains only one page of a **`pdf`** document, a multi-page **`pdf`** document is distributed over several image files. 
+After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, these separated files are then combined into one **`pdf`** document.
 
-This processing step only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.
-In this processing step, the document types listed in section 2.1.2 are converted to **`pdf`** format 
-using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
-In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
-In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
-
-### 2.1.4 Convert appropriate image documents to **`pdf`** files (step: **`ocr`**)
+### 2.1.3 Convert appropriate image documents to **`pdf`** files (step: **`ocr`**)
 
 This processing step only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.3.
 In this processing step, the document types listed in section 2.1.3 are converted to **`pdf`** format 
 using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
+In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
+
+After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, the files split in the previous processing step are combined into a single **`pdf`** document.
+
+### 2.1.4 Convert appropriate non-pdf documents to **`pdf`** files (step: **`n_2_p`**)
+
+This processing step only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.
+In this processing step, the document types listed in section 2.1.2 are converted to **`pdf`** format 
+using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
 
@@ -125,7 +130,54 @@ In the event of an error, the original document is marked as erroneous and an ex
 
 ### 2.1.6 Store the document structure from the parser result (step: **`s_f_p`**)
 
-The output of [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} is parsed for document metadata relevant to **DCR** and the metadata thus found is written to the database table **content** together with the original document text for further processing. 
+The output of [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} is parsed for document metadata relevant to **DCR** and the metadata thus found is written to the database tables **content** and **document** together with the original document text for further processing. 
+
+#### 1. Database table **`document`**:
+
+The database table **`document`** contains a basic entry for each processed document and an additional entry for each auxiliary file created in the processing process: 
+
+![](img/index_2.1.6_example_document_1.png)
+
+The fonts used in the document are stored in the JSON column **`fonts`** of the base entry of the document:
+
+![](img/index_2.1.6_example_document_2.png)
+
+The JSON property **`noWords`** shows the word-related frequency of use of the font:
+
+    [
+      {"id": "F0", "italicAngle": "0.00", "name": "Arial-BoldMT",   "noWords": 5,  "weight": "700.00"},
+      {"id": "F1", "italicAngle": "0.00", "name": "ArialMT",        "noWords": 10, "weight": "400.00"},
+      {"id": "F2", "italicAngle": "0.00", "name": "CourierNewPSMT", "noWords": 40, "weight": "400.00"}
+    ]
+
+#### 2. Database table **`content`**:
+
+The database table **`content`** contains a separate entry for each sentence identified by PDFlib TET in the document:
+
+![](img/index_2.1.6_example_content_1.png)
+
+The main information about the respective sentence is in the JSON column **`sentence`**:
+
+![](img/index_2.1.6_example_content_2.png)
+
+An example JSON column **`sentence`**:
+
+    {
+      "noSentenceInPara": 2,
+      "noWords": 10,
+      "words": [
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 11, "noWordSentence": 1,  "wordParsed": "This"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 12, "noWordSentence": 2,  "wordParsed": "is"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 13, "noWordSentence": 3,  "wordParsed": "the"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 1,  "noWordSentence": 4,  "wordParsed": "second"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 2,  "noWordSentence": 5,  "wordParsed": "sentence"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 3,  "noWordSentence": 6,  "wordParsed": "of"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 4,  "noWordSentence": 7,  "wordParsed": "the"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 5,  "noWordSentence": 8,  "wordParsed": "first"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 6,  "noWordSentence": 9,  "wordParsed": "paragraph"},
+        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 7,  "noWordSentence": 10, "wordParsed": "."}
+      ]
+    }
 
 ### 2.2 TBD ...
 
