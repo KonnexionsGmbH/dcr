@@ -13,7 +13,7 @@ import sqlalchemy
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
-DCR_ARGV_0: str = "src/dcr/dcr.py"
+DCR_ARGV_0: str = "src/dcr_core/dcr_core.py"
 
 DCR_CFG_DATABASE_FILE: str = "database_file"
 DCR_CFG_DATABASE_URL: str = "database_url"

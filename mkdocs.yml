@@ -41,7 +41,7 @@ nav:
 plugins:
   - search
 
-repo_url: https://github.com/KonnexionsGmbH/dcr/
+repo_url: https://github.com/KonnexionsGmbH/dcr_core/
 
 site_name: DCR - Document Content Recognition
 site_url: https://www.konnexions.ch/

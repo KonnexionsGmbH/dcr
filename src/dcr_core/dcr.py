@@ -1,4 +1,4 @@
-"""Module dcr: Entry Point Functionality.
+"""Module dcr_core: Entry Point Functionality.
 
 This is the entry point to the application DCR.
 """
@@ -212,7 +212,7 @@ def initialise_logger() -> None:
         log_config = yaml.safe_load(file.read())
 
     logging.config.dictConfig(log_config)
-    libs.cfg.logger = logging.getLogger("dcr.py")
+    libs.cfg.logger = logging.getLogger("dcr_core.py")
     libs.cfg.logger.setLevel(logging.DEBUG)
 
     libs.utils.progress_msg("The logger is configured and ready")
@@ -267,9 +267,9 @@ def main(argv: List[str]) -> None:
     initialise_logger()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-    libs.cfg.logger.info("Start dcr.py")
+    libs.cfg.logger.info("Start dcr_core.py")
 
-    print("Start dcr.py")
+    print("Start dcr_core.py")
 
     locale.setlocale(locale.LC_ALL, libs.cfg.LOCALE)
 
@@ -296,9 +296,9 @@ def main(argv: List[str]) -> None:
         # Process the documents.
         process_documents(args)
 
-    print("End   dcr.py")
+    print("End   dcr_core.py")
 
-    libs.cfg.logger.info("End   dcr.py")
+    libs.cfg.logger.info("End   dcr_core.py")
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 

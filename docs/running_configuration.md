@@ -3,7 +3,7 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.0)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.1)
 
 ----
 
@@ -135,7 +135,7 @@ The customisable entries are:
     db_schema = dcr_schema
     db_user = dcr_user
     db_user_admin = dcr_user_admin
-    dcr_version = 0.9.0
+    dcr_version = 0.9.1
     delete_auxiliary_files = false
     directory_inbox = data/inbox
     directory_inbox_accepted = data/inbox_accepted

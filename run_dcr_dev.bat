@@ -10,7 +10,7 @@ setlocal EnableDelayedExpansion
 
 set DCR_CHOICE_ACTION_DEFAULT=db_u
 set DCR_ENVIRONMENT_TYPE=dev
-set PYTHONPATH=%PYTHONPATH%;src\dcr;src\dcr\libs
+set PYTHONPATH=%PYTHONPATH%;src\dcr_core;src\dcr_core\libs
 
 if ["%1"] EQU [""] (
     echo =========================================================
@@ -157,9 +157,9 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet %DCR_CHOICE_ACTION%
     )
-    pipenv run python src\dcr\dcr.py !DCR_CHOICE_ACTION!
+    pipenv run python src\dcr_core\dcr.py !DCR_CHOICE_ACTION!
     if ERRORLEVEL 1 (
-        echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
+        echo Processing of the script: %0 - step: 'python src\dcr_core\dcr.py %DCR_CHOICE_ACTION%' was aborted
     )
     goto normal_exit
 )

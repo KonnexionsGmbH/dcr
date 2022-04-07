@@ -3,22 +3,23 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.0)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.1)
 
 ----
 
 ## 1. Version Planning
 
-| Version   | Feature(s)                           |
-|-----------|--------------------------------------|
-| ~~0.5.0~~ | ~~Inbox processing~~                 |
-| ~~0.6.0~~ | ~~pdf for Tesseract OCR processing~~ |
-| ~~0.6.5~~ | ~~Pandoc processing~~                |
-| ~~0.7.0~~ | ~~Tesseract OCR processing~~         |
-| ~~0.8.0~~ | ~~PDFlib TET processing~~            |
-| 0.9.0     | Parser                               |
-| 0.9.1     | UI based on Streamlit                |
-| 0.9.2     | Text preprocessing and wrangling     |
+| Version   | Feature(s)                            |
+|-----------|---------------------------------------|
+| ~~0.5.0~~ | ~~Inbox processing~~                  |
+| ~~0.6.0~~ | ~~pdf for Tesseract OCR processing~~  |
+| ~~0.6.5~~ | ~~Pandoc processing~~                 |
+| ~~0.7.0~~ | ~~Tesseract OCR processing~~          |
+| ~~0.8.0~~ | ~~PDFlib TET processing~~             |
+| ~~0.9.0~~ | ~~Parser~~                            |
+| 0.9.1     | Admin interface based on tkinter      |
+| 0.9.2     | Core text preprocessing and wrangling |
+| 0.9.3     | User interface based on tkinter       |
 
 ## 2. Next Development Steps
 

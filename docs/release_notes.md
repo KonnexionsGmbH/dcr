@@ -3,13 +3,13 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.0)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.1)
 
 ----
 
-## 1. Version 0.9.0
+## 1. Version 0.9.1
 
-Release Date: 06.04.2022
+Release Date: dd.mm.2022
 
 ### 1.1 New Features
 
@@ -172,7 +172,7 @@ new:
 "Info **********  Start: Pydoc-Markdown ******************************"
 pipenv run pydoc-markdown --version
 python -m pydoc-markdown, version 4.6.3
-pipenv run pydoc-markdown -I src/dcr --render-toc > docs/developing_api_documentation.md
+pipenv run pydoc-markdown -I src/dcr_core --render-toc > docs/developing_api_documentation.md
 Traceback (most recent call last):
   File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\parser.py", line 88, in parse_to_ast
     return RefactoringTool([], options).refactor_string(code + '\n', filename)

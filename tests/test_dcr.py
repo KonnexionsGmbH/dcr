@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module dcr."""
+"""Testing Module dcr_core."""
 import os
 import shutil
 from pathlib import Path

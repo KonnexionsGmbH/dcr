@@ -3,7 +3,7 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.0)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.1)
 
 ----
 
@@ -21,8 +21,8 @@ When selecting the Docker image, care must be taken to select the appropriate ve
 
 Alternatively, for a **`Ubuntu 20.04 LTS`** environment that is as unspoiled as possible, the following two scripts are available in the **`scripts`** file directory:
 
-- **`scripts/0.9.0/run_install_4-vm_wsl2_1.sh`**
-- **`scripts/0.9.0/run_install_4-vm_wsl2_2.sh`**
+- **`scripts/0.9.1/run_install_4-vm_wsl2_1.sh`**
+- **`scripts/0.9.1/run_install_4-vm_wsl2_2.sh`**
 
 After a **`cd scripts`** command in a terminal window, the script **`run_install_4-vm_wsl2_1.sh`** must first be executed. 
 Administration rights (**`sudo`**) are required for this. 
