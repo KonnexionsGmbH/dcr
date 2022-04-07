@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.preprocessor.pdf2imagedcr."""
+"""Testing Module dcr_core.libs.preprocessor.pdf2imagedcr."""
 import libs.cfg
 import libs.db
 import libs.preprocessor.parser

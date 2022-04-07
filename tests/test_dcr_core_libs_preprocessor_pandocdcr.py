@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.preprocessor.pandocdcr."""
+"""Testing Module dcr_core.libs.preprocessor.pandocdcr."""
 import libs.cfg
 import libs.db
 import libs.db.cfg
@@ -12,6 +12,32 @@ import dcr
 # Constants & Globals.
 # -----------------------------------------------------------------------------
 # @pytest.mark.issue
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_NON_PDF_2_PDF - normal - duplicate.
+# -----------------------------------------------------------------------------
+def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_NON_PDF_2_PDF - normal - duplicate."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.info("=========> test_run_action_non_pdf_2_pdf_normal_duplicate <=========")
+
+    stem_name_1: str = "docx_ok"
+    file_ext_1: str = "docx"
+
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.directory_inbox)
+
+    stem_name_2: str = "docx_ok_1"
+    file_ext_2: str = "pdf"
+
+    pytest.helpers.help_run_action_all_complete_duplicate_file(
+        file_ext_1, file_ext_2, stem_name_1, stem_name_2
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -39,6 +65,9 @@ def test_run_action_non_pdf_2_pdf_normal_keep(fxtr_setup_empty_db_and_inbox):
     value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
     )
+    value_original_tesseract_timeout = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"
+    )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
@@ -48,6 +77,11 @@ def test_run_action_non_pdf_2_pdf_normal_keep(fxtr_setup_empty_db_and_inbox):
         libs.cfg.DCR_CFG_SECTION,
         libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
         value_original_delete_auxiliary_files,
+    )
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
+        value_original_tesseract_timeout,
     )
 
     # -------------------------------------------------------------------------
@@ -84,32 +118,6 @@ def test_run_action_non_pdf_2_pdf_normal_keep(fxtr_setup_empty_db_and_inbox):
         libs.cfg.directory_inbox_rejected,
         [],
         [],
-    )
-
-    # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test RUN_ACTION_NON_PDF_2_PDF - normal - duplicate.
-# -----------------------------------------------------------------------------
-def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_NON_PDF_2_PDF - normal - duplicate."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_non_pdf_2_pdf_normal_duplicate <=========")
-
-    stem_name_1: str = "docx_ok"
-    file_ext_1: str = "docx"
-
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.directory_inbox)
-
-    stem_name_2: str = "docx_ok_1"
-    file_ext_2: str = "pdf"
-
-    pytest.helpers.help_run_action_all_complete_duplicate_file(
-        file_ext_1, file_ext_2, stem_name_1, stem_name_2
     )
 
     # -------------------------------------------------------------------------

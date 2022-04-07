@@ -17,9 +17,9 @@ If required, a PostgreSQL container can be downloaded and created with the scrip
 
 ![](img/developing_data_model_dbt_overview_er.png)
 
-#### 2.2 Database Tables **`content`**
+### 2.2 Database Tables
 
-#### 2.2.1 Database Table **`content`**
+#### 2.2.1 **`content`**
 
 This database table contains the results from the parsing process.
 
@@ -39,7 +39,7 @@ This database table contains the results from the parsing process.
 
 ![](img/developing_data_model_dbt_content_er.png)
 
-#### 2.2.2 Database Table **`document`**
+#### 2.2.2 **`document`**
 
 This database table contains the document-related data.
 
@@ -59,7 +59,7 @@ This database table contains the document-related data.
 
 ![](img/developing_data_model_dbt_document_er.png)
 
-#### 2.2.3 Database Table **`journal`**
+#### 2.2.3 **`journal`**
 
 This database table contains document-related error message and performance data.
 
@@ -71,7 +71,7 @@ This database table contains document-related error message and performance data
 
 ![](img/developing_data_model_dbt_journal_er.png)
 
-#### 2.2.4 Database Table **`language`**
+#### 2.2.4 **`language`**
 
 This database table controls the language-related document properties during processing.
 
@@ -83,7 +83,7 @@ This database table controls the language-related document properties during pro
 
 ![](img/developing_data_model_dbt_language_er.png)
 
-#### 2.2.5 Database Table **`run`**
+#### 2.2.5 **`run`**
 
 This database table documents the executed processing runs in detail.
 
@@ -95,7 +95,7 @@ This database table documents the executed processing runs in detail.
 
 ![](img/developing_data_model_dbt_run_er.png)
 
-#### 2.2.6 Database Table **`version`**
+#### 2.2.6 **`version`**
 
 This database table is used to monitor the version status of the **DCR** database schema.
 
