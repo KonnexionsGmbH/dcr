@@ -1,9 +1,7 @@
 # DCR - Running - Data Model
 
-![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.1)
 
 ----
 
@@ -19,90 +17,92 @@ If required, a PostgreSQL container can be downloaded and created with the scrip
 
 ![](img/developing_data_model_dbt_overview_er.png)
 
-#### 2.1.1 Database Table **`content`**
+#### 2.2 Database Tables **`content`**
+
+#### 2.2.1 Database Table **`content`**
 
 This database table contains the results from the parsing process.
 
-##### a) Example Rows
+**Example rows**:
 
 ![](img/developing_data_model_dbt_content_rows.png)
 
-##### b) Example Columns
+**Example columns**:
 
 ![](img/developing_data_model_dbt_content_columns.png)
 
-##### c) Example Column **`sentence`**
+**Example column `sentence`**:
 
 ![](img/developing_data_model_dbt_content_json.png)
 
-##### d) ER Diagram
+**ER diagram**:
 
 ![](img/developing_data_model_dbt_content_er.png)
 
-#### 2.1.2 Database Table **`document`**
+#### 2.2.2 Database Table **`document`**
 
 This database table contains the document-related data.
 
-##### a) Example Rows
+**Example rows**:
 
 ![](img/developing_data_model_dbt_document_rows.png)
 
-##### b) Example Columns
+**Example columns**:
 
 ![](img/developing_data_model_dbt_document_columns.png)
 
-##### c) Example Column **`fonts`**
+**Example column `fonts`**:
 
 ![](img/developing_data_model_dbt_document_json.png)
 
-##### d) ER Diagram
+**ER diagram**:
 
 ![](img/developing_data_model_dbt_document_er.png)
 
-#### 2.1.3 Database Table **`journal`**
+#### 2.2.3 Database Table **`journal`**
 
 This database table contains document-related error message and performance data.
 
-##### a) Example Rows
+**Example rows**:
 
 ![](img/developing_data_model_dbt_journal_rows.png)
 
-##### b) ER Diagram
+**ER diagram**:
 
 ![](img/developing_data_model_dbt_journal_er.png)
 
-#### 2.1.4 Database Table **`language`**
+#### 2.2.4 Database Table **`language`**
 
 This database table controls the language-related document properties during processing.
 
-##### a) Example Rows
+**Example rows**:
 
 ![](img/developing_data_model_dbt_language_rows.png)
 
-##### b) ER Diagram
+**ER diagram**:
 
 ![](img/developing_data_model_dbt_language_er.png)
 
-#### 2.1.5 Database Table **`run`**
+#### 2.2.5 Database Table **`run`**
 
 This database table documents the executed processing runs in detail.
 
-##### a) Example Rows
+**Example rows**:
 
 ![](img/developing_data_model_dbt_run_rows.png)
 
-##### b) ER Diagram
+**ER diagram**:
 
 ![](img/developing_data_model_dbt_run_er.png)
 
-#### 2.1.6 Database Table **`version`**
+#### 2.2.6 Database Table **`version`**
 
 This database table is used to monitor the version status of the **DCR** database schema.
 
-##### a) Example Rows
+**Example rows**:
 
 ![](img/developing_data_model_dbt_version_rows.png)
 
-##### b) ER Diagram
+**ER diagram**:
 
 ![](img/developing_data_model_dbt_version_er.png)
