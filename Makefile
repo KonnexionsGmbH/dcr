@@ -32,12 +32,12 @@ export DCR_ENVIRONMENT_TYPE=test
 
 ifeq ($(OS),Windows_NT)
 	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
-    export MYPYPATH=src\\dcr_core;src\\dcr_core\\libs
-    export PYTHONPATH=src\\dcr_core;src\\dcr_core\\libs
+    export MYPYPATH=src\\dcr_admin;src\\dcr_core;src\\dcr_core\\libs
+    export PYTHONPATH=src\\dcr_admin;src\\dcr_core;src\\dcr_core\\libs
 else
 	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
-    export MYPYPATH=src/dcr_core:src/dcr_core/libs
-    export PYTHONPATH=src/dcr_core:src/dcr_core/libs
+    export MYPYPATH=src/dcr_admin:src/dcr_core:src/dcr_core/libs
+    export PYTHONPATH=src/dcr_admin:src/dcr_core:src/dcr_core/libs
 endif
 
 # Bandit is a tool designed to find common security issues in Python code.
@@ -164,7 +164,7 @@ pipenv-prod:        ## Install the package dependencies for production.
 pydoc-markdown:     ## Create Python API documentation in Markdown format with Pydoc-Markdown.
 	@echo "Info **********  Start: Pydoc-Markdown ******************************"
 	pipenv run pydoc-markdown --version
-	pipenv run pydoc-markdown -I src/dcr_core --render-toc > docs/developing_api_documentation.md
+	pipenv run pydoc-markdown -I src/dcr_admin src/dcr_core --render-toc > docs/developing_api_documentation.md
 	@echo "Info **********  End:   Pydoc-Markdown ******************************"
 
 # pydocstyle - docstring style checker.

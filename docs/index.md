@@ -24,7 +24,7 @@ The processing logic is as follows:
 
 ---
 
-![](img/Screen-Shot-2020-06-03-at-1.45.33-PM.png)
+![](img/index_rahman_finin.png)
 
 ---
 
@@ -61,7 +61,7 @@ The processing logic is as follows:
 
 ---
 
-![](img/dcr_Overview.png)
+![](img/index_dcr_Overview.png)
 
 ---
 

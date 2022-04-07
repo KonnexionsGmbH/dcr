@@ -8,13 +8,15 @@ rem ----------------------------------------------------------------------------
 
 setlocal EnableDelayedExpansion
 
-set DCR_CHOICE_ACTION_DEFAULT=db_u
+set DCR_CHOICE_ACTION_DEFAULT=aui
 set DCR_ENVIRONMENT_TYPE=prod
-set PYTHONPATH=%PYTHONPATH%;src\dcr_core;src\dcr_core\libs
+set PYTHONPATH=%PYTHONPATH%;src\dcr_admin;src\dcr_core;src\dcr_core\libs
 
 if ["%1"] EQU [""] (
     echo =========================================================
-    echo all   - Run the complete processing of all new documents.
+    echo aui   - Run the administration user interface.
+    echo ---------------------------------------------------------
+    echo all   - Run the complete core processing of all new documents.
     echo ---------------------------------------------------------
     echo p_i   - 1. Process the inbox directory.
     echo p_2_i - 2. Convert pdf documents to image files:               Poppler.
@@ -101,6 +103,15 @@ echo.
     if ["%DCR_CHOICE_ACTION%"] EQU ["all"] (
         set _CHOICE=%DCR_CHOICE_ACTION%
     )
+
+if ["%DCR_CHOICE_ACTION%"] EQU ["aui"] (
+    pipenv run python src\dcr_admin\admin.py
+    if ERRORLEVEL 1 (
+        echo Processing of the script: %0 - step: 'python src\dcr_admin\admin.py' was aborted
+        exit -1073741510
+    )
+    goto normal_exit
+)
 
     if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"] (
         set _CHOICE=%DCR_CHOICE_ACTION%

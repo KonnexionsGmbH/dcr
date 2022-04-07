@@ -10,10 +10,12 @@ set -e
 
 export DCR_CHOICE_ACTION_DEFAULT=db_u
 export DCR_ENVIRONMENT_TYPE=prod
-export PYTHONPATH=${PYTHONPATH}:src/dcr_core:src/dcr_core/libs
+export PYTHONPATH=${PYTHONPATH}:src/dcr_admin:src/dcr_core:src/dcr_core/libs
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
+    echo "aui   - Run the administration user interface."
+    echo "------------------------------------------------------------------------------"
     echo "all   - Run the complete processing of all new documents."
     echo "------------------------------------------------------------------------------"
     echo "p_i   - 1. Process the inbox directory."
@@ -62,6 +64,11 @@ date +"DATE TIME : %d.%m.%Y %H:%M:%S"
 echo "=============================================================================="
 
 case "${DCR_CHOICE_ACTION}" in
+  aui)
+    if ! ( pipenv run python src/dcr_admin/admin.py ); then
+        exit 255
+    fi
+    ;;
   m_d)
     # Development install packages
     if ! ( make pipenv-dev ); then

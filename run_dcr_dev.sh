@@ -8,12 +8,14 @@ set -e
 #
 # ----------------------------------------------------------------------------------
 
-export DCR_CHOICE_ACTION_DEFAULT=db_u
+export DCR_CHOICE_ACTION_DEFAULT=aui
 export DCR_ENVIRONMENT_TYPE=dev
-export PYTHONPATH=${PYTHONPATH}:src/dcr_core:src/dcr_core/libs
+export PYTHONPATH=${PYTHONPATH}:src/dcr_admin:src/dcr_core:src/dcr_core/libs
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
+    echo "aui   - Run the administration user interface."
+    echo "------------------------------------------------------------------------------"
     echo "all   - Run the complete processing of all new documents."
     echo "------------------------------------------------------------------------------"
     echo "p_i   - 1. Process the inbox directory."
@@ -62,6 +64,9 @@ date +"DATE TIME : %d.%m.%Y %H:%M:%S"
 echo "=============================================================================="
 
 case "${DCR_CHOICE_ACTION}" in
+  aui)
+    pipenv run python src/dcr_admin/admin.py
+    ;;
   m_d)
     # Development install packages
     make pipenv-dev
@@ -73,7 +78,7 @@ case "${DCR_CHOICE_ACTION}" in
     make compileall
     ;;
   db_c)
-    pipenv run python src/dcr_core/dcr_core.py "${DCR_CHOICE_ACTION}"
+    pipenv run python src/dcr_core/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   db_u|n_2_p|ocr|p_2_i|s_f_p|tet)
     case "${DCR_CHOICE_ACTION}" in
@@ -95,14 +100,14 @@ case "${DCR_CHOICE_ACTION}" in
       *)
         ;;
     esac
-    pipenv run python src/dcr_core/dcr_core.py "${DCR_CHOICE_ACTION}"
+    pipenv run python src/dcr_core/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   all|p_i)
     rm -rf data/inbox
     mkdir data/inbox
     cp -r tests/inbox/* data/inbox
     ls -ll data/inbox
-    pipenv run python src/dcr_core/dcr_core.py "${DCR_CHOICE_ACTION}"
+    pipenv run python src/dcr_core/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
     echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p | ocr | p_i | p_2_i | s_f_p | tet"

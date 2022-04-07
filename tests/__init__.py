@@ -1,1 +1,1 @@
-"""Unit test package for dcr_core."""
+"""Unit test package for dcr."""
