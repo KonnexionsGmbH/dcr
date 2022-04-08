@@ -10,7 +10,7 @@ set -e
 
 export DCR_CHOICE_ACTION_DEFAULT=db_u
 export DCR_ENVIRONMENT_TYPE=prod
-export PYTHONPATH=${PYTHONPATH}:src/dcr_admin:src/dcr_core:src/dcr_core/libs
+export PYTHONPATH=${PYTHONPATH}:src/dcr:src/dcr/libs
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
@@ -65,7 +65,7 @@ echo "==========================================================================
 
 case "${DCR_CHOICE_ACTION}" in
   aui)
-    if ! ( pipenv run python src/dcr_admin/admin.py ); then
+    if ! ( pipenv run python src/dcr/admin.py ); then
         exit 255
     fi
     ;;
@@ -105,7 +105,7 @@ case "${DCR_CHOICE_ACTION}" in
       *)
         ;;
     esac
-    if ! ( pipenv run python src/dcr_core/dcr_core.py "${DCR_CHOICE_ACTION}" ); then
+    if ! ( pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}" ); then
         exit 255
     fi
     ;;

@@ -82,7 +82,7 @@ A **`pdf`** document consisting of a scanned image is marked for conversion from
 Other **`pdf`** documents are marked for further processing with the **`pdf`** parser and then also moved to the file directory **`ìnbox_accepted`**.
 If, however, when checking the **`pdf`** document with **`fitz`**, it turns out that the document with the file extension **`pdf`** is not really a **`pdf`** document, then the document is moved to the file directory **`inbox_rejected`**.
 
-#### 2.1.2.2 File extensions of documents for processing with Pandoc and TeX Live
+#### 2.1.2.2 File extensions of documents for processing with [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}
 
 Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and 
 marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}:
@@ -97,7 +97,7 @@ marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:ta
 
 An exception are files with the file name **`README.md`**, which are ignored and not processed.
 
-#### 2.1.2.3 File extensions of documents for processing with Tesseract OCR
+#### 2.1.2.3 File extensions of documents for processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}
 
 Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}:
 
@@ -175,7 +175,7 @@ The JSON property **`noWords`** shows the word-related frequency of use of the f
 
 #### b) Database table **`content`**
 
-The database table **`content`** contains a separate entry for each sentence identified by PDFlib TET in the document:
+The database table **`content`** contains a separate entry for each sentence identified by [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} in the document:
 
 ![](img/index_2.1.6_example_content_1.png)
 

@@ -30,7 +30,7 @@ Release Date: dd.mm.2022
 | Python3 - pip                                                                 | 22.0.4                 |                                     |         |
 | [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} | 5.10.0                 | base version                        |         |
 | [TeX Live](https://www.tug.org/texlive){:target="_blank"}                     | 2019                   | base version                        |         |
-| TeX Live - pdfTeX                                                             | 3.14159265-2.6-1.40.20 | base version                        |         |
+| [TeX Live](https://www.tug.org/texlive){:target="_blank"} - pdfTeX            | 3.14159265-2.6-1.40.20 | base version                        |         |
 
 #### 1.2.1 Unix-specific Software
 
@@ -172,7 +172,7 @@ new:
 "Info **********  Start: Pydoc-Markdown ******************************"
 pipenv run pydoc-markdown --version
 python -m pydoc-markdown, version 4.6.3
-pipenv run pydoc-markdown -I src/dcr_core --render-toc > docs/developing_api_documentation.md
+pipenv run pydoc-markdown -I src/dcr --render-toc > docs/developing_api_documentation.md
 Traceback (most recent call last):
   File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\parser.py", line 88, in parse_to_ast
     return RefactoringTool([], options).refactor_string(code + '\n', filename)
@@ -221,7 +221,7 @@ Traceback (most recent call last):
 lib2to3.pgen2.parse.ParseError: bad input: type=1, value='child_tag', context=(' ', (66, 14), 'src\\dcr\\libs\\parser.py')
 make: *** [pydoc-markdown] Fehler 1
 
-### <a name="issues_tesseract_ocr"></a> 2.4 Tesseract OCR
+### <a name="issues_tesseract_ocr"></a> 2.4 [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}
 
 - Issue: Images of type 'jp2': Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 ... [see #57](https://github.com/UB-Mannheim/tesseract/issues/57){:target="_blank"}
 

@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module dcr_core.libs.db.orm.connection."""
+"""Testing Module libs.db.orm.connection."""
 import libs.cfg
 import libs.db.cfg
 import libs.db.driver

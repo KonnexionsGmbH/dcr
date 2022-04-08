@@ -61,16 +61,16 @@ def convert_non_pdf_2_pdf_file() -> None:
     # not testable
     # try:
     # output = pypandoc.convert_file(
+    extra_args = [
+        f"--pdf-engine={libs.cfg.PANDOC_PDF_ENGINE_XELATEX}",
+        "-V",
+        f"lang:{libs.cfg.languages_pandoc[libs.cfg.document_language_id]}",
+    ]
+
     pypandoc.convert_file(
         source_file_name,
         libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
-        extra_args=(
-            [
-                f"--pdf-engine={libs.cfg.PANDOC_PDF_ENGINE_XELATEX}",
-                "-V",
-                f"lang:{libs.cfg.languages_pandoc[libs.cfg.document_language_id]}",
-            ]
-        ),
+        extra_args=extra_args,
         outputfile=target_file_name,
     )
 

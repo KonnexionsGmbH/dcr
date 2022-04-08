@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module dcr_core.libs.preprocessor.tesseractdcr."""
+"""Testing Module libs.preprocessor.tesseractdcr."""
 from typing import List
 
 import libs.cfg

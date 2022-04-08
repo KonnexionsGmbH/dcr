@@ -7,8 +7,8 @@
 
 ## 1. Overview
 
-Data storage is realised with the relational database management system [PostgreSQL](https://www.postgresql.org). 
-**DCR** uses the official Docker image as provided by the PostgreSQL Docker Community on DockerHub - [see here](https://hub.docker.com/_/postgres). 
+Data storage is realised with the relational database management system [PostgreSQL](https://www.postgresql.org){:target="_blank"}. 
+**DCR** uses the official Docker image as provided by the PostgreSQL Docker Community on DockerHub - [see here](https://hub.docker.com/_/postgres){:target="_blank"}. 
 If required, a PostgreSQL container can be downloaded and created with the script `scripts/run_setup_postgresql`.
 
 ## 2. Database Schema

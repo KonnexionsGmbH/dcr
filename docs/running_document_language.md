@@ -8,7 +8,7 @@
 ## 1. Overview
 
 **`DCR`** supports the processing of documents in different languages. 
-The supported languages must be accepted by both [SpaCy](https://spacy.io/usage/models) and [Tesseract OCR](https://tesseract-ocr.github.io/tessdoc/Data-Files-in-different-versions.html). 
+The supported languages must be accepted by [Pandoc](https://pandoc.org){:target="_blank"} respectively [Babel](http://mirrors.ctan.org/macros/latex/required/babel/base/babel.pdf){:target="_blank"}, [SpaCy](https://spacy.io/usage/models){:target="_blank"} and [Tesseract OCR](https://tesseract-ocr.github.io/tessdoc/Data-Files-in-different-versions.html){:target="_blank"}. 
 Furthermore, for each of the languages in question there must be a corresponding entry in the database table **`language`**.
 
 ## 2. Database Table **`language`**
@@ -63,9 +63,9 @@ Example entry for the document language French:
 |----------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
 | active               | active language - true or false                                                                                                                |
 | code_iso_639_3       | three-letter codes, the same as 639-2/T for languages, <br>but with distinct codes for each variety of an ISO 639 macrolanguage                |
-| code_pandoc          | the language code as used in Pandoc (Babel - IETF BCP 47)                                                                                      |
-| code_spacy           | the language code as used in SpaCy                                                                                                             |
-| code_tesseract       | the language code as used in Tesseract OCR                                                                                                     |
+| code_pandoc          | the language code as used in [Pandoc](https://pandoc.org){:target="_blank"} respectively [Babel - IETF BCP 47](http://mirrors.ctan.org/macros/latex/required/babel/base/babel.pdf){:target="_blank"}, [SpaCy](https://spacy.io/usage/models){:target="_blank"} and [Tesseract OCR](https://tesseract-ocr.github.io/tessdoc/Data-Files-in-different-versions.html){:target="_blank"}                                 |
+| code_spacy           | the language code as used in [SpaCy](https://spacy.io/usage/models){:target="_blank"}                                                                                                             |
+| code_tesseract       | the language code as used in [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}                                                                                                     |
 | directory_name_inbox | optional the name of the file directory relative to the **`inbox`** - <br>if missing the content of the column **`iso_language_name`** is used |
 | iso_language_name    | the name of the language according to **`ISO 639-1`**                                                                                          |
 

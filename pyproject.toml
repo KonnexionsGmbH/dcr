@@ -39,7 +39,7 @@ warn_unused_configs = true
 warn_unused_ignores = true
 
 [[tool.pydoc-markdown.loaders]]
-search_path = [ "src/dcr_admin", "src/dcr_core" ]
+search_path = [ "src/dcr" ]
 type = "python"
 
 [tool.pydoc-markdown.renderer]
