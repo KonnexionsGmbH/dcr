@@ -220,7 +220,7 @@ def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         [
-            ("Translating_SQL_Into_Relational_Algebra_p01_02", "pdf"),
+            ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
         libs.cfg.directory_inbox,
     )
@@ -260,8 +260,8 @@ def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_
     )
 
     files_expected: List = [
-        "Translating_SQL_Into_Relational_Algebra_p01_02_1.pdf",
-        "Translating_SQL_Into_Relational_Algebra_p01_02_1_0.pdf",
+        "translating_sql_into_relational_algebra_p01_02_1.pdf",
+        "translating_sql_into_relational_algebra_p01_02_1_0.pdf",
     ]
 
     pytest.helpers.verify_content_of_directory(
@@ -290,12 +290,12 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     # -------------------------------------------------------------------------
     libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal_duplicate <=========")
 
-    stem_name_1: str = "Translating_SQL_Into_Relational_Algebra_p01_02"
+    stem_name_1: str = "translating_sql_into_relational_algebra_p01_02"
     file_ext_1: str = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.directory_inbox)
 
-    stem_name_2: str = "Translating_SQL_Into_Relational_Algebra_p01_02_1_0"
+    stem_name_2: str = "translating_sql_into_relational_algebra_p01_02_1_0"
     file_ext_2: str = "pdf"
 
     value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
