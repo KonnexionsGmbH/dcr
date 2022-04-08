@@ -32,12 +32,12 @@ export DCR_ENVIRONMENT_TYPE=test
 
 ifeq ($(OS),Windows_NT)
 	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
-    export MYPYPATH=src\\dcr;src\\dcr\\libs
-    export PYTHONPATH=src\\dcr;src\\dcr\\libs
+    export MYPYPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\pp
+    export PYTHONPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\pp
 else
 	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
-    export MYPYPATH=src/dcr:src/dcr/libs
-    export PYTHONPATH=src/dcr:src/dcr/libs
+    export MYPYPATH=src/dcr:src/dcr/db:src/dcr/db/orm:src/dcr/libs:src/dcr/pp
+    export PYTHONPATH=src/dcr:src/dcr/db:src/dcr/db/orm:src/dcr/libs:src/dcr/pp
 endif
 
 # Bandit is a tool designed to find common security issues in Python code.
@@ -124,7 +124,7 @@ mypy:               ## Find typing issues with Mypy.
 	@echo MYPYPATH=${MYPYPATH}
 	pipenv run pip freeze | grep mypy
 	pipenv run mypy --version
-	pipenv run mypy --exclude TET.py src
+	pipenv run mypy --exclude src/dcr/TET.py src
 	@echo "Info **********  End:   Mypy ****************************************"
 
 # pip is the package installer for Python.

@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module preprocessor.parser."""
+"""Testing Module pp.parser."""
 from typing import List
 
 import libs.cfg

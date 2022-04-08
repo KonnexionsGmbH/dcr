@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module preprocessor.inbox."""
+"""Testing Module pp.inbox."""
 import os.path
 from pathlib import Path
 

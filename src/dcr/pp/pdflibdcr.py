@@ -1,5 +1,4 @@
-"""Module preprocessor.pdflibdcr: Extract text and metadata from pdf
-documents."""
+"""Module pp.pdflibdcr: Extract text and metadata from pdf documents."""
 import time
 
 import db.cfg

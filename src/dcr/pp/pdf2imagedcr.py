@@ -1,5 +1,5 @@
-"""Module preprocessor.pdf2imagedcr: Convert scanned image pdf documents to
-image files."""
+"""Module pp.pdf2imagedcr: Convert scanned image pdf documents to image
+files."""
 import os
 import time
 

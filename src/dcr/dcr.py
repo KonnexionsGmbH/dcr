@@ -17,12 +17,12 @@ import db.orm.connection
 import db.orm.dml
 import libs.cfg
 import libs.utils
-import preprocessor.inbox
-import preprocessor.pandocdcr
-import preprocessor.parser
-import preprocessor.pdf2imagedcr
-import preprocessor.pdflibdcr
-import preprocessor.tesseractdcr
+import pp.inbox
+import pp.pandocdcr
+import pp.parser
+import pp.pdf2imagedcr
+import pp.pdflibdcr
+import pp.tesseractdcr
 import sqlalchemy
 import yaml
 from sqlalchemy import Table
@@ -326,7 +326,7 @@ def process_convert_image_2_pdf() -> None:
             db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
-    preprocessor.tesseractdcr.convert_image_2_pdf()
+    pp.tesseractdcr.convert_image_2_pdf()
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -350,7 +350,7 @@ def process_convert_image_2_pdf() -> None:
             db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
-    preprocessor.tesseractdcr.reunite_pdfs()
+    pp.tesseractdcr.reunite_pdfs()
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -381,7 +381,7 @@ def process_convert_non_pdf_2_pdf() -> None:
             db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
-    preprocessor.pandocdcr.convert_non_pdf_2_pdf()
+    pp.pandocdcr.convert_non_pdf_2_pdf()
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -412,7 +412,7 @@ def process_convert_pdf_2_image() -> None:
             db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
-    preprocessor.pdf2imagedcr.convert_pdf_2_image()
+    pp.pdf2imagedcr.convert_pdf_2_image()
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -525,7 +525,7 @@ def process_extract_text_from_pdf() -> None:
             db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
-    preprocessor.pdflibdcr.extract_text_from_pdf()
+    pp.pdflibdcr.extract_text_from_pdf()
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -557,7 +557,7 @@ def process_inbox_directory() -> None:
         },
     )
 
-    preprocessor.inbox.process_inbox()
+    pp.inbox.process_inbox()
 
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
@@ -593,7 +593,7 @@ def process_store_from_parser() -> None:
         },
     )
 
-    preprocessor.parser.parse_tetml()
+    pp.parser.parse_tetml()
 
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,

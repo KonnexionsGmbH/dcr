@@ -1,4 +1,4 @@
-"""Module preprocessor.inbox: Check, distribute and process incoming documents.
+"""Module pp.inbox: Check, distribute and process incoming documents.
 
 New documents are made available in the file directory inbox. These are
 then checked and moved to the accepted or rejected file directories

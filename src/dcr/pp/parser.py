@@ -1,5 +1,4 @@
-"""Module preprocessor.parser: Store the document structure from the parser
-result."""
+"""Module pp.parser: Store the document structure from the parser result."""
 import json
 import os
 import time
