@@ -1,11 +1,11 @@
-"""Module libs.db.orm.dml: Database Manipulation Management."""
+"""Module db.orm.dml: Database Manipulation Management."""
 import os
 import time
 from typing import Dict
 
+import db.cfg
+import db.orm.dml
 import libs.cfg
-import libs.db.cfg
-import libs.db.orm.dml
 import libs.utils
 import sqlalchemy.orm
 from sqlalchemy import Table
@@ -34,9 +34,9 @@ def insert_dbt_row(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = Table(table_name, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine)
+    dbt = Table(table_name, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
 
-    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
+    with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         result = conn.execute(insert(dbt).values(columns).returning(dbt.columns.id))
         row = result.fetchone()
         conn.close()
@@ -62,14 +62,14 @@ def insert_journal_error(
     duration_ns = time.perf_counter_ns() - libs.cfg.start_time_document
 
     insert_dbt_row(
-        libs.db.cfg.DBT_JOURNAL,
+        db.cfg.DBT_JOURNAL,
         {
-            libs.db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
-            libs.db.cfg.DBC_DOCUMENT_ID: document_id,
-            libs.db.cfg.DBC_DURATION_NS: duration_ns,
-            libs.db.cfg.DBC_ERROR_CODE: error[0:6],
-            libs.db.cfg.DBC_ERROR_TEXT: error[7:],
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
+            db.cfg.DBC_DOCUMENT_ID: document_id,
+            db.cfg.DBC_DURATION_NS: duration_ns,
+            db.cfg.DBC_ERROR_CODE: error[0:6],
+            db.cfg.DBC_ERROR_TEXT: error[7:],
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
         },
     )
 
@@ -77,7 +77,7 @@ def insert_journal_error(
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "
-            f"[{libs.db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}] - "
+            f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}] - "
             f"Error: {error} "
         )
 
@@ -96,12 +96,12 @@ def insert_journal_statistics(
     duration_ns = time.perf_counter_ns() - libs.cfg.start_time_document
 
     insert_dbt_row(
-        libs.db.cfg.DBT_JOURNAL,
+        db.cfg.DBT_JOURNAL,
         {
-            libs.db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
-            libs.db.cfg.DBC_DOCUMENT_ID: document_id,
-            libs.db.cfg.DBC_DURATION_NS: duration_ns,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
+            db.cfg.DBC_DOCUMENT_ID: document_id,
+            db.cfg.DBC_DURATION_NS: duration_ns,
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
         },
     )
 
@@ -109,7 +109,7 @@ def insert_journal_statistics(
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "
-            f"[{libs.db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+            f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
         )
 
 
@@ -123,12 +123,12 @@ def select_document_base_file_name() -> str | None:
         str: The file name of the base document found.
     """
     dbt = Table(
-        libs.db.cfg.DBT_DOCUMENT,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
+        db.cfg.DBT_DOCUMENT,
+        db.cfg.db_orm_metadata,
+        autoload_with=db.cfg.db_orm_engine,
     )
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
+    with db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(
             select(dbt.c.directory_name, dbt.c.file_name).where(
                 dbt.c.document_id_parent == libs.cfg.document_id_base,
@@ -152,12 +152,12 @@ def select_document_file_name_id(document_id: sqlalchemy.Integer) -> str | None:
         str: The file name found.
     """
     dbt = Table(
-        libs.db.cfg.DBT_DOCUMENT,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
+        db.cfg.DBT_DOCUMENT,
+        db.cfg.db_orm_metadata,
+        autoload_with=db.cfg.db_orm_engine,
     )
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
+    with db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(
             select(dbt.c.file_name).where(
                 and_(
@@ -184,19 +184,19 @@ def select_document_file_name_sha256(document_id: sqlalchemy.Integer, sha256: st
         str: The file name found.
     """
     dbt = Table(
-        libs.db.cfg.DBT_DOCUMENT,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
+        db.cfg.DBT_DOCUMENT,
+        db.cfg.db_orm_metadata,
+        autoload_with=db.cfg.db_orm_engine,
     )
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
+    with db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(
             select(dbt.c.file_name).where(
                 and_(
                     dbt.c.id != document_id,
-                    dbt.c.directory_type == libs.db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX,
+                    dbt.c.directory_type == db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX,
                     dbt.c.sha256 == sha256,
-                    dbt.c.status == libs.db.cfg.DOCUMENT_STATUS_END,
+                    dbt.c.status == db.cfg.DOCUMENT_STATUS_END,
                 )
             )
         ).fetchone()
@@ -217,11 +217,9 @@ def select_run_run_id_last() -> int | sqlalchemy.Integer:
     Returns:
         sqlalchemy.Integer: The last run id found.
     """
-    dbt = Table(
-        libs.db.cfg.DBT_RUN, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine
-    )
+    dbt = Table(db.cfg.DBT_RUN, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
+    with db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(select(func.max(dbt.c.run_id))).fetchone()
         conn.close()
 
@@ -243,14 +241,14 @@ def select_version_version_unique() -> str:
         str: The version number found.
     """
     dbt = Table(
-        libs.db.cfg.DBT_VERSION,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
+        db.cfg.DBT_VERSION,
+        db.cfg.db_orm_metadata,
+        autoload_with=db.cfg.db_orm_engine,
     )
 
     current_version: str = ""
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
+    with db.cfg.db_orm_engine.connect() as conn:
         for row in conn.execute(select(dbt.c.version)):
             if current_version == "":
                 current_version = row.version
@@ -283,9 +281,9 @@ def update_dbt_id(
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = Table(table_name, libs.db.cfg.db_orm_metadata, autoload_with=libs.db.cfg.db_orm_engine)
+    dbt = Table(table_name, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
 
-    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
+    with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(update(dbt).where(dbt.c.id == id_where).values(columns))
         conn.close()
 

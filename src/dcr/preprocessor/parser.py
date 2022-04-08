@@ -7,10 +7,10 @@ from datetime import datetime
 from typing import Dict
 from typing import Iterable
 
+import db.cfg
+import db.orm.dml
 import defusedxml.ElementTree
 import libs.cfg
-import libs.db.cfg
-import libs.db.orm.dml
 import libs.utils
 
 
@@ -85,9 +85,9 @@ def init_parse_result_sentence() -> None:
     libs.cfg.parse_result_no_word_sentence = 0
 
     libs.cfg.parse_result_sentence = {
-        libs.db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA: None,
-        libs.db.cfg.JSON_NAME_NO_WORDS: None,
-        libs.db.cfg.JSON_NAME_WORDS: [],
+        db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA: None,
+        db.cfg.JSON_NAME_NO_WORDS: None,
+        db.cfg.JSON_NAME_WORDS: [],
     }
 
 
@@ -96,25 +96,25 @@ def init_parse_result_sentence() -> None:
 # -----------------------------------------------------------------------------
 def insert_content() -> None:
     """Store the parse result in the database table content."""
-    if not libs.cfg.parse_result_sentence[libs.db.cfg.JSON_NAME_WORDS]:
+    if not libs.cfg.parse_result_sentence[db.cfg.JSON_NAME_WORDS]:
         return
 
     libs.cfg.parse_result_sentence[
-        libs.db.cfg.JSON_NAME_NO_WORDS
+        db.cfg.JSON_NAME_NO_WORDS
     ] = libs.cfg.parse_result_no_word_sentence
 
     if not libs.cfg.is_simulate_parser:
-        libs.db.orm.dml.insert_dbt_row(
-            libs.db.cfg.DBT_CONTENT,
+        db.orm.dml.insert_dbt_row(
+            db.cfg.DBT_CONTENT,
             {
-                libs.db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
-                libs.db.cfg.DBC_LINE_IN_PARA_END: libs.cfg.parse_result_line_in_para_end,
-                libs.db.cfg.DBC_LINE_IN_PARA_START: libs.cfg.parse_result_line_in_para_start,
-                libs.db.cfg.DBC_PAGE_IN_DOC_END: libs.cfg.parse_result_page_in_doc_end,
-                libs.db.cfg.DBC_PAGE_IN_DOC_START: libs.cfg.parse_result_page_in_doc_start,
-                libs.db.cfg.DBC_PARA_IN_PAGE_END: libs.cfg.parse_result_para_in_page_end,
-                libs.db.cfg.DBC_PARA_IN_PAGE_START: libs.cfg.parse_result_para_in_page_start,
-                libs.db.cfg.DBC_SENTENCE: json.dumps(libs.cfg.parse_result_sentence),
+                db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
+                db.cfg.DBC_LINE_IN_PARA_END: libs.cfg.parse_result_line_in_para_end,
+                db.cfg.DBC_LINE_IN_PARA_START: libs.cfg.parse_result_line_in_para_start,
+                db.cfg.DBC_PAGE_IN_DOC_END: libs.cfg.parse_result_page_in_doc_end,
+                db.cfg.DBC_PAGE_IN_DOC_START: libs.cfg.parse_result_page_in_doc_start,
+                db.cfg.DBC_PARA_IN_PAGE_END: libs.cfg.parse_result_para_in_page_end,
+                db.cfg.DBC_PARA_IN_PAGE_START: libs.cfg.parse_result_para_in_page_start,
+                db.cfg.DBC_SENTENCE: json.dumps(libs.cfg.parse_result_sentence),
             },
         )
 
@@ -123,7 +123,7 @@ def insert_content() -> None:
     libs.cfg.parse_result_no_sentence += 1
 
     libs.cfg.parse_result_sentence[
-        libs.db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA
+        db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA
     ] = libs.cfg.parse_result_no_sentence
 
 
@@ -273,13 +273,13 @@ def parse_tag_font(parent_tag: str, parent: Iterable[str]) -> None:
 
     libs.cfg.parse_result_fonts.append(
         {
-            libs.db.cfg.JSON_NAME_ID: parent.attrib[libs.cfg.PARSE_ATTRIB_ID],
-            libs.db.cfg.JSON_NAME_ITALIC_ANGLE: parent.attrib[libs.cfg.PARSE_ATTRIB_ITALIC_ANGLE],
-            libs.db.cfg.JSON_NAME_NAME: parent.attrib[libs.cfg.PARSE_ATTRIB_NAME],
-            libs.db.cfg.JSON_NAME_NO_WORDS: libs.cfg.parse_result_fonts_no_words[
+            db.cfg.JSON_NAME_ID: parent.attrib[libs.cfg.PARSE_ATTRIB_ID],
+            db.cfg.JSON_NAME_ITALIC_ANGLE: parent.attrib[libs.cfg.PARSE_ATTRIB_ITALIC_ANGLE],
+            db.cfg.JSON_NAME_NAME: parent.attrib[libs.cfg.PARSE_ATTRIB_NAME],
+            db.cfg.JSON_NAME_NO_WORDS: libs.cfg.parse_result_fonts_no_words[
                 parent.attrib[libs.cfg.PARSE_ATTRIB_ID]
             ],
-            libs.db.cfg.JSON_NAME_WEIGHT: parent.attrib[libs.cfg.PARSE_ATTRIB_WEIGHT],
+            db.cfg.JSON_NAME_WEIGHT: parent.attrib[libs.cfg.PARSE_ATTRIB_WEIGHT],
         }
     )
 
@@ -428,9 +428,9 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
     libs.cfg.parse_result_no_word_sentence = 0
 
     libs.cfg.parse_result_sentence[
-        libs.db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA
+        db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA
     ] = libs.cfg.parse_result_no_sentence
-    libs.cfg.parse_result_sentence[libs.db.cfg.JSON_NAME_WORDS] = []
+    libs.cfg.parse_result_sentence[db.cfg.JSON_NAME_WORDS] = []
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -520,17 +520,17 @@ def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
 
     debug_xml_element_text()
 
-    word_list = libs.cfg.parse_result_sentence[libs.db.cfg.JSON_NAME_WORDS]
+    word_list = libs.cfg.parse_result_sentence[db.cfg.JSON_NAME_WORDS]
     word_list.append(
         {
-            libs.db.cfg.JSON_NAME_FONT_ID: libs.cfg.parse_result_font_id,
-            libs.db.cfg.JSON_NAME_FONT_SIZE: libs.cfg.parse_result_font_size,
-            libs.db.cfg.JSON_NAME_NO_WORD_LINE: libs.cfg.parse_result_no_word_line,
-            libs.db.cfg.JSON_NAME_NO_WORD_SENTENCE: libs.cfg.parse_result_no_word_sentence,
-            libs.db.cfg.JSON_NAME_WORD_PARSED: libs.cfg.parse_result_text,
+            db.cfg.JSON_NAME_FONT_ID: libs.cfg.parse_result_font_id,
+            db.cfg.JSON_NAME_FONT_SIZE: libs.cfg.parse_result_font_size,
+            db.cfg.JSON_NAME_NO_WORD_LINE: libs.cfg.parse_result_no_word_line,
+            db.cfg.JSON_NAME_NO_WORD_SENTENCE: libs.cfg.parse_result_no_word_sentence,
+            db.cfg.JSON_NAME_WORD_PARSED: libs.cfg.parse_result_text,
         }
     )
-    libs.cfg.parse_result_sentence[libs.db.cfg.JSON_NAME_WORDS] = word_list
+    libs.cfg.parse_result_sentence[db.cfg.JSON_NAME_WORDS] = word_list
 
     if libs.cfg.parse_result_font_id in libs.cfg.parse_result_fonts_no_words:
         libs.cfg.parse_result_fonts_no_words[libs.cfg.parse_result_font_id] = (
@@ -565,8 +565,8 @@ def parse_tetml() -> None:
 
     libs.utils.reset_statistics_total()
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_STEP_PARSER)
+    with db.cfg.db_orm_engine.connect() as conn:
+        rows = libs.utils.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -624,14 +624,14 @@ def parse_tetml_file() -> None:
         libs.utils.finalize_file_processing()
 
     # Update the font information in the database table.
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_DOCUMENT,
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_DOCUMENT,
         libs.cfg.document_id_base,
         {
-            libs.db.cfg.DBC_FONTS: json.dumps(libs.cfg.parse_result_fonts),
+            db.cfg.DBC_FONTS: json.dumps(libs.cfg.parse_result_fonts),
         },
     )
 
-    libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
+    db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

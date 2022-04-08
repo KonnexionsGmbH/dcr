@@ -7,10 +7,10 @@ import sys
 import traceback
 from typing import Tuple
 
+import db.cfg
+import db.driver
+import db.orm.dml
 import libs.cfg
-import libs.db.cfg
-import libs.db.driver
-import libs.db.orm.dml
 import libs.utils
 from sqlalchemy import Table
 from sqlalchemy import and_
@@ -71,7 +71,7 @@ def delete_auxiliary_file(file_name: str) -> None:
         return
 
     # Don't remove the base document !!!
-    if file_name == libs.db.orm.dml.select_document_base_file_name():
+    if file_name == db.orm.dml.select_document_base_file_name():
         return
 
     if os.path.isfile(file_name):
@@ -86,11 +86,11 @@ def finalize_file_processing() -> None:
     """Finalise the file processing."""
     libs.cfg.total_ok_processed += 1
 
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_DOCUMENT,
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_DOCUMENT,
         libs.cfg.document_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
+            db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_END,
         },
     )
 
@@ -104,25 +104,25 @@ def initialise_document_child() -> None:
     Prepares a new document for one of the file directories
     'inbox_accepted' or 'inbox_rejected'.
     """
-    libs.cfg.document_child_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_DOCUMENT,
+    libs.cfg.document_child_id = db.orm.dml.insert_dbt_row(
+        db.cfg.DBT_DOCUMENT,
         {
-            libs.db.cfg.DBC_CHILD_NO: libs.cfg.document_child_child_no,
-            libs.db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
-            libs.db.cfg.DBC_DIRECTORY_NAME: str(libs.cfg.document_child_directory_name),
-            libs.db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_child_directory_type,
-            libs.db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_child_id_base,
-            libs.db.cfg.DBC_DOCUMENT_ID_PARENT: libs.cfg.document_child_id_parent,
-            libs.db.cfg.DBC_ERROR_CODE: libs.cfg.document_child_error_code,
-            libs.db.cfg.DBC_FILE_NAME: libs.cfg.document_child_file_name,
-            libs.db.cfg.DBC_FILE_TYPE: libs.cfg.document_child_file_type,
-            libs.db.cfg.DBC_NEXT_STEP: libs.cfg.document_child_next_step,
-            libs.db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id
+            db.cfg.DBC_CHILD_NO: libs.cfg.document_child_child_no,
+            db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
+            db.cfg.DBC_DIRECTORY_NAME: str(libs.cfg.document_child_directory_name),
+            db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_child_directory_type,
+            db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_child_id_base,
+            db.cfg.DBC_DOCUMENT_ID_PARENT: libs.cfg.document_child_id_parent,
+            db.cfg.DBC_ERROR_CODE: libs.cfg.document_child_error_code,
+            db.cfg.DBC_FILE_NAME: libs.cfg.document_child_file_name,
+            db.cfg.DBC_FILE_TYPE: libs.cfg.document_child_file_type,
+            db.cfg.DBC_NEXT_STEP: libs.cfg.document_child_next_step,
+            db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id
             if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX
             else libs.cfg.document_child_language_id,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.cfg.document_child_status,
-            libs.db.cfg.DBC_STEM_NAME: libs.cfg.document_child_stem_name,
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_STATUS: libs.cfg.document_child_status,
+            db.cfg.DBC_STEM_NAME: libs.cfg.document_child_stem_name,
         },
     )
 
@@ -145,13 +145,13 @@ def prepare_document_4_next_step(next_file_type: str, next_step: str) -> None:
     libs.cfg.document_child_id_parent = libs.cfg.document_id
     libs.cfg.document_child_language_id = libs.cfg.document_language_id
     libs.cfg.document_child_next_step = next_step
-    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
+    libs.cfg.document_child_status = db.cfg.DOCUMENT_STATUS_START
 
 
 # -----------------------------------------------------------------------------
 # Prepare the source and target file names.
 # -----------------------------------------------------------------------------
-def prepare_file_names(file_extension: str = libs.db.cfg.DOCUMENT_FILE_TYPE_PDF) -> Tuple[str, str]:
+def prepare_file_names(file_extension: str = db.cfg.DOCUMENT_FILE_TYPE_PDF) -> Tuple[str, str]:
     """Prepare the source and target file names.
 
     Args:
@@ -200,8 +200,8 @@ def progress_msg_connected() -> None:
     if libs.cfg.is_verbose:
         print("")
         progress_msg(
-            f"User '{libs.db.cfg.db_current_user}' is now connected "
-            f"to database '{libs.db.cfg.db_current_database}'"
+            f"User '{db.cfg.db_current_user}' is now connected "
+            f"to database '{db.cfg.db_current_database}'"
         )
 
 
@@ -211,21 +211,19 @@ def progress_msg_connected() -> None:
 def progress_msg_disconnected() -> None:
     """Create a progress message: disconnected from database."""
     if libs.cfg.is_verbose:
-        if libs.db.cfg.db_current_database is None and libs.db.cfg.db_current_user is None:
+        if db.cfg.db_current_database is None and db.cfg.db_current_user is None:
             print("")
             libs.utils.progress_msg("Database is now disconnected")
             return
 
-        database = (
-            "n/a" if libs.db.cfg.db_current_database is None else libs.db.cfg.db_current_database
-        )
-        user = "n/a" if libs.db.cfg.db_current_user is None else libs.db.cfg.db_current_user
+        database = "n/a" if db.cfg.db_current_database is None else db.cfg.db_current_database
+        user = "n/a" if db.cfg.db_current_user is None else db.cfg.db_current_user
 
         print("")
         libs.utils.progress_msg(f"User '{user}' is now disconnected from database '{database}'")
 
-        libs.db.cfg.db_current_database = None
-        libs.db.cfg.db_current_user = None
+        db.cfg.db_current_database = None
+        db.cfg.db_current_user = None
 
 
 # -----------------------------------------------------------------------------
@@ -255,16 +253,16 @@ def report_document_error(error_code: str | None, error: str) -> None:
     libs.cfg.total_erroneous += 1
 
     if error_code is not None:
-        libs.db.orm.dml.update_dbt_id(
-            libs.db.cfg.DBT_DOCUMENT,
+        db.orm.dml.update_dbt_id(
+            db.cfg.DBT_DOCUMENT,
             libs.cfg.document_id,
             {
-                libs.db.cfg.DBC_ERROR_CODE: error_code,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+                db.cfg.DBC_ERROR_CODE: error_code,
+                db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_ERROR,
             },
         )
 
-    libs.db.orm.dml.insert_journal_error(
+    db.orm.dml.insert_journal_error(
         document_id=libs.cfg.document_id,
         error=error,
     )
@@ -334,8 +332,8 @@ def select_document(conn: Connection, dbt: Table, next_step: str) -> engine.Curs
                 dbt.c.next_step == next_step,
                 dbt.c.status.in_(
                     [
-                        libs.db.cfg.DOCUMENT_STATUS_ERROR,
-                        libs.db.cfg.DOCUMENT_STATUS_START,
+                        db.cfg.DOCUMENT_STATUS_ERROR,
+                        db.cfg.DOCUMENT_STATUS_START,
                     ]
                 ),
             )
@@ -357,9 +355,9 @@ def select_document_prepare() -> Table:
     libs.utils.check_directories()
 
     return Table(
-        libs.db.cfg.DBT_DOCUMENT,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
+        db.cfg.DBT_DOCUMENT,
+        db.cfg.db_orm_metadata,
+        autoload_with=db.cfg.db_orm_engine,
     )
 
 
@@ -522,15 +520,15 @@ def start_document_processing(document: Row) -> None:
     libs.cfg.document_status = document.status
     libs.cfg.document_stem_name = document.stem_name
 
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_DOCUMENT,
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_DOCUMENT,
         libs.cfg.document_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_START,
+            db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_START,
         },
     )
 
-    if libs.cfg.document_status == libs.db.cfg.DOCUMENT_STATUS_START:
+    if libs.cfg.document_status == db.cfg.DOCUMENT_STATUS_START:
         libs.cfg.total_status_ready += 1
     else:
         # not testable
@@ -571,6 +569,6 @@ def terminate_fatal(error_msg: str) -> None:
 
     traceback.print_exc(chain=True)
 
-    libs.db.driver.disconnect_db()
+    db.driver.disconnect_db()
 
     sys.exit(1)

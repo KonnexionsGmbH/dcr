@@ -3,10 +3,9 @@
 import os.path
 from pathlib import Path
 
+import db.cfg
+import db.orm.connection
 import libs.cfg
-import libs.db
-import libs.db.cfg
-import libs.db.orm.connection
 import pytest
 from sqlalchemy import Table
 from sqlalchemy import update
@@ -196,19 +195,17 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     # Connect to the database.
-    libs.db.orm.connection.connect_db()
+    db.orm.connection.connect_db()
 
     dbt = Table(
-        libs.db.cfg.DBT_LANGUAGE,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
+        db.cfg.DBT_LANGUAGE,
+        db.cfg.db_orm_metadata,
+        autoload_with=db.cfg.db_orm_engine,
     )
 
-    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
+    with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(
-            update(dbt)
-            .where(dbt.c.iso_language_name == "French")
-            .values({libs.db.cfg.DBC_ACTIVE: True})
+            update(dbt).where(dbt.c.iso_language_name == "French").values({db.cfg.DBC_ACTIVE: True})
         )
         conn.close()
 
@@ -379,7 +376,7 @@ def test_run_action_process_inbox_normal(fxtr_setup_empty_db_and_inbox):
         [
             stem_name + "_1." + file_ext,
             stem_name + "_1_1." + libs.cfg.pdf2image_type,
-            stem_name + "_1_1." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
+            stem_name + "_1_1." + db.cfg.DOCUMENT_FILE_TYPE_PDF,
         ],
     )
 

@@ -1,14 +1,14 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.db.orm.ddl."""
+"""Testing Module db.orm.ddl."""
 import os.path
 import shutil
 from pathlib import Path
 
+import db.cfg
+import db.driver
+import db.orm.connection
+import db.orm.ddl
 import libs.cfg
-import libs.db.cfg
-import libs.db.driver
-import libs.db.orm.connection
-import libs.db.orm.ddl
 import pytest
 
 # -----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ def test_load_db_data_from_json_content(fxtr_setup_empty_db_and_inbox):
     )
 
     with pytest.raises(SystemExit) as expt:
-        libs.db.orm.ddl.load_db_data_from_json(initial_database_data_path)
+        db.orm.ddl.load_db_data_from_json(initial_database_data_path)
 
     # restore original file
     shutil.copy(
@@ -78,7 +78,7 @@ def test_load_db_data_from_json_unknown(fxtr_setup_empty_db_and_inbox):
     )
 
     with pytest.raises(SystemExit) as expt:
-        libs.db.orm.ddl.load_db_data_from_json(initial_database_data_path)
+        db.orm.ddl.load_db_data_from_json(initial_database_data_path)
 
     # restore original file
     shutil.copy(

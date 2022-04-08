@@ -1,6 +1,6 @@
-"""Module libs.db.orm.connection: Database Connection Management."""
+"""Module db.orm.connection: Database Connection Management."""
+import db.cfg
 import libs.cfg
-import libs.db.cfg
 import libs.utils
 import sqlalchemy
 import sqlalchemy.orm
@@ -17,24 +17,24 @@ def connect_db() -> None:
 
     prepare_connect_db()
 
-    libs.db.cfg.db_orm_metadata = MetaData()
+    db.cfg.db_orm_metadata = MetaData()
 
-    libs.db.cfg.db_orm_engine = sqlalchemy.create_engine(
+    db.cfg.db_orm_engine = sqlalchemy.create_engine(
         libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PREFIX]
         + libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST]
         + ":"
         + libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT]
         + "/"
-        + libs.db.cfg.db_current_database
+        + db.cfg.db_current_database
         + "?user="
-        + libs.db.cfg.db_current_user
+        + db.cfg.db_current_user
         + "&password="
         + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD],
         poolclass=NullPool,
     )
-    libs.db.cfg.db_orm_engine.connect()
+    db.cfg.db_orm_engine.connect()
 
-    libs.db.cfg.db_orm_metadata.bind = libs.db.cfg.db_orm_engine
+    db.cfg.db_orm_metadata.bind = db.cfg.db_orm_engine
 
     libs.utils.progress_msg_connected()
 
@@ -46,21 +46,21 @@ def connect_db() -> None:
 # -----------------------------------------------------------------------------
 def disconnect_db() -> None:
     """Disconnect the database."""
-    if libs.db.cfg.db_orm_metadata is None and libs.db.cfg.db_orm_engine is None:
-        libs.db.cfg.db_current_database = None
-        libs.db.cfg.db_current_user = None
+    if db.cfg.db_orm_metadata is None and db.cfg.db_orm_engine is None:
+        db.cfg.db_current_database = None
+        db.cfg.db_current_user = None
         libs.utils.progress_msg(
             "There is currently no open database connection (orm)",
         )
         return
 
-    if libs.db.cfg.db_orm_metadata is not None:
-        libs.db.cfg.db_orm_metadata.clear()
-        libs.db.cfg.db_orm_metadata = None
+    if db.cfg.db_orm_metadata is not None:
+        db.cfg.db_orm_metadata.clear()
+        db.cfg.db_orm_metadata = None
 
-    if libs.db.cfg.db_orm_engine is not None:
-        libs.db.cfg.db_orm_engine.dispose()
-        libs.db.cfg.db_orm_engine = None
+    if db.cfg.db_orm_engine is not None:
+        db.cfg.db_orm_engine.dispose()
+        db.cfg.db_orm_engine = None
 
     libs.utils.progress_msg_disconnected()
 
@@ -70,5 +70,5 @@ def disconnect_db() -> None:
 # -----------------------------------------------------------------------------
 def prepare_connect_db() -> None:
     """Prepare the database connection for normal users."""
-    libs.db.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE]
-    libs.db.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER]
+    db.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE]
+    db.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER]

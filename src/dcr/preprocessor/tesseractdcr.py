@@ -2,13 +2,12 @@
 import os
 import time
 
+import db.cfg
+import db.orm.dml
 import libs.cfg
-import libs.db.cfg
-import libs.db.orm.dml
 import libs.utils
 import PyPDF4
 import pytesseract
-from pytesseract import TesseractError
 from sqlalchemy import func
 from sqlalchemy import select
 
@@ -27,8 +26,8 @@ def convert_image_2_pdf() -> None:
 
     libs.utils.reset_statistics_total()
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_document(conn, dbt, libs.db.cfg.DOCUMENT_STEP_TESSERACT)
+    with db.cfg.db_orm_engine.connect() as conn:
+        rows = libs.utils.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_TESSERACT)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -55,8 +54,8 @@ def convert_image_2_pdf_file() -> None:
 
     if os.path.exists(target_file_name):
         libs.utils.report_document_error(
-            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error=libs.db.cfg.ERROR_41_903.replace("{file_name}", target_file_name),
+            error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            error=db.cfg.ERROR_41_903.replace("{file_name}", target_file_name),
         )
         return
 
@@ -74,12 +73,12 @@ def convert_image_2_pdf_file() -> None:
             target_file.write(pdf)
 
         libs.utils.prepare_document_4_next_step(
-            next_file_type=libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
-            next_step=libs.db.cfg.DOCUMENT_STEP_PDFLIB,
+            next_file_type=db.cfg.DOCUMENT_FILE_TYPE_PDF,
+            next_step=db.cfg.DOCUMENT_STEP_PDFLIB,
         )
 
         libs.cfg.document_child_file_name = (
-            libs.cfg.document_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF
+            libs.cfg.document_stem_name + "." + db.cfg.DOCUMENT_FILE_TYPE_PDF
         )
 
         libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
@@ -92,20 +91,20 @@ def convert_image_2_pdf_file() -> None:
         # Document successfully converted to pdf format
         libs.utils.finalize_file_processing()
 
-        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
+        db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     # not testable
     # except TesseractError as err_t:
     #     libs.utils.report_document_error(
-    #         error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-    #         error=libs.db.cfg.ERROR_41_902.replace("{source_file}", source_file_name)
+    #         error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
+    #         error=db.cfg.ERROR_41_902.replace("{source_file}", source_file_name)
     #         .replace("{target_file}", target_file_name)
     #         .replace("{error_status}", str(err_t.status))
     #         .replace("{error}", err_t.message),
     #     )
     except RuntimeError as err:
         libs.utils.report_document_error(
-            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-            error=libs.db.cfg.ERROR_41_901.replace("{source_file}", source_file_name)
+            error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
+            error=db.cfg.ERROR_41_901.replace("{source_file}", source_file_name)
             .replace("{target_file}", target_file_name)
             .replace("{type_error}", str(type(err)))
             .replace("{error}", str(err)),
@@ -126,14 +125,14 @@ def reunite_pdfs() -> None:
 
     libs.utils.reset_statistics_total()
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
+    with db.cfg.db_orm_engine.connect() as conn:
         rows = conn.execute(
             select(dbt).where(
                 dbt.c.id
                 == (
                     select(dbt.c.document_id_base)
-                    .where(dbt.c.status == libs.db.cfg.DOCUMENT_STATUS_START)
-                    .where(dbt.c.next_step == libs.db.cfg.DOCUMENT_STEP_PDFLIB)
+                    .where(dbt.c.status == db.cfg.DOCUMENT_STATUS_START)
+                    .where(dbt.c.next_step == db.cfg.DOCUMENT_STEP_PDFLIB)
                     .group_by(dbt.c.document_id_base)
                     .having(func.count(dbt.c.document_id_base) > 1)
                     .scalar_subquery()
@@ -166,7 +165,7 @@ def reunite_pdfs_file() -> None:
         libs.cfg.document_stem_name + "_" + str(libs.cfg.document_id_base) + "_0"
     )
     libs.cfg.document_child_file_name = (
-        libs.cfg.document_child_stem_name + "." + libs.db.cfg.DOCUMENT_FILE_TYPE_PDF
+        libs.cfg.document_child_stem_name + "." + db.cfg.DOCUMENT_FILE_TYPE_PDF
     )
 
     target_file_path = os.path.join(
@@ -176,8 +175,8 @@ def reunite_pdfs_file() -> None:
 
     if os.path.exists(target_file_path):
         libs.utils.report_document_error(
-            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error=libs.db.cfg.ERROR_41_904.replace("{file_name}", str(target_file_path)),
+            error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            error=db.cfg.ERROR_41_904.replace("{file_name}", str(target_file_path)),
         )
         return
 
@@ -187,11 +186,11 @@ def reunite_pdfs_file() -> None:
 
     dbt = libs.utils.select_document_prepare()
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
+    with db.cfg.db_orm_engine.connect() as conn:
         rows = conn.execute(
             select(dbt)
-            .where(dbt.c.status == libs.db.cfg.DOCUMENT_STATUS_START)
-            .where(dbt.c.next_step == libs.db.cfg.DOCUMENT_STEP_PDFLIB)
+            .where(dbt.c.status == db.cfg.DOCUMENT_STATUS_START)
+            .where(dbt.c.next_step == db.cfg.DOCUMENT_STEP_PDFLIB)
             .where(dbt.c.document_id_base == libs.cfg.document_id_base)
             .order_by(dbt.c.id)
         )
@@ -210,12 +209,12 @@ def reunite_pdfs_file() -> None:
 
             libs.utils.delete_auxiliary_file(str(source_file_path))
 
-            libs.db.orm.dml.update_dbt_id(
-                libs.db.cfg.DBT_DOCUMENT,
+            db.orm.dml.update_dbt_id(
+                db.cfg.DBT_DOCUMENT,
                 row.id,
                 {
-                    libs.db.cfg.DBC_NEXT_STEP: libs.db.cfg.DOCUMENT_STEP_PYPDF4,
-                    libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
+                    db.cfg.DBC_NEXT_STEP: db.cfg.DOCUMENT_STEP_PYPDF4,
+                    db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_END,
                 },
             )
 
@@ -230,4 +229,4 @@ def reunite_pdfs_file() -> None:
     # Child document successfully reunited to one pdf document
     libs.utils.finalize_file_processing()
 
-    libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
+    db.orm.dml.insert_journal_statistics(libs.cfg.document_id)

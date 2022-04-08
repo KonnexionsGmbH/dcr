@@ -3,8 +3,6 @@
 from typing import List
 
 import libs.cfg
-import libs.db
-import libs.db.cfg
 import pytest
 
 import dcr

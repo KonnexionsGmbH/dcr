@@ -13,10 +13,10 @@ from pathlib import Path
 from typing import List
 from typing import Tuple
 
+import db.cfg
+import db.driver
+import db.orm.connection
 import libs.cfg
-import libs.db.cfg
-import libs.db.driver
-import libs.db.orm.connection
 import libs.utils
 import pytest
 from sqlalchemy import Table
@@ -159,17 +159,17 @@ def delete_config_param(config_section: str, config_param: str) -> str:
 @pytest.helpers.register
 def delete_version_version():
     """Delete all entries in the database table 'version'."""
-    libs.db.orm.connection.connect_db()
+    db.orm.connection.connect_db()
 
-    with libs.db.cfg.db_orm_engine.begin() as conn:
+    with db.cfg.db_orm_engine.begin() as conn:
         version = Table(
-            libs.db.cfg.DBT_VERSION,
-            libs.db.cfg.db_orm_metadata,
-            autoload_with=libs.db.cfg.db_orm_engine,
+            db.cfg.DBT_VERSION,
+            db.cfg.db_orm_metadata,
+            autoload_with=db.cfg.db_orm_engine,
         )
         conn.execute(delete(version))
 
-    libs.db.orm.connection.disconnect_db()
+    db.orm.connection.disconnect_db()
 
 
 # -----------------------------------------------------------------------------
@@ -256,7 +256,7 @@ def fxtr_setup_empty_db_and_inbox(
     fxtr_rmdir_opt(libs.cfg.directory_inbox_accepted)
     fxtr_rmdir_opt(libs.cfg.directory_inbox)
 
-    libs.db.driver.drop_database()
+    db.driver.drop_database()
 
     restore_setup_cfg()
 

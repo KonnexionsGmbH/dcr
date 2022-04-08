@@ -11,11 +11,11 @@ import sys
 import time
 from typing import List
 
+import db.cfg
+import db.driver
+import db.orm.connection
+import db.orm.dml
 import libs.cfg
-import libs.db.cfg
-import libs.db.driver
-import libs.db.orm.connection
-import libs.db.orm.dml
 import libs.utils
 import preprocessor.inbox
 import preprocessor.pandocdcr
@@ -36,17 +36,17 @@ def check_db_up_to_date() -> None:
     """Check that the database version is up-to-date."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    if libs.db.cfg.db_orm_engine is None:
+    if db.cfg.db_orm_engine is None:
         libs.utils.terminate_fatal(
             "The database does not yet exist.",
         )
 
-    if not sqlalchemy.inspect(libs.db.cfg.db_orm_engine).has_table(libs.db.cfg.DBT_VERSION):
+    if not sqlalchemy.inspect(db.cfg.db_orm_engine).has_table(db.cfg.DBT_VERSION):
         libs.utils.terminate_fatal(
             "The database table 'version' does not yet exist.",
         )
 
-    current_version = libs.db.orm.dml.select_version_version_unique()
+    current_version = db.orm.dml.select_version_version_unique()
 
     if libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION] != current_version:
         libs.utils.terminate_fatal(
@@ -226,16 +226,16 @@ def load_data_from_dbt_language() -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     dbt = Table(
-        libs.db.cfg.DBT_LANGUAGE,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
+        db.cfg.DBT_LANGUAGE,
+        db.cfg.db_orm_metadata,
+        autoload_with=db.cfg.db_orm_engine,
     )
 
     libs.cfg.languages_pandoc = {}
     libs.cfg.languages_spacy = {}
     libs.cfg.languages_tesseract = {}
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
+    with db.cfg.db_orm_engine.connect() as conn:
         rows = conn.execute(
             select(dbt.c.id, dbt.c.code_pandoc, dbt.c.code_spacy, dbt.c.code_tesseract).where(
                 dbt.c.active,
@@ -291,12 +291,12 @@ def main(argv: List[str]) -> None:
     if args[libs.cfg.RUN_ACTION_CREATE_DB]:
         # Create the database.
         libs.utils.progress_msg_empty_before("Start: Create the database ...")
-        libs.db.driver.create_database()
+        db.driver.create_database()
         libs.utils.progress_msg("End  : Create the database ...")
     elif args[libs.cfg.RUN_ACTION_UPGRADE_DB]:
         # Upgrade the database.
         libs.utils.progress_msg_empty_before("Start: Upgrade the database ...")
-        libs.db.driver.upgrade_database()
+        db.driver.upgrade_database()
         libs.utils.progress_msg("End  : Upgrade the database ...")
     else:
         # Process the documents.
@@ -318,47 +318,47 @@ def process_convert_image_2_pdf() -> None:
     libs.utils.progress_msg_empty_before(
         "Start: Convert image documents to pdf files ... Tesseract OCR"
     )
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+        db.cfg.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            db.cfg.DBC_ACTION: libs.cfg.run_action,
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
     preprocessor.tesseractdcr.convert_image_2_pdf()
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_END,
+            db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
         },
     )
     libs.utils.progress_msg("End  : Convert image documents to pdf files ...")
 
-    libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PYPDF4
+    libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PYPDF4
 
     libs.utils.progress_msg_empty_before("Start: Reunite the related pdf files ... PyPDF4")
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+        db.cfg.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            db.cfg.DBC_ACTION: libs.cfg.run_action,
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
     preprocessor.tesseractdcr.reunite_pdfs()
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_END,
+            db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
         },
     )
     libs.utils.progress_msg("End  : Reunite the related pdf files ...")
@@ -373,23 +373,23 @@ def process_convert_non_pdf_2_pdf() -> None:
     libs.utils.progress_msg_empty_before(
         "Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]"
     )
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+        db.cfg.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            db.cfg.DBC_ACTION: libs.cfg.run_action,
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
     preprocessor.pandocdcr.convert_non_pdf_2_pdf()
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_END,
+            db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
         },
     )
     libs.utils.progress_msg("End  : Convert non-pdf documents to pdf files ...")
@@ -404,23 +404,23 @@ def process_convert_pdf_2_image() -> None:
     libs.utils.progress_msg_empty_before(
         "Start: Convert pdf documents to image files ... pdf2image [Poppler]"
     )
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+        db.cfg.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            db.cfg.DBC_ACTION: libs.cfg.run_action,
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
     preprocessor.pdf2imagedcr.convert_pdf_2_image()
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_END,
+            db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
         },
     )
     libs.utils.progress_msg("End  : Convert pdf documents to image files ...")
@@ -438,12 +438,12 @@ def process_documents(args: dict[str, bool]) -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # Connect to the database.
-    libs.db.orm.connection.connect_db()
+    db.orm.connection.connect_db()
 
     # Check the version of the database.
     check_db_up_to_date()
 
-    libs.cfg.run_run_id = libs.db.orm.dml.select_run_run_id_last() + 1
+    libs.cfg.run_run_id = db.orm.dml.select_run_run_id_last() + 1
 
     # Load the data from the database table 'language'.
     load_data_from_dbt_language()
@@ -451,7 +451,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Process the documents in the inbox file directory.
     if args[libs.cfg.RUN_ACTION_PROCESS_INBOX]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_INBOX
+        libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_INBOX
         process_inbox_directory()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
@@ -460,7 +460,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Convert the scanned image pdf documents to image files.
     if args[libs.cfg.RUN_ACTION_PDF_2_IMAGE]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PDF2IMAGE
+        libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PDF2IMAGE
         process_convert_pdf_2_image()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
@@ -469,7 +469,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Convert the image documents to pdf files.
     if args[libs.cfg.RUN_ACTION_IMAGE_2_PDF]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_TESSERACT
+        libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_TESSERACT
         process_convert_image_2_pdf()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
@@ -478,7 +478,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Convert the non-pdf documents to pdf files.
     if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PANDOC
+        libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PANDOC
         process_convert_non_pdf_2_pdf()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
@@ -487,7 +487,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Extract text and metadata from pdf documents.
     if args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PDFLIB
+        libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PDFLIB
         process_extract_text_from_pdf()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
@@ -496,14 +496,14 @@ def process_documents(args: dict[str, bool]) -> None:
     # Store the document structure from the parser result.
     if args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PARSER
+        libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PARSER
         process_store_from_parser()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
         )
 
     # Disconnect from the database.
-    libs.db.orm.connection.disconnect_db()
+    db.orm.connection.disconnect_db()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -517,23 +517,23 @@ def process_extract_text_from_pdf() -> None:
     libs.utils.progress_msg_empty_before(
         "Start: Extract text and metadata from pdf documents ... PDFlib TET"
     )
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+        db.cfg.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            db.cfg.DBC_ACTION: libs.cfg.run_action,
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
     preprocessor.pdflibdcr.extract_text_from_pdf()
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_END,
+            db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
         },
     )
     libs.utils.progress_msg("End  : Extract text and metadata from pdf documents ...")
@@ -548,25 +548,25 @@ def process_inbox_directory() -> None:
 
     libs.utils.progress_msg_empty_before("Start: Process the inbox directory ... PyMuPDF [fitz]")
 
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+        db.cfg.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            db.cfg.DBC_ACTION: libs.cfg.run_action,
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
 
     preprocessor.inbox.process_inbox()
 
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_END,
+            db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
         },
     )
 
@@ -584,25 +584,25 @@ def process_store_from_parser() -> None:
         "Start: Store document structure ... defusedxml [xml.etree.ElementTree]"
     )
 
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+        db.cfg.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            db.cfg.DBC_ACTION: libs.cfg.run_action,
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
 
     preprocessor.parser.parse_tetml()
 
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_END,
+            db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
         },
     )
 

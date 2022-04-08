@@ -1,10 +1,10 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.db.orm.connection."""
+"""Testing Module db.orm.connection."""
+import db.cfg
+import db.driver
+import db.orm.connection
+import db.orm.dml
 import libs.cfg
-import libs.db.cfg
-import libs.db.driver
-import libs.db.orm.connection
-import libs.db.orm.dml
 import libs.utils
 
 # -----------------------------------------------------------------------------
@@ -21,12 +21,12 @@ def test_disconnect_both(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.db.orm.connection.connect_db()
+    db.orm.connection.connect_db()
 
-    libs.db.cfg.db_orm_engine = None
-    libs.db.cfg.db_orm_metadata = None
+    db.cfg.db_orm_engine = None
+    db.cfg.db_orm_metadata = None
 
-    libs.db.orm.connection.disconnect_db()
+    db.orm.connection.disconnect_db()
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -40,11 +40,11 @@ def test_disconnect_db_orm_engine(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.db.orm.connection.connect_db()
+    db.orm.connection.connect_db()
 
-    libs.db.cfg.db_orm_engine = None
+    db.cfg.db_orm_engine = None
 
-    libs.db.orm.connection.disconnect_db()
+    db.orm.connection.disconnect_db()
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -58,11 +58,11 @@ def test_disconnect_db_orm_metadata(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.db.orm.connection.connect_db()
+    db.orm.connection.connect_db()
 
-    libs.db.cfg.db_orm_metadata = None
+    db.cfg.db_orm_metadata = None
 
-    libs.db.orm.connection.disconnect_db()
+    db.orm.connection.disconnect_db()
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

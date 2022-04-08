@@ -11,10 +11,10 @@ import pathlib
 import shutil
 import time
 
+import db.cfg
+import db.orm.dml
 import fitz
 import libs.cfg
-import libs.db.cfg
-import libs.db.orm.dml
 import libs.utils
 from sqlalchemy import Table
 from sqlalchemy.orm import Session
@@ -77,29 +77,29 @@ def initialise_document_base(file: pathlib.Path) -> None:
 
     prepare_document_base(file)
 
-    libs.cfg.document_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_DOCUMENT,
+    libs.cfg.document_id = db.orm.dml.insert_dbt_row(
+        db.cfg.DBT_DOCUMENT,
         {
-            libs.db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
-            libs.db.cfg.DBC_DIRECTORY_NAME: libs.cfg.document_directory_name,
-            libs.db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_directory_type,
-            libs.db.cfg.DBC_FILE_NAME: libs.cfg.document_file_name,
-            libs.db.cfg.DBC_FILE_TYPE: libs.cfg.document_file_type,
-            libs.db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_SHA256: libs.cfg.document_sha256,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_START,
-            libs.db.cfg.DBC_STEM_NAME: libs.cfg.document_stem_name,
+            db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
+            db.cfg.DBC_DIRECTORY_NAME: libs.cfg.document_directory_name,
+            db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_directory_type,
+            db.cfg.DBC_FILE_NAME: libs.cfg.document_file_name,
+            db.cfg.DBC_FILE_TYPE: libs.cfg.document_file_type,
+            db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id,
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_SHA256: libs.cfg.document_sha256,
+            db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_START,
+            db.cfg.DBC_STEM_NAME: libs.cfg.document_stem_name,
         },
     )
 
     libs.cfg.document_id_base = libs.cfg.document_id
 
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_DOCUMENT,
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_DOCUMENT,
         libs.cfg.document_id,
         {
-            libs.db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_id_base,
+            db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_id_base,
         },
     )
 
@@ -117,7 +117,7 @@ def prepare_document_base(file: pathlib.Path) -> None:
     """
     # Example: data\inbox
     libs.cfg.document_directory_name = str(file.parent)
-    libs.cfg.document_directory_type = libs.db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX
+    libs.cfg.document_directory_type = db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX
     libs.cfg.document_error_code = None
 
     # Example: pdf_scanned_ok.pdf
@@ -137,7 +137,7 @@ def prepare_document_base(file: pathlib.Path) -> None:
     else:
         libs.cfg.document_sha256 = libs.utils.compute_sha256(file)
 
-    libs.cfg.document_status = libs.db.cfg.DOCUMENT_STATUS_START
+    libs.cfg.document_status = db.cfg.DOCUMENT_STATUS_START
 
     # Example: pdf_scanned_ok
     libs.cfg.document_stem_name = pathlib.PurePath(file).stem
@@ -158,8 +158,8 @@ def prepare_document_child_accepted() -> None:
         + "."
         + (
             libs.cfg.document_file_type
-            if libs.cfg.document_file_type != libs.db.cfg.DOCUMENT_FILE_TYPE_TIF
-            else libs.db.cfg.DOCUMENT_FILE_TYPE_TIFF
+            if libs.cfg.document_file_type != db.cfg.DOCUMENT_FILE_TYPE_TIF
+            else db.cfg.DOCUMENT_FILE_TYPE_TIFF
         )
     )
 
@@ -167,7 +167,7 @@ def prepare_document_child_accepted() -> None:
     libs.cfg.document_child_id_base = libs.cfg.document_id
     libs.cfg.document_child_id_parent = libs.cfg.document_id
     libs.cfg.document_child_next_step = None
-    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
+    libs.cfg.document_child_status = db.cfg.DOCUMENT_STATUS_START
 
     libs.cfg.document_child_stem_name = (
         libs.cfg.document_stem_name + "_" + str(libs.cfg.document_id)
@@ -191,21 +191,21 @@ def prepare_pdf(file: pathlib.Path) -> None:
         prepare_document_child_accepted()
 
         if bool(extracted_text):
-            next_step: str = libs.db.cfg.DOCUMENT_STEP_PDFLIB
+            next_step: str = db.cfg.DOCUMENT_STEP_PDFLIB
             libs.cfg.language_ok_processed_pdflib += 1
             libs.cfg.total_ok_processed_pdflib += 1
         else:
-            next_step: str = libs.db.cfg.DOCUMENT_STEP_PDF2IMAGE
+            next_step: str = db.cfg.DOCUMENT_STEP_PDF2IMAGE
             libs.cfg.language_ok_processed_pdf2image += 1
             libs.cfg.total_ok_processed_pdf2image += 1
 
         process_inbox_accepted(next_step)
 
-        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
+        db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     except RuntimeError as err:
         process_inbox_rejected(
-            libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
-            libs.db.cfg.ERROR_01_903.replace("{source_file}", libs.cfg.document_file_name).replace(
+            db.cfg.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
+            db.cfg.ERROR_01_903.replace("{source_file}", libs.cfg.document_file_name).replace(
                 "{error_msg}", str(err)
             ),
         )
@@ -240,12 +240,12 @@ def process_inbox() -> None:
     libs.utils.reset_statistics_total()
 
     dbt = Table(
-        libs.db.cfg.DBT_LANGUAGE,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
+        db.cfg.DBT_LANGUAGE,
+        db.cfg.db_orm_metadata,
+        autoload_with=db.cfg.db_orm_engine,
     )
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
+    with db.cfg.db_orm_engine.connect() as conn:
         for row in libs.utils.select_language(conn, dbt):
             libs.cfg.language_id = row.id
             libs.cfg.language_directory_inbox = row.directory_name_inbox
@@ -280,9 +280,9 @@ def process_inbox_accepted(next_step: str) -> None:
     libs.cfg.document_child_directory_name = libs.cfg.config[
         libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED
     ]
-    libs.cfg.document_child_directory_type = libs.db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED
+    libs.cfg.document_child_directory_type = db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED
     libs.cfg.document_child_next_step = next_step
-    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_START
+    libs.cfg.document_child_status = db.cfg.DOCUMENT_STATUS_START
 
     source_file = os.path.join(libs.cfg.document_directory_name, libs.cfg.document_file_name)
     target_file = os.path.join(
@@ -291,8 +291,8 @@ def process_inbox_accepted(next_step: str) -> None:
 
     if os.path.exists(target_file):
         libs.utils.report_document_error(
-            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error=libs.db.cfg.ERROR_01_906.replace("{file_name}", target_file),
+            error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            error=db.cfg.ERROR_01_906.replace("{file_name}", target_file),
         )
         libs.cfg.language_erroneous += 1
     else:
@@ -300,11 +300,11 @@ def process_inbox_accepted(next_step: str) -> None:
 
         libs.utils.initialise_document_child()
 
-        libs.db.orm.dml.update_dbt_id(
-            libs.db.cfg.DBT_DOCUMENT,
+        db.orm.dml.update_dbt_id(
+            db.cfg.DBT_DOCUMENT,
             libs.cfg.document_id,
             {
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_END,
+                db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_END,
             },
         )
 
@@ -323,12 +323,12 @@ def process_inbox_file(file: pathlib.Path) -> None:
     Args:
         file (pathlib.Path): Inbox file.
     """
-    libs.cfg.session = Session(libs.db.cfg.db_orm_engine)
+    libs.cfg.session = Session(db.cfg.db_orm_engine)
 
     initialise_document_base(file)
 
     if not libs.cfg.is_ignore_duplicates:
-        file_name = libs.db.orm.dml.select_document_file_name_sha256(
+        file_name = db.orm.dml.select_document_file_name_sha256(
             libs.cfg.document_id, libs.cfg.document_sha256
         )
     else:
@@ -336,27 +336,27 @@ def process_inbox_file(file: pathlib.Path) -> None:
 
     if file_name is not None:
         process_inbox_rejected(
-            libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            libs.db.cfg.ERROR_01_905.replace("{file_name}", file_name),
+            db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            db.cfg.ERROR_01_905.replace("{file_name}", file_name),
         )
-    elif libs.cfg.document_file_type == libs.db.cfg.DOCUMENT_FILE_TYPE_PDF:
+    elif libs.cfg.document_file_type == db.cfg.DOCUMENT_FILE_TYPE_PDF:
         prepare_pdf(file)
-    elif libs.cfg.document_file_type in libs.db.cfg.DOCUMENT_FILE_TYPE_PANDOC:
+    elif libs.cfg.document_file_type in db.cfg.DOCUMENT_FILE_TYPE_PANDOC:
         prepare_document_child_accepted()
-        process_inbox_accepted(libs.db.cfg.DOCUMENT_STEP_PANDOC)
+        process_inbox_accepted(db.cfg.DOCUMENT_STEP_PANDOC)
         libs.cfg.language_ok_processed_pandoc += 1
         libs.cfg.total_ok_processed_pandoc += 1
-        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
-    elif libs.cfg.document_file_type in libs.db.cfg.DOCUMENT_FILE_TYPE_TESSERACT:
+        db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
+    elif libs.cfg.document_file_type in db.cfg.DOCUMENT_FILE_TYPE_TESSERACT:
         prepare_document_child_accepted()
-        process_inbox_accepted(libs.db.cfg.DOCUMENT_STEP_TESSERACT)
+        process_inbox_accepted(db.cfg.DOCUMENT_STEP_TESSERACT)
         libs.cfg.language_ok_processed_tesseract += 1
         libs.cfg.total_ok_processed_tesseract += 1
-        libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
+        db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     else:
         process_inbox_rejected(
-            libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
-            libs.db.cfg.ERROR_01_901.replace("{extension}", file.suffix[1:]),
+            db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
+            db.cfg.ERROR_01_901.replace("{extension}", file.suffix[1:]),
         )
 
 
@@ -418,9 +418,9 @@ def process_inbox_rejected(error_code: str, error: str) -> None:
     libs.cfg.document_child_directory_name = libs.cfg.config[
         libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
     ]
-    libs.cfg.document_child_directory_type = libs.db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX_REJECTED
+    libs.cfg.document_child_directory_type = db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX_REJECTED
     libs.cfg.document_child_error_code = error_code
-    libs.cfg.document_child_status = libs.db.cfg.DOCUMENT_STATUS_ERROR
+    libs.cfg.document_child_status = db.cfg.DOCUMENT_STATUS_ERROR
 
     source_file = os.path.join(libs.cfg.document_directory_name, libs.cfg.document_file_name)
     target_file = os.path.join(
@@ -429,9 +429,9 @@ def process_inbox_rejected(error_code: str, error: str) -> None:
 
     # Move the document file from directory inbox to directory inbox_rejected - if not yet existing
     if os.path.exists(target_file):
-        libs.db.orm.dml.insert_journal_error(
+        db.orm.dml.insert_journal_error(
             document_id=libs.cfg.document_id,
-            error=libs.db.cfg.ERROR_01_906.replace("{file_name}", target_file),
+            error=db.cfg.ERROR_01_906.replace("{file_name}", target_file),
         )
         libs.cfg.language_erroneous += 1
     else:
@@ -439,18 +439,18 @@ def process_inbox_rejected(error_code: str, error: str) -> None:
 
         libs.utils.initialise_document_child()
 
-        libs.db.orm.dml.update_dbt_id(
-            libs.db.cfg.DBT_DOCUMENT,
+        db.orm.dml.update_dbt_id(
+            db.cfg.DBT_DOCUMENT,
             libs.cfg.document_id,
             {
-                libs.db.cfg.DBC_ERROR_CODE: error_code,
-                libs.db.cfg.DBC_STATUS: libs.db.cfg.DOCUMENT_STATUS_ERROR,
+                db.cfg.DBC_ERROR_CODE: error_code,
+                db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_ERROR,
             },
         )
 
         libs.cfg.language_erroneous += 1
         libs.cfg.total_erroneous += 1
 
-    libs.db.orm.dml.insert_journal_error(document_id=libs.cfg.document_id, error=error)
+    db.orm.dml.insert_journal_error(document_id=libs.cfg.document_id, error=error)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

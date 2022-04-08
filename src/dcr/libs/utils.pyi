@@ -1,10 +1,8 @@
 """Library Stub."""
 import pathlib
-from typing import Dict
-from typing import Iterable
 from typing import Tuple
 
-import libs.db.cfg
+import db.cfg
 from sqlalchemy import Table
 from sqlalchemy import engine
 from sqlalchemy.engine import Connection
@@ -17,7 +15,7 @@ def finalize_file_processing() -> None: ...
 def initialise_document_child() -> None: ...
 def prepare_document_4_next_step(next_file_type: str, next_step: str) -> None: ...
 def prepare_file_names(
-    file_extension: str = libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
+    file_extension: str = db.cfg.DOCUMENT_FILE_TYPE_PDF,
 ) -> Tuple[str, str]: ...
 def progress_msg(msg: str) -> None: ...
 def progress_msg_connected() -> None: ...

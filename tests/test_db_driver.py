@@ -1,10 +1,10 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.db.driver."""
+"""Testing Module db.driver."""
+import db.cfg
+import db.driver
+import db.orm.connection
+import db.orm.dml
 import libs.cfg
-import libs.db.cfg
-import libs.db.driver
-import libs.db.orm.connection
-import libs.db.orm.dml
 import pytest
 from sqlalchemy import Table
 from sqlalchemy import update
@@ -33,7 +33,7 @@ def test_connect_db(fxtr_setup_logger_environment):
     dcr.get_config()
 
     with pytest.raises(SystemExit) as expt:
-        libs.db.driver.connect_db()
+        db.driver.connect_db()
 
     assert expt.type == SystemExit, "DCR_CFG_DB_CONNECTION_PORT: no database"
     assert expt.value.code == 1, "DCR_CFG_DB_CONNECTION_PORT: no database"
@@ -60,7 +60,7 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
     dcr.get_config()
 
     with pytest.raises(SystemExit) as expt:
-        libs.db.driver.connect_db_admin()
+        db.driver.connect_db_admin()
 
     assert expt.type == SystemExit, "DCR_CFG_DB_CONNECTION_PORT: no database"
     assert expt.value.code == 1, "DCR_CFG_DB_CONNECTION_PORT: no database"
@@ -132,7 +132,7 @@ def test_drop_database(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
-    libs.db.driver.drop_database()
+    db.driver.drop_database()
 
     # -------------------------------------------------------------------------
     config_section = libs.cfg.DCR_CFG_SECTION
@@ -141,7 +141,7 @@ def test_drop_database(fxtr_setup_logger_environment):
     value_original = pytest.helpers.delete_config_param(config_section, config_param)
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
-    libs.db.driver.drop_database()
+    db.driver.drop_database()
 
     pytest.helpers.restore_config_param(config_section, config_param, value_original)
 
@@ -154,7 +154,7 @@ def test_drop_database(fxtr_setup_logger_environment):
     dcr.get_config()
 
     with pytest.raises(SystemExit) as expt:
-        libs.db.driver.drop_database()
+        db.driver.drop_database()
 
     assert expt.type == SystemExit, "DCR_CFG_DB_DIALECT: unknown DB dialect"
     assert expt.value.code == 1, "DCR_CFG_DB_DIALECT: unknown DB dialect"
@@ -173,20 +173,20 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.db.orm.connection.connect_db()
+    db.orm.connection.connect_db()
 
-    libs.db.orm.dml.insert_dbt_row(libs.db.cfg.DBT_VERSION, {libs.db.cfg.DBC_VERSION: "0.0.0"})
+    db.orm.dml.insert_dbt_row(db.cfg.DBT_VERSION, {db.cfg.DBC_VERSION: "0.0.0"})
 
-    libs.db.orm.connection.disconnect_db()
+    db.orm.connection.disconnect_db()
 
-    libs.db.driver.connect_db()
+    db.driver.connect_db()
 
-    libs.db.cfg.db_driver_cur = libs.db.cfg.db_driver_conn.cursor()
+    db.cfg.db_driver_cur = db.cfg.db_driver_conn.cursor()
 
     with pytest.raises(SystemExit) as expt:
-        libs.db.driver.select_version_version_unique()
+        db.driver.select_version_version_unique()
 
-    libs.db.driver.disconnect_db()
+    db.driver.disconnect_db()
 
     assert expt.type == SystemExit, "Version not unique (driver)"
     assert expt.value.code == 1, "Version not unique (driver)"
@@ -194,14 +194,14 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     pytest.helpers.delete_version_version()
 
-    libs.db.driver.connect_db()
+    db.driver.connect_db()
 
-    libs.db.cfg.db_driver_cur = libs.db.cfg.db_driver_conn.cursor()
+    db.cfg.db_driver_cur = db.cfg.db_driver_conn.cursor()
 
     with pytest.raises(SystemExit) as expt:
-        libs.db.driver.select_version_version_unique()
+        db.driver.select_version_version_unique()
 
-    libs.db.driver.disconnect_db()
+    db.driver.disconnect_db()
 
     assert expt.type == SystemExit, "Version missing (driver)"
     assert expt.value.code == 1, "Version missing (driver)"
@@ -221,11 +221,11 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
 
     # -------------------------------------------------------------------------
-    libs.db.orm.connection.connect_db()
+    db.orm.connection.connect_db()
 
     update_version_version("0.5.0")
 
-    libs.db.orm.connection.disconnect_db()
+    db.orm.connection.disconnect_db()
 
     with pytest.raises(SystemExit) as expt:
         dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
@@ -234,11 +234,11 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Version < '1.0.0' not supported"
 
     # -------------------------------------------------------------------------
-    libs.db.orm.connection.connect_db()
+    db.orm.connection.connect_db()
 
     update_version_version("0.0.0")
 
-    libs.db.orm.connection.disconnect_db()
+    db.orm.connection.disconnect_db()
 
     with pytest.raises(SystemExit) as expt:
         dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
@@ -264,16 +264,16 @@ def update_version_version(
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     dbt = Table(
-        libs.db.cfg.DBT_VERSION,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
+        db.cfg.DBT_VERSION,
+        db.cfg.db_orm_metadata,
+        autoload_with=db.cfg.db_orm_engine,
     )
 
-    with libs.db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
+    with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(
             update(dbt).values(
                 {
-                    libs.db.cfg.DBC_VERSION: version,
+                    db.cfg.DBC_VERSION: version,
                 }
             )
         )
