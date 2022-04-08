@@ -1,5 +1,4 @@
-"""Module libs.preprocessor.pandocdcr: Convert non-pdf documents to pdf
-files."""
+"""Module preprocessor.pandocdcr: Convert non-pdf documents to pdf files."""
 import os
 import time
 

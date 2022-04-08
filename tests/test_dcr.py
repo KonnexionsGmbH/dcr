@@ -5,7 +5,6 @@ import shutil
 from pathlib import Path
 
 import libs.cfg
-import libs.preprocessor.parser
 import pytest
 
 import dcr

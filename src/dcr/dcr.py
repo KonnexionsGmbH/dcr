@@ -16,13 +16,13 @@ import libs.db.cfg
 import libs.db.driver
 import libs.db.orm.connection
 import libs.db.orm.dml
-import libs.preprocessor.inbox
-import libs.preprocessor.pandocdcr
-import libs.preprocessor.parser
-import libs.preprocessor.pdf2imagedcr
-import libs.preprocessor.pdflibdcr
-import libs.preprocessor.tesseractdcr
 import libs.utils
+import preprocessor.inbox
+import preprocessor.pandocdcr
+import preprocessor.parser
+import preprocessor.pdf2imagedcr
+import preprocessor.pdflibdcr
+import preprocessor.tesseractdcr
 import sqlalchemy
 import yaml
 from sqlalchemy import Table
@@ -326,7 +326,7 @@ def process_convert_image_2_pdf() -> None:
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.preprocessor.tesseractdcr.convert_image_2_pdf()
+    preprocessor.tesseractdcr.convert_image_2_pdf()
     libs.db.orm.dml.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -350,7 +350,7 @@ def process_convert_image_2_pdf() -> None:
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.preprocessor.tesseractdcr.reunite_pdfs()
+    preprocessor.tesseractdcr.reunite_pdfs()
     libs.db.orm.dml.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -381,7 +381,7 @@ def process_convert_non_pdf_2_pdf() -> None:
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.preprocessor.pandocdcr.convert_non_pdf_2_pdf()
+    preprocessor.pandocdcr.convert_non_pdf_2_pdf()
     libs.db.orm.dml.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -412,7 +412,7 @@ def process_convert_pdf_2_image() -> None:
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.preprocessor.pdf2imagedcr.convert_pdf_2_image()
+    preprocessor.pdf2imagedcr.convert_pdf_2_image()
     libs.db.orm.dml.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -525,7 +525,7 @@ def process_extract_text_from_pdf() -> None:
             libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
         },
     )
-    libs.preprocessor.pdflibdcr.extract_text_from_pdf()
+    preprocessor.pdflibdcr.extract_text_from_pdf()
     libs.db.orm.dml.update_dbt_id(
         libs.db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -557,7 +557,7 @@ def process_inbox_directory() -> None:
         },
     )
 
-    libs.preprocessor.inbox.process_inbox()
+    preprocessor.inbox.process_inbox()
 
     libs.db.orm.dml.update_dbt_id(
         libs.db.cfg.DBT_RUN,
@@ -593,7 +593,7 @@ def process_store_from_parser() -> None:
         },
     )
 
-    libs.preprocessor.parser.parse_tetml()
+    preprocessor.parser.parse_tetml()
 
     libs.db.orm.dml.update_dbt_id(
         libs.db.cfg.DBT_RUN,

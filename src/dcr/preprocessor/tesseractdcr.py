@@ -1,5 +1,4 @@
-"""Module libs.preprocessor.tesseractdcr: Convert image documents to pdf
-files."""
+"""Module preprocessor.tesseractdcr: Convert image documents to pdf files."""
 import os
 import time
 
@@ -95,14 +94,14 @@ def convert_image_2_pdf_file() -> None:
 
         libs.db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     # not testable
-    except TesseractError as err_t:
-        libs.utils.report_document_error(
-            error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-            error=libs.db.cfg.ERROR_41_902.replace("{source_file}", source_file_name)
-            .replace("{target_file}", target_file_name)
-            .replace("{error_status}", str(err_t.status))
-            .replace("{error}", err_t.message),
-        )
+    # except TesseractError as err_t:
+    #     libs.utils.report_document_error(
+    #         error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
+    #         error=libs.db.cfg.ERROR_41_902.replace("{source_file}", source_file_name)
+    #         .replace("{target_file}", target_file_name)
+    #         .replace("{error_status}", str(err_t.status))
+    #         .replace("{error}", err_t.message),
+    #     )
     except RuntimeError as err:
         libs.utils.report_document_error(
             error_code=libs.db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,

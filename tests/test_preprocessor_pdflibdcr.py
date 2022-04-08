@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.preprocessor.pdflibdcr."""
+"""Testing Module preprocessor.pdflibdcr."""
 import libs.cfg
 import libs.db
 import libs.db.cfg

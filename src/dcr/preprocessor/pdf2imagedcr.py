@@ -1,12 +1,11 @@
-"""Module libs.preprocessor.pdf2imagedcr: Convert scanned image pdf documents
-to image files."""
+"""Module preprocessor.pdf2imagedcr: Convert scanned image pdf documents to
+image files."""
 import os
 import time
 
 import libs.cfg
 import libs.db.cfg
 import libs.db.orm.dml
-import libs.preprocessor.inbox
 import libs.utils
 import pdf2image
 

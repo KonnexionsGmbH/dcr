@@ -24,7 +24,7 @@ In this format, the API documentation can then be integrated into the user docum
 
 **Module Dokumentation**:
 
-    Module libs.preprocessor.inbox: Check and distribute incoming documents.
+    Module preprocessor.inbox: Check and distribute incoming documents.
   
     New documents are made available in the file directory inbox.
     These are then checked and moved to the accepted or

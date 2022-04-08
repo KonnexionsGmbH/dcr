@@ -1,9 +1,8 @@
 # pylint: disable=unused-argument
-"""Testing Module libs.preprocessor.pandocdcr."""
+"""Testing Module preprocessor.pandocdcr."""
 import libs.cfg
 import libs.db
 import libs.db.cfg
-import libs.preprocessor.parser
 import pytest
 
 import dcr
