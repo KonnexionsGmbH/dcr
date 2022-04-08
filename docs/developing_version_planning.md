@@ -28,6 +28,8 @@
 - 9 convert 'doc' documents to 'docx'
 - 9 reconstruct original document
 - 9 reset a list of documents: clean up the database before the next process retry - delete existing data
+- 9 merge database table 'journal' into 'document'
+- 9 merge database table ''
 - ~~API Documentation~~
 - ~~PDFlib TET processing~~
 - ~~Tesseract OCR - Installation~~  

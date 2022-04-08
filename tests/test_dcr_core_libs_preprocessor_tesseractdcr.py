@@ -1,6 +1,5 @@
 # pylint: disable=unused-argument
 """Testing Module dcr_core.libs.preprocessor.tesseractdcr."""
-import platform
 from typing import List
 
 import libs.cfg
@@ -94,7 +93,8 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
             ("pdf_scanned_01_ok_256_c", "bmp"),
             ("pdf_scanned_01_ok_m", "bmp"),
             ("pdf_scanned_02_ok", "gif"),
-            ("pdf_scanned_03_ok", "jp2"),
+            # TBD next Tesseract OCR version
+            # ("pdf_scanned_03_ok", "jp2"),
             ("pdf_scanned_04_ok", "jpeg"),
             ("pdf_scanned_05_ok", "png"),
             ("pdf_scanned_06_ok", "pnm"),
@@ -147,26 +147,20 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
         "pdf_scanned_01_ok_m_7.pdf",
         "pdf_scanned_02_ok_9.gif",
         "pdf_scanned_02_ok_9.pdf",
-        "pdf_scanned_03_ok_11.jp2",
-        # TBD
+        # TBD next Tesseract OCR version
+        # "pdf_scanned_03_ok_11.jp2",
         # "pdf_scanned_03_ok_11.pdf",
-        "pdf_scanned_04_ok_13.jpeg",
-        "pdf_scanned_04_ok_13.pdf",
-        "pdf_scanned_05_ok_15.png",
-        "pdf_scanned_05_ok_15.pdf",
-        "pdf_scanned_06_ok_17.pnm",
-        "pdf_scanned_06_ok_17.pdf",
-        "pdf_scanned_07_ok_19.tiff",
-        "pdf_scanned_07_ok_19.pdf",
-        "pdf_scanned_08_ok_21.webp",
-        "pdf_scanned_08_ok_21.pdf",
+        "pdf_scanned_04_ok_11.jpeg",
+        "pdf_scanned_04_ok_11.pdf",
+        "pdf_scanned_05_ok_13.png",
+        "pdf_scanned_05_ok_13.pdf",
+        "pdf_scanned_06_ok_15.pnm",
+        "pdf_scanned_06_ok_15.pdf",
+        "pdf_scanned_07_ok_17.tiff",
+        "pdf_scanned_07_ok_17.pdf",
+        "pdf_scanned_08_ok_19.webp",
+        "pdf_scanned_08_ok_19.pdf",
     ]
-
-    # TBD
-    if platform.system() != "Windows":
-        files_expected.append(
-            "pdf_scanned_03_ok_11.pdf",
-        )
 
     pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox_accepted,
