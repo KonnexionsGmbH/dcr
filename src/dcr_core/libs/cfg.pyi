@@ -202,6 +202,8 @@ language_ok_processed_pdflib: int
 language_ok_processed_tesseract: int
 language_to_be_processed: int
 
+languages_pandoc: Dict[sqlalchemy.Integer, str]
+languages_spacy: Dict[sqlalchemy.Integer, str]
 languages_tesseract: Dict[sqlalchemy.Integer, str]
 
 logger: logging.Logger

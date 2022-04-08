@@ -19,7 +19,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - coverage.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_store_from_parser_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - coverage."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
@@ -175,7 +174,6 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - normal - keep.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - normal - keep."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)

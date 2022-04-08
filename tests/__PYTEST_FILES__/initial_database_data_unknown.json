@@ -3,7 +3,7 @@
   "data": {
     "tables": [
       {
-        "tableName": "language",
+        "tableName": "unknown",
         "rows": [
           {
             "row": [
@@ -14,10 +14,6 @@
               {
                 "columnName": "code_iso_639_3",
                 "columnValue": "deu"
-              },
-              {
-                "columnName": "code_pandoc",
-                "columnValue": "de"
               },
               {
                 "columnName": "code_spacy",
@@ -48,10 +44,6 @@
                 "columnValue": "fra"
               },
               {
-                "columnName": "code_pandoc",
-                "columnValue": "fr"
-              },
-              {
                 "columnName": "code_spacy",
                 "columnValue": "fr"
               },
@@ -78,10 +70,6 @@
               {
                 "columnName": "code_iso_639_3",
                 "columnValue": "ita"
-              },
-              {
-                "columnName": "code_pandoc",
-                "columnValue": "it"
               },
               {
                 "columnName": "code_spacy",

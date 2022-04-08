@@ -65,9 +65,6 @@ def test_run_action_non_pdf_2_pdf_normal_keep(fxtr_setup_empty_db_and_inbox):
     value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
     )
-    value_original_tesseract_timeout = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"
-    )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
@@ -77,11 +74,6 @@ def test_run_action_non_pdf_2_pdf_normal_keep(fxtr_setup_empty_db_and_inbox):
         libs.cfg.DCR_CFG_SECTION,
         libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
         value_original_delete_auxiliary_files,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
-        value_original_tesseract_timeout,
     )
 
     # -------------------------------------------------------------------------

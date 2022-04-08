@@ -36,6 +36,10 @@ Example entry for the document language French:
           "columnValue": "fra"
         },
         {
+          "columnName": "code_pandoc",
+          "columnValue": "fr"
+        },
+        {
           "columnName": "code_spacy",
           "columnValue": "fr"
         },
@@ -59,7 +63,8 @@ Example entry for the document language French:
 |----------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
 | active               | active language - true or false                                                                                                                |
 | code_iso_639_3       | three-letter codes, the same as 639-2/T for languages, <br>but with distinct codes for each variety of an ISO 639 macrolanguage                |
-| code_space           | the language code as used in SpaCy                                                                                                             |
+| code_pandoc          | the language code as used in Pandoc (Babel - IETF BCP 47)                                                                                      |
+| code_spacy           | the language code as used in SpaCy                                                                                                             |
 | code_tesseract       | the language code as used in Tesseract OCR                                                                                                     |
 | directory_name_inbox | optional the name of the file directory relative to the **`inbox`** - <br>if missing the content of the column **`iso_language_name`** is used |
 | iso_language_name    | the name of the language according to **`ISO 639-1`**                                                                                          |
@@ -73,7 +78,8 @@ The corresponding entry in the database table language is created internally wit
 |----------------------|---------------------|
 | active               | true                |
 | code_iso_639_3       | eng                 |
-| code_space           | en                  |
+| code_pandoc          | en                  |
+| code_spacy           | en                  |
 | code_tesseract       | eng                 |
 | directory_name_inbox | the inbox directory |
 | iso_language_name    | English             |

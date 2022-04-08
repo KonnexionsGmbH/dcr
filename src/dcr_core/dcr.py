@@ -231,20 +231,26 @@ def load_data_from_dbt_language() -> None:
         autoload_with=libs.db.cfg.db_orm_engine,
     )
 
+    libs.cfg.languages_pandoc = {}
+    libs.cfg.languages_spacy = {}
     libs.cfg.languages_tesseract = {}
 
     with libs.db.cfg.db_orm_engine.connect() as conn:
         rows = conn.execute(
-            select(dbt.c.id, dbt.c.code_spacy, dbt.c.code_tesseract).where(
+            select(dbt.c.id, dbt.c.code_pandoc, dbt.c.code_spacy, dbt.c.code_tesseract).where(
                 dbt.c.active,
             )
         )
 
         for row in rows:
+            libs.cfg.languages_pandoc[row.id] = row.code_pandoc
+            libs.cfg.languages_spacy[row.id] = row.code_spacy
             libs.cfg.languages_tesseract[row.id] = row.code_tesseract
 
         conn.close()
 
+    libs.utils.progress_msg(f"Available languages for Pandoc        '{libs.cfg.languages_pandoc}'")
+    libs.utils.progress_msg(f"Available languages for SpaCy         '{libs.cfg.languages_spacy}'")
     libs.utils.progress_msg(
         f"Available languages for Tesseract OCR '{libs.cfg.languages_tesseract}'"
     )

@@ -64,7 +64,12 @@ def convert_non_pdf_2_pdf_file() -> None:
     pypandoc.convert_file(
         source_file_name,
         libs.db.cfg.DOCUMENT_FILE_TYPE_PDF,
-        extra_args=(["--pdf-engine=" + libs.cfg.PANDOC_PDF_ENGINE_XELATEX]),
+        extra_args=(
+            [
+                f"--pdf-engine={libs.cfg.PANDOC_PDF_ENGINE_XELATEX}",
+                f"-V lang:{libs.cfg.languages_pandoc[libs.cfg.document_language_id]}",
+            ]
+        ),
         outputfile=target_file_name,
     )
 

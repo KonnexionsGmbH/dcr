@@ -375,6 +375,9 @@ def create_dbt_language(table_name: str) -> None:
             libs.db.cfg.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False, unique=True
         ),
         sqlalchemy.Column(
+            libs.db.cfg.DBC_CODE_PANDOC, sqlalchemy.String, nullable=False, unique=True
+        ),
+        sqlalchemy.Column(
             libs.db.cfg.DBC_CODE_SPACY, sqlalchemy.String, nullable=False, unique=True
         ),
         sqlalchemy.Column(
@@ -544,6 +547,7 @@ def create_schema() -> None:
         libs.db.cfg.DBT_LANGUAGE,
         {
             libs.db.cfg.DBC_CODE_ISO_639_3: "eng",
+            libs.db.cfg.DBC_CODE_PANDOC: "en",
             libs.db.cfg.DBC_CODE_SPACY: "en",
             libs.db.cfg.DBC_CODE_TESSERACT: "eng",
             libs.db.cfg.DBC_DIRECTORY_NAME_INBOX: str(
