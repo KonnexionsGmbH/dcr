@@ -53,10 +53,6 @@ def extract_text_from_pdf_file() -> None:
         db.cfg.DOCUMENT_FILE_TYPE_XML
     )
 
-    print(f"wwe document_directory_name={libs.cfg.document_directory_name}")
-    print(f"wwe source_file_name       ={source_file_name}")
-    print(f"wwe target_file_name       ={target_file_name}")
-
     # not testable
     # tet = None
 

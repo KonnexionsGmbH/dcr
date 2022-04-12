@@ -200,7 +200,7 @@ def get_environment() -> None:
             f"has the invalid content '{libs.cfg.environment_type}'"
         )
 
-    libs.utils.progress_msg("The run is performed in the environment '{libs.cfg.environment_type}'")
+    libs.utils.progress_msg(f"The run is performed in the environment '{libs.cfg.environment_type}'")
 
 
 # -----------------------------------------------------------------------------
