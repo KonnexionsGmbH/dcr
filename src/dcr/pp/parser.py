@@ -565,7 +565,7 @@ def parse_tetml() -> None:
     libs.utils.reset_statistics_total()
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER)
+        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -618,10 +618,6 @@ def parse_tetml_file() -> None:
         if not libs.cfg.is_simulate_parser:
             libs.utils.delete_auxiliary_file(file_name)
 
-    # Text and metadata from Document successfully extracted to xml format
-    if not libs.cfg.is_simulate_parser:
-        libs.utils.finalize_file_processing()
-
     # Update the font information in the database table.
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_DOCUMENT,
@@ -631,6 +627,8 @@ def parse_tetml_file() -> None:
         },
     )
 
-    db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
+    # Text and metadata from Document successfully extracted to xml format
+    if not libs.cfg.is_simulate_parser:
+        libs.utils.finalize_file_processing()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

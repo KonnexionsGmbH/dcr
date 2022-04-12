@@ -27,7 +27,7 @@ def convert_image_2_pdf() -> None:
     libs.utils.reset_statistics_total()
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_TESSERACT)
+        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_TESSERACT)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -53,9 +53,10 @@ def convert_image_2_pdf_file() -> None:
     source_file_name, target_file_name = libs.utils.prepare_file_names()
 
     if os.path.exists(target_file_name):
-        libs.utils.report_document_error(
+        db.orm.dml.update_document_error(
+            document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error=db.cfg.ERROR_41_903.replace("{file_name}", target_file_name),
+            error_msg=db.cfg.ERROR_41_903.replace("{file_name}", target_file_name),
         )
         return
 
@@ -83,28 +84,28 @@ def convert_image_2_pdf_file() -> None:
 
         libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
-        libs.utils.initialise_document_child()
+        db.orm.dml.insert_document_child()
 
         if libs.cfg.document_id_base != libs.cfg.document_id_parent:
             libs.utils.delete_auxiliary_file(source_file_name)
 
         # Document successfully converted to pdf format
         libs.utils.finalize_file_processing()
-
-        db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     # not testable
     # except TesseractError as err_t:
     #     libs.utils.report_document_error(
+    #         document_id = libs.cfg.document_id,
     #         error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-    #         error=db.cfg.ERROR_41_902.replace("{source_file}", source_file_name)
+    #         error_msg=db.cfg.ERROR_41_902.replace("{source_file}", source_file_name)
     #         .replace("{target_file}", target_file_name)
     #         .replace("{error_status}", str(err_t.status))
     #         .replace("{error}", err_t.message),
     #     )
     except RuntimeError as err:
-        libs.utils.report_document_error(
+        db.orm.dml.update_document_error(
+            document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-            error=db.cfg.ERROR_41_901.replace("{source_file}", source_file_name)
+            error_msg=db.cfg.ERROR_41_901.replace("{source_file}", source_file_name)
             .replace("{target_file}", target_file_name)
             .replace("{type_error}", str(type(err)))
             .replace("{error}", str(err)),
@@ -128,8 +129,7 @@ def reunite_pdfs() -> None:
     with db.cfg.db_orm_engine.connect() as conn:
         rows = conn.execute(
             select(dbt).where(
-                dbt.c.id
-                == (
+                dbt.c.id.in_(
                     select(dbt.c.document_id_base)
                     .where(dbt.c.status == db.cfg.DOCUMENT_STATUS_START)
                     .where(dbt.c.next_step == db.cfg.DOCUMENT_STEP_PDFLIB)
@@ -174,9 +174,10 @@ def reunite_pdfs_file() -> None:
     )
 
     if os.path.exists(target_file_path):
-        libs.utils.report_document_error(
+        db.orm.dml.update_document_error(
+            document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error=db.cfg.ERROR_41_904.replace("{file_name}", str(target_file_path)),
+            error_msg=db.cfg.ERROR_41_904.replace("{file_name}", str(target_file_path)),
         )
         return
 
@@ -224,9 +225,7 @@ def reunite_pdfs_file() -> None:
     with open(target_file_path, "wb") as out:
         pdf_writer.write(out)
 
-    libs.utils.initialise_document_child()
+    db.orm.dml.insert_document_child()
 
     # Child document successfully reunited to one pdf document
     libs.utils.finalize_file_processing()
-
-    db.orm.dml.insert_journal_statistics(libs.cfg.document_id)

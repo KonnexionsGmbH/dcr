@@ -15,6 +15,8 @@ Furthermore, for each of the languages in question there must be a corresponding
 
 ![](img/running_document_language_dbt_language_rows.png)
 
+![](img/running_document_language_dbt_language_column.png)
+
 The active languages in the database table **`language`** control the allocation of the documents to a language. 
 Each document language must have its own entry in this table. 
 The documents in a particular language are expected in the subdirectory to the **`inbox`** or as defined in the **`directory_name_inbox`** column.

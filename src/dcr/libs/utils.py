@@ -13,10 +13,6 @@ import db.orm.dml
 import libs.cfg
 import libs.utils
 from sqlalchemy import Table
-from sqlalchemy import and_
-from sqlalchemy import engine
-from sqlalchemy import select
-from sqlalchemy.engine import Connection
 from sqlalchemy.engine import Row
 
 
@@ -84,47 +80,11 @@ def delete_auxiliary_file(file_name: str) -> None:
 # -----------------------------------------------------------------------------
 def finalize_file_processing() -> None:
     """Finalise the file processing."""
+    db.orm.dml.update_document_statistics(
+        document_id=libs.cfg.document_id, status=db.cfg.DOCUMENT_STATUS_END
+    )
+
     libs.cfg.total_ok_processed += 1
-
-    db.orm.dml.update_dbt_id(
-        db.cfg.DBT_DOCUMENT,
-        libs.cfg.document_id,
-        {
-            db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_END,
-        },
-    )
-
-
-# -----------------------------------------------------------------------------
-# Initialise a new child document of the base document.
-# -----------------------------------------------------------------------------
-def initialise_document_child() -> None:
-    """Initialise a new child document of the base document.
-
-    Prepares a new document for one of the file directories
-    'inbox_accepted' or 'inbox_rejected'.
-    """
-    libs.cfg.document_child_id = db.orm.dml.insert_dbt_row(
-        db.cfg.DBT_DOCUMENT,
-        {
-            db.cfg.DBC_CHILD_NO: libs.cfg.document_child_child_no,
-            db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
-            db.cfg.DBC_DIRECTORY_NAME: str(libs.cfg.document_child_directory_name),
-            db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_child_directory_type,
-            db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_child_id_base,
-            db.cfg.DBC_DOCUMENT_ID_PARENT: libs.cfg.document_child_id_parent,
-            db.cfg.DBC_ERROR_CODE: libs.cfg.document_child_error_code,
-            db.cfg.DBC_FILE_NAME: libs.cfg.document_child_file_name,
-            db.cfg.DBC_FILE_TYPE: libs.cfg.document_child_file_type,
-            db.cfg.DBC_NEXT_STEP: libs.cfg.document_child_next_step,
-            db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id
-            if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX
-            else libs.cfg.document_child_language_id,
-            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            db.cfg.DBC_STATUS: libs.cfg.document_child_status,
-            db.cfg.DBC_STEM_NAME: libs.cfg.document_child_stem_name,
-        },
-    )
 
 
 # -----------------------------------------------------------------------------
@@ -241,34 +201,6 @@ def progress_msg_empty_before(msg: str) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Report a document error.
-# -----------------------------------------------------------------------------
-def report_document_error(error_code: str | None, error: str) -> None:
-    """Report a document error.
-
-    Args:
-        error_code (str|None): Error code.
-        error (str):  Journal action text.
-    """
-    libs.cfg.total_erroneous += 1
-
-    if error_code is not None:
-        db.orm.dml.update_dbt_id(
-            db.cfg.DBT_DOCUMENT,
-            libs.cfg.document_id,
-            {
-                db.cfg.DBC_ERROR_CODE: error_code,
-                db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_ERROR,
-            },
-        )
-
-    db.orm.dml.insert_journal_error(
-        document_id=libs.cfg.document_id,
-        error=error,
-    )
-
-
-# -----------------------------------------------------------------------------
 # Reset the language related statistic counters.
 # -----------------------------------------------------------------------------
 def reset_statistics_language() -> None:
@@ -300,49 +232,6 @@ def reset_statistics_total() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Select the documents to be processed.
-# -----------------------------------------------------------------------------
-def select_document(conn: Connection, dbt: Table, next_step: str) -> engine.CursorResult:
-    """Select the documents to be processed.
-
-    Args:
-        conn (Connection): Database connection.
-        dbt (Table): database table document.
-        next_step (str): Next processing step.
-
-    Returns:
-        engine.CursorResult: The documents found.
-    """
-    return conn.execute(
-        select(
-            dbt.c.id,
-            dbt.c.child_no,
-            dbt.c.directory_name,
-            dbt.c.directory_type,
-            dbt.c.document_id_base,
-            dbt.c.document_id_parent,
-            dbt.c.file_name,
-            dbt.c.file_type,
-            dbt.c.language_id,
-            dbt.c.status,
-            dbt.c.stem_name,
-        )
-        .where(
-            and_(
-                dbt.c.next_step == next_step,
-                dbt.c.status.in_(
-                    [
-                        db.cfg.DOCUMENT_STATUS_ERROR,
-                        db.cfg.DOCUMENT_STATUS_START,
-                    ]
-                ),
-            )
-        )
-        .order_by(dbt.c.id.asc())
-    )
-
-
-# -----------------------------------------------------------------------------
 # Prepare the selection of the documents to be processed.
 # -----------------------------------------------------------------------------
 def select_document_prepare() -> Table:
@@ -358,32 +247,6 @@ def select_document_prepare() -> Table:
         db.cfg.DBT_DOCUMENT,
         db.cfg.db_orm_metadata,
         autoload_with=db.cfg.db_orm_engine,
-    )
-
-
-# -----------------------------------------------------------------------------
-# Select the languages to be processed.
-# -----------------------------------------------------------------------------
-def select_language(conn: Connection, dbt: Table) -> engine.CursorResult:
-    """Select the documents to be processed.
-
-    Args:
-        conn (Connection): Database connection.
-        dbt (Table): database table language.
-
-    Returns:
-        engine.CursorResult: The languages found.
-    """
-    return conn.execute(
-        select(
-            dbt.c.id,
-            dbt.c.directory_name_inbox,
-            dbt.c.iso_language_name,
-        )
-        .where(
-            dbt.c.active,
-        )
-        .order_by(dbt.c.id.asc())
     )
 
 
@@ -528,11 +391,11 @@ def start_document_processing(document: Row) -> None:
         },
     )
 
-    if libs.cfg.document_status == db.cfg.DOCUMENT_STATUS_START:
-        libs.cfg.total_status_ready += 1
-    else:
+    if libs.cfg.document_status == db.cfg.DOCUMENT_STATUS_ERROR:
         # not testable
         libs.cfg.total_status_error += 1
+    else:
+        libs.cfg.total_status_ready += 1
 
 
 # -----------------------------------------------------------------------------

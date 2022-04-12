@@ -135,8 +135,7 @@ def create_db_triggers(table_names: List[str]) -> None:
 
     for table_name in table_names:
         create_db_trigger_created_at(table_name)
-        if table_name != db.cfg.DBT_JOURNAL:
-            create_db_trigger_modified_at(table_name)
+        create_db_trigger_modified_at(table_name)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -267,7 +266,10 @@ def create_dbt_document(table_name: str) -> None:
             ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=True,
         ),
+        sqlalchemy.Column(db.cfg.DBC_DURATION_NS, sqlalchemy.BigInteger, nullable=False),
         sqlalchemy.Column(db.cfg.DBC_ERROR_CODE, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(db.cfg.DBC_ERROR_NO, sqlalchemy.BigInteger, nullable=False),
+        sqlalchemy.Column(db.cfg.DBC_ERROR_MSG, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(db.cfg.DBC_FILE_NAME, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(db.cfg.DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
@@ -282,58 +284,15 @@ def create_dbt_document(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(db.cfg.DBC_NEXT_STEP, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(db.cfg.DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
-        sqlalchemy.Column(db.cfg.DBC_SHA256, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(db.cfg.DBC_STATUS, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(db.cfg.DBC_STEM_NAME, sqlalchemy.String, nullable=False),
-    )
-
-    libs.utils.progress_msg(f"The database table '{table_name}' has now been created")
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Create the database table journal.
-# -----------------------------------------------------------------------------
-def create_dbt_journal(table_name: str) -> None:
-    """Create the database table journal.
-
-    Args:
-        table_name (str): Table name.
-    """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    sqlalchemy.Table(
-        table_name,
-        db.cfg.db_orm_metadata,
-        sqlalchemy.Column(
-            db.cfg.DBC_ID,
-            sqlalchemy.Integer,
-            autoincrement=True,
-            nullable=False,
-            primary_key=True,
-        ),
-        sqlalchemy.Column(
-            db.cfg.DBC_CREATED_AT,
-            sqlalchemy.DateTime,
-        ),
-        sqlalchemy.Column(db.cfg.DBC_CURRENT_STEP, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(
-            db.cfg.DBC_DOCUMENT_ID,
-            sqlalchemy.Integer,
-            ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
-            nullable=False,
-        ),
-        sqlalchemy.Column(db.cfg.DBC_DURATION_NS, sqlalchemy.BigInteger, nullable=False),
-        sqlalchemy.Column(db.cfg.DBC_ERROR_CODE, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(db.cfg.DBC_ERROR_TEXT, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(
             db.cfg.DBC_RUN_ID,
             sqlalchemy.Integer,
             ForeignKey(db.cfg.DBT_RUN + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
+        sqlalchemy.Column(db.cfg.DBC_SHA256, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(db.cfg.DBC_STATUS, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(db.cfg.DBC_STEM_NAME, sqlalchemy.String, nullable=False),
     )
 
     libs.utils.progress_msg(f"The database table '{table_name}' has now been created")
@@ -519,18 +478,16 @@ def create_schema() -> None:
     create_dbt_run(db.cfg.DBT_RUN)
     create_dbt_version(db.cfg.DBT_VERSION)
     # FK: language
+    # FK: run
     create_dbt_document(db.cfg.DBT_DOCUMENT)
     # FK: document
     create_dbt_content(db.cfg.DBT_CONTENT)
-    # FK: run
-    create_dbt_journal(db.cfg.DBT_JOURNAL)
 
     # Create the database triggers.
     create_db_triggers(
         [
             db.cfg.DBT_CONTENT,
             db.cfg.DBT_DOCUMENT,
-            db.cfg.DBT_JOURNAL,
             db.cfg.DBT_LANGUAGE,
             db.cfg.DBT_RUN,
             db.cfg.DBT_VERSION,
@@ -598,7 +555,7 @@ def load_db_data_from_json(initial_database_data: Path) -> None:
             table_name = json_table[db.cfg.JSON_NAME_TABLE_NAME].lower()
 
             if table_name not in ["language"]:
-                if table_name in ["content", "document", "journal", "run", "version"]:
+                if table_name in ["content", "document", "run", "version"]:
                     libs.utils.terminate_fatal(
                         f"The database table '{table_name}' must not be changed via the JSON file."
                     )

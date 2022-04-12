@@ -33,7 +33,7 @@ def convert_pdf_2_image() -> None:
     dbt = libs.utils.select_document_prepare()
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PDF2IMAGE)
+        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PDF2IMAGE)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -93,9 +93,10 @@ def convert_pdf_2_image_file() -> None:
         )
 
         if os.path.exists(file_name_child):
-            libs.utils.report_document_error(
+            db.orm.dml.update_document_error(
+                document_id=libs.cfg.document_id,
                 error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-                error=db.cfg.ERROR_21_903.replace("{file_name}", file_name_child),
+                error_msg=db.cfg.ERROR_21_903.replace("{file_name}", file_name_child),
             )
         else:
             img.save(
@@ -103,7 +104,7 @@ def convert_pdf_2_image_file() -> None:
                 libs.cfg.pdf2image_type,
             )
 
-            libs.utils.initialise_document_child()
+            db.orm.dml.insert_document_child()
 
             libs.cfg.total_generated += 1
 
@@ -112,14 +113,13 @@ def convert_pdf_2_image_file() -> None:
             libs.cfg.total_ok_processed -= 1
 
     libs.cfg.total_ok_processed += 1
-
-    db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     # not testable
     # except PDFPopplerTimeoutError as err:
     #     number_errors += 1
     #     libs.utils.report_document_error(
+    #         document_id = libs.cfg.document_id,
     #         error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-    #         error=db.cfg.ERROR_21_901.replace(
+    #         error_msg=db.cfg.ERROR_21_901.replace(
     #             "{file_name}", libs.cfg.document_file_name
     #         ).replace("{error_msg}", str(err)),
     #     )

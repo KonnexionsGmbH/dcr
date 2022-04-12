@@ -83,6 +83,8 @@ def initialise_document_base(file: pathlib.Path) -> None:
             db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
             db.cfg.DBC_DIRECTORY_NAME: libs.cfg.document_directory_name,
             db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_directory_type,
+            db.cfg.DBC_DURATION_NS: 0,
+            db.cfg.DBC_ERROR_NO: 0,
             db.cfg.DBC_FILE_NAME: libs.cfg.document_file_name,
             db.cfg.DBC_FILE_TYPE: libs.cfg.document_file_type,
             db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id,
@@ -200,8 +202,6 @@ def prepare_pdf(file: pathlib.Path) -> None:
             libs.cfg.total_ok_processed_pdf2image += 1
 
         process_inbox_accepted(next_step)
-
-        db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     except RuntimeError as err:
         process_inbox_rejected(
             db.cfg.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
@@ -246,7 +246,7 @@ def process_inbox() -> None:
     )
 
     with db.cfg.db_orm_engine.connect() as conn:
-        for row in libs.utils.select_language(conn, dbt):
+        for row in db.orm.dml.select_language(conn, dbt):
             libs.cfg.language_id = row.id
             libs.cfg.language_directory_inbox = row.directory_name_inbox
             libs.cfg.language_iso_language_name = row.iso_language_name
@@ -290,22 +290,18 @@ def process_inbox_accepted(next_step: str) -> None:
     )
 
     if os.path.exists(target_file):
-        libs.utils.report_document_error(
+        db.orm.dml.update_document_error(
+            document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error=db.cfg.ERROR_01_906.replace("{file_name}", target_file),
+            error_msg=db.cfg.ERROR_01_906.replace("{file_name}", target_file),
         )
-        libs.cfg.language_erroneous += 1
     else:
         shutil.move(source_file, target_file)
 
-        libs.utils.initialise_document_child()
+        db.orm.dml.insert_document_child()
 
-        db.orm.dml.update_dbt_id(
-            db.cfg.DBT_DOCUMENT,
-            libs.cfg.document_id,
-            {
-                db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_END,
-            },
+        db.orm.dml.update_document_statistics(
+            document_id=libs.cfg.document_id, status=db.cfg.DOCUMENT_STATUS_END
         )
 
         libs.cfg.language_ok_processed += 1
@@ -346,13 +342,11 @@ def process_inbox_file(file: pathlib.Path) -> None:
         process_inbox_accepted(db.cfg.DOCUMENT_STEP_PANDOC)
         libs.cfg.language_ok_processed_pandoc += 1
         libs.cfg.total_ok_processed_pandoc += 1
-        db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     elif libs.cfg.document_file_type in db.cfg.DOCUMENT_FILE_TYPE_TESSERACT:
         prepare_document_child_accepted()
         process_inbox_accepted(db.cfg.DOCUMENT_STEP_TESSERACT)
         libs.cfg.language_ok_processed_tesseract += 1
         libs.cfg.total_ok_processed_tesseract += 1
-        db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     else:
         process_inbox_rejected(
             db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
@@ -429,28 +423,22 @@ def process_inbox_rejected(error_code: str, error: str) -> None:
 
     # Move the document file from directory inbox to directory inbox_rejected - if not yet existing
     if os.path.exists(target_file):
-        db.orm.dml.insert_journal_error(
+        db.orm.dml.update_document_error(
             document_id=libs.cfg.document_id,
-            error=db.cfg.ERROR_01_906.replace("{file_name}", target_file),
+            error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            error_msg=db.cfg.ERROR_01_906.replace("{file_name}", target_file),
         )
-        libs.cfg.language_erroneous += 1
     else:
         shutil.move(source_file, target_file)
 
-        libs.utils.initialise_document_child()
+        db.orm.dml.insert_document_child()
 
-        db.orm.dml.update_dbt_id(
-            db.cfg.DBT_DOCUMENT,
-            libs.cfg.document_id,
-            {
-                db.cfg.DBC_ERROR_CODE: error_code,
-                db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_ERROR,
-            },
+        db.orm.dml.update_document_error(
+            document_id=libs.cfg.document_id,
+            error_code=error_code,
+            error_msg=error,
         )
 
         libs.cfg.language_erroneous += 1
-        libs.cfg.total_erroneous += 1
-
-    db.orm.dml.insert_journal_error(document_id=libs.cfg.document_id, error=error)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

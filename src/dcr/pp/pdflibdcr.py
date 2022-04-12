@@ -38,7 +38,7 @@ def extract_text_from_pdf() -> None:
     libs.utils.reset_statistics_total()
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = libs.utils.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PDFLIB)
+        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PDFLIB)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -81,8 +81,9 @@ def extract_text_from_pdf_file() -> None:
     # not testable
     # if source_file == -1:
     #     libs.utils.report_document_error(
+    #         document_id = libs.cfg.document_id,
     #         error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
-    #         error=db.cfg.ERROR_51_901.replace("{file_name}", source_file_name)
+    #         error_msg=db.cfg.ERROR_51_901.replace("{file_name}", source_file_name)
     #         .replace("{error_no}", str(tet.get_errnum()))
     #         .replace("{api_name}", tet.get_apiname() + "()")
     #         .replace("{error}", tet.get_errmsg()),
@@ -111,19 +112,18 @@ def extract_text_from_pdf_file() -> None:
     )
     libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
-    libs.utils.initialise_document_child()
+    db.orm.dml.insert_document_child()
 
     libs.utils.delete_auxiliary_file(source_file_name)
 
     # Text and metadata from Document successfully extracted to xml format
     libs.utils.finalize_file_processing()
-
-    db.orm.dml.insert_journal_statistics(libs.cfg.document_id)
     # not testable
     # except TETException:
     #     libs.utils.report_document_error(
+    #         document_id = libs.cfg.document_id,
     #         error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
-    #         error=db.cfg.ERROR_51_903.replace("{file_name}", source_file_name)
+    #         error_msg=db.cfg.ERROR_51_903.replace("{file_name}", source_file_name)
     #         .replace("{target_file}", target_file_name)
     #         .replace("{error_no}", str(tet.get_errnum()))
     #         .replace("{api_name}", tet.get_apiname() + "()")
