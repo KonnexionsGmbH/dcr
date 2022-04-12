@@ -10,18 +10,6 @@ from PDFlib.TET import TET
 # not testable
 # from tetlib_py import TETException
 
-# -----------------------------------------------------------------------------
-# Global Constants.
-# -----------------------------------------------------------------------------
-# document-specific option list
-BASE_DOC_OPT_LIST = "engines={notextcolor}"
-
-# global option list */
-GLOBAL_OPT_LIST = ""
-
-# page-specific option list */
-PAGE_OPT_LIST = "granularity=word tetml={glyphdetails={all} elements={line}}"
-
 
 # -----------------------------------------------------------------------------
 # Extract text and metadata from pdf documents (step: tet).
@@ -65,6 +53,10 @@ def extract_text_from_pdf_file() -> None:
         db.cfg.DOCUMENT_FILE_TYPE_XML
     )
 
+    print(f"wwe document_directory_name={libs.cfg.document_directory_name}")
+    print(f"wwe source_file_name       ={source_file_name}")
+    print(f"wwe target_file_name       ={target_file_name}")
+
     # not testable
     # tet = None
 
@@ -72,9 +64,9 @@ def extract_text_from_pdf_file() -> None:
     # try:
     tet = TET()
 
-    tet.set_option(GLOBAL_OPT_LIST)
+    tet.set_option(libs.cfg.TET_GLOBAL_OPT_LIST)
 
-    doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {BASE_DOC_OPT_LIST}"
+    doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {libs.cfg.TET_BASE_DOC_OPT_LIST}"
 
     source_file = tet.open_document(source_file_name, doc_opt_list)
 
@@ -95,7 +87,7 @@ def extract_text_from_pdf_file() -> None:
 
     # loop over pages in the document */
     for page_no in range(1, int(no_pages) + 1):
-        tet.process_page(source_file, page_no, PAGE_OPT_LIST)
+        tet.process_page(source_file, page_no, libs.cfg.TET_PAGE_OPT_LIST)
 
     # This could be combined with the last page-related call
     tet.process_page(source_file, 0, "tetml={trailer}")

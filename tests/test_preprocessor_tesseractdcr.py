@@ -202,6 +202,79 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
+# Test RUN_ACTION_IMAGE_2_PDF - normal - timeout.
+# -----------------------------------------------------------------------------
+def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_IMAGE_2_PDF - normal - timeout."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 1/2 <=========")
+
+    stem_name: str = "pdf_scanned_ok"
+    file_ext: str = "pdf"
+
+    document_id, _file_tesseract_1 = pytest.helpers.help_run_action_process_inbox_normal(
+        stem_name,
+        file_ext,
+    )
+
+    # -------------------------------------------------------------------------
+    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
+    )
+
+    value_original_tesseract_timeout = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "1"
+    )
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
+        value_original_delete_auxiliary_files,
+    )
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
+        value_original_tesseract_timeout,
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 2/2 <=========")
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [
+            stem_name + "_" + str(document_id) + "." + file_ext,
+            stem_name + "_" + str(document_id) + "_1." + libs.cfg.pdf2image_type,
+        ],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test RUN_ACTION_IMAGE_2_PDF - reunite.
 # -----------------------------------------------------------------------------
 def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
@@ -309,79 +382,6 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
         libs.cfg.DCR_CFG_SECTION,
         libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
         value_original_tesseract_timeout,
-    )
-
-    # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test RUN_ACTION_IMAGE_2_PDF - normal - timeout.
-# -----------------------------------------------------------------------------
-def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_IMAGE_2_PDF - normal - timeout."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 1/2 <=========")
-
-    stem_name: str = "pdf_scanned_ok"
-    file_ext: str = "pdf"
-
-    document_id, _file_tesseract_1 = pytest.helpers.help_run_action_process_inbox_normal(
-        stem_name,
-        file_ext,
-    )
-
-    # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
-    )
-
-    value_original_tesseract_timeout = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "1"
-    )
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
-
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
-    )
-
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
-        value_original_tesseract_timeout,
-    )
-
-    # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 2/2 <=========")
-
-    pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
-        [],
-        [
-            stem_name + "_" + str(document_id) + "." + file_ext,
-            stem_name + "_" + str(document_id) + "_1." + libs.cfg.pdf2image_type,
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
-        [],
-        [],
     )
 
     # -------------------------------------------------------------------------

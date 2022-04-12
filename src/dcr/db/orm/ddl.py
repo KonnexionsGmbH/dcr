@@ -271,6 +271,7 @@ def create_dbt_document(table_name: str) -> None:
         sqlalchemy.Column(db.cfg.DBC_ERROR_NO, sqlalchemy.BigInteger, nullable=False),
         sqlalchemy.Column(db.cfg.DBC_ERROR_MSG, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(db.cfg.DBC_FILE_NAME, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(db.cfg.DBC_FILE_SIZE_BYTES, sqlalchemy.Integer, nullable=False),
         sqlalchemy.Column(db.cfg.DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
             db.cfg.DBC_FONTS,
@@ -284,6 +285,7 @@ def create_dbt_document(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(db.cfg.DBC_NEXT_STEP, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(db.cfg.DBC_PDF_PAGES_NO, sqlalchemy.Integer, nullable=True),
         sqlalchemy.Column(
             db.cfg.DBC_RUN_ID,
             sqlalchemy.Integer,

@@ -25,12 +25,8 @@
 - 9 API documentation: Layout improvement
 - 9 Google Styleguide implementation
 - 9 admin: reset a list of documents: clean up the database before the next process retry - delete existing data
-- 9 all: database table 'document': new column file_size
-- 9 all: database table 'document': new column no_pages_pdf
-- 9 all: merge database table 'journal' into 'document'
-- 9 all: remove database table 'run', eventually keep some run related information in database table 'document'
 - 9 pandocdcr: convert 'doc' documents to 'docx'
-- 9 parser: classify the sentences, e.g. footer, header, title etc. 
+- 9 parser: classify the sentences, e.g. body, footer, header, title etc. 
 - 9 parser: count and process gross words to net words, e.g. urls, email addresses etc.
 - 9 parser: count and store no_words per font and per page
 - 9 parser: take into account cross-pages sentences
@@ -39,6 +35,9 @@
 - ~~API Documentation~~
 - ~~PDFlib TET processing~~
 - ~~Tesseract OCR - Installation~~  
+- ~~all: database table 'document': new column file_size~~
+- ~~all: database table 'document': new column no_pages_pdf~~
+- ~~all: merge database table 'journal' into 'document'~~
 - ~~clean up the auxiliary files in file directory inbox_accepted - keep the base document~~
 - ~~combine **`pdf`** files - scanned **`pdf`** documents - after Tesseract OCR~~
 - ~~convert the appropriate documents into the **`pdf`** format with Pandoc and TeX Live~~

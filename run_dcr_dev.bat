@@ -19,8 +19,8 @@ if ["%1"] EQU [""] (
     echo all   - Run the complete core processing of all new documents.
     echo ---------------------------------------------------------
     echo p_i   - 1. Process the inbox directory.
-    echo p_2_i - 2. Convert pdf documents to image files:               Poppler.
-    echo ocr   - 3. Convert image documents to pdf files:               Tesseract OCR.
+    echo p_2_i - 2. Convert pdf documents to image files:               pdf2image / Poppler.
+    echo ocr   - 3. Convert image documents to pdf files:               Tesseract OCR / Tex Live.
     echo n_2_p - 2. Convert non-pdf documents to pdf files:             Pandoc
     echo tet   - 4. Extract text and metdata from pdf documents:        PDFlib TET.
     echo s_f_p - 5. Store the document structure from the parser result.

@@ -139,6 +139,13 @@ RUN_ACTION_UPGRADE_DB: str = "db_u"
 
 TESTS_INBOX_NAME: str = "tests/__PYTEST_FILES__/"
 
+# document-specific option list
+TET_BASE_DOC_OPT_LIST: str = "engines={notextcolor}"
+# global option list */
+TET_GLOBAL_OPT_LIST: str = ""
+# page-specific option list */
+TET_PAGE_OPT_LIST: str = "granularity=word tetml={glyphdetails={all} elements={line}}"
+
 VERBOSE_TRUE: str = "true"
 
 # -----------------------------------------------------------------------------

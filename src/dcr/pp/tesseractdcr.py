@@ -141,8 +141,6 @@ def reunite_pdfs() -> None:
         )
 
         for row in rows:
-            libs.cfg.start_time_document = time.perf_counter_ns()
-
             libs.utils.start_document_processing(
                 document=row,
             )
@@ -199,6 +197,8 @@ def reunite_pdfs_file() -> None:
         libs.cfg.document_child_id_parent = 0
 
         for row in rows:
+            start_time_document = time.perf_counter_ns()
+
             libs.cfg.document_child_id_parent = row.id
 
             source_file_path = os.path.join(row.directory_name, row.file_name)
@@ -210,20 +210,33 @@ def reunite_pdfs_file() -> None:
 
             libs.utils.delete_auxiliary_file(str(source_file_path))
 
+            duration_ns = time.perf_counter_ns() - start_time_document
+
             db.orm.dml.update_dbt_id(
                 db.cfg.DBT_DOCUMENT,
                 row.id,
                 {
+                    db.cfg.DBC_DURATION_NS: duration_ns,
                     db.cfg.DBC_NEXT_STEP: db.cfg.DOCUMENT_STEP_PYPDF4,
                     db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_END,
                 },
             )
+
+            libs.cfg.document_child_id_parent = row.id
 
         conn.close()
 
     # Write out the merged PDF
     with open(target_file_path, "wb") as out:
         pdf_writer.write(out)
+
+    libs.utils.prepare_document_4_next_step(
+        next_file_type=db.cfg.DOCUMENT_FILE_TYPE_PDF,
+        next_step=db.cfg.DOCUMENT_STEP_PDFLIB,
+    )
+
+    libs.cfg.document_child_directory_name = libs.cfg.directory_inbox_accepted
+    libs.cfg.document_child_directory_type = db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED
 
     db.orm.dml.insert_document_child()
 

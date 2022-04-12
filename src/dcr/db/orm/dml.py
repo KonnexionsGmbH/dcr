@@ -1,5 +1,6 @@
 """Module db.orm.dml: Database Manipulation Management."""
 import os
+import pathlib
 import time
 from typing import Dict
 
@@ -8,6 +9,8 @@ import db.orm.dml
 import libs.cfg
 import libs.utils
 import sqlalchemy.orm
+from PyPDF4 import PdfFileReader
+from PyPDF4.utils import PdfReadError
 from sqlalchemy import Table
 from sqlalchemy import and_
 from sqlalchemy import engine
@@ -16,6 +19,31 @@ from sqlalchemy import insert
 from sqlalchemy import select
 from sqlalchemy import update
 from sqlalchemy.engine import Connection
+
+
+# -----------------------------------------------------------------------------
+# Determine the number of pages in a pdf document.
+# -----------------------------------------------------------------------------
+def get_pdf_pages_no(
+    file_path: pathlib.Path,
+    file_type: str,
+) -> sqlalchemy.Integer | None:
+    """Determine the number of pages in a pdf document.
+
+    Args:
+        file_path (pathlib.Path):     File.
+        file_type (str): File type.
+
+    Returns:
+        sqlalchemy.Integer|None: The number of pages found.
+    """
+    if file_type != db.cfg.DOCUMENT_FILE_TYPE_PDF:
+        return None
+
+    try:
+        return PdfFileReader(file_path).numPages
+    except PdfReadError:
+        return -1
 
 
 # -----------------------------------------------------------------------------
@@ -49,14 +77,52 @@ def insert_dbt_row(
 
 
 # -----------------------------------------------------------------------------
+# Insert a new base document.
+# -----------------------------------------------------------------------------
+def insert_document_base() -> None:
+    """Insert a new base document."""
+    file_path = os.path.join(libs.cfg.document_directory_name, libs.cfg.document_file_name)
+
+    libs.cfg.document_id = db.orm.dml.insert_dbt_row(
+        db.cfg.DBT_DOCUMENT,
+        {
+            db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
+            db.cfg.DBC_DIRECTORY_NAME: libs.cfg.document_directory_name,
+            db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_directory_type,
+            db.cfg.DBC_DURATION_NS: 0,
+            db.cfg.DBC_ERROR_NO: 0,
+            db.cfg.DBC_FILE_NAME: libs.cfg.document_file_name,
+            db.cfg.DBC_FILE_SIZE_BYTES: os.path.getsize(file_path),
+            db.cfg.DBC_FILE_TYPE: libs.cfg.document_file_type,
+            db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id,
+            db.cfg.DBC_PDF_PAGES_NO: get_pdf_pages_no(file_path, libs.cfg.document_file_type),
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_SHA256: libs.cfg.document_sha256,
+            db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_START,
+            db.cfg.DBC_STEM_NAME: libs.cfg.document_stem_name,
+        },
+    )
+
+    libs.cfg.document_id_base = libs.cfg.document_id
+
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_DOCUMENT,
+        libs.cfg.document_id,
+        {
+            db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_id_base,
+        },
+    )
+
+
+# -----------------------------------------------------------------------------
 # Insert a new child document of the base document.
 # -----------------------------------------------------------------------------
 def insert_document_child() -> None:
-    """Insert a new child document of the base document.
+    """Insert a new child document of the base document."""
+    file_path = os.path.join(
+        libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name
+    )
 
-    Prepares a new document for one of the file directories
-    'inbox_accepted' or 'inbox_rejected'.
-    """
     libs.cfg.document_child_id = db.orm.dml.insert_dbt_row(
         db.cfg.DBT_DOCUMENT,
         {
@@ -70,11 +136,13 @@ def insert_document_child() -> None:
             db.cfg.DBC_ERROR_CODE: libs.cfg.document_child_error_code,
             db.cfg.DBC_ERROR_NO: 0,
             db.cfg.DBC_FILE_NAME: libs.cfg.document_child_file_name,
+            db.cfg.DBC_FILE_SIZE_BYTES: os.path.getsize(file_path),
             db.cfg.DBC_FILE_TYPE: libs.cfg.document_child_file_type,
             db.cfg.DBC_NEXT_STEP: libs.cfg.document_child_next_step,
             db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id
             if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX
             else libs.cfg.document_child_language_id,
+            db.cfg.DBC_PDF_PAGES_NO: get_pdf_pages_no(file_path, libs.cfg.document_child_file_type),
             db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
             db.cfg.DBC_STATUS: libs.cfg.document_child_status,
             db.cfg.DBC_STEM_NAME: libs.cfg.document_child_stem_name,
@@ -341,8 +409,9 @@ def update_document_error(document_id: sqlalchemy.Integer, error_code: str, erro
     """
     dbt = Table(db.cfg.DBT_DOCUMENT, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
 
-    duration_ns = time.perf_counter_ns() - libs.cfg.start_time_document
     libs.cfg.total_erroneous += 1
+
+    duration_ns = time.perf_counter_ns() - libs.cfg.start_time_document
 
     update_dbt_id(
         table_name=db.cfg.DBT_DOCUMENT,

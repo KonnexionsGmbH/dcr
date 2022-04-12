@@ -67,7 +67,6 @@ The processing logic is as follows:
 
 In the first step, the file directory **`inbox`** is checked for new document files. 
 An entry is created in the **`document`** database table for each new document, showing the current processing status of the document. 
-In addition, document-related error messages and performance data are recorded in the **`journal`** database table.
 
 The association of document and language is managed via subdirectories of the file folder **`inbox`**. 
 In the database table **`language`**, the column **`directory_name_inbox`** specifies per language in which subdirectory the documents in this language are to be supplied. 
@@ -132,7 +131,7 @@ This processing step only has to be performed if there are new documents in the 
 In this processing step, the document types listed in section 2.1.3 are converted to **`pdf`** format 
 using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
-In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
+In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
 
 After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, the files split in the previous processing step are combined into a single **`pdf`** document.
 
@@ -142,14 +141,14 @@ This processing step only has to be performed if there are new documents in the 
 In this processing step, the document types listed in section 2.1.2 are converted to **`pdf`** format 
 using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
-In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
+In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
 
 ### 2.1.6 Extract text and metadata from **`pdf`** documents (step: **`tet`**)
 
 In this processing step, the text and metadata of the **`pdf`** documents from 2.1.1, 2.3 and 2.4 are extracted and written to an **`xml`** file in **`tetml`** format for each document.
 The [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} library is used for this purpose.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`xml`** file (child document).
-In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`journal`** table. 
+In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
 
 ### 2.1.7 Store the document structure from the parser result (step: **`s_f_p`**)
 

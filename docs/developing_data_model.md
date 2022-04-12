@@ -15,7 +15,7 @@ If required, a PostgreSQL container can be downloaded and created with the scrip
 
 ### 2.1 Entity-relationship (ER) Diagram
 
-![](img/developing_data_model_dbt_overview_er.png)
+![](img/developing_data_model_dbt_overview_erd.png)
 
 ### 2.2 Database Tables
 
@@ -37,7 +37,7 @@ This database table contains the results from the parsing process.
 
 **ER diagram**:
 
-![](img/developing_data_model_dbt_content_er.png)
+![](img/developing_data_model_dbt_content_erd.png)
 
 #### 2.2.2 **`document`**
 
@@ -57,21 +57,9 @@ This database table contains the document-related data.
 
 **ER diagram**:
 
-![](img/developing_data_model_dbt_document_er.png)
+![](img/developing_data_model_dbt_document_erd.png)
 
-#### 2.2.3 **`journal`**
-
-This database table contains document-related error message and performance data.
-
-**Example rows**:
-
-![](img/developing_data_model_dbt_journal_rows.png)
-
-**ER diagram**:
-
-![](img/developing_data_model_dbt_journal_er.png)
-
-#### 2.2.4 **`language`**
+#### 2.2.3 **`language`**
 
 This database table controls the language-related document properties during processing.
 
@@ -81,9 +69,9 @@ This database table controls the language-related document properties during pro
 
 **ER diagram**:
 
-![](img/developing_data_model_dbt_language_er.png)
+![](img/developing_data_model_dbt_language_erd.png)
 
-#### 2.2.5 **`run`**
+#### 2.2.4 **`run`**
 
 This database table documents the executed processing runs in detail.
 
@@ -93,9 +81,9 @@ This database table documents the executed processing runs in detail.
 
 **ER diagram**:
 
-![](img/developing_data_model_dbt_run_er.png)
+![](img/developing_data_model_dbt_run_erd.png)
 
-#### 2.2.6 **`version`**
+#### 2.2.5 **`version`**
 
 This database table is used to monitor the version status of the **DCR** database schema.
 
@@ -105,4 +93,4 @@ This database table is used to monitor the version status of the **DCR** databas
 
 **ER diagram**:
 
-![](img/developing_data_model_dbt_version_er.png)
+![](img/developing_data_model_dbt_version_erd.png)

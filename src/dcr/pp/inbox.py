@@ -62,48 +62,22 @@ def create_directory(directory_type: str, directory_name: str) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Initialise the base document in the database and in the journal.
+# Initialise the base document in the database.
 # -----------------------------------------------------------------------------
-def initialise_document_base(file: pathlib.Path) -> None:
-    """Initialise the base document in the database and in the journal.
+def initialise_document_base(file_path: pathlib.Path) -> None:
+    """Initialise the base document in the database.
 
     Analyses the file name and creates an entry in each of the two database
-    tables document and journal.
+    table 'document'.
 
     Args:
-        file (pathlib.Path): File.
+        file_path (pathlib.Path): File.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    prepare_document_base(file)
+    prepare_document_base(file_path)
 
-    libs.cfg.document_id = db.orm.dml.insert_dbt_row(
-        db.cfg.DBT_DOCUMENT,
-        {
-            db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
-            db.cfg.DBC_DIRECTORY_NAME: libs.cfg.document_directory_name,
-            db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_directory_type,
-            db.cfg.DBC_DURATION_NS: 0,
-            db.cfg.DBC_ERROR_NO: 0,
-            db.cfg.DBC_FILE_NAME: libs.cfg.document_file_name,
-            db.cfg.DBC_FILE_TYPE: libs.cfg.document_file_type,
-            db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id,
-            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            db.cfg.DBC_SHA256: libs.cfg.document_sha256,
-            db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_START,
-            db.cfg.DBC_STEM_NAME: libs.cfg.document_stem_name,
-        },
-    )
-
-    libs.cfg.document_id_base = libs.cfg.document_id
-
-    db.orm.dml.update_dbt_id(
-        db.cfg.DBT_DOCUMENT,
-        libs.cfg.document_id,
-        {
-            db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_id_base,
-        },
-    )
+    db.orm.dml.insert_document_base()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -111,22 +85,22 @@ def initialise_document_base(file: pathlib.Path) -> None:
 # -----------------------------------------------------------------------------
 # Prepare the base document data.
 # -----------------------------------------------------------------------------
-def prepare_document_base(file: pathlib.Path) -> None:
+def prepare_document_base(file_path: pathlib.Path) -> None:
     """Prepare the base document data.
 
     Args:
-        file (pathlib.Path): File.
+        file_path (pathlib.Path): File.
     """
     # Example: data\inbox
-    libs.cfg.document_directory_name = str(file.parent)
+    libs.cfg.document_directory_name = str(file_path.parent)
     libs.cfg.document_directory_type = db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX
     libs.cfg.document_error_code = None
 
     # Example: pdf_scanned_ok.pdf
-    libs.cfg.document_file_name = file.name
+    libs.cfg.document_file_name = file_path.name
 
     # Example: pdf
-    libs.cfg.document_file_type = file.suffix[1:].lower()
+    libs.cfg.document_file_type = file_path.suffix[1:].lower()
 
     # Example: 07e21aeef5600c03bc111204a44f708d592a63703a027ea4272a246304557625
     libs.cfg.document_id_base = None
@@ -137,12 +111,12 @@ def prepare_document_base(file: pathlib.Path) -> None:
     if libs.cfg.is_ignore_duplicates:
         libs.cfg.document_sha256 = None
     else:
-        libs.cfg.document_sha256 = libs.utils.compute_sha256(file)
+        libs.cfg.document_sha256 = libs.utils.compute_sha256(file_path)
 
     libs.cfg.document_status = db.cfg.DOCUMENT_STATUS_START
 
     # Example: pdf_scanned_ok
-    libs.cfg.document_stem_name = pathlib.PurePath(file).stem
+    libs.cfg.document_stem_name = pathlib.PurePath(file_path).stem
 
 
 # -----------------------------------------------------------------------------
@@ -179,16 +153,16 @@ def prepare_document_child_accepted() -> None:
 # -----------------------------------------------------------------------------
 # Prepare a new pdf document for further processing..
 # -----------------------------------------------------------------------------
-def prepare_pdf(file: pathlib.Path) -> None:
+def prepare_pdf(file_path: pathlib.Path) -> None:
     """Prepare a new pdf document for further processing.
 
     Args:
-        file (pathlib.Path): Inbox file.
+        file_path (pathlib.Path): Inbox file.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     try:
-        extracted_text = "".join([page.get_text() for page in fitz.open(file)])
+        extracted_text = "".join([page.get_text() for page in fitz.open(file_path)])
 
         prepare_document_child_accepted()
 
@@ -313,15 +287,15 @@ def process_inbox_accepted(next_step: str) -> None:
 # -----------------------------------------------------------------------------
 # Process the next inbox file.
 # -----------------------------------------------------------------------------
-def process_inbox_file(file: pathlib.Path) -> None:
+def process_inbox_file(file_path: pathlib.Path) -> None:
     """Process the next inbox file.
 
     Args:
-        file (pathlib.Path): Inbox file.
+        file_path (pathlib.Path): Inbox file.
     """
     libs.cfg.session = Session(db.cfg.db_orm_engine)
 
-    initialise_document_base(file)
+    initialise_document_base(file_path)
 
     if not libs.cfg.is_ignore_duplicates:
         file_name = db.orm.dml.select_document_file_name_sha256(
@@ -336,7 +310,7 @@ def process_inbox_file(file: pathlib.Path) -> None:
             db.cfg.ERROR_01_905.replace("{file_name}", file_name),
         )
     elif libs.cfg.document_file_type == db.cfg.DOCUMENT_FILE_TYPE_PDF:
-        prepare_pdf(file)
+        prepare_pdf(file_path)
     elif libs.cfg.document_file_type in db.cfg.DOCUMENT_FILE_TYPE_PANDOC:
         prepare_document_child_accepted()
         process_inbox_accepted(db.cfg.DOCUMENT_STEP_PANDOC)
@@ -350,7 +324,7 @@ def process_inbox_file(file: pathlib.Path) -> None:
     else:
         process_inbox_rejected(
             db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
-            db.cfg.ERROR_01_901.replace("{extension}", file.suffix[1:]),
+            db.cfg.ERROR_01_901.replace("{extension}", file_path.suffix[1:]),
         )
 
 
@@ -376,6 +350,8 @@ def process_inbox_language() -> None:
 
     for file in sorted(pathlib.Path(libs.cfg.language_directory_inbox).iterdir()):
         if file.is_file():
+            libs.cfg.start_time_document = time.perf_counter_ns()
+
             if file.name == "README.md":
                 libs.utils.progress_msg(
                     "Attention: All files with the file name 'README.md' are ignored"
@@ -385,7 +361,6 @@ def process_inbox_language() -> None:
             libs.cfg.language_to_be_processed += 1
             libs.cfg.total_to_be_processed += 1
 
-            libs.cfg.start_time_document = time.perf_counter_ns()
             process_inbox_file(file)
 
     libs.utils.show_statistics_language()
@@ -398,12 +373,12 @@ def process_inbox_language() -> None:
 # -----------------------------------------------------------------------------
 # Reject a new document that is faulty.
 # -----------------------------------------------------------------------------
-def process_inbox_rejected(error_code: str, error: str) -> None:
+def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     """Reject a new document that is faulty.
 
     Args:
-        error_code (str):     Error code.
-        error (str): Journal action data.
+        error_code (str): Error code.
+        error_msg (str):  Error message.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
@@ -436,7 +411,7 @@ def process_inbox_rejected(error_code: str, error: str) -> None:
         db.orm.dml.update_document_error(
             document_id=libs.cfg.document_id,
             error_code=error_code,
-            error_msg=error,
+            error_msg=error_msg,
         )
 
         libs.cfg.language_erroneous += 1

@@ -139,6 +139,10 @@ RUN_ACTION_UPGRADE_DB: str
 
 TESTS_INBOX_NAME: str
 
+TET_BASE_DOC_OPT_LIST: str
+TET_GLOBAL_OPT_LIST: str
+TET_PAGE_OPT_LIST: str
+
 VERBOSE_TRUE: str
 
 # -----------------------------------------------------------------------------
