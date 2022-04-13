@@ -6,7 +6,7 @@ import db.cfg
 import db.orm.dml
 import libs.cfg
 import libs.utils
-import PyPDF4
+import PyPDF2
 import pytesseract
 from sqlalchemy import func
 from sqlalchemy import select
@@ -179,7 +179,7 @@ def reunite_pdfs_file() -> None:
         )
         return
 
-    pdf_writer = PyPDF4.PdfFileWriter()
+    pdf_writer = PyPDF2.PdfFileWriter()
 
     libs.cfg.documents_to_be_reunited = []
 
@@ -203,7 +203,7 @@ def reunite_pdfs_file() -> None:
 
             source_file_path = os.path.join(row.directory_name, row.file_name)
 
-            pdf_reader = PyPDF4.PdfFileReader(source_file_path)
+            pdf_reader = PyPDF2.PdfFileReader(source_file_path)
             for page in range(pdf_reader.getNumPages()):
                 # Add each page to the writer object
                 pdf_writer.addPage(pdf_reader.getPage(page))
@@ -217,7 +217,7 @@ def reunite_pdfs_file() -> None:
                 row.id,
                 {
                     db.cfg.DBC_DURATION_NS: duration_ns,
-                    db.cfg.DBC_NEXT_STEP: db.cfg.DOCUMENT_STEP_PYPDF4,
+                    db.cfg.DBC_NEXT_STEP: db.cfg.DOCUMENT_STEP_PYPDF2,
                     db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_END,
                 },
             )

@@ -9,8 +9,8 @@ import db.orm.dml
 import libs.cfg
 import libs.utils
 import sqlalchemy.orm
-from PyPDF4 import PdfFileReader
-from PyPDF4.utils import PdfReadError
+from PyPDF2 import PdfFileReader
+from PyPDF2.utils import PdfReadError
 from sqlalchemy import Table
 from sqlalchemy import and_
 from sqlalchemy import engine

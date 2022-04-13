@@ -200,7 +200,9 @@ def get_environment() -> None:
             f"has the invalid content '{libs.cfg.environment_type}'"
         )
 
-    libs.utils.progress_msg(f"The run is performed in the environment '{libs.cfg.environment_type}'")
+    libs.utils.progress_msg(
+        f"The run is performed in the environment '{libs.cfg.environment_type}'"
+    )
 
 
 # -----------------------------------------------------------------------------
@@ -339,9 +341,9 @@ def process_convert_image_2_pdf() -> None:
     )
     libs.utils.progress_msg("End  : Convert image documents to pdf files ...")
 
-    libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PYPDF4
+    libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PYPDF2
 
-    libs.utils.progress_msg_empty_before("Start: Reunite the related pdf files ... PyPDF4")
+    libs.utils.progress_msg_empty_before("Start: Reunite the related pdf files ... PyPDF2")
     libs.cfg.run_id = db.orm.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
