@@ -13,6 +13,7 @@ pdf2image = "*"
 psycopg2-binary = "*"
 pypandoc = "*"
 pytesseract = "*"
+spacy = "*"
 weasyprint = "*"
 
 [dev-packages]
