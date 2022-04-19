@@ -274,11 +274,6 @@ def create_dbt_document(table_name: str) -> None:
         sqlalchemy.Column(db.cfg.DBC_FILE_SIZE_BYTES, sqlalchemy.Integer, nullable=False),
         sqlalchemy.Column(db.cfg.DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(
-            db.cfg.DBC_FONTS,
-            sqlalchemy.JSON,
-            nullable=True,
-        ),
-        sqlalchemy.Column(
             db.cfg.DBC_LANGUAGE_ID,
             sqlalchemy.Integer,
             ForeignKey(db.cfg.DBT_LANGUAGE + "." + db.cfg.DBC_ID, ondelete="CASCADE"),

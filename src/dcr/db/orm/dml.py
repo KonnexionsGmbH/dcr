@@ -62,16 +62,12 @@ def insert_dbt_row(
     Returns:
         sqlalchemy.Integer: The last id found.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     dbt = Table(table_name, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
 
     with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         result = conn.execute(insert(dbt).values(columns).returning(dbt.columns.id))
         row = result.fetchone()
         conn.close()
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     return row[0]
 

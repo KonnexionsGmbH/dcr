@@ -73,12 +73,6 @@ OS_POSIX: str = "posix"
 PANDOC_PDF_ENGINE_LULATEX: str = "lulatex"
 PANDOC_PDF_ENGINE_XELATEX: str = "xelatex"
 
-PARSE_ATTRIB_FONT: str = "font"
-PARSE_ATTRIB_ID: str = "id"
-PARSE_ATTRIB_ITALIC_ANGLE: str = "italicangle"
-PARSE_ATTRIB_NAME: str = "name"
-PARSE_ATTRIB_SIZE: str = "size"
-PARSE_ATTRIB_WEIGHT: str = "weight"
 PARSE_NAME_SPACE: str = "{http://www.pdflib.com/XML/TET5/TET-5.0}"
 
 PARSE_TAG_A: str = "A"
@@ -88,7 +82,6 @@ PARSE_TAG_ATTACHMENTS: str = "Attachments"
 PARSE_TAG_AUTHOR: str = "Author"
 PARSE_TAG_BOOKMARKS: str = "Bookmarks"
 PARSE_TAG_BOX: str = "Box"
-PARSE_TAG_COLOR_SPACES: str = "ColorSpaces"
 PARSE_TAG_CONTENT: str = "Content"
 PARSE_TAG_CREATION: str = "Creation"
 PARSE_TAG_CREATION_DATE: str = "CreationDate"
@@ -100,10 +93,7 @@ PARSE_TAG_DOC_INFO: str = "DocInfo"
 PARSE_TAG_ENCRYPTION: str = "Encryption"
 PARSE_TAG_EXCEPTION: str = "Exception"
 PARSE_TAG_FIELDS: str = "Fields"
-PARSE_TAG_FONT: str = "Font"
-PARSE_TAG_FONTS: str = "Fonts"
 PARSE_TAG_FROM: int = len(PARSE_NAME_SPACE)
-PARSE_TAG_GLYPH: str = "Glyph"
 PARSE_TAG_GRAPHICS: str = "Graphics"
 PARSE_TAG_IMAGES: str = "Images"
 PARSE_TAG_JAVA_SCRIPTS: str = "JavaScripts"
@@ -140,11 +130,9 @@ RUN_ACTION_UPGRADE_DB: str = "db_u"
 TESTS_INBOX_NAME: str = "tests/__PYTEST_FILES__/"
 
 # document-specific option list
-TET_BASE_DOC_OPT_LIST: str = "engines={notextcolor}"
-# global option list */
-TET_GLOBAL_OPT_LIST: str = ""
+TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector}"
 # page-specific option list */
-TET_PAGE_OPT_LIST: str = "granularity=word tetml={glyphdetails={all} elements={line}}"
+TET_PAGE_OPT_LIST: str = "granularity=word tetml={elements={line}}"
 
 VERBOSE_TRUE: str = "true"
 
@@ -217,10 +205,6 @@ logger: logging.Logger
 
 parse_result_author: str
 parse_result_creation_date: datetime
-parse_result_font_id: str | None
-parse_result_font_size: str
-parse_result_fonts: List[Dict[str, str]]
-parse_result_fonts_no_words: Dict[str, int]
 parse_result_line_in_para_end: int
 parse_result_line_in_para_start: int
 parse_result_mod_date: datetime

@@ -73,12 +73,6 @@ OS_POSIX: str
 PANDOC_PDF_ENGINE_LULATEX: str
 PANDOC_PDF_ENGINE_XELATEX: str
 
-PARSE_ATTRIB_FONT: str
-PARSE_ATTRIB_ID: str
-PARSE_ATTRIB_ITALIC_ANGLE: str
-PARSE_ATTRIB_NAME: str
-PARSE_ATTRIB_SIZE: str
-PARSE_ATTRIB_WEIGHT: str
 PARSE_NAME_SPACE: str
 
 PARSE_TAG_A: str
@@ -88,7 +82,6 @@ PARSE_TAG_ATTACHMENTS: str
 PARSE_TAG_AUTHOR: str
 PARSE_TAG_BOOKMARKS: str
 PARSE_TAG_BOX: str
-PARSE_TAG_COLOR_SPACES: str
 PARSE_TAG_CONTENT: str
 PARSE_TAG_CREATION: str
 PARSE_TAG_CREATION_DATE: str
@@ -100,10 +93,7 @@ PARSE_TAG_DOC_INFO: str
 PARSE_TAG_ENCRYPTION: str
 PARSE_TAG_EXCEPTION: str
 PARSE_TAG_FIELDS: str
-PARSE_TAG_FONT: str
-PARSE_TAG_FONTS: str
 PARSE_TAG_FROM: int
-PARSE_TAG_GLYPH: str
 PARSE_TAG_GRAPHICS: str
 PARSE_TAG_IMAGES: str
 PARSE_TAG_JAVA_SCRIPTS: str
@@ -139,8 +129,7 @@ RUN_ACTION_UPGRADE_DB: str
 
 TESTS_INBOX_NAME: str
 
-TET_BASE_DOC_OPT_LIST: str
-TET_GLOBAL_OPT_LIST: str
+TET_DOCUMENT_OPT_LIST: str
 TET_PAGE_OPT_LIST: str
 
 VERBOSE_TRUE: str
@@ -214,10 +203,6 @@ logger: logging.Logger
 
 parse_result_author: str
 parse_result_creation_date: datetime
-parse_result_font_id: str | None
-parse_result_font_size: str
-parse_result_fonts: List[Dict[str, str]]
-parse_result_fonts_no_words: Dict[str, int]
 parse_result_line_in_para_end: int
 parse_result_line_in_para_start: int
 parse_result_mod_date: datetime

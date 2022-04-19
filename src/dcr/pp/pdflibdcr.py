@@ -60,23 +60,20 @@ def extract_text_from_pdf_file() -> None:
     # try:
     tet = TET()
 
-    tet.set_option(libs.cfg.TET_GLOBAL_OPT_LIST)
-
-    doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {libs.cfg.TET_BASE_DOC_OPT_LIST}"
+    doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {libs.cfg.TET_DOCUMENT_OPT_LIST}"
 
     source_file = tet.open_document(source_file_name, doc_opt_list)
 
-    # not testable
-    # if source_file == -1:
-    #     libs.utils.report_document_error(
-    #         document_id = libs.cfg.document_id,
-    #         error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_PDFLIB,
-    #         error_msg=db.cfg.ERROR_51_901.replace("{file_name}", source_file_name)
-    #         .replace("{error_no}", str(tet.get_errnum()))
-    #         .replace("{api_name}", tet.get_apiname() + "()")
-    #         .replace("{error}", tet.get_errmsg()),
-    #     )
-    #     return
+    if source_file == -1:
+        db.orm.dml.update_document_error(
+            document_id=libs.cfg.document_id,
+            error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
+            error_msg=db.cfg.ERROR_51_901.replace("{file_name}", source_file_name)
+            .replace("{error_no}", str(tet.get_errnum()))
+            .replace("{api_name}", tet.get_apiname() + "()")
+            .replace("{error}", tet.get_errmsg()),
+        )
+        return
 
     # get number of pages in the document */
     no_pages = tet.pcos_get_number(source_file, "length:pages")

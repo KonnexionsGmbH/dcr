@@ -1,5 +1,4 @@
 """Module pp.parser: Store the document structure from the parser result."""
-import json
 import os
 import time
 from datetime import datetime
@@ -50,8 +49,6 @@ def debug_xml_element_text() -> None:
             f"line={libs.cfg.parse_result_no_line:2d} "
             f"word sentence={libs.cfg.parse_result_no_word_sentence:3d} "
             f"word line={libs.cfg.parse_result_no_word_line:2d} "
-            f"font='{libs.cfg.parse_result_font_id}' "
-            f"size='{libs.cfg.parse_result_font_size}' "
             f"text='{libs.cfg.parse_result_text}'"
         )
 
@@ -63,10 +60,6 @@ def init_parse_result() -> None:
     """Initialize the parse result variables."""
     libs.cfg.parse_result_author = None
     libs.cfg.parse_result_creation_date = None
-    libs.cfg.parse_result_font_id = None
-    libs.cfg.parse_result_font_size = None
-    libs.cfg.parse_result_fonts = []
-    libs.cfg.parse_result_fonts_no_words = {}
     libs.cfg.parse_result_mod_date = None
     libs.cfg.parse_result_no_line = 0
     libs.cfg.parse_result_no_page = 0
@@ -113,7 +106,7 @@ def insert_content() -> None:
                 db.cfg.DBC_PAGE_IN_DOC_START: libs.cfg.parse_result_page_in_doc_start,
                 db.cfg.DBC_PARA_IN_PAGE_END: libs.cfg.parse_result_para_in_page_end,
                 db.cfg.DBC_PARA_IN_PAGE_START: libs.cfg.parse_result_para_in_page_start,
-                db.cfg.DBC_SENTENCE: json.dumps(libs.cfg.parse_result_sentence),
+                db.cfg.DBC_SENTENCE: libs.cfg.parse_result_sentence,
             },
         )
 
@@ -141,22 +134,8 @@ def parse_tag_box(parent_tag: str, parent: Iterable[str]) -> None:
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
         match child_tag:
-            # not testable
-            # case (
-            #     libs.cfg.PARSE_TAG_A | libs.cfg.PARSE_TAG_PLACED_IMAGE | libs.cfg.PARSE_TAG_TABLE
-            # ):
-            #     pass
-            case libs.cfg.PARSE_TAG_GLYPH:
-                parse_tag_glyph(child_tag, child)
             case libs.cfg.PARSE_TAG_LINE:
                 parse_tag_line(child_tag, child)
-            # not testable
-            # case libs.cfg.PARSE_TAG_PARA:
-            #     parse_tag_para(child_tag, child)
-            # case libs.cfg.PARSE_TAG_TEXT:
-            #     parse_tag_text(child_tag, child)
-            # case libs.cfg.PARSE_TAG_WORD:
-            #     parse_tag_word(child_tag, child)
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -259,73 +238,6 @@ def parse_tag_document(parent_tag: str, parent: Iterable[str]) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Processing tag 'Font'.
-# -----------------------------------------------------------------------------
-def parse_tag_font(parent_tag: str, parent: Iterable[str]) -> None:
-    """Processing tag 'Font'.
-
-    Args:
-        parent_tag (str): Parent tag.
-        parent (Iterable[str): Parent data structure.
-    """
-    debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
-
-    libs.cfg.parse_result_fonts.append(
-        {
-            db.cfg.JSON_NAME_ID: parent.attrib[libs.cfg.PARSE_ATTRIB_ID],
-            db.cfg.JSON_NAME_ITALIC_ANGLE: parent.attrib[libs.cfg.PARSE_ATTRIB_ITALIC_ANGLE],
-            db.cfg.JSON_NAME_NAME: parent.attrib[libs.cfg.PARSE_ATTRIB_NAME],
-            db.cfg.JSON_NAME_NO_WORDS: libs.cfg.parse_result_fonts_no_words[
-                parent.attrib[libs.cfg.PARSE_ATTRIB_ID]
-            ],
-            db.cfg.JSON_NAME_WEIGHT: parent.attrib[libs.cfg.PARSE_ATTRIB_WEIGHT],
-        }
-    )
-
-    debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
-
-
-# -----------------------------------------------------------------------------
-# Processing tag 'Fonts'.
-# -----------------------------------------------------------------------------
-def parse_tag_fonts(parent_tag: str, parent: Iterable[str]) -> None:
-    """Processing tag 'Fonts'.
-
-    Args:
-        parent_tag (str): Parent tag.
-        parent (Iterable[str): Parent data structure.
-    """
-    debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
-
-    for child in parent:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
-        match child_tag:
-            case libs.cfg.PARSE_TAG_FONT:
-                parse_tag_font(child_tag, child)
-
-    debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
-
-
-# -----------------------------------------------------------------------------
-# Processing tag Glyph.
-# -----------------------------------------------------------------------------
-def parse_tag_glyph(parent_tag: str, parent: Iterable[str]) -> None:
-    """Processing tag 'Glyph'.
-
-    Args:
-        parent_tag (str): Parent tag.
-        parent (Iterable[str): Parent data structure.
-    """
-    debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
-
-    if libs.cfg.parse_result_font_id is None:
-        libs.cfg.parse_result_font_id = parent.attrib[libs.cfg.PARSE_ATTRIB_FONT]
-        libs.cfg.parse_result_font_size = parent.attrib[libs.cfg.PARSE_ATTRIB_SIZE]
-
-    debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
-
-
-# -----------------------------------------------------------------------------
 # Processing tag Line.
 # -----------------------------------------------------------------------------
 def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
@@ -402,7 +314,7 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
         match child_tag:
             case libs.cfg.PARSE_TAG_GRAPHICS | libs.cfg.PARSE_TAG_RESOURCES:
-                parse_tag_resources(child_tag, child)
+                pass
             case libs.cfg.PARSE_TAG_PAGE:
                 parse_tag_page(child_tag, child)
 
@@ -444,33 +356,6 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
             #     parse_tag_para(child_tag, child)
 
     insert_content()
-
-    debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
-
-
-# -----------------------------------------------------------------------------
-# Processing tag Resources.
-# -----------------------------------------------------------------------------
-def parse_tag_resources(parent_tag: str, parent: Iterable[str]) -> None:
-    """Processing tag 'Resources'.
-
-    Args:
-        parent_tag (str): Parent tag.
-        parent (Iterable[str): Parent data structure.
-    """
-    debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
-
-    for child in parent:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
-        match child_tag:
-            case (
-                libs.cfg.PARSE_TAG_COLOR_SPACES
-                | libs.cfg.PARSE_TAG_IMAGES
-                | libs.cfg.PARSE_TAG_PATTERNX
-            ):
-                pass
-            case libs.cfg.PARSE_TAG_FONTS:
-                parse_tag_fonts(child_tag, child)
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -522,21 +407,12 @@ def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
     word_list = libs.cfg.parse_result_sentence[db.cfg.JSON_NAME_WORDS]
     word_list.append(
         {
-            db.cfg.JSON_NAME_FONT_ID: libs.cfg.parse_result_font_id,
-            db.cfg.JSON_NAME_FONT_SIZE: libs.cfg.parse_result_font_size,
             db.cfg.JSON_NAME_NO_WORD_LINE: libs.cfg.parse_result_no_word_line,
             db.cfg.JSON_NAME_NO_WORD_SENTENCE: libs.cfg.parse_result_no_word_sentence,
             db.cfg.JSON_NAME_WORD_PARSED: libs.cfg.parse_result_text,
         }
     )
     libs.cfg.parse_result_sentence[db.cfg.JSON_NAME_WORDS] = word_list
-
-    if libs.cfg.parse_result_font_id in libs.cfg.parse_result_fonts_no_words:
-        libs.cfg.parse_result_fonts_no_words[libs.cfg.parse_result_font_id] = (
-            libs.cfg.parse_result_fonts_no_words[libs.cfg.parse_result_font_id] + 1
-        )
-    else:
-        libs.cfg.parse_result_fonts_no_words[libs.cfg.parse_result_font_id] = 1
 
     libs.cfg.parse_result_line_in_para_end = libs.cfg.parse_result_no_line
     libs.cfg.parse_result_page_in_doc_end = libs.cfg.parse_result_no_page
@@ -545,8 +421,6 @@ def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
     if libs.cfg.parse_result_text == ".":
         insert_content()
 
-    libs.cfg.parse_result_font_id = None
-    libs.cfg.parse_result_font_size = None
     libs.cfg.parse_result_text = None
 
 
@@ -617,15 +491,6 @@ def parse_tetml_file() -> None:
 
         if not libs.cfg.is_simulate_parser:
             libs.utils.delete_auxiliary_file(file_name)
-
-    # Update the font information in the database table.
-    db.orm.dml.update_dbt_id(
-        db.cfg.DBT_DOCUMENT,
-        libs.cfg.document_id_base,
-        {
-            db.cfg.DBC_FONTS: json.dumps(libs.cfg.parse_result_fonts),
-        },
-    )
 
     # Text and metadata from Document successfully extracted to xml format
     if not libs.cfg.is_simulate_parser:
