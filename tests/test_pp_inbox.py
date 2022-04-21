@@ -6,6 +6,7 @@ from pathlib import Path
 import db.cfg
 import db.orm.connection
 import libs.cfg
+import libs.utils
 import pytest
 from sqlalchemy import Table
 from sqlalchemy import update
@@ -65,6 +66,64 @@ def test_run_action_process_inbox_accepted(fxtr_setup_empty_db_and_inbox):
             "png_pdf_text_ok_11.png",
             "rtf_ok_13.rtf",
             "tiff_pdf_text_ok_15.tiff",
+        ],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_rejected,
+        [],
+        [],
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_PROCESS_INBOX - accepted - delete_auxiliary_file.
+# -----------------------------------------------------------------------------
+@pytest.mark.issue
+def test_run_action_process_inbox_accepted_delete_auxiliary_file(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PROCESS_INBOX - accepted delete_auxiliary_file."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    stem_name_1: str = "pdf_text_ok"
+    file_ext: str = "pdf"
+
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext)], libs.cfg.directory_inbox)
+
+    # -------------------------------------------------------------------------
+    value_original = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"
+    )
+
+    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+
+    db.orm.connection.connect_db()
+
+    libs.utils.delete_auxiliary_file(
+        os.path.join(libs.cfg.directory_inbox_accepted, "pdf_text_ok_1.pdf")
+    )
+
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.info("=========> test_run_action_process_inbox_accepted_duplicate <=========")
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox,
+        [],
+        [],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        libs.cfg.directory_inbox_accepted,
+        [],
+        [
+            "pdf_text_ok_1.pdf",
         ],
     )
 

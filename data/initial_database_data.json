@@ -21,7 +21,7 @@
               },
               {
                 "columnName": "code_spacy",
-                "columnValue": "de"
+                "columnValue": "de_dep_news_trf"
               },
               {
                 "columnName": "code_tesseract",
@@ -53,7 +53,7 @@
               },
               {
                 "columnName": "code_spacy",
-                "columnValue": "fr"
+                "columnValue": "fr_dep_news_trf"
               },
               {
                 "columnName": "code_tesseract",
@@ -85,7 +85,7 @@
               },
               {
                 "columnName": "code_spacy",
-                "columnValue": "it"
+                "columnValue": "it_core_news_lg"
               },
               {
                 "columnName": "code_tesseract",

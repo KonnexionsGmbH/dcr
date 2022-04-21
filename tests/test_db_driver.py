@@ -95,7 +95,9 @@ def test_create_database(fxtr_setup_logger_environment):
     config_section = libs.cfg.DCR_CFG_SECTION
     config_param = libs.cfg.DCR_CFG_DB_DIALECT
 
-    value_original = pytest.helpers.store_config_param(config_section, config_param, "n/a")
+    value_original = pytest.helpers.store_config_param(
+        config_section, config_param, libs.cfg.INFORMATION_NOT_YET_AVAILABLE
+    )
 
     with pytest.raises(SystemExit) as expt:
         dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
@@ -149,7 +151,9 @@ def test_drop_database(fxtr_setup_logger_environment):
     config_section = libs.cfg.DCR_CFG_SECTION
     config_param = libs.cfg.DCR_CFG_DB_DIALECT
 
-    value_original = pytest.helpers.store_config_param(config_section, config_param, "n/a")
+    value_original = pytest.helpers.store_config_param(
+        config_section, config_param, libs.cfg.INFORMATION_NOT_YET_AVAILABLE
+    )
 
     dcr.get_config()
 

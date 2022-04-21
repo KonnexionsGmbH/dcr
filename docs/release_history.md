@@ -10,7 +10,6 @@ Release Date: 06.04.2022
 
 ### 1. New Features
 
-- processing step **`s_f_p`**: Store the document structure from the parser result.
 - support for documents in different languages - English, French, German and Italian as standard
 
 ### 2. Applied Software
@@ -65,7 +64,7 @@ Release Date: 18.03.2022
 
 ### 1. New Features
 
-- processing step **`tet`**: Extract text and metadata from **`pdf`** files.
+- processing step **`tet`**: Extract text from **`pdf`** files.
 
 ### 2. Applied Software
 

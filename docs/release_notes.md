@@ -13,7 +13,6 @@ Release Date: dd.mm.2022
 
 ### 1.1 New Features
 
-- processing step **`s_f_p`**: Store the document structure from the parser result.
 - support for documents in different languages - English, French, German and Italian as standard
 
 ### 1.2 Applied Software

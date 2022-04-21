@@ -3,7 +3,7 @@
   "data": {
     "tables": [
       {
-        "tableName": "content",
+        "tableName": "document",
         "rows": [
           {
             "row": [

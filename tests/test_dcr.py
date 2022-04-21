@@ -28,13 +28,14 @@ def test_get_args(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     args = dcr.get_args([libs.cfg.DCR_ARGV_0, "AlL"])
 
-    assert len(args) == 8, "arg: all"
+    assert len(args) == 9, "arg: all"
     assert args[libs.cfg.RUN_ACTION_IMAGE_2_PDF], "arg: all"
     assert args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF], "arg: all"
     assert args[libs.cfg.RUN_ACTION_PDF_2_IMAGE], "arg: all"
     assert args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: all"
     assert args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER], "arg: all"
     assert args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF], "arg: all"
+    assert args[libs.cfg.RUN_ACTION_TOKENIZE], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_CREATE_DB], "arg: all"
     assert not args[libs.cfg.RUN_ACTION_UPGRADE_DB], "arg: all"
 
@@ -48,6 +49,7 @@ def test_get_args(fxtr_setup_logger_environment):
     assert not args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: db_c"
     assert not args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER], "arg: db_c"
     assert not args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF], "arg: db_c"
+    assert not args[libs.cfg.RUN_ACTION_TOKENIZE], "arg: db_c"
     assert not args[libs.cfg.RUN_ACTION_UPGRADE_DB], "arg: db_c"
 
     # -------------------------------------------------------------------------
@@ -61,6 +63,7 @@ def test_get_args(fxtr_setup_logger_environment):
     assert not args[libs.cfg.RUN_ACTION_PROCESS_INBOX], "arg: db_u"
     assert not args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER], "arg: db_u"
     assert not args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF], "arg: db_u"
+    assert not args[libs.cfg.RUN_ACTION_TOKENIZE], "arg: db_u"
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -78,7 +81,7 @@ def test_get_args(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        dcr.get_args(["n/a", "second"])
+        dcr.get_args([libs.cfg.INFORMATION_NOT_YET_AVAILABLE, "second"])
 
     assert expt.type == SystemExit, "invalid arg"
     assert expt.value.code == 1, "invalid arg"
@@ -103,7 +106,9 @@ def test_get_config(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "n/a"
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_IGNORE_DUPLICATES,
+        libs.cfg.INFORMATION_NOT_YET_AVAILABLE,
     )
 
     dcr.get_config()
@@ -129,7 +134,9 @@ def test_get_config(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, "n/a"
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_PDF2IMAGE_TYPE,
+        libs.cfg.INFORMATION_NOT_YET_AVAILABLE,
     )
 
     with pytest.raises(SystemExit) as expt:
@@ -155,7 +162,9 @@ def test_get_config_simulate_parser(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_SIMULATE_PARSER, "n/a"
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_SIMULATE_PARSER,
+        libs.cfg.INFORMATION_NOT_YET_AVAILABLE,
     )
 
     dcr.get_config()
@@ -207,7 +216,7 @@ def test_get_config_verbose(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, "n/a"
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, libs.cfg.INFORMATION_NOT_YET_AVAILABLE
     )
 
     libs.cfg.is_verbose = True
@@ -246,7 +255,9 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     value_original = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "n/a"
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_VERBOSE_PARSER,
+        libs.cfg.INFORMATION_NOT_YET_AVAILABLE,
     )
 
     dcr.get_config()
@@ -416,7 +427,7 @@ def test_get_environment(fxtr_setup_logger):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    os.environ[libs.cfg.DCR_ENVIRONMENT_TYPE] = "n/a"
+    os.environ[libs.cfg.DCR_ENVIRONMENT_TYPE] = libs.cfg.INFORMATION_NOT_YET_AVAILABLE
 
     with pytest.raises(SystemExit) as expt:
         dcr.get_environment()

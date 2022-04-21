@@ -25,6 +25,8 @@ if [ -z "$1" ]; then
     echo "tet   - 4. Extract text and metadata from pdf documents:       PDFlib TET."
     echo "s_f_p - 5. Store the document structure from the parser result."
     echo "------------------------------------------------------------------------------"
+    echo "tkn   - 6. Create document tokens:                             SpaCy."
+    echo "------------------------------------------------------------------------------"
     echo "db_c  - Create the database."
     echo "db_u  - Upgrade the database."
     echo "------------------------------------------------------------------------------"
@@ -80,7 +82,7 @@ case "${DCR_CHOICE_ACTION}" in
   db_c)
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
-  db_u|n_2_p|ocr|p_2_i|s_f_p|tet)
+  db_u|n_2_p|ocr|p_2_i|s_f_p|tet|tkn)
     case "${DCR_CHOICE_ACTION}" in
       p_2_i)
         export DCR_CHOICE_ACTION=p_i ${DCR_CHOICE_ACTION}
@@ -97,6 +99,9 @@ case "${DCR_CHOICE_ACTION}" in
       s_f_p)
         export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet ${DCR_CHOICE_ACTION}
         ;;
+      tkn)
+        export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_f_p ${DCR_CHOICE_ACTION}
+        ;;
       *)
         ;;
     esac
@@ -110,7 +115,7 @@ case "${DCR_CHOICE_ACTION}" in
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
-    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p | ocr | p_i | p_2_i | s_f_p | tet"
+    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p | ocr | p_i | p_2_i | s_f_p | tet | tkn"
     ;;
 esac
 

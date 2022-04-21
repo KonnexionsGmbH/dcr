@@ -19,19 +19,17 @@ The following actions are available:
 | **`ocr`**   | Convert appropriate image documents to **`pdf`** files.                                                            |
 | **`p_2_i`** | Convert **`pdf`** documents to image files.                                                                        |
 | **`p_i`**   | Process the inbox directory.                                                                                       |
-| **`s_f_p`** | Store the document structure from the parser result.                                                               |
-| **`tet`**   | Extract text and metadata from **`pdf`** documents.                                                                |
+| **`tet`**   | Extract text from **`pdf`** documents.                                                                             |
 
 The action **`all - run the complete processing of all new documents`** includes the following processes in the order given:
 
-| Action      | Process                                                                                                            |
-|-------------|--------------------------------------------------------------------------------------------------------------------|
-| **`p_i`**   | Process the inbox directory.                                                                                       |
-| **`p_2_i`** | Convert **`pdf`** documents to image files.                                                                        |
-| **`ocr`**   | Convert appropriate image documents to **`pdf`** files.                                                            |
-| **`n_2_p`** | Convert appropriate non-pdf documents to **`pdf`** files.                                                          |
-| **`tet`**   | Extract text and metadata from **`pdf`** documents.                                                                |
-| **`s_f_p`** | Store the document structure from the parser result.                                                               |
+| Action      | Process                                                   |
+|-------------|-----------------------------------------------------------|
+| **`p_i`**   | Process the inbox directory.                              |
+| **`p_2_i`** | Convert **`pdf`** documents to image files.               |
+| **`ocr`**   | Convert appropriate image documents to **`pdf`** files.   |
+| **`n_2_p`** | Convert appropriate non-pdf documents to **`pdf`** files. |
+| **`tet`**   | Extract text from **`pdf`** documents.                    |
 
 The action **`db_c - create the database`** is only required once when installing **`DCR`**.  
 

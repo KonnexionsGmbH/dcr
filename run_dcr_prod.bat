@@ -25,6 +25,8 @@ if ["%1"] EQU [""] (
     echo tet   - 4. Extract text and metdata from pdf documents:        PDFlib TET.
     echo s_f_p - 5. Store the document structure from the parser result.
     echo ---------------------------------------------------------
+    echo tkn   - 6. Create document tokens:                             SpaCy.
+    echo ---------------------------------------------------------
     echo db_c  - Create the database.
     echo db_u  - Upgrade the database.
     echo ---------------------------------------------------------
@@ -131,6 +133,10 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["tet"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
+if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
+    set _CHOICE=%DCR_CHOICE_ACTION%
+)
+
 if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
         set DCR_CHOICE_ACTION=p_i %DCR_CHOICE_ACTION%
@@ -147,6 +153,9 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet %DCR_CHOICE_ACTION%
     )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
+        set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_f_p tkn %DCR_CHOICE_ACTION%
+    )
     pipenv run python src\dcr\dcr.py !DCR_CHOICE_ACTION!
     if ERRORLEVEL 1 (
         echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
@@ -155,7 +164,7 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     goto normal_exit
 )
 
-echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | s_f_p | tet"
+echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | s_f_p | tet | tkn"
 exit -1073741510
 
 :normal_exit

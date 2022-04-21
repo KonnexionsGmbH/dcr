@@ -117,7 +117,7 @@ Document files that do not fall into one of the previous categories are marked a
 ### 2.1.3 Convert **`pdf`** documents to image files (step: **`p_2_i`**)
 
 This processing step only has to be carried out if there are new **`pdf`** documents in the document input that only consist of scanned images.
-**`pdf`** documents consisting of scanned images must first be processed with OCR software in order to extract text and metadata they contain. 
+**`pdf`** documents consisting of scanned images must first be processed with OCR software in order to extract text they contain. 
 Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} does not support the **`pdf`** file format, such a **`pdf`** document must first be converted into one or more image files. 
 This is done with the software [pdf2image](https://pypi.org/project/pdf2image){:target="_blank"}, which in turn is based on the [Poppler](https://poppler.freedesktop.org){:target="_blank"} software.
 The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image file(s) (child document(s)).
@@ -143,63 +143,12 @@ using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
 
-### 2.1.6 Extract text and metadata from **`pdf`** documents (step: **`tet`**)
+### 2.1.6 Extract text from **`pdf`** documents (step: **`tet`**)
 
-In this processing step, the text and metadata of the **`pdf`** documents from 2.1.1, 2.3 and 2.4 are extracted and written to an **`xml`** file in **`tetml`** format for each document.
+In this processing step, the text of the **`pdf`** documents from 2.1.1, 2.3 and 2.4 are extracted and written to an **`xml`** file in **`tetml`** format for each document.
 The [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} library is used for this purpose.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`xml`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
-
-### 2.1.7 Store the document structure from the parser result (step: **`s_f_p`**)
-
-The output of [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} is parsed for document metadata relevant to **DCR** and the metadata thus found is written to the database tables **content** and **document** together with the original document text for further processing. 
-
-#### a) Database table **`document`**
-
-The database table **`document`** contains a basic entry for each processed document and an additional entry for each auxiliary file created in the processing process: 
-
-![](img/index_2.1.6_example_document_1.png)
-
-The fonts used in the document are stored in the JSON column **`fonts`** of the base entry of the document:
-
-![](img/index_2.1.6_example_document_2.png)
-
-The JSON property **`noWords`** shows the word-related frequency of use of the font:
-
-    [
-      {"id": "F0", "italicAngle": "0.00", "name": "Arial-BoldMT",   "noWords": 5,  "weight": "700.00"},
-      {"id": "F1", "italicAngle": "0.00", "name": "ArialMT",        "noWords": 10, "weight": "400.00"},
-      {"id": "F2", "italicAngle": "0.00", "name": "CourierNewPSMT", "noWords": 40, "weight": "400.00"}
-    ]
-
-#### b) Database table **`content`**
-
-The database table **`content`** contains a separate entry for each sentence identified by [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} in the document:
-
-![](img/index_2.1.6_example_content_1.png)
-
-The main information about the respective sentence is in the JSON column **`sentence`**:
-
-![](img/index_2.1.6_example_content_2.png)
-
-An example JSON column **`sentence`**:
-
-    {
-      "noSentenceInPara": 2,
-      "noWords": 10,
-      "words": [
-        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 11, "noWordSentence": 1,  "wordParsed": "This"},
-        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 12, "noWordSentence": 2,  "wordParsed": "is"},
-        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 13, "noWordSentence": 3,  "wordParsed": "the"},
-        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 1,  "noWordSentence": 4,  "wordParsed": "second"},
-        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 2,  "noWordSentence": 5,  "wordParsed": "sentence"},
-        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 3,  "noWordSentence": 6,  "wordParsed": "of"},
-        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 4,  "noWordSentence": 7,  "wordParsed": "the"},
-        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 5,  "noWordSentence": 8,  "wordParsed": "first"},
-        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 6,  "noWordSentence": 9,  "wordParsed": "paragraph"},
-        {"fontId": "F2", "fontSize": "12.00", "noWordLine": 7,  "noWordSentence": 10, "wordParsed": "."}
-      ]
-    }
 
 ### 2.2 TBD ...
 
