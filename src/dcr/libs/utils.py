@@ -12,7 +12,6 @@ import db.driver
 import db.orm.dml
 import libs.cfg
 import libs.utils
-from sqlalchemy import Table
 from sqlalchemy.engine import Row
 
 
@@ -237,25 +236,6 @@ def reset_statistics_total() -> None:
     libs.cfg.total_status_error = 0
     libs.cfg.total_status_ready = 0
     libs.cfg.total_to_be_processed = 0
-
-
-# -----------------------------------------------------------------------------
-# Prepare the selection of the documents to be processed.
-# -----------------------------------------------------------------------------
-def select_document_prepare() -> Table:
-    """Prepare the selection of the documents to be processed.
-
-    Returns:
-        Table: Database table document,
-    """
-    # Check the inbox file directories.
-    libs.utils.check_directories()
-
-    return Table(
-        db.cfg.DBT_DOCUMENT,
-        db.cfg.db_orm_metadata,
-        autoload_with=db.cfg.db_orm_engine,
-    )
 
 
 # -----------------------------------------------------------------------------

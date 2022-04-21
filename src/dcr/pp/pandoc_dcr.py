@@ -25,7 +25,7 @@ def convert_non_pdf_2_pdf() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = libs.utils.select_document_prepare()
+    dbt = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     libs.utils.reset_statistics_total()
 

@@ -27,7 +27,7 @@ def convert_pdf_2_image() -> None:
 
     libs.utils.reset_statistics_total()
 
-    dbt = libs.utils.select_document_prepare()
+    dbt = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     with db.cfg.db_orm_engine.connect() as conn:
         rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PDF2IMAGE)

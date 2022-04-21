@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module pp.pandocdcr."""
+"""Testing Module pp.pandoc_dcr."""
 import libs.cfg
 import pytest
 

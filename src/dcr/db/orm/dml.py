@@ -148,6 +148,53 @@ def insert_document_child() -> None:
 
 
 # -----------------------------------------------------------------------------
+# Preparation of a database table for DML operations.
+# -----------------------------------------------------------------------------
+def dml_prepare(dbt_name: str) -> Table:
+    """Preparation of a database table for DML operations.
+
+    Returns:
+        Table: Database table document,
+    """
+    # Check the inbox file directories.
+    libs.utils.check_directories()
+
+    return Table(
+        dbt_name,
+        db.cfg.db_orm_metadata,
+        autoload_with=db.cfg.db_orm_engine,
+    )
+
+
+# -----------------------------------------------------------------------------
+# Select the content pages to be processed.
+# -----------------------------------------------------------------------------
+def select_content_tetml_page(
+    conn: Connection, dbt: Table, document_id: sqlalchemy.Integer
+) -> engine.CursorResult:
+    """Select the content pages to be processed.
+
+    Args:
+        conn (Connection): Database connection.
+        dbt (Table): database table document.
+        document_id (sqlalchemy.Integer): Document id.
+
+    Returns:
+        engine.CursorResult: The content pages found.
+    """
+    return conn.execute(
+        select(
+            dbt.c.page_no,
+            dbt.c.page_text,
+        )
+        .where(
+            dbt.c.document_id == document_id,
+        )
+        .order_by(dbt.c.page_no.asc())
+    )
+
+
+# -----------------------------------------------------------------------------
 # Select the documents to be processed.
 # -----------------------------------------------------------------------------
 def select_document(conn: Connection, dbt: Table, next_step: str) -> engine.CursorResult:

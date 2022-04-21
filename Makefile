@@ -141,6 +141,10 @@ pipenv-dev:         ## Install the package dependencies for development.
 	python -m pipenv --rm
 	exit
 	python -m pipenv update --dev
+	pipenv run spacy download de_dep_news_trf
+	pipenv run spacy download en_core_web_trf
+	pipenv run spacy download fr_dep_news_trf
+	pipenv run spacy download it_core_news_lg
 	pipenv run pip freeze
 	python --version
 	python -m pip --version
@@ -153,6 +157,10 @@ pipenv-prod:        ## Install the package dependencies for production.
 	python -m pipenv --rm
 	exit
 	python -m pipenv update
+	pipenv run spacy download de_dep_news_trf
+	pipenv run spacy download en_core_web_trf
+	pipenv run spacy download fr_dep_news_trf
+	pipenv run spacy download it_core_news_lg
 	pipenv run pip freeze
 	python --version
 	python -m pip --version

@@ -22,7 +22,7 @@ def convert_image_2_pdf() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = libs.utils.select_document_prepare()
+    dbt = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     libs.utils.reset_statistics_total()
 
@@ -116,7 +116,7 @@ def reunite_pdfs() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = libs.utils.select_document_prepare()
+    dbt = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     libs.utils.reset_statistics_total()
 
@@ -179,7 +179,7 @@ def reunite_pdfs_file() -> None:
 
     libs.cfg.documents_to_be_reunited = []
 
-    dbt = libs.utils.select_document_prepare()
+    dbt = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     with db.cfg.db_orm_engine.connect() as conn:
         rows = conn.execute(

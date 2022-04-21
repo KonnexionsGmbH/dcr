@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module pp.pdflibdcr."""
+"""Testing Module pp.pdflib_dcr."""
 import os
 
 import libs.cfg
