@@ -70,9 +70,6 @@ LOGGER_START: str
 OS_NT: str
 OS_POSIX: str
 
-PANDOC_PDF_ENGINE_LULATEX: str
-PANDOC_PDF_ENGINE_XELATEX: str
-
 PARSE_NAME_SPACE: str
 
 PARSE_TAG_A: str
@@ -125,12 +122,10 @@ RUN_ACTION_PDF_2_IMAGE: str
 RUN_ACTION_PROCESS_INBOX: str
 RUN_ACTION_STORE_FROM_PARSER: str
 RUN_ACTION_TEXT_FROM_PDF: str
+RUN_ACTION_TOKENIZE: str
 RUN_ACTION_UPGRADE_DB: str
 
 TESTS_INBOX_NAME: str
-
-TET_DOCUMENT_OPT_LIST: str
-TET_PAGE_OPT_LIST: str
 
 VERBOSE_TRUE: str
 
@@ -162,6 +157,7 @@ document_child_next_step: str | None
 document_child_no: sqlalchemy.Integer | None
 document_child_status: str
 document_child_stem_name: str
+
 document_current_step: str
 document_directory_name: str
 document_directory_type: str
@@ -225,7 +221,7 @@ run_action: str
 run_id: sqlalchemy.Integer
 run_run_id: sqlalchemy.Integer
 
-start_time_document: sqlalchemy.BigInteger
+start_time_document: int
 
 tesseract_timeout: Decimal
 

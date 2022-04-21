@@ -91,6 +91,7 @@ def insert_document_base() -> None:
             db.cfg.DBC_FILE_SIZE_BYTES: os.path.getsize(file_path),
             db.cfg.DBC_FILE_TYPE: libs.cfg.document_file_type,
             db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id,
+            db.cfg.DBC_NEXT_STEP: db.cfg.DOCUMENT_STEP_INBOX,
             db.cfg.DBC_PDF_PAGES_NO: get_pdf_pages_no(file_path, libs.cfg.document_file_type),
             db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
             db.cfg.DBC_SHA256: libs.cfg.document_sha256,

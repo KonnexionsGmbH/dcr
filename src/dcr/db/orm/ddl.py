@@ -141,10 +141,114 @@ def create_db_triggers(table_names: List[str]) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Create the database table content.
+# Create the database table content_tetml_page.
 # -----------------------------------------------------------------------------
-def create_dbt_content(table_name: str) -> None:
-    """Create the database table content.
+def create_dbt_content_tetml_page(table_name: str) -> None:
+    """Create the database table content_tetml_page.
+
+    Args:
+        table_name (str): Table name.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    sqlalchemy.Table(
+        table_name,
+        db.cfg.db_orm_metadata,
+        sqlalchemy.Column(
+            db.cfg.DBC_ID,
+            sqlalchemy.Integer,
+            autoincrement=True,
+            nullable=False,
+            primary_key=True,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_CREATED_AT,
+            sqlalchemy.DateTime,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_MODIFIED_AT,
+            sqlalchemy.DateTime,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_DOCUMENT_ID,
+            sqlalchemy.Integer,
+            ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_PAGE_NO,
+            sqlalchemy.Integer,
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_PAGE_TEXT,
+            sqlalchemy.TEXT,
+            nullable=False,
+        ),
+    )
+
+    libs.utils.progress_msg(f"The database table '{table_name}' has now been created")
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Create the database table content_token.
+# -----------------------------------------------------------------------------
+def create_dbt_content_token(table_name: str) -> None:
+    """Create the database table content_token.
+
+    Args:
+        table_name (str): Table name.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    sqlalchemy.Table(
+        table_name,
+        db.cfg.db_orm_metadata,
+        sqlalchemy.Column(
+            db.cfg.DBC_ID,
+            sqlalchemy.Integer,
+            autoincrement=True,
+            nullable=False,
+            primary_key=True,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_CREATED_AT,
+            sqlalchemy.DateTime,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_MODIFIED_AT,
+            sqlalchemy.DateTime,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_DOCUMENT_ID,
+            sqlalchemy.Integer,
+            ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_PAGE_NO,
+            sqlalchemy.Integer,
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_TOKEN,
+            sqlalchemy.JSON,
+            nullable=False,
+        ),
+    )
+
+    libs.utils.progress_msg(f"The database table '{table_name}' has now been created")
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Create the database table content_tetml_word.
+# -----------------------------------------------------------------------------
+def create_dbt_content_tetml_word(table_name: str) -> None:
+    """Create the database table content_tetml_word.
 
     Args:
         table_name (str): Table name.
@@ -252,8 +356,8 @@ def create_dbt_document(table_name: str) -> None:
             nullable=True,
         ),
         sqlalchemy.Column(db.cfg.DBC_CURRENT_STEP, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(db.cfg.DBC_DIRECTORY_NAME, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(db.cfg.DBC_DIRECTORY_TYPE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(db.cfg.DBC_DIRECTORY_NAME, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(db.cfg.DBC_DIRECTORY_TYPE, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(
             db.cfg.DBC_DOCUMENT_ID_BASE,
             sqlalchemy.Integer,
@@ -270,9 +374,9 @@ def create_dbt_document(table_name: str) -> None:
         sqlalchemy.Column(db.cfg.DBC_ERROR_CODE, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(db.cfg.DBC_ERROR_NO, sqlalchemy.BigInteger, nullable=False),
         sqlalchemy.Column(db.cfg.DBC_ERROR_MSG, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(db.cfg.DBC_FILE_NAME, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(db.cfg.DBC_FILE_SIZE_BYTES, sqlalchemy.Integer, nullable=False),
-        sqlalchemy.Column(db.cfg.DBC_FILE_TYPE, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(db.cfg.DBC_FILE_NAME, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(db.cfg.DBC_FILE_SIZE_BYTES, sqlalchemy.Integer, nullable=True),
+        sqlalchemy.Column(db.cfg.DBC_FILE_TYPE, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(
             db.cfg.DBC_LANGUAGE_ID,
             sqlalchemy.Integer,
@@ -289,7 +393,7 @@ def create_dbt_document(table_name: str) -> None:
         ),
         sqlalchemy.Column(db.cfg.DBC_SHA256, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(db.cfg.DBC_STATUS, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(db.cfg.DBC_STEM_NAME, sqlalchemy.String, nullable=False),
+        sqlalchemy.Column(db.cfg.DBC_STEM_NAME, sqlalchemy.String, nullable=True),
     )
 
     libs.utils.progress_msg(f"The database table '{table_name}' has now been created")
@@ -478,12 +582,16 @@ def create_schema() -> None:
     # FK: run
     create_dbt_document(db.cfg.DBT_DOCUMENT)
     # FK: document
-    create_dbt_content(db.cfg.DBT_CONTENT)
+    create_dbt_content_tetml_page(db.cfg.DBT_CONTENT_TETML_PAGE)
+    create_dbt_content_tetml_word(db.cfg.DBT_CONTENT_TETML_WORD)
+    create_dbt_content_token(db.cfg.DBT_CONTENT_TOKEN)
 
     # Create the database triggers.
     create_db_triggers(
         [
-            db.cfg.DBT_CONTENT,
+            db.cfg.DBT_CONTENT_TETML_PAGE,
+            db.cfg.DBT_CONTENT_TETML_WORD,
+            db.cfg.DBT_CONTENT_TOKEN,
             db.cfg.DBT_DOCUMENT,
             db.cfg.DBT_LANGUAGE,
             db.cfg.DBT_RUN,
@@ -498,7 +606,7 @@ def create_schema() -> None:
         {
             db.cfg.DBC_CODE_ISO_639_3: "eng",
             db.cfg.DBC_CODE_PANDOC: "en",
-            db.cfg.DBC_CODE_SPACY: "en",
+            db.cfg.DBC_CODE_SPACY: "en_core_web_trf",
             db.cfg.DBC_CODE_TESSERACT: "eng",
             db.cfg.DBC_DIRECTORY_NAME_INBOX: str(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]),
             db.cfg.DBC_ISO_LANGUAGE_NAME: "English",
@@ -552,7 +660,14 @@ def load_db_data_from_json(initial_database_data: Path) -> None:
             table_name = json_table[db.cfg.JSON_NAME_TABLE_NAME].lower()
 
             if table_name not in ["language"]:
-                if table_name in ["content", "document", "run", "version"]:
+                if table_name in [
+                    "content_tetml_page",
+                    "content_tetml_word",
+                    "content_token",
+                    "document",
+                    "run",
+                    "version",
+                ]:
                     libs.utils.terminate_fatal(
                         f"The database table '{table_name}' must not be changed via the JSON file."
                     )

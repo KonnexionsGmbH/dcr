@@ -70,9 +70,6 @@ LOGGER_START: str = "Start"
 OS_NT: str = "nt"
 OS_POSIX: str = "posix"
 
-PANDOC_PDF_ENGINE_LULATEX: str = "lulatex"
-PANDOC_PDF_ENGINE_XELATEX: str = "xelatex"
-
 PARSE_NAME_SPACE: str = "{http://www.pdflib.com/XML/TET5/TET-5.0}"
 
 PARSE_TAG_A: str = "A"
@@ -125,14 +122,10 @@ RUN_ACTION_PDF_2_IMAGE: str = "p_2_i"
 RUN_ACTION_PROCESS_INBOX: str = "p_i"
 RUN_ACTION_STORE_FROM_PARSER: str = "s_f_p"
 RUN_ACTION_TEXT_FROM_PDF: str = "tet"
+RUN_ACTION_TOKENIZE: str = "tkn"
 RUN_ACTION_UPGRADE_DB: str = "db_u"
 
 TESTS_INBOX_NAME: str = "tests/__PYTEST_FILES__/"
-
-# document-specific option list
-TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector}"
-# page-specific option list */
-TET_PAGE_OPT_LIST: str = "granularity=word tetml={elements={line}}"
 
 VERBOSE_TRUE: str = "true"
 
@@ -164,6 +157,7 @@ document_child_next_step: str | None
 document_child_no: sqlalchemy.Integer | None
 document_child_status: str
 document_child_stem_name: str
+
 document_current_step: str
 document_directory_name: str
 document_directory_type: str
@@ -227,7 +221,7 @@ run_action: str
 run_id: sqlalchemy.Integer
 run_run_id: sqlalchemy.Integer
 
-start_time_document: sqlalchemy.BigInteger
+start_time_document: int
 
 tesseract_timeout: Decimal
 

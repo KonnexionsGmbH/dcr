@@ -176,8 +176,16 @@ def progress_msg_disconnected() -> None:
             libs.utils.progress_msg("Database is now disconnected")
             return
 
-        database = "n/a" if db.cfg.db_current_database is None else db.cfg.db_current_database
-        user = "n/a" if db.cfg.db_current_user is None else db.cfg.db_current_user
+        database = (
+            libs.cfg.INFORMATION_NOT_YET_AVAILABLE
+            if db.cfg.db_current_database is None
+            else db.cfg.db_current_database
+        )
+        user = (
+            libs.cfg.INFORMATION_NOT_YET_AVAILABLE
+            if db.cfg.db_current_user is None
+            else db.cfg.db_current_user
+        )
 
         print("")
         libs.utils.progress_msg(f"User '{user}' is now disconnected from database '{database}'")
@@ -345,18 +353,6 @@ def show_statistics_total() -> None:
         else:
             libs.utils.progress_msg(
                 f"Number documents erroneous:                {libs.cfg.total_erroneous:6d}"
-            )
-
-        if libs.cfg.run_action == libs.cfg.RUN_ACTION_TEXT_FROM_PDF:
-            libs.utils.progress_msg(
-                "The text and metadata from the error-free pdf documents in the file directory "
-                + "'inbox_accepted' are now extracted for further processing",
-            )
-        elif libs.cfg.run_action != libs.cfg.RUN_ACTION_PROCESS_INBOX:
-            libs.utils.progress_msg(
-                "The error-free documents in the file directory "
-                + "'inbox_accepted' are now converted to a pdf format "
-                + "for further processing",
             )
 
 

@@ -17,12 +17,13 @@ import db.orm.connection
 import db.orm.dml
 import libs.cfg
 import libs.utils
+import nlp.tokenize
 import pp.inbox
-import pp.pandocdcr
+import pp.pandoc_dcr
 import pp.parser
-import pp.pdf2imagedcr
-import pp.pdflibdcr
-import pp.tesseractdcr
+import pp.pdf2image_dcr
+import pp.pdflib_dcr
+import pp.tesseract_dcr
 import sqlalchemy
 import yaml
 from sqlalchemy import Table
@@ -68,15 +69,20 @@ def get_args(argv: List[str]) -> dict[str, bool]:
     The command line arguments define the process steps to be executed.
     The valid arguments are:
 
-        all   - Run the complete processing of all new documents.
+        all   - Run the complete core processing of all new documents.
         db_c  - Create the database.
         db_u  - Upgrade the database.
-        n_2_p - Convert non-pdf documents to pdf files.
-        ocr   - Convert image documents to pdf files.
-        p_2_i - Convert pdf documents to image files.
+        m_d   - Run the installation of the necessary 3rd party packages
+                for development and run the development ecosystem.
+        m_p   - Run the installation of the necessary 3rd party packages
+                for production and compile all packages and modules.
+        n_2_p - Convert non-pdf documents to pdf files:             Pandoc
+        ocr   - Convert image documents to pdf files:               Tesseract OCR / Tex Live.
+        p_2_i - Convert pdf documents to image files:               pdf2image / Poppler.
         p_i   - Process the inbox directory.
         s_f_p - Store the document structure from the parser result.
-        tet   - Extract text and metadata from pdf documents.
+        tet   - Extract text and metadata from pdf documents:       PDFlib TET.
+        tkn   - Create document tokens:                             SpaCy.
 
     With the option all, the following process steps are executed
     in this order:
@@ -87,6 +93,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         4. ocr
         5. tet
         6. s_f_p
+        7. tkn
 
     Args:
         argv (List[str]): Command line arguments.
@@ -112,6 +119,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         libs.cfg.RUN_ACTION_PROCESS_INBOX: False,
         libs.cfg.RUN_ACTION_STORE_FROM_PARSER: False,
         libs.cfg.RUN_ACTION_TEXT_FROM_PDF: False,
+        libs.cfg.RUN_ACTION_TOKENIZE: False,
         libs.cfg.RUN_ACTION_UPGRADE_DB: False,
     }
 
@@ -124,6 +132,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
             args[libs.cfg.RUN_ACTION_PROCESS_INBOX] = True
             args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER] = True
             args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF] = True
+            args[libs.cfg.RUN_ACTION_TOKENIZE] = True
         elif arg in (
             libs.cfg.RUN_ACTION_CREATE_DB,
             libs.cfg.RUN_ACTION_IMAGE_2_PDF,
@@ -132,6 +141,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
             libs.cfg.RUN_ACTION_PROCESS_INBOX,
             libs.cfg.RUN_ACTION_STORE_FROM_PARSER,
             libs.cfg.RUN_ACTION_TEXT_FROM_PDF,
+            libs.cfg.RUN_ACTION_TOKENIZE,
             libs.cfg.RUN_ACTION_UPGRADE_DB,
         ):
             args[arg] = True
@@ -328,7 +338,7 @@ def process_convert_image_2_pdf() -> None:
             db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
-    pp.tesseractdcr.convert_image_2_pdf()
+    pp.tesseract_dcr.convert_image_2_pdf()
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -352,7 +362,7 @@ def process_convert_image_2_pdf() -> None:
             db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
-    pp.tesseractdcr.reunite_pdfs()
+    pp.tesseract_dcr.reunite_pdfs()
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -383,7 +393,7 @@ def process_convert_non_pdf_2_pdf() -> None:
             db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
-    pp.pandocdcr.convert_non_pdf_2_pdf()
+    pp.pandoc_dcr.convert_non_pdf_2_pdf()
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -414,7 +424,7 @@ def process_convert_pdf_2_image() -> None:
             db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
-    pp.pdf2imagedcr.convert_pdf_2_image()
+    pp.pdf2image_dcr.convert_pdf_2_image()
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -504,6 +514,15 @@ def process_documents(args: dict[str, bool]) -> None:
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
         )
 
+    # Create document token.
+    if args[libs.cfg.RUN_ACTION_TOKENIZE]:
+        start_time_process = time.perf_counter_ns()
+        libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_TOKENIZE
+        process_tokenize()
+        libs.utils.progress_msg(
+            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
+        )
+
     # Disconnect from the database.
     db.orm.connection.disconnect_db()
 
@@ -527,7 +546,7 @@ def process_extract_text_from_pdf() -> None:
             db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
         },
     )
-    pp.pdflibdcr.extract_text_from_pdf()
+    pp.pdflib_dcr.extract_text_from_pdf()
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
@@ -609,6 +628,40 @@ def process_store_from_parser() -> None:
     )
 
     libs.utils.progress_msg("End  : Store document structure ...")
+
+
+# -----------------------------------------------------------------------------
+# Create document tokens.
+# -----------------------------------------------------------------------------
+def process_tokenize() -> None:
+    """Create document tokens."""
+    libs.cfg.run_action = libs.cfg.RUN_ACTION_TOKENIZE
+
+    libs.utils.progress_msg_empty_before("Start: Create document tokens ... SpaCy")
+
+    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+        db.cfg.DBT_RUN,
+        {
+            db.cfg.DBC_ACTION: libs.cfg.run_action,
+            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_START,
+        },
+    )
+
+    nlp.tokenize.tokenize()
+
+    db.orm.dml.update_dbt_id(
+        db.cfg.DBT_RUN,
+        libs.cfg.run_id,
+        {
+            db.cfg.DBC_STATUS: db.cfg.RUN_STATUS_END,
+            db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
+            db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
+            db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+        },
+    )
+
+    libs.utils.progress_msg("End  : Create document tokens ...")
 
 
 # -----------------------------------------------------------------------------

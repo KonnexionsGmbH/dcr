@@ -32,6 +32,7 @@ def connect_db() -> None:
         + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD],
         poolclass=NullPool,
     )
+
     db.cfg.db_orm_engine.connect()
 
     db.cfg.db_orm_metadata.bind = db.cfg.db_orm_engine

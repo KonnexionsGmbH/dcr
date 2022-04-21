@@ -1,4 +1,4 @@
-"""Module pp.pandocdcr: Convert non-pdf documents to pdf files."""
+"""Module pp.pandoc_dcr: Convert non-pdf documents to pdf files."""
 import os
 import time
 
@@ -7,6 +7,12 @@ import db.orm.dml
 import libs.cfg
 import libs.utils
 import pypandoc
+
+# -----------------------------------------------------------------------------
+# Global variables.
+# -----------------------------------------------------------------------------
+PANDOC_PDF_ENGINE_LULATEX: str = "lulatex"
+PANDOC_PDF_ENGINE_XELATEX: str = "xelatex"
 
 
 # -----------------------------------------------------------------------------
@@ -35,6 +41,9 @@ def convert_non_pdf_2_pdf() -> None:
 
             convert_non_pdf_2_pdf_file()
 
+            # Document successfully converted to pdf format
+            libs.utils.finalize_file_processing()
+
         conn.close()
 
     libs.utils.show_statistics_total()
@@ -47,6 +56,8 @@ def convert_non_pdf_2_pdf() -> None:
 # -----------------------------------------------------------------------------
 def convert_non_pdf_2_pdf_file() -> None:
     """Convert a non-pdf document to a pdf file."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
     source_file_name, target_file_name = libs.utils.prepare_file_names()
 
     if os.path.exists(target_file_name):
@@ -58,11 +69,8 @@ def convert_non_pdf_2_pdf_file() -> None:
         return
 
     # Convert the document
-    # not testable
-    # try:
-    # output = pypandoc.convert_file(
     extra_args = [
-        f"--pdf-engine={libs.cfg.PANDOC_PDF_ENGINE_XELATEX}",
+        f"--pdf-engine={PANDOC_PDF_ENGINE_XELATEX}",
         "-V",
         f"lang:{libs.cfg.languages_pandoc[libs.cfg.document_language_id]}",
     ]
@@ -74,16 +82,6 @@ def convert_non_pdf_2_pdf_file() -> None:
         outputfile=target_file_name,
     )
 
-    # not testable
-    # if output != "":
-    #     libs.utils.report_document_error(
-    #         document_id = libs.cfg.document_id,
-    #         error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_PANDOC,
-    #         error_msg=db.cfg.ERROR_31_901.replace("{source_file}", source_file_name)
-    #         .replace("{target_file}", target_file_name)
-    #         .replace("{output}", output),
-    #     )
-    # else:
     libs.utils.prepare_document_4_next_step(
         next_file_type=db.cfg.DOCUMENT_FILE_TYPE_PDF,
         next_step=db.cfg.DOCUMENT_STEP_PDFLIB,
@@ -98,14 +96,4 @@ def convert_non_pdf_2_pdf_file() -> None:
 
     libs.utils.delete_auxiliary_file(source_file_name)
 
-    # Document successfully converted to pdf format
-    libs.utils.finalize_file_processing()
-    # not testable
-    # except RuntimeError as err:
-    #     libs.utils.report_document_error(
-    #         document_id = libs.cfg.document_id,
-    #         error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-    #         error_msg=db.cfg.ERROR_31_902.replace("{file_name}", source_file_name).replace(
-    #             "{error_msg}", str(str(err).encode("utf-8"))
-    #         ),
-    #     )
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
