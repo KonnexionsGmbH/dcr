@@ -508,7 +508,6 @@ def process_documents(args: dict[str, bool]) -> None:
     # Store the document structure from the parser result.
     if args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PARSER
         process_store_from_parser()
         libs.utils.progress_msg(
             f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
@@ -678,6 +677,9 @@ def validate_config() -> None:
     validate_config_pdf2image_type()
     validate_config_simulate_parser()
     validate_config_tesseract_timeout()
+    validate_config_tetml_line()
+    validate_config_tetml_page()
+    validate_config_tetml_word()
     validate_config_verbose()
     validate_config_verbose_parser()
 
@@ -801,6 +803,48 @@ def validate_config_tesseract_timeout() -> None:
 
     if libs.cfg.DCR_CFG_TESSERACT_TIMEOUT in libs.cfg.config:
         libs.cfg.tesseract_timeout = int(libs.cfg.config[libs.cfg.DCR_CFG_TESSERACT_TIMEOUT])
+
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - tetml_line
+# -----------------------------------------------------------------------------
+def validate_config_tetml_line() -> None:
+    """Validate the configuration parameters - tetml_line."""
+    libs.cfg.is_tetml_line = False
+
+    if libs.cfg.DCR_CFG_TETML_LINE in libs.cfg.config:
+        if libs.cfg.config[libs.cfg.DCR_CFG_TETML_LINE].lower() == "true":
+            libs.cfg.is_tetml_line = True
+
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - tetml_page
+# -----------------------------------------------------------------------------
+def validate_config_tetml_page() -> None:
+    """Validate the configuration parameters - tetml_page."""
+    libs.cfg.is_tetml_page = True
+
+    if libs.cfg.DCR_CFG_TETML_PAGE in libs.cfg.config:
+        if libs.cfg.config[libs.cfg.DCR_CFG_TETML_PAGE].lower() == "false":
+            libs.cfg.is_tetml_page = False
+
+    if not (libs.cfg.is_tetml_line or libs.cfg.is_tetml_page):
+        libs.utils.terminate_fatal(
+            "At least one of the configuration parameters 'tetml_line' or "
+            + "'tetml_page' must be 'true'"
+        )
+
+
+# -----------------------------------------------------------------------------
+# validate the configuration parameters - tetml_word
+# -----------------------------------------------------------------------------
+def validate_config_tetml_word() -> None:
+    """Validate the configuration parameters - tetml_word."""
+    libs.cfg.is_tetml_word = False
+
+    if libs.cfg.DCR_CFG_TETML_WORD in libs.cfg.config:
+        if libs.cfg.config[libs.cfg.DCR_CFG_TETML_WORD].lower() == "true":
+            libs.cfg.is_tetml_word = True
 
 
 # -----------------------------------------------------------------------------

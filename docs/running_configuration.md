@@ -141,6 +141,10 @@ The customisable entries are:
     ignore_duplicates = false
     initial_database_data = data/initial_database_data.json
     pdf2image_type = jpeg
+    simulate_parser = false
+    tetml_line = false
+    tetml_page = true
+    tetml_word = false
     tesseract_timeout = 10
     verbose = true
     verbose_parser = none
@@ -166,8 +170,13 @@ The customisable entries are:
 | ignore_duplicates        | **`false`**                           | accept presumably duplicated documents <br/>based on a SHA256 hash key                      |
 | initial_database_data    | **`data/initial_database_data.json`** | file with initial database contents                                                         |
 | pdfimage_type            | **`jpeg`**                            | format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**      |
+| simulate_parser          | **`false`**                           | simulate the parsing process for testing purposes                                           |
 | tesseract_timeout        | **`10`**                              | terminate the tesseract job after a <br>period of time (seconds)                            |
+| tetml_line               | **`false`**                           | PDFlib TET granularity 'line'                                                               |
+| tetml_page               | **`true`**                            | PDFlib TET granularity 'page'                                                               |
+| tetml_word               | **`false`**                           | PDFlib TET granularity 'word'                                                               |
 | verbose                  | **`true`**                            | display progress messages for processing                                                    |
+| verbose_parser           | **`none`**                            | display progress messages for parsing xml (TETML) : <br>**`all`**, **`none`** or **`text`** |
 
 The configuration parameters can be set differently for the individual environments (`dev`, `prod` and `test`).
 

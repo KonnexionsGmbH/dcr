@@ -35,6 +35,12 @@ def test_run_action_store_from_parser_coverage(fxtr_rmdir_opt, fxtr_setup_empty_
     value_original_verbose_parser = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "none"
     )
+    value_original_tetml_line = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_LINE, "true"
+    )
+    value_original_tetml_word = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_WORD, "true"
+    )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
@@ -53,11 +59,20 @@ def test_run_action_store_from_parser_coverage(fxtr_rmdir_opt, fxtr_setup_empty_
         libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
         value_original_delete_auxiliary_files,
     )
-
     pytest.helpers.restore_config_param(
         libs.cfg.DCR_CFG_SECTION,
         libs.cfg.DCR_CFG_VERBOSE_PARSER,
         value_original_verbose_parser,
+    )
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_TETML_LINE,
+        value_original_tetml_line,
+    )
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_TETML_WORD,
+        value_original_tetml_word,
     )
 
     # -------------------------------------------------------------------------
@@ -69,14 +84,12 @@ def test_run_action_store_from_parser_coverage(fxtr_rmdir_opt, fxtr_setup_empty_
         [],
     )
 
-    files_expected: List = [
-        "docx_coverage_1_1.docx",
-    ]
-
     pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox_accepted,
         [],
-        files_expected,
+        [
+            "docx_coverage_1_1.docx",
+        ],
     )
 
     pytest.helpers.verify_content_of_directory(
@@ -113,6 +126,12 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
     value_original_tesseract_timeout = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"
     )
+    value_original_tetml_line = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_LINE, "true"
+    )
+    value_original_tetml_word = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_WORD, "true"
+    )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
@@ -135,6 +154,16 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
         libs.cfg.DCR_CFG_SECTION,
         libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
         value_original_tesseract_timeout,
+    )
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_TETML_LINE,
+        value_original_tetml_line,
+    )
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_TETML_WORD,
+        value_original_tetml_word,
     )
 
     # -------------------------------------------------------------------------
@@ -192,6 +221,12 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
     value_original_tesseract_timeout = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"
     )
+    value_original_tetml_line = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_LINE, "true"
+    )
+    value_original_tetml_word = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_WORD, "true"
+    )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
@@ -215,6 +250,16 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
         libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
         value_original_tesseract_timeout,
     )
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_TETML_LINE,
+        value_original_tetml_line,
+    )
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_TETML_WORD,
+        value_original_tetml_word,
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.info("=========> test_run_action_store_from_parser_normal_keep <=========")
@@ -227,14 +272,17 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
 
     files_expected: List = [
         "pdf_mini_1.pdf",
-        "pdf_mini_1.xml",
+        "pdf_mini_1.line.xml",
+        "pdf_mini_1.word.xml",
         "pdf_scanned_ok_3.pdf",
         "pdf_scanned_ok_3_1.jpeg",
         "pdf_scanned_ok_3_1.pdf",
-        "pdf_scanned_ok_3_1.xml",
+        "pdf_scanned_ok_3_1.line.xml",
+        "pdf_scanned_ok_3_1.word.xml",
         "translating_sql_into_relational_algebra_p01_02_5.pdf",
         "translating_sql_into_relational_algebra_p01_02_5_0.pdf",
-        "translating_sql_into_relational_algebra_p01_02_5_0.xml",
+        "translating_sql_into_relational_algebra_p01_02_5_0.line.xml",
+        "translating_sql_into_relational_algebra_p01_02_5_0.word.xml",
         "translating_sql_into_relational_algebra_p01_02_5_1.jpeg",
         "translating_sql_into_relational_algebra_p01_02_5_1.pdf",
         "translating_sql_into_relational_algebra_p01_02_5_2.jpeg",
@@ -323,14 +371,12 @@ def test_run_action_store_from_parser_verbose_parser_all(
         [],
     )
 
-    files_expected: List = [
-        "pdf_mini_1.pdf",
-    ]
-
     pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox_accepted,
         [],
-        files_expected,
+        [
+            "pdf_mini_1.pdf",
+        ],
     )
 
     pytest.helpers.verify_content_of_directory(
@@ -403,14 +449,12 @@ def test_run_action_store_from_parser_verbose_parser_text(
         [],
     )
 
-    files_expected: List = [
-        "pdf_mini_1.pdf",
-    ]
-
     pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox_accepted,
         [],
-        files_expected,
+        [
+            "pdf_mini_1.pdf",
+        ],
     )
 
     pytest.helpers.verify_content_of_directory(

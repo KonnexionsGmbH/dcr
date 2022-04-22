@@ -1,4 +1,4 @@
-name: Ubuntu - 20.04 - Standards
+name: Ubuntu - 22.04 - Standards
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        os: ["ubuntu-20.04"]
+        os: ["ubuntu-22.04"]
         python-version: ["3.10"]
     steps:
       - uses: actions/checkout@v2

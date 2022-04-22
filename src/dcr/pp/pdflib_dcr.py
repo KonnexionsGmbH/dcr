@@ -11,6 +11,10 @@ from PDFlib.TET import TET
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
+
+LINE_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector}"
+LINE_TET_PAGE_OPT_LIST: str = "granularity=line"
+
 PAGE_TET_DOCUMENT_OPT_LIST: str = (
     "engines={noannotation noimage text notextcolor novector} " + "lineseparator=U+0020"
 )
@@ -44,9 +48,14 @@ def extract_text_from_pdf() -> None:
                 document=row,
             )
 
-            extract_text_from_pdf_file_page()
+            if libs.cfg.is_tetml_line:
+                extract_text_from_pdf_file_line()
 
-            extract_text_from_pdf_file_word()
+            if libs.cfg.is_tetml_page:
+                extract_text_from_pdf_file_page()
+
+            if libs.cfg.is_tetml_word:
+                extract_text_from_pdf_file_word()
 
         conn.close()
 
@@ -123,14 +132,87 @@ def extract_text_from_pdf_file_page() -> None:
 
 
 # -----------------------------------------------------------------------------
+# Extract text from a pdf document (step: tet) - method line.
+# -----------------------------------------------------------------------------
+def extract_text_from_pdf_file_line() -> None:
+    """Extract text from a pdf document (step: tet) - method line."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    xml_variation = "line."
+
+    source_file_name, target_file_name = libs.utils.prepare_file_names(
+        xml_variation + db.cfg.DOCUMENT_FILE_TYPE_XML
+    )
+
+    tet = TET()
+
+    doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {LINE_TET_DOCUMENT_OPT_LIST}"
+
+    source_file = tet.open_document(source_file_name, doc_opt_list)
+
+    if source_file == -1:
+        db.orm.dml.update_document_error(
+            document_id=libs.cfg.document_id,
+            error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
+            error_msg=db.cfg.ERROR_51_901.replace("{file_name}", source_file_name)
+            .replace("{error_no}", str(tet.get_errnum()))
+            .replace("{api_name}", tet.get_apiname() + "()")
+            .replace("{error}", tet.get_errmsg()),
+        )
+        return
+
+    # get number of pages in the document */
+    no_pages = tet.pcos_get_number(source_file, "length:pages")
+
+    # loop over pages in the document */
+    for page_no in range(1, int(no_pages) + 1):
+        tet.process_page(source_file, page_no, LINE_TET_PAGE_OPT_LIST)
+
+    # This could be combined with the last page-related call
+    tet.process_page(source_file, 0, "tetml={trailer}")
+
+    tet.close_document(source_file)
+
+    libs.utils.prepare_document_4_next_step(
+        next_file_type=db.cfg.DOCUMENT_FILE_TYPE_XML,
+        next_step=db.cfg.DOCUMENT_STEP_PARSER_LINE,
+    )
+
+    libs.cfg.document_child_file_name = (
+        libs.cfg.document_stem_name + "." + xml_variation + db.cfg.DOCUMENT_FILE_TYPE_XML
+    )
+    libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
+
+    db.orm.dml.insert_document_child()
+
+    libs.utils.delete_auxiliary_file(source_file_name)
+
+    tet.delete()
+
+    # Text from Document successfully extracted to database
+    duration_ns = libs.utils.finalize_file_processing()
+
+    if libs.cfg.is_verbose:
+        libs.utils.progress_msg(
+            f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
+            f"Document: {libs.cfg.document_id:6d} "
+            f"[line version: {db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+        )
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Extract text from a pdf document (step: tet) - method word.
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf_file_word() -> None:
     """Extract text from a pdf document (step: tet) - method word."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
+    xml_variation = "word."
+
     source_file_name, target_file_name = libs.utils.prepare_file_names(
-        db.cfg.DOCUMENT_FILE_TYPE_XML
+        xml_variation + db.cfg.DOCUMENT_FILE_TYPE_XML
     )
 
     tet = TET()
@@ -164,11 +246,11 @@ def extract_text_from_pdf_file_word() -> None:
 
     libs.utils.prepare_document_4_next_step(
         next_file_type=db.cfg.DOCUMENT_FILE_TYPE_XML,
-        next_step=db.cfg.DOCUMENT_STEP_PARSER,
+        next_step=db.cfg.DOCUMENT_STEP_PARSER_WORD,
     )
 
     libs.cfg.document_child_file_name = (
-        libs.cfg.document_stem_name + "." + db.cfg.DOCUMENT_FILE_TYPE_XML
+        libs.cfg.document_stem_name + "." + xml_variation + db.cfg.DOCUMENT_FILE_TYPE_XML
     )
     libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
@@ -179,6 +261,13 @@ def extract_text_from_pdf_file_word() -> None:
     tet.delete()
 
     # Text from Document successfully extracted to database
-    libs.utils.finalize_file_processing()
+    duration_ns = libs.utils.finalize_file_processing()
+
+    if libs.cfg.is_verbose:
+        libs.utils.progress_msg(
+            f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
+            f"Document: {libs.cfg.document_id:6d} "
+            f"[word version: {db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+        )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

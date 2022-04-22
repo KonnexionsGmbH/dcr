@@ -368,6 +368,12 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     value_original_tesseract_timeout = pytest.helpers.store_config_param(
         libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"
     )
+    value_original_tetml_line = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_LINE, "true"
+    )
+    value_original_tetml_word = pytest.helpers.store_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_WORD, "true"
+    )
 
     pytest.helpers.help_run_action_all_complete_duplicate_file(
         file_ext_1, file_ext_2, stem_name_1, stem_name_2
@@ -382,6 +388,16 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
         libs.cfg.DCR_CFG_SECTION,
         libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
         value_original_tesseract_timeout,
+    )
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_TETML_LINE,
+        value_original_tetml_line,
+    )
+    pytest.helpers.restore_config_param(
+        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.DCR_CFG_TETML_WORD,
+        value_original_tetml_word,
     )
 
     # -------------------------------------------------------------------------

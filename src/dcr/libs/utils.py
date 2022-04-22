@@ -77,13 +77,15 @@ def delete_auxiliary_file(file_name: str) -> None:
 # -----------------------------------------------------------------------------
 # Finalise the file processing.
 # -----------------------------------------------------------------------------
-def finalize_file_processing() -> None:
+def finalize_file_processing() -> int:
     """Finalise the file processing."""
-    db.orm.dml.update_document_statistics(
+    duration_ns = db.orm.dml.update_document_statistics(
         document_id=libs.cfg.document_id, status=db.cfg.DOCUMENT_STATUS_END
     )
 
     libs.cfg.total_ok_processed += 1
+
+    return duration_ns
 
 
 # -----------------------------------------------------------------------------

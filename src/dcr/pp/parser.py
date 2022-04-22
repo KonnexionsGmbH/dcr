@@ -37,86 +37,138 @@ def debug_xml_element_all(
 
 
 # -----------------------------------------------------------------------------
-# Debug an XML element only 'text'.
+# Debug an XML element only 'text' - variant line.
 # -----------------------------------------------------------------------------
-def debug_xml_element_text() -> None:
-    """Debug an XML element only 'text."""
+def debug_xml_element_text_line() -> None:
+    """Debug an XML element only 'text - variant line."""
     if libs.cfg.verbose_parser == "text":
         print(
-            f"page={libs.cfg.parse_result_no_page:2d} "
-            f"paragraph={libs.cfg.parse_result_no_para:2d} "
-            f"sentence={libs.cfg.parse_result_no_sentence:2d} "
-            f"line={libs.cfg.parse_result_no_line:2d} "
-            f"word sentence={libs.cfg.parse_result_no_word_sentence:3d} "
-            f"word line={libs.cfg.parse_result_no_word_line:2d} "
+            f"page_i_doc={libs.cfg.parse_result_page_index_doc:2d} "
+            f"para_i_page={libs.cfg.parse_result_para_index_page:2d} "
+            f"line_i_page={libs.cfg.parse_result_line_index_page:2d} "
+            f"line_i_para={libs.cfg.parse_result_line_index_para:2d} "
             f"text='{libs.cfg.parse_result_text}'"
         )
 
 
 # -----------------------------------------------------------------------------
-# Initialize the parse result variables.
+# Debug an XML element only 'text' - variant word.
 # -----------------------------------------------------------------------------
-def init_parse_result() -> None:
-    """Initialize the parse result variables."""
-    libs.cfg.parse_result_author = None
-    libs.cfg.parse_result_creation_date = None
-    libs.cfg.parse_result_mod_date = None
-    libs.cfg.parse_result_no_line = 0
-    libs.cfg.parse_result_no_page = 0
-    libs.cfg.parse_result_no_para = 0
-    libs.cfg.parse_result_no_sentence = 0
-    libs.cfg.parse_result_no_word_line = 0
-    libs.cfg.parse_result_text = None
+def debug_xml_element_text_word() -> None:
+    """Debug an XML element only 'text - variant word."""
+    if libs.cfg.verbose_parser == "text":
+        print(
+            f"page_i_doc={libs.cfg.parse_result_page_index_doc:2d} "
+            f"para_i_page={libs.cfg.parse_result_para_index_page:2d} "
+            f"line_i_page={libs.cfg.parse_result_line_index_page:2d} "
+            f"line_i_para={libs.cfg.parse_result_line_index_para:2d} "
+            f"word_i_page={libs.cfg.parse_result_word_index_page:2d} "
+            f"word_i_para={libs.cfg.parse_result_word_index_para:2d} "
+            f"word_i_line={libs.cfg.parse_result_word_index_line:2d} "
+            f"text='{libs.cfg.parse_result_text}'"
+        )
 
 
 # -----------------------------------------------------------------------------
-# Initialize the parse result variables regarding sentence.
+# Initialize the parse result variables of a document.
 # -----------------------------------------------------------------------------
-def init_parse_result_sentence() -> None:
-    """Initialize the parse result variables regarding sentence."""
-    libs.cfg.parse_result_no_word_sentence = 0
+def init_parse_result_document() -> None:
+    """Initialize the parse result variables of a document."""
+    libs.cfg.parse_result_no_pages_in_doc = 0
+    libs.cfg.parse_result_page_index_doc = 0
 
-    libs.cfg.parse_result_sentence = {
-        db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA: None,
-        db.cfg.JSON_NAME_NO_WORDS: None,
-        db.cfg.JSON_NAME_WORDS: [],
+
+# -----------------------------------------------------------------------------
+# Initialize the parse result variables of a line.
+# -----------------------------------------------------------------------------
+def init_parse_result_line() -> None:
+    """Initialize the parse result variables of a line."""
+    libs.cfg.parse_result_no_words_in_line = 0
+    libs.cfg.parse_result_word_index_line = 0
+
+
+# -----------------------------------------------------------------------------
+# Initialize the parse result variables of a page.
+# -----------------------------------------------------------------------------
+def init_parse_result_page() -> None:
+    """Initialize the parse result variables of a page."""
+    libs.cfg.parse_result_line_index_page = 0
+    libs.cfg.parse_result_no_lines_in_page = 0
+    libs.cfg.parse_result_no_paras_in_page = 0
+    libs.cfg.parse_result_no_words_in_page = 0
+    libs.cfg.parse_result_page_lines = {
+        db.cfg.JSON_NAME_NO_LINES_IN_PAGE: None,
+        db.cfg.JSON_NAME_NO_PARAS_IN_PAGE: None,
+        db.cfg.JSON_NAME_PAGE_LINES: [],
     }
+    libs.cfg.parse_result_page_words = {
+        db.cfg.JSON_NAME_NO_LINES_IN_PAGE: None,
+        db.cfg.JSON_NAME_NO_PARAS_IN_PAGE: None,
+        db.cfg.JSON_NAME_NO_WORDS_IN_PAGE: None,
+        db.cfg.JSON_NAME_PAGE_WORDS: [],
+    }
+    libs.cfg.parse_result_para_index_page = 0
+    libs.cfg.parse_result_word_index_page = 0
 
 
 # -----------------------------------------------------------------------------
-# Store the parse result in the database table content.
+# Initialize the parse result variables of a para.
 # -----------------------------------------------------------------------------
-def insert_content() -> None:
-    """Store the parse result in the database table content."""
-    if not libs.cfg.parse_result_sentence[db.cfg.JSON_NAME_WORDS]:
-        return
+def init_parse_result_para() -> None:
+    """Initialize the parse result variables mof a para."""
+    libs.cfg.parse_result_line_index_para = 0
+    libs.cfg.parse_result_no_lines_in_para = 0
+    libs.cfg.parse_result_no_words_in_para = 0
+    libs.cfg.parse_result_word_index_para = 0
 
-    libs.cfg.parse_result_sentence[
-        db.cfg.JSON_NAME_NO_WORDS
-    ] = libs.cfg.parse_result_no_word_sentence
 
+# -----------------------------------------------------------------------------
+# Store the parse result in the database table content_tetml_line.
+# -----------------------------------------------------------------------------
+def insert_content_tetml_line() -> None:
+    """Store the parse result in the database table content_tetml_line."""
     if not libs.cfg.is_simulate_parser:
+        libs.cfg.parse_result_page_lines[
+            db.cfg.JSON_NAME_NO_LINES_IN_PAGE
+        ] = libs.cfg.parse_result_no_lines_in_page
+        libs.cfg.parse_result_page_lines[
+            db.cfg.JSON_NAME_NO_PARAS_IN_PAGE
+        ] = libs.cfg.parse_result_no_paras_in_page
+
+        db.orm.dml.insert_dbt_row(
+            db.cfg.DBT_CONTENT_TETML_LINE,
+            {
+                db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
+                db.cfg.DBC_PAGE_NO: libs.cfg.parse_result_no_pages_in_doc,
+                db.cfg.DBC_PAGE_LINES: libs.cfg.parse_result_page_lines,
+            },
+        )
+
+
+# -----------------------------------------------------------------------------
+# Store the parse result in the database table content_tetml_word.
+# -----------------------------------------------------------------------------
+def insert_content_tetml_word() -> None:
+    """Store the parse result in the database table content_tetml_word."""
+    if not libs.cfg.is_simulate_parser:
+        libs.cfg.parse_result_page_words[
+            db.cfg.JSON_NAME_NO_LINES_IN_PAGE
+        ] = libs.cfg.parse_result_no_lines_in_page
+        libs.cfg.parse_result_page_words[
+            db.cfg.JSON_NAME_NO_PARAS_IN_PAGE
+        ] = libs.cfg.parse_result_no_paras_in_page
+        libs.cfg.parse_result_page_words[
+            db.cfg.JSON_NAME_NO_WORDS_IN_PAGE
+        ] = libs.cfg.parse_result_no_words_in_page
+
         db.orm.dml.insert_dbt_row(
             db.cfg.DBT_CONTENT_TETML_WORD,
             {
                 db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
-                db.cfg.DBC_LINE_IN_PARA_END: libs.cfg.parse_result_line_in_para_end,
-                db.cfg.DBC_LINE_IN_PARA_START: libs.cfg.parse_result_line_in_para_start,
-                db.cfg.DBC_PAGE_IN_DOC_END: libs.cfg.parse_result_page_in_doc_end,
-                db.cfg.DBC_PAGE_IN_DOC_START: libs.cfg.parse_result_page_in_doc_start,
-                db.cfg.DBC_PARA_IN_PAGE_END: libs.cfg.parse_result_para_in_page_end,
-                db.cfg.DBC_PARA_IN_PAGE_START: libs.cfg.parse_result_para_in_page_start,
-                db.cfg.DBC_SENTENCE: libs.cfg.parse_result_sentence,
+                db.cfg.DBC_PAGE_NO: libs.cfg.parse_result_no_pages_in_doc,
+                db.cfg.DBC_PAGE_WORDS: libs.cfg.parse_result_page_words,
             },
         )
-
-    init_parse_result_sentence()
-
-    libs.cfg.parse_result_no_sentence += 1
-
-    libs.cfg.parse_result_sentence[
-        db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA
-    ] = libs.cfg.parse_result_no_sentence
 
 
 # -----------------------------------------------------------------------------
@@ -249,18 +301,35 @@ def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
     """
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
-    libs.cfg.parse_result_no_line += 1
-    libs.cfg.parse_result_no_word_line = 0
+    init_parse_result_line()
 
-    libs.cfg.parse_result_line_in_para_start = libs.cfg.parse_result_no_line
-    libs.cfg.parse_result_page_in_doc_start = libs.cfg.parse_result_no_page
-    libs.cfg.parse_result_para_in_page_start = libs.cfg.parse_result_no_para
+    libs.cfg.parse_result_no_lines_in_page += 1
+    libs.cfg.parse_result_no_lines_in_para += 1
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
         match child_tag:
+            case libs.cfg.PARSE_TAG_TEXT:
+                parse_tag_text(child_tag, child)
             case libs.cfg.PARSE_TAG_WORD:
                 parse_tag_word(child_tag, child)
+
+    debug_xml_element_text_line()
+
+    if libs.cfg.is_parsing_line:
+        page_lines = libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_PAGE_LINES]
+        page_lines.append(
+            {
+                db.cfg.JSON_NAME_PARA_INDEX_PAGE: libs.cfg.parse_result_para_index_page,
+                db.cfg.JSON_NAME_LINE_INDEX_PAGE: libs.cfg.parse_result_line_index_page,
+                db.cfg.JSON_NAME_LINE_INDEX_PARA: libs.cfg.parse_result_line_index_para,
+                db.cfg.JSON_NAME_LINE_TEXT: libs.cfg.parse_result_text,
+            }
+        )
+        libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_PAGE_LINES] = page_lines
+
+    libs.cfg.parse_result_line_index_page += 1
+    libs.cfg.parse_result_line_index_para += 1
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -277,8 +346,9 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
     """
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
-    libs.cfg.parse_result_no_page = int(parent.attrib["number"])
-    libs.cfg.parse_result_no_para = 0
+    init_parse_result_page()
+
+    libs.cfg.parse_result_no_pages_in_doc += 1
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -295,6 +365,14 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
             case libs.cfg.PARSE_TAG_CONTENT:
                 parse_tag_content(child_tag, child)
 
+    libs.cfg.parse_result_page_index_doc += 1
+
+    if not libs.cfg.is_simulate_parser:
+        if libs.cfg.is_parsing_line:
+            insert_content_tetml_line()
+        elif libs.cfg.is_parsing_word:
+            insert_content_tetml_word()
+
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
 
@@ -309,6 +387,8 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
         parent (Iterable[str): Parent data structure.
     """
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+
+    init_parse_result_document()
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -333,15 +413,9 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
     """
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
-    libs.cfg.parse_result_no_line = 0
-    libs.cfg.parse_result_no_para += 1
-    libs.cfg.parse_result_no_sentence = 1
-    libs.cfg.parse_result_no_word_sentence = 0
+    init_parse_result_para()
 
-    libs.cfg.parse_result_sentence[
-        db.cfg.JSON_NAME_NO_SENTENCE_IN_PARA
-    ] = libs.cfg.parse_result_no_sentence
-    libs.cfg.parse_result_sentence[db.cfg.JSON_NAME_WORDS] = []
+    libs.cfg.parse_result_no_paras_in_page += 1
 
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
@@ -349,7 +423,7 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
             case libs.cfg.PARSE_TAG_BOX:
                 parse_tag_box(child_tag, child)
 
-    insert_content()
+    libs.cfg.parse_result_para_index_page += 1
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -393,29 +467,26 @@ def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
-    libs.cfg.parse_result_no_word_line += 1
-    libs.cfg.parse_result_no_word_sentence += 1
+    libs.cfg.parse_result_no_words_in_line += 1
+    libs.cfg.parse_result_no_words_in_page += 1
+    libs.cfg.parse_result_no_words_in_para += 1
 
-    debug_xml_element_text()
+    debug_xml_element_text_word()
 
-    word_list = libs.cfg.parse_result_sentence[db.cfg.JSON_NAME_WORDS]
-    word_list.append(
-        {
-            db.cfg.JSON_NAME_NO_WORD_LINE: libs.cfg.parse_result_no_word_line,
-            db.cfg.JSON_NAME_NO_WORD_SENTENCE: libs.cfg.parse_result_no_word_sentence,
-            db.cfg.JSON_NAME_WORD_PARSED: libs.cfg.parse_result_text,
-        }
-    )
-    libs.cfg.parse_result_sentence[db.cfg.JSON_NAME_WORDS] = word_list
+    if libs.cfg.is_parsing_word:
+        page_words = libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_PAGE_WORDS]
+        page_words.append(
+            {
+                db.cfg.JSON_NAME_LINE_INDEX_PAGE: libs.cfg.parse_result_line_index_page,
+                db.cfg.JSON_NAME_WORD_INDEX_LINE: libs.cfg.parse_result_word_index_line,
+                db.cfg.JSON_NAME_WORD_TEXT: libs.cfg.parse_result_text,
+            }
+        )
+        libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_PAGE_WORDS] = page_words
 
-    libs.cfg.parse_result_line_in_para_end = libs.cfg.parse_result_no_line
-    libs.cfg.parse_result_page_in_doc_end = libs.cfg.parse_result_no_page
-    libs.cfg.parse_result_para_in_page_end = libs.cfg.parse_result_no_para
-
-    if libs.cfg.parse_result_text == ".":
-        insert_content()
-
-    libs.cfg.parse_result_text = None
+    libs.cfg.parse_result_word_index_line += 1
+    libs.cfg.parse_result_word_index_page += 1
+    libs.cfg.parse_result_word_index_para += 1
 
 
 # -----------------------------------------------------------------------------
@@ -433,7 +504,7 @@ def parse_tetml() -> None:
     libs.utils.reset_statistics_total()
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER)
+        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER_LINE)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -442,11 +513,43 @@ def parse_tetml() -> None:
                 document=row,
             )
 
-            parse_tetml_file()
+            parse_tetml_file_line()
 
             # Text and metadata from Document successfully extracted to xml format
             if not libs.cfg.is_simulate_parser:
-                libs.utils.finalize_file_processing()
+                duration_ns = libs.utils.finalize_file_processing()
+
+                if libs.cfg.is_verbose:
+                    libs.utils.progress_msg(
+                        f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
+                        f"Document: {libs.cfg.document_id:6d} "
+                        f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+                    )
+
+        conn.close()
+
+    with db.cfg.db_orm_engine.connect() as conn:
+        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER_WORD)
+
+        for row in rows:
+            libs.cfg.start_time_document = time.perf_counter_ns()
+
+            libs.utils.start_document_processing(
+                document=row,
+            )
+
+            parse_tetml_file_word()
+
+            # Text and metadata from Document successfully extracted to xml format
+            if not libs.cfg.is_simulate_parser:
+                duration_ns = libs.utils.finalize_file_processing()
+
+                if libs.cfg.is_verbose:
+                    libs.utils.progress_msg(
+                        f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
+                        f"Document: {libs.cfg.document_id:6d} "
+                        f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+                    )
 
         conn.close()
 
@@ -456,22 +559,64 @@ def parse_tetml() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Parse the TETML file (step: s_f_p).
+# Parse the TETML file type line (step: s_f_p).
 # -----------------------------------------------------------------------------
-def parse_tetml_file() -> None:
-    """Parse a document.
+def parse_tetml_file_line() -> None:
+    """Parse the TETML file type line.
 
     TBD
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PARSER_LINE
 
     file_name = os.path.join(
         libs.cfg.document_directory_name,
         libs.cfg.document_file_name,
     )
 
-    init_parse_result()
-    init_parse_result_sentence()
+    libs.cfg.is_parsing_line = True
+    libs.cfg.is_parsing_word = False
+
+    # Create the Element tree object
+    tree = defusedxml.ElementTree.parse(file_name)
+
+    # Get the root Element
+    root = tree.getroot()
+
+    for child in root:
+        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        match child_tag:
+            case libs.cfg.PARSE_TAG_DOCUMENT:
+                parse_tag_document(child_tag, child)
+            case libs.cfg.PARSE_TAG_CREATION:
+                pass
+
+    if not libs.cfg.is_simulate_parser:
+        libs.utils.delete_auxiliary_file(file_name)
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Parse the TETML file type word (step: s_f_p).
+# -----------------------------------------------------------------------------
+def parse_tetml_file_word() -> None:
+    """Parse the TETML file type word.
+
+    TBD
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PARSER_WORD
+
+    file_name = os.path.join(
+        libs.cfg.document_directory_name,
+        libs.cfg.document_file_name,
+    )
+
+    libs.cfg.is_parsing_line = False
+    libs.cfg.is_parsing_word = True
 
     # Create the Element tree object
     tree = defusedxml.ElementTree.parse(file_name)

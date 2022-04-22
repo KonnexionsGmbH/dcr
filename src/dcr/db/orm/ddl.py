@@ -141,6 +141,58 @@ def create_db_triggers(table_names: List[str]) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Create the database table content_tetml_line.
+# -----------------------------------------------------------------------------
+def create_dbt_content_tetml_line(table_name: str) -> None:
+    """Create the database table content_tetml_line.
+
+    Args:
+        table_name (str): Table name.
+    """
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    sqlalchemy.Table(
+        table_name,
+        db.cfg.db_orm_metadata,
+        sqlalchemy.Column(
+            db.cfg.DBC_ID,
+            sqlalchemy.Integer,
+            autoincrement=True,
+            nullable=False,
+            primary_key=True,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_CREATED_AT,
+            sqlalchemy.DateTime,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_MODIFIED_AT,
+            sqlalchemy.DateTime,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_DOCUMENT_ID,
+            sqlalchemy.Integer,
+            ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_PAGE_NO,
+            sqlalchemy.Integer,
+            nullable=False,
+        ),
+        sqlalchemy.Column(
+            db.cfg.DBC_PAGE_LINES,
+            sqlalchemy.JSON,
+            nullable=False,
+        ),
+    )
+
+    libs.utils.progress_msg(f"The database table '{table_name}' has now been created")
+
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Create the database table content_tetml_page.
 # -----------------------------------------------------------------------------
 def create_dbt_content_tetml_page(table_name: str) -> None:
@@ -228,37 +280,12 @@ def create_dbt_content_tetml_word(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(
-            db.cfg.DBC_LINE_IN_PARA_END,
+            db.cfg.DBC_PAGE_NO,
             sqlalchemy.Integer,
             nullable=False,
         ),
         sqlalchemy.Column(
-            db.cfg.DBC_LINE_IN_PARA_START,
-            sqlalchemy.Integer,
-            nullable=False,
-        ),
-        sqlalchemy.Column(
-            db.cfg.DBC_PAGE_IN_DOC_END,
-            sqlalchemy.Integer,
-            nullable=False,
-        ),
-        sqlalchemy.Column(
-            db.cfg.DBC_PAGE_IN_DOC_START,
-            sqlalchemy.Integer,
-            nullable=False,
-        ),
-        sqlalchemy.Column(
-            db.cfg.DBC_PARA_IN_PAGE_END,
-            sqlalchemy.Integer,
-            nullable=False,
-        ),
-        sqlalchemy.Column(
-            db.cfg.DBC_PARA_IN_PAGE_START,
-            sqlalchemy.Integer,
-            nullable=False,
-        ),
-        sqlalchemy.Column(
-            db.cfg.DBC_SENTENCE,
+            db.cfg.DBC_PAGE_WORDS,
             sqlalchemy.JSON,
             nullable=False,
         ),
@@ -582,6 +609,7 @@ def create_schema() -> None:
     # FK: run
     create_dbt_document(db.cfg.DBT_DOCUMENT)
     # FK: document
+    create_dbt_content_tetml_line(db.cfg.DBT_CONTENT_TETML_LINE)
     create_dbt_content_tetml_page(db.cfg.DBT_CONTENT_TETML_PAGE)
     create_dbt_content_tetml_word(db.cfg.DBT_CONTENT_TETML_WORD)
     create_dbt_content_token(db.cfg.DBT_CONTENT_TOKEN)
@@ -589,6 +617,7 @@ def create_schema() -> None:
     # Create the database triggers.
     create_db_triggers(
         [
+            db.cfg.DBT_CONTENT_TETML_LINE,
             db.cfg.DBT_CONTENT_TETML_PAGE,
             db.cfg.DBT_CONTENT_TETML_WORD,
             db.cfg.DBT_CONTENT_TOKEN,
@@ -661,6 +690,7 @@ def load_db_data_from_json(initial_database_data: Path) -> None:
 
             if table_name not in ["language"]:
                 if table_name in [
+                    "content_tetml_line",
                     "content_tetml_page",
                     "content_tetml_word",
                     "content_token",

@@ -46,6 +46,9 @@ DCR_CFG_SECTION_PROD: str
 DCR_CFG_SECTION_TEST: str
 DCR_CFG_SIMULATE_PARSER: str
 DCR_CFG_TESSERACT_TIMEOUT: str
+DCR_CFG_TETML_LINE: str
+DCR_CFG_TETML_PAGE: str
+DCR_CFG_TETML_WORD: str
 DCR_CFG_VERBOSE: str
 DCR_CFG_VERBOSE_PARSER: str
 
@@ -72,7 +75,6 @@ OS_POSIX: str
 
 PARSE_NAME_SPACE: str
 
-PARSE_TAG_A: str
 PARSE_TAG_ACTION: str
 PARSE_TAG_ANNOTATIONS: str
 PARSE_TAG_ATTACHMENTS: str
@@ -92,7 +94,6 @@ PARSE_TAG_EXCEPTION: str
 PARSE_TAG_FIELDS: str
 PARSE_TAG_FROM: int
 PARSE_TAG_GRAPHICS: str
-PARSE_TAG_IMAGES: str
 PARSE_TAG_JAVA_SCRIPTS: str
 PARSE_TAG_LINE: str
 PARSE_TAG_METADATA: str
@@ -102,13 +103,11 @@ PARSE_TAG_OUTPUT_INTENTS: str
 PARSE_TAG_PAGE: str
 PARSE_TAG_PAGES: str
 PARSE_TAG_PARA: str
-PARSE_TAG_PATTERNX: str
 PARSE_TAG_PLACED_IMAGE: str
 PARSE_TAG_PRODUCER: str
 PARSE_TAG_RESOURCES: str
 PARSE_TAG_SIGNATURE_FIELDS: str
 PARSE_TAG_TABLE: str
-PARSE_TAG_TET: str
 PARSE_TAG_TEXT: str
 PARSE_TAG_TITLE: str
 PARSE_TAG_WORD: str
@@ -177,7 +176,12 @@ environment_type: str
 
 is_delete_auxiliary_files: bool
 is_ignore_duplicates: bool
+is_parsing_line: bool
+is_parsing_word: bool
 is_simulate_parser: bool
+is_tetml_line: bool
+is_tetml_page: bool
+is_tetml_word: bool
 is_verbose: bool
 
 language_directory_inbox: PathLike[str]
@@ -197,23 +201,23 @@ languages_tesseract: Dict[sqlalchemy.Integer, str]
 
 logger: logging.Logger
 
-parse_result_author: str
-parse_result_creation_date: datetime
-parse_result_line_in_para_end: int
-parse_result_line_in_para_start: int
-parse_result_mod_date: datetime
-parse_result_no_line: int
-parse_result_no_page: int
-parse_result_no_para: int
-parse_result_no_sentence: int
-parse_result_no_word_line: int
-parse_result_no_word_sentence: int
-parse_result_page_in_doc_end: int
-parse_result_page_in_doc_start: int
-parse_result_para_in_page_end: int
-parse_result_para_in_page_start: int
-parse_result_sentence: Dict[str, int | List[Dict[str, str | int]]]
+parse_result_line_index_page: int
+parse_result_line_index_para: int
+parse_result_no_lines_in_page: int
+parse_result_no_lines_in_para: int
+parse_result_no_pages_in_doc: int
+parse_result_no_paras_in_page: int
+parse_result_no_words_in_line: int
+parse_result_no_words_in_page: int
+parse_result_no_words_in_para: int
+parse_result_page_index_doc: int
+parse_result_page_lines: Dict[str, int | List[Dict[str, int | str]]]
+parse_result_page_words: Dict[str, int | List[Dict[str, int | str]]]
+parse_result_para_index_page: int
 parse_result_text: str
+parse_result_word_index_line: int
+parse_result_word_index_page: int
+parse_result_word_index_para: int
 
 pdf2image_type: str
 

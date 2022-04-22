@@ -107,8 +107,15 @@ def convert_pdf_2_image_file() -> None:
     libs.cfg.total_ok_processed += 1
 
     # Document successfully converted to image format
-    db.orm.dml.update_document_statistics(
+    duration_ns = db.orm.dml.update_document_statistics(
         document_id=libs.cfg.document_id, status=db.cfg.DOCUMENT_STATUS_END
     )
+
+    if libs.cfg.is_verbose:
+        libs.utils.progress_msg(
+            f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
+            f"Document: {libs.cfg.document_id:6d} "
+            f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+        )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

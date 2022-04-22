@@ -42,7 +42,14 @@ def convert_non_pdf_2_pdf() -> None:
             convert_non_pdf_2_pdf_file()
 
             # Document successfully converted to pdf format
-            libs.utils.finalize_file_processing()
+            duration_ns = libs.utils.finalize_file_processing()
+
+            if libs.cfg.is_verbose:
+                libs.utils.progress_msg(
+                    f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
+                    f"Document: {libs.cfg.document_id:6d} "
+                    f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+                )
 
         conn.close()
 

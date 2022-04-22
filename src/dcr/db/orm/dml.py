@@ -472,8 +472,8 @@ def update_document_error(document_id: sqlalchemy.Integer, error_code: str, erro
     if libs.cfg.is_verbose:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {document_id:6d} "
-            f"[{db.orm.dml.select_document_file_name_id(document_id)}] - "
+            f"Document: {libs.cfg.document_id:6d} "
+            f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}] - "
             f"Error: {error_msg} "
         )
 
@@ -484,7 +484,7 @@ def update_document_error(document_id: sqlalchemy.Integer, error_code: str, erro
 def update_document_statistics(
     document_id: sqlalchemy.Integer,
     status: str,
-) -> None:
+) -> int:
     """Update the table 'document' with statistics data.
 
     Args:
@@ -502,9 +502,4 @@ def update_document_statistics(
         },
     )
 
-    if libs.cfg.is_verbose:
-        libs.utils.progress_msg(
-            f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {document_id:6d} "
-            f"[{db.orm.dml.select_document_file_name_id(document_id)}]"
-        )
+    return duration_ns

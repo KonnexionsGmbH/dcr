@@ -50,7 +50,14 @@ def tokenize() -> None:
             tokenize_document(nlp, dbt_content_tetml_page)
 
             # Document successfully converted to pdf format
-            libs.utils.finalize_file_processing()
+            duration_ns = libs.utils.finalize_file_processing()
+
+            if libs.cfg.is_verbose:
+                libs.utils.progress_msg(
+                    f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
+                    f"Document: {libs.cfg.document_id:6d} "
+                    f"[base: {db.orm.dml.select_document_file_name_id(libs.cfg.document_id_base)}]"
+                )
 
         conn.close()
 
@@ -80,7 +87,7 @@ def tokenize_document(nlp: Language, dbt_content: Table) -> None:
                 tokens_json.append(
                     {
                         db.cfg.JSON_NAME_TOKEN_TEXT: token.text,
-                        db.cfg.JSON_NAME_TOKEN_I: token.i,
+                        db.cfg.JSON_NAME_TOKEN_INDEX: token.i,
                         db.cfg.JSON_NAME_TOKEN_LEMMA: token.lemma_,
                         db.cfg.JSON_NAME_TOKEN_POS: token.pos_,
                         db.cfg.JSON_NAME_TOKEN_TAG: token.tag_,
