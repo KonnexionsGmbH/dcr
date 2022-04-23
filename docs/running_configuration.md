@@ -68,7 +68,7 @@ The existing entries can be modified or deleted, but new entries can also be add
         },
         {
           "columnName": "code_spacy",
-          "columnValue": "fr"
+          "columnValue": "fr_dep_news_trf"
         },
         {
           "columnName": "code_tesseract",

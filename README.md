@@ -13,13 +13,25 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for mor
 
 ## Features
 
+### General 
+ 
+- Support for documents in different languages - English, French, German and Italian as standard.
+
+### Preprocessor 
+ 
 - Converting **`bmp`**, **`gif`**, **`jp2`**, **`jpeg`**, **`png`**, **`pnm`**, **`tif`**, **`tiff`** or **`webp`** type documents to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract).
 - Converting **`csv`**, **`docx`**, **`epub`**, **`html`**, **`odt`**, **`rst`** or **`rtf`** type documents to **`pdf`** format using [Pandoc](https://pandoc.org) and [TeX Live](https://www.tug.org/texlive).
-- Converting scanned image **`pdf`** documents to a series of **`jpeg`** or **`png`** files using [pdf2image](https://pypi.org/project/pdf2image) and [Poppler](https://poppler.freedesktop.org){:target="_blank"}.
+- Converting scanned image **`pdf`** documents to a series of **`jpeg`** or **`png`** files using [pdf2image](https://pypi.org/project/pdf2image) and [Poppler](https://poppler.freedesktop.org).
 - Extracting text and metadata from **`pdf`** documents using [PDFlib TET](https://www.pdflib.com/products/tet/).
 - Identifying scanned image **`pdf`** documents using [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/module.html).
-- Support for documents in different languages - English, French, German and Italian as standard.
-- Much more!
+
+### NLP 
+ 
+- Categorisation of the lines in the document into body, footer and header lines.
+- Determination of the token structure page by page with the help of [SpaCy](https://spacy.io).
+- Storage of the analysis result in a [PostgreSQL](https://www.postgresql.org) database.
+
+### Much more!
 
 ## Support
 

@@ -80,11 +80,11 @@ def tokenize_document(nlp: Language, dbt_content: Table) -> None:
         rows = db.orm.dml.select_content_tetml_page(conn, dbt_content, libs.cfg.document_id_base)
 
         for row in rows:
-            tokens_json: List[Dict[str, bool | str]] = []
+            page_tokens: List[Dict[str, bool | str]] = []
 
             page_no = row[0]
             for token in nlp(row[1]):
-                tokens_json.append(
+                page_tokens.append(
                     {
                         db.cfg.JSON_NAME_TOKEN_TEXT: token.text,
                         db.cfg.JSON_NAME_TOKEN_INDEX: token.i,
@@ -103,7 +103,7 @@ def tokenize_document(nlp: Language, dbt_content: Table) -> None:
                 {
                     db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
                     db.cfg.DBC_PAGE_NO: page_no,
-                    db.cfg.DBC_TOKEN: tokens_json,
+                    db.cfg.DBC_PAGE_TOKENS: page_tokens,
                 },
             )
 

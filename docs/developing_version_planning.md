@@ -25,10 +25,7 @@
 
 #### 2.1.1 High Priority
 
-- parser: classify the sentences, e.g. body, footer, header, title etc. 
-- parser: count and process gross words to net words, e.g. urls, email addresses etc.
-- parser: count and store no_words per font and per page
-- parser: take into account cross-pages sentences
+- parser: classify the lines, e.g. body, footer, header etc. 
 
 
 #### 2.1.2 Normal Priority

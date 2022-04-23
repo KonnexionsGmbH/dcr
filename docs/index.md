@@ -20,11 +20,9 @@ The processing logic is as follows:
 
 ### 1.1 Rahman & Finin Paper
 
----
-
 ![](img/index_rahman_finin.png)
 
----
+<div style="page-break-after: always;"></div>
 
 ### 1.2 Supported File Types
 
@@ -48,7 +46,7 @@ The processing logic is as follows:
 - **`tiff`** [Tag Image File Format](https://en.wikipedia.org/wiki/TIFF){:target="_blank"}
 - **`webp`** [Image file format with lossless and lossy compression](https://developers.google.com/speed/webp){:target="_blank"}
 
----
+<div style="page-break-after: always;"></div>
 
 ## 2. Detailed processing steps
 
@@ -57,11 +55,7 @@ The processing logic is as follows:
 
 ### 2.1.1 Preprocessor Architecture
 
----
-
 ![](img/index_dcr_Overview.png)
-
----
 
 ### 2.1.2 Process the inbox directory (step: **`p_i`**)
 

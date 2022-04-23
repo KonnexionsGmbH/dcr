@@ -4,6 +4,7 @@
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 
 ----
+
 ## Version 0.9.0
 
 Release Date: 06.04.2022

@@ -19,7 +19,9 @@ The following actions are available:
 | **`ocr`**   | Convert appropriate image documents to **`pdf`** files.                                                            |
 | **`p_2_i`** | Convert **`pdf`** documents to image files.                                                                        |
 | **`p_i`**   | Process the inbox directory.                                                                                       |
+| **`s_f_p`** | ??? wwe.                                                                                                           |
 | **`tet`**   | Extract text from **`pdf`** documents.                                                                             |
+| **`tkn`**   | ??? wwe.                                                                                                           |
 
 The action **`all - run the complete processing of all new documents`** includes the following processes in the order given:
 
@@ -30,6 +32,8 @@ The action **`all - run the complete processing of all new documents`** includes
 | **`ocr`**   | Convert appropriate image documents to **`pdf`** files.   |
 | **`n_2_p`** | Convert appropriate non-pdf documents to **`pdf`** files. |
 | **`tet`**   | Extract text from **`pdf`** documents.                    |
+| **`s_f_p`** | ??? wwe.                                                  |
+| **`tkn`**   | ??? wwe.                                                  |
 
 The action **`db_c - create the database`** is only required once when installing **`DCR`**.  
 

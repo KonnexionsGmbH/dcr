@@ -14,6 +14,7 @@ Release Date: dd.mm.2022
 ### 1.1 New Features
 
 - support for documents in different languages - English, French, German and Italian as standard
+- ??? wwe
 
 ### 1.2 Applied Software
 

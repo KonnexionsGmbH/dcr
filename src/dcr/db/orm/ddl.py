@@ -337,7 +337,7 @@ def create_dbt_content_token(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(
-            db.cfg.DBC_TOKEN,
+            db.cfg.DBC_PAGE_TOKENS,
             sqlalchemy.JSON,
             nullable=False,
         ),
