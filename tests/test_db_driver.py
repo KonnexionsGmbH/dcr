@@ -26,9 +26,13 @@ def test_connect_db(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     config_section = libs.cfg.DCR_CFG_SECTION_TEST
-    config_param = libs.cfg.DCR_CFG_DB_CONNECTION_PORT
 
-    value_original = pytest.helpers.store_config_param(config_section, config_param, "9999")
+    values_original = pytest.helpers.backup_config_params(
+        config_section,
+        [
+            (libs.cfg.DCR_CFG_DB_CONNECTION_PORT, "9999"),
+        ],
+    )
 
     dcr.get_config()
 
@@ -38,7 +42,10 @@ def test_connect_db(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_DB_CONNECTION_PORT: no database"
     assert expt.value.code == 1, "DCR_CFG_DB_CONNECTION_PORT: no database"
 
-    pytest.helpers.restore_config_param(config_section, config_param, value_original)
+    pytest.helpers.restore_config_params(
+        config_section,
+        values_original,
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -53,9 +60,13 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     config_section = libs.cfg.DCR_CFG_SECTION_TEST
-    config_param = libs.cfg.DCR_CFG_DB_CONNECTION_PORT
 
-    value_original = pytest.helpers.store_config_param(config_section, config_param, "9999")
+    values_original = pytest.helpers.backup_config_params(
+        config_section,
+        [
+            (libs.cfg.DCR_CFG_DB_CONNECTION_PORT, "9999"),
+        ],
+    )
 
     dcr.get_config()
 
@@ -65,7 +76,10 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_DB_CONNECTION_PORT: no database"
     assert expt.value.code == 1, "DCR_CFG_DB_CONNECTION_PORT: no database"
 
-    pytest.helpers.restore_config_param(config_section, config_param, value_original)
+    pytest.helpers.restore_config_params(
+        config_section,
+        values_original,
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -82,21 +96,23 @@ def test_create_database(fxtr_setup_logger_environment):
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
     # -------------------------------------------------------------------------
-    config_section = libs.cfg.DCR_CFG_SECTION
-    config_param = libs.cfg.DCR_CFG_DB_DIALECT
-
-    value_original = pytest.helpers.delete_config_param(config_section, config_param)
+    values_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DB_DIALECT
+    )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
-    pytest.helpers.restore_config_param(config_section, config_param, value_original)
+    pytest.helpers.restore_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        values_original,
+    )
 
     # -------------------------------------------------------------------------
-    config_section = libs.cfg.DCR_CFG_SECTION
-    config_param = libs.cfg.DCR_CFG_DB_DIALECT
-
-    value_original = pytest.helpers.store_config_param(
-        config_section, config_param, libs.cfg.INFORMATION_NOT_YET_AVAILABLE
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DB_DIALECT, libs.cfg.INFORMATION_NOT_YET_AVAILABLE),
+        ],
     )
 
     with pytest.raises(SystemExit) as expt:
@@ -105,13 +121,18 @@ def test_create_database(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_DB_DIALECT: unknown DB dialect"
     assert expt.value.code == 1, "DCR_CFG_DB_DIALECT: unknown DB dialect"
 
-    pytest.helpers.restore_config_param(config_section, config_param, value_original)
+    pytest.helpers.restore_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        values_original,
+    )
 
     # -------------------------------------------------------------------------
-    config_section = libs.cfg.DCR_CFG_SECTION
-    config_param = libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA
-
-    value_original = pytest.helpers.store_config_param(config_section, config_param, "unknown_file")
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA, "unknown_file"),
+        ],
+    )
 
     with pytest.raises(SystemExit) as expt:
         dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
@@ -119,7 +140,10 @@ def test_create_database(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_INITIAL_DATABASE_DATA: unknown file"
     assert expt.value.code == 1, "DCR_CFG_INITIAL_DATABASE_DATA: unknown file"
 
-    pytest.helpers.restore_config_param(config_section, config_param, value_original)
+    pytest.helpers.restore_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        values_original,
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -137,22 +161,24 @@ def test_drop_database(fxtr_setup_logger_environment):
     db.driver.drop_database()
 
     # -------------------------------------------------------------------------
-    config_section = libs.cfg.DCR_CFG_SECTION
-    config_param = libs.cfg.DCR_CFG_DB_DIALECT
-
-    value_original = pytest.helpers.delete_config_param(config_section, config_param)
+    values_original = pytest.helpers.delete_config_param(
+        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DB_DIALECT
+    )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
     db.driver.drop_database()
 
-    pytest.helpers.restore_config_param(config_section, config_param, value_original)
+    pytest.helpers.restore_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        values_original,
+    )
 
     # -------------------------------------------------------------------------
-    config_section = libs.cfg.DCR_CFG_SECTION
-    config_param = libs.cfg.DCR_CFG_DB_DIALECT
-
-    value_original = pytest.helpers.store_config_param(
-        config_section, config_param, libs.cfg.INFORMATION_NOT_YET_AVAILABLE
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DB_DIALECT, libs.cfg.INFORMATION_NOT_YET_AVAILABLE),
+        ],
     )
 
     dcr.get_config()
@@ -163,7 +189,10 @@ def test_drop_database(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_DB_DIALECT: unknown DB dialect"
     assert expt.value.code == 1, "DCR_CFG_DB_DIALECT: unknown DB dialect"
 
-    pytest.helpers.restore_config_param(config_section, config_param, value_original)
+    pytest.helpers.restore_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        values_original,
+    )
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

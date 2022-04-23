@@ -28,11 +28,12 @@ def test_run_action_tokenize_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbo
     )
 
     # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"
-    )
-    value_original_tesseract_timeout = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
@@ -43,15 +44,9 @@ def test_run_action_tokenize_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbo
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TOKENIZE])
 
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
-        value_original_tesseract_timeout,
+        values_original,
     )
 
     # -------------------------------------------------------------------------

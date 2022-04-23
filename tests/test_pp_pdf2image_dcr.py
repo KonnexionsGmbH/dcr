@@ -30,16 +30,19 @@ def test_run_action_pdf_2_image_normal_jpeg_keep(fxtr_rmdir_opt, fxtr_setup_empt
     )
 
     # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
+            "false"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
 
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -87,8 +90,11 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+        ],
     )
 
     # -------------------------------------------------------------------------
@@ -107,10 +113,9 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
     )
 
     # -------------------------------------------------------------------------
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -136,26 +141,19 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
-    )
-
-    value_original_pdf2image_type = pytest.helpers.store_config_param(
+    values_original = pytest.helpers.backup_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_PDF2IMAGE_TYPE,
-        libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
 
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
-    )
-
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_PDF2IMAGE_TYPE, value_original_pdf2image_type
+        values_original,
     )
 
     # -------------------------------------------------------------------------

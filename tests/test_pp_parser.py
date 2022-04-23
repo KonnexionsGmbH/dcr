@@ -16,63 +16,41 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - coverage.
 # -----------------------------------------------------------------------------
-def test_run_action_store_from_parser_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+@pytest.mark.parametrize("verbose_parser", ["all", "none", "text"])
+def test_run_action_store_from_parser_coverage(
+    verbose_parser: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
+):
     """Test RUN_ACTION_STORE_FROM_PARSER - coverage."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         [
-            ("docx_coverage_1", "docx"),
+            ("pdf_mini", "pdf"),
         ],
         libs.cfg.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"
-    )
-    value_original_verbose_parser = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "none"
-    )
-    value_original_tetml_line = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_LINE, "true"
-    )
-    value_original_tetml_word = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_WORD, "true"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (libs.cfg.DCR_CFG_VERBOSE_PARSER, verbose_parser),
+            (libs.cfg.DCR_CFG_TETML_LINE, "true"),
+            (libs.cfg.DCR_CFG_TETML_WORD, "true"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_NON_PDF_2_PDF])
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_STORE_FROM_PARSER])
 
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_VERBOSE_PARSER,
-        value_original_verbose_parser,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TETML_LINE,
-        value_original_tetml_line,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TETML_WORD,
-        value_original_tetml_word,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -88,7 +66,7 @@ def test_run_action_store_from_parser_coverage(fxtr_rmdir_opt, fxtr_setup_empty_
         libs.cfg.directory_inbox_accepted,
         [],
         [
-            "docx_coverage_1_1.docx",
+            "pdf_mini_1.pdf",
         ],
     )
 
@@ -120,17 +98,14 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
     )
 
     # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"
-    )
-    value_original_tesseract_timeout = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"
-    )
-    value_original_tetml_line = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_LINE, "true"
-    )
-    value_original_tetml_word = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_WORD, "true"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (libs.cfg.DCR_CFG_TETML_LINE, "true"),
+            (libs.cfg.DCR_CFG_TETML_WORD, "true"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
@@ -145,25 +120,9 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_STORE_FROM_PARSER])
 
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
-        value_original_tesseract_timeout,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TETML_LINE,
-        value_original_tetml_line,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TETML_WORD,
-        value_original_tetml_word,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -215,17 +174,14 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
     )
 
     # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
-    )
-    value_original_tesseract_timeout = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"
-    )
-    value_original_tetml_line = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_LINE, "true"
-    )
-    value_original_tetml_word = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_WORD, "true"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (libs.cfg.DCR_CFG_TETML_LINE, "true"),
+            (libs.cfg.DCR_CFG_TETML_WORD, "true"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
@@ -240,25 +196,9 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_STORE_FROM_PARSER])
 
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TESSERACT_TIMEOUT,
-        value_original_tesseract_timeout,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TETML_LINE,
-        value_original_tetml_line,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TETML_WORD,
-        value_original_tetml_word,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -299,162 +239,6 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
         libs.cfg.directory_inbox_accepted,
         [],
         files_expected,
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
-        [],
-        [],
-    )
-
-    # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test RUN_ACTION_STORE_FROM_PARSER - verbose_parser - all.
-# -----------------------------------------------------------------------------
-def test_run_action_store_from_parser_verbose_parser_all(
-    fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
-):
-    """Test RUN_ACTION_STORE_FROM_PARSER - verbose_parser - all."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        [
-            ("pdf_mini", "pdf"),
-        ],
-        libs.cfg.directory_inbox,
-    )
-
-    # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"
-    )
-    value_original_verbose_parser = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "all"
-    )
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_NON_PDF_2_PDF])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_STORE_FROM_PARSER])
-
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
-    )
-
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_VERBOSE_PARSER,
-        value_original_verbose_parser,
-    )
-
-    # -------------------------------------------------------------------------
-    libs.cfg.logger.info(
-        "=========> test_run_action_store_from_parser_verbose_parser_all <========="
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
-        [],
-        [
-            "pdf_mini_1.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
-        [],
-        [],
-    )
-
-    # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test RUN_ACTION_STORE_FROM_PARSER - verbose_parser - text.
-# -----------------------------------------------------------------------------
-def test_run_action_store_from_parser_verbose_parser_text(
-    fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
-):
-    """Test RUN_ACTION_STORE_FROM_PARSER - verbose_parser - text."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        [
-            ("pdf_mini", "pdf"),
-        ],
-        libs.cfg.directory_inbox,
-    )
-
-    # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"
-    )
-    value_original_verbose_parser = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE_PARSER, "text"
-    )
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_NON_PDF_2_PDF])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
-
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_STORE_FROM_PARSER])
-
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
-    )
-
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_VERBOSE_PARSER,
-        value_original_verbose_parser,
-    )
-
-    # -------------------------------------------------------------------------
-    libs.cfg.logger.info(
-        "=========> test_run_action_store_from_parser_verbose_parser_text <========="
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
-        [],
-        [
-            "pdf_mini_1.pdf",
-        ],
     )
 
     pytest.helpers.verify_content_of_directory(

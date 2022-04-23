@@ -34,6 +34,37 @@ FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
 
 
 # -----------------------------------------------------------------------------
+# Backup and modify configuration parameter values.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def backup_config_params(
+    config_section: str,
+    config_params: List[Tuple[str, str]],
+) -> List[Tuple[str, str]]:
+    """Backup and modify configuration parameter values.
+
+    Args:
+        config_section (str): Configuration section.
+        config_params (List[Tuple[str, str]]): Configuration parameter modifications.
+
+    Returns:
+        List[Tuple[str, str]]: Original configuration parameter.
+    """
+    config_params_backup: List[Tuple[str, str]] = []
+
+    CONFIG_PARSER.read(libs.cfg.DCR_CFG_FILE)
+
+    for (config_param, config_value) in config_params:
+        config_params_backup.append((config_param, CONFIG_PARSER[config_section][config_param]))
+        CONFIG_PARSER[config_section][config_param] = config_value
+
+    with open(libs.cfg.DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
+        CONFIG_PARSER.write(configfile)
+
+    return config_params_backup
+
+
+# -----------------------------------------------------------------------------
 # Backup the 'setup.cfg' file.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
@@ -139,7 +170,7 @@ def delete_config_param(config_section: str, config_param: str) -> str:
         config_param (str): Configuration parameter.
 
     Returns:
-        str: Original configuration parameter value.
+        List[Tuple[str,str]]: Original configuration parameter.
     """
     CONFIG_PARSER.read(libs.cfg.DCR_CFG_FILE)
 
@@ -150,7 +181,7 @@ def delete_config_param(config_section: str, config_param: str) -> str:
     with open(libs.cfg.DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
-    return config_value_orig
+    return [(config_param, config_value_orig)]
 
 
 # -----------------------------------------------------------------------------
@@ -373,22 +404,21 @@ def help_run_action_process_inbox_normal(
 
 
 # -----------------------------------------------------------------------------
-# Restore the original configuration parameter value.
+# Restore the original configuration parameter.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def restore_config_param(
+def restore_config_params(
     config_section: str,
-    config_param: str,
-    config_value_orig: str,
+    config_params: List[Tuple[str, str]],
 ) -> None:
-    """Restore the original configuration parameter value.
+    """Restore the original configuration parameter.
 
     Args:
         config_section (str): Configuration section.
-        config_param (str): Configuration parameter.
-        config_value_orig (str): Original configuration parameter value.
+        config_params (List[Tuple[str, str]]): Configuration parameter modifications.
     """
-    CONFIG_PARSER[config_section][config_param] = config_value_orig
+    for (config_param, config_value) in config_params:
+        CONFIG_PARSER[config_section][config_param] = config_value
 
     with open(libs.cfg.DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)

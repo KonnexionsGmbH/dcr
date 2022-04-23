@@ -82,7 +82,6 @@ def test_run_action_process_inbox_accepted(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_INBOX - accepted - delete_auxiliary_file.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_process_inbox_accepted_delete_auxiliary_file(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_INBOX - accepted delete_auxiliary_file."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
@@ -94,8 +93,11 @@ def test_run_action_process_inbox_accepted_delete_auxiliary_file(fxtr_setup_empt
     pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext)], libs.cfg.directory_inbox)
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
@@ -106,8 +108,9 @@ def test_run_action_process_inbox_accepted_delete_auxiliary_file(fxtr_setup_empt
         os.path.join(libs.cfg.directory_inbox_accepted, "pdf_text_ok_1.pdf")
     )
 
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, value_original
+    pytest.helpers.restore_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -269,16 +272,18 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
         conn.close()
 
     # -------------------------------------------------------------------------
-    value_original_verbose = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_VERBOSE, "false"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_VERBOSE, "false"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_VERBOSE,
-        value_original_verbose,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -352,14 +357,18 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
     )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "true"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "true"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
+    pytest.helpers.restore_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -404,8 +413,11 @@ def test_run_action_process_inbox_normal(fxtr_setup_empty_db_and_inbox):
     pytest.helpers.copy_files_4_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
 
     # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
@@ -414,10 +426,9 @@ def test_run_action_process_inbox_normal(fxtr_setup_empty_db_and_inbox):
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -473,15 +484,20 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
-    value_original = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "false"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_IGNORE_DUPLICATES, "false"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_IGNORE_DUPLICATES, value_original
+    pytest.helpers.restore_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        values_original,
     )
+
     # -------------------------------------------------------------------------
     libs.cfg.logger.info("=========> test_run_action_process_inbox_rejected <=========")
 

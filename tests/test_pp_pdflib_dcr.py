@@ -16,7 +16,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TEXT_FROM_PDF - normal - keep.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_extract_text_from_pdf_normal_keep(
     fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
 ):
@@ -32,34 +31,22 @@ def test_run_action_extract_text_from_pdf_normal_keep(
     )
 
     # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
-    )
-    value_original_tetml_line = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_LINE, "true"
-    )
-    value_original_tetml_word = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_TETML_WORD, "true"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.DCR_CFG_TETML_LINE, "true"),
+            (libs.cfg.DCR_CFG_TETML_WORD, "true"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
 
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TETML_LINE,
-        value_original_tetml_line,
-    )
-    pytest.helpers.restore_config_param(
-        libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_TETML_WORD,
-        value_original_tetml_word,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -94,7 +81,6 @@ def test_run_action_extract_text_from_pdf_normal_keep(
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TEXT_FROM_PDF - normal - keep - only page.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_extract_text_from_pdf_normal_keep_only_page(
     fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
 ):
@@ -110,18 +96,20 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(
     )
 
     # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
 
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -171,8 +159,11 @@ def test_run_action_extract_text_from_pdf_rej_file_open(
     )
 
     # -------------------------------------------------------------------------
-    value_original_delete_auxiliary_files = pytest.helpers.store_config_param(
-        libs.cfg.DCR_CFG_SECTION, libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.DCR_CFG_SECTION,
+        [
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+        ],
     )
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
@@ -190,10 +181,9 @@ def test_run_action_extract_text_from_pdf_rej_file_open(
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
 
-    pytest.helpers.restore_config_param(
+    pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
-        libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-        value_original_delete_auxiliary_files,
+        values_original,
     )
 
     # -------------------------------------------------------------------------

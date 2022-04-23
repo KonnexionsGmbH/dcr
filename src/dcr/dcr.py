@@ -828,11 +828,12 @@ def validate_config_tetml_page() -> None:
         if libs.cfg.config[libs.cfg.DCR_CFG_TETML_PAGE].lower() == "false":
             libs.cfg.is_tetml_page = False
 
-    if not (libs.cfg.is_tetml_line or libs.cfg.is_tetml_page):
-        libs.utils.terminate_fatal(
-            "At least one of the configuration parameters 'tetml_line' or "
-            + "'tetml_page' must be 'true'"
-        )
+    if not libs.cfg.is_tetml_page:
+        if not libs.cfg.is_tetml_line:
+            libs.utils.terminate_fatal(
+                "At least one of the configuration parameters 'tetml_line' or "
+                + "'tetml_page' must be 'true'"
+            )
 
 
 # -----------------------------------------------------------------------------
