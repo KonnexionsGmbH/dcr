@@ -33,8 +33,7 @@ def test_run_action_pdf_2_image_normal_jpeg_keep(fxtr_rmdir_opt, fxtr_setup_empt
     values_original = pytest.helpers.backup_config_params(
         libs.cfg.DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES,
-            "false"),
+            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
     )
 
