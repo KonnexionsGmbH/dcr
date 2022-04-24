@@ -140,7 +140,7 @@ def insert_content_tetml_line() -> None:
             {
                 db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
                 db.cfg.DBC_PAGE_NO: libs.cfg.parse_result_no_pages_in_doc,
-                db.cfg.DBC_PAGE_LINES: libs.cfg.parse_result_page_lines,
+                db.cfg.DBC_PAGE_DATA: libs.cfg.parse_result_page_lines,
             },
         )
 
@@ -166,7 +166,7 @@ def insert_content_tetml_word() -> None:
             {
                 db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
                 db.cfg.DBC_PAGE_NO: libs.cfg.parse_result_no_pages_in_doc,
-                db.cfg.DBC_PAGE_WORDS: libs.cfg.parse_result_page_words,
+                db.cfg.DBC_PAGE_DATA: libs.cfg.parse_result_page_words,
             },
         )
 

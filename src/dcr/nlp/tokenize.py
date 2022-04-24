@@ -14,6 +14,26 @@ from sqlalchemy import Table
 
 
 # -----------------------------------------------------------------------------
+# Extract the text from the page lines.
+# -----------------------------------------------------------------------------
+def get_text_from_page_lines(page_data: Dict[str, str | List[Dict[str, int | str]]]) -> str:
+    """Extract the text from the page data.
+
+    Args:
+        page_data (Dict[str, str | List[Dict[str, int | str]]]): Page data.
+
+    Returns:
+        str: Reconstructed text.
+    """
+    text_lines = []
+
+    for page_line in page_data[db.cfg.JSON_NAME_PAGE_LINES]:
+        text_lines.append(page_line[db.cfg.JSON_NAME_LINE_TEXT])
+
+    return "\n".join(text_lines)
+
+
+# -----------------------------------------------------------------------------
 # Create document tokens (step: tkn).
 # -----------------------------------------------------------------------------
 def tokenize() -> None:
@@ -23,7 +43,11 @@ def tokenize() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt_content_tetml_page: Table = db.orm.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_PAGE)
+    if libs.cfg.is_tetml_line:
+        dbt_content_tetml: Table = db.orm.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_LINE)
+    else:
+        dbt_content_tetml: Table = db.orm.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_PAGE)
+
     dbt_document = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     nlp: Language
@@ -47,7 +71,7 @@ def tokenize() -> None:
                 nlp = spacy.load(spacy_model)
                 spacy_model_current = spacy_model
 
-            tokenize_document(nlp, dbt_content_tetml_page)
+            tokenize_document(nlp, dbt_content_tetml)
 
             # Document successfully converted to pdf format
             duration_ns = libs.utils.finalize_file_processing()
@@ -77,13 +101,15 @@ def tokenize_document(nlp: Language, dbt_content: Table) -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = db.orm.dml.select_content_tetml_page(conn, dbt_content, libs.cfg.document_id_base)
+        rows = db.orm.dml.select_content_tetml(conn, dbt_content, libs.cfg.document_id_base)
 
         for row in rows:
             page_tokens: List[Dict[str, bool | str]] = []
 
             page_no = row[0]
-            for token in nlp(row[1]):
+            text = get_text_from_page_lines(row[1]) if libs.cfg.is_tetml_line else row[1]
+
+            for token in nlp(text):
                 page_tokens.append(
                     {
                         db.cfg.JSON_NAME_TOKEN_TEXT: token.text,
@@ -103,7 +129,7 @@ def tokenize_document(nlp: Language, dbt_content: Table) -> None:
                 {
                     db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
                     db.cfg.DBC_PAGE_NO: page_no,
-                    db.cfg.DBC_PAGE_TOKENS: page_tokens,
+                    db.cfg.DBC_PAGE_DATA: page_tokens,
                 },
             )
 

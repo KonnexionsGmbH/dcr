@@ -191,7 +191,9 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_line <=========")
+    libs.cfg.logger.info(
+        "=========> test_run_action_extract_text_from_pdf_rej_file_open_line <========="
+    )
 
     pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox,
@@ -240,6 +242,8 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(
         libs.cfg.DCR_CFG_SECTION,
         [
             (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.DCR_CFG_TETML_LINE, "false"),
+            (libs.cfg.DCR_CFG_TETML_PAGE, "true"),
         ],
     )
 
@@ -264,7 +268,9 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_page <=========")
+    libs.cfg.logger.info(
+        "=========> test_run_action_extract_text_from_pdf_rej_file_open_page <========="
+    )
 
     pytest.helpers.verify_content_of_directory(
         libs.cfg.directory_inbox,

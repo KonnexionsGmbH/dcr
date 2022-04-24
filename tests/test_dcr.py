@@ -393,7 +393,6 @@ def test_get_config_tetml_line(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
-
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 

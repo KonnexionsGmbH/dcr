@@ -7,7 +7,7 @@
 
 ## 1. Operating System
 
-Continuous delivery / integration (CD/CI) runs on **`Ubunto 18.04`**, **`Ubuntu 20.04`**~~, **`Windows Server 2019`** and **`Windows Server 2022`**~~.
+Continuous delivery / integration (CD/CI) runs on **`Ubunto 20.04`**, **`Ubuntu 22.04`**~~, **`Windows Server 2019`** and **`Windows Server 2022`**~~.
 This means that **DCR** also runs under **`Windows 10`** and **`Windows 11`**. 
 For the Windowes operating systems, only additional the functionality of the **`grep`**, **`make`**  and **`sed`** tools must be made available, e.g. via [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm){:target="_blank"}, [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} or [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}.
 

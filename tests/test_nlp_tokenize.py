@@ -15,7 +15,12 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TOKENIZE - normal.
 # -----------------------------------------------------------------------------
-def test_run_action_tokenize_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+@pytest.mark.parametrize(
+    "tetml_line, tetml_page", [("false", "true"), ("true", "false"), ("true", "true")]
+)
+def test_run_action_tokenize_normal(
+    tetml_line: str, tetml_page: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
+):
     """Test RUN_ACTION_TOKENIZE - normal."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
@@ -32,7 +37,8 @@ def test_run_action_tokenize_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbo
         libs.cfg.DCR_CFG_SECTION,
         [
             (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (libs.cfg.DCR_CFG_TETML_LINE, tetml_line),
+            (libs.cfg.DCR_CFG_TETML_PAGE, tetml_page),
         ],
     )
 

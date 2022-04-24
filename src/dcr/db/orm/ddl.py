@@ -181,7 +181,7 @@ def create_dbt_content_tetml_line(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(
-            db.cfg.DBC_PAGE_LINES,
+            db.cfg.DBC_PAGE_DATA,
             sqlalchemy.JSON,
             nullable=False,
         ),
@@ -233,7 +233,7 @@ def create_dbt_content_tetml_page(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(
-            db.cfg.DBC_PAGE_TEXT,
+            db.cfg.DBC_PAGE_DATA,
             sqlalchemy.TEXT,
             nullable=False,
         ),
@@ -285,7 +285,7 @@ def create_dbt_content_tetml_word(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(
-            db.cfg.DBC_PAGE_WORDS,
+            db.cfg.DBC_PAGE_DATA,
             sqlalchemy.JSON,
             nullable=False,
         ),
@@ -337,7 +337,7 @@ def create_dbt_content_token(table_name: str) -> None:
             nullable=False,
         ),
         sqlalchemy.Column(
-            db.cfg.DBC_PAGE_TOKENS,
+            db.cfg.DBC_PAGE_DATA,
             sqlalchemy.JSON,
             nullable=False,
         ),

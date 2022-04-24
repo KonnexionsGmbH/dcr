@@ -169,7 +169,7 @@ def dml_prepare(dbt_name: str) -> Table:
 # -----------------------------------------------------------------------------
 # Select the content pages to be processed.
 # -----------------------------------------------------------------------------
-def select_content_tetml_page(
+def select_content_tetml(
     conn: Connection, dbt: Table, document_id: sqlalchemy.Integer
 ) -> engine.CursorResult:
     """Select the content pages to be processed.
@@ -185,7 +185,7 @@ def select_content_tetml_page(
     return conn.execute(
         select(
             dbt.c.page_no,
-            dbt.c.page_text,
+            dbt.c.page_data,
         )
         .where(
             dbt.c.document_id == document_id,
