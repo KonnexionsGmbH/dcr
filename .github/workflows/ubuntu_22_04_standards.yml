@@ -41,6 +41,10 @@ jobs:
         run: make lint
       - name: Create the documentation and upload it
         run: make docs
+      - name: Create a PostgreSQL container
+        run: |
+            chmod +x ./scripts/run_setup_postgresql.sh
+            ./scripts/run_setup_postgresql.sh test
       - name: Install Step 1 - Necessary system software (incl. Poppler & TeX Live)
         run: |
             sudo apt-get update  -y
