@@ -142,8 +142,8 @@ The customisable entries are:
     initial_database_data = data/initial_database_data.json
     pdf2image_type = jpeg
     simulate_parser = false
-    tetml_line = false
-    tetml_page = true
+    tetml_line = true
+    tetml_page = false
     tetml_word = false
     tesseract_timeout = 10
     verbose = true
@@ -172,8 +172,8 @@ The customisable entries are:
 | pdfimage_type            | **`jpeg`**                            | format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**      |
 | simulate_parser          | **`false`**                           | simulate the parsing process for testing purposes                                           |
 | tesseract_timeout        | **`10`**                              | terminate the tesseract job after a <br>period of time (seconds)                            |
-| tetml_line               | **`false`**                           | PDFlib TET granularity 'line'                                                               |
-| tetml_page               | **`true`**                            | PDFlib TET granularity 'page'                                                               |
+| tetml_line               | **`true`**                            | PDFlib TET granularity 'line'                                                               |
+| tetml_page               | **`false`**                           | PDFlib TET granularity 'page'                                                               |
 | tetml_word               | **`false`**                           | PDFlib TET granularity 'word'                                                               |
 | verbose                  | **`true`**                            | display progress messages for processing                                                    |
 | verbose_parser           | **`none`**                            | display progress messages for parsing xml (TETML) : <br>**`all`**, **`none`** or **`text`** |

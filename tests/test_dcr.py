@@ -365,7 +365,7 @@ def test_get_config_tetml_line(fxtr_setup_logger_environment):
 
     dcr.get_config()
 
-    assert not libs.cfg.is_tetml_line, "DCR_CFG_TETML_LINE: false (not true)"
+    assert libs.cfg.is_tetml_line, "DCR_CFG_TETML_LINE: true (not false)"
 
     pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
@@ -376,18 +376,23 @@ def test_get_config_tetml_line(fxtr_setup_logger_environment):
     values_original = pytest.helpers.backup_config_params(
         libs.cfg.DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_TETML_LINE, "tRUE"),
+            (libs.cfg.DCR_CFG_TETML_LINE, "fALSE"),
+            (libs.cfg.DCR_CFG_TETML_PAGE, "true"),
         ],
     )
 
     dcr.get_config()
 
-    assert libs.cfg.is_tetml_line, "DCR_CFG_TETML_LINE: true"
+    assert not libs.cfg.is_tetml_line, "DCR_CFG_TETML_LINE: false"
 
     pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
         values_original,
     )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -404,7 +409,7 @@ def test_get_config_tetml_line_page(fxtr_setup_logger_environment):
     values_original = pytest.helpers.backup_config_params(
         libs.cfg.DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_TETML_PAGE, "false"),
+            (libs.cfg.DCR_CFG_TETML_LINE, "false"),
         ],
     )
 
@@ -444,7 +449,7 @@ def test_get_config_tetml_page(fxtr_setup_logger_environment):
 
     dcr.get_config()
 
-    assert libs.cfg.is_tetml_page, "DCR_CFG_TETML_PAGE: true (not false)"
+    assert not libs.cfg.is_tetml_page, "DCR_CFG_TETML_PAGE: false (not true)"
 
     pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,
@@ -455,14 +460,13 @@ def test_get_config_tetml_page(fxtr_setup_logger_environment):
     values_original = pytest.helpers.backup_config_params(
         libs.cfg.DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_TETML_LINE, "true"),
-            (libs.cfg.DCR_CFG_TETML_PAGE, "fALSE"),
+            (libs.cfg.DCR_CFG_TETML_PAGE, "tRUE"),
         ],
     )
 
     dcr.get_config()
 
-    assert not libs.cfg.is_tetml_page, "DCR_CFG_TETML_PAGE: false"
+    assert libs.cfg.is_tetml_page, "DCR_CFG_TETML_PAGE: true"
 
     pytest.helpers.restore_config_params(
         libs.cfg.DCR_CFG_SECTION,

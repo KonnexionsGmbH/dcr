@@ -100,6 +100,8 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(
         libs.cfg.DCR_CFG_SECTION,
         [
             (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.DCR_CFG_TETML_LINE, "false"),
+            (libs.cfg.DCR_CFG_TETML_PAGE, "true"),
         ],
     )
 

@@ -178,8 +178,8 @@ is_ignore_duplicates: bool
 is_parsing_line: bool
 is_parsing_word: bool
 is_simulate_parser: bool = False
-is_tetml_line: bool = False
-is_tetml_page: bool = True
+is_tetml_line: bool = True
+is_tetml_page: bool = False
 is_tetml_word: bool = False
 is_verbose: bool = True
 

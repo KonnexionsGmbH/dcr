@@ -810,11 +810,11 @@ def validate_config_tesseract_timeout() -> None:
 # -----------------------------------------------------------------------------
 def validate_config_tetml_line() -> None:
     """Validate the configuration parameters - tetml_line."""
-    libs.cfg.is_tetml_line = False
+    libs.cfg.is_tetml_line = True
 
     if libs.cfg.DCR_CFG_TETML_LINE in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_TETML_LINE].lower() == "true":
-            libs.cfg.is_tetml_line = True
+        if libs.cfg.config[libs.cfg.DCR_CFG_TETML_LINE].lower() == "false":
+            libs.cfg.is_tetml_line = False
 
 
 # -----------------------------------------------------------------------------
@@ -822,11 +822,11 @@ def validate_config_tetml_line() -> None:
 # -----------------------------------------------------------------------------
 def validate_config_tetml_page() -> None:
     """Validate the configuration parameters - tetml_page."""
-    libs.cfg.is_tetml_page = True
+    libs.cfg.is_tetml_page = False
 
     if libs.cfg.DCR_CFG_TETML_PAGE in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_TETML_PAGE].lower() == "false":
-            libs.cfg.is_tetml_page = False
+        if libs.cfg.config[libs.cfg.DCR_CFG_TETML_PAGE].lower() == "true":
+            libs.cfg.is_tetml_page = True
 
     if not libs.cfg.is_tetml_page:
         if not libs.cfg.is_tetml_line:
