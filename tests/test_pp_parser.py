@@ -1,6 +1,6 @@
 # pylint: disable=unused-argument
 """Testing Module pp.parser."""
-from typing import List
+import typing
 
 import libs.cfg
 import pytest
@@ -10,6 +10,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
+# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -28,17 +29,17 @@ def test_run_action_store_from_parser_coverage(
         [
             ("pdf_mini", "pdf"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (libs.cfg.DCR_CFG_VERBOSE_PARSER, verbose_parser),
-            (libs.cfg.DCR_CFG_TETML_LINE, "true"),
-            (libs.cfg.DCR_CFG_TETML_WORD, "true"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (libs.cfg.config._DCR_CFG_VERBOSE_PARSER, verbose_parser),
+            (libs.cfg.config._DCR_CFG_TETML_LINE, "true"),
+            (libs.cfg.config._DCR_CFG_TETML_WORD, "true"),
         ],
     )
 
@@ -49,7 +50,7 @@ def test_run_action_store_from_parser_coverage(
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_STORE_FROM_PARSER])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -57,13 +58,13 @@ def test_run_action_store_from_parser_coverage(
     libs.cfg.logger.info("=========> test_run_action_store_from_parser_coverage <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         [
             "pdf_mini_1.pdf",
@@ -71,7 +72,7 @@ def test_run_action_store_from_parser_coverage(
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -94,17 +95,17 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
             ("pdf_scanned_ok", "pdf"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"),
-            (libs.cfg.DCR_CFG_TETML_LINE, "true"),
-            (libs.cfg.DCR_CFG_TETML_WORD, "true"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (libs.cfg.config._DCR_CFG_TETML_LINE, "true"),
+            (libs.cfg.config._DCR_CFG_TETML_WORD, "true"),
         ],
     )
 
@@ -121,7 +122,7 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_STORE_FROM_PARSER])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -129,25 +130,25 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
     libs.cfg.logger.info("=========> test_run_action_store_from_parser_normal <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
-    files_expected: List = [
+    files_expected: typing.List = [
         "pdf_mini_1.pdf",
         "pdf_scanned_ok_3.pdf",
         "translating_sql_into_relational_algebra_p01_02_5.pdf",
     ]
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         files_expected,
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -170,17 +171,17 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
             ("pdf_scanned_ok", "pdf"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"),
-            (libs.cfg.DCR_CFG_TETML_LINE, "true"),
-            (libs.cfg.DCR_CFG_TETML_WORD, "true"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (libs.cfg.config._DCR_CFG_TETML_LINE, "true"),
+            (libs.cfg.config._DCR_CFG_TETML_WORD, "true"),
         ],
     )
 
@@ -197,7 +198,7 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_STORE_FROM_PARSER])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -205,12 +206,12 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
     libs.cfg.logger.info("=========> test_run_action_store_from_parser_normal_keep <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
-    files_expected: List = [
+    files_expected: typing.List = [
         "pdf_mini_1.pdf",
         "pdf_mini_1.line.xml",
         "pdf_mini_1.word.xml",
@@ -236,13 +237,13 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
     #     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         files_expected,
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )

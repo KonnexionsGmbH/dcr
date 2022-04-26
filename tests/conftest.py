@@ -8,10 +8,9 @@ Returns:
 """
 import configparser
 import os
+import pathlib
 import shutil
-from pathlib import Path
-from typing import List
-from typing import Tuple
+import typing
 
 import db.cfg
 import db.driver
@@ -19,14 +18,15 @@ import db.orm.connection
 import libs.cfg
 import libs.utils
 import pytest
-from sqlalchemy import Table
-from sqlalchemy import delete
+import setup.config
+import sqlalchemy
 
 import dcr
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
+# pylint: disable=W0212
 CONFIG_PARSER: configparser.ConfigParser = configparser.ConfigParser()
 
 FILE_NAME_SETUP_CFG: str = "setup.cfg"
@@ -39,26 +39,28 @@ FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
 @pytest.helpers.register
 def backup_config_params(
     config_section: str,
-    config_params: List[Tuple[str, str]],
-) -> List[Tuple[str, str]]:
+    config_params: typing.List[typing.Tuple[str, str]],
+) -> typing.List[typing.Tuple[str, str]]:
     """Backup and modify configuration parameter values.
 
     Args:
         config_section (str): Configuration section.
-        config_params (List[Tuple[str, str]]): Configuration parameter modifications.
+        config_params (typing.List[typing.Tuple[str, str]]): Configuration parameter modifications.
 
     Returns:
-        List[Tuple[str, str]]: Original configuration parameter.
+        typing.List[typing.Tuple[str, str]]: Original configuration parameter.
     """
-    config_params_backup: List[Tuple[str, str]] = []
+    config_params_backup: typing.List[typing.Tuple[str, str]] = []
 
-    CONFIG_PARSER.read(libs.cfg.DCR_CFG_FILE)
+    CONFIG_PARSER.read(libs.cfg.config._DCR_CFG_FILE)
 
     for (config_param, config_value) in config_params:
         config_params_backup.append((config_param, CONFIG_PARSER[config_section][config_param]))
         CONFIG_PARSER[config_section][config_param] = config_value
 
-    with open(libs.cfg.DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
+    with open(
+        libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT
+    ) as configfile:
         CONFIG_PARSER.write(configfile)
 
     return config_params_backup
@@ -79,13 +81,13 @@ def backup_setup_cfg() -> None:
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def copy_directories_4_pytest_2_dir(
-    source_directories: List[str],
+    source_directories: typing.List[str],
     target_dir: str,
 ) -> None:
     """Copy directories from the sample test file directory.
 
     Args:
-        source_directories: List[str]: Source directory names.
+        source_directories: typing.List[str]: Source directory names.
         target_dir: str: Target directory.
     """
     assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), (
@@ -94,11 +96,11 @@ def copy_directories_4_pytest_2_dir(
 
     for source in source_directories:
         source_dir = libs.cfg.TESTS_INBOX_NAME + "/" + source
-        source_path = os.path.join(libs.cfg.TESTS_INBOX_NAME, Path(source))
+        source_path = os.path.join(libs.cfg.TESTS_INBOX_NAME, pathlib.Path(source))
         assert os.path.isdir(source_path), (
             "source language directory '" + str(source_path) + "' missing"
         )
-        target_path = os.path.join(target_dir, Path(source))
+        target_path = os.path.join(target_dir, pathlib.Path(source))
         shutil.copytree(source_dir, target_path)
 
 
@@ -107,13 +109,21 @@ def copy_directories_4_pytest_2_dir(
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def copy_files_4_pytest(
-    file_list: List[Tuple[Tuple[str, str | None], Tuple[Path, List[str], str | None]]]
+    file_list: typing.List[
+        typing.Tuple[
+            typing.Tuple[str, str | None], typing.Tuple[pathlib.Path, typing.List[str], str | None]
+        ]
+    ]
 ) -> None:
     """Copy files from the sample test file directory.
 
     Args:
-        file_list (List[Tuple[Tuple[str, str | None], Tuple[Path, List[str], str | None]]]):
-                  List of files to be copied.
+        file_list (typing.List[
+            typing.Tuple[
+                typing.Tuple[str, str | None],
+                typing.Tuple[pathlib.Path, typing.List[str], str | None]
+            ]
+        ]): typing.List of files to be copied.
     """
     assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), (
         "source directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
@@ -144,13 +154,13 @@ def copy_files_4_pytest(
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def copy_files_4_pytest_2_dir(
-    source_files: List[Tuple[str, str | None]],
-    target_path: Path,
+    source_files: typing.List[typing.Tuple[str, str | None]],
+    target_path: pathlib.Path,
 ) -> None:
     """Copy files from the sample test file directory.
 
     Args:
-        source_files: List[Tuple[str, str | None]]: Source file names.
+        source_files: typing.List[typing.Tuple[str, str | None]]: Source file names.
         target_path: Path: Target directory.
     """
     for source_file in source_files:
@@ -162,7 +172,9 @@ def copy_files_4_pytest_2_dir(
 # Delete the original configuration parameter value.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def delete_config_param(config_section: str, config_param: str) -> str:
+def delete_config_param(
+    config_section: str, config_param: str
+) -> typing.List[typing.Tuple[str, str]]:
     """Delete the original configuration parameter value.
 
     Args:
@@ -170,15 +182,17 @@ def delete_config_param(config_section: str, config_param: str) -> str:
         config_param (str): Configuration parameter.
 
     Returns:
-        List[Tuple[str,str]]: Original configuration parameter.
+        typing.List[typing.Tuple[str,str]]: Original configuration parameter.
     """
-    CONFIG_PARSER.read(libs.cfg.DCR_CFG_FILE)
+    CONFIG_PARSER.read(libs.cfg.config._DCR_CFG_FILE)
 
     config_value_orig = CONFIG_PARSER[config_section][config_param]
 
     del CONFIG_PARSER[config_section][config_param]
 
-    with open(libs.cfg.DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
+    with open(
+        libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT
+    ) as configfile:
         CONFIG_PARSER.write(configfile)
 
     return [(config_param, config_value_orig)]
@@ -193,12 +207,12 @@ def delete_version_version():
     db.orm.connection.connect_db()
 
     with db.cfg.db_orm_engine.begin() as conn:
-        version = Table(
+        version = sqlalchemy.Table(
             db.cfg.DBT_VERSION,
             db.cfg.db_orm_metadata,
             autoload_with=db.cfg.db_orm_engine,
         )
-        conn.execute(delete(version))
+        conn.execute(sqlalchemy.delete(version))
 
     db.orm.connection.disconnect_db()
 
@@ -274,18 +288,18 @@ def fxtr_setup_empty_db_and_inbox(
 
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
 
-    fxtr_rmdir_opt(libs.cfg.directory_inbox)
-    fxtr_mkdir(libs.cfg.directory_inbox)
-    fxtr_rmdir_opt(libs.cfg.directory_inbox_accepted)
-    fxtr_mkdir(libs.cfg.directory_inbox_accepted)
-    fxtr_rmdir_opt(libs.cfg.directory_inbox_rejected)
-    fxtr_mkdir(libs.cfg.directory_inbox_rejected)
+    fxtr_rmdir_opt(libs.cfg.config.directory_inbox)
+    fxtr_mkdir(libs.cfg.config.directory_inbox)
+    fxtr_rmdir_opt(libs.cfg.config.directory_inbox_accepted)
+    fxtr_mkdir(libs.cfg.config.directory_inbox_accepted)
+    fxtr_rmdir_opt(libs.cfg.config.directory_inbox_rejected)
+    fxtr_mkdir(libs.cfg.config.directory_inbox_rejected)
 
     yield
 
-    fxtr_rmdir_opt(libs.cfg.directory_inbox_rejected)
-    fxtr_rmdir_opt(libs.cfg.directory_inbox_accepted)
-    fxtr_rmdir_opt(libs.cfg.directory_inbox)
+    fxtr_rmdir_opt(libs.cfg.config.directory_inbox_rejected)
+    fxtr_rmdir_opt(libs.cfg.config.directory_inbox_accepted)
+    fxtr_rmdir_opt(libs.cfg.config.directory_inbox)
 
     db.driver.drop_database()
 
@@ -309,7 +323,9 @@ def fxtr_setup_logger():
 @pytest.fixture()
 def fxtr_setup_logger_environment():
     """Fixture: Setup logger & environment."""
-    libs.cfg.environment_type = libs.cfg.ENVIRONMENT_TYPE_TEST
+    libs.cfg.config = setup.config.Config()
+
+    libs.cfg.config.environment_type = libs.cfg.config._ENVIRONMENT_TYPE_TEST
 
     backup_setup_cfg()
 
@@ -329,12 +345,12 @@ def help_run_action_all_complete_duplicate_file(
 ) -> None:
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [(stem_name_1, file_ext_1)], libs.cfg.directory_inbox_accepted
+        [(stem_name_1, file_ext_1)], libs.cfg.config.directory_inbox_accepted
     )
 
     os.rename(
-        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
-        os.path.join(libs.cfg.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
+        os.path.join(libs.cfg.config.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
+        os.path.join(libs.cfg.config.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
     )
 
     # -------------------------------------------------------------------------
@@ -342,19 +358,19 @@ def help_run_action_all_complete_duplicate_file(
 
     # -------------------------------------------------------------------------
     verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
     verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         [stem_name_1 + "_1." + file_ext_1, stem_name_2 + "." + file_ext_2],
     )
 
     verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -369,7 +385,9 @@ def help_run_action_process_inbox_normal(
     file_ext,
 ):
     """Help RUN_ACTION_PROCESS_INBOX - normal."""
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name, file_ext)], libs.cfg.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        [(stem_name, file_ext)], libs.cfg.config.directory_inbox
+    )
 
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
@@ -377,25 +395,25 @@ def help_run_action_process_inbox_normal(
     document_id: int = 1
 
     file_p_i = (
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [stem_name, str(document_id)],
         file_ext,
     )
 
     verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
     verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         [stem_name + "_" + str(document_id) + "." + file_ext],
     )
 
     verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -404,26 +422,54 @@ def help_run_action_process_inbox_normal(
 
 
 # -----------------------------------------------------------------------------
+# Insert a new configuration parameter.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def insert_config_param(
+    config_section: str,
+    config_param: str,
+    config_value_new: str,
+) -> None:
+    """Insert a new configuration parameter.
+
+    Args:
+        config_section (str): Configuration section.
+        config_param (str): Configuration parameter.
+        config_value_new (str): New configuration parameter value.
+    """
+    CONFIG_PARSER.read(libs.cfg.config._DCR_CFG_FILE)
+
+    CONFIG_PARSER[config_section][config_param] = config_value_new
+
+    with open(
+        libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT
+    ) as configfile:
+        CONFIG_PARSER.write(configfile)
+
+
+# -----------------------------------------------------------------------------
 # Restore the original configuration parameter.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def restore_config_params(
     config_section: str,
-    config_params: List[Tuple[str, str]],
+    config_params: typing.List[typing.Tuple[str, str]],
 ) -> None:
     """Restore the original configuration parameter.
 
     Args:
         config_section (str): Configuration section.
-        config_params (List[Tuple[str, str]]): Configuration parameter modifications.
+        config_params (typing.List[typing.Tuple[str, str]]): Configuration parameter modifications.
     """
     for (config_param, config_value) in config_params:
         CONFIG_PARSER[config_section][config_param] = config_value
 
-    with open(libs.cfg.DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
+    with open(
+        libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT
+    ) as configfile:
         CONFIG_PARSER.write(configfile)
 
-    dcr.get_config()
+    libs.cfg.config = setup.config.Config()
 
 
 # -----------------------------------------------------------------------------
@@ -441,7 +487,7 @@ def restore_setup_cfg():
 # Run before all tests.
 # -----------------------------------------------------------------------------
 @pytest.fixture(scope="session", autouse=True)
-def setup():
+def setup_dcr():
     """Run before all tests."""
     dcr.initialise_logger()
 
@@ -465,13 +511,15 @@ def store_config_param(
     Returns:
         str: Original configuration parameter value.
     """
-    CONFIG_PARSER.read(libs.cfg.DCR_CFG_FILE)
+    CONFIG_PARSER.read(libs.cfg.config._DCR_CFG_FILE)
 
     config_value_orig = CONFIG_PARSER[config_section][config_param]
 
     CONFIG_PARSER[config_section][config_param] = config_value_new
 
-    with open(libs.cfg.DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
+    with open(
+        libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT
+    ) as configfile:
         CONFIG_PARSER.write(configfile)
 
     return config_value_orig
@@ -483,18 +531,18 @@ def store_config_param(
 @pytest.helpers.register
 def verify_content_of_directory(
     directory_name: str,
-    expected_directories: List[str],
-    expected_files: List[str],
+    expected_directories: typing.List[str],
+    expected_files: typing.List[str],
 ) -> None:
     """Verify the content of a file directory.
 
     Args:
         directory_name: str:
                    Name of the file directory to be checked.
-        expected_directories: List[str]:
-                   List of the expected directory names.
-        expected_files: List[str]:
-                   List of the expected file names.
+        expected_directories: typing.List[str]:
+                   typing.List of the expected directory names.
+        expected_files: typing.List[str]:
+                   typing.List of the expected file names.
     """
     libs.cfg.logger.info("directory name   =%s", directory_name)
 

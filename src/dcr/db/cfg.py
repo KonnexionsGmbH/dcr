@@ -1,10 +1,8 @@
 """Module db.cfg: Database Configuration Data."""
-from typing import List
+import typing
 
-from psycopg2.extensions import connection
-from psycopg2.extensions import cursor
-from sqlalchemy import MetaData
-from sqlalchemy.engine import Engine
+import psycopg2.extensions
+import sqlalchemy
 
 # -----------------------------------------------------------------------------
 # Global Constants.
@@ -81,7 +79,7 @@ DOCUMENT_ERROR_CODE_REJ_PDFLIB: str = "Issue with PDFlib TET"
 DOCUMENT_ERROR_CODE_REJ_TESSERACT: str = "Issue with Tesseract OCR"
 
 DOCUMENT_FILE_TYPE_JPG: str = "jpg"
-DOCUMENT_FILE_TYPE_PANDOC: List[str] = [
+DOCUMENT_FILE_TYPE_PANDOC: typing.List[str] = [
     "csv",
     "docx",
     "epub",
@@ -92,7 +90,7 @@ DOCUMENT_FILE_TYPE_PANDOC: List[str] = [
 ]
 DOCUMENT_FILE_TYPE_PDF: str = "pdf"
 DOCUMENT_FILE_TYPE_PNG: str = "png"
-DOCUMENT_FILE_TYPE_TESSERACT: List[str] = [
+DOCUMENT_FILE_TYPE_TESSERACT: typing.List[str] = [
     "bmp",
     "gif",
     "jp2",
@@ -107,6 +105,10 @@ DOCUMENT_FILE_TYPE_TESSERACT: List[str] = [
 DOCUMENT_FILE_TYPE_TIF: str = "tif"
 DOCUMENT_FILE_TYPE_TIFF: str = "tiff"
 DOCUMENT_FILE_TYPE_XML: str = "xml"
+
+DOCUMENT_LINE_TYPE_BODY: str = "b"
+DOCUMENT_LINE_TYPE_FOOTER: str = "f"
+DOCUMENT_LINE_TYPE_HEADER: str = "h"
 
 DOCUMENT_STATUS_ABORT: str = "abort"
 DOCUMENT_STATUS_END: str = "end"
@@ -212,6 +214,7 @@ JSON_NAME_LINE_INDEX_PAGE: str = "lineIndexPage"
 JSON_NAME_LINE_INDEX_PARA: str = "lineIndexPara"
 JSON_NAME_LINE_WORDS: str = "lineWords"
 JSON_NAME_LINE_TEXT: str = "lineText"
+JSON_NAME_LINE_TYPE: str = "lineType"
 JSON_NAME_NO_LINES_IN_PAGE: str = "noLinesInPage"
 JSON_NAME_NO_LINES_IN_PARA: str = "noLinesInPara"
 JSON_NAME_NO_PAGES_IN_DOC: str = "noPagesInDoc"
@@ -250,7 +253,7 @@ RUN_STATUS_START: str = "start"
 
 db_current_database: str
 db_current_user: str
-db_driver_conn: connection | None = None
-db_driver_cur: cursor | None = None
-db_orm_engine: Engine | None = None
-db_orm_metadata: MetaData | None = None
+db_driver_conn: psycopg2.extensions.connection | None = None
+db_driver_cur: psycopg2.extensions.cursor | None = None
+db_orm_engine: sqlalchemy.engine.Engine | None = None
+db_orm_metadata: sqlalchemy.MetaData | None = None

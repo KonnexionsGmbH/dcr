@@ -10,6 +10,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
+# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -27,16 +28,16 @@ def test_run_action_extract_text_from_pdf_normal_keep(
         [
             ("pdf_text_ok_protected", "pdf"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (libs.cfg.DCR_CFG_TETML_LINE, "true"),
-            (libs.cfg.DCR_CFG_TETML_WORD, "true"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.config._DCR_CFG_TETML_LINE, "true"),
+            (libs.cfg.config._DCR_CFG_TETML_WORD, "true"),
         ],
     )
 
@@ -45,7 +46,7 @@ def test_run_action_extract_text_from_pdf_normal_keep(
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -53,13 +54,13 @@ def test_run_action_extract_text_from_pdf_normal_keep(
     libs.cfg.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         [
             "pdf_text_ok_protected_1.pdf",
@@ -69,7 +70,7 @@ def test_run_action_extract_text_from_pdf_normal_keep(
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -92,16 +93,16 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(
         [
             ("pdf_text_ok_protected", "pdf"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (libs.cfg.DCR_CFG_TETML_LINE, "false"),
-            (libs.cfg.DCR_CFG_TETML_PAGE, "true"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.config._DCR_CFG_TETML_LINE, "false"),
+            (libs.cfg.config._DCR_CFG_TETML_PAGE, "true"),
         ],
     )
 
@@ -110,7 +111,7 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -120,13 +121,13 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         [
             "pdf_text_ok_protected_1.pdf",
@@ -134,7 +135,7 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -157,16 +158,16 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(
         [
             ("case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (libs.cfg.DCR_CFG_TETML_LINE, "true"),
-            (libs.cfg.DCR_CFG_TETML_PAGE, "false"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.config._DCR_CFG_TETML_LINE, "true"),
+            (libs.cfg.config._DCR_CFG_TETML_PAGE, "false"),
         ],
     )
 
@@ -178,7 +179,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(
 
     os.remove(
         os.path.join(
-            libs.cfg.directory_inbox_accepted,
+            libs.cfg.config.directory_inbox_accepted,
             "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
         )
     )
@@ -186,7 +187,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -196,13 +197,13 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         [
             "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
@@ -211,7 +212,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -234,16 +235,16 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(
         [
             ("case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (libs.cfg.DCR_CFG_TETML_LINE, "false"),
-            (libs.cfg.DCR_CFG_TETML_PAGE, "true"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.config._DCR_CFG_TETML_LINE, "false"),
+            (libs.cfg.config._DCR_CFG_TETML_PAGE, "true"),
         ],
     )
 
@@ -255,7 +256,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(
 
     os.remove(
         os.path.join(
-            libs.cfg.directory_inbox_accepted,
+            libs.cfg.config.directory_inbox_accepted,
             "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
         )
     )
@@ -263,7 +264,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -273,13 +274,13 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         [
             "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
@@ -288,7 +289,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )

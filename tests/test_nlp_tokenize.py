@@ -9,6 +9,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
+# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -29,16 +30,16 @@ def test_run_action_tokenize_normal(
         [
             ("pdf_mini", "pdf"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (libs.cfg.DCR_CFG_TETML_LINE, tetml_line),
-            (libs.cfg.DCR_CFG_TETML_PAGE, tetml_page),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (libs.cfg.config._DCR_CFG_TETML_LINE, tetml_line),
+            (libs.cfg.config._DCR_CFG_TETML_PAGE, tetml_page),
         ],
     )
 
@@ -51,7 +52,7 @@ def test_run_action_tokenize_normal(
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TOKENIZE])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -59,13 +60,13 @@ def test_run_action_tokenize_normal(
     libs.cfg.logger.info("=========> test_run_action_tokenize_normal <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         [
             "pdf_mini_1.pdf",
@@ -73,7 +74,7 @@ def test_run_action_tokenize_normal(
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )

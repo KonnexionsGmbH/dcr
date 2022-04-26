@@ -1,37 +1,37 @@
 """Module db.orm.dml: Database Manipulation Management."""
 import os
-import pathlib
 import time
-from typing import Dict
+import typing
 
 import db.cfg
 import db.orm.dml
 import libs.cfg
 import libs.utils
+import PyPDF2
+import PyPDF2.utils
+import sqlalchemy
+import sqlalchemy.engine
 import sqlalchemy.orm
-from PyPDF2 import PdfFileReader
-from PyPDF2.utils import PdfReadError
-from sqlalchemy import Table
-from sqlalchemy import and_
-from sqlalchemy import engine
-from sqlalchemy import func
-from sqlalchemy import insert
-from sqlalchemy import select
-from sqlalchemy import update
-from sqlalchemy.engine import Connection
+
+# -----------------------------------------------------------------------------
+# Type declaration.
+# -----------------------------------------------------------------------------
+Columns: typing.TypeAlias = typing.Dict[
+    str, typing.Union[os.PathLike[str], sqlalchemy.Integer, str]
+]
 
 
 # -----------------------------------------------------------------------------
 # Determine the number of pages in a pdf document.
 # -----------------------------------------------------------------------------
 def get_pdf_pages_no(
-    file_path: pathlib.Path,
+    file_name: str,
     file_type: str,
-) -> sqlalchemy.Integer | None:
+) -> int | None:
     """Determine the number of pages in a pdf document.
 
     Args:
-        file_path (pathlib.Path):     File.
+        file_name (str): File name.
         file_type (str): File type.
 
     Returns:
@@ -41,8 +41,8 @@ def get_pdf_pages_no(
         return None
 
     try:
-        return PdfFileReader(file_path).numPages
-    except PdfReadError:
+        return PyPDF2.PdfFileReader(file_name).numPages
+    except PyPDF2.utils.PdfReadError:
         return -1
 
 
@@ -51,7 +51,7 @@ def get_pdf_pages_no(
 # -----------------------------------------------------------------------------
 def insert_dbt_row(
     table_name: str,
-    columns: libs.cfg.Columns,
+    columns: Columns,
 ) -> sqlalchemy.Integer:
     """Insert a new row into a database table.
 
@@ -62,10 +62,10 @@ def insert_dbt_row(
     Returns:
         sqlalchemy.Integer: The last id found.
     """
-    dbt = Table(table_name, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
+    dbt = sqlalchemy.Table(table_name, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
 
     with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
-        result = conn.execute(insert(dbt).values(columns).returning(dbt.columns.id))
+        result = conn.execute(sqlalchemy.insert(dbt).values(columns).returning(dbt.columns.id))
         row = result.fetchone()
         conn.close()
 
@@ -150,16 +150,16 @@ def insert_document_child() -> None:
 # -----------------------------------------------------------------------------
 # Preparation of a database table for DML operations.
 # -----------------------------------------------------------------------------
-def dml_prepare(dbt_name: str) -> Table:
+def dml_prepare(dbt_name: str) -> sqlalchemy.Table:
     """Preparation of a database table for DML operations.
 
     Returns:
-        Table: Database table document,
+        sqlalchemy.Table: Database table document,
     """
     # Check the inbox file directories.
     libs.utils.check_directories()
 
-    return Table(
+    return sqlalchemy.Table(
         dbt_name,
         db.cfg.db_orm_metadata,
         autoload_with=db.cfg.db_orm_engine,
@@ -170,20 +170,20 @@ def dml_prepare(dbt_name: str) -> Table:
 # Select the content pages to be processed.
 # -----------------------------------------------------------------------------
 def select_content_tetml(
-    conn: Connection, dbt: Table, document_id: sqlalchemy.Integer
-) -> engine.CursorResult:
+    conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table, document_id: sqlalchemy.Integer
+) -> sqlalchemy.engine.CursorResult:
     """Select the content pages to be processed.
 
     Args:
         conn (Connection): Database connection.
-        dbt (Table): database table document.
+        dbt (sqlalchemy.Table): database table document.
         document_id (sqlalchemy.Integer): Document id.
 
     Returns:
         engine.CursorResult: The content pages found.
     """
     return conn.execute(
-        select(
+        sqlalchemy.select(
             dbt.c.page_no,
             dbt.c.page_data,
         )
@@ -197,19 +197,21 @@ def select_content_tetml(
 # -----------------------------------------------------------------------------
 # Select the documents to be processed.
 # -----------------------------------------------------------------------------
-def select_document(conn: Connection, dbt: Table, next_step: str) -> engine.CursorResult:
+def select_document(
+    conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table, next_step: str
+) -> sqlalchemy.engine.CursorResult:
     """Select the documents to be processed.
 
     Args:
         conn (Connection): Database connection.
-        dbt (Table): database table document.
+        dbt (sqlalchemy.Table): database table document.
         next_step (str): Next processing step.
 
     Returns:
         engine.CursorResult: The documents found.
     """
     return conn.execute(
-        select(
+        sqlalchemy.select(
             dbt.c.id,
             dbt.c.child_no,
             dbt.c.directory_name,
@@ -223,7 +225,7 @@ def select_document(conn: Connection, dbt: Table, next_step: str) -> engine.Curs
             dbt.c.stem_name,
         )
         .where(
-            and_(
+            sqlalchemy.and_(
                 dbt.c.next_step == next_step,
                 dbt.c.status.in_(
                     [
@@ -246,7 +248,7 @@ def select_document_base_file_name() -> str | None:
     Returns:
         str: The file name of the base document found.
     """
-    dbt = Table(
+    dbt = sqlalchemy.Table(
         db.cfg.DBT_DOCUMENT,
         db.cfg.db_orm_metadata,
         autoload_with=db.cfg.db_orm_engine,
@@ -254,7 +256,7 @@ def select_document_base_file_name() -> str | None:
 
     with db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(
-            select(dbt.c.directory_name, dbt.c.file_name).where(
+            sqlalchemy.select(dbt.c.directory_name, dbt.c.file_name).where(
                 dbt.c.document_id_parent == libs.cfg.document_id_base,
             )
         ).fetchone()
@@ -275,7 +277,7 @@ def select_document_file_name_id(document_id: sqlalchemy.Integer) -> str | None:
     Returns:
         str: The file name found.
     """
-    dbt = Table(
+    dbt = sqlalchemy.Table(
         db.cfg.DBT_DOCUMENT,
         db.cfg.db_orm_metadata,
         autoload_with=db.cfg.db_orm_engine,
@@ -283,8 +285,8 @@ def select_document_file_name_id(document_id: sqlalchemy.Integer) -> str | None:
 
     with db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(
-            select(dbt.c.file_name).where(
-                and_(
+            sqlalchemy.select(dbt.c.file_name).where(
+                sqlalchemy.and_(
                     dbt.c.id == document_id,
                 )
             )
@@ -307,7 +309,7 @@ def select_document_file_name_sha256(document_id: sqlalchemy.Integer, sha256: st
     Returns:
         str: The file name found.
     """
-    dbt = Table(
+    dbt = sqlalchemy.Table(
         db.cfg.DBT_DOCUMENT,
         db.cfg.db_orm_metadata,
         autoload_with=db.cfg.db_orm_engine,
@@ -315,8 +317,8 @@ def select_document_file_name_sha256(document_id: sqlalchemy.Integer, sha256: st
 
     with db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(
-            select(dbt.c.file_name).where(
-                and_(
+            sqlalchemy.select(dbt.c.file_name).where(
+                sqlalchemy.and_(
                     dbt.c.id != document_id,
                     dbt.c.directory_type == db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX,
                     dbt.c.sha256 == sha256,
@@ -335,18 +337,20 @@ def select_document_file_name_sha256(document_id: sqlalchemy.Integer, sha256: st
 # -----------------------------------------------------------------------------
 # Get the languages to be processed.
 # -----------------------------------------------------------------------------
-def select_language(conn: Connection, dbt: Table) -> engine.CursorResult:
+def select_language(
+    conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table
+) -> sqlalchemy.engine.CursorResult:
     """Get the languages to be processed.
 
     Args:
         conn (Connection): Database connection.
-        dbt (Table): database table language.
+        dbt (sqlalchemy.Table): database table language.
 
     Returns:
         engine.CursorResult: The languages found.
     """
     return conn.execute(
-        select(
+        sqlalchemy.select(
             dbt.c.id,
             dbt.c.directory_name_inbox,
             dbt.c.iso_language_name,
@@ -367,10 +371,12 @@ def select_run_run_id_last() -> int | sqlalchemy.Integer:
     Returns:
         sqlalchemy.Integer: The last run id found.
     """
-    dbt = Table(db.cfg.DBT_RUN, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
+    dbt = sqlalchemy.Table(
+        db.cfg.DBT_RUN, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine
+    )
 
     with db.cfg.db_orm_engine.connect() as conn:
-        row = conn.execute(select(func.max(dbt.c.run_id))).fetchone()
+        row = conn.execute(sqlalchemy.select(sqlalchemy.func.max(dbt.c.run_id))).fetchone()
         conn.close()
 
     if row[0] is None:
@@ -390,7 +396,7 @@ def select_version_version_unique() -> str:
     Returns:
         str: The version number found.
     """
-    dbt = Table(
+    dbt = sqlalchemy.Table(
         db.cfg.DBT_VERSION,
         db.cfg.db_orm_metadata,
         autoload_with=db.cfg.db_orm_engine,
@@ -399,7 +405,7 @@ def select_version_version_unique() -> str:
     current_version: str = ""
 
     with db.cfg.db_orm_engine.connect() as conn:
-        for row in conn.execute(select(dbt.c.version)):
+        for row in conn.execute(sqlalchemy.select(dbt.c.version)):
             if current_version == "":
                 current_version = row.version
             else:
@@ -420,21 +426,21 @@ def select_version_version_unique() -> str:
 def update_dbt_id(
     table_name: str,
     id_where: sqlalchemy.Integer,
-    columns: Dict[str, str],
+    columns: typing.Dict[str, str],
 ) -> None:
     """Update a database row based on its id column.
 
     Args:
-        table_name (str): Table name.
+        table_name (str): sqlalchemy.Table name.
         id_where (sqlalchemy.Integer): Content of column id.
         columns (Columns): Pairs of column name and value.
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = Table(table_name, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
+    dbt = sqlalchemy.Table(table_name, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
 
     with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
-        conn.execute(update(dbt).where(dbt.c.id == id_where).values(columns))
+        conn.execute(sqlalchemy.update(dbt).where(dbt.c.id == id_where).values(columns))
         conn.close()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -451,7 +457,9 @@ def update_document_error(document_id: sqlalchemy.Integer, error_code: str, erro
         error_code (str)                : Error code.
         error_msg (str)                 : Error message.
     """
-    dbt = Table(db.cfg.DBT_DOCUMENT, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
+    dbt = sqlalchemy.Table(
+        db.cfg.DBT_DOCUMENT, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine
+    )
 
     libs.cfg.total_erroneous += 1
 
@@ -469,7 +477,7 @@ def update_document_error(document_id: sqlalchemy.Integer, error_code: str, erro
         },
     )
 
-    if libs.cfg.is_verbose:
+    if libs.cfg.config.is_verbose:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "

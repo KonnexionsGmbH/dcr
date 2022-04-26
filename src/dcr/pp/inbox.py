@@ -16,8 +16,8 @@ import db.orm.dml
 import fitz
 import libs.cfg
 import libs.utils
-from sqlalchemy import Table
-from sqlalchemy.orm import Session
+import sqlalchemy
+import sqlalchemy.orm
 
 
 # -----------------------------------------------------------------------------
@@ -32,9 +32,9 @@ def check_and_create_directories() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    create_directory("the accepted documents", str(libs.cfg.directory_inbox_accepted))
+    create_directory("the accepted documents", str(libs.cfg.config.directory_inbox_accepted))
 
-    create_directory("the rejected documents", str(libs.cfg.directory_inbox_rejected))
+    create_directory("the rejected documents", str(libs.cfg.config.directory_inbox_rejected))
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -102,13 +102,12 @@ def prepare_document_base(file_path: pathlib.Path) -> None:
     # Example: pdf
     libs.cfg.document_file_type = file_path.suffix[1:].lower()
 
-    # Example: 07e21aeef5600c03bc111204a44f708d592a63703a027ea4272a246304557625
     libs.cfg.document_id_base = None
 
     libs.cfg.document_id_parent = None
     libs.cfg.document_next_step = None
 
-    if libs.cfg.is_ignore_duplicates:
+    if libs.cfg.config.is_ignore_duplicates:
         libs.cfg.document_sha256 = None
     else:
         libs.cfg.document_sha256 = libs.utils.compute_sha256(file_path)
@@ -203,7 +202,7 @@ def process_inbox() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    if libs.cfg.is_ignore_duplicates:
+    if libs.cfg.config.is_ignore_duplicates:
         libs.utils.progress_msg("Configuration: File duplicates are allowed!")
     else:
         libs.utils.progress_msg("Configuration: File duplicates are not allowed!")
@@ -213,7 +212,7 @@ def process_inbox() -> None:
 
     libs.utils.reset_statistics_total()
 
-    dbt = Table(
+    dbt = sqlalchemy.Table(
         db.cfg.DBT_LANGUAGE,
         db.cfg.db_orm_metadata,
         autoload_with=db.cfg.db_orm_engine,
@@ -227,7 +226,8 @@ def process_inbox() -> None:
 
             if libs.cfg.language_directory_inbox is None:
                 libs.cfg.language_directory_inbox = pathlib.Path(
-                    str(libs.cfg.directory_inbox), libs.cfg.language_iso_language_name.lower()
+                    str(libs.cfg.config.directory_inbox),
+                    libs.cfg.language_iso_language_name.lower(),
                 )
 
             if os.path.isdir(pathlib.Path(str(libs.cfg.language_directory_inbox))):
@@ -251,9 +251,7 @@ def process_inbox_accepted(next_step: str) -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.cfg.document_child_directory_name = libs.cfg.config[
-        libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED
-    ]
+    libs.cfg.document_child_directory_name = libs.cfg.config.directory_inbox_accepted
     libs.cfg.document_child_directory_type = db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED
     libs.cfg.document_child_next_step = next_step
     libs.cfg.document_child_status = db.cfg.DOCUMENT_STATUS_START
@@ -278,7 +276,7 @@ def process_inbox_accepted(next_step: str) -> None:
             document_id=libs.cfg.document_id, status=db.cfg.DOCUMENT_STATUS_END
         )
 
-        if libs.cfg.is_verbose:
+        if libs.cfg.config.is_verbose:
             libs.utils.progress_msg(
                 f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                 f"Document: {libs.cfg.document_id:6d} "
@@ -300,11 +298,11 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     Args:
         file_path (pathlib.Path): Inbox file.
     """
-    libs.cfg.session = Session(db.cfg.db_orm_engine)
+    libs.cfg.session = sqlalchemy.orm.Session(db.cfg.db_orm_engine)
 
     initialise_document_base(file_path)
 
-    if not libs.cfg.is_ignore_duplicates:
+    if not libs.cfg.config.is_ignore_duplicates:
         file_name = db.orm.dml.select_document_file_name_sha256(
             libs.cfg.document_id, libs.cfg.document_sha256
         )
@@ -391,9 +389,7 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
 
     prepare_document_child_accepted()
 
-    libs.cfg.document_child_directory_name = libs.cfg.config[
-        libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
-    ]
+    libs.cfg.document_child_directory_name = libs.cfg.config.directory_inbox_rejected
     libs.cfg.document_child_directory_type = db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX_REJECTED
     libs.cfg.document_child_error_code = error_code
     libs.cfg.document_child_status = db.cfg.DOCUMENT_STATUS_ERROR

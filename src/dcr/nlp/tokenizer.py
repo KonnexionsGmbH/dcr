@@ -1,22 +1,23 @@
 """Module nlp.tokenizer: Store the document tokens page by page in the
 database."""
+
 import time
-from typing import Dict
-from typing import List
+import typing
 
 import db.cfg
 import db.orm.dml
 import libs.cfg
 import libs.utils
 import spacy
-from spacy import Language
-from sqlalchemy import Table
+import sqlalchemy
 
 
 # -----------------------------------------------------------------------------
 # Extract the text from the page lines.
 # -----------------------------------------------------------------------------
-def get_text_from_page_lines(page_data: Dict[str, str | List[Dict[str, int | str]]]) -> str:
+def get_text_from_page_lines(
+    page_data: typing.Dict[str, str | typing.List[typing.Dict[str, int | str]]]
+) -> str:
     """Extract the text from the page data.
 
     Args:
@@ -43,14 +44,14 @@ def tokenize() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    if libs.cfg.is_tetml_line:
-        dbt_content_tetml: Table = db.orm.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_LINE)
+    if libs.cfg.config.is_tetml_line:
+        dbt_content_tetml: sqlalchemy.Table = db.orm.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_LINE)
     else:
-        dbt_content_tetml: Table = db.orm.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_PAGE)
+        dbt_content_tetml: sqlalchemy.Table = db.orm.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_PAGE)
 
     dbt_document = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
-    nlp: Language
+    nlp: spacy.Language
     spacy_model_current: str | None = None
 
     libs.utils.reset_statistics_total()
@@ -76,7 +77,7 @@ def tokenize() -> None:
             # Document successfully converted to pdf format
             duration_ns = libs.utils.finalize_file_processing()
 
-            if libs.cfg.is_verbose:
+            if libs.cfg.config.is_verbose:
                 libs.utils.progress_msg(
                     f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                     f"Document: {libs.cfg.document_id:6d} "
@@ -93,7 +94,7 @@ def tokenize() -> None:
 # -----------------------------------------------------------------------------
 # Create the tokens of a document page by page (step: tkn).
 # -----------------------------------------------------------------------------
-def tokenize_document(nlp: Language, dbt_content: Table) -> None:
+def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> None:
     """Create the tokens of a document page by page.
 
     TBD
@@ -104,10 +105,10 @@ def tokenize_document(nlp: Language, dbt_content: Table) -> None:
         rows = db.orm.dml.select_content_tetml(conn, dbt_content, libs.cfg.document_id_base)
 
         for row in rows:
-            page_tokens: List[Dict[str, bool | str]] = []
+            page_tokens: typing.List[typing.Dict[str, bool | str]] = []
 
             page_no = row[0]
-            text = get_text_from_page_lines(row[1]) if libs.cfg.is_tetml_line else row[1]
+            text = get_text_from_page_lines(row[1]) if libs.cfg.config.is_tetml_line else row[1]
 
             for token in nlp(text):
                 page_tokens.append(

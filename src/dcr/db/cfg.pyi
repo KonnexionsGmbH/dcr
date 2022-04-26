@@ -1,10 +1,8 @@
 """Library Stub."""
-from typing import List
+import typing
 
-from psycopg2.extensions import connection
-from psycopg2.extensions import cursor
-from sqlalchemy import MetaData
-from sqlalchemy.engine import Engine
+import psycopg2.extensions
+import sqlalchemy
 
 # -----------------------------------------------------------------------------
 # Global Constants.
@@ -81,13 +79,17 @@ DOCUMENT_ERROR_CODE_REJ_PDFLIB: str
 DOCUMENT_ERROR_CODE_REJ_TESSERACT: str
 
 DOCUMENT_FILE_TYPE_JPG: str
-DOCUMENT_FILE_TYPE_PANDOC: List[str]
+DOCUMENT_FILE_TYPE_PANDOC: typing.List[str]
 DOCUMENT_FILE_TYPE_PDF: str
 DOCUMENT_FILE_TYPE_PNG: str
-DOCUMENT_FILE_TYPE_TESSERACT: List[str]
+DOCUMENT_FILE_TYPE_TESSERACT: typing.List[str]
 DOCUMENT_FILE_TYPE_TIF: str
 DOCUMENT_FILE_TYPE_TIFF: str
 DOCUMENT_FILE_TYPE_XML: str
+
+DOCUMENT_LINE_TYPE_BODY: str
+DOCUMENT_LINE_TYPE_FOOTER: str
+DOCUMENT_LINE_TYPE_HEADER: str
 
 DOCUMENT_STATUS_ABORT: str
 DOCUMENT_STATUS_END: str
@@ -140,6 +142,7 @@ JSON_NAME_LINE_INDEX_PAGE: str
 JSON_NAME_LINE_INDEX_PARA: str
 JSON_NAME_LINE_WORDS: str
 JSON_NAME_LINE_TEXT: str
+JSON_NAME_LINE_TYPE: str
 JSON_NAME_NO_LINES_IN_PAGE: str
 JSON_NAME_NO_LINES_IN_PARA: str
 JSON_NAME_NO_PAGES_IN_DOC: str
@@ -178,7 +181,7 @@ RUN_STATUS_START: str
 
 db_current_database: str
 db_current_user: str
-db_driver_conn: connection | None = None
-db_driver_cur: cursor | None = None
-db_orm_engine: Engine | None = None
-db_orm_metadata: MetaData | None = None
+db_driver_conn: psycopg2.extensions.connection | None = None
+db_driver_cur: psycopg2.extensions.cursor | None = None
+db_orm_engine: sqlalchemy.engine.Engine | None = None
+db_orm_metadata: sqlalchemy.MetaData | None = None

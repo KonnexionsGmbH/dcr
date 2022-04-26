@@ -7,7 +7,7 @@ import db.orm.dml
 import libs.cfg
 import libs.utils
 import pytest
-from sqlalchemy import Table
+import sqlalchemy
 
 import dcr
 
@@ -32,9 +32,9 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1
 
     # -------------------------------------------------------------------------
-    current_version = libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]
+    current_version = libs.cfg.config.dcr_version
 
-    libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION] = "0.0.0"
+    libs.cfg.config.dcr_version = "0.0.0"
 
     with pytest.raises(SystemExit) as expt:
         db.orm.connection.connect_db()
@@ -43,12 +43,12 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     assert expt.type == SystemExit
     assert expt.value.code == 1
 
-    libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION] = current_version
+    libs.cfg.config.dcr_version = current_version
 
     # -------------------------------------------------------------------------
     db.orm.connection.connect_db()
 
-    dbt = Table(
+    dbt = sqlalchemy.Table(
         db.cfg.DBT_VERSION,
         db.cfg.db_orm_metadata,
         autoload_with=db.cfg.db_orm_engine,

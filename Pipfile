@@ -21,6 +21,7 @@ pytest-cov = "*"
 pytest-deadfixtures = "*"
 pytest-helpers-namespace = "*"
 pytest-random-order = "*"
+strsimpy ="*"
 
 [dev-packages]
 # TBD

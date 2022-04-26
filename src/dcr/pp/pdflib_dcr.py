@@ -6,12 +6,11 @@ import db.cfg
 import db.orm.dml
 import libs.cfg
 import libs.utils
-from PDFlib.TET import TET
+import PDFlib.TET
 
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-
 LINE_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector}"
 LINE_TET_PAGE_OPT_LIST: str = "granularity=line"
 
@@ -69,13 +68,13 @@ def extract_text_from_pdf() -> None:
                 document=row,
             )
 
-            if libs.cfg.is_tetml_line:
+            if libs.cfg.config.is_tetml_line:
                 extract_text_from_pdf_file_line()
 
-            if libs.cfg.is_tetml_page:
+            if libs.cfg.config.is_tetml_page:
                 extract_text_from_pdf_file_page()
 
-            if libs.cfg.is_tetml_word:
+            if libs.cfg.config.is_tetml_word:
                 extract_text_from_pdf_file_word()
 
         conn.close()
@@ -98,7 +97,7 @@ def extract_text_from_pdf_file_line() -> None:
         xml_variation + db.cfg.DOCUMENT_FILE_TYPE_XML
     )
 
-    tet = TET()
+    tet = PDFlib.TET.TET()
 
     doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {LINE_TET_DOCUMENT_OPT_LIST}"
 
@@ -148,7 +147,7 @@ def extract_text_from_pdf_file_line() -> None:
     # Text from Document successfully extracted to database
     duration_ns = libs.utils.finalize_file_processing()
 
-    if libs.cfg.is_verbose:
+    if libs.cfg.config.is_verbose:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "
@@ -170,7 +169,7 @@ def extract_text_from_pdf_file_page() -> None:
         libs.cfg.document_file_name,
     )
 
-    tet = TET()
+    tet = PDFlib.TET.TET()
 
     source_file = tet.open_document(file_name, PAGE_TET_DOCUMENT_OPT_LIST)
 
@@ -207,13 +206,13 @@ def extract_text_from_pdf_file_page() -> None:
 
     tet.delete()
 
-    if not libs.cfg.is_tetml_line:
+    if not libs.cfg.config.is_tetml_line:
         create_child_document()
 
     # Text from Document successfully extracted to database
     duration_ns = libs.utils.finalize_file_processing()
 
-    if libs.cfg.is_verbose:
+    if libs.cfg.config.is_verbose:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "
@@ -236,7 +235,7 @@ def extract_text_from_pdf_file_word() -> None:
         xml_variation + db.cfg.DOCUMENT_FILE_TYPE_XML
     )
 
-    tet = TET()
+    tet = PDFlib.TET.TET()
 
     doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {WORD_TET_DOCUMENT_OPT_LIST}"
 
@@ -284,7 +283,7 @@ def extract_text_from_pdf_file_word() -> None:
     # Text from Document successfully extracted to database
     duration_ns = libs.utils.finalize_file_processing()
 
-    if libs.cfg.is_verbose:
+    if libs.cfg.config.is_verbose:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "

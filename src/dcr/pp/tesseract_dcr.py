@@ -8,8 +8,7 @@ import libs.cfg
 import libs.utils
 import PyPDF2
 import pytesseract
-from sqlalchemy import func
-from sqlalchemy import select
+import sqlalchemy
 
 
 # -----------------------------------------------------------------------------
@@ -68,7 +67,7 @@ def convert_image_2_pdf_file() -> None:
             extension="pdf",
             image=source_file_name,
             lang=libs.cfg.languages_tesseract[libs.cfg.document_language_id],
-            timeout=libs.cfg.tesseract_timeout,
+            timeout=libs.cfg.config.tesseract_timeout,
         )
 
         with open(target_file_name, "w+b") as target_file:
@@ -94,7 +93,7 @@ def convert_image_2_pdf_file() -> None:
         # Document successfully converted to pdf format
         duration_ns = libs.utils.finalize_file_processing()
 
-        if libs.cfg.is_verbose:
+        if libs.cfg.config.is_verbose:
             libs.utils.progress_msg(
                 f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                 f"Document: {libs.cfg.document_id:6d} "
@@ -129,13 +128,13 @@ def reunite_pdfs() -> None:
 
     with db.cfg.db_orm_engine.connect() as conn:
         rows = conn.execute(
-            select(dbt).where(
+            sqlalchemy.select(dbt).where(
                 dbt.c.id.in_(
-                    select(dbt.c.document_id_base)
+                    sqlalchemy.select(dbt.c.document_id_base)
                     .where(dbt.c.status == db.cfg.DOCUMENT_STATUS_START)
                     .where(dbt.c.next_step == db.cfg.DOCUMENT_STEP_PDFLIB)
                     .group_by(dbt.c.document_id_base)
-                    .having(func.count(dbt.c.document_id_base) > 1)
+                    .having(sqlalchemy.func.count(dbt.c.document_id_base) > 1)
                     .scalar_subquery()
                 )
             )
@@ -170,7 +169,7 @@ def reunite_pdfs_file() -> None:
     )
 
     target_file_path = os.path.join(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         libs.cfg.document_child_file_name,
     )
 
@@ -190,7 +189,7 @@ def reunite_pdfs_file() -> None:
 
     with db.cfg.db_orm_engine.connect() as conn:
         rows = conn.execute(
-            select(dbt)
+            sqlalchemy.select(dbt)
             .where(dbt.c.status == db.cfg.DOCUMENT_STATUS_START)
             .where(dbt.c.next_step == db.cfg.DOCUMENT_STEP_PDFLIB)
             .where(dbt.c.document_id_base == libs.cfg.document_id_base)
@@ -238,7 +237,7 @@ def reunite_pdfs_file() -> None:
         next_step=db.cfg.DOCUMENT_STEP_PDFLIB,
     )
 
-    libs.cfg.document_child_directory_name = libs.cfg.directory_inbox_accepted
+    libs.cfg.document_child_directory_name = libs.cfg.config.directory_inbox_accepted
     libs.cfg.document_child_directory_type = db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED
 
     db.orm.dml.insert_document_child()
@@ -246,7 +245,7 @@ def reunite_pdfs_file() -> None:
     # Child document successfully reunited to one pdf document
     duration_ns = libs.utils.finalize_file_processing()
 
-    if libs.cfg.is_verbose:
+    if libs.cfg.config.is_verbose:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "

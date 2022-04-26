@@ -4,8 +4,7 @@ import libs.cfg
 import libs.utils
 import sqlalchemy
 import sqlalchemy.orm
-from sqlalchemy import MetaData
-from sqlalchemy.pool import NullPool
+import sqlalchemy.pool
 
 
 # -----------------------------------------------------------------------------
@@ -17,20 +16,20 @@ def connect_db() -> None:
 
     prepare_connect_db()
 
-    db.cfg.db_orm_metadata = MetaData()
+    db.cfg.db_orm_metadata = sqlalchemy.MetaData()
 
     db.cfg.db_orm_engine = sqlalchemy.create_engine(
-        libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PREFIX]
-        + libs.cfg.config[libs.cfg.DCR_CFG_DB_HOST]
+        libs.cfg.config.db_connection_prefix
+        + libs.cfg.config.db_host
         + ":"
-        + libs.cfg.config[libs.cfg.DCR_CFG_DB_CONNECTION_PORT]
+        + libs.cfg.config.db_connection_port
         + "/"
         + db.cfg.db_current_database
         + "?user="
         + db.cfg.db_current_user
         + "&password="
-        + libs.cfg.config[libs.cfg.DCR_CFG_DB_PASSWORD],
-        poolclass=NullPool,
+        + libs.cfg.config.db_password,
+        poolclass=sqlalchemy.pool.NullPool,
     )
 
     db.cfg.db_orm_engine.connect()
@@ -71,5 +70,5 @@ def disconnect_db() -> None:
 # -----------------------------------------------------------------------------
 def prepare_connect_db() -> None:
     """Prepare the database connection for normal users."""
-    db.cfg.db_current_database = libs.cfg.config[libs.cfg.DCR_CFG_DB_DATABASE]
-    db.cfg.db_current_user = libs.cfg.config[libs.cfg.DCR_CFG_DB_USER]
+    db.cfg.db_current_database = libs.cfg.config.db_database
+    db.cfg.db_current_user = libs.cfg.config.db_user

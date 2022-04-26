@@ -1,9 +1,8 @@
 """Module pp.parser: Store the document structure from the parser result."""
+import datetime
 import os
 import time
-from datetime import datetime
-from typing import Dict
-from typing import Iterable
+import typing
 
 import db.cfg
 import db.orm.dml
@@ -16,7 +15,7 @@ import libs.utils
 # Debug an XML element detailed.
 # -----------------------------------------------------------------------------
 def debug_xml_element_all(
-    event: str, parent_tag: str, attrib: Dict[str, str], text: Iterable[str | None]
+    event: str, parent_tag: str, attrib: typing.Dict[str, str], text: typing.Iterable[str | None]
 ) -> None:
     """Debug an XML element detailed.
 
@@ -26,7 +25,7 @@ def debug_xml_element_all(
         attrib (Dict[str,str]): Attributes.
         text (Iterable[str|None]): XML element.
     """
-    if libs.cfg.verbose_parser == "all":
+    if libs.cfg.config.verbose_parser == "all":
         print(f"{event} tag   ={parent_tag}")
 
         if attrib != {}:
@@ -41,7 +40,7 @@ def debug_xml_element_all(
 # -----------------------------------------------------------------------------
 def debug_xml_element_text_line() -> None:
     """Debug an XML element only 'text - variant line."""
-    if libs.cfg.verbose_parser == "text":
+    if libs.cfg.config.verbose_parser == "text":
         print(
             f"page_i_doc={libs.cfg.parse_result_page_index_doc:2d} "
             f"para_i_page={libs.cfg.parse_result_para_index_page:2d} "
@@ -56,7 +55,7 @@ def debug_xml_element_text_line() -> None:
 # -----------------------------------------------------------------------------
 def debug_xml_element_text_word() -> None:
     """Debug an XML element only 'text - variant word."""
-    if libs.cfg.verbose_parser == "text":
+    if libs.cfg.config.verbose_parser == "text":
         print(
             f"page_i_doc={libs.cfg.parse_result_page_index_doc:2d} "
             f"para_i_page={libs.cfg.parse_result_para_index_page:2d} "
@@ -127,7 +126,7 @@ def init_parse_result_para() -> None:
 # -----------------------------------------------------------------------------
 def insert_content_tetml_line() -> None:
     """Store the parse result in the database table content_tetml_line."""
-    if not libs.cfg.is_simulate_parser:
+    if not libs.cfg.config.is_simulate_parser:
         libs.cfg.parse_result_page_lines[
             db.cfg.JSON_NAME_NO_LINES_IN_PAGE
         ] = libs.cfg.parse_result_no_lines_in_page
@@ -150,7 +149,7 @@ def insert_content_tetml_line() -> None:
 # -----------------------------------------------------------------------------
 def insert_content_tetml_word() -> None:
     """Store the parse result in the database table content_tetml_word."""
-    if not libs.cfg.is_simulate_parser:
+    if not libs.cfg.config.is_simulate_parser:
         libs.cfg.parse_result_page_words[
             db.cfg.JSON_NAME_NO_LINES_IN_PAGE
         ] = libs.cfg.parse_result_no_lines_in_page
@@ -174,7 +173,7 @@ def insert_content_tetml_word() -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Box.
 # -----------------------------------------------------------------------------
-def parse_tag_box(parent_tag: str, parent: Iterable[str]) -> None:
+def parse_tag_box(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """Processing tag 'Box'.
 
     Args:
@@ -195,7 +194,7 @@ def parse_tag_box(parent_tag: str, parent: Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag 'Content'.
 # -----------------------------------------------------------------------------
-def parse_tag_content(parent_tag: str, parent: Iterable[str]) -> None:
+def parse_tag_content(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """Processing tag 'Content'.
 
     Args:
@@ -218,7 +217,7 @@ def parse_tag_content(parent_tag: str, parent: Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag 'DocInfo'.
 # -----------------------------------------------------------------------------
-def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
+def parse_tag_doc_info(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """Processing tag 'DocInfo'.
 
     Args:
@@ -233,7 +232,7 @@ def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
             case libs.cfg.PARSE_TAG_AUTHOR:
                 libs.cfg.parse_result_author = child.text
             case libs.cfg.PARSE_TAG_CREATION_DATE:
-                libs.cfg.parse_result_creation_date = datetime.strptime(
+                libs.cfg.parse_result_creation_date = datetime.datetime.strptime(
                     child.text, "%Y-%m-%dT%H:%M:%S%z"
                 )
             case (
@@ -244,7 +243,7 @@ def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
             ):
                 pass
             case libs.cfg.PARSE_TAG_MOD_DATE:
-                libs.cfg.parse_result_mod_date = datetime.strptime(
+                libs.cfg.parse_result_mod_date = datetime.datetime.strptime(
                     child.text, "%Y-%m-%dT%H:%M:%S%z"
                 )
 
@@ -254,7 +253,7 @@ def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag 'Document'.
 # -----------------------------------------------------------------------------
-def parse_tag_document(parent_tag: str, parent: Iterable[str]) -> None:
+def parse_tag_document(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """Processing tag 'Document'.
 
     Args:
@@ -292,7 +291,7 @@ def parse_tag_document(parent_tag: str, parent: Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Line.
 # -----------------------------------------------------------------------------
-def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
+def parse_tag_line(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """Processing tag 'Line'.
 
     Args:
@@ -316,7 +315,7 @@ def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
 
     debug_xml_element_text_line()
 
-    if libs.cfg.is_parsing_line:
+    if libs.cfg.config.is_parsing_line:
         page_lines = libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_PAGE_LINES]
         page_lines.append(
             {
@@ -324,6 +323,7 @@ def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
                 db.cfg.JSON_NAME_LINE_INDEX_PAGE: libs.cfg.parse_result_line_index_page,
                 db.cfg.JSON_NAME_LINE_INDEX_PARA: libs.cfg.parse_result_line_index_para,
                 db.cfg.JSON_NAME_LINE_TEXT: libs.cfg.parse_result_text,
+                db.cfg.JSON_NAME_LINE_TYPE: db.cfg.DOCUMENT_LINE_TYPE_BODY,
             }
         )
         libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_PAGE_LINES] = page_lines
@@ -337,7 +337,7 @@ def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag 'Page'.
 # -----------------------------------------------------------------------------
-def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
+def parse_tag_page(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """Processing tag 'Page'.
 
     Args:
@@ -367,10 +367,10 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
 
     libs.cfg.parse_result_page_index_doc += 1
 
-    if not libs.cfg.is_simulate_parser:
-        if libs.cfg.is_parsing_line:
+    if not libs.cfg.config.is_simulate_parser:
+        if libs.cfg.config.is_parsing_line:
             insert_content_tetml_line()
-        elif libs.cfg.is_parsing_word:
+        elif libs.cfg.config.is_parsing_word:
             insert_content_tetml_word()
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -379,7 +379,7 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag 'Pages'.
 # -----------------------------------------------------------------------------
-def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
+def parse_tag_pages(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """Processing tag 'Pages'.
 
     Args:
@@ -404,7 +404,7 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Para.
 # -----------------------------------------------------------------------------
-def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
+def parse_tag_para(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """Processing tag 'Para'.
 
     Args:
@@ -431,7 +431,7 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Text.
 # -----------------------------------------------------------------------------
-def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
+def parse_tag_text(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """Processing tag 'Text'.
 
     Args:
@@ -448,7 +448,7 @@ def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Word.
 # -----------------------------------------------------------------------------
-def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
+def parse_tag_word(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """Processing tag 'Word'.
 
     Args:
@@ -473,7 +473,7 @@ def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
 
     debug_xml_element_text_word()
 
-    if libs.cfg.is_parsing_word:
+    if libs.cfg.config.is_parsing_word:
         page_words = libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_PAGE_WORDS]
         page_words.append(
             {
@@ -516,10 +516,10 @@ def parse_tetml() -> None:
             parse_tetml_file_line()
 
             # Text and metadata from Document successfully extracted to xml format
-            if not libs.cfg.is_simulate_parser:
+            if not libs.cfg.config.is_simulate_parser:
                 duration_ns = libs.utils.finalize_file_processing()
 
-                if libs.cfg.is_verbose:
+                if libs.cfg.config.is_verbose:
                     libs.utils.progress_msg(
                         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                         f"Document: {libs.cfg.document_id:6d} "
@@ -541,10 +541,10 @@ def parse_tetml() -> None:
             parse_tetml_file_word()
 
             # Text and metadata from Document successfully extracted to xml format
-            if not libs.cfg.is_simulate_parser:
+            if not libs.cfg.config.is_simulate_parser:
                 duration_ns = libs.utils.finalize_file_processing()
 
-                if libs.cfg.is_verbose:
+                if libs.cfg.config.is_verbose:
                     libs.utils.progress_msg(
                         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                         f"Document: {libs.cfg.document_id:6d} "
@@ -575,8 +575,8 @@ def parse_tetml_file_line() -> None:
         libs.cfg.document_file_name,
     )
 
-    libs.cfg.is_parsing_line = True
-    libs.cfg.is_parsing_word = False
+    libs.cfg.config.is_parsing_line = True
+    libs.cfg.config.is_parsing_word = False
 
     # Create the Element tree object
     tree = defusedxml.ElementTree.parse(file_name)
@@ -592,7 +592,7 @@ def parse_tetml_file_line() -> None:
             case libs.cfg.PARSE_TAG_CREATION:
                 pass
 
-    if not libs.cfg.is_simulate_parser:
+    if not libs.cfg.config.is_simulate_parser:
         libs.utils.delete_auxiliary_file(file_name)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -615,8 +615,8 @@ def parse_tetml_file_word() -> None:
         libs.cfg.document_file_name,
     )
 
-    libs.cfg.is_parsing_line = False
-    libs.cfg.is_parsing_word = True
+    libs.cfg.config.is_parsing_line = False
+    libs.cfg.config.is_parsing_word = True
 
     # Create the Element tree object
     tree = defusedxml.ElementTree.parse(file_name)
@@ -632,7 +632,7 @@ def parse_tetml_file_word() -> None:
             case libs.cfg.PARSE_TAG_CREATION:
                 pass
 
-    if not libs.cfg.is_simulate_parser:
+    if not libs.cfg.config.is_simulate_parser:
         libs.utils.delete_auxiliary_file(file_name)
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

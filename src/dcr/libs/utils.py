@@ -1,18 +1,18 @@
-"""Module libs.utils: Helper functions."""
+"""Module libs.setup: Helper functions."""
 import datetime
 import hashlib
 import os
 import pathlib
 import sys
 import traceback
-from typing import Tuple
+import typing
 
 import db.cfg
 import db.driver
 import db.orm.dml
 import libs.cfg
 import libs.utils
-from sqlalchemy.engine import Row
+import sqlalchemy.engine
 
 
 # -----------------------------------------------------------------------------
@@ -23,10 +23,10 @@ def check_directories() -> None:
 
     The file directory inbox_accepted must exist.
     """
-    if not os.path.isdir(libs.cfg.directory_inbox_accepted):
+    if not os.path.isdir(libs.cfg.config.directory_inbox_accepted):
         libs.utils.terminate_fatal(
             f"The inbox_accepted directory with the name "
-            f"'{str(libs.cfg.directory_inbox_accepted)}' "
+            f"'{str(libs.cfg.config.directory_inbox_accepted)}' "
             f"does not exist - error={str(OSError)}",
         )
 
@@ -62,7 +62,7 @@ def delete_auxiliary_file(file_name: str) -> None:
     Args:
         file_name (str): File name.
     """
-    if not libs.cfg.is_delete_auxiliary_files:
+    if not libs.cfg.config.is_delete_auxiliary_files:
         return
 
     # Don't remove the base document !!!
@@ -112,7 +112,9 @@ def prepare_document_4_next_step(next_file_type: str, next_step: str) -> None:
 # -----------------------------------------------------------------------------
 # Prepare the source and target file names.
 # -----------------------------------------------------------------------------
-def prepare_file_names(file_extension: str = db.cfg.DOCUMENT_FILE_TYPE_PDF) -> Tuple[str, str]:
+def prepare_file_names(
+    file_extension: str = db.cfg.DOCUMENT_FILE_TYPE_PDF,
+) -> typing.Tuple[str, str]:
     """Prepare the source and target file names.
 
     Args:
@@ -143,14 +145,8 @@ def progress_msg(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    if libs.cfg.is_verbose:
-        final_msg: str = (
-            libs.cfg.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
-        )
-
-        print(final_msg)
-
-        libs.cfg.logger.debug(final_msg)
+    if libs.cfg.config.is_verbose:
+        progress_msg_core(msg)
 
 
 # -----------------------------------------------------------------------------
@@ -158,7 +154,7 @@ def progress_msg(msg: str) -> None:
 # -----------------------------------------------------------------------------
 def progress_msg_connected() -> None:
     """Create a progress message: connected to database."""
-    if libs.cfg.is_verbose:
+    if libs.cfg.config.is_verbose:
         print("")
         progress_msg(
             f"User '{db.cfg.db_current_user}' is now connected "
@@ -167,11 +163,29 @@ def progress_msg_connected() -> None:
 
 
 # -----------------------------------------------------------------------------
+# Create a progress message.
+# -----------------------------------------------------------------------------
+def progress_msg_core(msg: str) -> None:
+    """Create a progress message.
+
+    Args:
+        msg (str): Progress message.
+    """
+    final_msg: str = (
+        libs.cfg.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
+    )
+
+    print(final_msg)
+
+    libs.cfg.logger.debug(final_msg)
+
+
+# -----------------------------------------------------------------------------
 # Create a progress message: disconnected from database.
 # -----------------------------------------------------------------------------
 def progress_msg_disconnected() -> None:
     """Create a progress message: disconnected from database."""
-    if libs.cfg.is_verbose:
+    if libs.cfg.config.is_verbose:
         if db.cfg.db_current_database is None and db.cfg.db_current_user is None:
             print("")
             libs.utils.progress_msg("Database is now disconnected")
@@ -204,7 +218,7 @@ def progress_msg_empty_before(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    if libs.cfg.is_verbose:
+    if libs.cfg.config.is_verbose:
         print("")
         progress_msg(msg)
 
@@ -341,7 +355,7 @@ def show_statistics_total() -> None:
 # -----------------------------------------------------------------------------
 # Start document processing.
 # -----------------------------------------------------------------------------
-def start_document_processing(document: Row) -> None:
+def start_document_processing(document: sqlalchemy.engine.Row) -> None:
     """Start document processing.
 
     Args:
@@ -374,21 +388,6 @@ def start_document_processing(document: Row) -> None:
         libs.cfg.total_status_error += 1
     else:
         libs.cfg.total_status_ready += 1
-
-
-# -----------------------------------------------------------------------------
-# Convert a string into a file path.
-# -----------------------------------------------------------------------------
-def str_2_path(param: str) -> pathlib.Path:
-    """Convert a string into a file path.
-
-    Args:
-        param (str): text parameter.
-
-    Returns:
-        pathlib.Path: File path.
-    """
-    return pathlib.Path(os.path.join(os.getcwd(), *param.split("/" if "/" in param else "\\")))
 
 
 # -----------------------------------------------------------------------------

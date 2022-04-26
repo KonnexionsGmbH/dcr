@@ -1,6 +1,6 @@
 # pylint: disable=unused-argument
 """Testing Module pp.tesseract_dcr."""
-from typing import List
+import typing
 
 import libs.cfg
 import pytest
@@ -10,6 +10,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
+# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -25,14 +26,14 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
         [
             ("pdf_scanned_ok", "pdf"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
         ],
     )
 
@@ -43,7 +44,7 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -51,24 +52,24 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
-    files_expected: List = [
+    files_expected: typing.List = [
         "pdf_scanned_ok_1.pdf",
         "pdf_scanned_ok_1_1.pdf",
     ]
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         files_expected,
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -100,15 +101,15 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
             ("pdf_scanned_07_ok", "tiff"),
             ("pdf_scanned_08_ok", "webp"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "30"),
         ],
     )
 
@@ -117,7 +118,7 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -125,12 +126,12 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
     libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
-    files_expected: List = [
+    files_expected: typing.List = [
         "pdf_scanned_01_ok_16_c_1.bmp",
         "pdf_scanned_01_ok_16_c_1.pdf",
         "pdf_scanned_01_ok_24_3.bmp",
@@ -157,13 +158,13 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
     ]
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         files_expected,
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -185,7 +186,9 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     stem_name_1: str = "tiff_pdf_text_ok"
     file_ext_1: str = "tiff"
 
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        [(stem_name_1, file_ext_1)], libs.cfg.config.directory_inbox
+    )
 
     stem_name_2: str = "tiff_pdf_text_ok_1"
     file_ext_2: str = "pdf"
@@ -218,10 +221,10 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "1"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "1"),
         ],
     )
 
@@ -232,7 +235,7 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -240,22 +243,22 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 2/2 <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         [
             stem_name + "_" + str(document_id) + "." + file_ext,
-            stem_name + "_" + str(document_id) + "_1." + libs.cfg.pdf2image_type,
+            stem_name + "_" + str(document_id) + "_1." + libs.cfg.config.pdf2image_type,
         ],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -276,15 +279,15 @@ def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_
         [
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "30"),
         ],
     )
 
@@ -295,7 +298,7 @@ def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -303,24 +306,24 @@ def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_
     libs.cfg.logger.info("=========> test_run_action_image_2_pdf_reunite <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
-    files_expected: List = [
+    files_expected: typing.List = [
         "translating_sql_into_relational_algebra_p01_02_1.pdf",
         "translating_sql_into_relational_algebra_p01_02_1_0.pdf",
     ]
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         files_expected,
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -342,18 +345,20 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     stem_name_1: str = "translating_sql_into_relational_algebra_p01_02"
     file_ext_1: str = "pdf"
 
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        [(stem_name_1, file_ext_1)], libs.cfg.config.directory_inbox
+    )
 
     stem_name_2: str = "translating_sql_into_relational_algebra_p01_02_1_0"
     file_ext_2: str = "pdf"
 
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (libs.cfg.DCR_CFG_TESSERACT_TIMEOUT, "30"),
-            (libs.cfg.DCR_CFG_TETML_LINE, "true"),
-            (libs.cfg.DCR_CFG_TETML_WORD, "true"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (libs.cfg.config._DCR_CFG_TETML_LINE, "true"),
+            (libs.cfg.config._DCR_CFG_TETML_WORD, "true"),
         ],
     )
 
@@ -362,7 +367,7 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     )
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 

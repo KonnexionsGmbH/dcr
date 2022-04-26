@@ -1,8 +1,8 @@
 # pylint: disable=unused-argument
 """Testing Module db.orm.ddl."""
 import os.path
+import pathlib
 import shutil
-from pathlib import Path
 
 import db.cfg
 import db.driver
@@ -25,7 +25,7 @@ def test_load_db_data_from_json_content(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    initial_database_data_path = Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA])
+    initial_database_data_path = pathlib.Path(libs.cfg.config.initial_database_data)
     initial_database_data_path_directory = os.path.dirname(initial_database_data_path)
     initial_database_data_path_file_name = os.path.basename(initial_database_data_path)
 
@@ -63,7 +63,7 @@ def test_load_db_data_from_json_unknown(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    initial_database_data_path = Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA])
+    initial_database_data_path = pathlib.Path(libs.cfg.config.initial_database_data)
     initial_database_data_path_directory = os.path.dirname(initial_database_data_path)
     initial_database_data_path_file_name = os.path.basename(initial_database_data_path)
 

@@ -1,8 +1,8 @@
 """Module db.orm.ddl: Database Definition Management."""
 import json
 import os
-from pathlib import Path
-from typing import List
+import pathlib
+import typing
 
 import db.cfg
 import db.orm.connection
@@ -10,10 +10,8 @@ import db.orm.dml
 import libs.cfg
 import libs.utils
 import sqlalchemy
+import sqlalchemy.event
 import sqlalchemy.orm
-from sqlalchemy import DDL
-from sqlalchemy import ForeignKey
-from sqlalchemy import event
 
 
 # -----------------------------------------------------------------------------
@@ -27,10 +25,10 @@ def create_db_trigger_function(column_name: str) -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    event.listen(
+    sqlalchemy.event.listen(
         db.cfg.db_orm_metadata,
         "after_create",
-        DDL(
+        sqlalchemy.DDL(
             """
 CREATE FUNCTION function_{column_name}()
     RETURNS TRIGGER
@@ -64,10 +62,10 @@ def create_db_trigger_created_at(table_name: str) -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    event.listen(
+    sqlalchemy.event.listen(
         db.cfg.db_orm_metadata,
         "after_create",
-        DDL(
+        sqlalchemy.DDL(
             """
 CREATE TRIGGER trigger_created_at_{table_name}
     BEFORE INSERT
@@ -96,10 +94,10 @@ def create_db_trigger_modified_at(table_name: str) -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    event.listen(
+    sqlalchemy.event.listen(
         db.cfg.db_orm_metadata,
         "after_create",
-        DDL(
+        sqlalchemy.DDL(
             """
 CREATE TRIGGER trigger_modified_at_{table_name}
     BEFORE UPDATE
@@ -120,7 +118,7 @@ CREATE TRIGGER trigger_modified_at_{table_name}
 # -----------------------------------------------------------------------------
 # Create the triggers for the database tables.
 # -----------------------------------------------------------------------------
-def create_db_triggers(table_names: List[str]) -> None:
+def create_db_triggers(table_names: typing.List[str]) -> None:
     """Create the triggers for the database tables.
 
     Args:
@@ -172,7 +170,7 @@ def create_dbt_content_tetml_line(table_name: str) -> None:
         sqlalchemy.Column(
             db.cfg.DBC_DOCUMENT_ID,
             sqlalchemy.Integer,
-            ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
+            sqlalchemy.ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
         sqlalchemy.Column(
@@ -224,7 +222,7 @@ def create_dbt_content_tetml_page(table_name: str) -> None:
         sqlalchemy.Column(
             db.cfg.DBC_DOCUMENT_ID,
             sqlalchemy.Integer,
-            ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
+            sqlalchemy.ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
         sqlalchemy.Column(
@@ -276,7 +274,7 @@ def create_dbt_content_tetml_word(table_name: str) -> None:
         sqlalchemy.Column(
             db.cfg.DBC_DOCUMENT_ID,
             sqlalchemy.Integer,
-            ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
+            sqlalchemy.ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
         sqlalchemy.Column(
@@ -328,7 +326,7 @@ def create_dbt_content_token(table_name: str) -> None:
         sqlalchemy.Column(
             db.cfg.DBC_DOCUMENT_ID,
             sqlalchemy.Integer,
-            ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
+            sqlalchemy.ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
         sqlalchemy.Column(
@@ -388,13 +386,13 @@ def create_dbt_document(table_name: str) -> None:
         sqlalchemy.Column(
             db.cfg.DBC_DOCUMENT_ID_BASE,
             sqlalchemy.Integer,
-            ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
+            sqlalchemy.ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=True,
         ),
         sqlalchemy.Column(
             db.cfg.DBC_DOCUMENT_ID_PARENT,
             sqlalchemy.Integer,
-            ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
+            sqlalchemy.ForeignKey(db.cfg.DBT_DOCUMENT + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=True,
         ),
         sqlalchemy.Column(db.cfg.DBC_DURATION_NS, sqlalchemy.BigInteger, nullable=False),
@@ -407,7 +405,7 @@ def create_dbt_document(table_name: str) -> None:
         sqlalchemy.Column(
             db.cfg.DBC_LANGUAGE_ID,
             sqlalchemy.Integer,
-            ForeignKey(db.cfg.DBT_LANGUAGE + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
+            sqlalchemy.ForeignKey(db.cfg.DBT_LANGUAGE + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
         sqlalchemy.Column(db.cfg.DBC_NEXT_STEP, sqlalchemy.String, nullable=True),
@@ -415,7 +413,7 @@ def create_dbt_document(table_name: str) -> None:
         sqlalchemy.Column(
             db.cfg.DBC_RUN_ID,
             sqlalchemy.Integer,
-            ForeignKey(db.cfg.DBT_RUN + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
+            sqlalchemy.ForeignKey(db.cfg.DBT_RUN + "." + db.cfg.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
         sqlalchemy.Column(db.cfg.DBC_SHA256, sqlalchemy.String, nullable=True),
@@ -583,21 +581,23 @@ def create_schema() -> None:
     """Create the database tables and triggers."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    schema = libs.cfg.config[libs.cfg.DCR_CFG_DB_SCHEMA]
+    schema = libs.cfg.config.db_schema
 
     db.orm.connection.connect_db()
 
     db.cfg.db_orm_engine.execute(sqlalchemy.schema.CreateSchema(schema))
 
     with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
-        conn.execute(DDL(f"DROP SCHEMA IF EXISTS {schema} CASCADE"))
+        conn.execute(sqlalchemy.DDL(f"DROP SCHEMA IF EXISTS {schema} CASCADE"))
         libs.utils.progress_msg(f"If existing, the schema '{schema}' has now been dropped")
 
-        conn.execute(DDL(f"CREATE SCHEMA {schema}"))
+        conn.execute(sqlalchemy.DDL(f"CREATE SCHEMA {schema}"))
         libs.utils.progress_msg(f"The schema '{schema}' has now been created")
 
-        conn.execute(DDL(f"ALTER ROLE {db.cfg.db_current_user} SET search_path = {schema}"))
-        conn.execute(DDL(f"SET search_path = {schema}"))
+        conn.execute(
+            sqlalchemy.DDL(f"ALTER ROLE {db.cfg.db_current_user} SET search_path = {schema}")
+        )
+        conn.execute(sqlalchemy.DDL(f"SET search_path = {schema}"))
         libs.utils.progress_msg(f"The search path '{schema}' has now been set")
 
         conn.close()
@@ -637,7 +637,7 @@ def create_schema() -> None:
             db.cfg.DBC_CODE_PANDOC: "en",
             db.cfg.DBC_CODE_SPACY: "en_core_web_trf",
             db.cfg.DBC_CODE_TESSERACT: "eng",
-            db.cfg.DBC_DIRECTORY_NAME_INBOX: str(libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]),
+            db.cfg.DBC_DIRECTORY_NAME_INBOX: libs.cfg.config.directory_inbox,
             db.cfg.DBC_ISO_LANGUAGE_NAME: "English",
         },
     )
@@ -645,18 +645,18 @@ def create_schema() -> None:
     db.orm.dml.insert_dbt_row(
         db.cfg.DBT_VERSION,
         {
-            db.cfg.DBC_VERSION: libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION],
+            db.cfg.DBC_VERSION: libs.cfg.config.dcr_version,
         },
     )
 
-    if libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]:
-        initial_database_data_path = Path(libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA])
+    if libs.cfg.config.initial_database_data:
+        initial_database_data_path = pathlib.Path(libs.cfg.config.initial_database_data)
         if os.path.isfile(initial_database_data_path):
             load_db_data_from_json(initial_database_data_path)
         else:
             libs.utils.terminate_fatal(
                 f"File with initial database data is missing - "
-                f"file name '{libs.cfg.config[libs.cfg.DCR_CFG_INITIAL_DATABASE_DATA]}'"
+                f"file name '{libs.cfg.config.initial_database_data}'"
             )
 
     # Disconnect from the database.
@@ -668,7 +668,7 @@ def create_schema() -> None:
 # -----------------------------------------------------------------------------
 # Load database data from a JSON file.
 # -----------------------------------------------------------------------------
-def load_db_data_from_json(initial_database_data: Path) -> None:
+def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
     """Load database data from a JSON file.
 
     Args:
@@ -678,10 +678,9 @@ def load_db_data_from_json(initial_database_data: Path) -> None:
         json_data = json.load(json_file)
 
         api_version = json_data[db.cfg.JSON_NAME_API_VERSION]
-        if api_version != libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]:
+        if api_version != libs.cfg.config.dcr_version:
             libs.utils.terminate_fatal(
-                f"Expected api version is' {libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION]}' "
-                f"- got '{api_version}'"
+                f"Expected api version is' {libs.cfg.config.dcr_version}' " f"- got '{api_version}'"
             )
 
         data = json_data[db.cfg.JSON_NAME_DATA]

@@ -20,7 +20,7 @@ def convert_pdf_2_image() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    if libs.cfg.config[libs.cfg.DCR_CFG_PDF2IMAGE_TYPE] == libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG:
+    if libs.cfg.config.pdf2image_type == libs.cfg.config.PDF2IMAGE_TYPE_PNG:
         libs.cfg.document_child_file_type = db.cfg.DOCUMENT_FILE_TYPE_PNG
     else:
         libs.cfg.document_child_file_type = db.cfg.DOCUMENT_FILE_TYPE_JPG
@@ -63,7 +63,7 @@ def convert_pdf_2_image_file() -> None:
     images = pdf2image.convert_from_path(file_name_parent)
 
     libs.utils.prepare_document_4_next_step(
-        next_file_type=libs.cfg.pdf2image_type,
+        next_file_type=libs.cfg.config.pdf2image_type,
         next_step=db.cfg.DOCUMENT_STEP_TESSERACT,
     )
 
@@ -95,7 +95,7 @@ def convert_pdf_2_image_file() -> None:
         else:
             img.save(
                 file_name_child,
-                libs.cfg.pdf2image_type,
+                libs.cfg.config.pdf2image_type,
             )
 
             db.orm.dml.insert_document_child()
@@ -111,7 +111,7 @@ def convert_pdf_2_image_file() -> None:
         document_id=libs.cfg.document_id, status=db.cfg.DOCUMENT_STATUS_END
     )
 
-    if libs.cfg.is_verbose:
+    if libs.cfg.config.is_verbose:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "

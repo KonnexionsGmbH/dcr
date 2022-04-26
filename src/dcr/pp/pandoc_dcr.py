@@ -44,7 +44,7 @@ def convert_non_pdf_2_pdf() -> None:
             # Document successfully converted to pdf format
             duration_ns = libs.utils.finalize_file_processing()
 
-            if libs.cfg.is_verbose:
+            if libs.cfg.config.is_verbose:
                 libs.utils.progress_msg(
                     f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                     f"Document: {libs.cfg.document_id:6d} "

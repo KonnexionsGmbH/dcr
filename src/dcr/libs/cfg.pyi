@@ -1,62 +1,15 @@
 """Library Stub."""
 import logging
-from datetime import datetime
-from decimal import Decimal
-from os import PathLike
-from typing import Dict
-from typing import List
-from typing import TypeAlias
-from typing import Union
+import os
+import typing
 
+import setup.config
 import sqlalchemy
 
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
 DCR_ARGV_0: str
-
-DCR_CFG_DATABASE_FILE: str
-DCR_CFG_DATABASE_URL: str
-DCR_CFG_DB_CONNECTION_PORT: str
-DCR_CFG_DB_CONNECTION_PREFIX: str
-DCR_CFG_DB_CONTAINER_PORT: str
-DCR_CFG_DB_DATABASE: str
-DCR_CFG_DB_DATABASE_ADMIN: str
-DCR_CFG_DB_DIALECT: str
-DCR_CFG_DB_HOST: str
-DCR_CFG_DB_PASSWORD: str
-DCR_CFG_DB_PASSWORD_ADMIN: str
-DCR_CFG_DB_SCHEMA: str
-DCR_CFG_DB_USER: str
-DCR_CFG_DB_USER_ADMIN: str
-DCR_CFG_DCR_VERSION: str
-DCR_CFG_DELETE_AUXILIARY_FILES: str
-DCR_CFG_DIRECTORY_INBOX: str
-DCR_CFG_DIRECTORY_INBOX_ACCEPTED: str
-DCR_CFG_DIRECTORY_INBOX_REJECTED: str
-DCR_CFG_FILE: str
-DCR_CFG_IGNORE_DUPLICATES: str
-DCR_CFG_INITIAL_DATABASE_DATA: str
-DCR_CFG_PDF2IMAGE_TYPE: str
-DCR_CFG_PDF2IMAGE_TYPE_JPEG: str
-DCR_CFG_PDF2IMAGE_TYPE_PNG: str
-DCR_CFG_SECTION: str
-DCR_CFG_SECTION_DEV: str
-DCR_CFG_SECTION_PROD: str
-DCR_CFG_SECTION_TEST: str
-DCR_CFG_SIMULATE_PARSER: str
-DCR_CFG_TESSERACT_TIMEOUT: str
-DCR_CFG_TETML_LINE: str
-DCR_CFG_TETML_PAGE: str
-DCR_CFG_TETML_WORD: str
-DCR_CFG_VERBOSE: str
-DCR_CFG_VERBOSE_PARSER: str
-
-DCR_ENVIRONMENT_TYPE: str
-
-ENVIRONMENT_TYPE_DEV: str
-ENVIRONMENT_TYPE_PROD: str
-ENVIRONMENT_TYPE_TEST: str
 
 FILE_ENCODING_DEFAULT: str
 
@@ -129,18 +82,13 @@ TESTS_INBOX_NAME: str
 VERBOSE_TRUE: str
 
 # -----------------------------------------------------------------------------
-# Global Type Definitions.
-# -----------------------------------------------------------------------------
-Columns: TypeAlias = Dict[str, Union[PathLike[str], sqlalchemy.Integer, str]]
-
-# -----------------------------------------------------------------------------
 # Global Variables.
 # -----------------------------------------------------------------------------
-config: Dict[str, PathLike[str] | str]
+config: typing.Type[setup.config.Config]
 
-directory_inbox: PathLike[str] | str
-directory_inbox_accepted: PathLike[str] | str
-directory_inbox_rejected: PathLike[str] | str
+directory_inbox: os.PathLike[str] | str
+directory_inbox_accepted: os.PathLike[str] | str
+directory_inbox_rejected: os.PathLike[str] | str
 
 document_child_child_no: sqlalchemy.Integer | None
 document_child_directory_name: str
@@ -172,19 +120,7 @@ document_sha256: str | None
 document_status: str
 document_stem_name: str
 
-environment_type: str
-
-is_delete_auxiliary_files: bool
-is_ignore_duplicates: bool
-is_parsing_line: bool
-is_parsing_word: bool
-is_simulate_parser: bool
-is_tetml_line: bool
-is_tetml_page: bool
-is_tetml_word: bool
-is_verbose: bool
-
-language_directory_inbox: PathLike[str]
+language_directory_inbox: os.PathLike[str]
 language_erroneous: int
 language_id: sqlalchemy.Integer
 language_iso_language_name: str
@@ -195,9 +131,9 @@ language_ok_processed_pdflib: int
 language_ok_processed_tesseract: int
 language_to_be_processed: int
 
-languages_pandoc: Dict[sqlalchemy.Integer, str]
-languages_spacy: Dict[sqlalchemy.Integer, str]
-languages_tesseract: Dict[sqlalchemy.Integer, str]
+languages_pandoc: typing.Dict[sqlalchemy.Integer, str]
+languages_spacy: typing.Dict[sqlalchemy.Integer, str]
+languages_tesseract: typing.Dict[sqlalchemy.Integer, str]
 
 logger: logging.Logger
 
@@ -211,23 +147,19 @@ parse_result_no_words_in_line: int
 parse_result_no_words_in_page: int
 parse_result_no_words_in_para: int
 parse_result_page_index_doc: int
-parse_result_page_lines: Dict[str, int | List[Dict[str, int | str]]]
-parse_result_page_words: Dict[str, int | List[Dict[str, int | str]]]
+parse_result_page_lines: typing.Dict[str, int | typing.List[typing.Dict[str, int | str]]]
+parse_result_page_words: typing.Dict[str, int | typing.List[typing.Dict[str, int | str]]]
 parse_result_para_index_page: int
 parse_result_text: str
 parse_result_word_index_line: int
 parse_result_word_index_page: int
 parse_result_word_index_para: int
 
-pdf2image_type: str
-
 run_action: str
 run_id: sqlalchemy.Integer
 run_run_id: sqlalchemy.Integer
 
 start_time_document: int
-
-tesseract_timeout: Decimal
 
 total_erroneous: int
 total_generated: int
@@ -239,5 +171,3 @@ total_ok_processed_tesseract: int
 total_status_error: int
 total_status_ready: int
 total_to_be_processed: int
-
-verbose_parser: str

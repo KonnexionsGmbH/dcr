@@ -2,14 +2,12 @@
 
 This is the entry point to the application DCR.
 """
-import configparser
 import locale
 import logging
 import logging.config
-import os
 import sys
 import time
-from typing import List
+import typing
 
 import db.cfg
 import db.driver
@@ -17,17 +15,16 @@ import db.orm.connection
 import db.orm.dml
 import libs.cfg
 import libs.utils
-import nlp.tokenize
+import nlp.tokenizer
 import pp.inbox
 import pp.pandoc_dcr
 import pp.parser
 import pp.pdf2image_dcr
 import pp.pdflib_dcr
 import pp.tesseract_dcr
+import setup.config
 import sqlalchemy
 import yaml
-from sqlalchemy import Table
-from sqlalchemy import select
 
 
 # -----------------------------------------------------------------------------
@@ -49,10 +46,10 @@ def check_db_up_to_date() -> None:
 
     current_version = db.orm.dml.select_version_version_unique()
 
-    if libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION] != current_version:
+    if libs.cfg.config.dcr_version != current_version:
         libs.utils.terminate_fatal(
             f"Current database version is '{current_version}' - but expected version is '"
-            f"{str(libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION])}''"
+            f"{libs.cfg.config.dcr_version}''"
         )
 
     libs.utils.progress_msg(f"The current version of database is '{current_version}'")
@@ -63,7 +60,7 @@ def check_db_up_to_date() -> None:
 # -----------------------------------------------------------------------------
 # Load the command line arguments into memory.
 # -----------------------------------------------------------------------------
-def get_args(argv: List[str]) -> dict[str, bool]:
+def get_args(argv: typing.List[str]) -> dict[str, bool]:
     """Load the command line arguments.
 
     The command line arguments define the process steps to be executed.
@@ -156,66 +153,6 @@ def get_args(argv: List[str]) -> dict[str, bool]:
 
 
 # -----------------------------------------------------------------------------
-# Load the configuration parameters.
-# -----------------------------------------------------------------------------
-def get_config() -> None:
-    """Load the configuration parameters.
-
-    Loads the configuration parameters from the `setup.cfg` file under
-    the `DCR` sections.
-    """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    config_parser = configparser.ConfigParser()
-    config_parser.read(libs.cfg.DCR_CFG_FILE)
-
-    libs.cfg.config.clear()
-
-    for section in config_parser.sections():
-        if section == libs.cfg.DCR_CFG_SECTION:
-            for (key, value) in config_parser.items(section):
-                libs.cfg.config[key] = value
-
-    for section in config_parser.sections():
-        if section == libs.cfg.DCR_CFG_SECTION + "_" + libs.cfg.environment_type:
-            for (key, value) in config_parser.items(section):
-                libs.cfg.config[key] = value
-
-    validate_config()
-
-    libs.utils.progress_msg("The configuration parameters are checked and loaded")
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Load environment variables.
-# -----------------------------------------------------------------------------
-def get_environment() -> None:
-    """Load environment variables."""
-    try:
-        libs.cfg.environment_type = os.environ[libs.cfg.DCR_ENVIRONMENT_TYPE]
-    except KeyError:
-        libs.utils.terminate_fatal(
-            f"The environment variable '{libs.cfg.DCR_ENVIRONMENT_TYPE}' is missing"
-        )
-
-    if libs.cfg.environment_type not in [
-        libs.cfg.ENVIRONMENT_TYPE_DEV,
-        libs.cfg.ENVIRONMENT_TYPE_PROD,
-        libs.cfg.ENVIRONMENT_TYPE_TEST,
-    ]:
-        libs.utils.terminate_fatal(
-            f"The environment variable '{libs.cfg.DCR_ENVIRONMENT_TYPE}' "
-            f"has the invalid content '{libs.cfg.environment_type}'"
-        )
-
-    libs.utils.progress_msg(
-        f"The run is performed in the environment '{libs.cfg.environment_type}'"
-    )
-
-
-# -----------------------------------------------------------------------------
 # Initialising the logging functionality.
 # -----------------------------------------------------------------------------
 def initialise_logger() -> None:
@@ -227,7 +164,7 @@ def initialise_logger() -> None:
     libs.cfg.logger = logging.getLogger("dcr.py")
     libs.cfg.logger.setLevel(logging.DEBUG)
 
-    libs.utils.progress_msg("The logger is configured and ready")
+    libs.utils.progress_msg_core("The logger is configured and ready")
 
 
 # -----------------------------------------------------------------------------
@@ -237,7 +174,7 @@ def load_data_from_dbt_language() -> None:
     """Load the data from the database table 'language'."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = Table(
+    dbt = sqlalchemy.Table(
         db.cfg.DBT_LANGUAGE,
         db.cfg.db_orm_metadata,
         autoload_with=db.cfg.db_orm_engine,
@@ -249,7 +186,9 @@ def load_data_from_dbt_language() -> None:
 
     with db.cfg.db_orm_engine.connect() as conn:
         rows = conn.execute(
-            select(dbt.c.id, dbt.c.code_pandoc, dbt.c.code_spacy, dbt.c.code_tesseract).where(
+            sqlalchemy.select(
+                dbt.c.id, dbt.c.code_pandoc, dbt.c.code_spacy, dbt.c.code_tesseract
+            ).where(
                 dbt.c.active,
             )
         )
@@ -273,7 +212,7 @@ def load_data_from_dbt_language() -> None:
 # -----------------------------------------------------------------------------
 # Initialising the logging functionality.
 # -----------------------------------------------------------------------------
-def main(argv: List[str]) -> None:
+def main(argv: typing.List[str]) -> None:
     """Entry point.
 
     The processes to be carried out are selected via command line arguments.
@@ -291,14 +230,11 @@ def main(argv: List[str]) -> None:
 
     locale.setlocale(locale.LC_ALL, libs.cfg.LOCALE)
 
-    # Load the environment variables.
-    get_environment()
+    # Load the configuration parameters.
+    libs.cfg.config = setup.config.Config()
 
     # Load the command line arguments.
     args = get_args(argv)
-
-    # Load the configuration parameters.
-    get_config()
 
     if args[libs.cfg.RUN_ACTION_CREATE_DB]:
         # Create the database.
@@ -647,7 +583,7 @@ def process_tokenize() -> None:
         },
     )
 
-    nlp.tokenize.tokenize()
+    nlp.tokenizer.tokenize()
 
     db.orm.dml.update_dbt_id(
         db.cfg.DBT_RUN,
@@ -661,215 +597,6 @@ def process_tokenize() -> None:
     )
 
     libs.utils.progress_msg("End  : Create document tokens ...")
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters.
-# -----------------------------------------------------------------------------
-def validate_config() -> None:
-    """Validate the configuration parameters."""
-    # -------------------------------------------------------------------------
-    validate_config_delete_auxiliary_files()
-    validate_config_directory_inbox()
-    validate_config_directory_inbox_accepted()
-    validate_config_directory_inbox_rejected()
-    validate_config_ignore_duplicates()
-    validate_config_pdf2image_type()
-    validate_config_simulate_parser()
-    validate_config_tesseract_timeout()
-    validate_config_tetml_line()
-    validate_config_tetml_page()
-    validate_config_tetml_word()
-    validate_config_verbose()
-    validate_config_verbose_parser()
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - delete_auxiliary_files
-# -----------------------------------------------------------------------------
-def validate_config_delete_auxiliary_files() -> None:
-    """Validate the configuration parameters - delete_auxiliary_files."""
-    libs.cfg.is_delete_auxiliary_files = True
-
-    if libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES].lower() == "false":
-            libs.cfg.is_delete_auxiliary_files = False
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - directory_inbox
-# -----------------------------------------------------------------------------
-def validate_config_directory_inbox() -> None:
-    """Validate the configuration parameters - directory_inbox."""
-    if libs.cfg.DCR_CFG_DIRECTORY_INBOX in libs.cfg.config:
-        libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX] = libs.utils.str_2_path(
-            libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-        )
-
-        libs.cfg.directory_inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-    else:
-        libs.utils.terminate_fatal(
-            f"Missing configuration parameter '{libs.cfg.DCR_CFG_DIRECTORY_INBOX}'"
-        )
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - directory_inbox_accepted
-# -----------------------------------------------------------------------------
-def validate_config_directory_inbox_accepted() -> None:
-    """Validate the configuration parameters - directory_inbox_accepted."""
-    if libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED in libs.cfg.config:
-        libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED] = libs.utils.str_2_path(
-            libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-        )
-
-        libs.cfg.directory_inbox_accepted = libs.cfg.config[
-            libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED
-        ]
-    else:
-        libs.utils.terminate_fatal(
-            f"Missing configuration parameter '{libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'"
-        )
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - directory_inbox_rejected
-# -----------------------------------------------------------------------------
-def validate_config_directory_inbox_rejected() -> None:
-    """Validate the configuration parameters - directory_inbox_rejected."""
-    if libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED in libs.cfg.config:
-        libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED] = libs.utils.str_2_path(
-            libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
-        )
-
-        libs.cfg.directory_inbox_rejected = libs.cfg.config[
-            libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
-        ]
-    else:
-        libs.utils.terminate_fatal(
-            f"Missing configuration parameter '{libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED}'"
-        )
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - ignore_duplicates
-# -----------------------------------------------------------------------------
-def validate_config_ignore_duplicates() -> None:
-    """Validate the configuration parameters - ignore_duplicates."""
-    libs.cfg.is_ignore_duplicates = False
-
-    if libs.cfg.DCR_CFG_IGNORE_DUPLICATES in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_IGNORE_DUPLICATES].lower() == "true":
-            libs.cfg.is_ignore_duplicates = True
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - pdf2image_type
-# -----------------------------------------------------------------------------
-def validate_config_pdf2image_type() -> None:
-    """Validate the configuration parameters - pdf2image_type."""
-    libs.cfg.pdf2image_type = libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
-
-    if libs.cfg.DCR_CFG_PDF2IMAGE_TYPE in libs.cfg.config:
-        libs.cfg.pdf2image_type = libs.cfg.config[libs.cfg.DCR_CFG_PDF2IMAGE_TYPE]
-        if libs.cfg.pdf2image_type not in [
-            libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG,
-            libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG,
-        ]:
-            libs.utils.terminate_fatal(
-                f"Invalid configuration parameter value for parameter "
-                f"'pdf2image_type': '{libs.cfg.pdf2image_type}'"
-            )
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - simulate_parser
-# -----------------------------------------------------------------------------
-def validate_config_simulate_parser() -> None:
-    """Validate the configuration parameters - simulate_parser."""
-    libs.cfg.is_simulate_parser = False
-
-    if libs.cfg.DCR_CFG_SIMULATE_PARSER in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_SIMULATE_PARSER].lower() == "true":
-            libs.cfg.is_simulate_parser = True
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - tesseract_timeout
-# -----------------------------------------------------------------------------
-def validate_config_tesseract_timeout() -> None:
-    """Validate the configuration parameters - tesseract_timeout."""
-    libs.cfg.tesseract_timeout = 30
-
-    if libs.cfg.DCR_CFG_TESSERACT_TIMEOUT in libs.cfg.config:
-        libs.cfg.tesseract_timeout = int(libs.cfg.config[libs.cfg.DCR_CFG_TESSERACT_TIMEOUT])
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - tetml_line
-# -----------------------------------------------------------------------------
-def validate_config_tetml_line() -> None:
-    """Validate the configuration parameters - tetml_line."""
-    libs.cfg.is_tetml_line = True
-
-    if libs.cfg.DCR_CFG_TETML_LINE in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_TETML_LINE].lower() == "false":
-            libs.cfg.is_tetml_line = False
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - tetml_page
-# -----------------------------------------------------------------------------
-def validate_config_tetml_page() -> None:
-    """Validate the configuration parameters - tetml_page."""
-    libs.cfg.is_tetml_page = False
-
-    if libs.cfg.DCR_CFG_TETML_PAGE in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_TETML_PAGE].lower() == "true":
-            libs.cfg.is_tetml_page = True
-
-    if not libs.cfg.is_tetml_page:
-        if not libs.cfg.is_tetml_line:
-            libs.utils.terminate_fatal(
-                "At least one of the configuration parameters 'tetml_line' or "
-                + "'tetml_page' must be 'true'"
-            )
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - tetml_word
-# -----------------------------------------------------------------------------
-def validate_config_tetml_word() -> None:
-    """Validate the configuration parameters - tetml_word."""
-    libs.cfg.is_tetml_word = False
-
-    if libs.cfg.DCR_CFG_TETML_WORD in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_TETML_WORD].lower() == "true":
-            libs.cfg.is_tetml_word = True
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - verbose
-# -----------------------------------------------------------------------------
-def validate_config_verbose() -> None:
-    """Validate the configuration parameters - verbose."""
-    libs.cfg.is_verbose = True
-
-    if libs.cfg.DCR_CFG_VERBOSE in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE].lower() == "false":
-            libs.cfg.is_verbose = False
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - verbose_parser
-# -----------------------------------------------------------------------------
-def validate_config_verbose_parser() -> None:
-    """Validate the configuration parameters - verbose_parser."""
-    libs.cfg.verbose_parser = "none"
-
-    if libs.cfg.DCR_CFG_VERBOSE_PARSER in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE_PARSER].lower() in ["all", "text"]:
-            libs.cfg.verbose_parser = libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE_PARSER].lower()
 
 
 # -----------------------------------------------------------------------------

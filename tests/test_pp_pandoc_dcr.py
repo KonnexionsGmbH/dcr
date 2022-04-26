@@ -8,6 +8,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
+# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -24,7 +25,9 @@ def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox
     stem_name_1: str = "docx_ok"
     file_ext_1: str = "docx"
 
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        [(stem_name_1, file_ext_1)], libs.cfg.config.directory_inbox
+    )
 
     stem_name_2: str = "docx_ok_1"
     file_ext_2: str = "pdf"
@@ -55,14 +58,14 @@ def test_run_action_non_pdf_2_pdf_normal_keep(fxtr_setup_empty_db_and_inbox):
             ("rst_ok", "rst"),
             ("rtf_ok", "rtf"),
         ],
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         [
-            (libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
     )
 
@@ -71,7 +74,7 @@ def test_run_action_non_pdf_2_pdf_normal_keep(fxtr_setup_empty_db_and_inbox):
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_NON_PDF_2_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.DCR_CFG_SECTION,
+        libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
 
@@ -79,13 +82,13 @@ def test_run_action_non_pdf_2_pdf_normal_keep(fxtr_setup_empty_db_and_inbox):
     libs.cfg.logger.info("=========> test_run_action_non_pdf_2_pdf_normal <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox,
+        libs.cfg.config.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_accepted,
+        libs.cfg.config.directory_inbox_accepted,
         [],
         [
             "csv_ok_1.csv",
@@ -106,7 +109,7 @@ def test_run_action_non_pdf_2_pdf_normal_keep(fxtr_setup_empty_db_and_inbox):
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.directory_inbox_rejected,
+        libs.cfg.config.directory_inbox_rejected,
         [],
         [],
     )
@@ -123,7 +126,7 @@ def test_run_action_non_pdf_2_pdf_special(fxtr_rmdir_opt, fxtr_setup_empty_db_an
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    fxtr_rmdir_opt(libs.cfg.directory_inbox_accepted)
+    fxtr_rmdir_opt(libs.cfg.config.directory_inbox_accepted)
 
     with pytest.raises(SystemExit) as expt:
         dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_NON_PDF_2_PDF])

@@ -1,12 +1,13 @@
 """Testing Module conftest."""
 import os
-from pathlib import Path
+import pathlib
 
 import libs.cfg
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
+# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -20,7 +21,7 @@ def test_mkdir_rmdir_rmdir_opt(fxtr_mkdir, fxtr_rmdir, fxtr_rmdir_opt):
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    directory_path: os.PathLike = Path("tmp")
+    directory_path: os.PathLike = pathlib.Path("tmp")
 
     fxtr_rmdir_opt(directory_path)
 
