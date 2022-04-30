@@ -5,7 +5,7 @@ import time
 import typing
 
 import db.cfg
-import db.orm.dml
+import db.dml
 import defusedxml.ElementTree
 import libs.cfg
 import libs.utils
@@ -134,7 +134,7 @@ def insert_content_tetml_line() -> None:
 
         libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_NO_PARAS_IN_PAGE] = libs.cfg.parse_result_no_paras_in_page
 
-        db.orm.dml.insert_dbt_row(
+        db.dml.insert_dbt_row(
             db.cfg.DBT_CONTENT_TETML_LINE,
             {
                 db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
@@ -154,7 +154,7 @@ def insert_content_tetml_word() -> None:
         libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_NO_PARAS_IN_PAGE] = libs.cfg.parse_result_no_paras_in_page
         libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_NO_WORDS_IN_PAGE] = libs.cfg.parse_result_no_words_in_page
 
-        db.orm.dml.insert_dbt_row(
+        db.dml.insert_dbt_row(
             db.cfg.DBT_CONTENT_TETML_WORD,
             {
                 db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
@@ -517,12 +517,12 @@ def parse_tetml() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
+    dbt = db.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     libs.utils.reset_statistics_total()
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER_LINE)
+        rows = db.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER_LINE)
 
         for row in rows:
             # ------------------------------------------------------------------
@@ -544,13 +544,13 @@ def parse_tetml() -> None:
                     libs.utils.progress_msg(
                         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                         f"Document: {libs.cfg.document_id:6d} "
-                        f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+                        f"[{db.dml.select_document_file_name_id(libs.cfg.document_id)}]"
                     )
 
         conn.close()
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER_WORD)
+        rows = db.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER_WORD)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -569,7 +569,7 @@ def parse_tetml() -> None:
                     libs.utils.progress_msg(
                         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                         f"Document: {libs.cfg.document_id:6d} "
-                        f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+                        f"[{db.dml.select_document_file_name_id(libs.cfg.document_id)}]"
                     )
 
         conn.close()

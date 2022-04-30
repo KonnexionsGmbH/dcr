@@ -4,7 +4,7 @@ import os
 import time
 
 import db.cfg
-import db.orm.dml
+import db.dml
 import libs.cfg
 import libs.utils
 import pdf2image
@@ -27,10 +27,10 @@ def convert_pdf_2_image() -> None:
 
     libs.utils.reset_statistics_total()
 
-    dbt = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
+    dbt = db.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PDF2IMAGE)
+        rows = db.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PDF2IMAGE)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -83,7 +83,7 @@ def convert_pdf_2_image_file() -> None:
         )
 
         if os.path.exists(file_name_child):
-            db.orm.dml.update_document_error(
+            db.dml.update_document_error(
                 document_id=libs.cfg.document_id,
                 error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
                 error_msg=db.cfg.ERROR_21_903.replace("{file_name}", file_name_child),
@@ -94,7 +94,7 @@ def convert_pdf_2_image_file() -> None:
                 libs.cfg.config.pdf2image_type,
             )
 
-            db.orm.dml.insert_document_child()
+            db.dml.insert_document_child()
 
             libs.cfg.total_generated += 1
 
@@ -103,15 +103,13 @@ def convert_pdf_2_image_file() -> None:
     libs.cfg.total_ok_processed += 1
 
     # Document successfully converted to image format
-    duration_ns = db.orm.dml.update_document_statistics(
-        document_id=libs.cfg.document_id, status=db.cfg.DOCUMENT_STATUS_END
-    )
+    duration_ns = db.dml.update_document_statistics(document_id=libs.cfg.document_id, status=db.cfg.DOCUMENT_STATUS_END)
 
     if libs.cfg.config.is_verbose:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "
-            f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+            f"[{db.dml.select_document_file_name_id(libs.cfg.document_id)}]"
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

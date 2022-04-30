@@ -1,8 +1,8 @@
 # pylint: disable=unused-argument
-"""Testing Module db.orm.dml."""
+"""Testing Module db.dml."""
 import db.cfg
+import db.dml
 import db.driver
-import db.orm.dml
 import libs.cfg
 import libs.utils
 import pytest
@@ -74,10 +74,10 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
-    db.orm.dml.insert_dbt_row(db.cfg.DBT_VERSION, {db.cfg.DBC_VERSION: "0.0.0"})
+    db.dml.insert_dbt_row(db.cfg.DBT_VERSION, {db.cfg.DBC_VERSION: "0.0.0"})
 
     with pytest.raises(SystemExit) as expt:
-        db.orm.dml.select_version_version_unique()
+        db.dml.select_version_version_unique()
 
     db.driver.disconnect_db()
 
@@ -90,7 +90,7 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     db.driver.connect_db()
 
     with pytest.raises(SystemExit) as expt:
-        db.orm.dml.select_version_version_unique()
+        db.dml.select_version_version_unique()
 
     db.driver.disconnect_db()
 

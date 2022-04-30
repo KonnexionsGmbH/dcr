@@ -1,7 +1,7 @@
 """Module db.driver: Database Definition Management."""
 import db.cfg
-import db.orm.ddl
-import db.orm.dml
+import db.ddl
+import db.dml
 import libs.cfg
 import libs.utils
 import psycopg2
@@ -120,7 +120,7 @@ def create_database_postgresql() -> None:
 
     disconnect_db()
 
-    db.orm.ddl.create_schema()
+    db.ddl.create_schema()
 
     libs.utils.progress_msg(
         f"The database has been successfully created, " f"version number='{libs.cfg.config.dcr_version}"
@@ -229,12 +229,12 @@ def upgrade_database() -> None:
 
     libs.utils.progress_msg("Upgrade the database tables ...")
 
-    current_version: str = db.orm.dml.select_version_version_unique()
+    current_version: str = db.dml.select_version_version_unique()
 
     if current_version == libs.cfg.config.dcr_version:
         libs.utils.progress_msg(f"The database is already up to date, version number='{current_version}'")
     else:
-        while db.orm.dml.select_version_version_unique() != libs.cfg.config.dcr_version:
+        while db.dml.select_version_version_unique() != libs.cfg.config.dcr_version:
             upgrade_database_version()
 
     disconnect_db()
@@ -249,7 +249,7 @@ def upgrade_database_version() -> None:
     """Upgrade the current database schema - from one version to the next."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    current_version: str = db.orm.dml.select_version_version_unique()
+    current_version: str = db.dml.select_version_version_unique()
 
     if current_version == "0.5.0":
         libs.utils.terminate_fatal(

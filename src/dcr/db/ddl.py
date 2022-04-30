@@ -1,12 +1,12 @@
-"""Module db.orm.ddl: Database Definition Management."""
+"""Module db.ddl: Database Definition Management."""
 import json
 import os
 import pathlib
 import typing
 
 import db.cfg
+import db.dml
 import db.driver
-import db.orm.dml
 import libs.cfg
 import libs.utils
 import sqlalchemy
@@ -620,7 +620,7 @@ def create_schema() -> None:
 
     db.cfg.db_orm_metadata.create_all(db.cfg.db_orm_engine)
 
-    db.orm.dml.insert_dbt_row(
+    db.dml.insert_dbt_row(
         db.cfg.DBT_LANGUAGE,
         {
             db.cfg.DBC_CODE_ISO_639_3: "eng",
@@ -632,7 +632,7 @@ def create_schema() -> None:
         },
     )
 
-    db.orm.dml.insert_dbt_row(
+    db.dml.insert_dbt_row(
         db.cfg.DBT_VERSION,
         {
             db.cfg.DBC_VERSION: libs.cfg.config.dcr_version,
@@ -698,7 +698,7 @@ def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
                 for json_column in json_row[db.cfg.JSON_NAME_ROW]:
                     db_columns[json_column[db.cfg.JSON_NAME_COLUMN_NAME]] = json_column[db.cfg.JSON_NAME_COLUMN_VALUE]
 
-                db.orm.dml.insert_dbt_row(
+                db.dml.insert_dbt_row(
                     table_name,
                     db_columns,
                 )

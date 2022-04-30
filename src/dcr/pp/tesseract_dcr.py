@@ -3,7 +3,7 @@ import os
 import time
 
 import db.cfg
-import db.orm.dml
+import db.dml
 import libs.cfg
 import libs.utils
 import PyPDF2
@@ -21,12 +21,12 @@ def convert_image_2_pdf() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
+    dbt = db.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     libs.utils.reset_statistics_total()
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_TESSERACT)
+        rows = db.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_TESSERACT)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -54,7 +54,7 @@ def convert_image_2_pdf_file() -> None:
     source_file_name, target_file_name = libs.utils.prepare_file_names()
 
     if os.path.exists(target_file_name):
-        db.orm.dml.update_document_error(
+        db.dml.update_document_error(
             document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=db.cfg.ERROR_41_903.replace("{file_name}", target_file_name),
@@ -83,7 +83,7 @@ def convert_image_2_pdf_file() -> None:
 
         libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
-        db.orm.dml.insert_document_child()
+        db.dml.insert_document_child()
 
         if libs.cfg.document_id_base != libs.cfg.document_id_parent:
             libs.utils.delete_auxiliary_file(source_file_name)
@@ -95,10 +95,10 @@ def convert_image_2_pdf_file() -> None:
             libs.utils.progress_msg(
                 f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                 f"Document: {libs.cfg.document_id:6d} "
-                f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+                f"[{db.dml.select_document_file_name_id(libs.cfg.document_id)}]"
             )
     except RuntimeError as err:
-        db.orm.dml.update_document_error(
+        db.dml.update_document_error(
             document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
             error_msg=db.cfg.ERROR_41_901.replace("{source_file}", source_file_name)
@@ -120,7 +120,7 @@ def reunite_pdfs() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
+    dbt = db.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     libs.utils.reset_statistics_total()
 
@@ -168,7 +168,7 @@ def reunite_pdfs_file() -> None:
     )
 
     if os.path.exists(target_file_path):
-        db.orm.dml.update_document_error(
+        db.dml.update_document_error(
             document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=db.cfg.ERROR_41_904.replace("{file_name}", str(target_file_path)),
@@ -179,7 +179,7 @@ def reunite_pdfs_file() -> None:
 
     libs.cfg.documents_to_be_reunited = []
 
-    dbt = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
+    dbt = db.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     with db.cfg.db_orm_engine.connect() as conn:
         rows = conn.execute(
@@ -208,7 +208,7 @@ def reunite_pdfs_file() -> None:
 
             duration_ns = time.perf_counter_ns() - start_time_document
 
-            db.orm.dml.update_dbt_id(
+            db.dml.update_dbt_id(
                 db.cfg.DBT_DOCUMENT,
                 row.id,
                 {
@@ -234,7 +234,7 @@ def reunite_pdfs_file() -> None:
     libs.cfg.document_child_directory_name = libs.cfg.config.directory_inbox_accepted
     libs.cfg.document_child_directory_type = db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED
 
-    db.orm.dml.insert_document_child()
+    db.dml.insert_document_child()
 
     # Child document successfully reunited to one pdf document
     duration_ns = libs.utils.finalize_file_processing()
@@ -243,7 +243,7 @@ def reunite_pdfs_file() -> None:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "
-            f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+            f"[{db.dml.select_document_file_name_id(libs.cfg.document_id)}]"
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

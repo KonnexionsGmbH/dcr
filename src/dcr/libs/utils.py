@@ -8,8 +8,8 @@ import traceback
 import typing
 
 import db.cfg
+import db.dml
 import db.driver
-import db.orm.dml
 import libs.cfg
 import libs.utils
 import sqlalchemy.engine
@@ -66,7 +66,7 @@ def delete_auxiliary_file(file_name: str) -> None:
         return
 
     # Don't remove the base document !!!
-    if file_name == db.orm.dml.select_document_base_file_name():
+    if file_name == db.dml.select_document_base_file_name():
         return
 
     if os.path.isfile(file_name):
@@ -79,9 +79,7 @@ def delete_auxiliary_file(file_name: str) -> None:
 # -----------------------------------------------------------------------------
 def finalize_file_processing() -> int:
     """Finalise the file processing."""
-    duration_ns = db.orm.dml.update_document_statistics(
-        document_id=libs.cfg.document_id, status=db.cfg.DOCUMENT_STATUS_END
-    )
+    duration_ns = db.dml.update_document_statistics(document_id=libs.cfg.document_id, status=db.cfg.DOCUMENT_STATUS_END)
 
     libs.cfg.total_ok_processed += 1
 
@@ -345,7 +343,7 @@ def start_document_processing(document: sqlalchemy.engine.Row) -> None:
     libs.cfg.document_status = document.status
     libs.cfg.document_stem_name = document.stem_name
 
-    db.orm.dml.update_dbt_id(
+    db.dml.update_dbt_id(
         db.cfg.DBT_DOCUMENT,
         libs.cfg.document_id,
         {

@@ -3,7 +3,7 @@ import os
 import time
 
 import db.cfg
-import db.orm.dml
+import db.dml
 import libs.cfg
 import libs.utils
 import PDFlib.TET
@@ -26,7 +26,7 @@ WORD_TET_PAGE_OPT_LIST: str = "granularity=word tetml={elements={line}}"
 # -----------------------------------------------------------------------------
 def create_child_document() -> None:
     """Create the child document entry."""
-    libs.cfg.document_child_id = db.orm.dml.insert_dbt_row(
+    libs.cfg.document_child_id = db.dml.insert_dbt_row(
         db.cfg.DBT_DOCUMENT,
         {
             db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
@@ -52,12 +52,12 @@ def extract_text_from_pdf() -> None:
     """
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    dbt = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
+    dbt = db.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     libs.utils.reset_statistics_total()
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PDFLIB)
+        rows = db.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PDFLIB)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -99,7 +99,7 @@ def extract_text_from_pdf_file_line() -> None:
 
     source_file = tet.open_document(source_file_name, doc_opt_list)
     if source_file == -1:
-        db.orm.dml.update_document_error(
+        db.dml.update_document_error(
             document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
             error_msg=db.cfg.ERROR_51_901.replace("{file_name}", source_file_name)
@@ -132,7 +132,7 @@ def extract_text_from_pdf_file_line() -> None:
 
     libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
-    db.orm.dml.insert_document_child()
+    db.dml.insert_document_child()
 
     libs.utils.delete_auxiliary_file(source_file_name)
 
@@ -147,7 +147,7 @@ def extract_text_from_pdf_file_line() -> None:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "
-            f"[line version: {db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+            f"[line version: {db.dml.select_document_file_name_id(libs.cfg.document_id)}]"
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -169,7 +169,7 @@ def extract_text_from_pdf_file_page() -> None:
 
     source_file = tet.open_document(file_name, PAGE_TET_DOCUMENT_OPT_LIST)
     if source_file == -1:
-        db.orm.dml.update_document_error(
+        db.dml.update_document_error(
             document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
             error_msg=db.cfg.ERROR_51_901.replace("{file_name}", file_name)
@@ -186,7 +186,7 @@ def extract_text_from_pdf_file_page() -> None:
     for page_no in range(1, int(no_pages) + 1):
         page_handle = tet.open_page(source_file, page_no, PAGE_TET_PAGE_OPT_LIST)
 
-        db.orm.dml.insert_dbt_row(
+        db.dml.insert_dbt_row(
             db.cfg.DBT_CONTENT_TETML_PAGE,
             {
                 db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
@@ -211,7 +211,7 @@ def extract_text_from_pdf_file_page() -> None:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "
-            f"[page version: {db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+            f"[page version: {db.dml.select_document_file_name_id(libs.cfg.document_id)}]"
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -234,7 +234,7 @@ def extract_text_from_pdf_file_word() -> None:
 
     source_file = tet.open_document(source_file_name, doc_opt_list)
     if source_file == -1:
-        db.orm.dml.update_document_error(
+        db.dml.update_document_error(
             document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
             error_msg=db.cfg.ERROR_51_901.replace("{file_name}", source_file_name)
@@ -266,7 +266,7 @@ def extract_text_from_pdf_file_word() -> None:
     )
     libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
-    db.orm.dml.insert_document_child()
+    db.dml.insert_document_child()
 
     libs.utils.delete_auxiliary_file(source_file_name)
 
@@ -279,7 +279,7 @@ def extract_text_from_pdf_file_word() -> None:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "
-            f"[word version: {db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+            f"[word version: {db.dml.select_document_file_name_id(libs.cfg.document_id)}]"
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

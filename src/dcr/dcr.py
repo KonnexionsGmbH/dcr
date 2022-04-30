@@ -10,8 +10,8 @@ import time
 import typing
 
 import db.cfg
+import db.dml
 import db.driver
-import db.orm.dml
 import libs.cfg
 import libs.utils
 import nlp.tokenizer
@@ -43,7 +43,7 @@ def check_db_up_to_date() -> None:
             "The database table 'version' does not yet exist.",
         )
 
-    current_version = db.orm.dml.select_version_version_unique()
+    current_version = db.dml.select_version_version_unique()
 
     if libs.cfg.config.dcr_version != current_version:
         libs.utils.terminate_fatal(
@@ -259,7 +259,7 @@ def process_convert_image_2_pdf() -> None:
     libs.cfg.run_action = libs.cfg.RUN_ACTION_IMAGE_2_PDF
 
     libs.utils.progress_msg_empty_before("Start: Convert image documents to pdf files ... Tesseract OCR")
-    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+    libs.cfg.run_id = db.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
             db.cfg.DBC_ACTION: libs.cfg.run_action,
@@ -268,7 +268,7 @@ def process_convert_image_2_pdf() -> None:
         },
     )
     pp.tesseract_dcr.convert_image_2_pdf()
-    db.orm.dml.update_dbt_id(
+    db.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
@@ -283,7 +283,7 @@ def process_convert_image_2_pdf() -> None:
     libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PYPDF2
 
     libs.utils.progress_msg_empty_before("Start: Reunite the related pdf files ... PyPDF2")
-    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+    libs.cfg.run_id = db.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
             db.cfg.DBC_ACTION: libs.cfg.run_action,
@@ -292,7 +292,7 @@ def process_convert_image_2_pdf() -> None:
         },
     )
     pp.tesseract_dcr.reunite_pdfs()
-    db.orm.dml.update_dbt_id(
+    db.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
@@ -312,7 +312,7 @@ def process_convert_non_pdf_2_pdf() -> None:
     """Convert non-pdf documents to pdf files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_NON_PDF_2_PDF
     libs.utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]")
-    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+    libs.cfg.run_id = db.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
             db.cfg.DBC_ACTION: libs.cfg.run_action,
@@ -321,7 +321,7 @@ def process_convert_non_pdf_2_pdf() -> None:
         },
     )
     pp.pandoc_dcr.convert_non_pdf_2_pdf()
-    db.orm.dml.update_dbt_id(
+    db.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
@@ -341,7 +341,7 @@ def process_convert_pdf_2_image() -> None:
     """Convert pdf documents to image files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_PDF_2_IMAGE
     libs.utils.progress_msg_empty_before("Start: Convert pdf documents to image files ... pdf2image [Poppler]")
-    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+    libs.cfg.run_id = db.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
             db.cfg.DBC_ACTION: libs.cfg.run_action,
@@ -350,7 +350,7 @@ def process_convert_pdf_2_image() -> None:
         },
     )
     pp.pdf2image_dcr.convert_pdf_2_image()
-    db.orm.dml.update_dbt_id(
+    db.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
@@ -380,7 +380,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Check the version of the database.
     check_db_up_to_date()
 
-    libs.cfg.run_run_id = db.orm.dml.select_run_run_id_last() + 1
+    libs.cfg.run_run_id = db.dml.select_run_run_id_last() + 1
 
     # Load the data from the database table 'language'.
     load_data_from_dbt_language()
@@ -446,7 +446,7 @@ def process_extract_text_from_pdf() -> None:
     """Extract text and metadata from pdf documents."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_TEXT_FROM_PDF
     libs.utils.progress_msg_empty_before("Start: Extract text and metadata from pdf documents ... PDFlib TET")
-    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+    libs.cfg.run_id = db.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
             db.cfg.DBC_ACTION: libs.cfg.run_action,
@@ -455,7 +455,7 @@ def process_extract_text_from_pdf() -> None:
         },
     )
     pp.pdflib_dcr.extract_text_from_pdf()
-    db.orm.dml.update_dbt_id(
+    db.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
@@ -477,7 +477,7 @@ def process_inbox_directory() -> None:
 
     libs.utils.progress_msg_empty_before("Start: Process the inbox directory ... PyMuPDF [fitz]")
 
-    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+    libs.cfg.run_id = db.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
             db.cfg.DBC_ACTION: libs.cfg.run_action,
@@ -488,7 +488,7 @@ def process_inbox_directory() -> None:
 
     pp.inbox.process_inbox()
 
-    db.orm.dml.update_dbt_id(
+    db.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
@@ -511,7 +511,7 @@ def process_store_from_parser() -> None:
 
     libs.utils.progress_msg_empty_before("Start: Store document structure ... defusedxml [xml.etree.ElementTree]")
 
-    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+    libs.cfg.run_id = db.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
             db.cfg.DBC_ACTION: libs.cfg.run_action,
@@ -522,7 +522,7 @@ def process_store_from_parser() -> None:
 
     pp.parser.parse_tetml()
 
-    db.orm.dml.update_dbt_id(
+    db.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {
@@ -545,7 +545,7 @@ def process_tokenize() -> None:
 
     libs.utils.progress_msg_empty_before("Start: Create document tokens ... SpaCy")
 
-    libs.cfg.run_id = db.orm.dml.insert_dbt_row(
+    libs.cfg.run_id = db.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
             db.cfg.DBC_ACTION: libs.cfg.run_action,
@@ -556,7 +556,7 @@ def process_tokenize() -> None:
 
     nlp.tokenizer.tokenize()
 
-    db.orm.dml.update_dbt_id(
+    db.dml.update_dbt_id(
         db.cfg.DBT_RUN,
         libs.cfg.run_id,
         {

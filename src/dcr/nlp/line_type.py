@@ -5,8 +5,8 @@ from typing import List
 from typing import Tuple
 
 import db.cfg
+import db.dml
 import db.driver
-import db.orm.dml
 import jellyfish
 import libs.cfg
 import libs.utils
@@ -350,10 +350,10 @@ class LineType:
 
         libs.utils.progress_msg_line_type(f"LineType: Value of page_line_type sorted     ={self._page_line_type}")
 
-        dbt_content_tetml: sqlalchemy.Table = db.orm.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_LINE)
+        dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_LINE)
 
         with db.cfg.db_orm_engine.connect() as conn:
-            rows = db.orm.dml.select_content_tetml(conn, dbt_content_tetml, document_id)
+            rows = db.dml.select_content_tetml(conn, dbt_content_tetml, document_id)
             for row in rows:
                 content_page_no = row[0]
 
@@ -387,7 +387,7 @@ class LineType:
 
                 if is_changed:
                     libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_PAGE_LINES] = content_page_lines
-                    db.orm.dml.update_dbt_id(
+                    db.dml.update_dbt_id(
                         db.cfg.DBT_CONTENT_TETML_LINE,
                         document_id,
                         {

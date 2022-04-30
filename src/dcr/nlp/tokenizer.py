@@ -5,7 +5,7 @@ import time
 import typing
 
 import db.cfg
-import db.orm.dml
+import db.dml
 import libs.cfg
 import libs.utils
 import spacy
@@ -43,11 +43,11 @@ def tokenize() -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     if libs.cfg.config.is_tetml_line:
-        dbt_content_tetml: sqlalchemy.Table = db.orm.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_LINE)
+        dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_LINE)
     else:
-        dbt_content_tetml: sqlalchemy.Table = db.orm.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_PAGE)
+        dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_PAGE)
 
-    dbt_document = db.orm.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
+    dbt_document = db.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
 
     nlp: spacy.Language
     spacy_model_current: str | None = None
@@ -55,7 +55,7 @@ def tokenize() -> None:
     libs.utils.reset_statistics_total()
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = db.orm.dml.select_document(conn, dbt_document, db.cfg.DOCUMENT_STEP_TOKENIZE)
+        rows = db.dml.select_document(conn, dbt_document, db.cfg.DOCUMENT_STEP_TOKENIZE)
 
         for row in rows:
             libs.cfg.start_time_document = time.perf_counter_ns()
@@ -79,7 +79,7 @@ def tokenize() -> None:
                 libs.utils.progress_msg(
                     f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                     f"Document: {libs.cfg.document_id:6d} "
-                    f"[base: {db.orm.dml.select_document_file_name_id(libs.cfg.document_id_base)}]"
+                    f"[base: {db.dml.select_document_file_name_id(libs.cfg.document_id_base)}]"
                 )
 
         conn.close()
@@ -100,7 +100,7 @@ def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> Non
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     with db.cfg.db_orm_engine.connect() as conn:
-        rows = db.orm.dml.select_content_tetml(conn, dbt_content, libs.cfg.document_id_base)
+        rows = db.dml.select_content_tetml(conn, dbt_content, libs.cfg.document_id_base)
         for row in rows:
             # ------------------------------------------------------------------
             # Processing a single page
@@ -125,7 +125,7 @@ def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> Non
                     }
                 )
 
-            db.orm.dml.insert_dbt_row(
+            db.dml.insert_dbt_row(
                 db.cfg.DBT_CONTENT_TOKEN,
                 {
                     db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,

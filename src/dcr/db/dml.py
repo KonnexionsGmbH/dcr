@@ -1,10 +1,10 @@
-"""Module db.orm.dml: Database Manipulation Management."""
+"""Module db.dml: Database Manipulation Management."""
 import os
 import time
 import typing
 
 import db.cfg
-import db.orm.dml
+import db.dml
 import libs.cfg
 import libs.utils
 import PyPDF2
@@ -77,7 +77,7 @@ def insert_document_base() -> None:
     """Insert a new base document."""
     file_path = os.path.join(libs.cfg.document_directory_name, libs.cfg.document_file_name)
 
-    libs.cfg.document_id = db.orm.dml.insert_dbt_row(
+    libs.cfg.document_id = db.dml.insert_dbt_row(
         db.cfg.DBT_DOCUMENT,
         {
             db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
@@ -100,7 +100,7 @@ def insert_document_base() -> None:
 
     libs.cfg.document_id_base = libs.cfg.document_id
 
-    db.orm.dml.update_dbt_id(
+    db.dml.update_dbt_id(
         db.cfg.DBT_DOCUMENT,
         libs.cfg.document_id,
         {
@@ -116,7 +116,7 @@ def insert_document_child() -> None:
     """Insert a new child document of the base document."""
     file_path = os.path.join(libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name)
 
-    libs.cfg.document_child_id = db.orm.dml.insert_dbt_row(
+    libs.cfg.document_child_id = db.dml.insert_dbt_row(
         db.cfg.DBT_DOCUMENT,
         {
             db.cfg.DBC_CHILD_NO: libs.cfg.document_child_child_no,
@@ -467,7 +467,7 @@ def update_document_error(document_id: sqlalchemy.Integer, error_code: str, erro
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {libs.cfg.document_id:6d} "
-            f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}] - "
+            f"[{db.dml.select_document_file_name_id(libs.cfg.document_id)}] - "
             f"Error: {error_msg} "
         )
 

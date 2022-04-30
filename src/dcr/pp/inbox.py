@@ -12,7 +12,7 @@ import shutil
 import time
 
 import db.cfg
-import db.orm.dml
+import db.dml
 import fitz
 import libs.cfg
 import libs.utils
@@ -76,7 +76,7 @@ def initialise_document_base(file_path: pathlib.Path) -> None:
 
     prepare_document_base(file_path)
 
-    db.orm.dml.insert_document_base()
+    db.dml.insert_document_base()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -214,7 +214,7 @@ def process_inbox() -> None:
     )
 
     with db.cfg.db_orm_engine.connect() as conn:
-        for row in db.orm.dml.select_language(conn, dbt):
+        for row in db.dml.select_language(conn, dbt):
             libs.cfg.language_id = row.id
             libs.cfg.language_directory_inbox = row.directory_name_inbox
             libs.cfg.language_iso_language_name = row.iso_language_name
@@ -255,7 +255,7 @@ def process_inbox_accepted(next_step: str) -> None:
     target_file = os.path.join(libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name)
 
     if os.path.exists(target_file):
-        db.orm.dml.update_document_error(
+        db.dml.update_document_error(
             document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=db.cfg.ERROR_01_906.replace("{file_name}", target_file),
@@ -263,9 +263,9 @@ def process_inbox_accepted(next_step: str) -> None:
     else:
         shutil.move(source_file, target_file)
 
-        db.orm.dml.insert_document_child()
+        db.dml.insert_document_child()
 
-        duration_ns = db.orm.dml.update_document_statistics(
+        duration_ns = db.dml.update_document_statistics(
             document_id=libs.cfg.document_id, status=db.cfg.DOCUMENT_STATUS_END
         )
 
@@ -273,7 +273,7 @@ def process_inbox_accepted(next_step: str) -> None:
             libs.utils.progress_msg(
                 f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                 f"Document: {libs.cfg.document_id:6d} "
-                f"[{db.orm.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+                f"[{db.dml.select_document_file_name_id(libs.cfg.document_id)}]"
             )
 
         libs.cfg.language_ok_processed += 1
@@ -296,7 +296,7 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     initialise_document_base(file_path)
 
     if not libs.cfg.config.is_ignore_duplicates:
-        file_name = db.orm.dml.select_document_file_name_sha256(libs.cfg.document_id, libs.cfg.document_sha256)
+        file_name = db.dml.select_document_file_name_sha256(libs.cfg.document_id, libs.cfg.document_sha256)
     else:
         file_name = None
 
@@ -386,7 +386,7 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
 
     # Move the document file from directory inbox to directory inbox_rejected - if not yet existing
     if os.path.exists(target_file):
-        db.orm.dml.update_document_error(
+        db.dml.update_document_error(
             document_id=libs.cfg.document_id,
             error_code=db.cfg.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=db.cfg.ERROR_01_906.replace("{file_name}", target_file),
@@ -394,9 +394,9 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     else:
         shutil.move(source_file, target_file)
 
-        db.orm.dml.insert_document_child()
+        db.dml.insert_document_child()
 
-        db.orm.dml.update_document_error(
+        db.dml.update_document_error(
             document_id=libs.cfg.document_id,
             error_code=error_code,
             error_msg=error_msg,
