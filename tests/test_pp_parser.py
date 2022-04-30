@@ -2,8 +2,10 @@
 """Testing Module pp.parser."""
 import typing
 
+import jellyfish
 import libs.cfg
 import pytest
+import roman
 
 import dcr
 
@@ -15,12 +17,75 @@ import dcr
 
 
 # -----------------------------------------------------------------------------
+# Test Levenshtein - arabic.
+# -----------------------------------------------------------------------------
+def test_levenshtein_arabic():
+    """Test Levenshtein - arabic."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    upper_limit: int = 1200
+
+    for prev in range(upper_limit):
+        text_curr = f"Page {prev+1} of {str(upper_limit)}"
+        text_prev = f"Page {prev} of {str(upper_limit)}"
+
+        distance: int = jellyfish.levenshtein_distance(
+            text_prev,
+            text_curr,
+        )
+
+        match distance:
+            case 1:
+                assert True
+            case 2:
+                assert (prev + 1) % 10 == 0, "prev=" + text_prev + " - curr=" + text_curr
+            case 3:
+                assert (prev + 1) % 100 == 0, "prev=" + text_prev + " - curr=" + text_curr
+            case 4:
+                assert (prev + 1) % 1000 == 0, "prev=" + text_prev + " - curr=" + text_curr
+            case _:
+                assert False, "distance=" + str(distance) + " prev=" + text_prev + " - curr=" + text_curr
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Levenshtein - roman.
+# -----------------------------------------------------------------------------
+def test_levenshtein_roman():
+    """Test Levenshtein - roman."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    upper_limit: int = 1200
+    upper_limit_roman: str = roman.toRoman(upper_limit)
+
+    for prev in range(upper_limit):
+        text_curr = f"Page {roman.toRoman(prev + 1)} of {upper_limit_roman}"
+        text_prev = f"Page {roman.toRoman(prev)} of {upper_limit_roman}"
+
+        distance: int = jellyfish.levenshtein_distance(
+            text_prev,
+            text_curr,
+        )
+
+        match distance:
+            case 1 | 2 | 3 | 4 | 5 | 6 | 7:
+                assert True
+            case _:
+                assert False, "distance=" + str(distance) + " prev=" + text_prev + " - curr=" + text_curr
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - coverage.
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("verbose_parser", ["all", "none", "text"])
-def test_run_action_store_from_parser_coverage(
-    verbose_parser: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
-):
+def test_run_action_store_from_parser_coverage(verbose_parser: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - coverage."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 

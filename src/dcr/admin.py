@@ -26,9 +26,7 @@ class Admin(tkinter.Tk):
         tkinter.ttk.Label(self, text="DCR Administration", font=("TkDefaultFont", 16))
 
         self.status = tkinter.StringVar()
-        tkinter.ttk.Label(self, textvariable=self.status).grid(
-            sticky=(tkinter.W + tkinter.E), row=2, padx=10
-        )
+        tkinter.ttk.Label(self, textvariable=self.status).grid(sticky=(tkinter.W + tkinter.E), row=2, padx=10)
 
 
 if __name__ == "__main__":

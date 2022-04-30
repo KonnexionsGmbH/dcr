@@ -6,7 +6,6 @@ import shutil
 
 import db.cfg
 import db.driver
-import db.orm.connection
 import db.orm.ddl
 import libs.cfg
 import pytest

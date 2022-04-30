@@ -9,6 +9,7 @@ import db.orm.dml
 import defusedxml.ElementTree
 import libs.cfg
 import libs.utils
+import nlp.line_type
 
 
 # -----------------------------------------------------------------------------
@@ -74,7 +75,7 @@ def debug_xml_element_text_word() -> None:
 def init_parse_result_document() -> None:
     """Initialize the parse result variables of a document."""
     libs.cfg.parse_result_no_pages_in_doc = 0
-    libs.cfg.parse_result_page_index_doc = 0
+    libs.cfg.parse_result_page_index_doc = -1
 
 
 # -----------------------------------------------------------------------------
@@ -95,11 +96,13 @@ def init_parse_result_page() -> None:
     libs.cfg.parse_result_no_lines_in_page = 0
     libs.cfg.parse_result_no_paras_in_page = 0
     libs.cfg.parse_result_no_words_in_page = 0
+
     libs.cfg.parse_result_page_lines = {
         db.cfg.JSON_NAME_NO_LINES_IN_PAGE: None,
         db.cfg.JSON_NAME_NO_PARAS_IN_PAGE: None,
         db.cfg.JSON_NAME_PAGE_LINES: [],
     }
+
     libs.cfg.parse_result_page_words = {
         db.cfg.JSON_NAME_NO_LINES_IN_PAGE: None,
         db.cfg.JSON_NAME_NO_PARAS_IN_PAGE: None,
@@ -127,12 +130,9 @@ def init_parse_result_para() -> None:
 def insert_content_tetml_line() -> None:
     """Store the parse result in the database table content_tetml_line."""
     if not libs.cfg.config.is_simulate_parser:
-        libs.cfg.parse_result_page_lines[
-            db.cfg.JSON_NAME_NO_LINES_IN_PAGE
-        ] = libs.cfg.parse_result_no_lines_in_page
-        libs.cfg.parse_result_page_lines[
-            db.cfg.JSON_NAME_NO_PARAS_IN_PAGE
-        ] = libs.cfg.parse_result_no_paras_in_page
+        libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_NO_LINES_IN_PAGE] = libs.cfg.parse_result_no_lines_in_page
+
+        libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_NO_PARAS_IN_PAGE] = libs.cfg.parse_result_no_paras_in_page
 
         db.orm.dml.insert_dbt_row(
             db.cfg.DBT_CONTENT_TETML_LINE,
@@ -150,15 +150,9 @@ def insert_content_tetml_line() -> None:
 def insert_content_tetml_word() -> None:
     """Store the parse result in the database table content_tetml_word."""
     if not libs.cfg.config.is_simulate_parser:
-        libs.cfg.parse_result_page_words[
-            db.cfg.JSON_NAME_NO_LINES_IN_PAGE
-        ] = libs.cfg.parse_result_no_lines_in_page
-        libs.cfg.parse_result_page_words[
-            db.cfg.JSON_NAME_NO_PARAS_IN_PAGE
-        ] = libs.cfg.parse_result_no_paras_in_page
-        libs.cfg.parse_result_page_words[
-            db.cfg.JSON_NAME_NO_WORDS_IN_PAGE
-        ] = libs.cfg.parse_result_no_words_in_page
+        libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_NO_LINES_IN_PAGE] = libs.cfg.parse_result_no_lines_in_page
+        libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_NO_PARAS_IN_PAGE] = libs.cfg.parse_result_no_paras_in_page
+        libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_NO_WORDS_IN_PAGE] = libs.cfg.parse_result_no_words_in_page
 
         db.orm.dml.insert_dbt_row(
             db.cfg.DBT_CONTENT_TETML_WORD,
@@ -232,9 +226,7 @@ def parse_tag_doc_info(parent_tag: str, parent: typing.Iterable[str]) -> None:
             case libs.cfg.PARSE_TAG_AUTHOR:
                 libs.cfg.parse_result_author = child.text
             case libs.cfg.PARSE_TAG_CREATION_DATE:
-                libs.cfg.parse_result_creation_date = datetime.datetime.strptime(
-                    child.text, "%Y-%m-%dT%H:%M:%S%z"
-                )
+                libs.cfg.parse_result_creation_date = datetime.datetime.strptime(child.text, "%Y-%m-%dT%H:%M:%S%z")
             case (
                 libs.cfg.PARSE_TAG_CREATOR
                 | libs.cfg.PARSE_TAG_PRODUCER
@@ -243,9 +235,7 @@ def parse_tag_doc_info(parent_tag: str, parent: typing.Iterable[str]) -> None:
             ):
                 pass
             case libs.cfg.PARSE_TAG_MOD_DATE:
-                libs.cfg.parse_result_mod_date = datetime.datetime.strptime(
-                    child.text, "%Y-%m-%dT%H:%M:%S%z"
-                )
+                libs.cfg.parse_result_mod_date = datetime.datetime.strptime(child.text, "%Y-%m-%dT%H:%M:%S%z")
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -346,10 +336,17 @@ def parse_tag_page(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
+    # Initialize the page related variables.
     init_parse_result_page()
 
-    libs.cfg.parse_result_no_pages_in_doc += 1
+    libs.cfg.parse_result_no_pages_in_doc += 1  # relative 1
+    libs.cfg.parse_result_page_index_doc += 1  # relative 0
 
+    libs.utils.progress_msg_line_type(
+        f"LineType: Start page                         ={libs.cfg.parse_result_no_pages_in_doc}"
+    )
+
+    # Process the page related tags.
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
         match child_tag:
@@ -365,11 +362,15 @@ def parse_tag_page(parent_tag: str, parent: typing.Iterable[str]) -> None:
             case libs.cfg.PARSE_TAG_CONTENT:
                 parse_tag_content(child_tag, child)
 
-    libs.cfg.parse_result_page_index_doc += 1
-
+    # Process the page related variables.
     if not libs.cfg.config.is_simulate_parser:
         if libs.cfg.config.is_parsing_line:
             insert_content_tetml_line()
+            if libs.cfg.config.line_footer_max_lines > 0 or libs.cfg.config.line_header_max_lines > 0:
+                libs.cfg.line_type.process_page(
+                    page_no=libs.cfg.parse_result_no_pages_in_doc,
+                    page_lines=libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_PAGE_LINES],
+                )
         elif libs.cfg.config.is_parsing_word:
             insert_content_tetml_word()
 
@@ -388,8 +389,19 @@ def parse_tag_pages(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
+    # Initialize the document related variables.
     init_parse_result_document()
 
+    libs.cfg.parse_result_no_words_in_line = 0
+    libs.cfg.parse_result_word_index_line = 0
+
+    if libs.cfg.config.is_parsing_line:
+        libs.cfg.line_type = nlp.line_type.LineType()
+
+    libs.utils.progress_msg_line_type("LineType")
+    libs.utils.progress_msg_line_type(f"LineType: Start document                     ={libs.cfg.document_file_name}")
+
+    # Process the tags of all document pages.
     for child in parent:
         child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
         match child_tag:
@@ -397,6 +409,12 @@ def parse_tag_pages(parent_tag: str, parent: typing.Iterable[str]) -> None:
                 pass
             case libs.cfg.PARSE_TAG_PAGE:
                 parse_tag_page(child_tag, child)
+
+    # Process the document related variables.
+    libs.utils.progress_msg_line_type(f"LineType: End document                       ={libs.cfg.document_file_name}")
+    if libs.cfg.config.is_parsing_line:
+        if libs.cfg.config.line_footer_max_lines > 0 or libs.cfg.config.line_header_max_lines > 0:
+            libs.cfg.line_type.process_document(libs.cfg.document_id)
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -507,6 +525,9 @@ def parse_tetml() -> None:
         rows = db.orm.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER_LINE)
 
         for row in rows:
+            # ------------------------------------------------------------------
+            # Processing a single document
+            # ------------------------------------------------------------------
             libs.cfg.start_time_document = time.perf_counter_ns()
 
             libs.utils.start_document_processing(

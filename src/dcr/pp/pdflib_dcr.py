@@ -14,9 +14,7 @@ import PDFlib.TET
 LINE_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector}"
 LINE_TET_PAGE_OPT_LIST: str = "granularity=line"
 
-PAGE_TET_DOCUMENT_OPT_LIST: str = (
-    "engines={noannotation noimage text notextcolor novector} " + "lineseparator=U+0020"
-)
+PAGE_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector} " + "lineseparator=U+0020"
 PAGE_TET_PAGE_OPT_LIST: str = "granularity=page"
 
 WORD_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector}"
@@ -93,16 +91,13 @@ def extract_text_from_pdf_file_line() -> None:
 
     xml_variation = "line."
 
-    source_file_name, target_file_name = libs.utils.prepare_file_names(
-        xml_variation + db.cfg.DOCUMENT_FILE_TYPE_XML
-    )
+    source_file_name, target_file_name = libs.utils.prepare_file_names(xml_variation + db.cfg.DOCUMENT_FILE_TYPE_XML)
 
     tet = PDFlib.TET.TET()
 
     doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {LINE_TET_DOCUMENT_OPT_LIST}"
 
     source_file = tet.open_document(source_file_name, doc_opt_list)
-
     if source_file == -1:
         db.orm.dml.update_document_error(
             document_id=libs.cfg.document_id,
@@ -134,6 +129,7 @@ def extract_text_from_pdf_file_line() -> None:
     libs.cfg.document_child_file_name = (
         libs.cfg.document_stem_name + "." + xml_variation + db.cfg.DOCUMENT_FILE_TYPE_XML
     )
+
     libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
     db.orm.dml.insert_document_child()
@@ -172,7 +168,6 @@ def extract_text_from_pdf_file_page() -> None:
     tet = PDFlib.TET.TET()
 
     source_file = tet.open_document(file_name, PAGE_TET_DOCUMENT_OPT_LIST)
-
     if source_file == -1:
         db.orm.dml.update_document_error(
             document_id=libs.cfg.document_id,
@@ -231,16 +226,13 @@ def extract_text_from_pdf_file_word() -> None:
 
     xml_variation = "word."
 
-    source_file_name, target_file_name = libs.utils.prepare_file_names(
-        xml_variation + db.cfg.DOCUMENT_FILE_TYPE_XML
-    )
+    source_file_name, target_file_name = libs.utils.prepare_file_names(xml_variation + db.cfg.DOCUMENT_FILE_TYPE_XML)
 
     tet = PDFlib.TET.TET()
 
     doc_opt_list = f"tetml={{filename={{{target_file_name}}}}} {WORD_TET_DOCUMENT_OPT_LIST}"
 
     source_file = tet.open_document(source_file_name, doc_opt_list)
-
     if source_file == -1:
         db.orm.dml.update_document_error(
             document_id=libs.cfg.document_id,

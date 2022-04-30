@@ -11,7 +11,6 @@ import typing
 
 import db.cfg
 import db.driver
-import db.orm.connection
 import db.orm.dml
 import libs.cfg
 import libs.utils
@@ -186,9 +185,7 @@ def load_data_from_dbt_language() -> None:
 
     with db.cfg.db_orm_engine.connect() as conn:
         rows = conn.execute(
-            sqlalchemy.select(
-                dbt.c.id, dbt.c.code_pandoc, dbt.c.code_spacy, dbt.c.code_tesseract
-            ).where(
+            sqlalchemy.select(dbt.c.id, dbt.c.code_pandoc, dbt.c.code_spacy, dbt.c.code_tesseract).where(
                 dbt.c.active,
             )
         )
@@ -202,9 +199,7 @@ def load_data_from_dbt_language() -> None:
 
     libs.utils.progress_msg(f"Available languages for Pandoc        '{libs.cfg.languages_pandoc}'")
     libs.utils.progress_msg(f"Available languages for SpaCy         '{libs.cfg.languages_spacy}'")
-    libs.utils.progress_msg(
-        f"Available languages for Tesseract OCR '{libs.cfg.languages_tesseract}'"
-    )
+    libs.utils.progress_msg(f"Available languages for Tesseract OCR '{libs.cfg.languages_tesseract}'")
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -263,9 +258,7 @@ def process_convert_image_2_pdf() -> None:
     """Convert image documents to pdf files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_IMAGE_2_PDF
 
-    libs.utils.progress_msg_empty_before(
-        "Start: Convert image documents to pdf files ... Tesseract OCR"
-    )
+    libs.utils.progress_msg_empty_before("Start: Convert image documents to pdf files ... Tesseract OCR")
     libs.cfg.run_id = db.orm.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
@@ -318,9 +311,7 @@ def process_convert_image_2_pdf() -> None:
 def process_convert_non_pdf_2_pdf() -> None:
     """Convert non-pdf documents to pdf files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_NON_PDF_2_PDF
-    libs.utils.progress_msg_empty_before(
-        "Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]"
-    )
+    libs.utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]")
     libs.cfg.run_id = db.orm.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
@@ -349,9 +340,7 @@ def process_convert_non_pdf_2_pdf() -> None:
 def process_convert_pdf_2_image() -> None:
     """Convert pdf documents to image files."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_PDF_2_IMAGE
-    libs.utils.progress_msg_empty_before(
-        "Start: Convert pdf documents to image files ... pdf2image [Poppler]"
-    )
+    libs.utils.progress_msg_empty_before("Start: Convert pdf documents to image files ... pdf2image [Poppler]")
     libs.cfg.run_id = db.orm.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
@@ -386,7 +375,7 @@ def process_documents(args: dict[str, bool]) -> None:
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
     # Connect to the database.
-    db.orm.connection.connect_db()
+    db.driver.connect_db()
 
     # Check the version of the database.
     check_db_up_to_date()
@@ -401,65 +390,51 @@ def process_documents(args: dict[str, bool]) -> None:
         start_time_process = time.perf_counter_ns()
         libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_INBOX
         process_inbox_directory()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
 
     # Convert the scanned image pdf documents to image files.
     if args[libs.cfg.RUN_ACTION_PDF_2_IMAGE]:
         start_time_process = time.perf_counter_ns()
         libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PDF2IMAGE
         process_convert_pdf_2_image()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
 
     # Convert the image documents to pdf files.
     if args[libs.cfg.RUN_ACTION_IMAGE_2_PDF]:
         start_time_process = time.perf_counter_ns()
         libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_TESSERACT
         process_convert_image_2_pdf()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
 
     # Convert the non-pdf documents to pdf files.
     if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
         start_time_process = time.perf_counter_ns()
         libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PANDOC
         process_convert_non_pdf_2_pdf()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
 
     # Extract text and metadata from pdf documents.
     if args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF]:
         start_time_process = time.perf_counter_ns()
         libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PDFLIB
         process_extract_text_from_pdf()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
 
     # Store the document structure from the parser result.
     if args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER]:
         start_time_process = time.perf_counter_ns()
         process_store_from_parser()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
 
     # Create document token.
     if args[libs.cfg.RUN_ACTION_TOKENIZE]:
         start_time_process = time.perf_counter_ns()
         libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_TOKENIZE
         process_tokenize()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
 
     # Disconnect from the database.
-    db.orm.connection.disconnect_db()
+    db.driver.disconnect_db()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -470,9 +445,7 @@ def process_documents(args: dict[str, bool]) -> None:
 def process_extract_text_from_pdf() -> None:
     """Extract text and metadata from pdf documents."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_TEXT_FROM_PDF
-    libs.utils.progress_msg_empty_before(
-        "Start: Extract text and metadata from pdf documents ... PDFlib TET"
-    )
+    libs.utils.progress_msg_empty_before("Start: Extract text and metadata from pdf documents ... PDFlib TET")
     libs.cfg.run_id = db.orm.dml.insert_dbt_row(
         db.cfg.DBT_RUN,
         {
@@ -536,9 +509,7 @@ def process_store_from_parser() -> None:
     """Store the document structure from the parser result."""
     libs.cfg.run_action = libs.cfg.RUN_ACTION_STORE_FROM_PARSER
 
-    libs.utils.progress_msg_empty_before(
-        "Start: Store document structure ... defusedxml [xml.etree.ElementTree]"
-    )
+    libs.utils.progress_msg_empty_before("Start: Store document structure ... defusedxml [xml.etree.ElementTree]")
 
     libs.cfg.run_id = db.orm.dml.insert_dbt_row(
         db.cfg.DBT_RUN,

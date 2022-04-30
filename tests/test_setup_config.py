@@ -13,7 +13,7 @@ import setup.config
 # @pytest.mark.issue
 
 
-CONFIG_PARAM_NO: int = 31
+CONFIG_PARAM_NO: int = 33
 
 
 # -----------------------------------------------------------------------------
@@ -40,9 +40,7 @@ def test_get_config(fxtr_setup_logger_environment):
 
     libs.cfg.config = setup.config.Config()
 
-    assert (
-        not libs.cfg.config.is_ignore_duplicates
-    ), "DCR_CFG_IGNORE_DUPLICATES: false (any not true)"
+    assert not libs.cfg.config.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: false (any not true)"
 
     pytest.helpers.restore_config_params(
         libs.cfg.config._DCR_CFG_SECTION,
@@ -84,6 +82,57 @@ def test_get_config(fxtr_setup_logger_environment):
         libs.cfg.config._DCR_CFG_SECTION,
         values_original,
     )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - get_config().
+# -----------------------------------------------------------------------------
+def test_get_config_line_footer_preference(fxtr_setup_logger_environment):
+    """Test: test_get_config_line_footer_preference()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.config._DCR_CFG_SECTION,
+        [
+            (
+                libs.cfg.config._DCR_CFG_LINE_FOOTER_PREFERENCE,
+                libs.cfg.INFORMATION_NOT_YET_AVAILABLE,
+            ),
+        ],
+    )
+
+    libs.cfg.config = setup.config.Config()
+
+    assert libs.cfg.config.is_line_footer_preferred, "DCR_CFG_LINE_FOOTER_PREFERENCE: true (not false)"
+
+    pytest.helpers.restore_config_params(
+        libs.cfg.config._DCR_CFG_SECTION,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.config._DCR_CFG_SECTION,
+        [
+            (libs.cfg.config._DCR_CFG_LINE_FOOTER_PREFERENCE, "fALSE"),
+        ],
+    )
+
+    libs.cfg.config = setup.config.Config()
+
+    assert not libs.cfg.config.is_line_footer_preferred, "DCR_CFG_LINE_FOOTER_PREFERENCE: false"
+
+    pytest.helpers.restore_config_params(
+        libs.cfg.config._DCR_CFG_SECTION,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -343,12 +392,8 @@ def test_get_config_tetml_line_page(fxtr_setup_logger_environment):
     with pytest.raises(SystemExit) as expt:
         libs.cfg.config = setup.config.Config()
 
-    assert (
-        expt.type == SystemExit
-    ), "DCR_CFG_TETML_LINE and DCR_CFG_TETML_PAGE: both 'false' not allowed"
-    assert (
-        expt.value.code == 1
-    ), "DCR_CFG_TETML_LINE and DCR_CFG_TETML_PAGE: both 'false' not allowed"
+    assert expt.type == SystemExit, "DCR_CFG_TETML_LINE and DCR_CFG_TETML_PAGE: both 'false' not allowed"
+    assert expt.value.code == 1, "DCR_CFG_TETML_LINE and DCR_CFG_TETML_PAGE: both 'false' not allowed"
 
     pytest.helpers.restore_config_params(
         libs.cfg.config._DCR_CFG_SECTION,
@@ -535,6 +580,51 @@ def test_get_config_verbose(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 # Test Function - get_config().
 # -----------------------------------------------------------------------------
+def test_get_config_verbose_line_type(fxtr_setup_logger_environment):
+    """Test: test_get_config_verbose_line_type()."""
+    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.config._DCR_CFG_SECTION,
+        [
+            (libs.cfg.config._DCR_CFG_VERBOSE_LINE_TYPE, libs.cfg.INFORMATION_NOT_YET_AVAILABLE),
+        ],
+    )
+
+    libs.cfg.config = setup.config.Config()
+
+    assert not libs.cfg.config.is_verbose_line_type, "DCR_CFG_VERBOSE_LINE_TYPE: false (not true)"
+
+    pytest.helpers.restore_config_params(
+        libs.cfg.config._DCR_CFG_SECTION,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        libs.cfg.config._DCR_CFG_SECTION,
+        [
+            (libs.cfg.config._DCR_CFG_VERBOSE_LINE_TYPE, "tRUE"),
+        ],
+    )
+
+    libs.cfg.config = setup.config.Config()
+
+    assert libs.cfg.config.is_verbose_line_type, "DCR_CFG_VERBOSE_LINE_TYPE: true"
+
+    pytest.helpers.restore_config_params(
+        libs.cfg.config._DCR_CFG_SECTION,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - get_config().
+# -----------------------------------------------------------------------------
 def test_get_config_verbose_parser(fxtr_setup_logger_environment):
     """Test: get_config_verbose_parser()."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
@@ -566,9 +656,7 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
 
     libs.cfg.config = setup.config.Config()
 
-    assert (
-        libs.cfg.config.verbose_parser == "none"
-    ), "DCR_CFG_VERBOSE_PARSER: none (not all or text)"
+    assert libs.cfg.config.verbose_parser == "none", "DCR_CFG_VERBOSE_PARSER: none (not all or text)"
 
     pytest.helpers.restore_config_params(
         libs.cfg.config._DCR_CFG_SECTION,
@@ -628,9 +716,7 @@ def test_get_environment(fxtr_setup_logger):
     # -------------------------------------------------------------------------
     libs.cfg.config._get_environment_variant()
 
-    assert (
-        libs.cfg.config.environment_variant == libs.cfg.config._ENVIRONMENT_TYPE_TEST
-    ), "_DCR_ENVIRONMENT_TYPE: ok"
+    assert libs.cfg.config.environment_variant == libs.cfg.config._ENVIRONMENT_TYPE_TEST, "_DCR_ENVIRONMENT_TYPE: ok"
 
     # -------------------------------------------------------------------------
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)

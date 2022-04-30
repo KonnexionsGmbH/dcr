@@ -79,9 +79,7 @@ def convert_image_2_pdf_file() -> None:
             next_step=db.cfg.DOCUMENT_STEP_PDFLIB,
         )
 
-        libs.cfg.document_child_file_name = (
-            libs.cfg.document_stem_name + "." + db.cfg.DOCUMENT_FILE_TYPE_PDF
-        )
+        libs.cfg.document_child_file_name = libs.cfg.document_stem_name + "." + db.cfg.DOCUMENT_FILE_TYPE_PDF
 
         libs.cfg.document_child_stem_name = libs.cfg.document_stem_name
 
@@ -161,12 +159,8 @@ def reunite_pdfs_file() -> None:
     """Reunite the related pdf documents of a specific base document."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
-    libs.cfg.document_child_stem_name = (
-        libs.cfg.document_stem_name + "_" + str(libs.cfg.document_id_base) + "_0"
-    )
-    libs.cfg.document_child_file_name = (
-        libs.cfg.document_child_stem_name + "." + db.cfg.DOCUMENT_FILE_TYPE_PDF
-    )
+    libs.cfg.document_child_stem_name = libs.cfg.document_stem_name + "_" + str(libs.cfg.document_id_base) + "_0"
+    libs.cfg.document_child_file_name = libs.cfg.document_child_stem_name + "." + db.cfg.DOCUMENT_FILE_TYPE_PDF
 
     target_file_path = os.path.join(
         libs.cfg.config.directory_inbox_accepted,

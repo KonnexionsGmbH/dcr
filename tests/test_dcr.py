@@ -194,9 +194,7 @@ def test_wrong_api_version(fxtr_setup_empty_db_and_inbox):
     )
 
     shutil.copyfile(
-        os.path.join(
-            libs.cfg.TESTS_INBOX_NAME, "test_initial_database_data_wrong_api_version.json"
-        ),
+        os.path.join(libs.cfg.TESTS_INBOX_NAME, "test_initial_database_data_wrong_api_version.json"),
         pathlib.Path(libs.cfg.config.initial_database_data),
     )
 

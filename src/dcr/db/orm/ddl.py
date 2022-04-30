@@ -5,7 +5,7 @@ import pathlib
 import typing
 
 import db.cfg
-import db.orm.connection
+import db.driver
 import db.orm.dml
 import libs.cfg
 import libs.utils
@@ -456,20 +456,12 @@ def create_dbt_language(table_name: str) -> None:
             sqlalchemy.DateTime,
         ),
         sqlalchemy.Column(db.cfg.DBC_ACTIVE, sqlalchemy.Boolean, default=True, nullable=False),
-        sqlalchemy.Column(
-            db.cfg.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False, unique=True
-        ),
+        sqlalchemy.Column(db.cfg.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False, unique=True),
         sqlalchemy.Column(db.cfg.DBC_CODE_PANDOC, sqlalchemy.String, nullable=False, unique=True),
         sqlalchemy.Column(db.cfg.DBC_CODE_SPACY, sqlalchemy.String, nullable=False, unique=True),
-        sqlalchemy.Column(
-            db.cfg.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True
-        ),
-        sqlalchemy.Column(
-            db.cfg.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True
-        ),
-        sqlalchemy.Column(
-            db.cfg.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True
-        ),
+        sqlalchemy.Column(db.cfg.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True),
+        sqlalchemy.Column(db.cfg.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True),
+        sqlalchemy.Column(db.cfg.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True),
     )
 
     libs.utils.progress_msg(f"The database table '{table_name}' has now been created")
@@ -583,7 +575,7 @@ def create_schema() -> None:
 
     schema = libs.cfg.config.db_schema
 
-    db.orm.connection.connect_db()
+    db.driver.connect_db()
 
     db.cfg.db_orm_engine.execute(sqlalchemy.schema.CreateSchema(schema))
 
@@ -594,9 +586,7 @@ def create_schema() -> None:
         conn.execute(sqlalchemy.DDL(f"CREATE SCHEMA {schema}"))
         libs.utils.progress_msg(f"The schema '{schema}' has now been created")
 
-        conn.execute(
-            sqlalchemy.DDL(f"ALTER ROLE {db.cfg.db_current_user} SET search_path = {schema}")
-        )
+        conn.execute(sqlalchemy.DDL(f"ALTER ROLE {db.cfg.db_current_user} SET search_path = {schema}"))
         conn.execute(sqlalchemy.DDL(f"SET search_path = {schema}"))
         libs.utils.progress_msg(f"The search path '{schema}' has now been set")
 
@@ -655,12 +645,11 @@ def create_schema() -> None:
             load_db_data_from_json(initial_database_data_path)
         else:
             libs.utils.terminate_fatal(
-                f"File with initial database data is missing - "
-                f"file name '{libs.cfg.config.initial_database_data}'"
+                f"File with initial database data is missing - " f"file name '{libs.cfg.config.initial_database_data}'"
             )
 
     # Disconnect from the database.
-    db.orm.connection.disconnect_db()
+    db.driver.disconnect_db()
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
@@ -701,17 +690,13 @@ def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
                         f"The database table '{table_name}' must not be changed via the JSON file."
                     )
                 else:
-                    libs.utils.terminate_fatal(
-                        f"The database table '{table_name}' does not exist in the database."
-                    )
+                    libs.utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
 
             for json_row in json_table[db.cfg.JSON_NAME_ROWS]:
                 db_columns = {}
 
                 for json_column in json_row[db.cfg.JSON_NAME_ROW]:
-                    db_columns[json_column[db.cfg.JSON_NAME_COLUMN_NAME]] = json_column[
-                        db.cfg.JSON_NAME_COLUMN_VALUE
-                    ]
+                    db_columns[json_column[db.cfg.JSON_NAME_COLUMN_NAME]] = json_column[db.cfg.JSON_NAME_COLUMN_VALUE]
 
                 db.orm.dml.insert_dbt_row(
                     table_name,

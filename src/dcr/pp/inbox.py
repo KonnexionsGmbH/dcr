@@ -54,8 +54,7 @@ def create_directory(directory_type: str, directory_name: str) -> None:
     if not os.path.isdir(directory_name):
         os.mkdir(directory_name)
         libs.utils.progress_msg(
-            f"The file directory for '{directory_type}' "
-            f"was newly created under the name '{directory_name}'",
+            f"The file directory for '{directory_type}' " f"was newly created under the name '{directory_name}'",
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -144,9 +143,7 @@ def prepare_document_child_accepted() -> None:
     libs.cfg.document_child_next_step = None
     libs.cfg.document_child_status = db.cfg.DOCUMENT_STATUS_START
 
-    libs.cfg.document_child_stem_name = (
-        libs.cfg.document_stem_name + "_" + str(libs.cfg.document_id)
-    )
+    libs.cfg.document_child_stem_name = libs.cfg.document_stem_name + "_" + str(libs.cfg.document_id)
 
 
 # -----------------------------------------------------------------------------
@@ -178,9 +175,7 @@ def prepare_pdf(file_path: pathlib.Path) -> None:
     except RuntimeError as err:
         process_inbox_rejected(
             db.cfg.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
-            db.cfg.ERROR_01_903.replace("{source_file}", libs.cfg.document_file_name).replace(
-                "{error_msg}", str(err)
-            ),
+            db.cfg.ERROR_01_903.replace("{source_file}", libs.cfg.document_file_name).replace("{error_msg}", str(err)),
         )
 
     libs.cfg.logger.debug(libs.cfg.LOGGER_END)
@@ -257,9 +252,7 @@ def process_inbox_accepted(next_step: str) -> None:
     libs.cfg.document_child_status = db.cfg.DOCUMENT_STATUS_START
 
     source_file = os.path.join(libs.cfg.document_directory_name, libs.cfg.document_file_name)
-    target_file = os.path.join(
-        libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name
-    )
+    target_file = os.path.join(libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name)
 
     if os.path.exists(target_file):
         db.orm.dml.update_document_error(
@@ -303,9 +296,7 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     initialise_document_base(file_path)
 
     if not libs.cfg.config.is_ignore_duplicates:
-        file_name = db.orm.dml.select_document_file_name_sha256(
-            libs.cfg.document_id, libs.cfg.document_sha256
-        )
+        file_name = db.orm.dml.select_document_file_name_sha256(libs.cfg.document_id, libs.cfg.document_sha256)
     else:
         file_name = None
 
@@ -347,9 +338,7 @@ def process_inbox_language() -> None:
        unchanged to the inbox_ocr directory.
     4. All other documents are copied to the inbox_rejected directory.
     """
-    libs.utils.progress_msg(
-        f"Start of processing for language '{libs.cfg.language_iso_language_name}'"
-    )
+    libs.utils.progress_msg(f"Start of processing for language '{libs.cfg.language_iso_language_name}'")
 
     libs.utils.reset_statistics_language()
 
@@ -358,9 +347,7 @@ def process_inbox_language() -> None:
             libs.cfg.start_time_document = time.perf_counter_ns()
 
             if file.name == "README.md":
-                libs.utils.progress_msg(
-                    "Attention: All files with the file name 'README.md' are ignored"
-                )
+                libs.utils.progress_msg("Attention: All files with the file name 'README.md' are ignored")
                 continue
 
             libs.cfg.language_to_be_processed += 1
@@ -395,9 +382,7 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     libs.cfg.document_child_status = db.cfg.DOCUMENT_STATUS_ERROR
 
     source_file = os.path.join(libs.cfg.document_directory_name, libs.cfg.document_file_name)
-    target_file = os.path.join(
-        libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name
-    )
+    target_file = os.path.join(libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name)
 
     # Move the document file from directory inbox to directory inbox_rejected - if not yet existing
     if os.path.exists(target_file):

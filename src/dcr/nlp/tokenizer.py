@@ -15,9 +15,7 @@ import sqlalchemy
 # -----------------------------------------------------------------------------
 # Extract the text from the page lines.
 # -----------------------------------------------------------------------------
-def get_text_from_page_lines(
-    page_data: typing.Dict[str, str | typing.List[typing.Dict[str, int | str]]]
-) -> str:
+def get_text_from_page_lines(page_data: typing.Dict[str, str | typing.List[typing.Dict[str, int | str]]]) -> str:
     """Extract the text from the page data.
 
     Args:
@@ -103,8 +101,10 @@ def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> Non
 
     with db.cfg.db_orm_engine.connect() as conn:
         rows = db.orm.dml.select_content_tetml(conn, dbt_content, libs.cfg.document_id_base)
-
         for row in rows:
+            # ------------------------------------------------------------------
+            # Processing a single page
+            # ------------------------------------------------------------------
             page_tokens: typing.List[typing.Dict[str, bool | str]] = []
 
             page_no = row[0]

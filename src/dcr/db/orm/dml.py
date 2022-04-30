@@ -16,9 +16,7 @@ import sqlalchemy.orm
 # -----------------------------------------------------------------------------
 # Type declaration.
 # -----------------------------------------------------------------------------
-Columns: typing.TypeAlias = typing.Dict[
-    str, typing.Union[os.PathLike[str], sqlalchemy.Integer, str]
-]
+Columns: typing.TypeAlias = typing.Dict[str, typing.Union[os.PathLike[str], sqlalchemy.Integer, str]]
 
 
 # -----------------------------------------------------------------------------
@@ -116,9 +114,7 @@ def insert_document_base() -> None:
 # -----------------------------------------------------------------------------
 def insert_document_child() -> None:
     """Insert a new child document of the base document."""
-    file_path = os.path.join(
-        libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name
-    )
+    file_path = os.path.join(libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name)
 
     libs.cfg.document_child_id = db.orm.dml.insert_dbt_row(
         db.cfg.DBT_DOCUMENT,
@@ -337,9 +333,7 @@ def select_document_file_name_sha256(document_id: sqlalchemy.Integer, sha256: st
 # -----------------------------------------------------------------------------
 # Get the languages to be processed.
 # -----------------------------------------------------------------------------
-def select_language(
-    conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table
-) -> sqlalchemy.engine.CursorResult:
+def select_language(conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table) -> sqlalchemy.engine.CursorResult:
     """Get the languages to be processed.
 
     Args:
@@ -371,9 +365,7 @@ def select_run_run_id_last() -> int | sqlalchemy.Integer:
     Returns:
         sqlalchemy.Integer: The last run id found.
     """
-    dbt = sqlalchemy.Table(
-        db.cfg.DBT_RUN, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine
-    )
+    dbt = sqlalchemy.Table(db.cfg.DBT_RUN, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
 
     with db.cfg.db_orm_engine.connect() as conn:
         row = conn.execute(sqlalchemy.select(sqlalchemy.func.max(dbt.c.run_id))).fetchone()
@@ -435,15 +427,11 @@ def update_dbt_id(
         id_where (sqlalchemy.Integer): Content of column id.
         columns (Columns): Pairs of column name and value.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
     dbt = sqlalchemy.Table(table_name, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
 
     with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(sqlalchemy.update(dbt).where(dbt.c.id == id_where).values(columns))
         conn.close()
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -457,9 +445,7 @@ def update_document_error(document_id: sqlalchemy.Integer, error_code: str, erro
         error_code (str)                : Error code.
         error_msg (str)                 : Error message.
     """
-    dbt = sqlalchemy.Table(
-        db.cfg.DBT_DOCUMENT, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine
-    )
+    dbt = sqlalchemy.Table(db.cfg.DBT_DOCUMENT, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
 
     libs.cfg.total_erroneous += 1
 

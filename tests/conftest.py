@@ -14,7 +14,6 @@ import typing
 
 import db.cfg
 import db.driver
-import db.orm.connection
 import libs.cfg
 import libs.utils
 import pytest
@@ -58,9 +57,7 @@ def backup_config_params(
         config_params_backup.append((config_param, CONFIG_PARSER[config_section][config_param]))
         CONFIG_PARSER[config_section][config_param] = config_value
 
-    with open(
-        libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT
-    ) as configfile:
+    with open(libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
     return config_params_backup
@@ -90,16 +87,12 @@ def copy_directories_4_pytest_2_dir(
         source_directories: typing.List[str]: Source directory names.
         target_dir: str: Target directory.
     """
-    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), (
-        "source base directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
-    )
+    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), "source base directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
 
     for source in source_directories:
         source_dir = libs.cfg.TESTS_INBOX_NAME + "/" + source
         source_path = os.path.join(libs.cfg.TESTS_INBOX_NAME, pathlib.Path(source))
-        assert os.path.isdir(source_path), (
-            "source language directory '" + str(source_path) + "' missing"
-        )
+        assert os.path.isdir(source_path), "source language directory '" + str(source_path) + "' missing"
         target_path = os.path.join(target_dir, pathlib.Path(source))
         shutil.copytree(source_dir, target_path)
 
@@ -110,9 +103,7 @@ def copy_directories_4_pytest_2_dir(
 @pytest.helpers.register
 def copy_files_4_pytest(
     file_list: typing.List[
-        typing.Tuple[
-            typing.Tuple[str, str | None], typing.Tuple[pathlib.Path, typing.List[str], str | None]
-        ]
+        typing.Tuple[typing.Tuple[str, str | None], typing.Tuple[pathlib.Path, typing.List[str], str | None]]
     ]
 ) -> None:
     """Copy files from the sample test file directory.
@@ -125,9 +116,7 @@ def copy_files_4_pytest(
             ]
         ]): typing.List of files to be copied.
     """
-    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), (
-        "source directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
-    )
+    assert os.path.isdir(libs.cfg.TESTS_INBOX_NAME), "source directory '" + libs.cfg.TESTS_INBOX_NAME + "' missing"
 
     for ((source_stem, source_ext), (target_dir, target_file_comp, target_ext)) in file_list:
         source_file_name = source_stem if source_ext is None else source_stem + "." + source_ext
@@ -136,14 +125,10 @@ def copy_files_4_pytest(
 
         assert os.path.isdir(target_dir), "target directory '" + target_dir + "' missing"
         target_file_name = (
-            "_".join(target_file_comp)
-            if target_ext is None
-            else "_".join(target_file_comp) + "." + target_ext
+            "_".join(target_file_comp) if target_ext is None else "_".join(target_file_comp) + "." + target_ext
         )
         target_file = os.path.join(target_dir, target_file_name)
-        assert os.path.isfile(target_file) is False, (
-            "target file '" + str(target_file) + "' already existing"
-        )
+        assert os.path.isfile(target_file) is False, "target file '" + str(target_file) + "' already existing"
 
         shutil.copy(source_file, target_file)
         assert os.path.isfile(target_file), "target file '" + str(target_file) + "' is missing"
@@ -172,9 +157,7 @@ def copy_files_4_pytest_2_dir(
 # Delete the original configuration parameter value.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def delete_config_param(
-    config_section: str, config_param: str
-) -> typing.List[typing.Tuple[str, str]]:
+def delete_config_param(config_section: str, config_param: str) -> typing.List[typing.Tuple[str, str]]:
     """Delete the original configuration parameter value.
 
     Args:
@@ -190,9 +173,7 @@ def delete_config_param(
 
     del CONFIG_PARSER[config_section][config_param]
 
-    with open(
-        libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT
-    ) as configfile:
+    with open(libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
     return [(config_param, config_value_orig)]
@@ -204,7 +185,7 @@ def delete_config_param(
 @pytest.helpers.register
 def delete_version_version():
     """Delete all entries in the database table 'version'."""
-    db.orm.connection.connect_db()
+    db.driver.connect_db()
 
     with db.cfg.db_orm_engine.begin() as conn:
         version = sqlalchemy.Table(
@@ -214,7 +195,7 @@ def delete_version_version():
         )
         conn.execute(sqlalchemy.delete(version))
 
-    db.orm.connection.disconnect_db()
+    db.driver.disconnect_db()
 
 
 # -----------------------------------------------------------------------------
@@ -344,9 +325,7 @@ def help_run_action_all_complete_duplicate_file(
     file_ext_1: str, file_ext_2: str, stem_name_1: str, stem_name_2: str
 ) -> None:
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        [(stem_name_1, file_ext_1)], libs.cfg.config.directory_inbox_accepted
-    )
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.config.directory_inbox_accepted)
 
     os.rename(
         os.path.join(libs.cfg.config.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
@@ -385,9 +364,7 @@ def help_run_action_process_inbox_normal(
     file_ext,
 ):
     """Help RUN_ACTION_PROCESS_INBOX - normal."""
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        [(stem_name, file_ext)], libs.cfg.config.directory_inbox
-    )
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name, file_ext)], libs.cfg.config.directory_inbox)
 
     # -------------------------------------------------------------------------
     dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
@@ -441,9 +418,7 @@ def insert_config_param(
 
     CONFIG_PARSER[config_section][config_param] = config_value_new
 
-    with open(
-        libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT
-    ) as configfile:
+    with open(libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
 
@@ -464,9 +439,7 @@ def restore_config_params(
     for (config_param, config_value) in config_params:
         CONFIG_PARSER[config_section][config_param] = config_value
 
-    with open(
-        libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT
-    ) as configfile:
+    with open(libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
     libs.cfg.config = setup.config.Config()
@@ -517,9 +490,7 @@ def store_config_param(
 
     CONFIG_PARSER[config_section][config_param] = config_value_new
 
-    with open(
-        libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT
-    ) as configfile:
+    with open(libs.cfg.config._DCR_CFG_FILE, "w", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
     return config_value_orig

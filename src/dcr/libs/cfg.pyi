@@ -3,6 +3,7 @@ import logging
 import os
 import typing
 
+import nlp.line_type
 import setup.config
 import sqlalchemy
 
@@ -134,6 +135,8 @@ language_to_be_processed: int
 languages_pandoc: typing.Dict[sqlalchemy.Integer, str]
 languages_spacy: typing.Dict[sqlalchemy.Integer, str]
 languages_tesseract: typing.Dict[sqlalchemy.Integer, str]
+
+line_type: typing.Type[nlp.line_type.LineType]
 
 logger: logging.Logger
 

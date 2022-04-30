@@ -17,9 +17,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TEXT_FROM_PDF - normal - keep.
 # -----------------------------------------------------------------------------
-def test_run_action_extract_text_from_pdf_normal_keep(
-    fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
-):
+def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - normal - keep."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
@@ -82,9 +80,7 @@ def test_run_action_extract_text_from_pdf_normal_keep(
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TEXT_FROM_PDF - normal - keep - only page.
 # -----------------------------------------------------------------------------
-def test_run_action_extract_text_from_pdf_normal_keep_only_page(
-    fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
-):
+def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - normal - keep - only page."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
@@ -116,9 +112,7 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(
-        "=========> test_run_action_extract_text_from_pdf_normal_keep_only_page <========="
-    )
+    libs.cfg.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep_only_page <=========")
 
     pytest.helpers.verify_content_of_directory(
         libs.cfg.config.directory_inbox,
@@ -147,9 +141,7 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TEXT_FROM_PDF - rej_file_open - line.
 # -----------------------------------------------------------------------------
-def test_run_action_extract_text_from_pdf_rej_file_open_line(
-    fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
-):
+def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - rej_file_open - line."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
@@ -192,9 +184,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(
-        "=========> test_run_action_extract_text_from_pdf_rej_file_open_line <========="
-    )
+    libs.cfg.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_line <=========")
 
     pytest.helpers.verify_content_of_directory(
         libs.cfg.config.directory_inbox,
@@ -224,9 +214,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TEXT_FROM_PDF - rej_file_open - page.
 # -----------------------------------------------------------------------------
-def test_run_action_extract_text_from_pdf_rej_file_open_page(
-    fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
-):
+def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - rej_file_open - page."""
     libs.cfg.logger.debug(libs.cfg.LOGGER_START)
 
@@ -269,9 +257,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info(
-        "=========> test_run_action_extract_text_from_pdf_rej_file_open_page <========="
-    )
+    libs.cfg.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_page <=========")
 
     pytest.helpers.verify_content_of_directory(
         libs.cfg.config.directory_inbox,

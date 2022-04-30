@@ -140,13 +140,19 @@ The customisable entries are:
     directory_inbox_rejected = data/inbox_rejected
     ignore_duplicates = false
     initial_database_data = data/initial_database_data.json
+    line_footer_max_distance = 3
+    line_footer_max_lines = 3
+    line_footer_preference = true
+    line_header_max_distance = 3
+    line_header_max_lines = 3
     pdf2image_type = jpeg
     simulate_parser = false
+    tesseract_timeout = 30
     tetml_line = true
     tetml_page = false
     tetml_word = false
-    tesseract_timeout = 10
     verbose = true
+    verbose_line_type = false
     verbose_parser = none
 
 | Parameter                | Default value                         | Description                                                                                 |
@@ -169,6 +175,7 @@ The customisable entries are:
 | directory_inbox_rejected | **`data/inbox_rejected`**             | Complete file name for the JSON file with the <br>database initialisation data              |
 | ignore_duplicates        | **`false`**                           | accept presumably duplicated documents <br/>based on a SHA256 hash key                      |
 | initial_database_data    | **`data/initial_database_data.json`** | file with initial database contents                                                         |
+| line_footer_preference   | **`true`**                            | prefer the footer lines when determining the line type                                      |
 | pdfimage_type            | **`jpeg`**                            | format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**      |
 | simulate_parser          | **`false`**                           | simulate the parsing process for testing purposes                                           |
 | tesseract_timeout        | **`10`**                              | terminate the tesseract job after a <br>period of time (seconds)                            |
@@ -176,6 +183,7 @@ The customisable entries are:
 | tetml_page               | **`false`**                           | PDFlib TET granularity 'page'                                                               |
 | tetml_word               | **`false`**                           | PDFlib TET granularity 'word'                                                               |
 | verbose                  | **`true`**                            | display progress messages for processing                                                    |
+| verbose_line_type        | **`false`**                           | display progress messages for line type determination                                       |
 | verbose_parser           | **`none`**                            | display progress messages for parsing xml (TETML) : <br>**`all`**, **`none`** or **`text`** |
 
 The configuration parameters can be set differently for the individual environments (`dev`, `prod` and `test`).
