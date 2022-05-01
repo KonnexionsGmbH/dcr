@@ -179,13 +179,14 @@ def select_content_tetml(
     """
     return conn.execute(
         sqlalchemy.select(
+            dbt.c.id,
             dbt.c.page_no,
             dbt.c.page_data,
         )
         .where(
             dbt.c.document_id == document_id,
         )
-        .order_by(dbt.c.page_no.asc())
+        .order_by(dbt.c.id.asc())
     )
 
 

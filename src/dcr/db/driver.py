@@ -187,7 +187,12 @@ def drop_database_postgresql() -> None:
 
     cfg.glob.db_driver_cur = cfg.glob.db_driver_conn.cursor()
 
-    cfg.glob.db_driver_cur.execute("DROP DATABASE IF EXISTS " + database)
+    try:
+        cfg.glob.db_driver_cur.execute("DROP DATABASE IF EXISTS " + database)
+    except psycopg2.errors.ObjectInUse as err:  # pylint: disable=no-member
+        utils.terminate_fatal(
+            f"The database can currently not be dropped - error={str(err)}",
+        )
 
     utils.progress_msg(f"If existing, the database '{database}' has now been dropped")
 

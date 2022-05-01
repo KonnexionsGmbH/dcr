@@ -106,7 +106,8 @@ class LineType:
                 (_, _, distance) = self._page_lines_distance_footer[page][line]
                 if distance > cfg.glob.setup.line_footer_max_distance:
                     distance_rest = distance
-                    break
+                    if page > 0:
+                        break
 
             if distance_rest > cfg.glob.setup.line_footer_max_distance:
                 continue
@@ -115,13 +116,13 @@ class LineType:
             if distance <= cfg.glob.setup.line_footer_max_distance:
                 self._page_line_type.append((1, line_ind_prev, cfg.glob.DOCUMENT_LINE_TYPE_FOOTER))
 
-            for page in range(1, page_ind_max):
+            for page in range(1, page_ind_max + 1):
                 (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_footer[page][line]
                 self._page_line_type.append((page + 1, line_ind_prev, cfg.glob.DOCUMENT_LINE_TYPE_FOOTER))
 
             (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_footer[page_ind_max][line]
             if distance <= cfg.glob.setup.line_footer_max_distance:
-                self._page_line_type.append((page_ind_max + 1, line_ind_curr, cfg.glob.DOCUMENT_LINE_TYPE_FOOTER))
+                self._page_line_type.append((page_ind_max + 2, line_ind_curr, cfg.glob.DOCUMENT_LINE_TYPE_FOOTER))
 
     # -----------------------------------------------------------------------------
     # Determine the header lines.
@@ -138,7 +139,8 @@ class LineType:
                 (_, _, distance) = self._page_lines_distance_header[page][line]
                 if distance > cfg.glob.setup.line_header_max_distance:
                     distance_rest = distance
-                    break
+                    if page > 0:
+                        break
 
             if distance_rest > cfg.glob.setup.line_header_max_distance:
                 continue
@@ -147,13 +149,13 @@ class LineType:
             if distance <= cfg.glob.setup.line_header_max_distance:
                 self._page_line_type.append((1, line_ind_prev, cfg.glob.DOCUMENT_LINE_TYPE_HEADER))
 
-            for page in range(1, page_ind_max):
+            for page in range(1, page_ind_max + 1):
                 (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_header[page][line]
                 self._page_line_type.append((page + 1, line_ind_prev, cfg.glob.DOCUMENT_LINE_TYPE_HEADER))
 
             (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_header[page_ind_max][line]
             if distance <= cfg.glob.setup.line_header_max_distance:
-                self._page_line_type.append((page_ind_max + 1, line_ind_curr, cfg.glob.DOCUMENT_LINE_TYPE_HEADER))
+                self._page_line_type.append((page_ind_max + 2, line_ind_curr, cfg.glob.DOCUMENT_LINE_TYPE_HEADER))
 
     # -----------------------------------------------------------------------------
     # Process the document related data.
@@ -316,17 +318,17 @@ class LineType:
     # Example : [ (page_no, line_ind, line_type) ]:
     #
     # page_line_type = [(1, 0, 'h'),
-    #                  (1, 1, 'h'),
-    #                  (1, 2, 'h'),
-    #                  (1, 8, 'f'),
-    #                  (1, 9, 'f'),
-    #                  (1, 10, 'f'),
-    #                  (2, 0, 'h'),
-    #                  (2, 1, 'h'),
-    #                  (2, 2, 'h'),
-    #                  (2, 8, 'f'),
-    #                  (2, 9, 'f'),
-    #                  (2, 10, 'f')].
+    #                   (1, 1, 'h'),
+    #                   (1, 2, 'h'),
+    #                   (1, 8, 'f'),
+    #                   (1, 9, 'f'),
+    #                   (1, 10, 'f'),
+    #                   (2, 0, 'h'),
+    #                   (2, 1, 'h'),
+    #                   (2, 2, 'h'),
+    #                   (2, 8, 'f'),
+    #                   (2, 9, 'f'),
+    #                   (2, 10, 'f')].
     # -----------------------------------------------------------------------------
     def update_content_tetml_line(self, document_id: sqlalchemy.Integer) -> None:
         """Update the database table 'content_tetml_line'.
@@ -342,26 +344,25 @@ class LineType:
 
         dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(cfg.glob.DBT_CONTENT_TETML_LINE)
 
-        with cfg.glob.db_orm_engine.connect() as conn:
+        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
             rows = db.dml.select_content_tetml(conn, dbt_content_tetml, document_id)
-            for row in rows:
-                content_page_no = row[0]
 
-                cfg.glob.parse_result_page_lines = row[1]
-                print(f"wwe parse_result_page_lines={cfg.glob.parse_result_page_lines}")
-                content_page_lines = cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES]
-                print(f"wwe content_page_lines     ={content_page_lines}")
+            for row in rows:
+                content_tetml_id = row[0]
+                content_tetml_page_no = row[1]
+                cfg.glob.parse_result_page_lines = row[2]
+
+                content_tetml_page_lines = cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES]
 
                 is_changed = False
 
                 for (page_no, line_ind, line_type) in self._page_line_type:
-                    if page_no < content_page_no:
+                    if page_no < content_tetml_page_no:
                         continue
-                    if page_no > content_page_no:
+                    if page_no > content_tetml_page_no:
                         break
 
-                    xxx = content_page_lines[line_ind]
-                    line_type_curr = xxx[cfg.glob.JSON_NAME_LINE_TYPE]
+                    line_type_curr = content_tetml_page_lines[line_ind][cfg.glob.JSON_NAME_LINE_TYPE]  # type: ignore
 
                     if (
                         line_type_curr == cfg.glob.DOCUMENT_LINE_TYPE_FOOTER
@@ -371,21 +372,16 @@ class LineType:
                     ):
                         continue
 
-                    content_page_lines[line_ind][cfg.glob.JSON_NAME_LINE_TYPE] = line_type
+                    content_tetml_page_lines[line_ind][cfg.glob.JSON_NAME_LINE_TYPE] = line_type  # type: ignore
 
                     is_changed = True
 
                 if is_changed:
-                    cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES] = content_page_lines
+                    cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES] = content_tetml_page_lines
                     db.dml.update_dbt_id(
                         cfg.glob.DBT_CONTENT_TETML_LINE,
-                        document_id,
+                        content_tetml_id,
                         {
-                            cfg.glob.DBC_PAGE_DATA: cfg.glob.parse_result_page_lines,
+                            cfg.glob.DBC_PAGE_DATA: cfg.glob.parse_result_page_lines,  # type: ignore
                         },
                     )
-                    utils.progress_msg_line_type(
-                        f"LineType: Successful update of page          ={cfg.glob.parse_result_no_pages_in_doc}"
-                    )
-
-                # wwe ? print(xxx)

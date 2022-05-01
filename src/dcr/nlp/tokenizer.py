@@ -26,7 +26,8 @@ def get_text_from_page_lines(page_data: typing.Dict[str, str | typing.List[typin
     text_lines = []
 
     for page_line in page_data[cfg.glob.JSON_NAME_PAGE_LINES]:
-        text_lines.append(page_line[cfg.glob.JSON_NAME_LINE_TEXT])
+        if page_line[cfg.glob.JSON_NAME_LINE_TYPE] == cfg.glob.DOCUMENT_LINE_TYPE_BODY:
+            text_lines.append(page_line[cfg.glob.JSON_NAME_LINE_TEXT])
 
     return "\n".join(text_lines)
 
@@ -106,8 +107,8 @@ def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> Non
             # ------------------------------------------------------------------
             page_tokens: typing.List[typing.Dict[str, bool | str]] = []
 
-            page_no = row[0]
-            text = get_text_from_page_lines(row[1]) if cfg.glob.setup.is_tetml_line else row[1]
+            page_no = row[1]
+            text = get_text_from_page_lines(row[2]) if cfg.glob.setup.is_tetml_line else row[2]
 
             for token in nlp(text):
                 page_tokens.append(

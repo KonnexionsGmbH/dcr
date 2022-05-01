@@ -413,7 +413,7 @@ def parse_tag_pages(parent_tag: str, parent: typing.Iterable[str]) -> None:
     utils.progress_msg_line_type(f"LineType: End document                       ={cfg.glob.document_file_name}")
     if cfg.glob.setup.is_parsing_line:
         if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
-            cfg.glob.line_type.process_document(cfg.glob.document_id)
+            cfg.glob.line_type.process_document(cfg.glob.document_id_base)
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 

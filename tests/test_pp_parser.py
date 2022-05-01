@@ -147,6 +147,91 @@ def test_run_action_store_from_parser_coverage(verbose_parser: str, fxtr_rmdir_o
 
 
 # -----------------------------------------------------------------------------
+# Test RUN_ACTION_STORE_FROM_PARSER - coverage - LineType.
+# -----------------------------------------------------------------------------
+@pytest.mark.issue
+def test_run_action_store_from_parser_coverage_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_STORE_FROM_PARSER - coverage - LineType."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        [
+            ("p_2_header_0_footer_2_text_0", "pdf"),
+            ("p_2_header_2_footer_0_text_0", "pdf"),
+            ("p_2_header_2_footer_2_text_0", "pdf"),
+            ("p_3_header_0_footer_4", "pdf"),
+            ("p_3_header_4_footer_4", "pdf"),
+            ("p_5_header_2_footer_2_def_3_footer", "pdf"),
+            ("p_5_header_2_footer_2_def_3_header", "pdf"),
+            ("p_5_header_2_footer_2_man", "pdf"),
+        ],
+        cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION,
+        [
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
+        ],
+    )
+
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_STORE_FROM_PARSER])
+
+    pytest.helpers.restore_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_run_action_store_from_parser_coverage <=========")
+
+    pytest.helpers.verify_content_of_directory(
+        cfg.glob.setup.directory_inbox,
+        [],
+        [],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        cfg.glob.setup.directory_inbox_accepted,
+        [],
+        [
+            "p_2_header_0_footer_2_text_0_1.line.xml",
+            "p_2_header_0_footer_2_text_0_1.pdf",
+            "p_2_header_2_footer_0_text_0_3.line.xml",
+            "p_2_header_2_footer_0_text_0_3.pdf",
+            "p_2_header_2_footer_2_text_0_5.line.xml",
+            "p_2_header_2_footer_2_text_0_5.pdf",
+            "p_3_header_0_footer_4_7.line.xml",
+            "p_3_header_0_footer_4_7.pdf",
+            "p_3_header_4_footer_4_9.line.xml",
+            "p_3_header_4_footer_4_9.pdf",
+            "p_5_header_2_footer_2_def_3_footer_11.line.xml",
+            "p_5_header_2_footer_2_def_3_footer_11.pdf",
+            "p_5_header_2_footer_2_def_3_header_13.line.xml",
+            "p_5_header_2_footer_2_def_3_header_13.pdf",
+            "p_5_header_2_footer_2_man_15.line.xml",
+            "p_5_header_2_footer_2_man_15.pdf",
+        ],
+    )
+
+    pytest.helpers.verify_content_of_directory(
+        cfg.glob.setup.directory_inbox_rejected,
+        [],
+        [],
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - normal.
 # -----------------------------------------------------------------------------
 def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):

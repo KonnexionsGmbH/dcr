@@ -19,7 +19,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test Function - connect_db().
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_connect_db(fxtr_setup_logger_environment):
     """Test: connect_db()."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
