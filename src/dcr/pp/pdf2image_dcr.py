@@ -4,8 +4,8 @@ import os
 import time
 
 import cfg.glob
+import comm.utils
 import db.dml
-import libs.utils
 import pdf2image
 
 
@@ -24,7 +24,7 @@ def convert_pdf_2_image() -> None:
     else:
         cfg.glob.document_child_file_type = cfg.glob.DOCUMENT_FILE_TYPE_JPG
 
-    libs.utils.reset_statistics_total()
+    comm.utils.reset_statistics_total()
 
     dbt = db.dml.dml_prepare(cfg.glob.DBT_DOCUMENT)
 
@@ -34,7 +34,7 @@ def convert_pdf_2_image() -> None:
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
 
-            libs.utils.start_document_processing(
+            comm.utils.start_document_processing(
                 document=row,
             )
 
@@ -42,7 +42,7 @@ def convert_pdf_2_image() -> None:
 
         conn.close()
 
-    libs.utils.show_statistics_total()
+    comm.utils.show_statistics_total()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -61,7 +61,7 @@ def convert_pdf_2_image_file() -> None:
 
     images = pdf2image.convert_from_path(file_name_parent)
 
-    libs.utils.prepare_document_4_next_step(
+    comm.utils.prepare_document_4_next_step(
         next_file_type=cfg.glob.setup.pdf2image_type,
         next_step=cfg.glob.DOCUMENT_STEP_TESSERACT,
     )
@@ -97,7 +97,7 @@ def convert_pdf_2_image_file() -> None:
 
             cfg.glob.total_generated += 1
 
-    libs.utils.delete_auxiliary_file(file_name_parent)
+    comm.utils.delete_auxiliary_file(file_name_parent)
 
     cfg.glob.total_ok_processed += 1
 
@@ -107,7 +107,7 @@ def convert_pdf_2_image_file() -> None:
     )
 
     if cfg.glob.setup.is_verbose:
-        libs.utils.progress_msg(
+        comm.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {cfg.glob.document_id:6d} "
             f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"

@@ -3,8 +3,8 @@ import os
 import time
 
 import cfg.glob
+import comm.utils
 import db.dml
-import libs.utils
 import pypandoc
 
 # -----------------------------------------------------------------------------
@@ -26,7 +26,7 @@ def convert_non_pdf_2_pdf() -> None:
 
     dbt = db.dml.dml_prepare(cfg.glob.DBT_DOCUMENT)
 
-    libs.utils.reset_statistics_total()
+    comm.utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
         rows = db.dml.select_document(conn, dbt, cfg.glob.DOCUMENT_STEP_PANDOC)
@@ -34,17 +34,17 @@ def convert_non_pdf_2_pdf() -> None:
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
 
-            libs.utils.start_document_processing(
+            comm.utils.start_document_processing(
                 document=row,
             )
 
             convert_non_pdf_2_pdf_file()
 
             # Document successfully converted to pdf format
-            duration_ns = libs.utils.finalize_file_processing()
+            duration_ns = comm.utils.finalize_file_processing()
 
             if cfg.glob.setup.is_verbose:
-                libs.utils.progress_msg(
+                comm.utils.progress_msg(
                     f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                     f"Document: {cfg.glob.document_id:6d} "
                     f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
@@ -52,7 +52,7 @@ def convert_non_pdf_2_pdf() -> None:
 
         conn.close()
 
-    libs.utils.show_statistics_total()
+    comm.utils.show_statistics_total()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -64,7 +64,7 @@ def convert_non_pdf_2_pdf_file() -> None:
     """Convert a non-pdf document to a pdf file."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    source_file_name, target_file_name = libs.utils.prepare_file_names(cfg.glob.DOCUMENT_FILE_TYPE_PDF)
+    source_file_name, target_file_name = comm.utils.prepare_file_names(cfg.glob.DOCUMENT_FILE_TYPE_PDF)
 
     if os.path.exists(target_file_name):
         db.dml.update_document_error(
@@ -88,7 +88,7 @@ def convert_non_pdf_2_pdf_file() -> None:
         outputfile=target_file_name,
     )
 
-    libs.utils.prepare_document_4_next_step(
+    comm.utils.prepare_document_4_next_step(
         next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_PDF,
         next_step=cfg.glob.DOCUMENT_STEP_PDFLIB,
     )
@@ -98,6 +98,6 @@ def convert_non_pdf_2_pdf_file() -> None:
 
     db.dml.insert_document_child()
 
-    libs.utils.delete_auxiliary_file(source_file_name)
+    comm.utils.delete_auxiliary_file(source_file_name)
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

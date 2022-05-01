@@ -26,8 +26,8 @@ import dcr
 # pylint: disable=W0212
 CONFIG_PARSER: configparser.ConfigParser = configparser.ConfigParser()
 
-FILE_NAME_SETUP_CFG: str = "cfg.cfg"
-FILE_NAME_SETUP_CFG_BACKUP: str = "cfg.cfg_backup"
+FILE_NAME_SETUP_CFG: str = "setup.cfg"
+FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
 
 
 # -----------------------------------------------------------------------------
@@ -62,11 +62,11 @@ def backup_config_params(
 
 
 # -----------------------------------------------------------------------------
-# Backup the 'cfg.cfg' file.
+# Backup the 'setup.cfg' file.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def backup_setup_cfg() -> None:
-    """Backup the 'cfg.cfg' file."""
+    """Backup the 'setup.cfg' file."""
     if not os.path.isfile(FILE_NAME_SETUP_CFG_BACKUP):
         shutil.copy2(FILE_NAME_SETUP_CFG, FILE_NAME_SETUP_CFG_BACKUP)
 
@@ -302,7 +302,7 @@ def fxtr_setup_logger():
 @pytest.fixture()
 def fxtr_setup_logger_environment():
     """Fixture: Setup logger & environment."""
-    cfg.glob.config = cfg.setup.Setup()
+    cfg.glob.setup = cfg.setup.Setup()
 
     cfg.glob.setup.environment_type = cfg.glob.setup._ENVIRONMENT_TYPE_TEST
 
@@ -440,15 +440,15 @@ def restore_config_params(
     with open(cfg.glob.setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
-    cfg.glob.config = cfg.setup.Setup()
+    cfg.glob.setup = cfg.setup.Setup()
 
 
 # -----------------------------------------------------------------------------
-# Restore the 'cfg.cfg' file.
+# Restore the 'setup.cfg' file.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def restore_setup_cfg():
-    """Restore the 'cfg.cfg' file."""
+    """Restore the 'setup.cfg' file."""
     shutil.copy2(FILE_NAME_SETUP_CFG_BACKUP, FILE_NAME_SETUP_CFG)
 
     os.remove(FILE_NAME_SETUP_CFG_BACKUP)

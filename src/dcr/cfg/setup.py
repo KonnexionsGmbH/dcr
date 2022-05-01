@@ -4,7 +4,7 @@ import os
 import typing
 
 import cfg.glob
-import libs.utils
+import comm.utils
 
 
 # pylint: disable=R0902
@@ -114,7 +114,7 @@ class Setup:
 
         self._load_config()  # pylint: disable=E1121
 
-        libs.utils.progress_msg_core("The configuration parameters are checked and loaded")
+        comm.utils.progress_msg_core("The configuration parameters are checked and loaded")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -158,7 +158,7 @@ class Setup:
 
             self.directory_inbox = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX])
         else:
-            libs.utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
+            comm.utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_accepted.
@@ -172,7 +172,7 @@ class Setup:
 
             self.directory_inbox_accepted = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
         else:
-            libs.utils.terminate_fatal_setup(
+            comm.utils.terminate_fatal_setup(
                 f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'"
             )
 
@@ -188,7 +188,7 @@ class Setup:
 
             self.directory_inbox_rejected = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED])
         else:
-            libs.utils.terminate_fatal_setup(
+            comm.utils.terminate_fatal_setup(
                 f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'"
             )
 
@@ -221,7 +221,7 @@ class Setup:
                 Setup.PDF2IMAGE_TYPE_JPEG,
                 Setup.PDF2IMAGE_TYPE_PNG,
             ]:
-                libs.utils.terminate_fatal_setup(
+                comm.utils.terminate_fatal_setup(
                     f"Invalid configuration parameter value for parameter " f"'pdf2image_type': '{self.pdf2image_type}'"
                 )
 
@@ -262,7 +262,7 @@ class Setup:
 
         if not self.is_tetml_page:
             if not self.is_tetml_line:
-                libs.utils.terminate_fatal_setup(
+                comm.utils.terminate_fatal_setup(
                     "At least one of the configuration parameters 'tetml_line' or " + "'tetml_page' must be 'true'"
                 )
 
@@ -312,19 +312,19 @@ class Setup:
         try:
             self.environment_variant = os.environ[Setup._DCR_ENVIRONMENT_TYPE]
         except KeyError:
-            libs.utils.terminate_fatal_setup(f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' is missing")
+            comm.utils.terminate_fatal_setup(f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' is missing")
 
         if self.environment_variant not in [
             Setup._ENVIRONMENT_TYPE_DEV,
             Setup._ENVIRONMENT_TYPE_PROD,
             Setup._ENVIRONMENT_TYPE_TEST,
         ]:
-            libs.utils.terminate_fatal_setup(
+            comm.utils.terminate_fatal_setup(
                 f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' "
                 f"has the invalid content '{self.environment_variant}'"
             )
 
-        libs.utils.progress_msg_core(f"The run is performed in the environment '{self.environment_variant}'")
+        comm.utils.progress_msg_core(f"The run is performed in the environment '{self.environment_variant}'")
 
     # -----------------------------------------------------------------------------
     # Load and check the configuration parameters.
@@ -401,6 +401,6 @@ class Setup:
                 case Setup._DCR_CFG_LINE_HEADER_MAX_LINES:
                     self.line_header_max_lines = int(item)
                 case _:
-                    libs.utils.terminate_fatal_setup(f"Unknown configuration parameter '{key}'")
+                    comm.utils.terminate_fatal_setup(f"Unknown configuration parameter '{key}'")
 
         self._check_config()

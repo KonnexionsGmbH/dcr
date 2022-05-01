@@ -19,6 +19,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test Function - connect_db().
 # -----------------------------------------------------------------------------
+@pytest.mark.issue
 def test_connect_db(fxtr_setup_logger_environment):
     """Test: connect_db()."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -33,7 +34,7 @@ def test_connect_db(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.config = cfg.setup.Setup()
+    cfg.glob.setup = cfg.setup.Setup()
 
     with pytest.raises(SystemExit) as expt:
         db.driver.connect_db()
@@ -67,7 +68,7 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.config = cfg.setup.Setup()
+    cfg.glob.setup = cfg.setup.Setup()
 
     with pytest.raises(SystemExit) as expt:
         db.driver.connect_db_admin()
@@ -235,7 +236,7 @@ def test_drop_database(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.config = cfg.setup.Setup()
+    cfg.glob.setup = cfg.setup.Setup()
 
     with pytest.raises(SystemExit) as expt:
         db.driver.drop_database()

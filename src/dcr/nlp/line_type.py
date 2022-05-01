@@ -4,10 +4,10 @@ from typing import List
 from typing import Tuple
 
 import cfg.glob
+import comm.utils
 import db.dml
 import db.driver
 import jellyfish
-import libs.utils
 import sqlalchemy
 
 
@@ -88,7 +88,7 @@ class LineType:
                     )
                 )
 
-        libs.utils.progress_msg_line_type(f"LineType: Value of page_lines_distance       ={page_lines_distance}")
+        comm.utils.progress_msg_line_type(f"LineType: Value of page_lines_distance       ={page_lines_distance}")
         return page_lines_distance
 
     # -----------------------------------------------------------------------------
@@ -166,10 +166,10 @@ class LineType:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        libs.utils.progress_msg_line_type(
+        comm.utils.progress_msg_line_type(
             f"LineType: Value of page_lines_distance_header={self._page_lines_distance_header}"
         )
-        libs.utils.progress_msg_line_type(
+        comm.utils.progress_msg_line_type(
             f"LineType: Value of page_lines_distance_footer={self._page_lines_distance_footer}"
         )
 
@@ -272,10 +272,10 @@ class LineType:
                 )
             count += 1
 
-        libs.utils.progress_msg_line_type(
+        comm.utils.progress_msg_line_type(
             f"LineType: Value of line_text_footer_prev     ={self._line_text_footer_prev}"
         )
-        libs.utils.progress_msg_line_type(
+        comm.utils.progress_msg_line_type(
             f"LineType: Value of line_text_footer_curr     ={self._line_text_footer_curr}"
         )
 
@@ -311,10 +311,10 @@ class LineType:
             else:
                 self._line_text_header_curr.append((-1, cfg.glob.INFORMATION_NOT_YET_AVAILABLE))
 
-        libs.utils.progress_msg_line_type(
+        comm.utils.progress_msg_line_type(
             f"LineType: Value of line_text_header_prev     ={self._line_text_header_prev}"
         )
-        libs.utils.progress_msg_line_type(
+        comm.utils.progress_msg_line_type(
             f"LineType: Value of line_text_header_curr     ={self._line_text_header_curr}"
         )
 
@@ -342,11 +342,11 @@ class LineType:
         Args:
             document_id (sqlalchemy.Integer): Document identification.
         """
-        libs.utils.progress_msg_line_type(f"LineType: Value of page_line_type raw        ={self._page_line_type}")
+        comm.utils.progress_msg_line_type(f"LineType: Value of page_line_type raw        ={self._page_line_type}")
 
         self._page_line_type.sort()
 
-        libs.utils.progress_msg_line_type(f"LineType: Value of page_line_type sorted     ={self._page_line_type}")
+        comm.utils.progress_msg_line_type(f"LineType: Value of page_line_type sorted     ={self._page_line_type}")
 
         dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(cfg.glob.DBT_CONTENT_TETML_LINE)
 
@@ -392,7 +392,7 @@ class LineType:
                             cfg.glob.DBC_PAGE_DATA: cfg.glob.parse_result_page_lines,
                         },
                     )
-                    libs.utils.progress_msg_line_type(
+                    comm.utils.progress_msg_line_type(
                         f"LineType: Successful update of page          ={cfg.glob.parse_result_no_pages_in_doc}"
                     )
 

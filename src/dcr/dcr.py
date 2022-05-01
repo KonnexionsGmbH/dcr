@@ -11,9 +11,9 @@ import typing
 
 import cfg.glob
 import cfg.setup
+import comm.utils
 import db.dml
 import db.driver
-import libs.utils
 import nlp.tokenizer
 import pp.inbox
 import pp.pandoc_dcr
@@ -33,24 +33,24 @@ def check_db_up_to_date() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     if cfg.glob.db_orm_engine is None:
-        libs.utils.terminate_fatal(
+        comm.utils.terminate_fatal(
             "The database does not yet exist.",
         )
 
     if not sqlalchemy.inspect(cfg.glob.db_orm_engine).has_table(cfg.glob.DBT_VERSION):
-        libs.utils.terminate_fatal(
+        comm.utils.terminate_fatal(
             "The database table 'version' does not yet exist.",
         )
 
     current_version = db.dml.select_version_version_unique()
 
     if cfg.glob.setup.dcr_version != current_version:
-        libs.utils.terminate_fatal(
+        comm.utils.terminate_fatal(
             f"Current database version is '{current_version}' - but expected version is '"
             f"{cfg.glob.setup.dcr_version}''"
         )
 
-    libs.utils.progress_msg(f"The current version of database is '{current_version}'")
+    comm.utils.progress_msg(f"The current version of database is '{current_version}'")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -101,10 +101,10 @@ def get_args(argv: typing.List[str]) -> dict[str, bool]:
     num = len(argv)
 
     if num == 0:
-        libs.utils.terminate_fatal("No command line arguments found")
+        comm.utils.terminate_fatal("No command line arguments found")
 
     if num == 1:
-        libs.utils.terminate_fatal("The specific command line arguments are missing")
+        comm.utils.terminate_fatal("The specific command line arguments are missing")
 
     args = {
         cfg.glob.RUN_ACTION_CREATE_DB: False,
@@ -141,9 +141,9 @@ def get_args(argv: typing.List[str]) -> dict[str, bool]:
         ):
             args[arg] = True
         else:
-            libs.utils.terminate_fatal(f"Unknown command line argument='{argv[i]}'")
+            comm.utils.terminate_fatal(f"Unknown command line argument='{argv[i]}'")
 
-    libs.utils.progress_msg("The command line arguments are validated and loaded")
+    comm.utils.progress_msg("The command line arguments are validated and loaded")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -162,7 +162,7 @@ def initialise_logger() -> None:
     cfg.glob.logger = logging.getLogger("dcr.py")
     cfg.glob.logger.setLevel(logging.DEBUG)
 
-    libs.utils.progress_msg_core("The logger is configured and ready")
+    comm.utils.progress_msg_core("The logger is configured and ready")
 
 
 # -----------------------------------------------------------------------------
@@ -196,9 +196,9 @@ def load_data_from_dbt_language() -> None:
 
         conn.close()
 
-    libs.utils.progress_msg(f"Available languages for Pandoc        '{cfg.glob.languages_pandoc}'")
-    libs.utils.progress_msg(f"Available languages for SpaCy         '{cfg.glob.languages_spacy}'")
-    libs.utils.progress_msg(f"Available languages for Tesseract OCR '{cfg.glob.languages_tesseract}'")
+    comm.utils.progress_msg(f"Available languages for Pandoc        '{cfg.glob.languages_pandoc}'")
+    comm.utils.progress_msg(f"Available languages for SpaCy         '{cfg.glob.languages_spacy}'")
+    comm.utils.progress_msg(f"Available languages for Tesseract OCR '{cfg.glob.languages_tesseract}'")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -232,14 +232,14 @@ def main(argv: typing.List[str]) -> None:
 
     if args[cfg.glob.RUN_ACTION_CREATE_DB]:
         # Create the database.
-        libs.utils.progress_msg_empty_before("Start: Create the database ...")
+        comm.utils.progress_msg_empty_before("Start: Create the database ...")
         db.driver.create_database()
-        libs.utils.progress_msg("End  : Create the database ...")
+        comm.utils.progress_msg("End  : Create the database ...")
     elif args[cfg.glob.RUN_ACTION_UPGRADE_DB]:
         # Upgrade the database.
-        libs.utils.progress_msg_empty_before("Start: Upgrade the database ...")
+        comm.utils.progress_msg_empty_before("Start: Upgrade the database ...")
         db.driver.upgrade_database()
-        libs.utils.progress_msg("End  : Upgrade the database ...")
+        comm.utils.progress_msg("End  : Upgrade the database ...")
     else:
         # Process the documents.
         process_documents(args)
@@ -257,7 +257,7 @@ def process_convert_image_2_pdf() -> None:
     """Convert image documents to pdf files."""
     cfg.glob.run_action = cfg.glob.RUN_ACTION_IMAGE_2_PDF
 
-    libs.utils.progress_msg_empty_before("Start: Convert image documents to pdf files ... Tesseract OCR")
+    comm.utils.progress_msg_empty_before("Start: Convert image documents to pdf files ... Tesseract OCR")
     cfg.glob.run_id = db.dml.insert_dbt_row(
         cfg.glob.DBT_RUN,
         {
@@ -277,11 +277,11 @@ def process_convert_image_2_pdf() -> None:
             cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
-    libs.utils.progress_msg("End  : Convert image documents to pdf files ...")
+    comm.utils.progress_msg("End  : Convert image documents to pdf files ...")
 
     cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PYPDF2
 
-    libs.utils.progress_msg_empty_before("Start: Reunite the related pdf files ... PyPDF2")
+    comm.utils.progress_msg_empty_before("Start: Reunite the related pdf files ... PyPDF2")
     cfg.glob.run_id = db.dml.insert_dbt_row(
         cfg.glob.DBT_RUN,
         {
@@ -301,7 +301,7 @@ def process_convert_image_2_pdf() -> None:
             cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
-    libs.utils.progress_msg("End  : Reunite the related pdf files ...")
+    comm.utils.progress_msg("End  : Reunite the related pdf files ...")
 
 
 # -----------------------------------------------------------------------------
@@ -310,7 +310,7 @@ def process_convert_image_2_pdf() -> None:
 def process_convert_non_pdf_2_pdf() -> None:
     """Convert non-pdf documents to pdf files."""
     cfg.glob.run_action = cfg.glob.RUN_ACTION_NON_PDF_2_PDF
-    libs.utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]")
+    comm.utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]")
     cfg.glob.run_id = db.dml.insert_dbt_row(
         cfg.glob.DBT_RUN,
         {
@@ -330,7 +330,7 @@ def process_convert_non_pdf_2_pdf() -> None:
             cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
-    libs.utils.progress_msg("End  : Convert non-pdf documents to pdf files ...")
+    comm.utils.progress_msg("End  : Convert non-pdf documents to pdf files ...")
 
 
 # -----------------------------------------------------------------------------
@@ -339,7 +339,7 @@ def process_convert_non_pdf_2_pdf() -> None:
 def process_convert_pdf_2_image() -> None:
     """Convert pdf documents to image files."""
     cfg.glob.run_action = cfg.glob.RUN_ACTION_PDF_2_IMAGE
-    libs.utils.progress_msg_empty_before("Start: Convert pdf documents to image files ... pdf2image [Poppler]")
+    comm.utils.progress_msg_empty_before("Start: Convert pdf documents to image files ... pdf2image [Poppler]")
     cfg.glob.run_id = db.dml.insert_dbt_row(
         cfg.glob.DBT_RUN,
         {
@@ -359,7 +359,7 @@ def process_convert_pdf_2_image() -> None:
             cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
-    libs.utils.progress_msg("End  : Convert pdf documents to image files ...")
+    comm.utils.progress_msg("End  : Convert pdf documents to image files ...")
 
 
 # -----------------------------------------------------------------------------
@@ -389,48 +389,62 @@ def process_documents(args: dict[str, bool]) -> None:
         start_time_process = time.perf_counter_ns()
         cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_INBOX
         process_inbox_directory()
-        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
+        comm.utils.progress_msg(
+            f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s"
+        )
 
     # Convert the scanned image pdf documents to image files.
     if args[cfg.glob.RUN_ACTION_PDF_2_IMAGE]:
         start_time_process = time.perf_counter_ns()
         cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PDF2IMAGE
         process_convert_pdf_2_image()
-        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
+        comm.utils.progress_msg(
+            f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s"
+        )
 
     # Convert the image documents to pdf files.
     if args[cfg.glob.RUN_ACTION_IMAGE_2_PDF]:
         start_time_process = time.perf_counter_ns()
         cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_TESSERACT
         process_convert_image_2_pdf()
-        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
+        comm.utils.progress_msg(
+            f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s"
+        )
 
     # Convert the non-pdf documents to pdf files.
     if args[cfg.glob.RUN_ACTION_NON_PDF_2_PDF]:
         start_time_process = time.perf_counter_ns()
         cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PANDOC
         process_convert_non_pdf_2_pdf()
-        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
+        comm.utils.progress_msg(
+            f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s"
+        )
 
     # Extract text and metadata from pdf documents.
     if args[cfg.glob.RUN_ACTION_TEXT_FROM_PDF]:
         start_time_process = time.perf_counter_ns()
         cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PDFLIB
         process_extract_text_from_pdf()
-        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
+        comm.utils.progress_msg(
+            f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s"
+        )
 
     # Store the document structure from the parser result.
     if args[cfg.glob.RUN_ACTION_STORE_FROM_PARSER]:
         start_time_process = time.perf_counter_ns()
         process_store_from_parser()
-        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
+        comm.utils.progress_msg(
+            f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s"
+        )
 
     # Create document token.
     if args[cfg.glob.RUN_ACTION_TOKENIZE]:
         start_time_process = time.perf_counter_ns()
         cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_TOKENIZE
         process_tokenize()
-        libs.utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s")
+        comm.utils.progress_msg(
+            f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s"
+        )
 
     # Disconnect from the database.
     db.driver.disconnect_db()
@@ -444,7 +458,7 @@ def process_documents(args: dict[str, bool]) -> None:
 def process_extract_text_from_pdf() -> None:
     """Extract text and metadata from pdf documents."""
     cfg.glob.run_action = cfg.glob.RUN_ACTION_TEXT_FROM_PDF
-    libs.utils.progress_msg_empty_before("Start: Extract text and metadata from pdf documents ... PDFlib TET")
+    comm.utils.progress_msg_empty_before("Start: Extract text and metadata from pdf documents ... PDFlib TET")
     cfg.glob.run_id = db.dml.insert_dbt_row(
         cfg.glob.DBT_RUN,
         {
@@ -464,7 +478,7 @@ def process_extract_text_from_pdf() -> None:
             cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
-    libs.utils.progress_msg("End  : Extract text and metadata from pdf documents ...")
+    comm.utils.progress_msg("End  : Extract text and metadata from pdf documents ...")
 
 
 # -----------------------------------------------------------------------------
@@ -474,7 +488,7 @@ def process_inbox_directory() -> None:
     """Process the inbox directory."""
     cfg.glob.run_action = cfg.glob.RUN_ACTION_PROCESS_INBOX
 
-    libs.utils.progress_msg_empty_before("Start: Process the inbox directory ... PyMuPDF [fitz]")
+    comm.utils.progress_msg_empty_before("Start: Process the inbox directory ... PyMuPDF [fitz]")
 
     cfg.glob.run_id = db.dml.insert_dbt_row(
         cfg.glob.DBT_RUN,
@@ -498,7 +512,7 @@ def process_inbox_directory() -> None:
         },
     )
 
-    libs.utils.progress_msg("End  : Process the inbox directory ...")
+    comm.utils.progress_msg("End  : Process the inbox directory ...")
 
 
 # -----------------------------------------------------------------------------
@@ -508,7 +522,7 @@ def process_store_from_parser() -> None:
     """Store the document structure from the parser result."""
     cfg.glob.run_action = cfg.glob.RUN_ACTION_STORE_FROM_PARSER
 
-    libs.utils.progress_msg_empty_before("Start: Store document structure ... defusedxml [xml.etree.ElementTree]")
+    comm.utils.progress_msg_empty_before("Start: Store document structure ... defusedxml [xml.etree.ElementTree]")
 
     cfg.glob.run_id = db.dml.insert_dbt_row(
         cfg.glob.DBT_RUN,
@@ -532,7 +546,7 @@ def process_store_from_parser() -> None:
         },
     )
 
-    libs.utils.progress_msg("End  : Store document structure ...")
+    comm.utils.progress_msg("End  : Store document structure ...")
 
 
 # -----------------------------------------------------------------------------
@@ -542,7 +556,7 @@ def process_tokenize() -> None:
     """Create document tokens."""
     cfg.glob.run_action = cfg.glob.RUN_ACTION_TOKENIZE
 
-    libs.utils.progress_msg_empty_before("Start: Create document tokens ... SpaCy")
+    comm.utils.progress_msg_empty_before("Start: Create document tokens ... SpaCy")
 
     cfg.glob.run_id = db.dml.insert_dbt_row(
         cfg.glob.DBT_RUN,
@@ -566,7 +580,7 @@ def process_tokenize() -> None:
         },
     )
 
-    libs.utils.progress_msg("End  : Create document tokens ...")
+    comm.utils.progress_msg("End  : Create document tokens ...")
 
 
 # -----------------------------------------------------------------------------

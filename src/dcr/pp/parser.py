@@ -5,9 +5,9 @@ import time
 import typing
 
 import cfg.glob
+import comm.utils
 import db.dml
 import defusedxml.ElementTree
-import libs.utils
 import nlp.line_type
 
 
@@ -341,7 +341,7 @@ def parse_tag_page(parent_tag: str, parent: typing.Iterable[str]) -> None:
     cfg.glob.parse_result_no_pages_in_doc += 1  # relative 1
     cfg.glob.parse_result_page_index_doc += 1  # relative 0
 
-    libs.utils.progress_msg_line_type(
+    comm.utils.progress_msg_line_type(
         f"LineType: Start page                         ={cfg.glob.parse_result_no_pages_in_doc}"
     )
 
@@ -397,8 +397,8 @@ def parse_tag_pages(parent_tag: str, parent: typing.Iterable[str]) -> None:
     if cfg.glob.setup.is_parsing_line:
         cfg.glob.line_type = nlp.line_type.LineType()
 
-    libs.utils.progress_msg_line_type("LineType")
-    libs.utils.progress_msg_line_type(f"LineType: Start document                     ={cfg.glob.document_file_name}")
+    comm.utils.progress_msg_line_type("LineType")
+    comm.utils.progress_msg_line_type(f"LineType: Start document                     ={cfg.glob.document_file_name}")
 
     # Process the tags of all document pages.
     for child in parent:
@@ -410,7 +410,7 @@ def parse_tag_pages(parent_tag: str, parent: typing.Iterable[str]) -> None:
                 parse_tag_page(child_tag, child)
 
     # Process the document related variables.
-    libs.utils.progress_msg_line_type(f"LineType: End document                       ={cfg.glob.document_file_name}")
+    comm.utils.progress_msg_line_type(f"LineType: End document                       ={cfg.glob.document_file_name}")
     if cfg.glob.setup.is_parsing_line:
         if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
             cfg.glob.line_type.process_document(cfg.glob.document_id)
@@ -518,7 +518,7 @@ def parse_tetml() -> None:
 
     dbt = db.dml.dml_prepare(cfg.glob.DBT_DOCUMENT)
 
-    libs.utils.reset_statistics_total()
+    comm.utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
         rows = db.dml.select_document(conn, dbt, cfg.glob.DOCUMENT_STEP_PARSER_LINE)
@@ -529,7 +529,7 @@ def parse_tetml() -> None:
             # ------------------------------------------------------------------
             cfg.glob.start_time_document = time.perf_counter_ns()
 
-            libs.utils.start_document_processing(
+            comm.utils.start_document_processing(
                 document=row,
             )
 
@@ -537,10 +537,10 @@ def parse_tetml() -> None:
 
             # Text and metadata from Document successfully extracted to xml format
             if not cfg.glob.setup.is_simulate_parser:
-                duration_ns = libs.utils.finalize_file_processing()
+                duration_ns = comm.utils.finalize_file_processing()
 
                 if cfg.glob.setup.is_verbose:
-                    libs.utils.progress_msg(
+                    comm.utils.progress_msg(
                         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                         f"Document: {cfg.glob.document_id:6d} "
                         f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
@@ -554,7 +554,7 @@ def parse_tetml() -> None:
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
 
-            libs.utils.start_document_processing(
+            comm.utils.start_document_processing(
                 document=row,
             )
 
@@ -562,10 +562,10 @@ def parse_tetml() -> None:
 
             # Text and metadata from Document successfully extracted to xml format
             if not cfg.glob.setup.is_simulate_parser:
-                duration_ns = libs.utils.finalize_file_processing()
+                duration_ns = comm.utils.finalize_file_processing()
 
                 if cfg.glob.setup.is_verbose:
-                    libs.utils.progress_msg(
+                    comm.utils.progress_msg(
                         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                         f"Document: {cfg.glob.document_id:6d} "
                         f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
@@ -573,7 +573,7 @@ def parse_tetml() -> None:
 
         conn.close()
 
-    libs.utils.show_statistics_total()
+    comm.utils.show_statistics_total()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -613,7 +613,7 @@ def parse_tetml_file_line() -> None:
                 pass
 
     if not cfg.glob.setup.is_simulate_parser:
-        libs.utils.delete_auxiliary_file(file_name)
+        comm.utils.delete_auxiliary_file(file_name)
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -653,6 +653,6 @@ def parse_tetml_file_word() -> None:
                 pass
 
     if not cfg.glob.setup.is_simulate_parser:
-        libs.utils.delete_auxiliary_file(file_name)
+        comm.utils.delete_auxiliary_file(file_name)
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

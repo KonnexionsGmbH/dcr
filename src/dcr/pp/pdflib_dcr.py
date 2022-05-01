@@ -3,8 +3,8 @@ import os
 import time
 
 import cfg.glob
+import comm.utils
 import db.dml
-import libs.utils
 import PDFlib.TET
 
 # -----------------------------------------------------------------------------
@@ -53,7 +53,7 @@ def extract_text_from_pdf() -> None:
 
     dbt = db.dml.dml_prepare(cfg.glob.DBT_DOCUMENT)
 
-    libs.utils.reset_statistics_total()
+    comm.utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
         rows = db.dml.select_document(conn, dbt, cfg.glob.DOCUMENT_STEP_PDFLIB)
@@ -61,7 +61,7 @@ def extract_text_from_pdf() -> None:
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
 
-            libs.utils.start_document_processing(
+            comm.utils.start_document_processing(
                 document=row,
             )
 
@@ -76,7 +76,7 @@ def extract_text_from_pdf() -> None:
 
         conn.close()
 
-    libs.utils.show_statistics_total()
+    comm.utils.show_statistics_total()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -90,7 +90,7 @@ def extract_text_from_pdf_file_line() -> None:
 
     xml_variation = "line."
 
-    source_file_name, target_file_name = libs.utils.prepare_file_names(xml_variation + cfg.glob.DOCUMENT_FILE_TYPE_XML)
+    source_file_name, target_file_name = comm.utils.prepare_file_names(xml_variation + cfg.glob.DOCUMENT_FILE_TYPE_XML)
 
     tet = PDFlib.TET.TET()
 
@@ -120,7 +120,7 @@ def extract_text_from_pdf_file_line() -> None:
 
     tet.close_document(source_file)
 
-    libs.utils.prepare_document_4_next_step(
+    comm.utils.prepare_document_4_next_step(
         next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_XML,
         next_step=cfg.glob.DOCUMENT_STEP_PARSER_LINE,
     )
@@ -133,17 +133,17 @@ def extract_text_from_pdf_file_line() -> None:
 
     db.dml.insert_document_child()
 
-    libs.utils.delete_auxiliary_file(source_file_name)
+    comm.utils.delete_auxiliary_file(source_file_name)
 
     tet.delete()
 
     create_child_document()
 
     # Text from Document successfully extracted to database
-    duration_ns = libs.utils.finalize_file_processing()
+    duration_ns = comm.utils.finalize_file_processing()
 
     if cfg.glob.setup.is_verbose:
-        libs.utils.progress_msg(
+        comm.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {cfg.glob.document_id:6d} "
             f"[line version: {db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
@@ -204,10 +204,10 @@ def extract_text_from_pdf_file_page() -> None:
         create_child_document()
 
     # Text from Document successfully extracted to database
-    duration_ns = libs.utils.finalize_file_processing()
+    duration_ns = comm.utils.finalize_file_processing()
 
     if cfg.glob.setup.is_verbose:
-        libs.utils.progress_msg(
+        comm.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {cfg.glob.document_id:6d} "
             f"[page version: {db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
@@ -225,7 +225,7 @@ def extract_text_from_pdf_file_word() -> None:
 
     xml_variation = "word."
 
-    source_file_name, target_file_name = libs.utils.prepare_file_names(xml_variation + cfg.glob.DOCUMENT_FILE_TYPE_XML)
+    source_file_name, target_file_name = comm.utils.prepare_file_names(xml_variation + cfg.glob.DOCUMENT_FILE_TYPE_XML)
 
     tet = PDFlib.TET.TET()
 
@@ -255,7 +255,7 @@ def extract_text_from_pdf_file_word() -> None:
 
     tet.close_document(source_file)
 
-    libs.utils.prepare_document_4_next_step(
+    comm.utils.prepare_document_4_next_step(
         next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_XML,
         next_step=cfg.glob.DOCUMENT_STEP_PARSER_WORD,
     )
@@ -267,15 +267,15 @@ def extract_text_from_pdf_file_word() -> None:
 
     db.dml.insert_document_child()
 
-    libs.utils.delete_auxiliary_file(source_file_name)
+    comm.utils.delete_auxiliary_file(source_file_name)
 
     tet.delete()
 
     # Text from Document successfully extracted to database
-    duration_ns = libs.utils.finalize_file_processing()
+    duration_ns = comm.utils.finalize_file_processing()
 
     if cfg.glob.setup.is_verbose:
-        libs.utils.progress_msg(
+        comm.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {cfg.glob.document_id:6d} "
             f"[word version: {db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
