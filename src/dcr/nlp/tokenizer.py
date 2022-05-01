@@ -5,10 +5,10 @@ import time
 import typing
 
 import cfg.glob
-import comm.utils
 import db.dml
 import spacy
 import sqlalchemy
+import utils
 
 
 # -----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ def tokenize() -> None:
     nlp: spacy.Language
     spacy_model_current: str | None = None
 
-    comm.utils.reset_statistics_total()
+    utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
         rows = db.dml.select_document(conn, dbt_document, cfg.glob.DOCUMENT_STEP_TOKENIZE)
@@ -59,7 +59,7 @@ def tokenize() -> None:
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
 
-            comm.utils.start_document_processing(
+            utils.start_document_processing(
                 document=row,
             )
 
@@ -72,10 +72,10 @@ def tokenize() -> None:
             tokenize_document(nlp, dbt_content_tetml)
 
             # Document successfully converted to pdf format
-            duration_ns = comm.utils.finalize_file_processing()
+            duration_ns = utils.finalize_file_processing()
 
             if cfg.glob.setup.is_verbose:
-                comm.utils.progress_msg(
+                utils.progress_msg(
                     f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                     f"Document: {cfg.glob.document_id:6d} "
                     f"[base: {db.dml.select_document_file_name_id(cfg.glob.document_id_base)}]"
@@ -83,7 +83,7 @@ def tokenize() -> None:
 
         conn.close()
 
-    comm.utils.show_statistics_total()
+    utils.show_statistics_total()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 

@@ -12,11 +12,11 @@ import shutil
 import time
 
 import cfg.glob
-import comm.utils
 import db.dml
 import fitz
 import sqlalchemy
 import sqlalchemy.orm
+import utils
 
 
 # -----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ def create_directory(directory_type: str, directory_name: str) -> None:
 
     if not os.path.isdir(directory_name):
         os.mkdir(directory_name)
-        comm.utils.progress_msg(
+        utils.progress_msg(
             f"The file directory for '{directory_type}' " f"was newly created under the name '{directory_name}'",
         )
 
@@ -108,7 +108,7 @@ def prepare_document_base(file_path: pathlib.Path) -> None:
     if cfg.glob.setup.is_ignore_duplicates:
         cfg.glob.document_sha256 = None
     else:
-        cfg.glob.document_sha256 = comm.utils.compute_sha256(file_path)
+        cfg.glob.document_sha256 = utils.compute_sha256(file_path)
 
     cfg.glob.document_status = cfg.glob.DOCUMENT_STATUS_START
 
@@ -199,14 +199,14 @@ def process_inbox() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     if cfg.glob.setup.is_ignore_duplicates:
-        comm.utils.progress_msg("Configuration: File duplicates are allowed!")
+        utils.progress_msg("Configuration: File duplicates are allowed!")
     else:
-        comm.utils.progress_msg("Configuration: File duplicates are not allowed!")
+        utils.progress_msg("Configuration: File duplicates are not allowed!")
 
     # Check the inbox file directories and create the missing ones.
     check_and_create_directories()
 
-    comm.utils.reset_statistics_total()
+    utils.reset_statistics_total()
 
     dbt = sqlalchemy.Table(
         cfg.glob.DBT_LANGUAGE,
@@ -231,7 +231,7 @@ def process_inbox() -> None:
 
         conn.close()
 
-    comm.utils.show_statistics_total()
+    utils.show_statistics_total()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -271,7 +271,7 @@ def process_inbox_accepted(next_step: str) -> None:
         )
 
         if cfg.glob.setup.is_verbose:
-            comm.utils.progress_msg(
+            utils.progress_msg(
                 f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
                 f"Document: {cfg.glob.document_id:6d} "
                 f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
@@ -339,16 +339,16 @@ def process_inbox_language() -> None:
        unchanged to the inbox_ocr directory.
     4. All other documents are copied to the inbox_rejected directory.
     """
-    comm.utils.progress_msg(f"Start of processing for language '{cfg.glob.language_iso_language_name}'")
+    utils.progress_msg(f"Start of processing for language '{cfg.glob.language_iso_language_name}'")
 
-    comm.utils.reset_statistics_language()
+    utils.reset_statistics_language()
 
     for file in sorted(pathlib.Path(cfg.glob.language_directory_inbox).iterdir()):
         if file.is_file():
             cfg.glob.start_time_document = time.perf_counter_ns()
 
             if file.name == "README.md":
-                comm.utils.progress_msg("Attention: All files with the file name 'README.md' are ignored")
+                utils.progress_msg("Attention: All files with the file name 'README.md' are ignored")
                 continue
 
             cfg.glob.language_to_be_processed += 1
@@ -356,9 +356,9 @@ def process_inbox_language() -> None:
 
             process_inbox_file(file)
 
-    comm.utils.show_statistics_language()
+    utils.show_statistics_language()
 
-    comm.utils.progress_msg(
+    utils.progress_msg(
         f"End   of processing for language '{cfg.glob.language_iso_language_name}'",
     )
 

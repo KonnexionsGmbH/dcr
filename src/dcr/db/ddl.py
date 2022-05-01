@@ -5,12 +5,12 @@ import pathlib
 import typing
 
 import cfg.glob
-import comm.utils
 import db.dml
 import db.driver
 import sqlalchemy
 import sqlalchemy.event
 import sqlalchemy.orm
+import utils
 
 
 # -----------------------------------------------------------------------------
@@ -45,7 +45,7 @@ $$
         ),
     )
 
-    comm.utils.progress_msg(f"The trigger function 'function_{column_name}' has now been created")
+    utils.progress_msg(f"The trigger function 'function_{column_name}' has now been created")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -77,7 +77,7 @@ CREATE TRIGGER trigger_created_at_{table_name}
         ),
     )
 
-    comm.utils.progress_msg(f"The trigger 'trigger_created_at_{table_name}' has now been created")
+    utils.progress_msg(f"The trigger 'trigger_created_at_{table_name}' has now been created")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -109,7 +109,7 @@ CREATE TRIGGER trigger_modified_at_{table_name}
         ),
     )
 
-    comm.utils.progress_msg(f"The trigger 'trigger_modified_at_{table_name}' has now been created")
+    utils.progress_msg(f"The trigger 'trigger_modified_at_{table_name}' has now been created")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -125,7 +125,7 @@ def create_db_triggers(table_names: typing.List[str]) -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    comm.utils.progress_msg("Create the database triggers ...")
+    utils.progress_msg("Create the database triggers ...")
 
     for column_name in [cfg.glob.DBC_CREATED_AT, cfg.glob.DBC_MODIFIED_AT]:
         create_db_trigger_function(column_name)
@@ -184,7 +184,7 @@ def create_dbt_content_tetml_line(table_name: str) -> None:
         ),
     )
 
-    comm.utils.progress_msg(f"The database table '{table_name}' has now been created")
+    utils.progress_msg(f"The database table '{table_name}' has now been created")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -236,7 +236,7 @@ def create_dbt_content_tetml_page(table_name: str) -> None:
         ),
     )
 
-    comm.utils.progress_msg(f"The database table '{table_name}' has now been created")
+    utils.progress_msg(f"The database table '{table_name}' has now been created")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -288,7 +288,7 @@ def create_dbt_content_tetml_word(table_name: str) -> None:
         ),
     )
 
-    comm.utils.progress_msg(f"The database table '{table_name}' has now been created")
+    utils.progress_msg(f"The database table '{table_name}' has now been created")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -340,7 +340,7 @@ def create_dbt_content_token(table_name: str) -> None:
         ),
     )
 
-    comm.utils.progress_msg(f"The database table '{table_name}' has now been created")
+    utils.progress_msg(f"The database table '{table_name}' has now been created")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -420,7 +420,7 @@ def create_dbt_document(table_name: str) -> None:
         sqlalchemy.Column(cfg.glob.DBC_STEM_NAME, sqlalchemy.String, nullable=True),
     )
 
-    comm.utils.progress_msg(f"The database table '{table_name}' has now been created")
+    utils.progress_msg(f"The database table '{table_name}' has now been created")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -463,7 +463,7 @@ def create_dbt_language(table_name: str) -> None:
         sqlalchemy.Column(cfg.glob.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True),
     )
 
-    comm.utils.progress_msg(f"The database table '{table_name}' has now been created")
+    utils.progress_msg(f"The database table '{table_name}' has now been created")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -517,7 +517,7 @@ def create_dbt_run(table_name: str) -> None:
         ),
     )
 
-    comm.utils.progress_msg(f"The database table '{table_name}' has now been created")
+    utils.progress_msg(f"The database table '{table_name}' has now been created")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -560,7 +560,7 @@ def create_dbt_version(
         sqlalchemy.Column(cfg.glob.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True),
     )
 
-    comm.utils.progress_msg(f"The database table '{table_name}' has now been created")
+    utils.progress_msg(f"The database table '{table_name}' has now been created")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -580,14 +580,14 @@ def create_schema() -> None:
 
     with cfg.glob.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(sqlalchemy.DDL(f"DROP SCHEMA IF EXISTS {schema} CASCADE"))
-        comm.utils.progress_msg(f"If existing, the schema '{schema}' has now been dropped")
+        utils.progress_msg(f"If existing, the schema '{schema}' has now been dropped")
 
         conn.execute(sqlalchemy.DDL(f"CREATE SCHEMA {schema}"))
-        comm.utils.progress_msg(f"The schema '{schema}' has now been created")
+        utils.progress_msg(f"The schema '{schema}' has now been created")
 
         conn.execute(sqlalchemy.DDL(f"ALTER ROLE {cfg.glob.db_current_user} SET search_path = {schema}"))
         conn.execute(sqlalchemy.DDL(f"SET search_path = {schema}"))
-        comm.utils.progress_msg(f"The search path '{schema}' has now been set")
+        utils.progress_msg(f"The search path '{schema}' has now been set")
 
         conn.close()
 
@@ -643,7 +643,7 @@ def create_schema() -> None:
         if os.path.isfile(initial_database_data_path):
             load_db_data_from_json(initial_database_data_path)
         else:
-            comm.utils.terminate_fatal(
+            utils.terminate_fatal(
                 f"File with initial database data is missing - " f"file name '{cfg.glob.setup.initial_database_data}'"
             )
 
@@ -667,9 +667,7 @@ def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
 
         api_version = json_data[cfg.glob.JSON_NAME_API_VERSION]
         if api_version != cfg.glob.setup.dcr_version:
-            comm.utils.terminate_fatal(
-                f"Expected api version is' {cfg.glob.setup.dcr_version}' " f"- got '{api_version}'"
-            )
+            utils.terminate_fatal(f"Expected api version is' {cfg.glob.setup.dcr_version}' " f"- got '{api_version}'")
 
         data = json_data[cfg.glob.JSON_NAME_DATA]
         for json_table in data[cfg.glob.JSON_NAME_TABLES]:
@@ -685,11 +683,9 @@ def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
                     "run",
                     "version",
                 ]:
-                    comm.utils.terminate_fatal(
-                        f"The database table '{table_name}' must not be changed via the JSON file."
-                    )
+                    utils.terminate_fatal(f"The database table '{table_name}' must not be changed via the JSON file.")
                 else:
-                    comm.utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
+                    utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
 
             for json_row in json_table[cfg.glob.JSON_NAME_ROWS]:
                 db_columns = {}

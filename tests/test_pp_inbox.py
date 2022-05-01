@@ -4,10 +4,10 @@ import os.path
 import pathlib
 
 import cfg.glob
-import comm.utils
 import db.driver
 import pytest
 import sqlalchemy
+import utils
 
 import dcr
 
@@ -103,7 +103,7 @@ def test_run_action_process_inbox_accepted_delete_auxiliary_file(fxtr_setup_empt
 
     db.driver.connect_db()
 
-    comm.utils.delete_auxiliary_file(os.path.join(cfg.glob.setup.directory_inbox_accepted, "pdf_text_ok_1.pdf"))
+    utils.delete_auxiliary_file(os.path.join(cfg.glob.setup.directory_inbox_accepted, "pdf_text_ok_1.pdf"))
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,

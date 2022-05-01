@@ -4,13 +4,13 @@ import time
 import typing
 
 import cfg.glob
-import comm.utils
 import db.dml
 import PyPDF2
 import PyPDF2.utils
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
+import utils
 
 # -----------------------------------------------------------------------------
 # Type declaration.
@@ -152,7 +152,7 @@ def dml_prepare(dbt_name: str) -> sqlalchemy.Table:
         sqlalchemy.Table: Database table document,
     """
     # Check the inbox file directories.
-    comm.utils.check_directories()
+    utils.check_directories()
 
     return sqlalchemy.Table(
         dbt_name,
@@ -400,13 +400,13 @@ def select_version_version_unique() -> str:
             if current_version == "":
                 current_version = row.version
             else:
-                comm.utils.terminate_fatal(
+                utils.terminate_fatal(
                     "Column version in database table version not unique",
                 )
         conn.close()
 
     if current_version == "":
-        comm.utils.terminate_fatal("Column version in database table version not found")
+        utils.terminate_fatal("Column version in database table version not found")
 
     return current_version
 
@@ -463,7 +463,7 @@ def update_document_error(document_id: sqlalchemy.Integer, error_code: str, erro
     )
 
     if cfg.glob.setup.is_verbose:
-        comm.utils.progress_msg(
+        utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {cfg.glob.document_id:6d} "
             f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}] - "

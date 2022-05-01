@@ -4,7 +4,7 @@ import os
 import typing
 
 import cfg.glob
-import comm.utils
+import utils
 
 
 # pylint: disable=R0902
@@ -114,7 +114,7 @@ class Setup:
 
         self._load_config()  # pylint: disable=E1121
 
-        comm.utils.progress_msg_core("The configuration parameters are checked and loaded")
+        utils.progress_msg_core("The configuration parameters are checked and loaded")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -158,7 +158,7 @@ class Setup:
 
             self.directory_inbox = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX])
         else:
-            comm.utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
+            utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_accepted.
@@ -172,9 +172,7 @@ class Setup:
 
             self.directory_inbox_accepted = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
         else:
-            comm.utils.terminate_fatal_setup(
-                f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'"
-            )
+            utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_rejected.
@@ -188,9 +186,7 @@ class Setup:
 
             self.directory_inbox_rejected = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED])
         else:
-            comm.utils.terminate_fatal_setup(
-                f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'"
-            )
+            utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - ignore_duplicates.
@@ -221,7 +217,7 @@ class Setup:
                 Setup.PDF2IMAGE_TYPE_JPEG,
                 Setup.PDF2IMAGE_TYPE_PNG,
             ]:
-                comm.utils.terminate_fatal_setup(
+                utils.terminate_fatal_setup(
                     f"Invalid configuration parameter value for parameter " f"'pdf2image_type': '{self.pdf2image_type}'"
                 )
 
@@ -262,7 +258,7 @@ class Setup:
 
         if not self.is_tetml_page:
             if not self.is_tetml_line:
-                comm.utils.terminate_fatal_setup(
+                utils.terminate_fatal_setup(
                     "At least one of the configuration parameters 'tetml_line' or " + "'tetml_page' must be 'true'"
                 )
 
@@ -312,19 +308,19 @@ class Setup:
         try:
             self.environment_variant = os.environ[Setup._DCR_ENVIRONMENT_TYPE]
         except KeyError:
-            comm.utils.terminate_fatal_setup(f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' is missing")
+            utils.terminate_fatal_setup(f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' is missing")
 
         if self.environment_variant not in [
             Setup._ENVIRONMENT_TYPE_DEV,
             Setup._ENVIRONMENT_TYPE_PROD,
             Setup._ENVIRONMENT_TYPE_TEST,
         ]:
-            comm.utils.terminate_fatal_setup(
+            utils.terminate_fatal_setup(
                 f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' "
                 f"has the invalid content '{self.environment_variant}'"
             )
 
-        comm.utils.progress_msg_core(f"The run is performed in the environment '{self.environment_variant}'")
+        utils.progress_msg_core(f"The run is performed in the environment '{self.environment_variant}'")
 
     # -----------------------------------------------------------------------------
     # Load and check the configuration parameters.
@@ -401,6 +397,6 @@ class Setup:
                 case Setup._DCR_CFG_LINE_HEADER_MAX_LINES:
                     self.line_header_max_lines = int(item)
                 case _:
-                    comm.utils.terminate_fatal_setup(f"Unknown configuration parameter '{key}'")
+                    utils.terminate_fatal_setup(f"Unknown configuration parameter '{key}'")
 
         self._check_config()

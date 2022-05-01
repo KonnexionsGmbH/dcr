@@ -692,10 +692,12 @@ def test_get_environment(fxtr_setup_logger):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
+    cfg.glob.setup = cfg.setup.Setup()
+
     os.environ[cfg.glob.setup._DCR_ENVIRONMENT_TYPE] = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
 
     with pytest.raises(SystemExit) as expt:
-        cfg.glob.setup._get_environment_variant(cfg.glob.setup.Setup)
+        cfg.glob.setup._get_environment_variant()
 
     os.environ[cfg.glob.setup._DCR_ENVIRONMENT_TYPE] = cfg.glob.setup._ENVIRONMENT_TYPE_TEST
 
@@ -706,7 +708,7 @@ def test_get_environment(fxtr_setup_logger):
     os.environ.pop(cfg.glob.setup._DCR_ENVIRONMENT_TYPE)
 
     with pytest.raises(SystemExit) as expt:
-        cfg.glob.setup._get_environment_variant(cfg.glob.setup.Setup)
+        cfg.glob.setup._get_environment_variant()
 
     os.environ[cfg.glob.setup._DCR_ENVIRONMENT_TYPE] = cfg.glob.setup._ENVIRONMENT_TYPE_TEST
 
@@ -714,7 +716,7 @@ def test_get_environment(fxtr_setup_logger):
     assert expt.value.code == 1, "_DCR_ENVIRONMENT_TYPE: missing"
 
     # -------------------------------------------------------------------------
-    cfg.glob.setup._get_environment_variant(cfg.glob.setup.Setup)
+    cfg.glob.setup._get_environment_variant()
 
     assert cfg.glob.setup.environment_variant == cfg.glob.setup._ENVIRONMENT_TYPE_TEST, "_DCR_ENVIRONMENT_TYPE: ok"
 

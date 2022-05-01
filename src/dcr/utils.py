@@ -8,10 +8,10 @@ import traceback
 import typing
 
 import cfg.glob
-import comm.utils
 import db.dml
 import db.driver
 import sqlalchemy.engine
+import utils
 
 
 # -----------------------------------------------------------------------------
@@ -23,7 +23,7 @@ def check_directories() -> None:
     The file directory inbox_accepted must exist.
     """
     if not os.path.isdir(cfg.glob.setup.directory_inbox_accepted):
-        comm.utils.terminate_fatal(
+        utils.terminate_fatal(
             f"The inbox_accepted directory with the name "
             f"'{str(cfg.glob.setup.directory_inbox_accepted)}' "
             f"does not exist - error={str(OSError)}",
@@ -70,7 +70,7 @@ def delete_auxiliary_file(file_name: str) -> None:
 
     if os.path.isfile(file_name):
         os.remove(file_name)
-        comm.utils.progress_msg(f"Auxiliary file '{file_name}' deleted")
+        utils.progress_msg(f"Auxiliary file '{file_name}' deleted")
 
 
 # -----------------------------------------------------------------------------
@@ -184,7 +184,7 @@ def progress_msg_disconnected() -> None:
     if cfg.glob.setup.is_verbose:
         if cfg.glob.db_current_database is None and cfg.glob.db_current_user is None:
             print("")
-            comm.utils.progress_msg("Database is now disconnected")
+            utils.progress_msg("Database is now disconnected")
             return
 
         database = (
@@ -192,10 +192,11 @@ def progress_msg_disconnected() -> None:
             if cfg.glob.db_current_database is None
             else cfg.glob.db_current_database
         )
+
         user = cfg.glob.INFORMATION_NOT_YET_AVAILABLE if cfg.glob.db_current_user is None else cfg.glob.db_current_user
 
         print("")
-        comm.utils.progress_msg(f"User '{user}' is now disconnected from database '{database}'")
+        utils.progress_msg(f"User '{user}' is now disconnected from database '{database}'")
 
         cfg.glob.db_current_database = None
         cfg.glob.db_current_user = None
@@ -264,24 +265,20 @@ def reset_statistics_total() -> None:
 # -----------------------------------------------------------------------------
 def show_statistics_language() -> None:
     """Show the language related statistics of the run."""
-    comm.utils.progress_msg("===============================> Summary Language")
-    comm.utils.progress_msg(f"Number documents to be processed:          {cfg.glob.language_to_be_processed:6d}")
+    utils.progress_msg("===============================> Summary Language")
+    utils.progress_msg(f"Number documents to be processed:          {cfg.glob.language_to_be_processed:6d}")
 
     if cfg.glob.language_to_be_processed > 0:
-        comm.utils.progress_msg(
-            f"Number documents accepted - " f"Pandoc:        {cfg.glob.language_ok_processed_pandoc:6d}"
-        )
-        comm.utils.progress_msg(
+        utils.progress_msg(f"Number documents accepted - " f"Pandoc:        {cfg.glob.language_ok_processed_pandoc:6d}")
+        utils.progress_msg(
             f"Number documents accepted - " f"pdf2image:     {cfg.glob.language_ok_processed_pdf2image:6d}"
         )
-        comm.utils.progress_msg(
-            f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.language_ok_processed_pdflib:6d}"
-        )
-        comm.utils.progress_msg(
+        utils.progress_msg(f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.language_ok_processed_pdflib:6d}")
+        utils.progress_msg(
             f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.language_ok_processed_tesseract:6d}"
         )
-        comm.utils.progress_msg(f"Number documents accepted - " f"Total:         {cfg.glob.language_ok_processed:6d}")
-        comm.utils.progress_msg(f"Number documents rejected:                 {cfg.glob.language_erroneous:6d}")
+        utils.progress_msg(f"Number documents accepted - " f"Total:         {cfg.glob.language_ok_processed:6d}")
+        utils.progress_msg(f"Number documents rejected:                 {cfg.glob.language_erroneous:6d}")
 
 
 # -----------------------------------------------------------------------------
@@ -289,40 +286,40 @@ def show_statistics_language() -> None:
 # -----------------------------------------------------------------------------
 def show_statistics_total() -> None:
     """Show the total statistics of the run."""
-    comm.utils.progress_msg("==================================> Summary Total")
-    comm.utils.progress_msg(f"Number documents to be processed:          {cfg.glob.total_to_be_processed:6d}")
+    utils.progress_msg("==================================> Summary Total")
+    utils.progress_msg(f"Number documents to be processed:          {cfg.glob.total_to_be_processed:6d}")
 
     if cfg.glob.total_to_be_processed > 0:
         if cfg.glob.total_status_ready > 0 or cfg.glob.total_status_error > 0:
-            comm.utils.progress_msg(f"Number with document status ready:         {cfg.glob.total_status_ready:6d}")
-            comm.utils.progress_msg(f"Number with document status error:         {cfg.glob.total_status_error:6d}")
+            utils.progress_msg(f"Number with document status ready:         {cfg.glob.total_status_ready:6d}")
+            utils.progress_msg(f"Number with document status error:         {cfg.glob.total_status_error:6d}")
 
         if cfg.glob.run_action == cfg.glob.RUN_ACTION_PROCESS_INBOX:
-            comm.utils.progress_msg(
+            utils.progress_msg(
                 f"Number documents accepted - " f"Pandoc:        {cfg.glob.total_ok_processed_pandoc:6d}"
             )
-            comm.utils.progress_msg(
+            utils.progress_msg(
                 f"Number documents accepted - " f"pdf2image:     {cfg.glob.total_ok_processed_pdf2image:6d}"
             )
-            comm.utils.progress_msg(
+            utils.progress_msg(
                 f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.total_ok_processed_pdflib:6d}"
             )
-            comm.utils.progress_msg(
+            utils.progress_msg(
                 f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.total_ok_processed_tesseract:6d}"
             )
-            comm.utils.progress_msg("Number documents accepted - " + f"Total:         {cfg.glob.total_ok_processed:6d}")
+            utils.progress_msg("Number documents accepted - " + f"Total:         {cfg.glob.total_ok_processed:6d}")
         elif cfg.glob.run_action == cfg.glob.RUN_ACTION_TEXT_FROM_PDF:
-            comm.utils.progress_msg(f"Number documents extracted:                {cfg.glob.total_ok_processed:6d}")
+            utils.progress_msg(f"Number documents extracted:                {cfg.glob.total_ok_processed:6d}")
         else:
-            comm.utils.progress_msg(f"Number documents converted:                {cfg.glob.total_ok_processed:6d}")
+            utils.progress_msg(f"Number documents converted:                {cfg.glob.total_ok_processed:6d}")
 
         if cfg.glob.total_generated > 0:
-            comm.utils.progress_msg(f"Number documents generated:                {cfg.glob.total_generated:6d}")
+            utils.progress_msg(f"Number documents generated:                {cfg.glob.total_generated:6d}")
 
         if cfg.glob.run_action == cfg.glob.RUN_ACTION_PROCESS_INBOX:
-            comm.utils.progress_msg(f"Number documents rejected:                 {cfg.glob.total_erroneous:6d}")
+            utils.progress_msg(f"Number documents rejected:                 {cfg.glob.total_erroneous:6d}")
         else:
-            comm.utils.progress_msg(f"Number documents erroneous:                {cfg.glob.total_erroneous:6d}")
+            utils.progress_msg(f"Number documents erroneous:                {cfg.glob.total_erroneous:6d}")
 
 
 # -----------------------------------------------------------------------------

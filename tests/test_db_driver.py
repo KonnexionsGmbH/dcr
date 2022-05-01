@@ -152,6 +152,38 @@ def test_create_database(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 # Test disconnect without 'db_orm_engine' and 'db_orm_metadata'.
 # -----------------------------------------------------------------------------
+@pytest.mark.issue
+def test_disconnect(fxtr_setup_empty_db_and_inbox):
+    """Test disconnect without 'db_orm_engine' and 'db_orm_metadata'."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION,
+        [
+            (cfg.glob.setup._DCR_CFG_VERBOSE, "true"),
+        ],
+    )
+
+    db.driver.connect_db()
+
+    cfg.glob.db_current_database = None
+    cfg.glob.db_current_user = None
+
+    db.driver.disconnect_db()
+
+    pytest.helpers.restore_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test disconnect without 'db_orm_engine' and 'db_orm_metadata'.
+# -----------------------------------------------------------------------------
 def test_disconnect_both(fxtr_setup_empty_db_and_inbox):
     """Test disconnect without 'db_orm_engine' and 'db_orm_metadata'."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
