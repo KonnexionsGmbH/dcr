@@ -2,8 +2,8 @@
 """Testing Module pp.parser."""
 import typing
 
+import cfg.glob
 import jellyfish
-import libs.cfg
 import pytest
 import roman
 
@@ -21,7 +21,7 @@ import dcr
 # -----------------------------------------------------------------------------
 def test_levenshtein_arabic():
     """Test Levenshtein - arabic."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     upper_limit: int = 1200
@@ -48,7 +48,7 @@ def test_levenshtein_arabic():
                 assert False, "distance=" + str(distance) + " prev=" + text_prev + " - curr=" + text_curr
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ def test_levenshtein_arabic():
 # -----------------------------------------------------------------------------
 def test_levenshtein_roman():
     """Test Levenshtein - roman."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     upper_limit: int = 1200
@@ -78,7 +78,7 @@ def test_levenshtein_roman():
                 assert False, "distance=" + str(distance) + " prev=" + text_prev + " - curr=" + text_curr
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -87,49 +87,49 @@ def test_levenshtein_roman():
 @pytest.mark.parametrize("verbose_parser", ["all", "none", "text"])
 def test_run_action_store_from_parser_coverage(verbose_parser: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - coverage."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         [
             ("pdf_mini", "pdf"),
         ],
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (libs.cfg.config._DCR_CFG_VERBOSE_PARSER, verbose_parser),
-            (libs.cfg.config._DCR_CFG_TETML_LINE, "true"),
-            (libs.cfg.config._DCR_CFG_TETML_WORD, "true"),
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.glob.setup._DCR_CFG_VERBOSE_PARSER, verbose_parser),
+            (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
+            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_STORE_FROM_PARSER])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_STORE_FROM_PARSER])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_store_from_parser_coverage <=========")
+    cfg.glob.logger.info("=========> test_run_action_store_from_parser_coverage <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_accepted,
+        cfg.glob.setup.directory_inbox_accepted,
         [],
         [
             "pdf_mini_1.pdf",
@@ -137,13 +137,13 @@ def test_run_action_store_from_parser_coverage(verbose_parser: str, fxtr_rmdir_o
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_rejected,
+        cfg.glob.setup.directory_inbox_rejected,
         [],
         [],
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -151,7 +151,7 @@ def test_run_action_store_from_parser_coverage(verbose_parser: str, fxtr_rmdir_o
 # -----------------------------------------------------------------------------
 def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - normal."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -160,42 +160,42 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
             ("pdf_scanned_ok", "pdf"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "30"),
-            (libs.cfg.config._DCR_CFG_TETML_LINE, "true"),
-            (libs.cfg.config._DCR_CFG_TETML_WORD, "true"),
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
+            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_IMAGE_2_PDF])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_NON_PDF_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_NON_PDF_2_PDF])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_STORE_FROM_PARSER])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_STORE_FROM_PARSER])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_store_from_parser_normal <=========")
+    cfg.glob.logger.info("=========> test_run_action_store_from_parser_normal <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
         [],
         [],
     )
@@ -207,19 +207,19 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
     ]
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_accepted,
+        cfg.glob.setup.directory_inbox_accepted,
         [],
         files_expected,
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_rejected,
+        cfg.glob.setup.directory_inbox_rejected,
         [],
         [],
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -227,7 +227,7 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
 # -----------------------------------------------------------------------------
 def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - normal - keep."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -236,42 +236,42 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
             ("pdf_scanned_ok", "pdf"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "30"),
-            (libs.cfg.config._DCR_CFG_TETML_LINE, "true"),
-            (libs.cfg.config._DCR_CFG_TETML_WORD, "true"),
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
+            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_IMAGE_2_PDF])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_NON_PDF_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_NON_PDF_2_PDF])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_STORE_FROM_PARSER])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_STORE_FROM_PARSER])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_store_from_parser_normal_keep <=========")
+    cfg.glob.logger.info("=========> test_run_action_store_from_parser_normal_keep <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
         [],
         [],
     )
@@ -302,16 +302,16 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
     #     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_accepted,
+        cfg.glob.setup.directory_inbox_accepted,
         [],
         files_expected,
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_rejected,
+        cfg.glob.setup.directory_inbox_rejected,
         [],
         [],
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)

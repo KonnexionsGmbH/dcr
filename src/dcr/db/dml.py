@@ -3,9 +3,8 @@ import os
 import time
 import typing
 
-import db.cfg
+import cfg.glob
 import db.dml
-import libs.cfg
 import libs.utils
 import PyPDF2
 import PyPDF2.utils
@@ -35,7 +34,7 @@ def get_pdf_pages_no(
     Returns:
         sqlalchemy.Integer|None: The number of pages found.
     """
-    if file_type != db.cfg.DOCUMENT_FILE_TYPE_PDF:
+    if file_type != cfg.glob.DOCUMENT_FILE_TYPE_PDF:
         return None
 
     try:
@@ -55,14 +54,14 @@ def insert_dbt_row(
 
     Args:
         table_name (str): Table name.
-        columns (libs.cfg.TYPE_COLUMNS_INSERT): Pairs of column name and value.
+        columns (cfg.glob.TYPE_COLUMNS_INSERT): Pairs of column name and value.
 
     Returns:
         sqlalchemy.Integer: The last id found.
     """
-    dbt = sqlalchemy.Table(table_name, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
+    dbt = sqlalchemy.Table(table_name, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
-    with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
+    with cfg.glob.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         result = conn.execute(sqlalchemy.insert(dbt).values(columns).returning(dbt.columns.id))
         row = result.fetchone()
         conn.close()
@@ -75,36 +74,36 @@ def insert_dbt_row(
 # -----------------------------------------------------------------------------
 def insert_document_base() -> None:
     """Insert a new base document."""
-    file_path = os.path.join(libs.cfg.document_directory_name, libs.cfg.document_file_name)
+    file_path = os.path.join(cfg.glob.document_directory_name, cfg.glob.document_file_name)
 
-    libs.cfg.document_id = db.dml.insert_dbt_row(
-        db.cfg.DBT_DOCUMENT,
+    cfg.glob.document_id = db.dml.insert_dbt_row(
+        cfg.glob.DBT_DOCUMENT,
         {
-            db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
-            db.cfg.DBC_DIRECTORY_NAME: libs.cfg.document_directory_name,
-            db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_directory_type,
-            db.cfg.DBC_DURATION_NS: 0,
-            db.cfg.DBC_ERROR_NO: 0,
-            db.cfg.DBC_FILE_NAME: libs.cfg.document_file_name,
-            db.cfg.DBC_FILE_SIZE_BYTES: os.path.getsize(file_path),
-            db.cfg.DBC_FILE_TYPE: libs.cfg.document_file_type,
-            db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id,
-            db.cfg.DBC_NEXT_STEP: db.cfg.DOCUMENT_STEP_INBOX,
-            db.cfg.DBC_PDF_PAGES_NO: get_pdf_pages_no(file_path, libs.cfg.document_file_type),
-            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            db.cfg.DBC_SHA256: libs.cfg.document_sha256,
-            db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_START,
-            db.cfg.DBC_STEM_NAME: libs.cfg.document_stem_name,
+            cfg.glob.DBC_CURRENT_STEP: cfg.glob.document_current_step,
+            cfg.glob.DBC_DIRECTORY_NAME: cfg.glob.document_directory_name,
+            cfg.glob.DBC_DIRECTORY_TYPE: cfg.glob.document_directory_type,
+            cfg.glob.DBC_DURATION_NS: 0,
+            cfg.glob.DBC_ERROR_NO: 0,
+            cfg.glob.DBC_FILE_NAME: cfg.glob.document_file_name,
+            cfg.glob.DBC_FILE_SIZE_BYTES: os.path.getsize(file_path),
+            cfg.glob.DBC_FILE_TYPE: cfg.glob.document_file_type,
+            cfg.glob.DBC_LANGUAGE_ID: cfg.glob.language_id,
+            cfg.glob.DBC_NEXT_STEP: cfg.glob.DOCUMENT_STEP_INBOX,
+            cfg.glob.DBC_PDF_PAGES_NO: get_pdf_pages_no(file_path, cfg.glob.document_file_type),
+            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_SHA256: cfg.glob.document_sha256,
+            cfg.glob.DBC_STATUS: cfg.glob.DOCUMENT_STATUS_START,
+            cfg.glob.DBC_STEM_NAME: cfg.glob.document_stem_name,
         },
     )
 
-    libs.cfg.document_id_base = libs.cfg.document_id
+    cfg.glob.document_id_base = cfg.glob.document_id
 
     db.dml.update_dbt_id(
-        db.cfg.DBT_DOCUMENT,
-        libs.cfg.document_id,
+        cfg.glob.DBT_DOCUMENT,
+        cfg.glob.document_id,
         {
-            db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_id_base,
+            cfg.glob.DBC_DOCUMENT_ID_BASE: cfg.glob.document_id_base,
         },
     )
 
@@ -114,31 +113,31 @@ def insert_document_base() -> None:
 # -----------------------------------------------------------------------------
 def insert_document_child() -> None:
     """Insert a new child document of the base document."""
-    file_path = os.path.join(libs.cfg.document_child_directory_name, libs.cfg.document_child_file_name)
+    file_path = os.path.join(cfg.glob.document_child_directory_name, cfg.glob.document_child_file_name)
 
-    libs.cfg.document_child_id = db.dml.insert_dbt_row(
-        db.cfg.DBT_DOCUMENT,
+    cfg.glob.document_child_id = db.dml.insert_dbt_row(
+        cfg.glob.DBT_DOCUMENT,
         {
-            db.cfg.DBC_CHILD_NO: libs.cfg.document_child_child_no,
-            db.cfg.DBC_CURRENT_STEP: libs.cfg.document_current_step,
-            db.cfg.DBC_DIRECTORY_NAME: str(libs.cfg.document_child_directory_name),
-            db.cfg.DBC_DIRECTORY_TYPE: libs.cfg.document_child_directory_type,
-            db.cfg.DBC_DOCUMENT_ID_BASE: libs.cfg.document_child_id_base,
-            db.cfg.DBC_DOCUMENT_ID_PARENT: libs.cfg.document_child_id_parent,
-            db.cfg.DBC_DURATION_NS: 0,
-            db.cfg.DBC_ERROR_CODE: libs.cfg.document_child_error_code,
-            db.cfg.DBC_ERROR_NO: 0,
-            db.cfg.DBC_FILE_NAME: libs.cfg.document_child_file_name,
-            db.cfg.DBC_FILE_SIZE_BYTES: os.path.getsize(file_path),
-            db.cfg.DBC_FILE_TYPE: libs.cfg.document_child_file_type,
-            db.cfg.DBC_NEXT_STEP: libs.cfg.document_child_next_step,
-            db.cfg.DBC_LANGUAGE_ID: libs.cfg.language_id
-            if libs.cfg.run_action == libs.cfg.RUN_ACTION_PROCESS_INBOX
-            else libs.cfg.document_child_language_id,
-            db.cfg.DBC_PDF_PAGES_NO: get_pdf_pages_no(file_path, libs.cfg.document_child_file_type),
-            db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            db.cfg.DBC_STATUS: libs.cfg.document_child_status,
-            db.cfg.DBC_STEM_NAME: libs.cfg.document_child_stem_name,
+            cfg.glob.DBC_CHILD_NO: cfg.glob.document_child_child_no,
+            cfg.glob.DBC_CURRENT_STEP: cfg.glob.document_current_step,
+            cfg.glob.DBC_DIRECTORY_NAME: str(cfg.glob.document_child_directory_name),
+            cfg.glob.DBC_DIRECTORY_TYPE: cfg.glob.document_child_directory_type,
+            cfg.glob.DBC_DOCUMENT_ID_BASE: cfg.glob.document_child_id_base,
+            cfg.glob.DBC_DOCUMENT_ID_PARENT: cfg.glob.document_child_id_parent,
+            cfg.glob.DBC_DURATION_NS: 0,
+            cfg.glob.DBC_ERROR_CODE: cfg.glob.document_child_error_code,
+            cfg.glob.DBC_ERROR_NO: 0,
+            cfg.glob.DBC_FILE_NAME: cfg.glob.document_child_file_name,
+            cfg.glob.DBC_FILE_SIZE_BYTES: os.path.getsize(file_path),
+            cfg.glob.DBC_FILE_TYPE: cfg.glob.document_child_file_type,
+            cfg.glob.DBC_NEXT_STEP: cfg.glob.document_child_next_step,
+            cfg.glob.DBC_LANGUAGE_ID: cfg.glob.language_id
+            if cfg.glob.run_action == cfg.glob.RUN_ACTION_PROCESS_INBOX
+            else cfg.glob.document_child_language_id,
+            cfg.glob.DBC_PDF_PAGES_NO: get_pdf_pages_no(file_path, cfg.glob.document_child_file_type),
+            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_STATUS: cfg.glob.document_child_status,
+            cfg.glob.DBC_STEM_NAME: cfg.glob.document_child_stem_name,
         },
     )
 
@@ -157,8 +156,8 @@ def dml_prepare(dbt_name: str) -> sqlalchemy.Table:
 
     return sqlalchemy.Table(
         dbt_name,
-        db.cfg.db_orm_metadata,
-        autoload_with=db.cfg.db_orm_engine,
+        cfg.glob.db_orm_metadata,
+        autoload_with=cfg.glob.db_orm_engine,
     )
 
 
@@ -225,8 +224,8 @@ def select_document(
                 dbt.c.next_step == next_step,
                 dbt.c.status.in_(
                     [
-                        db.cfg.DOCUMENT_STATUS_ERROR,
-                        db.cfg.DOCUMENT_STATUS_START,
+                        cfg.glob.DOCUMENT_STATUS_ERROR,
+                        cfg.glob.DOCUMENT_STATUS_START,
                     ]
                 ),
             )
@@ -245,15 +244,15 @@ def select_document_base_file_name() -> str | None:
         str: The file name of the base document found.
     """
     dbt = sqlalchemy.Table(
-        db.cfg.DBT_DOCUMENT,
-        db.cfg.db_orm_metadata,
-        autoload_with=db.cfg.db_orm_engine,
+        cfg.glob.DBT_DOCUMENT,
+        cfg.glob.db_orm_metadata,
+        autoload_with=cfg.glob.db_orm_engine,
     )
 
-    with db.cfg.db_orm_engine.connect() as conn:
+    with cfg.glob.db_orm_engine.connect() as conn:
         row = conn.execute(
             sqlalchemy.select(dbt.c.directory_name, dbt.c.file_name).where(
-                dbt.c.document_id_parent == libs.cfg.document_id_base,
+                dbt.c.document_id_parent == cfg.glob.document_id_base,
             )
         ).fetchone()
         conn.close()
@@ -274,12 +273,12 @@ def select_document_file_name_id(document_id: sqlalchemy.Integer) -> str | None:
         str: The file name found.
     """
     dbt = sqlalchemy.Table(
-        db.cfg.DBT_DOCUMENT,
-        db.cfg.db_orm_metadata,
-        autoload_with=db.cfg.db_orm_engine,
+        cfg.glob.DBT_DOCUMENT,
+        cfg.glob.db_orm_metadata,
+        autoload_with=cfg.glob.db_orm_engine,
     )
 
-    with db.cfg.db_orm_engine.connect() as conn:
+    with cfg.glob.db_orm_engine.connect() as conn:
         row = conn.execute(
             sqlalchemy.select(dbt.c.file_name).where(
                 sqlalchemy.and_(
@@ -306,19 +305,19 @@ def select_document_file_name_sha256(document_id: sqlalchemy.Integer, sha256: st
         str: The file name found.
     """
     dbt = sqlalchemy.Table(
-        db.cfg.DBT_DOCUMENT,
-        db.cfg.db_orm_metadata,
-        autoload_with=db.cfg.db_orm_engine,
+        cfg.glob.DBT_DOCUMENT,
+        cfg.glob.db_orm_metadata,
+        autoload_with=cfg.glob.db_orm_engine,
     )
 
-    with db.cfg.db_orm_engine.connect() as conn:
+    with cfg.glob.db_orm_engine.connect() as conn:
         row = conn.execute(
             sqlalchemy.select(dbt.c.file_name).where(
                 sqlalchemy.and_(
                     dbt.c.id != document_id,
-                    dbt.c.directory_type == db.cfg.DOCUMENT_DIRECTORY_TYPE_INBOX,
+                    dbt.c.directory_type == cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX,
                     dbt.c.sha256 == sha256,
-                    dbt.c.status == db.cfg.DOCUMENT_STATUS_END,
+                    dbt.c.status == cfg.glob.DOCUMENT_STATUS_END,
                 )
             )
         ).fetchone()
@@ -365,9 +364,9 @@ def select_run_run_id_last() -> int | sqlalchemy.Integer:
     Returns:
         sqlalchemy.Integer: The last run id found.
     """
-    dbt = sqlalchemy.Table(db.cfg.DBT_RUN, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
+    dbt = sqlalchemy.Table(cfg.glob.DBT_RUN, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
-    with db.cfg.db_orm_engine.connect() as conn:
+    with cfg.glob.db_orm_engine.connect() as conn:
         row = conn.execute(sqlalchemy.select(sqlalchemy.func.max(dbt.c.run_id))).fetchone()
         conn.close()
 
@@ -389,14 +388,14 @@ def select_version_version_unique() -> str:
         str: The version number found.
     """
     dbt = sqlalchemy.Table(
-        db.cfg.DBT_VERSION,
-        db.cfg.db_orm_metadata,
-        autoload_with=db.cfg.db_orm_engine,
+        cfg.glob.DBT_VERSION,
+        cfg.glob.db_orm_metadata,
+        autoload_with=cfg.glob.db_orm_engine,
     )
 
     current_version: str = ""
 
-    with db.cfg.db_orm_engine.connect() as conn:
+    with cfg.glob.db_orm_engine.connect() as conn:
         for row in conn.execute(sqlalchemy.select(dbt.c.version)):
             if current_version == "":
                 current_version = row.version
@@ -427,9 +426,9 @@ def update_dbt_id(
         id_where (sqlalchemy.Integer): Content of column id.
         columns (Columns): Pairs of column name and value.
     """
-    dbt = sqlalchemy.Table(table_name, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
+    dbt = sqlalchemy.Table(table_name, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
-    with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
+    with cfg.glob.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(sqlalchemy.update(dbt).where(dbt.c.id == id_where).values(columns))
         conn.close()
 
@@ -445,29 +444,29 @@ def update_document_error(document_id: sqlalchemy.Integer, error_code: str, erro
         error_code (str)                : Error code.
         error_msg (str)                 : Error message.
     """
-    dbt = sqlalchemy.Table(db.cfg.DBT_DOCUMENT, db.cfg.db_orm_metadata, autoload_with=db.cfg.db_orm_engine)
+    dbt = sqlalchemy.Table(cfg.glob.DBT_DOCUMENT, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
-    libs.cfg.total_erroneous += 1
+    cfg.glob.total_erroneous += 1
 
-    duration_ns = time.perf_counter_ns() - libs.cfg.start_time_document
+    duration_ns = time.perf_counter_ns() - cfg.glob.start_time_document
 
     update_dbt_id(
-        table_name=db.cfg.DBT_DOCUMENT,
+        table_name=cfg.glob.DBT_DOCUMENT,
         id_where=document_id,
         columns={
-            db.cfg.DBC_DURATION_NS: duration_ns,
-            db.cfg.DBC_ERROR_CODE: error_code,
-            db.cfg.DBC_ERROR_MSG: error_msg,
-            db.cfg.DBC_ERROR_NO: dbt.c.error_no + 1,
-            db.cfg.DBC_STATUS: db.cfg.DOCUMENT_STATUS_ERROR,
+            cfg.glob.DBC_DURATION_NS: duration_ns,
+            cfg.glob.DBC_ERROR_CODE: error_code,
+            cfg.glob.DBC_ERROR_MSG: error_msg,
+            cfg.glob.DBC_ERROR_NO: dbt.c.error_no + 1,
+            cfg.glob.DBC_STATUS: cfg.glob.DOCUMENT_STATUS_ERROR,
         },
     )
 
-    if libs.cfg.config.is_verbose:
+    if cfg.glob.setup.is_verbose:
         libs.utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {libs.cfg.document_id:6d} "
-            f"[{db.dml.select_document_file_name_id(libs.cfg.document_id)}] - "
+            f"Document: {cfg.glob.document_id:6d} "
+            f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}] - "
             f"Error: {error_msg} "
         )
 
@@ -485,14 +484,14 @@ def update_document_statistics(
         document_id (sqlalchemy.Integer): Document id.
         status (str):                     Status.
     """
-    duration_ns = time.perf_counter_ns() - libs.cfg.start_time_document
+    duration_ns = time.perf_counter_ns() - cfg.glob.start_time_document
 
     update_dbt_id(
-        table_name=db.cfg.DBT_DOCUMENT,
+        table_name=cfg.glob.DBT_DOCUMENT,
         id_where=document_id,
         columns={
-            db.cfg.DBC_DURATION_NS: duration_ns,
-            db.cfg.DBC_STATUS: status,
+            cfg.glob.DBC_DURATION_NS: duration_ns,
+            cfg.glob.DBC_STATUS: status,
         },
     )
 

@@ -1,10 +1,8 @@
 # pylint: disable=unused-argument
 """Testing Module db.dml."""
-import db.cfg
+import cfg.glob
 import db.dml
 import db.driver
-import libs.cfg
-import libs.utils
 import pytest
 import sqlalchemy
 
@@ -21,7 +19,7 @@ import dcr
 # -----------------------------------------------------------------------------
 def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     """Test Database Version - Wrong version number in configuration."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -31,9 +29,9 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1
 
     # -------------------------------------------------------------------------
-    current_version = libs.cfg.config.dcr_version
+    current_version = cfg.glob.setup.dcr_version
 
-    libs.cfg.config.dcr_version = "0.0.0"
+    cfg.glob.setup.dcr_version = "0.0.0"
 
     with pytest.raises(SystemExit) as expt:
         db.driver.connect_db()
@@ -42,15 +40,15 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     assert expt.type == SystemExit
     assert expt.value.code == 1
 
-    libs.cfg.config.dcr_version = current_version
+    cfg.glob.setup.dcr_version = current_version
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
     dbt = sqlalchemy.Table(
-        db.cfg.DBT_VERSION,
-        db.cfg.db_orm_metadata,
-        autoload_with=db.cfg.db_orm_engine,
+        cfg.glob.DBT_VERSION,
+        cfg.glob.db_orm_metadata,
+        autoload_with=cfg.glob.db_orm_engine,
     )
 
     dbt.drop()
@@ -61,7 +59,7 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     assert expt.type == SystemExit
     assert expt.value.code == 1
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -69,12 +67,12 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     """Test: select_version_version_unique()."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
-    db.dml.insert_dbt_row(db.cfg.DBT_VERSION, {db.cfg.DBC_VERSION: "0.0.0"})
+    db.dml.insert_dbt_row(cfg.glob.DBT_VERSION, {cfg.glob.DBC_VERSION: "0.0.0"})
 
     with pytest.raises(SystemExit) as expt:
         db.dml.select_version_version_unique()
@@ -98,4 +96,4 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Version missing (orm)"
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)

@@ -1,15 +1,15 @@
-"""Module setup.config: Managing the application configuration parameters."""
+"""Module cfg.Setup: Managing the application configuration parameters."""
 import configparser
 import os
 import typing
 
-import libs.cfg
+import cfg.glob
 import libs.utils
 
 
 # pylint: disable=R0902
 # pylint: disable=R0903
-class Config:
+class Setup:
     """Managing the application configuration parameters.
 
     Returns:
@@ -72,7 +72,7 @@ class Config:
     # -----------------------------------------------------------------------------
     def __init__(self) -> None:
         """Initialise and load the application configuration parameters."""
-        libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         self._get_environment_variant()
 
@@ -108,7 +108,7 @@ class Config:
         self.line_footer_max_lines: int = 3
         self.line_header_max_distance: int = 3
         self.line_header_max_lines: int = 3
-        self.pdf2image_type: str = Config.PDF2IMAGE_TYPE_JPEG
+        self.pdf2image_type: str = Setup.PDF2IMAGE_TYPE_JPEG
         self.tesseract_timeout: int = 10
         self.verbose_parser: str = "none"
 
@@ -116,7 +116,7 @@ class Config:
 
         libs.utils.progress_msg_core("The configuration parameters are checked and loaded")
 
-        libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameters.
@@ -144,8 +144,8 @@ class Config:
     # -----------------------------------------------------------------------------
     def _check_config_delete_auxiliary_files(self) -> None:
         """Check the configuration parameter - delete_auxiliary_files."""
-        if Config._DCR_CFG_DELETE_AUXILIARY_FILES in self._config:
-            if str(self._config[Config._DCR_CFG_DELETE_AUXILIARY_FILES]).lower() == "false":
+        if Setup._DCR_CFG_DELETE_AUXILIARY_FILES in self._config:
+            if str(self._config[Setup._DCR_CFG_DELETE_AUXILIARY_FILES]).lower() == "false":
                 self.is_delete_auxiliary_files = False
 
     # -----------------------------------------------------------------------------
@@ -153,48 +153,52 @@ class Config:
     # -----------------------------------------------------------------------------
     def _check_config_directory_inbox(self) -> None:
         """Check the configuration parameter - directory_inbox."""
-        if Config._DCR_CFG_DIRECTORY_INBOX in self._config:
-            self._config[Config._DCR_CFG_DIRECTORY_INBOX] = str(self._config[Config._DCR_CFG_DIRECTORY_INBOX])
+        if Setup._DCR_CFG_DIRECTORY_INBOX in self._config:
+            self._config[Setup._DCR_CFG_DIRECTORY_INBOX] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX])
 
-            self.directory_inbox = str(self._config[Config._DCR_CFG_DIRECTORY_INBOX])
+            self.directory_inbox = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX])
         else:
-            libs.utils.terminate_fatal(f"Missing configuration parameter '{Config._DCR_CFG_DIRECTORY_INBOX}'")
+            libs.utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_accepted.
     # -----------------------------------------------------------------------------
     def _check_config_directory_inbox_accepted(self) -> None:
         """Check the configuration parameter - directory_inbox_accepted."""
-        if Config._DCR_CFG_DIRECTORY_INBOX_ACCEPTED in self._config:
-            self._config[Config._DCR_CFG_DIRECTORY_INBOX_ACCEPTED] = str(
-                self._config[Config._DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
+        if Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED in self._config:
+            self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED] = str(
+                self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
             )
 
-            self.directory_inbox_accepted = str(self._config[Config._DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
+            self.directory_inbox_accepted = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
         else:
-            libs.utils.terminate_fatal(f"Missing configuration parameter '{Config._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'")
+            libs.utils.terminate_fatal_setup(
+                f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'"
+            )
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_rejected.
     # -----------------------------------------------------------------------------
     def _check_config_directory_inbox_rejected(self) -> None:
         """Check the configuration parameter - directory_inbox_rejected."""
-        if Config._DCR_CFG_DIRECTORY_INBOX_REJECTED in self._config:
-            self._config[Config._DCR_CFG_DIRECTORY_INBOX_REJECTED] = str(
-                self._config[Config._DCR_CFG_DIRECTORY_INBOX_REJECTED]
+        if Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED in self._config:
+            self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED] = str(
+                self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED]
             )
 
-            self.directory_inbox_rejected = str(self._config[Config._DCR_CFG_DIRECTORY_INBOX_REJECTED])
+            self.directory_inbox_rejected = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED])
         else:
-            libs.utils.terminate_fatal(f"Missing configuration parameter '{Config._DCR_CFG_DIRECTORY_INBOX_REJECTED}'")
+            libs.utils.terminate_fatal_setup(
+                f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'"
+            )
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - ignore_duplicates.
     # -----------------------------------------------------------------------------
     def _check_config_ignore_duplicates(self) -> None:
         """Check the configuration parameter - ignore_duplicates."""
-        if Config._DCR_CFG_IGNORE_DUPLICATES in self._config:
-            if str(self._config[Config._DCR_CFG_IGNORE_DUPLICATES]).lower() == "true":
+        if Setup._DCR_CFG_IGNORE_DUPLICATES in self._config:
+            if str(self._config[Setup._DCR_CFG_IGNORE_DUPLICATES]).lower() == "true":
                 self.is_ignore_duplicates = True
 
     # -----------------------------------------------------------------------------
@@ -202,8 +206,8 @@ class Config:
     # -----------------------------------------------------------------------------
     def _check_config_line_footer_preference(self) -> None:
         """Check the configuration parameter - line_footer_preference."""
-        if Config._DCR_CFG_LINE_FOOTER_PREFERENCE in self._config:
-            if str(self._config[Config._DCR_CFG_LINE_FOOTER_PREFERENCE]).lower() == "false":
+        if Setup._DCR_CFG_LINE_FOOTER_PREFERENCE in self._config:
+            if str(self._config[Setup._DCR_CFG_LINE_FOOTER_PREFERENCE]).lower() == "false":
                 self.is_line_footer_preferred = False
 
     # -----------------------------------------------------------------------------
@@ -211,13 +215,13 @@ class Config:
     # -----------------------------------------------------------------------------
     def _check_config_pdf2image_type(self) -> None:
         """Check the configuration parameter - pdf2image_type."""
-        if Config._DCR_CFG_PDF2IMAGE_TYPE in self._config:
-            self.pdf2image_type = str(self._config[Config._DCR_CFG_PDF2IMAGE_TYPE])
+        if Setup._DCR_CFG_PDF2IMAGE_TYPE in self._config:
+            self.pdf2image_type = str(self._config[Setup._DCR_CFG_PDF2IMAGE_TYPE])
             if self.pdf2image_type not in [
-                Config.PDF2IMAGE_TYPE_JPEG,
-                Config.PDF2IMAGE_TYPE_PNG,
+                Setup.PDF2IMAGE_TYPE_JPEG,
+                Setup.PDF2IMAGE_TYPE_PNG,
             ]:
-                libs.utils.terminate_fatal(
+                libs.utils.terminate_fatal_setup(
                     f"Invalid configuration parameter value for parameter " f"'pdf2image_type': '{self.pdf2image_type}'"
                 )
 
@@ -226,8 +230,8 @@ class Config:
     # -----------------------------------------------------------------------------
     def _check_config_simulate_parser(self) -> None:
         """Check the configuration parameter - simulate_parser."""
-        if Config._DCR_CFG_SIMULATE_PARSER in self._config:
-            if str(self._config[Config._DCR_CFG_SIMULATE_PARSER]).lower() == "true":
+        if Setup._DCR_CFG_SIMULATE_PARSER in self._config:
+            if str(self._config[Setup._DCR_CFG_SIMULATE_PARSER]).lower() == "true":
                 self.is_simulate_parser = True
 
     # -----------------------------------------------------------------------------
@@ -235,16 +239,16 @@ class Config:
     # -----------------------------------------------------------------------------
     def _check_config_tesseract_timeout(self) -> None:
         """Check the configuration parameter - tesseract_timeout."""
-        if Config._DCR_CFG_TESSERACT_TIMEOUT in self._config:
-            self.tesseract_timeout = int(str(self._config[Config._DCR_CFG_TESSERACT_TIMEOUT]))
+        if Setup._DCR_CFG_TESSERACT_TIMEOUT in self._config:
+            self.tesseract_timeout = int(str(self._config[Setup._DCR_CFG_TESSERACT_TIMEOUT]))
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - tetml_line.
     # -----------------------------------------------------------------------------
     def _check_config_tetml_line(self) -> None:
         """Check the configuration parameter - tetml_line."""
-        if Config._DCR_CFG_TETML_LINE in self._config:
-            if str(self._config[Config._DCR_CFG_TETML_LINE]).lower() == "false":
+        if Setup._DCR_CFG_TETML_LINE in self._config:
+            if str(self._config[Setup._DCR_CFG_TETML_LINE]).lower() == "false":
                 self.is_tetml_line = False
 
     # -----------------------------------------------------------------------------
@@ -252,13 +256,13 @@ class Config:
     # -----------------------------------------------------------------------------
     def _check_config_tetml_page(self) -> None:
         """Check the configuration parameter - tetml_page."""
-        if Config._DCR_CFG_TETML_PAGE in self._config:
-            if str(self._config[Config._DCR_CFG_TETML_PAGE]).lower() == "true":
+        if Setup._DCR_CFG_TETML_PAGE in self._config:
+            if str(self._config[Setup._DCR_CFG_TETML_PAGE]).lower() == "true":
                 self.is_tetml_page = True
 
         if not self.is_tetml_page:
             if not self.is_tetml_line:
-                libs.utils.terminate_fatal(
+                libs.utils.terminate_fatal_setup(
                     "At least one of the configuration parameters 'tetml_line' or " + "'tetml_page' must be 'true'"
                 )
 
@@ -267,8 +271,8 @@ class Config:
     # -----------------------------------------------------------------------------
     def _check_config_tetml_word(self) -> None:
         """Check the configuration parameter - tetml_word."""
-        if Config._DCR_CFG_TETML_WORD in self._config:
-            if str(self._config[Config._DCR_CFG_TETML_WORD]).lower() == "true":
+        if Setup._DCR_CFG_TETML_WORD in self._config:
+            if str(self._config[Setup._DCR_CFG_TETML_WORD]).lower() == "true":
                 self.is_tetml_word = True
 
     # -----------------------------------------------------------------------------
@@ -276,8 +280,8 @@ class Config:
     # -----------------------------------------------------------------------------
     def _check_config_verbose(self) -> None:
         """Check the configuration parameter - verbose."""
-        if Config._DCR_CFG_VERBOSE in self._config:
-            if str(self._config[Config._DCR_CFG_VERBOSE]).lower() == "false":
+        if Setup._DCR_CFG_VERBOSE in self._config:
+            if str(self._config[Setup._DCR_CFG_VERBOSE]).lower() == "false":
                 self.is_verbose = False
 
     # -----------------------------------------------------------------------------
@@ -285,8 +289,8 @@ class Config:
     # -----------------------------------------------------------------------------
     def _check_config_verbose_line_type(self) -> None:
         """Check the configuration parameter - verbose_line_type."""
-        if Config._DCR_CFG_VERBOSE_LINE_TYPE in self._config:
-            if str(self._config[Config._DCR_CFG_VERBOSE_LINE_TYPE]).lower() == "true":
+        if Setup._DCR_CFG_VERBOSE_LINE_TYPE in self._config:
+            if str(self._config[Setup._DCR_CFG_VERBOSE_LINE_TYPE]).lower() == "true":
                 self.is_verbose_line_type = True
 
     # -----------------------------------------------------------------------------
@@ -294,29 +298,29 @@ class Config:
     # -----------------------------------------------------------------------------
     def _check_config_verbose_parser(self) -> None:
         """Check the configuration parameter - verbose_parser."""
-        if Config._DCR_CFG_VERBOSE_PARSER in self._config:
-            if str(self._config[Config._DCR_CFG_VERBOSE_PARSER]).lower() in ["all", "text"]:
-                self.verbose_parser = str(self._config[Config._DCR_CFG_VERBOSE_PARSER]).lower()
+        if Setup._DCR_CFG_VERBOSE_PARSER in self._config:
+            if str(self._config[Setup._DCR_CFG_VERBOSE_PARSER]).lower() in ["all", "text"]:
+                self.verbose_parser = str(self._config[Setup._DCR_CFG_VERBOSE_PARSER]).lower()
 
     # -----------------------------------------------------------------------------
     # Determine and check the environment variant.
     # -----------------------------------------------------------------------------
     def _get_environment_variant(self) -> None:
         """Determine and check the environment variant."""
-        self.environment_variant = Config._ENVIRONMENT_TYPE_PROD
+        self.environment_variant = Setup._ENVIRONMENT_TYPE_PROD
 
         try:
-            self.environment_variant = os.environ[Config._DCR_ENVIRONMENT_TYPE]
+            self.environment_variant = os.environ[Setup._DCR_ENVIRONMENT_TYPE]
         except KeyError:
-            libs.utils.terminate_fatal(f"The environment variable '{Config._DCR_ENVIRONMENT_TYPE}' is missing")
+            libs.utils.terminate_fatal_setup(f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' is missing")
 
         if self.environment_variant not in [
-            Config._ENVIRONMENT_TYPE_DEV,
-            Config._ENVIRONMENT_TYPE_PROD,
-            Config._ENVIRONMENT_TYPE_TEST,
+            Setup._ENVIRONMENT_TYPE_DEV,
+            Setup._ENVIRONMENT_TYPE_PROD,
+            Setup._ENVIRONMENT_TYPE_TEST,
         ]:
-            libs.utils.terminate_fatal(
-                f"The environment variable '{Config._DCR_ENVIRONMENT_TYPE}' "
+            libs.utils.terminate_fatal_setup(
+                f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' "
                 f"has the invalid content '{self.environment_variant}'"
             )
 
@@ -328,75 +332,75 @@ class Config:
     def _load_config(self) -> None:
         """Load and check the configuration parameters."""
         config_parser = configparser.ConfigParser()
-        config_parser.read(Config._DCR_CFG_FILE)
+        config_parser.read(Setup._DCR_CFG_FILE)
 
         for section in config_parser.sections():
-            if section == Config._DCR_CFG_SECTION:
+            if section == Setup._DCR_CFG_SECTION:
                 for (key, value) in config_parser.items(section):
                     self._config[key] = value
 
         for section in config_parser.sections():
-            if section == Config._DCR_CFG_SECTION + "_" + self.environment_variant:
+            if section == Setup._DCR_CFG_SECTION + "_" + self.environment_variant:
                 for (key, value) in config_parser.items(section):
                     self._config[key] = value
 
         for key, item in self._config.items():
             match key:
-                case Config._DCR_CFG_DB_CONNECTION_PORT:
+                case Setup._DCR_CFG_DB_CONNECTION_PORT:
                     self.db_connection_port = str(item)
-                case Config._DCR_CFG_DB_CONNECTION_PREFIX:
+                case Setup._DCR_CFG_DB_CONNECTION_PREFIX:
                     self.db_connection_prefix = str(item)
-                case Config._DCR_CFG_DB_CONTAINER_PORT:
+                case Setup._DCR_CFG_DB_CONTAINER_PORT:
                     self.db_container_port = str(item)
-                case Config._DCR_CFG_DB_DATABASE:
+                case Setup._DCR_CFG_DB_DATABASE:
                     self.db_database = str(item)
-                case Config._DCR_CFG_DB_DATABASE_ADMIN:
+                case Setup._DCR_CFG_DB_DATABASE_ADMIN:
                     self.db_database_admin = str(item)
-                case Config._DCR_CFG_DB_DIALECT:
+                case Setup._DCR_CFG_DB_DIALECT:
                     self.db_dialect = str(item)
-                case Config._DCR_CFG_DB_HOST:
+                case Setup._DCR_CFG_DB_HOST:
                     self.db_host = str(item)
-                case Config._DCR_CFG_DB_PASSWORD:
+                case Setup._DCR_CFG_DB_PASSWORD:
                     self.db_password = str(item)
-                case Config._DCR_CFG_DB_PASSWORD_ADMIN:
+                case Setup._DCR_CFG_DB_PASSWORD_ADMIN:
                     self.db_password_admin = str(item)
-                case Config._DCR_CFG_DB_SCHEMA:
+                case Setup._DCR_CFG_DB_SCHEMA:
                     self.db_schema = str(item)
-                case Config._DCR_CFG_DB_USER:
+                case Setup._DCR_CFG_DB_USER:
                     self.db_user = str(item)
-                case Config._DCR_CFG_DB_USER_ADMIN:
+                case Setup._DCR_CFG_DB_USER_ADMIN:
                     self.db_user_admin = str(item)
-                case Config._DCR_CFG_DCR_VERSION:
+                case Setup._DCR_CFG_DCR_VERSION:
                     self.dcr_version = str(item)
                 case (
-                    Config._DCR_CFG_DELETE_AUXILIARY_FILES
-                    | Config._DCR_CFG_DIRECTORY_INBOX
-                    | Config._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
-                    | Config._DCR_CFG_DIRECTORY_INBOX_REJECTED
-                    | Config._DCR_CFG_IGNORE_DUPLICATES
-                    | Config._DCR_CFG_LINE_FOOTER_PREFERENCE
-                    | Config._DCR_CFG_PDF2IMAGE_TYPE
-                    | Config._DCR_CFG_SIMULATE_PARSER
-                    | Config._DCR_CFG_TESSERACT_TIMEOUT
-                    | Config._DCR_CFG_TETML_LINE
-                    | Config._DCR_CFG_TETML_PAGE
-                    | Config._DCR_CFG_TETML_WORD
-                    | Config._DCR_CFG_VERBOSE
-                    | Config._DCR_CFG_VERBOSE_LINE_TYPE
-                    | Config._DCR_CFG_VERBOSE_PARSER
+                    Setup._DCR_CFG_DELETE_AUXILIARY_FILES
+                    | Setup._DCR_CFG_DIRECTORY_INBOX
+                    | Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
+                    | Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
+                    | Setup._DCR_CFG_IGNORE_DUPLICATES
+                    | Setup._DCR_CFG_LINE_FOOTER_PREFERENCE
+                    | Setup._DCR_CFG_PDF2IMAGE_TYPE
+                    | Setup._DCR_CFG_SIMULATE_PARSER
+                    | Setup._DCR_CFG_TESSERACT_TIMEOUT
+                    | Setup._DCR_CFG_TETML_LINE
+                    | Setup._DCR_CFG_TETML_PAGE
+                    | Setup._DCR_CFG_TETML_WORD
+                    | Setup._DCR_CFG_VERBOSE
+                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE
+                    | Setup._DCR_CFG_VERBOSE_PARSER
                 ):
                     continue
-                case Config._DCR_CFG_INITIAL_DATABASE_DATA:
+                case Setup._DCR_CFG_INITIAL_DATABASE_DATA:
                     self.initial_database_data = str(item)
-                case Config._DCR_CFG_LINE_FOOTER_MAX_DISTANCE:
+                case Setup._DCR_CFG_LINE_FOOTER_MAX_DISTANCE:
                     self.line_footer_max_distance = int(item)
-                case Config._DCR_CFG_LINE_FOOTER_MAX_LINES:
+                case Setup._DCR_CFG_LINE_FOOTER_MAX_LINES:
                     self.line_footer_max_lines = int(item)
-                case Config._DCR_CFG_LINE_HEADER_MAX_DISTANCE:
+                case Setup._DCR_CFG_LINE_HEADER_MAX_DISTANCE:
                     self.line_header_max_distance = int(item)
-                case Config._DCR_CFG_LINE_HEADER_MAX_LINES:
+                case Setup._DCR_CFG_LINE_HEADER_MAX_LINES:
                     self.line_header_max_lines = int(item)
                 case _:
-                    libs.utils.terminate_fatal(f"Unknown configuration parameter '{key}'")
+                    libs.utils.terminate_fatal_setup(f"Unknown configuration parameter '{key}'")
 
         self._check_config()

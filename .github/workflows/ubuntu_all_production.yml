@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1  # no history, just HEAD
-      - uses: actions/setup-python@v2
+      - uses: actions/cfg-python@v2
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install prod dependencies

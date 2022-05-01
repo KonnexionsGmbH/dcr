@@ -2,7 +2,7 @@
 """Testing Module pp.tesseract_dcr."""
 import typing
 
-import libs.cfg
+import cfg.glob
 import pytest
 
 import dcr
@@ -19,40 +19,40 @@ import dcr
 # -----------------------------------------------------------------------------
 def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_IMAGE_2_PDF - normal."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         [
             ("pdf_scanned_ok", "pdf"),
         ],
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
         ],
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal <=========")
+    cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
         [],
         [],
     )
@@ -63,19 +63,19 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     ]
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_accepted,
+        cfg.glob.setup.directory_inbox_accepted,
         [],
         files_expected,
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_rejected,
+        cfg.glob.setup.directory_inbox_rejected,
         [],
         [],
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -83,7 +83,7 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
 # -----------------------------------------------------------------------------
 def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_IMAGE_2_PDF - normal - keep."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -101,32 +101,32 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
             ("pdf_scanned_07_ok", "tiff"),
             ("pdf_scanned_08_ok", "webp"),
         ],
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
         ],
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal <=========")
+    cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
         [],
         [],
     )
@@ -158,19 +158,19 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
     ]
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_accepted,
+        cfg.glob.setup.directory_inbox_accepted,
         [],
         files_expected,
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_rejected,
+        cfg.glob.setup.directory_inbox_rejected,
         [],
         [],
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -178,15 +178,15 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
 # -----------------------------------------------------------------------------
 def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_IMAGE_2_PDF - normal - duplicate."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal_duplicate <=========")
+    cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_duplicate <=========")
 
     stem_name_1: str = "tiff_pdf_text_ok"
     file_ext_1: str = "tiff"
 
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.config.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], cfg.glob.setup.directory_inbox)
 
     stem_name_2: str = "tiff_pdf_text_ok_1"
     file_ext_2: str = "pdf"
@@ -194,7 +194,7 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -202,10 +202,10 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_IMAGE_2_PDF - normal - timeout."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 1/2 <=========")
+    cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 1/2 <=========")
 
     stem_name: str = "pdf_scanned_ok"
     file_ext: str = "pdf"
@@ -217,50 +217,50 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "1"),
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "1"),
         ],
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 2/2 <=========")
+    cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 2/2 <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_accepted,
+        cfg.glob.setup.directory_inbox_accepted,
         [],
         [
             stem_name + "_" + str(document_id) + "." + file_ext,
-            stem_name + "_" + str(document_id) + "_1." + libs.cfg.config.pdf2image_type,
+            stem_name + "_" + str(document_id) + "_1." + cfg.glob.setup.pdf2image_type,
         ],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_rejected,
+        cfg.glob.setup.directory_inbox_rejected,
         [],
         [],
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -268,41 +268,41 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
 # -----------------------------------------------------------------------------
 def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_IMAGE_2_PDF - reunite."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         [
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
         ],
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_IMAGE_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_IMAGE_2_PDF])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_reunite <=========")
+    cfg.glob.logger.info("=========> test_run_action_image_2_pdf_reunite <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
         [],
         [],
     )
@@ -313,19 +313,19 @@ def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_
     ]
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_accepted,
+        cfg.glob.setup.directory_inbox_accepted,
         [],
         files_expected,
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_rejected,
+        cfg.glob.setup.directory_inbox_rejected,
         [],
         [],
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -333,35 +333,35 @@ def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_
 # -----------------------------------------------------------------------------
 def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_IMAGE_2_PDF - reunite - duplicate."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_image_2_pdf_normal_duplicate <=========")
+    cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_duplicate <=========")
 
     stem_name_1: str = "translating_sql_into_relational_algebra_p01_02"
     file_ext_1: str = "pdf"
 
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.config.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], cfg.glob.setup.directory_inbox)
 
     stem_name_2: str = "translating_sql_into_relational_algebra_p01_02_1_0"
     file_ext_2: str = "pdf"
 
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (libs.cfg.config._DCR_CFG_TESSERACT_TIMEOUT, "30"),
-            (libs.cfg.config._DCR_CFG_TETML_LINE, "true"),
-            (libs.cfg.config._DCR_CFG_TETML_WORD, "true"),
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
+            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
 
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)

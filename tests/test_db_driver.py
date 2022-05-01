@@ -1,11 +1,10 @@
 # pylint: disable=unused-argument
 """Testing Module db.driver."""
-import db.cfg
+import cfg.glob
+import cfg.setup
 import db.dml
 import db.driver
-import libs.cfg
 import pytest
-import setup.config
 import sqlalchemy
 
 import dcr
@@ -22,19 +21,19 @@ import dcr
 # -----------------------------------------------------------------------------
 def test_connect_db(fxtr_setup_logger_environment):
     """Test: connect_db()."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    config_section = libs.cfg.config._DCR_CFG_SECTION_TEST
+    config_section = cfg.glob.setup._DCR_CFG_SECTION_TEST
 
     values_original = pytest.helpers.backup_config_params(
         config_section,
         [
-            (libs.cfg.config._DCR_CFG_DB_CONNECTION_PORT, "9999"),
+            (cfg.glob.setup._DCR_CFG_DB_CONNECTION_PORT, "9999"),
         ],
     )
 
-    libs.cfg.config = setup.config.Config()
+    cfg.glob.config = cfg.setup.Setup()
 
     with pytest.raises(SystemExit) as expt:
         db.driver.connect_db()
@@ -48,7 +47,7 @@ def test_connect_db(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -56,19 +55,19 @@ def test_connect_db(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_connect_db_admin(fxtr_setup_logger_environment):
     """Test: connect_db_admin()."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    config_section = libs.cfg.config._DCR_CFG_SECTION_TEST
+    config_section = cfg.glob.setup._DCR_CFG_SECTION_TEST
 
     values_original = pytest.helpers.backup_config_params(
         config_section,
         [
-            (libs.cfg.config._DCR_CFG_DB_CONNECTION_PORT, "9999"),
+            (cfg.glob.setup._DCR_CFG_DB_CONNECTION_PORT, "9999"),
         ],
     )
 
-    libs.cfg.config = setup.config.Config()
+    cfg.glob.config = cfg.setup.Setup()
 
     with pytest.raises(SystemExit) as expt:
         db.driver.connect_db_admin()
@@ -82,7 +81,7 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -90,63 +89,63 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_create_database(fxtr_setup_logger_environment):
     """Test: create_database()."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_CREATE_DB])
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.delete_config_param(
-        libs.cfg.config._DCR_CFG_SECTION, libs.cfg.config._DCR_CFG_DB_DIALECT
+        cfg.glob.setup._DCR_CFG_SECTION, cfg.glob.setup._DCR_CFG_DB_DIALECT
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_CREATE_DB])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DB_DIALECT, libs.cfg.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.glob.setup._DCR_CFG_DB_DIALECT, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
     with pytest.raises(SystemExit) as expt:
-        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+        dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_CREATE_DB])
 
     assert expt.type == SystemExit, "DCR_CFG_DB_DIALECT: unknown DB dialect"
     assert expt.value.code == 1, "DCR_CFG_DB_DIALECT: unknown DB dialect"
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_INITIAL_DATABASE_DATA, "unknown_file"),
+            (cfg.glob.setup._DCR_CFG_INITIAL_DATABASE_DATA, "unknown_file"),
         ],
     )
 
     with pytest.raises(SystemExit) as expt:
-        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+        dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_CREATE_DB])
 
     assert expt.type == SystemExit, "DCR_CFG_INITIAL_DATABASE_DATA: unknown file"
     assert expt.value.code == 1, "DCR_CFG_INITIAL_DATABASE_DATA: unknown file"
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -154,18 +153,18 @@ def test_create_database(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_disconnect_both(fxtr_setup_empty_db_and_inbox):
     """Test disconnect without 'db_orm_engine' and 'db_orm_metadata'."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
-    db.cfg.db_orm_engine = None
-    db.cfg.db_orm_metadata = None
+    cfg.glob.db_orm_engine = None
+    cfg.glob.db_orm_metadata = None
 
     db.driver.disconnect_db()
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -173,17 +172,17 @@ def test_disconnect_both(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_disconnect_db_orm_engine(fxtr_setup_empty_db_and_inbox):
     """Test disconnect without 'db_orm_engine'."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
-    db.cfg.db_orm_engine = None
+    cfg.glob.db_orm_engine = None
 
     db.driver.disconnect_db()
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -191,17 +190,17 @@ def test_disconnect_db_orm_engine(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_disconnect_db_orm_metadata(fxtr_setup_empty_db_and_inbox):
     """Test disconnect without 'db_orm_metadata'."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
-    db.cfg.db_orm_metadata = None
+    cfg.glob.db_orm_metadata = None
 
     db.driver.disconnect_db()
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -209,34 +208,34 @@ def test_disconnect_db_orm_metadata(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_drop_database(fxtr_setup_logger_environment):
     """Test: drop_database()."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_CREATE_DB])
     db.driver.drop_database()
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.delete_config_param(
-        libs.cfg.config._DCR_CFG_SECTION, libs.cfg.config._DCR_CFG_DB_DIALECT
+        cfg.glob.setup._DCR_CFG_SECTION, cfg.glob.setup._DCR_CFG_DB_DIALECT
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_CREATE_DB])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_CREATE_DB])
     db.driver.drop_database()
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DB_DIALECT, libs.cfg.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.glob.setup._DCR_CFG_DB_DIALECT, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
-    libs.cfg.config = setup.config.Config()
+    cfg.glob.config = cfg.setup.Setup()
 
     with pytest.raises(SystemExit) as expt:
         db.driver.drop_database()
@@ -245,12 +244,12 @@ def test_drop_database(fxtr_setup_logger_environment):
     assert expt.value.code == 1, "DCR_CFG_DB_DIALECT: unknown DB dialect"
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -258,18 +257,18 @@ def test_drop_database(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     """Test: select_version_version_unique()."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
-    db.dml.insert_dbt_row(db.cfg.DBT_VERSION, {db.cfg.DBC_VERSION: "0.0.0"})
+    db.dml.insert_dbt_row(cfg.glob.DBT_VERSION, {cfg.glob.DBC_VERSION: "0.0.0"})
 
     db.driver.disconnect_db()
 
     db.driver.connect_db()
 
-    db.cfg.db_driver_cur = db.cfg.db_driver_conn.cursor()
+    cfg.glob.db_driver_cur = cfg.glob.db_driver_conn.cursor()
 
     with pytest.raises(SystemExit) as expt:
         db.dml.select_version_version_unique()
@@ -284,7 +283,7 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
 
     db.driver.connect_db()
 
-    db.cfg.db_driver_cur = db.cfg.db_driver_conn.cursor()
+    cfg.glob.db_driver_cur = cfg.glob.db_driver_conn.cursor()
 
     with pytest.raises(SystemExit) as expt:
         db.dml.select_version_version_unique()
@@ -295,7 +294,7 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Version missing (driver)"
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -303,10 +302,10 @@ def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     """Test: upgrade_database()."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_UPGRADE_DB])
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
@@ -316,7 +315,7 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     db.driver.disconnect_db()
 
     with pytest.raises(SystemExit) as expt:
-        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
+        dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_UPGRADE_DB])
 
     assert expt.type == SystemExit, "Version < '1.0.0' not supported"
     assert expt.value.code == 1, "Version < '1.0.0' not supported"
@@ -329,13 +328,13 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     db.driver.disconnect_db()
 
     with pytest.raises(SystemExit) as expt:
-        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_UPGRADE_DB])
+        dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_UPGRADE_DB])
 
     assert expt.type == SystemExit, "Version unknown"
     assert expt.value.code == 1, "Version unknown"
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -349,22 +348,22 @@ def update_version_version(
     Args:
         version (str): New version number.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     dbt = sqlalchemy.Table(
-        db.cfg.DBT_VERSION,
-        db.cfg.db_orm_metadata,
-        autoload_with=db.cfg.db_orm_engine,
+        cfg.glob.DBT_VERSION,
+        cfg.glob.db_orm_metadata,
+        autoload_with=cfg.glob.db_orm_engine,
     )
 
-    with db.cfg.db_orm_engine.connect().execution_options(autocommit=True) as conn:
+    with cfg.glob.db_orm_engine.connect().execution_options(autocommit=True) as conn:
         conn.execute(
             sqlalchemy.update(dbt).values(
                 {
-                    db.cfg.DBC_VERSION: version,
+                    cfg.glob.DBC_VERSION: version,
                 }
             )
         )
         conn.close()
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)

@@ -91,7 +91,7 @@ docformatter:       ## Format the docstrings with docformatter.
 # includes Pyflakes:    https://github.com/PyCQA/pyflakes
 # includes Radon:       https://github.com/rubik/radon
 # https://github.com/pycqa/flake8
-# Configuration file: setup.cfg
+# Configuration file: cfg.cfg
 flake8:             ## Enforce the Python Style Guides with Flake8.
 	@echo "Info **********  Start: Flake8 **************************************"
 	pipenv run flake8 --version

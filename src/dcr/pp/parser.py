@@ -4,10 +4,9 @@ import os
 import time
 import typing
 
-import db.cfg
+import cfg.glob
 import db.dml
 import defusedxml.ElementTree
-import libs.cfg
 import libs.utils
 import nlp.line_type
 
@@ -26,7 +25,7 @@ def debug_xml_element_all(
         attrib (Dict[str,str]): Attributes.
         text (Iterable[str|None]): XML element.
     """
-    if libs.cfg.config.verbose_parser == "all":
+    if cfg.glob.setup.verbose_parser == "all":
         print(f"{event} tag   ={parent_tag}")
 
         if attrib != {}:
@@ -41,13 +40,13 @@ def debug_xml_element_all(
 # -----------------------------------------------------------------------------
 def debug_xml_element_text_line() -> None:
     """Debug an XML element only 'text - variant line."""
-    if libs.cfg.config.verbose_parser == "text":
+    if cfg.glob.setup.verbose_parser == "text":
         print(
-            f"page_i_doc={libs.cfg.parse_result_page_index_doc:2d} "
-            f"para_i_page={libs.cfg.parse_result_para_index_page:2d} "
-            f"line_i_page={libs.cfg.parse_result_line_index_page:2d} "
-            f"line_i_para={libs.cfg.parse_result_line_index_para:2d} "
-            f"text='{libs.cfg.parse_result_text}'"
+            f"page_i_doc={cfg.glob.parse_result_page_index_doc:2d} "
+            f"para_i_page={cfg.glob.parse_result_para_index_page:2d} "
+            f"line_i_page={cfg.glob.parse_result_line_index_page:2d} "
+            f"line_i_para={cfg.glob.parse_result_line_index_para:2d} "
+            f"text='{cfg.glob.parse_result_text}'"
         )
 
 
@@ -56,16 +55,16 @@ def debug_xml_element_text_line() -> None:
 # -----------------------------------------------------------------------------
 def debug_xml_element_text_word() -> None:
     """Debug an XML element only 'text - variant word."""
-    if libs.cfg.config.verbose_parser == "text":
+    if cfg.glob.setup.verbose_parser == "text":
         print(
-            f"page_i_doc={libs.cfg.parse_result_page_index_doc:2d} "
-            f"para_i_page={libs.cfg.parse_result_para_index_page:2d} "
-            f"line_i_page={libs.cfg.parse_result_line_index_page:2d} "
-            f"line_i_para={libs.cfg.parse_result_line_index_para:2d} "
-            f"word_i_page={libs.cfg.parse_result_word_index_page:2d} "
-            f"word_i_para={libs.cfg.parse_result_word_index_para:2d} "
-            f"word_i_line={libs.cfg.parse_result_word_index_line:2d} "
-            f"text='{libs.cfg.parse_result_text}'"
+            f"page_i_doc={cfg.glob.parse_result_page_index_doc:2d} "
+            f"para_i_page={cfg.glob.parse_result_para_index_page:2d} "
+            f"line_i_page={cfg.glob.parse_result_line_index_page:2d} "
+            f"line_i_para={cfg.glob.parse_result_line_index_para:2d} "
+            f"word_i_page={cfg.glob.parse_result_word_index_page:2d} "
+            f"word_i_para={cfg.glob.parse_result_word_index_para:2d} "
+            f"word_i_line={cfg.glob.parse_result_word_index_line:2d} "
+            f"text='{cfg.glob.parse_result_text}'"
         )
 
 
@@ -74,8 +73,8 @@ def debug_xml_element_text_word() -> None:
 # -----------------------------------------------------------------------------
 def init_parse_result_document() -> None:
     """Initialize the parse result variables of a document."""
-    libs.cfg.parse_result_no_pages_in_doc = 0
-    libs.cfg.parse_result_page_index_doc = -1
+    cfg.glob.parse_result_no_pages_in_doc = 0
+    cfg.glob.parse_result_page_index_doc = -1
 
 
 # -----------------------------------------------------------------------------
@@ -83,8 +82,8 @@ def init_parse_result_document() -> None:
 # -----------------------------------------------------------------------------
 def init_parse_result_line() -> None:
     """Initialize the parse result variables of a line."""
-    libs.cfg.parse_result_no_words_in_line = 0
-    libs.cfg.parse_result_word_index_line = 0
+    cfg.glob.parse_result_no_words_in_line = 0
+    cfg.glob.parse_result_word_index_line = 0
 
 
 # -----------------------------------------------------------------------------
@@ -92,25 +91,25 @@ def init_parse_result_line() -> None:
 # -----------------------------------------------------------------------------
 def init_parse_result_page() -> None:
     """Initialize the parse result variables of a page."""
-    libs.cfg.parse_result_line_index_page = 0
-    libs.cfg.parse_result_no_lines_in_page = 0
-    libs.cfg.parse_result_no_paras_in_page = 0
-    libs.cfg.parse_result_no_words_in_page = 0
+    cfg.glob.parse_result_line_index_page = 0
+    cfg.glob.parse_result_no_lines_in_page = 0
+    cfg.glob.parse_result_no_paras_in_page = 0
+    cfg.glob.parse_result_no_words_in_page = 0
 
-    libs.cfg.parse_result_page_lines = {
-        db.cfg.JSON_NAME_NO_LINES_IN_PAGE: None,
-        db.cfg.JSON_NAME_NO_PARAS_IN_PAGE: None,
-        db.cfg.JSON_NAME_PAGE_LINES: [],
+    cfg.glob.parse_result_page_lines = {
+        cfg.glob.JSON_NAME_NO_LINES_IN_PAGE: None,
+        cfg.glob.JSON_NAME_NO_PARAS_IN_PAGE: None,
+        cfg.glob.JSON_NAME_PAGE_LINES: [],
     }
 
-    libs.cfg.parse_result_page_words = {
-        db.cfg.JSON_NAME_NO_LINES_IN_PAGE: None,
-        db.cfg.JSON_NAME_NO_PARAS_IN_PAGE: None,
-        db.cfg.JSON_NAME_NO_WORDS_IN_PAGE: None,
-        db.cfg.JSON_NAME_PAGE_WORDS: [],
+    cfg.glob.parse_result_page_words = {
+        cfg.glob.JSON_NAME_NO_LINES_IN_PAGE: None,
+        cfg.glob.JSON_NAME_NO_PARAS_IN_PAGE: None,
+        cfg.glob.JSON_NAME_NO_WORDS_IN_PAGE: None,
+        cfg.glob.JSON_NAME_PAGE_WORDS: [],
     }
-    libs.cfg.parse_result_para_index_page = 0
-    libs.cfg.parse_result_word_index_page = 0
+    cfg.glob.parse_result_para_index_page = 0
+    cfg.glob.parse_result_word_index_page = 0
 
 
 # -----------------------------------------------------------------------------
@@ -118,10 +117,10 @@ def init_parse_result_page() -> None:
 # -----------------------------------------------------------------------------
 def init_parse_result_para() -> None:
     """Initialize the parse result variables mof a para."""
-    libs.cfg.parse_result_line_index_para = 0
-    libs.cfg.parse_result_no_lines_in_para = 0
-    libs.cfg.parse_result_no_words_in_para = 0
-    libs.cfg.parse_result_word_index_para = 0
+    cfg.glob.parse_result_line_index_para = 0
+    cfg.glob.parse_result_no_lines_in_para = 0
+    cfg.glob.parse_result_no_words_in_para = 0
+    cfg.glob.parse_result_word_index_para = 0
 
 
 # -----------------------------------------------------------------------------
@@ -129,17 +128,17 @@ def init_parse_result_para() -> None:
 # -----------------------------------------------------------------------------
 def insert_content_tetml_line() -> None:
     """Store the parse result in the database table content_tetml_line."""
-    if not libs.cfg.config.is_simulate_parser:
-        libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_NO_LINES_IN_PAGE] = libs.cfg.parse_result_no_lines_in_page
+    if not cfg.glob.setup.is_simulate_parser:
+        cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_NO_LINES_IN_PAGE] = cfg.glob.parse_result_no_lines_in_page
 
-        libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_NO_PARAS_IN_PAGE] = libs.cfg.parse_result_no_paras_in_page
+        cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_NO_PARAS_IN_PAGE] = cfg.glob.parse_result_no_paras_in_page
 
         db.dml.insert_dbt_row(
-            db.cfg.DBT_CONTENT_TETML_LINE,
+            cfg.glob.DBT_CONTENT_TETML_LINE,
             {
-                db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
-                db.cfg.DBC_PAGE_NO: libs.cfg.parse_result_no_pages_in_doc,
-                db.cfg.DBC_PAGE_DATA: libs.cfg.parse_result_page_lines,
+                cfg.glob.DBC_DOCUMENT_ID: cfg.glob.document_id_base,
+                cfg.glob.DBC_PAGE_NO: cfg.glob.parse_result_no_pages_in_doc,
+                cfg.glob.DBC_PAGE_DATA: cfg.glob.parse_result_page_lines,
             },
         )
 
@@ -149,17 +148,17 @@ def insert_content_tetml_line() -> None:
 # -----------------------------------------------------------------------------
 def insert_content_tetml_word() -> None:
     """Store the parse result in the database table content_tetml_word."""
-    if not libs.cfg.config.is_simulate_parser:
-        libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_NO_LINES_IN_PAGE] = libs.cfg.parse_result_no_lines_in_page
-        libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_NO_PARAS_IN_PAGE] = libs.cfg.parse_result_no_paras_in_page
-        libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_NO_WORDS_IN_PAGE] = libs.cfg.parse_result_no_words_in_page
+    if not cfg.glob.setup.is_simulate_parser:
+        cfg.glob.parse_result_page_words[cfg.glob.JSON_NAME_NO_LINES_IN_PAGE] = cfg.glob.parse_result_no_lines_in_page
+        cfg.glob.parse_result_page_words[cfg.glob.JSON_NAME_NO_PARAS_IN_PAGE] = cfg.glob.parse_result_no_paras_in_page
+        cfg.glob.parse_result_page_words[cfg.glob.JSON_NAME_NO_WORDS_IN_PAGE] = cfg.glob.parse_result_no_words_in_page
 
         db.dml.insert_dbt_row(
-            db.cfg.DBT_CONTENT_TETML_WORD,
+            cfg.glob.DBT_CONTENT_TETML_WORD,
             {
-                db.cfg.DBC_DOCUMENT_ID: libs.cfg.document_id_base,
-                db.cfg.DBC_PAGE_NO: libs.cfg.parse_result_no_pages_in_doc,
-                db.cfg.DBC_PAGE_DATA: libs.cfg.parse_result_page_words,
+                cfg.glob.DBC_DOCUMENT_ID: cfg.glob.document_id_base,
+                cfg.glob.DBC_PAGE_NO: cfg.glob.parse_result_no_pages_in_doc,
+                cfg.glob.DBC_PAGE_DATA: cfg.glob.parse_result_page_words,
             },
         )
 
@@ -177,9 +176,9 @@ def parse_tag_box(parent_tag: str, parent: typing.Iterable[str]) -> None:
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
     for child in parent:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
         match child_tag:
-            case libs.cfg.PARSE_TAG_LINE:
+            case cfg.glob.PARSE_TAG_LINE:
                 parse_tag_line(child_tag, child)
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -198,11 +197,11 @@ def parse_tag_content(parent_tag: str, parent: typing.Iterable[str]) -> None:
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
     for child in parent:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
         match child_tag:
-            case libs.cfg.PARSE_TAG_PARA:
+            case cfg.glob.PARSE_TAG_PARA:
                 parse_tag_para(child_tag, child)
-            case (libs.cfg.PARSE_TAG_PLACED_IMAGE | libs.cfg.PARSE_TAG_TABLE):
+            case (cfg.glob.PARSE_TAG_PLACED_IMAGE | cfg.glob.PARSE_TAG_TABLE):
                 pass
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -221,21 +220,21 @@ def parse_tag_doc_info(parent_tag: str, parent: typing.Iterable[str]) -> None:
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
     for child in parent:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
         match child_tag:
-            case libs.cfg.PARSE_TAG_AUTHOR:
-                libs.cfg.parse_result_author = child.text
-            case libs.cfg.PARSE_TAG_CREATION_DATE:
-                libs.cfg.parse_result_creation_date = datetime.datetime.strptime(child.text, "%Y-%m-%dT%H:%M:%S%z")
+            case cfg.glob.PARSE_TAG_AUTHOR:
+                cfg.glob.parse_result_author = child.text
+            case cfg.glob.PARSE_TAG_CREATION_DATE:
+                cfg.glob.parse_result_creation_date = datetime.datetime.strptime(child.text, "%Y-%m-%dT%H:%M:%S%z")
             case (
-                libs.cfg.PARSE_TAG_CREATOR
-                | libs.cfg.PARSE_TAG_PRODUCER
-                | libs.cfg.PARSE_TAG_CUSTOM
-                | libs.cfg.PARSE_TAG_TITLE
+                cfg.glob.PARSE_TAG_CREATOR
+                | cfg.glob.PARSE_TAG_PRODUCER
+                | cfg.glob.PARSE_TAG_CUSTOM
+                | cfg.glob.PARSE_TAG_TITLE
             ):
                 pass
-            case libs.cfg.PARSE_TAG_MOD_DATE:
-                libs.cfg.parse_result_mod_date = datetime.datetime.strptime(child.text, "%Y-%m-%dT%H:%M:%S%z")
+            case cfg.glob.PARSE_TAG_MOD_DATE:
+                cfg.glob.parse_result_mod_date = datetime.datetime.strptime(child.text, "%Y-%m-%dT%H:%M:%S%z")
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -253,26 +252,26 @@ def parse_tag_document(parent_tag: str, parent: typing.Iterable[str]) -> None:
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
     for child in parent:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
         match child_tag:
             case (
-                libs.cfg.PARSE_TAG_ACTION
-                | libs.cfg.PARSE_TAG_ATTACHMENTS
-                | libs.cfg.PARSE_TAG_BOOKMARKS
-                | libs.cfg.PARSE_TAG_DESTINATIONS
-                | libs.cfg.PARSE_TAG_ENCRYPTION
-                | libs.cfg.PARSE_TAG_EXCEPTION
-                | libs.cfg.PARSE_TAG_JAVA_SCRIPTS
-                | libs.cfg.PARSE_TAG_METADATA
-                | libs.cfg.PARSE_TAG_OPTIONS
-                | libs.cfg.PARSE_TAG_OUTPUT_INTENTS
-                | libs.cfg.PARSE_TAG_SIGNATURE_FIELDS
-                | libs.cfg.PARSE_TAG_XFA
+                cfg.glob.PARSE_TAG_ACTION
+                | cfg.glob.PARSE_TAG_ATTACHMENTS
+                | cfg.glob.PARSE_TAG_BOOKMARKS
+                | cfg.glob.PARSE_TAG_DESTINATIONS
+                | cfg.glob.PARSE_TAG_ENCRYPTION
+                | cfg.glob.PARSE_TAG_EXCEPTION
+                | cfg.glob.PARSE_TAG_JAVA_SCRIPTS
+                | cfg.glob.PARSE_TAG_METADATA
+                | cfg.glob.PARSE_TAG_OPTIONS
+                | cfg.glob.PARSE_TAG_OUTPUT_INTENTS
+                | cfg.glob.PARSE_TAG_SIGNATURE_FIELDS
+                | cfg.glob.PARSE_TAG_XFA
             ):
                 pass
-            case libs.cfg.PARSE_TAG_DOC_INFO:
+            case cfg.glob.PARSE_TAG_DOC_INFO:
                 parse_tag_doc_info(child_tag, child)
-            case libs.cfg.PARSE_TAG_PAGES:
+            case cfg.glob.PARSE_TAG_PAGES:
                 parse_tag_pages(child_tag, child)
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -292,34 +291,34 @@ def parse_tag_line(parent_tag: str, parent: typing.Iterable[str]) -> None:
 
     init_parse_result_line()
 
-    libs.cfg.parse_result_no_lines_in_page += 1
-    libs.cfg.parse_result_no_lines_in_para += 1
+    cfg.glob.parse_result_no_lines_in_page += 1
+    cfg.glob.parse_result_no_lines_in_para += 1
 
     for child in parent:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
         match child_tag:
-            case libs.cfg.PARSE_TAG_TEXT:
+            case cfg.glob.PARSE_TAG_TEXT:
                 parse_tag_text(child_tag, child)
-            case libs.cfg.PARSE_TAG_WORD:
+            case cfg.glob.PARSE_TAG_WORD:
                 parse_tag_word(child_tag, child)
 
     debug_xml_element_text_line()
 
-    if libs.cfg.config.is_parsing_line:
-        page_lines = libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_PAGE_LINES]
+    if cfg.glob.setup.is_parsing_line:
+        page_lines = cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES]
         page_lines.append(
             {
-                db.cfg.JSON_NAME_PARA_INDEX_PAGE: libs.cfg.parse_result_para_index_page,
-                db.cfg.JSON_NAME_LINE_INDEX_PAGE: libs.cfg.parse_result_line_index_page,
-                db.cfg.JSON_NAME_LINE_INDEX_PARA: libs.cfg.parse_result_line_index_para,
-                db.cfg.JSON_NAME_LINE_TEXT: libs.cfg.parse_result_text,
-                db.cfg.JSON_NAME_LINE_TYPE: db.cfg.DOCUMENT_LINE_TYPE_BODY,
+                cfg.glob.JSON_NAME_PARA_INDEX_PAGE: cfg.glob.parse_result_para_index_page,
+                cfg.glob.JSON_NAME_LINE_INDEX_PAGE: cfg.glob.parse_result_line_index_page,
+                cfg.glob.JSON_NAME_LINE_INDEX_PARA: cfg.glob.parse_result_line_index_para,
+                cfg.glob.JSON_NAME_LINE_TEXT: cfg.glob.parse_result_text,
+                cfg.glob.JSON_NAME_LINE_TYPE: cfg.glob.DOCUMENT_LINE_TYPE_BODY,
             }
         )
-        libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_PAGE_LINES] = page_lines
+        cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES] = page_lines
 
-    libs.cfg.parse_result_line_index_page += 1
-    libs.cfg.parse_result_line_index_para += 1
+    cfg.glob.parse_result_line_index_page += 1
+    cfg.glob.parse_result_line_index_para += 1
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -339,39 +338,39 @@ def parse_tag_page(parent_tag: str, parent: typing.Iterable[str]) -> None:
     # Initialize the page related variables.
     init_parse_result_page()
 
-    libs.cfg.parse_result_no_pages_in_doc += 1  # relative 1
-    libs.cfg.parse_result_page_index_doc += 1  # relative 0
+    cfg.glob.parse_result_no_pages_in_doc += 1  # relative 1
+    cfg.glob.parse_result_page_index_doc += 1  # relative 0
 
     libs.utils.progress_msg_line_type(
-        f"LineType: Start page                         ={libs.cfg.parse_result_no_pages_in_doc}"
+        f"LineType: Start page                         ={cfg.glob.parse_result_no_pages_in_doc}"
     )
 
     # Process the page related tags.
     for child in parent:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
         match child_tag:
             case (
-                libs.cfg.PARSE_TAG_ACTION
-                | libs.cfg.PARSE_TAG_ANNOTATIONS
-                | libs.cfg.PARSE_TAG_EXCEPTION
-                | libs.cfg.PARSE_TAG_FIELDS
-                | libs.cfg.PARSE_TAG_OPTIONS
-                | libs.cfg.PARSE_TAG_OUTPUT_INTENTS
+                cfg.glob.PARSE_TAG_ACTION
+                | cfg.glob.PARSE_TAG_ANNOTATIONS
+                | cfg.glob.PARSE_TAG_EXCEPTION
+                | cfg.glob.PARSE_TAG_FIELDS
+                | cfg.glob.PARSE_TAG_OPTIONS
+                | cfg.glob.PARSE_TAG_OUTPUT_INTENTS
             ):
                 pass
-            case libs.cfg.PARSE_TAG_CONTENT:
+            case cfg.glob.PARSE_TAG_CONTENT:
                 parse_tag_content(child_tag, child)
 
     # Process the page related variables.
-    if not libs.cfg.config.is_simulate_parser:
-        if libs.cfg.config.is_parsing_line:
+    if not cfg.glob.setup.is_simulate_parser:
+        if cfg.glob.setup.is_parsing_line:
             insert_content_tetml_line()
-            if libs.cfg.config.line_footer_max_lines > 0 or libs.cfg.config.line_header_max_lines > 0:
-                libs.cfg.line_type.process_page(
-                    page_no=libs.cfg.parse_result_no_pages_in_doc,
-                    page_lines=libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_PAGE_LINES],
+            if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
+                cfg.glob.line_type.process_page(
+                    page_no=cfg.glob.parse_result_no_pages_in_doc,
+                    page_lines=cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES],
                 )
-        elif libs.cfg.config.is_parsing_word:
+        elif cfg.glob.setup.is_parsing_word:
             insert_content_tetml_word()
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -392,29 +391,29 @@ def parse_tag_pages(parent_tag: str, parent: typing.Iterable[str]) -> None:
     # Initialize the document related variables.
     init_parse_result_document()
 
-    libs.cfg.parse_result_no_words_in_line = 0
-    libs.cfg.parse_result_word_index_line = 0
+    cfg.glob.parse_result_no_words_in_line = 0
+    cfg.glob.parse_result_word_index_line = 0
 
-    if libs.cfg.config.is_parsing_line:
-        libs.cfg.line_type = nlp.line_type.LineType()
+    if cfg.glob.setup.is_parsing_line:
+        cfg.glob.line_type = nlp.line_type.LineType()
 
     libs.utils.progress_msg_line_type("LineType")
-    libs.utils.progress_msg_line_type(f"LineType: Start document                     ={libs.cfg.document_file_name}")
+    libs.utils.progress_msg_line_type(f"LineType: Start document                     ={cfg.glob.document_file_name}")
 
     # Process the tags of all document pages.
     for child in parent:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
         match child_tag:
-            case libs.cfg.PARSE_TAG_GRAPHICS | libs.cfg.PARSE_TAG_RESOURCES:
+            case cfg.glob.PARSE_TAG_GRAPHICS | cfg.glob.PARSE_TAG_RESOURCES:
                 pass
-            case libs.cfg.PARSE_TAG_PAGE:
+            case cfg.glob.PARSE_TAG_PAGE:
                 parse_tag_page(child_tag, child)
 
     # Process the document related variables.
-    libs.utils.progress_msg_line_type(f"LineType: End document                       ={libs.cfg.document_file_name}")
-    if libs.cfg.config.is_parsing_line:
-        if libs.cfg.config.line_footer_max_lines > 0 or libs.cfg.config.line_header_max_lines > 0:
-            libs.cfg.line_type.process_document(libs.cfg.document_id)
+    libs.utils.progress_msg_line_type(f"LineType: End document                       ={cfg.glob.document_file_name}")
+    if cfg.glob.setup.is_parsing_line:
+        if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
+            cfg.glob.line_type.process_document(cfg.glob.document_id)
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -433,15 +432,15 @@ def parse_tag_para(parent_tag: str, parent: typing.Iterable[str]) -> None:
 
     init_parse_result_para()
 
-    libs.cfg.parse_result_no_paras_in_page += 1
+    cfg.glob.parse_result_no_paras_in_page += 1
 
     for child in parent:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
         match child_tag:
-            case libs.cfg.PARSE_TAG_BOX:
+            case cfg.glob.PARSE_TAG_BOX:
                 parse_tag_box(child_tag, child)
 
-    libs.cfg.parse_result_para_index_page += 1
+    cfg.glob.parse_result_para_index_page += 1
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -458,7 +457,7 @@ def parse_tag_text(parent_tag: str, parent: typing.Iterable[str]) -> None:
     """
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
-    libs.cfg.parse_result_text = parent.text
+    cfg.glob.parse_result_text = parent.text
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -476,35 +475,35 @@ def parse_tag_word(parent_tag: str, parent: typing.Iterable[str]) -> None:
     debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
     for child in parent:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
         match child_tag:
-            case libs.cfg.PARSE_TAG_BOX:
+            case cfg.glob.PARSE_TAG_BOX:
                 parse_tag_box(child_tag, child)
-            case libs.cfg.PARSE_TAG_TEXT:
+            case cfg.glob.PARSE_TAG_TEXT:
                 parse_tag_text(child_tag, child)
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
-    libs.cfg.parse_result_no_words_in_line += 1
-    libs.cfg.parse_result_no_words_in_page += 1
-    libs.cfg.parse_result_no_words_in_para += 1
+    cfg.glob.parse_result_no_words_in_line += 1
+    cfg.glob.parse_result_no_words_in_page += 1
+    cfg.glob.parse_result_no_words_in_para += 1
 
     debug_xml_element_text_word()
 
-    if libs.cfg.config.is_parsing_word:
-        page_words = libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_PAGE_WORDS]
+    if cfg.glob.setup.is_parsing_word:
+        page_words = cfg.glob.parse_result_page_words[cfg.glob.JSON_NAME_PAGE_WORDS]
         page_words.append(
             {
-                db.cfg.JSON_NAME_LINE_INDEX_PAGE: libs.cfg.parse_result_line_index_page,
-                db.cfg.JSON_NAME_WORD_INDEX_LINE: libs.cfg.parse_result_word_index_line,
-                db.cfg.JSON_NAME_WORD_TEXT: libs.cfg.parse_result_text,
+                cfg.glob.JSON_NAME_LINE_INDEX_PAGE: cfg.glob.parse_result_line_index_page,
+                cfg.glob.JSON_NAME_WORD_INDEX_LINE: cfg.glob.parse_result_word_index_line,
+                cfg.glob.JSON_NAME_WORD_TEXT: cfg.glob.parse_result_text,
             }
         )
-        libs.cfg.parse_result_page_words[db.cfg.JSON_NAME_PAGE_WORDS] = page_words
+        cfg.glob.parse_result_page_words[cfg.glob.JSON_NAME_PAGE_WORDS] = page_words
 
-    libs.cfg.parse_result_word_index_line += 1
-    libs.cfg.parse_result_word_index_page += 1
-    libs.cfg.parse_result_word_index_para += 1
+    cfg.glob.parse_result_word_index_line += 1
+    cfg.glob.parse_result_word_index_page += 1
+    cfg.glob.parse_result_word_index_para += 1
 
 
 # -----------------------------------------------------------------------------
@@ -515,20 +514,20 @@ def parse_tetml() -> None:
 
     TBD
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    dbt = db.dml.dml_prepare(db.cfg.DBT_DOCUMENT)
+    dbt = db.dml.dml_prepare(cfg.glob.DBT_DOCUMENT)
 
     libs.utils.reset_statistics_total()
 
-    with db.cfg.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER_LINE)
+    with cfg.glob.db_orm_engine.connect() as conn:
+        rows = db.dml.select_document(conn, dbt, cfg.glob.DOCUMENT_STEP_PARSER_LINE)
 
         for row in rows:
             # ------------------------------------------------------------------
             # Processing a single document
             # ------------------------------------------------------------------
-            libs.cfg.start_time_document = time.perf_counter_ns()
+            cfg.glob.start_time_document = time.perf_counter_ns()
 
             libs.utils.start_document_processing(
                 document=row,
@@ -537,23 +536,23 @@ def parse_tetml() -> None:
             parse_tetml_file_line()
 
             # Text and metadata from Document successfully extracted to xml format
-            if not libs.cfg.config.is_simulate_parser:
+            if not cfg.glob.setup.is_simulate_parser:
                 duration_ns = libs.utils.finalize_file_processing()
 
-                if libs.cfg.config.is_verbose:
+                if cfg.glob.setup.is_verbose:
                     libs.utils.progress_msg(
                         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-                        f"Document: {libs.cfg.document_id:6d} "
-                        f"[{db.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+                        f"Document: {cfg.glob.document_id:6d} "
+                        f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
                     )
 
         conn.close()
 
-    with db.cfg.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, db.cfg.DOCUMENT_STEP_PARSER_WORD)
+    with cfg.glob.db_orm_engine.connect() as conn:
+        rows = db.dml.select_document(conn, dbt, cfg.glob.DOCUMENT_STEP_PARSER_WORD)
 
         for row in rows:
-            libs.cfg.start_time_document = time.perf_counter_ns()
+            cfg.glob.start_time_document = time.perf_counter_ns()
 
             libs.utils.start_document_processing(
                 document=row,
@@ -562,21 +561,21 @@ def parse_tetml() -> None:
             parse_tetml_file_word()
 
             # Text and metadata from Document successfully extracted to xml format
-            if not libs.cfg.config.is_simulate_parser:
+            if not cfg.glob.setup.is_simulate_parser:
                 duration_ns = libs.utils.finalize_file_processing()
 
-                if libs.cfg.config.is_verbose:
+                if cfg.glob.setup.is_verbose:
                     libs.utils.progress_msg(
                         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-                        f"Document: {libs.cfg.document_id:6d} "
-                        f"[{db.dml.select_document_file_name_id(libs.cfg.document_id)}]"
+                        f"Document: {cfg.glob.document_id:6d} "
+                        f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
                     )
 
         conn.close()
 
     libs.utils.show_statistics_total()
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -587,17 +586,17 @@ def parse_tetml_file_line() -> None:
 
     TBD
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PARSER_LINE
+    cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PARSER_LINE
 
     file_name = os.path.join(
-        libs.cfg.document_directory_name,
-        libs.cfg.document_file_name,
+        cfg.glob.document_directory_name,
+        cfg.glob.document_file_name,
     )
 
-    libs.cfg.config.is_parsing_line = True
-    libs.cfg.config.is_parsing_word = False
+    cfg.glob.setup.is_parsing_line = True
+    cfg.glob.setup.is_parsing_word = False
 
     # Create the Element tree object
     tree = defusedxml.ElementTree.parse(file_name)
@@ -606,17 +605,17 @@ def parse_tetml_file_line() -> None:
     root = tree.getroot()
 
     for child in root:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
         match child_tag:
-            case libs.cfg.PARSE_TAG_DOCUMENT:
+            case cfg.glob.PARSE_TAG_DOCUMENT:
                 parse_tag_document(child_tag, child)
-            case libs.cfg.PARSE_TAG_CREATION:
+            case cfg.glob.PARSE_TAG_CREATION:
                 pass
 
-    if not libs.cfg.config.is_simulate_parser:
+    if not cfg.glob.setup.is_simulate_parser:
         libs.utils.delete_auxiliary_file(file_name)
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -627,17 +626,17 @@ def parse_tetml_file_word() -> None:
 
     TBD
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    libs.cfg.document_current_step = db.cfg.DOCUMENT_STEP_PARSER_WORD
+    cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PARSER_WORD
 
     file_name = os.path.join(
-        libs.cfg.document_directory_name,
-        libs.cfg.document_file_name,
+        cfg.glob.document_directory_name,
+        cfg.glob.document_file_name,
     )
 
-    libs.cfg.config.is_parsing_line = False
-    libs.cfg.config.is_parsing_word = True
+    cfg.glob.setup.is_parsing_line = False
+    cfg.glob.setup.is_parsing_word = True
 
     # Create the Element tree object
     tree = defusedxml.ElementTree.parse(file_name)
@@ -646,14 +645,14 @@ def parse_tetml_file_word() -> None:
     root = tree.getroot()
 
     for child in root:
-        child_tag = child.tag[libs.cfg.PARSE_TAG_FROM :]
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
         match child_tag:
-            case libs.cfg.PARSE_TAG_DOCUMENT:
+            case cfg.glob.PARSE_TAG_DOCUMENT:
                 parse_tag_document(child_tag, child)
-            case libs.cfg.PARSE_TAG_CREATION:
+            case cfg.glob.PARSE_TAG_CREATION:
                 pass
 
-    if not libs.cfg.config.is_simulate_parser:
+    if not cfg.glob.setup.is_simulate_parser:
         libs.utils.delete_auxiliary_file(file_name)
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)

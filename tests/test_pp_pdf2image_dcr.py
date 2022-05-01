@@ -1,6 +1,6 @@
 # pylint: disable=unused-argument
 """Testing Module pp.pdf2image_dcr."""
-import libs.cfg
+import cfg.glob
 import pytest
 
 import dcr
@@ -17,10 +17,10 @@ import dcr
 # -----------------------------------------------------------------------------
 def test_run_action_pdf_2_image_normal_jpeg_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PDF_2_IMAGE - normal - jpeg - keep."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_pdf_2_image_normal_jpeg 1/2 <=========")
+    cfg.glob.logger.info("=========> test_run_action_pdf_2_image_normal_jpeg 1/2 <=========")
 
     stem_name: str = "pdf_scanned_ok"
     file_ext: str = "pdf"
@@ -32,54 +32,54 @@ def test_run_action_pdf_2_image_normal_jpeg_keep(fxtr_rmdir_opt, fxtr_setup_empt
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_pdf_2_image_normal_jpeg 2/2 <=========")
+    cfg.glob.logger.info("=========> test_run_action_pdf_2_image_normal_jpeg 2/2 <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_accepted,
+        cfg.glob.setup.directory_inbox_accepted,
         [],
         [
             stem_name + "_" + str(document_id) + "." + file_ext,
-            stem_name + "_" + str(document_id) + "_1." + libs.cfg.config.pdf2image_type,
+            stem_name + "_" + str(document_id) + "_1." + cfg.glob.setup.pdf2image_type,
         ],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_rejected,
+        cfg.glob.setup.directory_inbox_rejected,
         [],
         [],
     )
 
     # -------------------------------------------------------------------------
-    fxtr_rmdir_opt(libs.cfg.config.directory_inbox_accepted)
+    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
 
     with pytest.raises(SystemExit) as expt:
-        dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+        dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
 
     assert expt.type == SystemExit, "inbox_accepted directory missing"
     assert expt.value.code == 1, "inbox_accepted, directory missing"
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -87,23 +87,23 @@ def test_run_action_pdf_2_image_normal_jpeg_keep(fxtr_rmdir_opt, fxtr_setup_empt
 # -----------------------------------------------------------------------------
 def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PDF_2_IMAGE - normal - jpeg - duplicate."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_pdf_2_image_normal_jpeg_duplicate <=========")
+    cfg.glob.logger.info("=========> test_run_action_pdf_2_image_normal_jpeg_duplicate <=========")
 
     stem_name_1: str = "pdf_scanned_ok"
     file_ext_1: str = "pdf"
 
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], libs.cfg.config.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], cfg.glob.setup.directory_inbox)
 
     stem_name_2: str = "pdf_scanned_ok_1_1"
     file_ext_2: str = "jpeg"
@@ -112,12 +112,12 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
 
     # -------------------------------------------------------------------------
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -125,10 +125,10 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
 # -----------------------------------------------------------------------------
 def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PDF_2_IMAGE - normal - jpeg - duplicate."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_pdf_2_image_normal_png 1/2 <=========")
+    cfg.glob.logger.info("=========> test_run_action_pdf_2_image_normal_png 1/2 <=========")
 
     stem_name: str = "pdf_scanned_ok"
     file_ext: str = "pdf"
@@ -140,43 +140,43 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         [
-            (libs.cfg.config._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (libs.cfg.config._DCR_CFG_PDF2IMAGE_TYPE, libs.cfg.config.PDF2IMAGE_TYPE_PNG),
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.glob.setup._DCR_CFG_PDF2IMAGE_TYPE, cfg.glob.setup.PDF2IMAGE_TYPE_PNG),
         ],
     )
 
-    dcr.main([libs.cfg.DCR_ARGV_0, libs.cfg.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
 
     pytest.helpers.restore_config_params(
-        libs.cfg.config._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION,
         values_original,
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.info("=========> test_run_action_pdf_2_image_normal_png 2/2 <=========")
+    cfg.glob.logger.info("=========> test_run_action_pdf_2_image_normal_png 2/2 <=========")
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox,
+        cfg.glob.setup.directory_inbox,
         [],
         [],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_accepted,
+        cfg.glob.setup.directory_inbox_accepted,
         [],
         [
             stem_name + "_" + str(document_id) + "." + file_ext,
-            stem_name + "_" + str(document_id) + "_1." + libs.cfg.config.PDF2IMAGE_TYPE_PNG,
+            stem_name + "_" + str(document_id) + "_1." + cfg.glob.setup.PDF2IMAGE_TYPE_PNG,
         ],
     )
 
     pytest.helpers.verify_content_of_directory(
-        libs.cfg.config.directory_inbox_rejected,
+        cfg.glob.setup.directory_inbox_rejected,
         [],
         [],
     )
 
     # -------------------------------------------------------------------------
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)

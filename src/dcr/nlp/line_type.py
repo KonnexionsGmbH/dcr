@@ -1,32 +1,30 @@
-"""Module setup.config: Managing the application configuration parameters."""
-# import collections
+"""Module nlp.LineType: Determine footer and header lines."""
 from typing import Dict
 from typing import List
 from typing import Tuple
 
-import db.cfg
+import cfg.glob
 import db.dml
 import db.driver
 import jellyfish
-import libs.cfg
 import libs.utils
 import sqlalchemy
 
 
 # pylint: disable=R0903
 class LineType:
-    """Managing the application configuration parameters.
+    """Determine footer and header lines.
 
     Returns:
-        _type_: Application configuration parameters.
+        _type_: Instance object.
     """
 
     # -----------------------------------------------------------------------------
-    # Initialise and load the application configuration parameters.
+    # Initialise the instance variables.
     # -----------------------------------------------------------------------------
     def __init__(self) -> None:
         """Initialise and load the application configuration parameters."""
-        libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         # [ (line_ind, line_text) ]
         self._line_text_footer_curr: List[Tuple[int, str]] = []
@@ -41,7 +39,7 @@ class LineType:
         # [ (page_no, line_ind, line_type) ]
         self._page_line_type: List[Tuple[int, int, str]] = []
 
-        libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Calculate the Levenshtein distances.
@@ -102,28 +100,28 @@ class LineType:
         Args:
             page_ind_max (_type_): Highest page index.
         """
-        for line in range(libs.cfg.config.line_footer_max_lines):
+        for line in range(cfg.glob.setup.line_footer_max_lines):
             distance_rest = 0
             for page in range(1, page_ind_max):
                 (_, _, distance) = self._page_lines_distance_footer[page][line]
-                if distance > libs.cfg.config.line_footer_max_distance:
+                if distance > cfg.glob.setup.line_footer_max_distance:
                     distance_rest = distance
                     break
 
-            if distance_rest > libs.cfg.config.line_footer_max_distance:
+            if distance_rest > cfg.glob.setup.line_footer_max_distance:
                 continue
 
             (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_footer[0][line]
-            if distance <= libs.cfg.config.line_footer_max_distance:
-                self._page_line_type.append((1, line_ind_prev, db.cfg.DOCUMENT_LINE_TYPE_FOOTER))
+            if distance <= cfg.glob.setup.line_footer_max_distance:
+                self._page_line_type.append((1, line_ind_prev, cfg.glob.DOCUMENT_LINE_TYPE_FOOTER))
 
             for page in range(1, page_ind_max):
                 (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_footer[page][line]
-                self._page_line_type.append((page + 1, line_ind_prev, db.cfg.DOCUMENT_LINE_TYPE_FOOTER))
+                self._page_line_type.append((page + 1, line_ind_prev, cfg.glob.DOCUMENT_LINE_TYPE_FOOTER))
 
             (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_footer[page_ind_max][line]
-            if distance <= libs.cfg.config.line_footer_max_distance:
-                self._page_line_type.append((page_ind_max + 1, line_ind_curr, db.cfg.DOCUMENT_LINE_TYPE_FOOTER))
+            if distance <= cfg.glob.setup.line_footer_max_distance:
+                self._page_line_type.append((page_ind_max + 1, line_ind_curr, cfg.glob.DOCUMENT_LINE_TYPE_FOOTER))
 
     # -----------------------------------------------------------------------------
     # Determine the header lines.
@@ -134,28 +132,28 @@ class LineType:
         Args:
             page_ind_max (_type_): Highest page index.
         """
-        for line in range(libs.cfg.config.line_header_max_lines):
+        for line in range(cfg.glob.setup.line_header_max_lines):
             distance_rest = 0
             for page in range(1, page_ind_max):
                 (_, _, distance) = self._page_lines_distance_header[page][line]
-                if distance > libs.cfg.config.line_header_max_distance:
+                if distance > cfg.glob.setup.line_header_max_distance:
                     distance_rest = distance
                     break
 
-            if distance_rest > libs.cfg.config.line_header_max_distance:
+            if distance_rest > cfg.glob.setup.line_header_max_distance:
                 continue
 
             (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_header[0][line]
-            if distance <= libs.cfg.config.line_header_max_distance:
-                self._page_line_type.append((1, line_ind_prev, db.cfg.DOCUMENT_LINE_TYPE_HEADER))
+            if distance <= cfg.glob.setup.line_header_max_distance:
+                self._page_line_type.append((1, line_ind_prev, cfg.glob.DOCUMENT_LINE_TYPE_HEADER))
 
             for page in range(1, page_ind_max):
                 (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_header[page][line]
-                self._page_line_type.append((page + 1, line_ind_prev, db.cfg.DOCUMENT_LINE_TYPE_HEADER))
+                self._page_line_type.append((page + 1, line_ind_prev, cfg.glob.DOCUMENT_LINE_TYPE_HEADER))
 
             (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_header[page_ind_max][line]
-            if distance <= libs.cfg.config.line_header_max_distance:
-                self._page_line_type.append((page_ind_max + 1, line_ind_curr, db.cfg.DOCUMENT_LINE_TYPE_HEADER))
+            if distance <= cfg.glob.setup.line_header_max_distance:
+                self._page_line_type.append((page_ind_max + 1, line_ind_curr, cfg.glob.DOCUMENT_LINE_TYPE_HEADER))
 
     # -----------------------------------------------------------------------------
     # Process the document related data.
@@ -166,7 +164,7 @@ class LineType:
         Args:
             document_id (sqlalchemy.Integer): Document identification.
         """
-        libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         libs.utils.progress_msg_line_type(
             f"LineType: Value of page_lines_distance_header={self._page_lines_distance_header}"
@@ -182,10 +180,10 @@ class LineType:
 
         page_ind_max -= 1
 
-        if libs.cfg.config.line_header_max_lines > 0:
+        if cfg.glob.setup.line_header_max_lines > 0:
             self.determine_header_lines(page_ind_max)
 
-        if libs.cfg.config.line_footer_max_lines > 0:
+        if cfg.glob.setup.line_footer_max_lines > 0:
             self.determine_footer_lines(page_ind_max)
 
         if len(self._page_line_type) == 0:
@@ -193,7 +191,7 @@ class LineType:
 
         self.update_content_tetml_line(document_id)
 
-        libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Process the page-related data.
@@ -207,9 +205,9 @@ class LineType:
             page_lines (List[Dict[str, int  |  str]]):
                     The lines of the current page.
         """
-        libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        if libs.cfg.config.line_header_max_lines > 0:
+        if cfg.glob.setup.line_header_max_lines > 0:
             self._save_lines_header_curr(
                 page_lines,
             )
@@ -224,7 +222,7 @@ class LineType:
             self._line_text_header_prev = self._line_text_header_curr
             self._line_text_header_curr = []
 
-        if libs.cfg.config.line_footer_max_lines > 0:
+        if cfg.glob.setup.line_footer_max_lines > 0:
             self._save_lines_footer_curr(
                 page_lines,
             )
@@ -239,7 +237,7 @@ class LineType:
             self._line_text_footer_prev = self._line_text_footer_curr
             self._line_text_footer_curr = []
 
-        libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Save the footers of the current page.
@@ -257,19 +255,19 @@ class LineType:
             page_lines (List[Dict[str, int | str]]):
                     All lines of the current page.
         """
-        count = len(page_lines) - libs.cfg.config.line_footer_max_lines
+        count = len(page_lines) - cfg.glob.setup.line_footer_max_lines
 
         self._line_text_footer_curr = []
 
-        for _ in range(libs.cfg.config.line_footer_max_lines):
+        for _ in range(cfg.glob.setup.line_footer_max_lines):
             if count < 0:
-                self._line_text_footer_curr.append((-1, libs.cfg.INFORMATION_NOT_YET_AVAILABLE))
+                self._line_text_footer_curr.append((-1, cfg.glob.INFORMATION_NOT_YET_AVAILABLE))
             else:
                 page_line: Dict[str, int | str] = page_lines[count]
                 self._line_text_footer_curr.append(
                     (
-                        page_line[db.cfg.JSON_NAME_LINE_INDEX_PAGE],
-                        page_line[db.cfg.JSON_NAME_LINE_TEXT],
+                        page_line[cfg.glob.JSON_NAME_LINE_INDEX_PAGE],
+                        page_line[cfg.glob.JSON_NAME_LINE_TEXT],
                     )  # type: ignore
                 )
             count += 1
@@ -301,17 +299,17 @@ class LineType:
 
         self._line_text_header_curr = []
 
-        for ind in range(libs.cfg.config.line_header_max_lines):
+        for ind in range(cfg.glob.setup.line_header_max_lines):
             if ind < page_lines_max:
                 page_line: Dict[str, int | str] = page_lines[ind]
                 self._line_text_header_curr.append(
                     (
-                        page_line[db.cfg.JSON_NAME_LINE_INDEX_PAGE],
-                        page_line[db.cfg.JSON_NAME_LINE_TEXT],
+                        page_line[cfg.glob.JSON_NAME_LINE_INDEX_PAGE],
+                        page_line[cfg.glob.JSON_NAME_LINE_TEXT],
                     )  # type: ignore
                 )
             else:
-                self._line_text_header_curr.append((-1, libs.cfg.INFORMATION_NOT_YET_AVAILABLE))
+                self._line_text_header_curr.append((-1, cfg.glob.INFORMATION_NOT_YET_AVAILABLE))
 
         libs.utils.progress_msg_line_type(
             f"LineType: Value of line_text_header_prev     ={self._line_text_header_prev}"
@@ -350,16 +348,16 @@ class LineType:
 
         libs.utils.progress_msg_line_type(f"LineType: Value of page_line_type sorted     ={self._page_line_type}")
 
-        dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(db.cfg.DBT_CONTENT_TETML_LINE)
+        dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(cfg.glob.DBT_CONTENT_TETML_LINE)
 
-        with db.cfg.db_orm_engine.connect() as conn:
+        with cfg.glob.db_orm_engine.connect() as conn:
             rows = db.dml.select_content_tetml(conn, dbt_content_tetml, document_id)
             for row in rows:
                 content_page_no = row[0]
 
-                libs.cfg.parse_result_page_lines = row[1]
-                print(f"wwe parse_result_page_lines={libs.cfg.parse_result_page_lines}")
-                content_page_lines = libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_PAGE_LINES]
+                cfg.glob.parse_result_page_lines = row[1]
+                print(f"wwe parse_result_page_lines={cfg.glob.parse_result_page_lines}")
+                content_page_lines = cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES]
                 print(f"wwe content_page_lines     ={content_page_lines}")
 
                 is_changed = False
@@ -371,31 +369,31 @@ class LineType:
                         break
 
                     xxx = content_page_lines[line_ind]
-                    line_type_curr = xxx[db.cfg.JSON_NAME_LINE_TYPE]
+                    line_type_curr = xxx[cfg.glob.JSON_NAME_LINE_TYPE]
 
                     if (
-                        line_type_curr == db.cfg.DOCUMENT_LINE_TYPE_FOOTER
-                        and libs.cfg.config.is_line_footer_preferred
-                        or line_type_curr == db.cfg.DOCUMENT_LINE_TYPE_HEADER
-                        and not libs.cfg.config.is_line_footer_preferred
+                        line_type_curr == cfg.glob.DOCUMENT_LINE_TYPE_FOOTER
+                        and cfg.glob.setup.is_line_footer_preferred
+                        or line_type_curr == cfg.glob.DOCUMENT_LINE_TYPE_HEADER
+                        and not cfg.glob.setup.is_line_footer_preferred
                     ):
                         continue
 
-                    content_page_lines[line_ind][db.cfg.JSON_NAME_LINE_TYPE] = line_type
+                    content_page_lines[line_ind][cfg.glob.JSON_NAME_LINE_TYPE] = line_type
 
                     is_changed = True
 
                 if is_changed:
-                    libs.cfg.parse_result_page_lines[db.cfg.JSON_NAME_PAGE_LINES] = content_page_lines
+                    cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES] = content_page_lines
                     db.dml.update_dbt_id(
-                        db.cfg.DBT_CONTENT_TETML_LINE,
+                        cfg.glob.DBT_CONTENT_TETML_LINE,
                         document_id,
                         {
-                            db.cfg.DBC_PAGE_DATA: libs.cfg.parse_result_page_lines,
+                            cfg.glob.DBC_PAGE_DATA: cfg.glob.parse_result_page_lines,
                         },
                     )
                     libs.utils.progress_msg_line_type(
-                        f"LineType: Successful update of page          ={libs.cfg.parse_result_no_pages_in_doc}"
+                        f"LineType: Successful update of page          ={cfg.glob.parse_result_no_pages_in_doc}"
                     )
 
                 # wwe ? print(xxx)
