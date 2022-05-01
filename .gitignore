@@ -9,7 +9,13 @@
 /coverage.xml
 /data/inbox/
 /data/inbox_accepted/
+/data/inbox_dev/
+/data/inbox_dev_accepted/
+/data/inbox_dev_rejected/
 /data/inbox_rejected/
+/data/inbox_test/
+/data/inbox_test_accepted/
+/data/inbox_test_rejected/
 /docs/*.pdf
 /setup.cfg_backup
 /site/

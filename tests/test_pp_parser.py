@@ -149,7 +149,6 @@ def test_run_action_store_from_parser_coverage(verbose_parser: str, fxtr_rmdir_o
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - coverage - LineType.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_store_from_parser_coverage_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - coverage - LineType."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

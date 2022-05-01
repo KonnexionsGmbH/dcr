@@ -151,7 +151,6 @@ def test_create_database(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 # Test disconnect without 'db_orm_engine' and 'db_orm_metadata'.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_disconnect(fxtr_setup_empty_db_and_inbox):
     """Test disconnect without 'db_orm_engine' and 'db_orm_metadata'."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

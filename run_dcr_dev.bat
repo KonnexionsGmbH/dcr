@@ -87,18 +87,18 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["m_p"] (
 )
 
 if ["%DCR_CHOICE_ACTION%"] EQU ["all"] (
-    if exist data\inbox (
-        rd /s /q data\inbox
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE% (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%
     )
-    if exist data\inbox_accepted (
-        rd /s /q data\inbox_accepted
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE%_accepted (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%_accepted
     )
-    if exist data\inbox_rejected (
-        rd /s /q data\inbox_rejected
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE%_rejected (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%_rejected
     )
-    mkdir data\inbox
-    xcopy /E /I /Q tests\inbox data\inbox
-    dir data\inbox
+    mkdir data\inbox_%DCR_ENVIRONMENT_TYPE%
+    xcopy /E /I /Q tests\inbox data\inbox_%DCR_ENVIRONMENT_TYPE%
+    dir data\inbox_%DCR_ENVIRONMENT_TYPE%
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
@@ -126,18 +126,18 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["ocr"] (
 )
 
 if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"] (
-    if exist data\inbox (
-        rd /s /q data\inbox
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE% (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%
     )
-    if exist data\inbox_accepted (
-        rd /s /q data\inbox_accepted
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE%_accepted (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%_accepted
     )
-    if exist data\inbox_rejected (
-        rd /s /q data\inbox_rejected
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE%_rejected (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%_rejected
     )
-    mkdir data\inbox
-    xcopy /E /I /Q tests\inbox data\inbox
-    dir data\inbox
+    mkdir data\inbox_%DCR_ENVIRONMENT_TYPE%
+    xcopy /E /I /Q tests\inbox data\inbox_%DCR_ENVIRONMENT_TYPE%
+    dir data\inbox_%DCR_ENVIRONMENT_TYPE%
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
