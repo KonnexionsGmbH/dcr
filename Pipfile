@@ -25,8 +25,6 @@ toml = "*"
 weasyprint = "*"
 
 [dev-packages]
-# TBD
-#mdx_del_int = "*"
 MyPy = "*"
 PyFlakes = "*"
 Pylint = "*"
@@ -42,6 +40,7 @@ mkdocs-material = "*"
 pycodestyle = "*"
 pydoc-markdown = "*"
 pydocstyle = "*"
+pymdown-extensions = "*"
 pytest-cov = "*"
 pytest-deadfixtures = "*"
 pytest-helpers-namespace = "*"
