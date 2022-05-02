@@ -21,8 +21,6 @@ def connect_db() -> None:
     """Connect to the database."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    print("wwe 100")
-
     prepare_connect_db()
 
     cfg.glob.db_orm_metadata = sqlalchemy.MetaData()
@@ -189,6 +187,7 @@ def drop_database_postgresql() -> None:
 
     try:
         cfg.glob.db_driver_cur.execute("DROP DATABASE IF EXISTS " + database)
+    # not testable
     except psycopg2.errors.ObjectInUse as err:  # pylint: disable=no-member
         utils.terminate_fatal(
             f"The database can currently not be dropped - error={str(err)}",
