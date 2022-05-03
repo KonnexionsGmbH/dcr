@@ -52,7 +52,6 @@ class Setup:
     _DCR_CFG_SIMULATE_PARSER: typing.ClassVar[str] = "simulate_parser"
     _DCR_CFG_SPACY_TKN_ATTR_DEP_: typing.ClassVar[str] = "spacy_tkn_attr_dep_"
     _DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_: typing.ClassVar[str] = "spacy_tkn_attr_ent_iob_"
-    _DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_: typing.ClassVar[str] = "spacy_tkn_attr_ent_kb_id_"
     _DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_: typing.ClassVar[str] = "spacy_tkn_attr_ent_type_"
     _DCR_CFG_SPACY_TKN_ATTR_I: typing.ClassVar[str] = "spacy_tkn_attr_i"
     _DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA: typing.ClassVar[str] = "spacy_tkn_attr_is_alpha"
@@ -71,8 +70,10 @@ class Setup:
     _DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM: typing.ClassVar[str] = "spacy_tkn_attr_like_num"
     _DCR_CFG_SPACY_TKN_ATTR_LIKE_URL: typing.ClassVar[str] = "spacy_tkn_attr_like_url"
     _DCR_CFG_SPACY_TKN_ATTR_NORM_: typing.ClassVar[str] = "spacy_tkn_attr_norm_"
+    _DCR_CFG_SPACY_TKN_ATTR_POS_: typing.ClassVar[str] = "spacy_tkn_attr_pos_"
     _DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE: typing.ClassVar[str] = "spacy_tkn_attr_right_edge"
     _DCR_CFG_SPACY_TKN_ATTR_SHAPE_: typing.ClassVar[str] = "spacy_tkn_attr_shape_"
+    _DCR_CFG_SPACY_TKN_ATTR_TAG_: typing.ClassVar[str] = "spacy_tkn_attr_tag_"
     _DCR_CFG_SPACY_TKN_ATTR_TEXT: typing.ClassVar[str] = "spacy_tkn_attr_text"
     _DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS: typing.ClassVar[str] = "spacy_tkn_attr_text_with_ws"
     _DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_: typing.ClassVar[str] = "spacy_tkn_attr_whitespace_"
@@ -127,7 +128,6 @@ class Setup:
         self.is_simulate_parser: bool = False
         self.is_spacy_tkn_attr_dep_: bool = False
         self.is_spacy_tkn_attr_ent_iob_: bool = False
-        self.is_spacy_tkn_attr_ent_kb_id_: bool = False
         self.is_spacy_tkn_attr_ent_type_: bool = True
         self.is_spacy_tkn_attr_i: bool = True
         self.is_spacy_tkn_attr_is_alpha: bool = False
@@ -146,8 +146,10 @@ class Setup:
         self.is_spacy_tkn_attr_like_num: bool = True
         self.is_spacy_tkn_attr_like_url: bool = True
         self.is_spacy_tkn_attr_norm_: bool = True
+        self.is_spacy_tkn_attr_pos_: bool = True
         self.is_spacy_tkn_attr_right_edge: bool = False
         self.is_spacy_tkn_attr_shape_: bool = False
+        self.is_spacy_tkn_attr_tag_: bool = True
         self.is_spacy_tkn_attr_text: bool = True
         self.is_spacy_tkn_attr_text_with_ws: bool = False
         self.is_spacy_tkn_attr_whitespace_: bool = True
@@ -185,7 +187,6 @@ class Setup:
         self._check_config_simulate_parser()
         self._check_config_spacy_tkn_attr_dep_()
         self._check_config_spacy_tkn_attr_ent_iob_()
-        self._check_config_spacy_tkn_attr_ent_kb_id_()
         self._check_config_spacy_tkn_attr_ent_type_()
         self._check_config_spacy_tkn_attr_i()
         self._check_config_spacy_tkn_attr_is_alpha()
@@ -204,8 +205,10 @@ class Setup:
         self._check_config_spacy_tkn_attr_like_num()
         self._check_config_spacy_tkn_attr_like_url()
         self._check_config_spacy_tkn_attr_norm_()
+        self._check_config_spacy_tkn_attr_pos_()
         self._check_config_spacy_tkn_attr_right_edge()
         self._check_config_spacy_tkn_attr_shape_()
+        self._check_config_spacy_tkn_attr_tag_()
         self._check_config_spacy_tkn_attr_text()
         self._check_config_spacy_tkn_attr_text_with_ws()
         self._check_config_spacy_tkn_attr_whitespace_()
@@ -325,15 +328,6 @@ class Setup:
         if Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_ in self._config:
             if str(self._config[Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_]).lower() == "true":
                 self.is_spacy_tkn_attr_ent_iob_ = True
-
-    # -----------------------------------------------------------------------------
-    # Check the configuration parameter - spacy_tkn_attr_ent_kb_id_.
-    # -----------------------------------------------------------------------------
-    def _check_config_spacy_tkn_attr_ent_kb_id_(self) -> None:
-        """Check the configuration parameter - spacy_tkn_attr_ent_kb_id_."""
-        if Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_ in self._config:
-            if str(self._config[Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_]).lower() == "true":
-                self.is_spacy_tkn_attr_ent_kb_id_ = True
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - ent_type_.
@@ -498,6 +492,15 @@ class Setup:
                 self.is_spacy_tkn_attr_norm_ = False
 
     # -----------------------------------------------------------------------------
+    # Check the configuration parameter - pos_.
+    # -----------------------------------------------------------------------------
+    def _check_config_spacy_tkn_attr_pos_(self) -> None:
+        """Check the configuration parameter - pos_."""
+        if Setup._DCR_CFG_SPACY_TKN_ATTR_POS_ in self._config:
+            if str(self._config[Setup._DCR_CFG_SPACY_TKN_ATTR_POS_]).lower() == "false":
+                self.is_spacy_tkn_attr_pos_ = False
+
+    # -----------------------------------------------------------------------------
     # Check the configuration parameter - spacy_tkn_attr_right_edge.
     # -----------------------------------------------------------------------------
     def _check_config_spacy_tkn_attr_right_edge(self) -> None:
@@ -514,6 +517,15 @@ class Setup:
         if Setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_ in self._config:
             if str(self._config[Setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_]).lower() == "true":
                 self.is_spacy_tkn_attr_shape_ = True
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - tag_.
+    # -----------------------------------------------------------------------------
+    def _check_config_spacy_tkn_attr_tag_(self) -> None:
+        """Check the configuration parameter - tag_."""
+        if Setup._DCR_CFG_SPACY_TKN_ATTR_TAG_ in self._config:
+            if str(self._config[Setup._DCR_CFG_SPACY_TKN_ATTR_TAG_]).lower() == "false":
+                self.is_spacy_tkn_attr_tag_ = False
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - text.
@@ -691,7 +703,6 @@ class Setup:
                     | Setup._DCR_CFG_SIMULATE_PARSER
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_I
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA
@@ -710,8 +721,10 @@ class Setup:
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_NORM_
+                    | Setup._DCR_CFG_SPACY_TKN_ATTR_POS_
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_
+                    | Setup._DCR_CFG_SPACY_TKN_ATTR_TAG_
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_

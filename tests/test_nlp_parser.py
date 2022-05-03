@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module pp.parser."""
+"""Testing Module nlp.parser."""
 import typing
 
 import cfg.glob
@@ -105,6 +105,7 @@ def test_run_action_store_from_parser_coverage(verbose_parser: str, fxtr_rmdir_o
             (cfg.glob.setup._DCR_CFG_VERBOSE_PARSER, verbose_parser),
             (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
             (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.glob.setup._DCR_CFG_VERBOSE_LINE_TYPE, "true"),
         ],
     )
 

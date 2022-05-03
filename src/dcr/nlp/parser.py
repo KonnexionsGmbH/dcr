@@ -1,4 +1,4 @@
-"""Module pp.parser: Store the document structure from the parser result."""
+"""Module nlp.parser: Store the document structure from the parser result."""
 import datetime
 import os
 import time
@@ -185,6 +185,27 @@ def parse_tag_box(parent_tag: str, parent: typing.Iterable[str]) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Processing tag Cell.
+# -----------------------------------------------------------------------------
+def parse_tag_cell(parent_tag: str, parent: typing.Iterable[str]) -> None:
+    """Processing tag 'Cell'.
+
+    Args:
+        parent_tag (str): Parent tag.
+        parent (Iterable[str): Parent data structure.
+    """
+    debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+
+    for child in parent:
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
+        match child_tag:
+            case cfg.glob.PARSE_TAG_PARA:
+                parse_tag_para(child_tag, child)
+
+    debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+
+
+# -----------------------------------------------------------------------------
 # Processing tag 'Content'.
 # -----------------------------------------------------------------------------
 def parse_tag_content(parent_tag: str, parent: typing.Iterable[str]) -> None:
@@ -201,7 +222,11 @@ def parse_tag_content(parent_tag: str, parent: typing.Iterable[str]) -> None:
         match child_tag:
             case cfg.glob.PARSE_TAG_PARA:
                 parse_tag_para(child_tag, child)
-            case (cfg.glob.PARSE_TAG_PLACED_IMAGE | cfg.glob.PARSE_TAG_TABLE):
+            case cfg.glob.PARSE_TAG_TABLE:
+                parse_tag_table(child_tag, child)
+            # not testablerun_dcr_dev db_c
+
+            case cfg.glob.PARSE_TAG_PLACED_IMAGE:
                 pass
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -441,6 +466,48 @@ def parse_tag_para(parent_tag: str, parent: typing.Iterable[str]) -> None:
                 parse_tag_box(child_tag, child)
 
     cfg.glob.parse_result_para_index_page += 1
+
+    debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+
+
+# -----------------------------------------------------------------------------
+# Processing tag Row.
+# -----------------------------------------------------------------------------
+def parse_tag_row(parent_tag: str, parent: typing.Iterable[str]) -> None:
+    """Processing tag 'Row'.
+
+    Args:
+        parent_tag (str): Parent tag.
+        parent (Iterable[str): Parent data structure.
+    """
+    debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+
+    for child in parent:
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
+        match child_tag:
+            case cfg.glob.PARSE_TAG_CELL:
+                parse_tag_cell(child_tag, child)
+
+    debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+
+
+# -----------------------------------------------------------------------------
+# Processing tag Table.
+# -----------------------------------------------------------------------------
+def parse_tag_table(parent_tag: str, parent: typing.Iterable[str]) -> None:
+    """Processing tag 'Table'.
+
+    Args:
+        parent_tag (str): Parent tag.
+        parent (Iterable[str): Parent data structure.
+    """
+    debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+
+    for child in parent:
+        child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
+        match child_tag:
+            case cfg.glob.PARSE_TAG_ROW:
+                parse_tag_row(child_tag, child)
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 

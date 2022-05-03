@@ -57,10 +57,6 @@ def get_token_attributes(token: spacy.tokens.Token) -> typing.Dict[str, bool | i
         if token.ent_iob_ != "":
             token_attr[cfg.glob.JSON_NAME_TOKEN_ENT_IOB_] = token.ent_iob_
 
-    if cfg.glob.setup.is_spacy_tkn_attr_ent_kb_id_:
-        if token.ent_kb_id_ != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_ENT_KB_ID_] = token.ent_kb_id_
-
     if cfg.glob.setup.is_spacy_tkn_attr_ent_type_:
         if token.ent_type_ != "":
             token_attr[cfg.glob.JSON_NAME_TOKEN_ENT_TYPE_] = token.ent_type_
@@ -109,8 +105,8 @@ def get_token_attributes(token: spacy.tokens.Token) -> typing.Dict[str, bool | i
             token_attr[cfg.glob.JSON_NAME_TOKEN_LANG_] = token.lang_
 
     if cfg.glob.setup.is_spacy_tkn_attr_left_edge:
-        if token.left_edge != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_LEFT_EDGE] = token.left_edge
+        if token.left_edge.text is not None:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_LEFT_EDGE] = token.left_edge.text
 
     if cfg.glob.setup.is_spacy_tkn_attr_lemma_:
         if token.lemma_ != "":
@@ -132,13 +128,21 @@ def get_token_attributes(token: spacy.tokens.Token) -> typing.Dict[str, bool | i
         if token.norm_ != "":
             token_attr[cfg.glob.JSON_NAME_TOKEN_NORM_] = token.norm_
 
+    if cfg.glob.setup.is_spacy_tkn_attr_pos_:
+        if token.pos_ != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_POS_] = token.pos_
+
     if cfg.glob.setup.is_spacy_tkn_attr_right_edge:
-        if token.right_edge != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_RIGHT_EDGE] = token.right_edge
+        if token.right_edge is not None:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_RIGHT_EDGE] = token.right_edge.text
 
     if cfg.glob.setup.is_spacy_tkn_attr_shape_:
         if token.shape_ != "":
             token_attr[cfg.glob.JSON_NAME_TOKEN_SHAPE_] = token.shape_
+
+    if cfg.glob.setup.is_spacy_tkn_attr_tag_:
+        if token.tag_ != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_TAG_] = token.tag_
 
     if cfg.glob.setup.is_spacy_tkn_attr_text:
         if token.text != "":

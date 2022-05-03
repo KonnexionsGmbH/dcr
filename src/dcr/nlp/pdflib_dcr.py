@@ -1,4 +1,4 @@
-"""Module pp.pdflib_dcr: Extract text from pdf documents."""
+"""Module nlp.pdflib_dcr: Extract text from pdf documents."""
 import os
 import time
 

@@ -143,18 +143,6 @@ ERROR_61_903: str
 FILE_ENCODING_DEFAULT: str
 
 INFORMATION_NOT_YET_AVAILABLE: str
-
-LOCALE: str
-LOGGER_CFG_FILE: str
-LOGGER_END: str
-LOGGER_FATAL_HEAD: str
-LOGGER_FATAL_TAIL: str
-LOGGER_PROGRESS_UPDATE: str
-LOGGER_START: str
-
-OS_NT: str
-OS_POSIX: str
-
 JSON_NAME_API_VERSION: str
 JSON_NAME_COLUMN_NAME: str
 JSON_NAME_COLUMN_VALUE: str
@@ -182,7 +170,6 @@ JSON_NAME_TABLE_NAME: str
 
 JSON_NAME_TOKEN_DEP_: str
 JSON_NAME_TOKEN_ENT_IOB_: str
-JSON_NAME_TOKEN_ENT_KB_ID_: str
 JSON_NAME_TOKEN_ENT_TYPE_: str
 JSON_NAME_TOKEN_I: str
 JSON_NAME_TOKEN_IS_ALPHA: str
@@ -201,8 +188,10 @@ JSON_NAME_TOKEN_LIKE_EMAIL: str
 JSON_NAME_TOKEN_LIKE_NUM: str
 JSON_NAME_TOKEN_LIKE_URL: str
 JSON_NAME_TOKEN_NORM_: str
+JSON_NAME_TOKEN_POS_: str
 JSON_NAME_TOKEN_RIGHT_EDGE: str
 JSON_NAME_TOKEN_SHAPE_: str
+JSON_NAME_TOKEN_TAG_: str
 JSON_NAME_TOKEN_TEXT: str
 JSON_NAME_TOKEN_TEXT_WITH_WS: str
 JSON_NAME_TOKEN_WHITESPACE_: str
@@ -212,6 +201,17 @@ JSON_NAME_WORD_INDEX_PAGE: str
 JSON_NAME_WORD_INDEX_PARA: str
 JSON_NAME_WORD_TEXT: str
 
+LOCALE: str
+LOGGER_CFG_FILE: str
+LOGGER_END: str
+LOGGER_FATAL_HEAD: str
+LOGGER_FATAL_TAIL: str
+LOGGER_PROGRESS_UPDATE: str
+LOGGER_START: str
+
+OS_NT: str
+OS_POSIX: str
+
 PARSE_NAME_SPACE: str
 
 PARSE_TAG_ACTION: str
@@ -220,6 +220,7 @@ PARSE_TAG_ATTACHMENTS: str
 PARSE_TAG_AUTHOR: str
 PARSE_TAG_BOOKMARKS: str
 PARSE_TAG_BOX: str
+PARSE_TAG_CELL: str
 PARSE_TAG_CONTENT: str
 PARSE_TAG_CREATION: str
 PARSE_TAG_CREATION_DATE: str
@@ -245,6 +246,7 @@ PARSE_TAG_PARA: str
 PARSE_TAG_PLACED_IMAGE: str
 PARSE_TAG_PRODUCER: str
 PARSE_TAG_RESOURCES: str
+PARSE_TAG_ROW: str
 PARSE_TAG_SIGNATURE_FIELDS: str
 PARSE_TAG_TABLE: str
 PARSE_TAG_TEXT: str
@@ -359,7 +361,6 @@ setup: typing.Type[cfg.setup.Setup]
 
 spacy_tkn_attr_dep_: bool
 spacy_tkn_attr_ent_iob_: bool
-spacy_tkn_attr_ent_kb_id_: bool
 spacy_tkn_attr_ent_type_: bool
 spacy_tkn_attr_i: bool
 spacy_tkn_attr_is_alpha: bool
@@ -378,8 +379,10 @@ spacy_tkn_attr_like_email: bool
 spacy_tkn_attr_like_num: bool
 spacy_tkn_attr_like_url: bool
 spacy_tkn_attr_norm_: bool
+spacy_tkn_attr_pos_: bool
 spacy_tkn_attr_right_edge: bool
 spacy_tkn_attr_shape_: bool
+spacy_tkn_attr_tag_: bool
 spacy_tkn_attr_text: bool
 spacy_tkn_attr_text_with_ws: bool
 spacy_tkn_attr_whitespace_: bool

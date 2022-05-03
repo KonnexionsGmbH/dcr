@@ -13,12 +13,12 @@ import cfg.glob
 import cfg.setup
 import db.dml
 import db.driver
+import nlp.parser
+import nlp.pdflib_dcr
 import nlp.tokenizer
 import pp.inbox
 import pp.pandoc_dcr
-import pp.parser
 import pp.pdf2image_dcr
-import pp.pdflib_dcr
 import pp.tesseract_dcr
 import sqlalchemy
 import utils
@@ -453,7 +453,7 @@ def process_extract_text_from_pdf() -> None:
             cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_START,
         },
     )
-    pp.pdflib_dcr.extract_text_from_pdf()
+    nlp.pdflib_dcr.extract_text_from_pdf()
     db.dml.update_dbt_id(
         cfg.glob.DBT_RUN,
         cfg.glob.run_id,
@@ -519,7 +519,7 @@ def process_store_from_parser() -> None:
         },
     )
 
-    pp.parser.parse_tetml()
+    nlp.parser.parse_tetml()
 
     db.dml.update_dbt_id(
         cfg.glob.DBT_RUN,
