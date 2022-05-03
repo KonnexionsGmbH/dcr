@@ -3,8 +3,6 @@
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 
-----
-
 ## 1. License
 
 In case of software changes we strongly recommend you to respect the license terms.

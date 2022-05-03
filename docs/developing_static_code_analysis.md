@@ -3,8 +3,6 @@
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 
-----
-
 The tools **`Bandit`**, **`Flake8`**, **`Mypy`** and **`Pylint`** are used for static code analysis:
 
 - [Bandit](https://bandit.readthedocs.io/en/latest){:target="_blank"} - **`Bandit`** is a tool designed to find common security issues in **`Python`** code.

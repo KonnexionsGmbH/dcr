@@ -3,8 +3,6 @@
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 
-----
-
 ## 1. Overview
 
 Data storage is realised with the relational database management system [PostgreSQL](https://www.postgresql.org){:target="_blank"}. 

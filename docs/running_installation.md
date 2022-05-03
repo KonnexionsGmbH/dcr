@@ -3,8 +3,6 @@
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 
-----
-
 1. Clone or copy the **DCR** repository from [here](https://github.com/KonnexionsGmbH/dcr){:target="_blank"}.
 
 2. Switch to the file directory **DCR**:

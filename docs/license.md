@@ -3,8 +3,6 @@
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 
-----
-
                            Konnexions Public License (KX-PL)
                                Version 2020.05, May 2020
 [pdf Version](https://github.com/KonnexionsGmbH/shared_resources/blob/master/License/KX-PL-2020.05.pdf){:target="_blank"}

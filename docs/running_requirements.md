@@ -3,8 +3,6 @@
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 
-----
-
 ## 1. Operating System
 
 Continuous delivery / integration (CD/CI) runs on **`Ubunto 20.04`**, **`Ubuntu 22.04`**~~, **`Windows Server 2019`** and **`Windows Server 2022`**~~.

@@ -3,8 +3,6 @@
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 
-----
-
 ## Version 0.9.0
 
 Release Date: 06.04.2022
@@ -56,8 +54,6 @@ Release Date: 06.04.2022
 | [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm){:target="_blank"} | 2.5.4   | base version             |        |
 | [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} | 3.81    | base version             |        |
 | [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}   | 4.2.1   | base version             |        |
-
-----
 
 ## Version 0.8.0
 
@@ -111,8 +107,6 @@ Release Date: 18.03.2022
 | [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} | 3.81    | base version             |        |
 | [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}   | 4.2.1   | base version             |        |
 
-----
-
 ## Version 0.7.0
 
 Release Date: 15.03.2022
@@ -164,8 +158,6 @@ Release Date: 15.03.2022
 | [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} | 3.81    | base version             |        |
 | [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}   | 4.2.1   | base version             |        |
 
-----
-
 ## Version 0.6.5
 
 Release Date: 10.03.2022
@@ -216,8 +208,6 @@ Release Date: 10.03.2022
 | [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} | 3.81    | base version             |        |
 | [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}   | 4.2.1   | base version             |        |
 
-----
-
 ## Version 0.6.0
 
 Release Date: 04.03.2022
@@ -264,8 +254,6 @@ Release Date: 04.03.2022
 | [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm){:target="_blank"} | 2.5.4   | base version             | new    |
 | [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} | 3.81    | base version             | new    |
 | [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}   | 4.2.1   | base version             | new    |
-
-----
 
 ## Version 0.5.0
 

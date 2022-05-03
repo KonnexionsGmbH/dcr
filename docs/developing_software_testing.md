@@ -3,8 +3,6 @@
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 
-----
-
 [pytest](https://github.com/pytest-dev/pytest){:target="_blank"} is used as a software testing framework with the following plugins::
 
 - [pytest-cov](https://github.com/pytest-dev/pytest-cov){:target="_blank"} for coverage reporting,

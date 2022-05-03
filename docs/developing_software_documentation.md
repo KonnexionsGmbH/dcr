@@ -3,8 +3,6 @@
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 
-----
-
 ### 1. API Documentation
 
 The creation of API documentation for functions, modules and packages is mandatory and enforced with the static analysis tool [pydocstyle](https://github.com/PyCQA/pydocstyle){:target="_blank"}.
