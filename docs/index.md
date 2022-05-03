@@ -7,7 +7,7 @@
 
 ## 1. Introduction
 
-Based on the paper "Unfolding the Structure of a Document using Deep Learning" ([Rahman and Finin, 2019](developing_research_notes.md#Rahman){:target="_blank"}), this software project attempts to automatically recognize the structure in arbitrary **`pdf`** documents and thus make them better searchable in a more qualified manner.
+Based on the paper "Unfolding the Structure of a Document using Deep Learning" (**[Rahman and Finin, 2019](https://konnexionsgmbh.github.io/dcr/research/#rahman-m-finin-t-2019)**), this software project attempts to use various software techniques to automatically recognise the structure in any **`pdf`** documents and thus make them more searchable.
 
 The processing logic is as follows:
 
@@ -16,14 +16,14 @@ The processing logic is as follows:
 - Documents not in **`pdf`** format are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
 - Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to **`pdf`** format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. **`jpeg`**, **`tiff`** etc., as well as scanned images in **`pdf`** format.  
 - From all **`pdf`** documents, the text and associated metadata is extracted into a document-specific **`xml`** file using [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"}.
-- The document-specific **`xml`** files are then parsed and the **DCR**-relevant contents are written to the database tables **`content`** and  **`document`**. 
+- The document-specific **`xml`** files are then parsed and the **DCR**-relevant contents are written to the database tables **`content_tetml_line`**,  **`content_tetml_page`**,  **`content_tetml_word`** and  and  **`document`**. 
+- Based on the previously created **`xml`** files, [SpaCy](https://spacy.io){:target="_blank"} extracts qualified tokens and stores them in the database table **`content_token`**.
+
+<div style="page-break-after: always;"></div>
 
 ### 1.1 Rahman & Finin Paper
 
 ![](img/index_rahman_finin.png)
-
-<div style="page-break-after: always;"></div>
-
 ### 1.2 Supported File Types
 
 **DCR** can handle the following file types based on the file extension:
@@ -52,10 +52,9 @@ The processing logic is as follows:
 
 ### 2.1 Preprocessor
 
-
 ### 2.1.1 Preprocessor Architecture
 
-![](img/index_dcr_Overview.png)
+![](img/architecture_preprocessor.png)
 
 ### 2.1.2 Process the inbox directory (step: **`p_i`**)
 
@@ -121,28 +120,55 @@ After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract
 
 ### 2.1.4 Convert appropriate image documents to **`pdf`** files (step: **`ocr`**)
 
-This processing step only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.3.
-In this processing step, the document types listed in section 2.1.3 are converted to **`pdf`** format 
-using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
+This processing step only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.3.
+In this processing step, the documents of this document types are converted to the **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
 
 After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, the files split in the previous processing step are combined into a single **`pdf`** document.
 
-### 2.1.5 Convert appropriate non-pdf documents to **`pdf`** files (step: **`n_2_p`**)
+### 2.1.5 Convert appropriate non-**`pdf`** documents to **`pdf`** files (step: **`n_2_p`**)
 
-This processing step only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.
-In this processing step, the document types listed in section 2.1.2 are converted to **`pdf`** format 
-using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
+This processing step only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.2.
+In this processing step, the documents of this document types are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
 
-### 2.1.6 Extract text from **`pdf`** documents (step: **`tet`**)
+### 2.2 Natural Language Processing (NLP)
+
+### 2.2.1 NLP Architecture
+
+![](img/architecture_nlp.png)
+
+### 2.2.2 Extract text from **`pdf`** documents (step: **`tet`**)
+
+In this processing step, the text of the **`pdf`** documents from sections 2.1.2.1, 2.1.4 and 2.1.5 are extracted and written to **`xml`** files in **`tetml`** format for each document.
+The [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} library is used for this purpose.
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`xml`** files (child documents).
+In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
+
+Depending on the configuration parameters **`tetml_line`**, **`tetml_page`** and **`tetml_word`**, up to three different **`xml`** files with different granularity can be created per document:
+
+- **`tetml_line`**: granularity document lines,
+- **`tetml_page`**: granularity document pages, and
+- **`tetml_word`**: granularity document words.
+
+The word variant is optional, but at least one of the variants line and page must be selected.
+
+<div style="page-break-after: always;"></div>
+
+### 2.2.3 Store the parser result in the database (step: **`s_f_p`**)
 
 In this processing step, the text of the **`pdf`** documents from 2.1.1, 2.3 and 2.4 are extracted and written to an **`xml`** file in **`tetml`** format for each document.
 The [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} library is used for this purpose.
 In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`xml`** file (child document).
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
 
-### 2.2 TBD ...
+### 2.2.4 Create qualified document tokens (step: **`tkn`**)
+
+In this processing step, the text of the **`pdf`** documents from 2.1.1, 2.3 and 2.4 are extracted and written to an **`xml`** file in **`tetml`** format for each document.
+The [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} library is used for this purpose.
+In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`xml`** file (child document).
+In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
+
 

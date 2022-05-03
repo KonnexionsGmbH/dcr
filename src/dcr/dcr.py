@@ -75,7 +75,7 @@ def get_args(argv: typing.List[str]) -> dict[str, bool]:
         ocr   - Convert image documents to pdf files:               Tesseract OCR / Tex Live.
         p_2_i - Convert pdf documents to image files:               pdf2image / Poppler.
         p_i   - Process the inbox directory.
-        s_f_p - Store the document structure from the parser result.
+        s_f_p - Store the parser result in the database.
         tet   - Extract text and metadata from pdf documents:       PDFlib TET.
         tkn   - Create document tokens:                             SpaCy.
 

@@ -100,6 +100,10 @@ class LineType:
         Args:
             page_ind_max (_type_): Highest page index.
         """
+        utils.progress_msg_line_type(
+            f"LineType: Value of page_lines_distance_footer={self._page_lines_distance_footer}"
+        )
+
         for line in range(cfg.glob.setup.line_footer_max_lines):
             distance_rest = 0
             for page in range(1, page_ind_max):
@@ -115,6 +119,9 @@ class LineType:
             (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_footer[0][line]
             if distance <= cfg.glob.setup.line_footer_max_distance:
                 self._page_line_type.append((1, line_ind_prev, cfg.glob.DOCUMENT_LINE_TYPE_FOOTER))
+
+            if page_ind_max == 1:
+                continue
 
             for page in range(1, page_ind_max + 1):
                 (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_footer[page][line]
@@ -133,6 +140,10 @@ class LineType:
         Args:
             page_ind_max (_type_): Highest page index.
         """
+        utils.progress_msg_line_type(
+            f"LineType: Value of page_lines_distance_header={self._page_lines_distance_header}"
+        )
+
         for line in range(cfg.glob.setup.line_header_max_lines):
             distance_rest = 0
             for page in range(1, page_ind_max):
@@ -148,6 +159,9 @@ class LineType:
             (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_header[0][line]
             if distance <= cfg.glob.setup.line_header_max_distance:
                 self._page_line_type.append((1, line_ind_prev, cfg.glob.DOCUMENT_LINE_TYPE_HEADER))
+
+            if page_ind_max == 1:
+                continue
 
             for page in range(1, page_ind_max + 1):
                 (line_ind_prev, line_ind_curr, distance) = self._page_lines_distance_header[page][line]
@@ -167,13 +181,6 @@ class LineType:
             document_id (sqlalchemy.Integer): Document identification.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-        utils.progress_msg_line_type(
-            f"LineType: Value of page_lines_distance_header={self._page_lines_distance_header}"
-        )
-        utils.progress_msg_line_type(
-            f"LineType: Value of page_lines_distance_footer={self._page_lines_distance_footer}"
-        )
 
         page_ind_max = len(self._page_lines_distance_header)
 

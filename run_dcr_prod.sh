@@ -19,13 +19,13 @@ if [ -z "$1" ]; then
     echo "all   - Run the complete processing of all new documents."
     echo "------------------------------------------------------------------------------"
     echo "p_i   - 1. Process the inbox directory."
-    echo "p_2_i - 2. Convert pdf documents to image files:               pdf2image / Poppler."
-    echo "ocr   - 3. Convert image documents to pdf files:               Tesseract OCR / Tex Live."
-    echo "n_2_p - 2. Convert non-pdf documents to pdf files:             Pandoc."
-    echo "tet   - 4. Extract text and metadata from pdf documents:       PDFlib TET."
-    echo "s_f_p - 5. Store the document structure from the parser result."
+    echo "p_2_i - 2. Convert pdf documents to image files:         pdf2image / Poppler."
+    echo "ocr   - 3. Convert image documents to pdf files:         Tesseract OCR / Tex Live."
+    echo "n_2_p - 2. Convert non-pdf documents to pdf files:       Pandoc."
     echo "------------------------------------------------------------------------------"
-    echo "tkn   - 6. Create document tokens:                             SpaCy."
+    echo "tet   - 4. Extract text and metadata from pdf documents: PDFlib TET."
+    echo "s_f_p - 5. Store the parser result in the database."
+    echo "tkn   - 6. Create qualified document tokens.             SpaCy."
     echo "------------------------------------------------------------------------------"
     echo "db_c  - Create the database."
     echo "db_u  - Upgrade the database."
@@ -90,7 +90,7 @@ case "${DCR_CHOICE_ACTION}" in
   all|db_c|db_u|n_2_p|ocr|p_i|p_2_i|s_f_p|tet|tkn)
     case "${DCR_CHOICE_ACTION}" in
       p_2_i)
-        export DCR_CHOICE_ACTION=p_i ${DCR_CHOICE_ACTION}
+        export DCR_CHOICE_ACTION=p_i ${DCR_CHOICE_ACTION?}
         ;;
       ocr)
         export DCR_CHOICE_ACTION=p_i p_2_i ${DCR_CHOICE_ACTION}

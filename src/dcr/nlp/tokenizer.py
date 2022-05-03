@@ -7,10 +7,13 @@ import typing
 import cfg.glob
 import db.dml
 import spacy
+import spacy.tokens
 import sqlalchemy
 import utils
 
 
+# pylint: disable=R0912
+# pylint: disable=R0915
 # -----------------------------------------------------------------------------
 # Extract the text from the page lines.
 # -----------------------------------------------------------------------------
@@ -30,6 +33,126 @@ def get_text_from_page_lines(page_data: typing.Dict[str, str | typing.List[typin
             text_lines.append(page_line[cfg.glob.JSON_NAME_LINE_TEXT])
 
     return "\n".join(text_lines)
+
+
+# -----------------------------------------------------------------------------
+# Determine the requested token attributes.
+# -----------------------------------------------------------------------------
+def get_token_attributes(token: spacy.tokens.Token) -> typing.Dict[str, bool | int | str]:  # noqa: C901
+    """Determine the requested token attributes.
+
+    Args:
+        token (spacy.tokens.Token): SpaCy token.
+
+    Returns:
+        typing.Dict[str, bool | int | str]: Requested token attributes.
+    """
+    token_attr = {}
+
+    if cfg.glob.setup.is_spacy_tkn_attr_dep_:
+        if token.dep_ != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_DEP_] = token.dep_
+
+    if cfg.glob.setup.is_spacy_tkn_attr_ent_iob_:
+        if token.ent_iob_ != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_ENT_IOB_] = token.ent_iob_
+
+    if cfg.glob.setup.is_spacy_tkn_attr_ent_kb_id_:
+        if token.ent_kb_id_ != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_ENT_KB_ID_] = token.ent_kb_id_
+
+    if cfg.glob.setup.is_spacy_tkn_attr_ent_type_:
+        if token.ent_type_ != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_ENT_TYPE_] = token.ent_type_
+
+    if cfg.glob.setup.is_spacy_tkn_attr_i:
+        token_attr[cfg.glob.JSON_NAME_TOKEN_I] = token.i
+
+    if cfg.glob.setup.is_spacy_tkn_attr_is_alpha:
+        if token.is_alpha:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_ALPHA] = token.is_alpha
+
+    if cfg.glob.setup.is_spacy_tkn_attr_is_currency:
+        if token.is_currency:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_CURRENCY] = token.is_currency
+
+    if cfg.glob.setup.is_spacy_tkn_attr_is_digit:
+        if token.is_digit:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_DIGIT] = token.is_digit
+
+    if cfg.glob.setup.is_spacy_tkn_attr_is_oov:
+        if token.is_oov:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_OOV] = token.is_oov
+
+    if cfg.glob.setup.is_spacy_tkn_attr_is_punct:
+        if token.is_punct:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_PUNCT] = token.is_punct
+
+    if cfg.glob.setup.is_spacy_tkn_attr_is_sent_end:
+        if token.is_sent_end:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_SENT_END] = token.is_sent_end
+
+    if cfg.glob.setup.is_spacy_tkn_attr_is_sent_start:
+        if token.is_sent_start:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_SENT_START] = token.is_sent_start
+
+    if cfg.glob.setup.is_spacy_tkn_attr_is_stop:
+        if token.is_stop:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_STOP] = token.is_stop
+
+    if cfg.glob.setup.is_spacy_tkn_attr_is_title:
+        if token.is_title:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_TITLE] = token.is_title
+
+    if cfg.glob.setup.is_spacy_tkn_attr_lang_:
+        if token.lang_ != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_LANG_] = token.lang_
+
+    if cfg.glob.setup.is_spacy_tkn_attr_left_edge:
+        if token.left_edge != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_LEFT_EDGE] = token.left_edge
+
+    if cfg.glob.setup.is_spacy_tkn_attr_lemma_:
+        if token.lemma_ != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_LEMMA_] = token.lemma_
+
+    if cfg.glob.setup.is_spacy_tkn_attr_like_email:
+        if token.like_email:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_LIKE_EMAIL] = token.like_email
+
+    if cfg.glob.setup.is_spacy_tkn_attr_like_num:
+        if token.like_num:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_LIKE_NUM] = token.like_num
+
+    if cfg.glob.setup.is_spacy_tkn_attr_like_url:
+        if token.like_url:
+            token_attr[cfg.glob.JSON_NAME_TOKEN_LIKE_URL] = token.like_url
+
+    if cfg.glob.setup.is_spacy_tkn_attr_norm_:
+        if token.norm_ != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_NORM_] = token.norm_
+
+    if cfg.glob.setup.is_spacy_tkn_attr_right_edge:
+        if token.right_edge != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_RIGHT_EDGE] = token.right_edge
+
+    if cfg.glob.setup.is_spacy_tkn_attr_shape_:
+        if token.shape_ != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_SHAPE_] = token.shape_
+
+    if cfg.glob.setup.is_spacy_tkn_attr_text:
+        if token.text != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_TEXT] = token.text
+
+    if cfg.glob.setup.is_spacy_tkn_attr_text_with_ws:
+        if token.text_with_ws != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_TEXT_WITH_WS] = token.text_with_ws
+
+    if cfg.glob.setup.is_spacy_tkn_attr_whitespace_:
+        if token.whitespace_ != "":
+            token_attr[cfg.glob.JSON_NAME_TOKEN_WHITESPACE_] = token.whitespace_
+
+    return token_attr
 
 
 # -----------------------------------------------------------------------------
@@ -111,19 +234,7 @@ def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> Non
             text = get_text_from_page_lines(row[2]) if cfg.glob.setup.is_tetml_line else row[2]
 
             for token in nlp(text):
-                page_tokens.append(
-                    {
-                        cfg.glob.JSON_NAME_TOKEN_TEXT: token.text,
-                        cfg.glob.JSON_NAME_TOKEN_INDEX: token.i,
-                        cfg.glob.JSON_NAME_TOKEN_LEMMA: token.lemma_,
-                        cfg.glob.JSON_NAME_TOKEN_POS: token.pos_,
-                        cfg.glob.JSON_NAME_TOKEN_TAG: token.tag_,
-                        cfg.glob.JSON_NAME_TOKEN_DEP: token.dep_,
-                        cfg.glob.JSON_NAME_TOKEN_SHAPE: token.shape_,
-                        cfg.glob.JSON_NAME_TOKEN_IS_ALPHA: token.is_alpha,
-                        cfg.glob.JSON_NAME_TOKEN_IS_STOP: token.is_stop,
-                    }
-                )
+                page_tokens.append(get_token_attributes(token))
 
             db.dml.insert_dbt_row(
                 cfg.glob.DBT_CONTENT_TOKEN,

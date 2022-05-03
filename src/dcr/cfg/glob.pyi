@@ -179,15 +179,34 @@ JSON_NAME_ROW: str
 JSON_NAME_ROWS: str
 JSON_NAME_TABLES: str
 JSON_NAME_TABLE_NAME: str
-JSON_NAME_TOKEN_DEP: str
-JSON_NAME_TOKEN_INDEX: str
+
+JSON_NAME_TOKEN_DEP_: str
+JSON_NAME_TOKEN_ENT_IOB_: str
+JSON_NAME_TOKEN_ENT_KB_ID_: str
+JSON_NAME_TOKEN_ENT_TYPE_: str
+JSON_NAME_TOKEN_I: str
 JSON_NAME_TOKEN_IS_ALPHA: str
+JSON_NAME_TOKEN_IS_CURRENCY: str
+JSON_NAME_TOKEN_IS_DIGIT: str
+JSON_NAME_TOKEN_IS_OOV: str
+JSON_NAME_TOKEN_IS_PUNCT: str
+JSON_NAME_TOKEN_IS_SENT_END: str
+JSON_NAME_TOKEN_IS_SENT_START: str
 JSON_NAME_TOKEN_IS_STOP: str
-JSON_NAME_TOKEN_LEMMA: str
-JSON_NAME_TOKEN_POS: str
-JSON_NAME_TOKEN_SHAPE: str
-JSON_NAME_TOKEN_TAG: str
+JSON_NAME_TOKEN_IS_TITLE: str
+JSON_NAME_TOKEN_LANG_: str
+JSON_NAME_TOKEN_LEFT_EDGE: str
+JSON_NAME_TOKEN_LEMMA_: str
+JSON_NAME_TOKEN_LIKE_EMAIL: str
+JSON_NAME_TOKEN_LIKE_NUM: str
+JSON_NAME_TOKEN_LIKE_URL: str
+JSON_NAME_TOKEN_NORM_: str
+JSON_NAME_TOKEN_RIGHT_EDGE: str
+JSON_NAME_TOKEN_SHAPE_: str
 JSON_NAME_TOKEN_TEXT: str
+JSON_NAME_TOKEN_TEXT_WITH_WS: str
+JSON_NAME_TOKEN_WHITESPACE_: str
+
 JSON_NAME_WORD_INDEX_LINE: str
 JSON_NAME_WORD_INDEX_PAGE: str
 JSON_NAME_WORD_INDEX_PARA: str
@@ -337,6 +356,33 @@ run_id: sqlalchemy.Integer
 run_run_id: sqlalchemy.Integer
 
 setup: typing.Type[cfg.setup.Setup]
+
+spacy_tkn_attr_dep_: bool
+spacy_tkn_attr_ent_iob_: bool
+spacy_tkn_attr_ent_kb_id_: bool
+spacy_tkn_attr_ent_type_: bool
+spacy_tkn_attr_i: bool
+spacy_tkn_attr_is_alpha: bool
+spacy_tkn_attr_is_currency: bool
+spacy_tkn_attr_is_digit: bool
+spacy_tkn_attr_is_oov: bool
+spacy_tkn_attr_is_punct: bool
+spacy_tkn_attr_is_sent_end: bool
+spacy_tkn_attr_is_sent_start: bool
+spacy_tkn_attr_is_stop: bool
+spacy_tkn_attr_is_title: bool
+spacy_tkn_attr_lang_: bool
+spacy_tkn_attr_left_edge: bool
+spacy_tkn_attr_lemma_: bool
+spacy_tkn_attr_like_email: bool
+spacy_tkn_attr_like_num: bool
+spacy_tkn_attr_like_url: bool
+spacy_tkn_attr_norm_: bool
+spacy_tkn_attr_right_edge: bool
+spacy_tkn_attr_shape_: bool
+spacy_tkn_attr_text: bool
+spacy_tkn_attr_text_with_ws: bool
+spacy_tkn_attr_whitespace_: bool
 
 start_time_document: int
 

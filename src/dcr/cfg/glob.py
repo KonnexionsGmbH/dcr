@@ -229,15 +229,34 @@ JSON_NAME_ROW: str = "row"
 JSON_NAME_ROWS: str = "rows"
 JSON_NAME_TABLES: str = "tables"
 JSON_NAME_TABLE_NAME: str = "tableName"
-JSON_NAME_TOKEN_DEP: str = "tokenDep"
-JSON_NAME_TOKEN_INDEX: str = "tokenIndex"
-JSON_NAME_TOKEN_IS_ALPHA: str = "tokenIsAlpha"
-JSON_NAME_TOKEN_IS_STOP: str = "tokenIsStop"
-JSON_NAME_TOKEN_LEMMA: str = "tokenLemma"
-JSON_NAME_TOKEN_POS: str = "tokenPos"
-JSON_NAME_TOKEN_SHAPE: str = "tokenShape"
-JSON_NAME_TOKEN_TAG: str = "tokenTag"
-JSON_NAME_TOKEN_TEXT: str = "tokenText"
+
+JSON_NAME_TOKEN_DEP_: str = "tknDep"
+JSON_NAME_TOKEN_ENT_IOB_: str = "tknEntIob"
+JSON_NAME_TOKEN_ENT_KB_ID_: str = "tknEntKbId"
+JSON_NAME_TOKEN_ENT_TYPE_: str = "tknEntType"
+JSON_NAME_TOKEN_I: str = "tknI"
+JSON_NAME_TOKEN_IS_ALPHA: str = "tknIsAlpha"
+JSON_NAME_TOKEN_IS_CURRENCY: str = "tknIsCurrency"
+JSON_NAME_TOKEN_IS_DIGIT: str = "tknIsDigit"
+JSON_NAME_TOKEN_IS_OOV: str = "tknIsOov"
+JSON_NAME_TOKEN_IS_PUNCT: str = "tknIsPunct"
+JSON_NAME_TOKEN_IS_SENT_END: str = "tknIsSentEnd"
+JSON_NAME_TOKEN_IS_SENT_START: str = "tknIsSentStart"
+JSON_NAME_TOKEN_IS_STOP: str = "tknIsStop"
+JSON_NAME_TOKEN_IS_TITLE: str = "tknIsTitle"
+JSON_NAME_TOKEN_LANG_: str = "tknLang"
+JSON_NAME_TOKEN_LEFT_EDGE: str = "tknLeftEdge"
+JSON_NAME_TOKEN_LEMMA_: str = "tknLemma"
+JSON_NAME_TOKEN_LIKE_EMAIL: str = "tknLikeEmail"
+JSON_NAME_TOKEN_LIKE_NUM: str = "tknLikeNum"
+JSON_NAME_TOKEN_LIKE_URL: str = "tknLikeUrl"
+JSON_NAME_TOKEN_NORM_: str = "tknNorm"
+JSON_NAME_TOKEN_RIGHT_EDGE: str = "tknRightEdge"
+JSON_NAME_TOKEN_SHAPE_: str = "tknShape"
+JSON_NAME_TOKEN_TEXT: str = "tknText"
+JSON_NAME_TOKEN_TEXT_WITH_WS: str = "tknTextWithWs"
+JSON_NAME_TOKEN_WHITESPACE_: str = "tknWhitespace"
+
 JSON_NAME_WORD_INDEX_LINE: str = "wordIndexLine"
 JSON_NAME_WORD_INDEX_PAGE: str = "wordIndexPage"
 JSON_NAME_WORD_INDEX_PARA: str = "wordIndexPara"
@@ -398,6 +417,33 @@ run_id: sqlalchemy.Integer
 run_run_id: sqlalchemy.Integer
 
 setup: typing.Type[cfg.setup.Setup]
+
+spacy_tkn_attr_dep_: bool = False
+spacy_tkn_attr_ent_iob_: bool = False
+spacy_tkn_attr_ent_kb_id_: bool = False
+spacy_tkn_attr_ent_type_: bool = True
+spacy_tkn_attr_i: bool = True
+spacy_tkn_attr_is_alpha: bool = False
+spacy_tkn_attr_is_currency: bool = True
+spacy_tkn_attr_is_digit: bool = True
+spacy_tkn_attr_is_oov: bool = True
+spacy_tkn_attr_is_punct: bool = True
+spacy_tkn_attr_is_sent_end: bool = False
+spacy_tkn_attr_is_sent_start: bool = False
+spacy_tkn_attr_is_stop: bool = True
+spacy_tkn_attr_is_title: bool = True
+spacy_tkn_attr_lang_: bool = False
+spacy_tkn_attr_left_edge: bool = False
+spacy_tkn_attr_lemma_: bool = True
+spacy_tkn_attr_like_email: bool = True
+spacy_tkn_attr_like_num: bool = True
+spacy_tkn_attr_like_url: bool = True
+spacy_tkn_attr_norm_: bool = True
+spacy_tkn_attr_right_edge: bool = False
+spacy_tkn_attr_shape_: bool = False
+spacy_tkn_attr_text: bool = True
+spacy_tkn_attr_text_with_ws: bool = False
+spacy_tkn_attr_whitespace_: bool = True
 
 start_time_document: int
 
