@@ -57,15 +57,15 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for mor
 | .pylintrc        | Configuration file for [pylint](https://github.com/PyCQA/pylint).                                                                                                                                                                                                                                                                                                            |
 | LICENSE          | Text of the licence terms.                                                                                                                                                                                                                                                                                                                                                   |
 | Makefile         | Definition of tasks to be excuted with the `make` command.                                                                                                                                                                                                                                                                                                                   |
-| Pipfile          | Specification of the Python package requirements.                                                                                                                                                                                                                                                                                                                            |
-| Pipfile.lock     | Specification of the specific versions of the Python packages.                                                                                                                                                                                                                                                                                                               |
+| Pipfile          | Definition of the Python package requirements.                                                                                                                                                                                                                                                                                                                               |
+| Pipfile.lock     | Definition of the specific versions of the Python packages.                                                                                                                                                                                                                                                                                                                  |
 | README.md        | This file.                                                                                                                                                                                                                                                                                                                                                                   |
 | logging_cfg.yaml | Configuration of the Logger functionality.                                                                                                                                                                                                                                                                                                                                   |
 | mkdocs.yml       | Configuration file for [MkDocs](https://github.com/mkdocs/mkdocs/).                                                                                                                                                                                                                                                                                                          |
 | pyproject.toml   | Configuration file for [bandit](https://github.com/PyCQA/bandit), [black](https://github.com/psf/black), [isort](https://github.com/PyCQA/isort), [mypy](https://github.com/python/mypy),<br/> [pydoc-markdown](https://github.com/NiklasRosenstein/pydoc-markdown), [pydocstyle](https://github.com/PyCQA/pydocstyle), and [pytest](https://github.com/pytest-dev/pytest/). |
 | run_dcr_dev      | Execute the **DCR** functions in the development environment.                                                                                                                                                                                                                                                                                                                |
 | run_dcr_prod     | Execute the **DCR** functions in the production environment.                                                                                                                                                                                                                                                                                                                 |
-| setup.cfg        | Configuration file for [coverage](https://github.com/nedbat/coveragepy/blob/6.3.2/doc/index.rst), **DCR**, [flake8](https://github.com/pycqa/flake8), and [radon](https://github.com/rubik/radon).                                                                                                                                                                          |
+| setup.cfg        | Configuration file for [coverage](https://github.com/nedbat/coveragepy/blob/6.3.2/doc/index.rst), **DCR**, [flake8](https://github.com/pycqa/flake8), and [radon](https://github.com/rubik/radon).                                                                                                                                                                           |
 
 ## 3. Support
 
@@ -80,22 +80,22 @@ But, such questions are **not** banned from the **[Discussions](https://github.c
 
 Make sure to stick around to answer some questions as well!
 
-## Links
+## 4. Links
 
 - **[Official Documentation](https://konnexionsgmbh.github.io/dcr)**
 - **[Release Notes](https://konnexionsgmbh.github.io/dcr/release_notes)**
 - **[Discussions](https://github.com/KonnexionsGmbH/dcr/discussions)** (Third-party themes, recipes, plugins and more)
 
-## 4. Contributing to DCR
+## 5. Contributing to DCR
 
 The **DCR** project welcomes, and depends on, contributions from developers and users in the open source community. 
 Please see the **[Contributing Guide](https://konnexionsgmbh.github.io/dcr/contributing)** for
 information on how you can help.
 
-## 5. Code of Conduct
+## 6. Code of Conduct
 
 Everyone who interacts in the **DCR** project's codebase, issue trackers, and discussion forums is expected to follow the **[Code of Conduct](https://konnexionsgmbh.github.io/dcr/code_of_conduct)**.
 
-## 6. License
+## 7. License
 
 **[Konnexions Public License (KX-PL)](https://konnexionsgmbh.github.io/dcr/license)**
