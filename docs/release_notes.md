@@ -13,7 +13,7 @@ Release Date: 05.05.2022
 
 - classification of lines into headers, footers and body lines
 - support for documents in different languages - English, French, German and Italian as standard
-- tokenizer based on [SpaCy](https://spacy.io){:target="_blank"}
+- tokenizer based on [spaCy](https://spacy.io){:target="_blank"}
 
 ### 1.2 Modified Features
 

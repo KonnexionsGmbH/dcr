@@ -42,7 +42,7 @@ def get_token_attributes(token: spacy.tokens.Token) -> typing.Dict[str, bool | i
     """Determine the requested token attributes.
 
     Args:
-        token (spacy.tokens.Token): SpaCy token.
+        token (spacy.tokens.Token): spaCy token.
 
     Returns:
         typing.Dict[str, bool | int | str]: Requested token attributes.

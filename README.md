@@ -33,7 +33,7 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for mor
 
 - Extracting text and metadata from **`pdf`** documents using [PDFlib TET](https://www.pdflib.com/products/tet/).
 - Categorisation of the lines in the document into body, footer and header lines.
-- Determination of the token structure page by page with the help of [SpaCy](https://spacy.io).
+- Determination of the token structure page by page with the help of [spaCy](https://spacy.io).
 - Storage of the analysis result in a [PostgreSQL](https://www.postgresql.org) database.
 
 ### Much more!

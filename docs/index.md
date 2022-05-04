@@ -15,7 +15,7 @@ The processing logic is as follows:
 - Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to **`pdf`** format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. **`jpeg`**, **`tiff`** etc., as well as scanned images in **`pdf`** format.  
 - From all **`pdf`** documents, the text and associated metadata is extracted into a document-specific **`xml`** file using [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"}.
 - The document-specific **`xml`** files are then parsed and the **DCR**-relevant contents are written to the database tables **`content_tetml_line`**,  **`content_tetml_page`**,  **`content_tetml_word`** and  and  **`document`**. 
-- Based on the previously created **`xml`** files, [SpaCy](https://spacy.io){:target="_blank"} extracts qualified tokens and stores them in the database table **`content_token`**.
+- Based on the previously created **`xml`** files, [spaCy](https://spacy.io){:target="_blank"} extracts qualified tokens and stores them in the database table **`content_token`**.
 
 <div style="page-break-after: always;"></div>
 

@@ -77,7 +77,7 @@ def get_args(argv: typing.List[str]) -> dict[str, bool]:
         p_i   - Process the inbox directory.
         s_f_p - Store the parser result in the database.
         tet   - Extract text and metadata from pdf documents:       PDFlib TET.
-        tkn   - Create document tokens:                             SpaCy.
+        tkn   - Create document tokens:                             spaCy.
 
     With the option all, the following process steps are executed
     in this order:
@@ -197,7 +197,7 @@ def load_data_from_dbt_language() -> None:
         conn.close()
 
     utils.progress_msg(f"Available languages for Pandoc        '{cfg.glob.languages_pandoc}'")
-    utils.progress_msg(f"Available languages for SpaCy         '{cfg.glob.languages_spacy}'")
+    utils.progress_msg(f"Available languages for spaCy         '{cfg.glob.languages_spacy}'")
     utils.progress_msg(f"Available languages for Tesseract OCR '{cfg.glob.languages_tesseract}'")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -542,7 +542,7 @@ def process_tokenize() -> None:
     """Create document tokens."""
     cfg.glob.run_action = cfg.glob.RUN_ACTION_TOKENIZE
 
-    utils.progress_msg_empty_before("Start: Create document tokens ... SpaCy")
+    utils.progress_msg_empty_before("Start: Create document tokens ... spaCy")
 
     cfg.glob.run_id = db.dml.insert_dbt_row(
         cfg.glob.DBT_RUN,
