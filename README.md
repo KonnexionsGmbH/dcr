@@ -80,22 +80,22 @@ But, such questions are **not** banned from the **[Discussions](https://github.c
 
 Make sure to stick around to answer some questions as well!
 
-## Links
+## 4. Links
 
 - **[Official Documentation](https://konnexionsgmbh.github.io/dcr)**
 - **[Release Notes](https://konnexionsgmbh.github.io/dcr/release_notes)**
 - **[Discussions](https://github.com/KonnexionsGmbH/dcr/discussions)** (Third-party themes, recipes, plugins and more)
 
-## 4. Contributing to DCR
+## 5. Contributing to DCR
 
 The **DCR** project welcomes, and depends on, contributions from developers and users in the open source community. 
 Please see the **[Contributing Guide](https://konnexionsgmbh.github.io/dcr/contributing)** for
 information on how you can help.
 
-## 5. Code of Conduct
+## 6. Code of Conduct
 
 Everyone who interacts in the **DCR** project's codebase, issue trackers, and discussion forums is expected to follow the **[Code of Conduct](https://konnexionsgmbh.github.io/dcr/code_of_conduct)**.
 
-## 6. License
+## 7. License
 
 **[Konnexions Public License (KX-PL)](https://konnexionsgmbh.github.io/dcr/license)**
