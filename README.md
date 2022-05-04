@@ -36,8 +36,6 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for mor
 - Determination of the token structure page by page with the help of [spaCy](https://spacy.io).
 - Storage of the analysis result in a [PostgreSQL](https://www.postgresql.org) database.
 
-### Much more!
-
 ## Support
 
 If you need help with **DCR**, do not hesitate to get in contact with us!
