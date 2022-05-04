@@ -1,6 +1,6 @@
 # DCR - File Directory **`resources`**
 
-This file directory contains in the subdirectory:
+This file directory contains in its subdirectory:
 
 - `DBeaver Project` - project data for **DCR**, which can be loaded in [DBeaver]() with the menu items `File` -> `Import` -> `Project`,
 - `Gammadyne` - the program [`timer.exe`](https://www.gammadyne.com/cmdline.htm#timer) from [Gammadyne](https://www.gammadyne.com/default.htm), which is used in the Windows shell scripts for time measurements,
