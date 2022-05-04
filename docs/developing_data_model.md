@@ -7,7 +7,7 @@
 
 Data storage is realised with the relational database management system [PostgreSQL](https://www.postgresql.org){:target="_blank"}. 
 **DCR** uses the official Docker image as provided by the PostgreSQL Docker Community on DockerHub - [see here](https://hub.docker.com/_/postgres){:target="_blank"}. 
-If required, a PostgreSQL container can be downloaded and created with the script `scripts/run_setup_postgresql`.
+If required, a PostgreSQL Docker image can be downloaded and a PostgreSQL Docker container can be created both with the script `scripts/run_setup_postgresql`.
 
 <div style="page-break-after: always;"></div>
 
@@ -37,7 +37,7 @@ This database table contains the results from the parsing process.
 
 **Example column `page_lines`**:
 
-![](img/developing_data_model_dbt_content_tetml_line_column_page_lines.png)
+![](img/developing_data_model_dbt_content_tetml_line_column_page_data.png)
 
 <div style="page-break-after: always;"></div>
 
@@ -61,7 +61,7 @@ This database table contains the results from the parsing process.
 
 **Example column `page_text`**:
 
-![](img/developing_data_model_dbt_content_tetml_page_column_page_text.png)
+![](img/developing_data_model_dbt_content_tetml_page_column_page_data.png)
 
 <div style="page-break-after: always;"></div>
 
@@ -87,7 +87,7 @@ This database table contains the results from the parsing process.
 
 **Example column `page_words`**:
 
-![](img/developing_data_model_dbt_content_tetml_word_column_page_words.png)
+![](img/developing_data_model_dbt_content_tetml_word_column_page_data.png)
 
 <div style="page-break-after: always;"></div>
 
@@ -113,7 +113,7 @@ This database table contains the results from the parsing process.
 
 **Example column `page_tokens`**:
 
-![](img/developing_data_model_dbt_content_token_column_page_tokens.png)
+![](img/developing_data_model_dbt_content_token_column_page_data.png)
 
 <div style="page-break-after: always;"></div>
 
