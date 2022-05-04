@@ -32,12 +32,12 @@ export DCR_ENVIRONMENT_TYPE=test
 
 ifeq ($(OS),Windows_NT)
 	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
-    export MYPYPATH=src\\dcr;src\\dcr\\libs
-    export PYTHONPATH=src\\dcr;src\\dcr\\libs
+    export MYPYPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\nlp;src\\dcr\\PDFlib;src\\dcr\\pp;src\\dcr\\setup
+    export PYTHONPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\nlp;src\\dcr\\PDFlib;src\\dcr\\pp;src\\dcr\\setup
 else
 	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
-    export MYPYPATH=src/dcr:src/dcr/libs
-    export PYTHONPATH=src/dcr:src/dcr:src/dcr/libs
+    export MYPYPATH=src/dcr:src/dcr/db:src/dcr/db/orm:src/dcr/libs:src/dcr/nlp:src/dcr/PDFlib:src/dcr/pp:src/dcr/setup
+    export PYTHONPATH=src/dcr:src/dcr/db:src/dcr/db/orm:src/dcr/libs:src/dcr/nlp:src/dcr/PDFlib:src/dcr/pp:src/dcr/setup
 endif
 
 # Bandit is a tool designed to find common security issues in Python code.
@@ -91,7 +91,7 @@ docformatter:       ## Format the docstrings with docformatter.
 # includes Pyflakes:    https://github.com/PyCQA/pyflakes
 # includes Radon:       https://github.com/rubik/radon
 # https://github.com/pycqa/flake8
-# Configuration file: setup.cfg
+# Configuration file: cfg.cfg
 flake8:             ## Enforce the Python Style Guides with Flake8.
 	@echo "Info **********  Start: Flake8 **************************************"
 	pipenv run flake8 --version
@@ -124,7 +124,7 @@ mypy:               ## Find typing issues with Mypy.
 	@echo MYPYPATH=${MYPYPATH}
 	pipenv run pip freeze | grep mypy
 	pipenv run mypy --version
-	pipenv run mypy --exclude TET.py src
+	pipenv run mypy --exclude src/dcr/PDFlib/TET.py src
 	@echo "Info **********  End:   Mypy ****************************************"
 
 # pip is the package installer for Python.
@@ -141,6 +141,10 @@ pipenv-dev:         ## Install the package dependencies for development.
 	python -m pipenv --rm
 	exit
 	python -m pipenv update --dev
+	pipenv run spacy download de_dep_news_trf
+	pipenv run spacy download en_core_web_trf
+	pipenv run spacy download fr_dep_news_trf
+	pipenv run spacy download it_core_news_lg
 	pipenv run pip freeze
 	python --version
 	python -m pip --version
@@ -153,6 +157,10 @@ pipenv-prod:        ## Install the package dependencies for production.
 	python -m pipenv --rm
 	exit
 	python -m pipenv update
+	pipenv run spacy download de_dep_news_trf
+	pipenv run spacy download en_core_web_trf
+	pipenv run spacy download fr_dep_news_trf
+	pipenv run spacy download it_core_news_lg
 	pipenv run pip freeze
 	python --version
 	python -m pip --version
@@ -203,6 +211,7 @@ pytest-ci:          ## Run all tests with pytest after test tool installation.
 	pipenv install pytest-deadfixtures
 	pipenv install pytest-helpers-namespace
 	pipenv install pytest-random-order
+	pipenv install roman
 	pipenv run pytest --version
 	pipenv run pytest --dead-fixtures tests
 	pipenv run pytest --cov=src --cov-report term-missing:skip-covered --random-order -v tests

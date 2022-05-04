@@ -8,20 +8,24 @@ rem ----------------------------------------------------------------------------
 
 setlocal EnableDelayedExpansion
 
-set DCR_CHOICE_ACTION_DEFAULT=db_u
+set DCR_CHOICE_ACTION_DEFAULT=aui
 set DCR_ENVIRONMENT_TYPE=dev
-set PYTHONPATH=%PYTHONPATH%;src\dcr;src\dcr\libs
+set PYTHONPATH=%PYTHONPATH%;src\dcr
 
 if ["%1"] EQU [""] (
     echo =========================================================
-    echo all   - Run the complete processing of all new documents.
+    echo aui   - Run the administration user interface.
+    echo ---------------------------------------------------------
+    echo all   - Run the complete core processing of all new documents.
     echo ---------------------------------------------------------
     echo p_i   - 1. Process the inbox directory.
-    echo p_2_i - 2. Convert pdf documents to image files:               Poppler.
-    echo ocr   - 3. Convert image documents to pdf files:               Tesseract OCR.
-    echo n_2_p - 2. Convert non-pdf documents to pdf files:             Pandoc
-    echo tet   - 4. Extract text and metdata from pdf documents:        PDFlib TET.
-    echo s_f_p - 5. Store the document structure from the parser result.
+    echo p_2_i - 2. Convert pdf documents to image files:          pdf2image / Poppler.
+    echo ocr   - 3. Convert image documents to pdf files:          Tesseract OCR / Tex Live.
+    echo n_2_p - 2. Convert non-pdf documents to pdf files:        Pandoc
+    echo ---------------------------------------------------------
+    echo tet   - 4. Extract text and metdata from pdf documents:   PDFlib TET.
+    echo s_f_p - 5. Store the parser result in the database.
+    echo tkn   - 6. Create qualified document tokens.              SpaCy.
     echo ---------------------------------------------------------
     echo db_c  - Create the database.
     echo db_u  - Upgrade the database.
@@ -83,19 +87,27 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["m_p"] (
 )
 
 if ["%DCR_CHOICE_ACTION%"] EQU ["all"] (
-    if exist data\inbox (
-        rd /s /q data\inbox
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE% (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%
     )
-    if exist data\inbox_accepted (
-        rd /s /q data\inbox_accepted
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE%_accepted (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%_accepted
     )
-    if exist data\inbox_rejected (
-        rd /s /q data\inbox_rejected
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE%_rejected (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%_rejected
     )
-    mkdir data\inbox
-    xcopy /E /I /Q tests\inbox data\inbox
-    dir data\inbox
+    mkdir data\inbox_%DCR_ENVIRONMENT_TYPE%
+    xcopy /E /I /Q tests\inbox data\inbox_%DCR_ENVIRONMENT_TYPE%
+    dir data\inbox_%DCR_ENVIRONMENT_TYPE%
     set _CHOICE=%DCR_CHOICE_ACTION%
+)
+
+if ["%DCR_CHOICE_ACTION%"] EQU ["aui"] (
+    pipenv run python src\dcr\admin.py
+    if ERRORLEVEL 1 (
+        echo Processing of the script: %0 - step: 'python src\dcr\admin.py was aborted
+    )
+    goto normal_exit
 )
 
 if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"] (
@@ -114,18 +126,18 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["ocr"] (
 )
 
 if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"] (
-    if exist data\inbox (
-        rd /s /q data\inbox
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE% (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%
     )
-    if exist data\inbox_accepted (
-        rd /s /q data\inbox_accepted
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE%_accepted (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%_accepted
     )
-    if exist data\inbox_rejected (
-        rd /s /q data\inbox_rejected
+    if exist data\inbox_%DCR_ENVIRONMENT_TYPE%_rejected (
+        rd /s /q data\inbox_%DCR_ENVIRONMENT_TYPE%_rejected
     )
-    mkdir data\inbox
-    xcopy /E /I /Q tests\inbox data\inbox
-    dir data\inbox
+    mkdir data\inbox_%DCR_ENVIRONMENT_TYPE%
+    xcopy /E /I /Q tests\inbox data\inbox_%DCR_ENVIRONMENT_TYPE%
+    dir data\inbox_%DCR_ENVIRONMENT_TYPE%
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
@@ -138,6 +150,10 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
 )
 
 if ["%DCR_CHOICE_ACTION%"] EQU ["tet"] (
+    set _CHOICE=%DCR_CHOICE_ACTION%
+)
+
+if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
@@ -157,6 +173,9 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet %DCR_CHOICE_ACTION%
     )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
+        set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_f_p tkn %DCR_CHOICE_ACTION%
+    )
     pipenv run python src\dcr\dcr.py !DCR_CHOICE_ACTION!
     if ERRORLEVEL 1 (
         echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
@@ -164,7 +183,7 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     goto normal_exit
 )
 
-echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | s_f_p | tet"
+echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | s_f_p | tet | tkn"
 
 :normal_exit
 echo -----------------------------------------------------------------------

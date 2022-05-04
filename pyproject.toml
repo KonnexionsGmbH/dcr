@@ -2,7 +2,7 @@
 skips = ["B404", "B603", "B607", "B608"]
 
 [tool.black]
-line-length = 100
+line-length = 120
 
 [tool.isort]
 float_to_top = true
@@ -16,7 +16,8 @@ disallow_any_decorated = true
 disallow_any_explicit = true
 disallow_any_expr = false
 disallow_any_generics = true
-disallow_any_unimported = true
+# due to SpaCy ...
+disallow_any_unimported = false
 disallow_incomplete_defs = true
 disallow_subclassing_any = true
 disallow_untyped_calls = true
@@ -34,7 +35,7 @@ strict_equality = true
 warn_no_return = true
 warn_redundant_casts = true
 warn_return_any = true
-warn_unreachable = true
+warn_unreachable = false
 warn_unused_configs = true
 warn_unused_ignores = true
 
@@ -59,5 +60,5 @@ match='((?!test_).*\.py)((?!TET).*\.py)'
 console_output_style = "count"
 markers = ["issue"]
 norecursedirs = "./tests/helpers"
-pythonpath = "./src/dcr/"
+pythonpath = "./src/"
 testpaths = "./tests/"

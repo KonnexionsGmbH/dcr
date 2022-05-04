@@ -1,11 +1,7 @@
 # DCR - Developing - Software Documentation
 
-![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.0)
-
-----
 
 ### 1. API Documentation
 
@@ -26,7 +22,7 @@ In this format, the API documentation can then be integrated into the user docum
 
 **Module Dokumentation**:
 
-    Module libs.preprocessor.inbox: Check and distribute incoming documents.
+    Module pp.inbox: Check and distribute incoming documents.
   
     New documents are made available in the file directory inbox.
     These are then checked and moved to the accepted or
@@ -49,7 +45,7 @@ In this format, the API documentation can then be integrated into the user docum
         ocr   - Convert image docuents to pdf files.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
-        tet   - Extract text and metadata from pdf documents.
+        tet   - Extract text from pdf documents.
 
     With the option all, the following process steps are executed
     in this order:

@@ -1,52 +1,184 @@
-# DCR - Running - Data Model
+# DCR - Developing - Data Model
 
-![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.0)
-
-----
 
 ## 1. Overview
 
-Data storage is realised with the relational database management system [PostgreSQL](https://www.postgresql.org). 
-**DCR** uses the official Docker image as provided by the PostgreSQL Docker Community on DockerHub - [see here](https://hub.docker.com/_/postgres). 
+Data storage is realised with the relational database management system [PostgreSQL](https://www.postgresql.org){:target="_blank"}. 
+**DCR** uses the official Docker image as provided by the PostgreSQL Docker Community on DockerHub - [see here](https://hub.docker.com/_/postgres){:target="_blank"}. 
 If required, a PostgreSQL container can be downloaded and created with the script `scripts/run_setup_postgresql`.
+
+<div style="page-break-after: always;"></div>
 
 ## 2. Database Schema
 
-### 2.1 Database Table **`content`**
+### 2.1 Entity-relationship (ER) Diagram
 
-This database table contains the results from the parsing process:
+![](img/developing_data_model_dbt_overview_erd.png)
 
-![](img/schema_dbt_content.png)
+<div style="page-break-after: always;"></div>
 
-### 2.2 Database Table **`document`**
+### 2.2 Database Tables
 
-This database table contains the document-related data:
+#### 2.2.1 Database Table **`content_tetml_line`**
 
-![](img/schema_dbt_document.png)
+This database table contains the results from the parsing process.
 
-### 2.3 Database Table **`journal`**
+**Example rows**:
 
-This database table contains document-related error message and performance data:
+![](img/developing_data_model_dbt_content_tetml_line_rows.png)
 
-![](img/schema_dbt_journal.png)
+**Example columns**:
 
-### 2.1 Database Table **`language`**
+![](img/developing_data_model_dbt_content_tetml_line_columns.png)
 
-This database table controls the language-related document properties during processing:
+<div style="page-break-after: always;"></div>
 
-![](img/schema_dbt_language.png)
+**Example column `page_lines`**:
 
-### 2.1 Database Table **`run`**
+![](img/developing_data_model_dbt_content_tetml_line_column_page_lines.png)
 
-This database table documents the executed processing runs in detail:
+<div style="page-break-after: always;"></div>
 
-![](img/schema_dbt_run.png)
+**ER Diagram**:
 
-### 2.1 Database Table **`version`**
+![](img/developing_data_model_dbt_content_tetml_line_erd.png)
 
-This database table is used to monitor the version status of the **DCR** database schema:
+<div style="page-break-after: always;"></div>
 
-![](img/schema_dbt_version.png)
+#### 2.2.2 Database Table **`content_tetml_page`**
+
+This database table contains the results from the parsing process.
+
+**Example rows**:
+
+![](img/developing_data_model_dbt_content_tetml_page_rows.png)
+
+**Example columns**:
+
+![](img/developing_data_model_dbt_content_tetml_page_columns.png)
+
+**Example column `page_text`**:
+
+![](img/developing_data_model_dbt_content_tetml_page_column_page_text.png)
+
+<div style="page-break-after: always;"></div>
+
+**ER Diagram**:
+
+![](img/developing_data_model_dbt_content_tetml_page_erd.png)
+
+<div style="page-break-after: always;"></div>
+
+#### 2.2.3 Database Table **`content_tetml_word`**
+
+This database table contains the results from the parsing process.
+
+**Example rows**:
+
+![](img/developing_data_model_dbt_content_tetml_word_rows.png)
+
+**Example columns**:
+
+![](img/developing_data_model_dbt_content_tetml_word_columns.png)
+
+<div style="page-break-after: always;"></div>
+
+**Example column `page_words`**:
+
+![](img/developing_data_model_dbt_content_tetml_word_column_page_words.png)
+
+<div style="page-break-after: always;"></div>
+
+**ER Diagram**:
+
+![](img/developing_data_model_dbt_content_tetml_word_erd.png)
+
+<div style="page-break-after: always;"></div>
+
+#### 2.2.4 Database Table **`content_token`**
+
+This database table contains the results from the parsing process.
+
+**Example rows**:
+
+![](img/developing_data_model_dbt_content_token_rows.png)
+
+**Example columns**:
+
+![](img/developing_data_model_dbt_content_token_columns.png)
+
+<div style="page-break-after: always;"></div>
+
+**Example column `page_tokens`**:
+
+![](img/developing_data_model_dbt_content_token_column_page_tokens.png)
+
+<div style="page-break-after: always;"></div>
+
+**ER Diagram**:
+
+![](img/developing_data_model_dbt_content_token_erd.png)
+
+<div style="page-break-after: always;"></div>
+
+#### 2.2.5 Database Table **`document`**
+
+This database table contains the document-related data.
+
+**Example rows**:
+
+![](img/developing_data_model_dbt_document_rows.png)
+
+**Example columns**:
+
+![](img/developing_data_model_dbt_document_columns.png)
+
+<div style="page-break-after: always;"></div>
+
+**ER Diagram**:
+
+![](img/developing_data_model_dbt_document_erd.png)
+
+<div style="page-break-after: always;"></div>
+
+#### 2.2.6 Database Table **`language`**
+
+This database table controls the language-related document properties during processing.
+
+**Example rows**:
+
+![](img/developing_data_model_dbt_language_rows.png)
+
+**ER Diagram**:
+
+![](img/developing_data_model_dbt_language_erd.png)
+
+<div style="page-break-after: always;"></div>
+
+#### 2.2.7 Database Table **`run`**
+
+This database table documents the executed processing runs in detail.
+
+**Example rows**:
+
+![](img/developing_data_model_dbt_run_rows.png)
+
+**ER Diagram**:
+
+![](img/developing_data_model_dbt_run_erd.png)
+
+<div style="page-break-after: always;"></div>
+
+#### 2.2.8 Database Table **`version`**
+
+This database table is used to monitor the version status of the **DCR** database schema.
+
+**Example row**:
+
+![](img/developing_data_model_dbt_version_rows.png)
+
+**ER Diagram**:
+
+![](img/developing_data_model_dbt_version_erd.png)

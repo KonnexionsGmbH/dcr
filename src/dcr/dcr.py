@@ -2,31 +2,27 @@
 
 This is the entry point to the application DCR.
 """
-import configparser
 import locale
 import logging
 import logging.config
-import os
 import sys
 import time
-from typing import List
+import typing
 
-import libs.cfg
-import libs.db.cfg
-import libs.db.driver
-import libs.db.orm.connection
-import libs.db.orm.dml
-import libs.preprocessor.inbox
-import libs.preprocessor.pandocdcr
-import libs.preprocessor.parser
-import libs.preprocessor.pdf2imagedcr
-import libs.preprocessor.pdflibdcr
-import libs.preprocessor.tesseractdcr
-import libs.utils
+import cfg.glob
+import cfg.setup
+import db.dml
+import db.driver
+import nlp.parser
+import nlp.pdflib_dcr
+import nlp.tokenizer
+import pp.inbox
+import pp.pandoc_dcr
+import pp.pdf2image_dcr
+import pp.tesseract_dcr
 import sqlalchemy
+import utils
 import yaml
-from sqlalchemy import Table
-from sqlalchemy import select
 
 
 # -----------------------------------------------------------------------------
@@ -34,49 +30,54 @@ from sqlalchemy import select
 # -----------------------------------------------------------------------------
 def check_db_up_to_date() -> None:
     """Check that the database version is up-to-date."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    if libs.db.cfg.db_orm_engine is None:
-        libs.utils.terminate_fatal(
+    if cfg.glob.db_orm_engine is None:
+        utils.terminate_fatal(
             "The database does not yet exist.",
         )
 
-    if not sqlalchemy.inspect(libs.db.cfg.db_orm_engine).has_table(libs.db.cfg.DBT_VERSION):
-        libs.utils.terminate_fatal(
+    if not sqlalchemy.inspect(cfg.glob.db_orm_engine).has_table(cfg.glob.DBT_VERSION):
+        utils.terminate_fatal(
             "The database table 'version' does not yet exist.",
         )
 
-    current_version = libs.db.orm.dml.select_version_version_unique()
+    current_version = db.dml.select_version_version_unique()
 
-    if libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION] != current_version:
-        libs.utils.terminate_fatal(
+    if cfg.glob.setup.dcr_version != current_version:
+        utils.terminate_fatal(
             f"Current database version is '{current_version}' - but expected version is '"
-            f"{str(libs.cfg.config[libs.cfg.DCR_CFG_DCR_VERSION])}''"
+            f"{cfg.glob.setup.dcr_version}''"
         )
 
-    libs.utils.progress_msg(f"The current version of database is '{current_version}'")
+    utils.progress_msg(f"The current version of database is '{current_version}'")
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Load the command line arguments into memory.
 # -----------------------------------------------------------------------------
-def get_args(argv: List[str]) -> dict[str, bool]:
+def get_args(argv: typing.List[str]) -> dict[str, bool]:
     """Load the command line arguments.
 
     The command line arguments define the process steps to be executed.
     The valid arguments are:
 
-        all   - Run the complete processing of all new documents.
+        all   - Run the complete core processing of all new documents.
         db_c  - Create the database.
         db_u  - Upgrade the database.
-        n_2_p - Convert non-pdf documents to pdf files.
-        ocr   - Convert image documents to pdf files.
-        p_2_i - Convert pdf documents to image files.
+        m_d   - Run the installation of the necessary 3rd party packages
+                for development and run the development ecosystem.
+        m_p   - Run the installation of the necessary 3rd party packages
+                for production and compile all packages and modules.
+        n_2_p - Convert non-pdf documents to pdf files:             Pandoc
+        ocr   - Convert image documents to pdf files:               Tesseract OCR / Tex Live.
+        p_2_i - Convert pdf documents to image files:               pdf2image / Poppler.
         p_i   - Process the inbox directory.
-        s_f_p - Store the document structure from the parser result.
-        tet   - Extract text and metadata from pdf documents.
+        s_f_p - Store the parser result in the database.
+        tet   - Extract text and metadata from pdf documents:       PDFlib TET.
+        tkn   - Create document tokens:                             spaCy.
 
     With the option all, the following process steps are executed
     in this order:
@@ -87,6 +88,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         4. ocr
         5. tet
         6. s_f_p
+        7. tkn
 
     Args:
         argv (List[str]): Command line arguments.
@@ -94,113 +96,58 @@ def get_args(argv: List[str]) -> dict[str, bool]:
     Returns:
         dict[str, bool]: The processing steps based on CLI arguments.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     num = len(argv)
 
     if num == 0:
-        libs.utils.terminate_fatal("No command line arguments found")
+        utils.terminate_fatal("No command line arguments found")
 
     if num == 1:
-        libs.utils.terminate_fatal("The specific command line arguments are missing")
+        utils.terminate_fatal("The specific command line arguments are missing")
 
     args = {
-        libs.cfg.RUN_ACTION_CREATE_DB: False,
-        libs.cfg.RUN_ACTION_IMAGE_2_PDF: False,
-        libs.cfg.RUN_ACTION_NON_PDF_2_PDF: False,
-        libs.cfg.RUN_ACTION_PDF_2_IMAGE: False,
-        libs.cfg.RUN_ACTION_PROCESS_INBOX: False,
-        libs.cfg.RUN_ACTION_STORE_FROM_PARSER: False,
-        libs.cfg.RUN_ACTION_TEXT_FROM_PDF: False,
-        libs.cfg.RUN_ACTION_UPGRADE_DB: False,
+        cfg.glob.RUN_ACTION_CREATE_DB: False,
+        cfg.glob.RUN_ACTION_IMAGE_2_PDF: False,
+        cfg.glob.RUN_ACTION_NON_PDF_2_PDF: False,
+        cfg.glob.RUN_ACTION_PDF_2_IMAGE: False,
+        cfg.glob.RUN_ACTION_PROCESS_INBOX: False,
+        cfg.glob.RUN_ACTION_STORE_FROM_PARSER: False,
+        cfg.glob.RUN_ACTION_TEXT_FROM_PDF: False,
+        cfg.glob.RUN_ACTION_TOKENIZE: False,
+        cfg.glob.RUN_ACTION_UPGRADE_DB: False,
     }
 
     for i in range(1, num):
         arg = argv[i].lower()
-        if arg == libs.cfg.RUN_ACTION_ALL_COMPLETE:
-            args[libs.cfg.RUN_ACTION_IMAGE_2_PDF] = True
-            args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF] = True
-            args[libs.cfg.RUN_ACTION_PDF_2_IMAGE] = True
-            args[libs.cfg.RUN_ACTION_PROCESS_INBOX] = True
-            args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER] = True
-            args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF] = True
+        if arg == cfg.glob.RUN_ACTION_ALL_COMPLETE:
+            args[cfg.glob.RUN_ACTION_IMAGE_2_PDF] = True
+            args[cfg.glob.RUN_ACTION_NON_PDF_2_PDF] = True
+            args[cfg.glob.RUN_ACTION_PDF_2_IMAGE] = True
+            args[cfg.glob.RUN_ACTION_PROCESS_INBOX] = True
+            args[cfg.glob.RUN_ACTION_STORE_FROM_PARSER] = True
+            args[cfg.glob.RUN_ACTION_TEXT_FROM_PDF] = True
+            args[cfg.glob.RUN_ACTION_TOKENIZE] = True
         elif arg in (
-            libs.cfg.RUN_ACTION_CREATE_DB,
-            libs.cfg.RUN_ACTION_IMAGE_2_PDF,
-            libs.cfg.RUN_ACTION_NON_PDF_2_PDF,
-            libs.cfg.RUN_ACTION_PDF_2_IMAGE,
-            libs.cfg.RUN_ACTION_PROCESS_INBOX,
-            libs.cfg.RUN_ACTION_STORE_FROM_PARSER,
-            libs.cfg.RUN_ACTION_TEXT_FROM_PDF,
-            libs.cfg.RUN_ACTION_UPGRADE_DB,
+            cfg.glob.RUN_ACTION_CREATE_DB,
+            cfg.glob.RUN_ACTION_IMAGE_2_PDF,
+            cfg.glob.RUN_ACTION_NON_PDF_2_PDF,
+            cfg.glob.RUN_ACTION_PDF_2_IMAGE,
+            cfg.glob.RUN_ACTION_PROCESS_INBOX,
+            cfg.glob.RUN_ACTION_STORE_FROM_PARSER,
+            cfg.glob.RUN_ACTION_TEXT_FROM_PDF,
+            cfg.glob.RUN_ACTION_TOKENIZE,
+            cfg.glob.RUN_ACTION_UPGRADE_DB,
         ):
             args[arg] = True
         else:
-            libs.utils.terminate_fatal(f"Unknown command line argument='{argv[i]}'")
+            utils.terminate_fatal(f"Unknown command line argument='{argv[i]}'")
 
-    libs.utils.progress_msg("The command line arguments are validated and loaded")
+    utils.progress_msg("The command line arguments are validated and loaded")
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     return args
-
-
-# -----------------------------------------------------------------------------
-# Load the configuration parameters.
-# -----------------------------------------------------------------------------
-def get_config() -> None:
-    """Load the configuration parameters.
-
-    Loads the configuration parameters from the `setup.cfg` file under
-    the `DCR` sections.
-    """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-
-    config_parser = configparser.ConfigParser()
-    config_parser.read(libs.cfg.DCR_CFG_FILE)
-
-    libs.cfg.config.clear()
-
-    for section in config_parser.sections():
-        if section == libs.cfg.DCR_CFG_SECTION:
-            for (key, value) in config_parser.items(section):
-                libs.cfg.config[key] = value
-
-    for section in config_parser.sections():
-        if section == libs.cfg.DCR_CFG_SECTION + "_" + libs.cfg.environment_type:
-            for (key, value) in config_parser.items(section):
-                libs.cfg.config[key] = value
-
-    validate_config()
-
-    libs.utils.progress_msg("The configuration parameters are checked and loaded")
-
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Load environment variables.
-# -----------------------------------------------------------------------------
-def get_environment() -> None:
-    """Load environment variables."""
-    try:
-        libs.cfg.environment_type = os.environ[libs.cfg.DCR_ENVIRONMENT_TYPE]
-    except KeyError:
-        libs.utils.terminate_fatal(
-            f"The environment variable '{libs.cfg.DCR_ENVIRONMENT_TYPE}' is missing"
-        )
-
-    if libs.cfg.environment_type not in [
-        libs.cfg.ENVIRONMENT_TYPE_DEV,
-        libs.cfg.ENVIRONMENT_TYPE_PROD,
-        libs.cfg.ENVIRONMENT_TYPE_TEST,
-    ]:
-        libs.utils.terminate_fatal(
-            f"The environment variable '{libs.cfg.DCR_ENVIRONMENT_TYPE}' "
-            f"has the invalid content '{libs.cfg.environment_type}'"
-        )
-
-    libs.utils.progress_msg("The run is performed in the environment '{libs.cfg.environment_type}'")
 
 
 # -----------------------------------------------------------------------------
@@ -208,14 +155,14 @@ def get_environment() -> None:
 # -----------------------------------------------------------------------------
 def initialise_logger() -> None:
     """Initialise the root logging functionality."""
-    with open(libs.cfg.LOGGER_CFG_FILE, "r", encoding=libs.cfg.FILE_ENCODING_DEFAULT) as file:
+    with open(cfg.glob.LOGGER_CFG_FILE, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file:
         log_config = yaml.safe_load(file.read())
 
     logging.config.dictConfig(log_config)
-    libs.cfg.logger = logging.getLogger("dcr.py")
-    libs.cfg.logger.setLevel(logging.DEBUG)
+    cfg.glob.logger = logging.getLogger("dcr.py")
+    cfg.glob.logger.setLevel(logging.DEBUG)
 
-    libs.utils.progress_msg("The logger is configured and ready")
+    utils.progress_msg_core("The logger is configured and ready")
 
 
 # -----------------------------------------------------------------------------
@@ -223,39 +170,43 @@ def initialise_logger() -> None:
 # -----------------------------------------------------------------------------
 def load_data_from_dbt_language() -> None:
     """Load the data from the database table 'language'."""
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    dbt = Table(
-        libs.db.cfg.DBT_LANGUAGE,
-        libs.db.cfg.db_orm_metadata,
-        autoload_with=libs.db.cfg.db_orm_engine,
+    dbt = sqlalchemy.Table(
+        cfg.glob.DBT_LANGUAGE,
+        cfg.glob.db_orm_metadata,
+        autoload_with=cfg.glob.db_orm_engine,
     )
 
-    libs.cfg.languages_tesseract = {}
+    cfg.glob.languages_pandoc = {}
+    cfg.glob.languages_spacy = {}
+    cfg.glob.languages_tesseract = {}
 
-    with libs.db.cfg.db_orm_engine.connect() as conn:
+    with cfg.glob.db_orm_engine.connect() as conn:
         rows = conn.execute(
-            select(dbt.c.id, dbt.c.code_spacy, dbt.c.code_tesseract).where(
+            sqlalchemy.select(dbt.c.id, dbt.c.code_pandoc, dbt.c.code_spacy, dbt.c.code_tesseract).where(
                 dbt.c.active,
             )
         )
 
         for row in rows:
-            libs.cfg.languages_tesseract[row.id] = row.code_tesseract
+            cfg.glob.languages_pandoc[row.id] = row.code_pandoc
+            cfg.glob.languages_spacy[row.id] = row.code_spacy
+            cfg.glob.languages_tesseract[row.id] = row.code_tesseract
 
         conn.close()
 
-    libs.utils.progress_msg(
-        f"Available languages for Tesseract OCR '{libs.cfg.languages_tesseract}'"
-    )
+    utils.progress_msg(f"Available languages for Pandoc        '{cfg.glob.languages_pandoc}'")
+    utils.progress_msg(f"Available languages for spaCy         '{cfg.glob.languages_spacy}'")
+    utils.progress_msg(f"Available languages for Tesseract OCR '{cfg.glob.languages_tesseract}'")
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
 # Initialising the logging functionality.
 # -----------------------------------------------------------------------------
-def main(argv: List[str]) -> None:
+def main(argv: typing.List[str]) -> None:
     """Entry point.
 
     The processes to be carried out are selected via command line arguments.
@@ -266,40 +217,37 @@ def main(argv: List[str]) -> None:
     # Initialise the logging functionality.
     initialise_logger()
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
-    libs.cfg.logger.info("Start dcr.py")
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    cfg.glob.logger.info("Start dcr.py")
 
     print("Start dcr.py")
 
-    locale.setlocale(locale.LC_ALL, libs.cfg.LOCALE)
+    locale.setlocale(locale.LC_ALL, cfg.glob.LOCALE)
 
-    # Load the environment variables.
-    get_environment()
+    # Load the configuration parameters.
+    cfg.glob.setup = cfg.setup.Setup()
 
     # Load the command line arguments.
     args = get_args(argv)
 
-    # Load the configuration parameters.
-    get_config()
-
-    if args[libs.cfg.RUN_ACTION_CREATE_DB]:
+    if args[cfg.glob.RUN_ACTION_CREATE_DB]:
         # Create the database.
-        libs.utils.progress_msg_empty_before("Start: Create the database ...")
-        libs.db.driver.create_database()
-        libs.utils.progress_msg("End  : Create the database ...")
-    elif args[libs.cfg.RUN_ACTION_UPGRADE_DB]:
+        utils.progress_msg_empty_before("Start: Create the database ...")
+        db.driver.create_database()
+        utils.progress_msg("End  : Create the database ...")
+    elif args[cfg.glob.RUN_ACTION_UPGRADE_DB]:
         # Upgrade the database.
-        libs.utils.progress_msg_empty_before("Start: Upgrade the database ...")
-        libs.db.driver.upgrade_database()
-        libs.utils.progress_msg("End  : Upgrade the database ...")
+        utils.progress_msg_empty_before("Start: Upgrade the database ...")
+        db.driver.upgrade_database()
+        utils.progress_msg("End  : Upgrade the database ...")
     else:
         # Process the documents.
         process_documents(args)
 
     print("End   dcr.py")
 
-    libs.cfg.logger.info("End   dcr.py")
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.info("End   dcr.py")
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -307,55 +255,53 @@ def main(argv: List[str]) -> None:
 # -----------------------------------------------------------------------------
 def process_convert_image_2_pdf() -> None:
     """Convert image documents to pdf files."""
-    libs.cfg.run_action = libs.cfg.RUN_ACTION_IMAGE_2_PDF
+    cfg.glob.run_action = cfg.glob.RUN_ACTION_IMAGE_2_PDF
 
-    libs.utils.progress_msg_empty_before(
-        "Start: Convert image documents to pdf files ... Tesseract OCR"
-    )
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    utils.progress_msg_empty_before("Start: Convert image documents to pdf files ... Tesseract OCR")
+    cfg.glob.run_id = db.dml.insert_dbt_row(
+        cfg.glob.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            cfg.glob.DBC_ACTION: cfg.glob.run_action,
+            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_START,
         },
     )
-    libs.preprocessor.tesseractdcr.convert_image_2_pdf()
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
-        libs.cfg.run_id,
+    pp.tesseract_dcr.convert_image_2_pdf()
+    db.dml.update_dbt_id(
+        cfg.glob.DBT_RUN,
+        cfg.glob.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_END,
+            cfg.glob.DBC_TOTAL_TO_BE_PROCESSED: cfg.glob.total_to_be_processed,
+            cfg.glob.DBC_TOTAL_OK_PROCESSED: cfg.glob.total_ok_processed,
+            cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
-    libs.utils.progress_msg("End  : Convert image documents to pdf files ...")
+    utils.progress_msg("End  : Convert image documents to pdf files ...")
 
-    libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PYPDF4
+    cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PYPDF2
 
-    libs.utils.progress_msg_empty_before("Start: Reunite the related pdf files ... PyPDF4")
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    utils.progress_msg_empty_before("Start: Reunite the related pdf files ... PyPDF2")
+    cfg.glob.run_id = db.dml.insert_dbt_row(
+        cfg.glob.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            cfg.glob.DBC_ACTION: cfg.glob.run_action,
+            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_START,
         },
     )
-    libs.preprocessor.tesseractdcr.reunite_pdfs()
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
-        libs.cfg.run_id,
+    pp.tesseract_dcr.reunite_pdfs()
+    db.dml.update_dbt_id(
+        cfg.glob.DBT_RUN,
+        cfg.glob.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_END,
+            cfg.glob.DBC_TOTAL_TO_BE_PROCESSED: cfg.glob.total_to_be_processed,
+            cfg.glob.DBC_TOTAL_OK_PROCESSED: cfg.glob.total_ok_processed,
+            cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
-    libs.utils.progress_msg("End  : Reunite the related pdf files ...")
+    utils.progress_msg("End  : Reunite the related pdf files ...")
 
 
 # -----------------------------------------------------------------------------
@@ -363,30 +309,28 @@ def process_convert_image_2_pdf() -> None:
 # -----------------------------------------------------------------------------
 def process_convert_non_pdf_2_pdf() -> None:
     """Convert non-pdf documents to pdf files."""
-    libs.cfg.run_action = libs.cfg.RUN_ACTION_NON_PDF_2_PDF
-    libs.utils.progress_msg_empty_before(
-        "Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]"
-    )
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    cfg.glob.run_action = cfg.glob.RUN_ACTION_NON_PDF_2_PDF
+    utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]")
+    cfg.glob.run_id = db.dml.insert_dbt_row(
+        cfg.glob.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            cfg.glob.DBC_ACTION: cfg.glob.run_action,
+            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_START,
         },
     )
-    libs.preprocessor.pandocdcr.convert_non_pdf_2_pdf()
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
-        libs.cfg.run_id,
+    pp.pandoc_dcr.convert_non_pdf_2_pdf()
+    db.dml.update_dbt_id(
+        cfg.glob.DBT_RUN,
+        cfg.glob.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_END,
+            cfg.glob.DBC_TOTAL_TO_BE_PROCESSED: cfg.glob.total_to_be_processed,
+            cfg.glob.DBC_TOTAL_OK_PROCESSED: cfg.glob.total_ok_processed,
+            cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
-    libs.utils.progress_msg("End  : Convert non-pdf documents to pdf files ...")
+    utils.progress_msg("End  : Convert non-pdf documents to pdf files ...")
 
 
 # -----------------------------------------------------------------------------
@@ -394,30 +338,28 @@ def process_convert_non_pdf_2_pdf() -> None:
 # -----------------------------------------------------------------------------
 def process_convert_pdf_2_image() -> None:
     """Convert pdf documents to image files."""
-    libs.cfg.run_action = libs.cfg.RUN_ACTION_PDF_2_IMAGE
-    libs.utils.progress_msg_empty_before(
-        "Start: Convert pdf documents to image files ... pdf2image [Poppler]"
-    )
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    cfg.glob.run_action = cfg.glob.RUN_ACTION_PDF_2_IMAGE
+    utils.progress_msg_empty_before("Start: Convert pdf documents to image files ... pdf2image [Poppler]")
+    cfg.glob.run_id = db.dml.insert_dbt_row(
+        cfg.glob.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            cfg.glob.DBC_ACTION: cfg.glob.run_action,
+            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_START,
         },
     )
-    libs.preprocessor.pdf2imagedcr.convert_pdf_2_image()
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
-        libs.cfg.run_id,
+    pp.pdf2image_dcr.convert_pdf_2_image()
+    db.dml.update_dbt_id(
+        cfg.glob.DBT_RUN,
+        cfg.glob.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_END,
+            cfg.glob.DBC_TOTAL_TO_BE_PROCESSED: cfg.glob.total_to_be_processed,
+            cfg.glob.DBC_TOTAL_OK_PROCESSED: cfg.glob.total_ok_processed,
+            cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
-    libs.utils.progress_msg("End  : Convert pdf documents to image files ...")
+    utils.progress_msg("End  : Convert pdf documents to image files ...")
 
 
 # -----------------------------------------------------------------------------
@@ -429,77 +371,71 @@ def process_documents(args: dict[str, bool]) -> None:
     Args:
         args (dict[str, bool]): The processing steps based on CLI arguments.
     """
-    libs.cfg.logger.debug(libs.cfg.LOGGER_START)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # Connect to the database.
-    libs.db.orm.connection.connect_db()
+    db.driver.connect_db()
 
     # Check the version of the database.
     check_db_up_to_date()
 
-    libs.cfg.run_run_id = libs.db.orm.dml.select_run_run_id_last() + 1
+    cfg.glob.run_run_id = db.dml.select_run_run_id_last() + 1
 
     # Load the data from the database table 'language'.
     load_data_from_dbt_language()
 
     # Process the documents in the inbox file directory.
-    if args[libs.cfg.RUN_ACTION_PROCESS_INBOX]:
+    if args[cfg.glob.RUN_ACTION_PROCESS_INBOX]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_INBOX
+        cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_INBOX
         process_inbox_directory()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Convert the scanned image pdf documents to image files.
-    if args[libs.cfg.RUN_ACTION_PDF_2_IMAGE]:
+    if args[cfg.glob.RUN_ACTION_PDF_2_IMAGE]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PDF2IMAGE
+        cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PDF2IMAGE
         process_convert_pdf_2_image()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Convert the image documents to pdf files.
-    if args[libs.cfg.RUN_ACTION_IMAGE_2_PDF]:
+    if args[cfg.glob.RUN_ACTION_IMAGE_2_PDF]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_TESSERACT
+        cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_TESSERACT
         process_convert_image_2_pdf()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Convert the non-pdf documents to pdf files.
-    if args[libs.cfg.RUN_ACTION_NON_PDF_2_PDF]:
+    if args[cfg.glob.RUN_ACTION_NON_PDF_2_PDF]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PANDOC
+        cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PANDOC
         process_convert_non_pdf_2_pdf()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Extract text and metadata from pdf documents.
-    if args[libs.cfg.RUN_ACTION_TEXT_FROM_PDF]:
+    if args[cfg.glob.RUN_ACTION_TEXT_FROM_PDF]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PDFLIB
+        cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PDFLIB
         process_extract_text_from_pdf()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Store the document structure from the parser result.
-    if args[libs.cfg.RUN_ACTION_STORE_FROM_PARSER]:
+    if args[cfg.glob.RUN_ACTION_STORE_FROM_PARSER]:
         start_time_process = time.perf_counter_ns()
-        libs.cfg.document_current_step = libs.db.cfg.DOCUMENT_STEP_PARSER
         process_store_from_parser()
-        libs.utils.progress_msg(
-            f"Time : {round((time.perf_counter_ns() - start_time_process)/1000000000,2) :10.2f} s"
-        )
+        utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
+
+    # Create document token.
+    if args[cfg.glob.RUN_ACTION_TOKENIZE]:
+        start_time_process = time.perf_counter_ns()
+        cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_TOKENIZE
+        process_tokenize()
+        utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Disconnect from the database.
-    libs.db.orm.connection.disconnect_db()
+    db.driver.disconnect_db()
 
-    libs.cfg.logger.debug(libs.cfg.LOGGER_END)
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -507,30 +443,28 @@ def process_documents(args: dict[str, bool]) -> None:
 # -----------------------------------------------------------------------------
 def process_extract_text_from_pdf() -> None:
     """Extract text and metadata from pdf documents."""
-    libs.cfg.run_action = libs.cfg.RUN_ACTION_TEXT_FROM_PDF
-    libs.utils.progress_msg_empty_before(
-        "Start: Extract text and metadata from pdf documents ... PDFlib TET"
-    )
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    cfg.glob.run_action = cfg.glob.RUN_ACTION_TEXT_FROM_PDF
+    utils.progress_msg_empty_before("Start: Extract text and metadata from pdf documents ... PDFlib TET")
+    cfg.glob.run_id = db.dml.insert_dbt_row(
+        cfg.glob.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            cfg.glob.DBC_ACTION: cfg.glob.run_action,
+            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_START,
         },
     )
-    libs.preprocessor.pdflibdcr.extract_text_from_pdf()
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
-        libs.cfg.run_id,
+    nlp.pdflib_dcr.extract_text_from_pdf()
+    db.dml.update_dbt_id(
+        cfg.glob.DBT_RUN,
+        cfg.glob.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_END,
+            cfg.glob.DBC_TOTAL_TO_BE_PROCESSED: cfg.glob.total_to_be_processed,
+            cfg.glob.DBC_TOTAL_OK_PROCESSED: cfg.glob.total_ok_processed,
+            cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
-    libs.utils.progress_msg("End  : Extract text and metadata from pdf documents ...")
+    utils.progress_msg("End  : Extract text and metadata from pdf documents ...")
 
 
 # -----------------------------------------------------------------------------
@@ -538,33 +472,33 @@ def process_extract_text_from_pdf() -> None:
 # -----------------------------------------------------------------------------
 def process_inbox_directory() -> None:
     """Process the inbox directory."""
-    libs.cfg.run_action = libs.cfg.RUN_ACTION_PROCESS_INBOX
+    cfg.glob.run_action = cfg.glob.RUN_ACTION_PROCESS_INBOX
 
-    libs.utils.progress_msg_empty_before("Start: Process the inbox directory ... PyMuPDF [fitz]")
+    utils.progress_msg_empty_before("Start: Process the inbox directory ... PyMuPDF [fitz]")
 
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    cfg.glob.run_id = db.dml.insert_dbt_row(
+        cfg.glob.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            cfg.glob.DBC_ACTION: cfg.glob.run_action,
+            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_START,
         },
     )
 
-    libs.preprocessor.inbox.process_inbox()
+    pp.inbox.process_inbox()
 
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
-        libs.cfg.run_id,
+    db.dml.update_dbt_id(
+        cfg.glob.DBT_RUN,
+        cfg.glob.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_END,
+            cfg.glob.DBC_TOTAL_TO_BE_PROCESSED: cfg.glob.total_to_be_processed,
+            cfg.glob.DBC_TOTAL_OK_PROCESSED: cfg.glob.total_ok_processed,
+            cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
 
-    libs.utils.progress_msg("End  : Process the inbox directory ...")
+    utils.progress_msg("End  : Process the inbox directory ...")
 
 
 # -----------------------------------------------------------------------------
@@ -572,198 +506,67 @@ def process_inbox_directory() -> None:
 # -----------------------------------------------------------------------------
 def process_store_from_parser() -> None:
     """Store the document structure from the parser result."""
-    libs.cfg.run_action = libs.cfg.RUN_ACTION_STORE_FROM_PARSER
+    cfg.glob.run_action = cfg.glob.RUN_ACTION_STORE_FROM_PARSER
 
-    libs.utils.progress_msg_empty_before(
-        "Start: Store document structure ... defusedxml [xml.etree.ElementTree]"
-    )
+    utils.progress_msg_empty_before("Start: Store document structure ... defusedxml [xml.etree.ElementTree]")
 
-    libs.cfg.run_id = libs.db.orm.dml.insert_dbt_row(
-        libs.db.cfg.DBT_RUN,
+    cfg.glob.run_id = db.dml.insert_dbt_row(
+        cfg.glob.DBT_RUN,
         {
-            libs.db.cfg.DBC_ACTION: libs.cfg.run_action,
-            libs.db.cfg.DBC_RUN_ID: libs.cfg.run_run_id,
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_START,
+            cfg.glob.DBC_ACTION: cfg.glob.run_action,
+            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_START,
         },
     )
 
-    libs.preprocessor.parser.parse_tetml()
+    nlp.parser.parse_tetml()
 
-    libs.db.orm.dml.update_dbt_id(
-        libs.db.cfg.DBT_RUN,
-        libs.cfg.run_id,
+    db.dml.update_dbt_id(
+        cfg.glob.DBT_RUN,
+        cfg.glob.run_id,
         {
-            libs.db.cfg.DBC_STATUS: libs.db.cfg.RUN_STATUS_END,
-            libs.db.cfg.DBC_TOTAL_TO_BE_PROCESSED: libs.cfg.total_to_be_processed,
-            libs.db.cfg.DBC_TOTAL_OK_PROCESSED: libs.cfg.total_ok_processed,
-            libs.db.cfg.DBC_TOTAL_ERRONEOUS: libs.cfg.total_erroneous,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_END,
+            cfg.glob.DBC_TOTAL_TO_BE_PROCESSED: cfg.glob.total_to_be_processed,
+            cfg.glob.DBC_TOTAL_OK_PROCESSED: cfg.glob.total_ok_processed,
+            cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
         },
     )
 
-    libs.utils.progress_msg("End  : Store document structure ...")
+    utils.progress_msg("End  : Store document structure ...")
 
 
 # -----------------------------------------------------------------------------
-# validate the configuration parameters.
+# Create document tokens.
 # -----------------------------------------------------------------------------
-def validate_config() -> None:
-    """Validate the configuration parameters."""
-    # -------------------------------------------------------------------------
-    validate_config_delete_auxiliary_files()
-    validate_config_directory_inbox()
-    validate_config_directory_inbox_accepted()
-    validate_config_directory_inbox_rejected()
-    validate_config_ignore_duplicates()
-    validate_config_pdf2image_type()
-    validate_config_simulate_parser()
-    validate_config_tesseract_timeout()
-    validate_config_verbose()
-    validate_config_verbose_parser()
+def process_tokenize() -> None:
+    """Create document tokens."""
+    cfg.glob.run_action = cfg.glob.RUN_ACTION_TOKENIZE
 
+    utils.progress_msg_empty_before("Start: Create document tokens ... spaCy")
 
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - delete_auxiliary_files
-# -----------------------------------------------------------------------------
-def validate_config_delete_auxiliary_files() -> None:
-    """Validate the configuration parameters - delete_auxiliary_files."""
-    libs.cfg.is_delete_auxiliary_files = True
+    cfg.glob.run_id = db.dml.insert_dbt_row(
+        cfg.glob.DBT_RUN,
+        {
+            cfg.glob.DBC_ACTION: cfg.glob.run_action,
+            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_START,
+        },
+    )
 
-    if libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_DELETE_AUXILIARY_FILES].lower() == "false":
-            libs.cfg.is_delete_auxiliary_files = False
+    nlp.tokenizer.tokenize()
 
+    db.dml.update_dbt_id(
+        cfg.glob.DBT_RUN,
+        cfg.glob.run_id,
+        {
+            cfg.glob.DBC_STATUS: cfg.glob.RUN_STATUS_END,
+            cfg.glob.DBC_TOTAL_TO_BE_PROCESSED: cfg.glob.total_to_be_processed,
+            cfg.glob.DBC_TOTAL_OK_PROCESSED: cfg.glob.total_ok_processed,
+            cfg.glob.DBC_TOTAL_ERRONEOUS: cfg.glob.total_erroneous,
+        },
+    )
 
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - directory_inbox
-# -----------------------------------------------------------------------------
-def validate_config_directory_inbox() -> None:
-    """Validate the configuration parameters - directory_inbox."""
-    if libs.cfg.DCR_CFG_DIRECTORY_INBOX in libs.cfg.config:
-        libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX] = libs.utils.str_2_path(
-            libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-        )
-
-        libs.cfg.directory_inbox = libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX]
-    else:
-        libs.utils.terminate_fatal(
-            f"Missing configuration parameter '{libs.cfg.DCR_CFG_DIRECTORY_INBOX}'"
-        )
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - directory_inbox_accepted
-# -----------------------------------------------------------------------------
-def validate_config_directory_inbox_accepted() -> None:
-    """Validate the configuration parameters - directory_inbox_accepted."""
-    if libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED in libs.cfg.config:
-        libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED] = libs.utils.str_2_path(
-            libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
-        )
-
-        libs.cfg.directory_inbox_accepted = libs.cfg.config[
-            libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED
-        ]
-    else:
-        libs.utils.terminate_fatal(
-            f"Missing configuration parameter '{libs.cfg.DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'"
-        )
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - directory_inbox_rejected
-# -----------------------------------------------------------------------------
-def validate_config_directory_inbox_rejected() -> None:
-    """Validate the configuration parameters - directory_inbox_rejected."""
-    if libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED in libs.cfg.config:
-        libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED] = libs.utils.str_2_path(
-            libs.cfg.config[libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED]
-        )
-
-        libs.cfg.directory_inbox_rejected = libs.cfg.config[
-            libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED
-        ]
-    else:
-        libs.utils.terminate_fatal(
-            f"Missing configuration parameter '{libs.cfg.DCR_CFG_DIRECTORY_INBOX_REJECTED}'"
-        )
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - ignore_duplicates
-# -----------------------------------------------------------------------------
-def validate_config_ignore_duplicates() -> None:
-    """Validate the configuration parameters - ignore_duplicates."""
-    libs.cfg.is_ignore_duplicates = False
-
-    if libs.cfg.DCR_CFG_IGNORE_DUPLICATES in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_IGNORE_DUPLICATES].lower() == "true":
-            libs.cfg.is_ignore_duplicates = True
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - pdf2image_type
-# -----------------------------------------------------------------------------
-def validate_config_pdf2image_type() -> None:
-    """Validate the configuration parameters - pdf2image_type."""
-    libs.cfg.pdf2image_type = libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG
-
-    if libs.cfg.DCR_CFG_PDF2IMAGE_TYPE in libs.cfg.config:
-        libs.cfg.pdf2image_type = libs.cfg.config[libs.cfg.DCR_CFG_PDF2IMAGE_TYPE]
-        if libs.cfg.pdf2image_type not in [
-            libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_JPEG,
-            libs.cfg.DCR_CFG_PDF2IMAGE_TYPE_PNG,
-        ]:
-            libs.utils.terminate_fatal(
-                f"Invalid configuration parameter value for parameter "
-                f"'pdf2image_type': '{libs.cfg.pdf2image_type}'"
-            )
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - simulate_parser
-# -----------------------------------------------------------------------------
-def validate_config_simulate_parser() -> None:
-    """Validate the configuration parameters - simulate_parser."""
-    libs.cfg.is_simulate_parser = False
-
-    if libs.cfg.DCR_CFG_SIMULATE_PARSER in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_SIMULATE_PARSER].lower() == "true":
-            libs.cfg.is_simulate_parser = True
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - tesseract_timeout
-# -----------------------------------------------------------------------------
-def validate_config_tesseract_timeout() -> None:
-    """Validate the configuration parameters - tesseract_timeout."""
-    libs.cfg.tesseract_timeout = 30
-
-    if libs.cfg.DCR_CFG_TESSERACT_TIMEOUT in libs.cfg.config:
-        libs.cfg.tesseract_timeout = int(libs.cfg.config[libs.cfg.DCR_CFG_TESSERACT_TIMEOUT])
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - verbose
-# -----------------------------------------------------------------------------
-def validate_config_verbose() -> None:
-    """Validate the configuration parameters - verbose."""
-    libs.cfg.is_verbose = True
-
-    if libs.cfg.DCR_CFG_VERBOSE in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE].lower() == "false":
-            libs.cfg.is_verbose = False
-
-
-# -----------------------------------------------------------------------------
-# validate the configuration parameters - verbose_parser
-# -----------------------------------------------------------------------------
-def validate_config_verbose_parser() -> None:
-    """Validate the configuration parameters - verbose_parser."""
-    libs.cfg.verbose_parser = "none"
-
-    if libs.cfg.DCR_CFG_VERBOSE_PARSER in libs.cfg.config:
-        if libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE_PARSER].lower() in ["all", "text"]:
-            libs.cfg.verbose_parser = libs.cfg.config[libs.cfg.DCR_CFG_VERBOSE_PARSER].lower()
+    utils.progress_msg("End  : Create document tokens ...")
 
 
 # -----------------------------------------------------------------------------

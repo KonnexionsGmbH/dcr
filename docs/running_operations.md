@@ -1,11 +1,7 @@
 # DCR - Running - Operations
 
-![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.0)
-
-----
 
 **DCR** should be operated via the script **`run_dcr_prod`**. 
 The following actions are available:
@@ -21,19 +17,21 @@ The following actions are available:
 | **`ocr`**   | Convert appropriate image documents to **`pdf`** files.                                                            |
 | **`p_2_i`** | Convert **`pdf`** documents to image files.                                                                        |
 | **`p_i`**   | Process the inbox directory.                                                                                       |
-| **`s_f_p`** | Store the document structure from the parser result.                                                               |
-| **`tet`**   | Extract text and metadata from **`pdf`** documents.                                                                |
+| **`s_f_p`** | ??? wwe.                                                                                                           |
+| **`tet`**   | Extract text from **`pdf`** documents.                                                                             |
+| **`tkn`**   | ??? wwe.                                                                                                           |
 
 The action **`all - run the complete processing of all new documents`** includes the following processes in the order given:
 
-| Action      | Process                                                                                                            |
-|-------------|--------------------------------------------------------------------------------------------------------------------|
-| **`p_i`**   | Process the inbox directory.                                                                                       |
-| **`p_2_i`** | Convert **`pdf`** documents to image files.                                                                        |
-| **`ocr`**   | Convert appropriate image documents to **`pdf`** files.                                                            |
-| **`n_2_p`** | Convert appropriate non-pdf documents to **`pdf`** files.                                                          |
-| **`tet`**   | Extract text and metadata from **`pdf`** documents.                                                                |
-| **`s_f_p`** | Store the document structure from the parser result.                                                               |
+| Action      | Process                                                   |
+|-------------|-----------------------------------------------------------|
+| **`p_i`**   | Process the inbox directory.                              |
+| **`p_2_i`** | Convert **`pdf`** documents to image files.               |
+| **`ocr`**   | Convert appropriate image documents to **`pdf`** files.   |
+| **`n_2_p`** | Convert appropriate non-pdf documents to **`pdf`** files. |
+| **`tet`**   | Extract text from **`pdf`** documents.                    |
+| **`s_f_p`** | ??? wwe.                                                  |
+| **`tkn`**   | ??? wwe.                                                  |
 
 The action **`db_c - create the database`** is only required once when installing **`DCR`**.  
 
