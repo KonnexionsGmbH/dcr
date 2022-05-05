@@ -117,7 +117,7 @@ class Setup:
         self.db_schema: str = "dcr_schema"
         self.db_user: str = "postgresql"
         self.db_user_admin: str = "postgresql"
-        self.dcr_version: str = "0.9.1"
+        self.dcr_version: str = "0.9.2"
         self.directory_inbox: str = "data/inbox"
         self.directory_inbox_accepted: str = "data/inbox_accepted"
         self.directory_inbox_rejected: str = "data/inbox_rejected"
