@@ -81,23 +81,32 @@ def convert_non_pdf_2_pdf_file() -> None:
         f"lang:{cfg.glob.languages_pandoc[cfg.glob.document_language_id]}",
     ]
 
-    pypandoc.convert_file(
-        source_file_name,
-        cfg.glob.DOCUMENT_FILE_TYPE_PDF,
-        extra_args=extra_args,
-        outputfile=target_file_name,
-    )
+    try:
+        pypandoc.convert_file(
+            source_file_name,
+            cfg.glob.DOCUMENT_FILE_TYPE_PDF,
+            extra_args=extra_args,
+            outputfile=target_file_name,
+        )
 
-    utils.prepare_document_4_next_step(
-        next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_PDF,
-        next_step=cfg.glob.DOCUMENT_STEP_PDFLIB,
-    )
+        utils.prepare_document_4_next_step(
+            next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_PDF,
+            next_step=cfg.glob.DOCUMENT_STEP_PDFLIB,
+        )
 
-    cfg.glob.document_child_file_name = cfg.glob.document_stem_name + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
-    cfg.glob.document_child_stem_name = cfg.glob.document_stem_name
+        cfg.glob.document_child_file_name = cfg.glob.document_stem_name + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
+        cfg.glob.document_child_stem_name = cfg.glob.document_stem_name
 
-    db.dml.insert_document_child()
+        db.dml.insert_document_child()
 
-    utils.delete_auxiliary_file(source_file_name)
+        utils.delete_auxiliary_file(source_file_name)
+    except RuntimeError as err:
+        db.dml.update_document_error(
+            document_id=cfg.glob.document_id,
+            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
+            error_msg=cfg.glob.ERROR_31_902.replace("{file_name}", source_file_name).replace(
+                "{error_msg}", str(str(err).encode("utf-8"))
+            ),
+        )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

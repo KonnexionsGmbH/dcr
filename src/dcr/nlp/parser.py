@@ -224,8 +224,7 @@ def parse_tag_content(parent_tag: str, parent: typing.Iterable[str]) -> None:
                 parse_tag_para(child_tag, child)
             case cfg.glob.PARSE_TAG_TABLE:
                 parse_tag_table(child_tag, child)
-            # not testablerun_dcr_dev db_c
-
+            # not testable
             case cfg.glob.PARSE_TAG_PLACED_IMAGE:
                 pass
 

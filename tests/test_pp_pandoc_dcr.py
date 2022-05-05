@@ -13,6 +13,30 @@ import dcr
 
 
 # -----------------------------------------------------------------------------
+# Test RUN_ACTION_NON_PDF_2_PDF - coverage.
+# -----------------------------------------------------------------------------
+def test_run_action_non_pdf_2_pdf_coverage(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_NON_PDF_2_PDF - coverage."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        [
+            ("p_2_header_0_footer_2_text_0", "docx"),
+        ],
+        cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_NON_PDF_2_PDF])
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test RUN_ACTION_NON_PDF_2_PDF - normal - duplicate.
 # -----------------------------------------------------------------------------
 def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
