@@ -5,21 +5,28 @@
 
 ## 1. Version Planning
 
-| Version | Feature(s)                            | Status |
-|---------|---------------------------------------|--------|
-| 0.9.3   | User interface based on tkinter       | Open   |
-| 0.9.2   | Admin interface based on tkinter      | Open   |
-| 0.9.1   | Core text preprocessing and wrangling | Done   |
-| 0.9.0   | Parser                                | Done   |
-| 0.8.0   | PDFlib TET processing                 | Done   |
-| 0.7.0   | Tesseract OCR processing              | Done   |
-| 0.6.5   | Pandoc processing                     | Done   |
-| 0.6.0   | pdf for Tesseract OCR processing      | Done   |
-| 0.5.0   | Inbox processing                      | Done   |
+### 1.1 Open
+
+| Version | Feature(s)                        | 
+|---------|-----------------------------------|
+| 0.9.3   | User interface based on tkinter   |
+| 0.9.2   | Admin interface based on tkinter  |
+
+### 1.2 Already implemented
+
+| Version | Feature(s)                             |
+|---------|----------------------------------------|
+| 0.9.1   | Core text preprocessing and wrangling  |
+| 0.9.0   | Parser                                 |
+| 0.8.0   | PDFlib TET processing                  |
+| 0.7.0   | Tesseract OCR processing               |
+| 0.6.5   | Pandoc processing                      |
+| 0.6.0   | **`pdf`** for Tesseract OCR processing |
+| 0.5.0   | Inbox processing                       |
 
 ## 2. Next Development Steps
 
-### 2.1 Still Open
+### 2.1 Open
 
 #### 2.1.1 High Priority
 
