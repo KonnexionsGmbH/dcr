@@ -40,14 +40,14 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for mor
 
 ### 2.1 Directories
 
-| Directory         | Content                                                                       |
-|-------------------|-------------------------------------------------------------------------------|
-| .github/workflows | [GitHub Action](https://github.com/actions) workflows                         |
-| data              | Inbox directories and database setup data                                     |
-| docs              | **DCR"" documentation files                                                   |
-| resources         | DBeaver configuration, Gammadyne utility and various external documentation   |
-| src               | Python scripts and [PDFlib TET](https://www.pdflib.com/products/tet/) files   |
-| tests             | Scripts and data for pytest                                                   |
+| Directory         | Content                                                                     |
+|-------------------|-----------------------------------------------------------------------------|
+| .github/workflows | [GitHub Action](https://github.com/actions) workflows                       |
+| data              | Inbox directories and database setup data                                   |
+| docs              | **DCR** documentation files                                                 |
+| resources         | DBeaver configuration, Gammadyne utility and various external documentation |
+| src               | Python scripts and [PDFlib TET](https://www.pdflib.com/products/tet/) files |
+| tests             | Scripts and data for pytest                                                 |
 
 ### 2.2 Files
 
