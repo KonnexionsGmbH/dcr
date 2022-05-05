@@ -11,9 +11,10 @@ Furthermore, for each of the languages in question there must be a corresponding
 
 ## 2. Database Table **`language`**
 
-![](img/running_document_language_dbt_language_rows.png)
+![](img/developing_data_model_dbt_language_rows.png)
 
-![](img/running_document_language_dbt_language_column.png)
+
+![](img/developing_data_model_dbt_language_columns.png)
 
 The active languages in the database table **`language`** control the allocation of the documents to a language. 
 Each document language must have its own entry in this table. 
@@ -41,7 +42,7 @@ Example entry for the document language French:
         },
         {
           "columnName": "code_spacy",
-          "columnValue": "fr"
+          "columnValue": "fr_dep_news_trf"
         },
         {                                   
           "columnName": "code_tesseract",
@@ -59,15 +60,15 @@ Example entry for the document language French:
     },
 
 
-| Column               | Description                                                                                                                                                                                                                                                                                                                                                                         |
-|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| active               | active language - true or false                                                                                                                                                                                                                                                                                                                                                     |
-| code_iso_639_3       | three-letter codes, the same as 639-2/T for languages, <br>but with distinct codes for each variety of an ISO 639 macrolanguage                                                                                                                                                                                                                                                     |
-| code_pandoc          | the language code as used in [Pandoc](https://pandoc.org){:target="_blank"} respectively [Babel - IETF BCP 47](http://mirrors.ctan.org/macros/latex/required/babel/base/babel.pdf){:target="_blank"}, [spaCy](https://spacy.io/usage/models){:target="_blank"} and [Tesseract OCR](https://tesseract-ocr.github.io/tessdoc/Data-Files-in-different-versions.html){:target="_blank"} |
-| code_spacy           | the language code as used in [spaCy](https://spacy.io/usage/models){:target="_blank"}                                                                                                                                                                                                                                                                                               |
-| code_tesseract       | the language code as used in [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}                                                                                                                                                                                                                                                                          |
-| directory_name_inbox | optional the name of the file directory relative to the **`inbox`** - <br>if missing the content of the column **`iso_language_name`** is used                                                                                                                                                                                                                                      |
-| iso_language_name    | the name of the language according to **`ISO 639-1`**                                                                                                                                                                                                                                                                                                                               |
+| Column               | Description                                                                                                                                                                                           |
+|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| active               | active language - true or false                                                                                                                                                                       |
+| code_iso_639_3       | three-letter codes, the same as 639-2/T for languages, <br>but with distinct codes for each variety of an ISO 639 macrolanguage                                                                       |
+| code_pandoc          | the language code as used in [Pandoc](https://pandoc.org){:target="_blank"} respectively [Babel - IETF BCP 47](http://mirrors.ctan.org/macros/latex/required/babel/base/babel.pdf){:target="_blank"}} |
+| code_spacy           | the trained pipeline package as used in [spaCy](https://spacy.io/usage/models){:target="_blank"}                                                                                                      |
+| code_tesseract       | the language code as used in [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}                                                                                            |
+| directory_name_inbox | optional the name of the file directory relative to the **`inbox`** - <br>if missing the content of the column **`iso_language_name`** is used                                                        |
+| iso_language_name    | the name of the language according to **`ISO 639-1`**                                                                                                                                                 |
 
 ## 3. Default Document Language
 
@@ -79,7 +80,7 @@ The corresponding entry in the database table language is created internally wit
 | active               | true                |
 | code_iso_639_3       | eng                 |
 | code_pandoc          | en                  |
-| code_spacy           | en                  |
+| code_spacy           | en_core_web_trf     |
 | code_tesseract       | eng                 |
 | directory_name_inbox | the inbox directory |
 | iso_language_name    | English             |

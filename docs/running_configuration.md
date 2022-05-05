@@ -154,41 +154,41 @@ The customisable entries are:
     verbose_line_type = false
     verbose_parser = none
     
-| Parameter                | Default value                         | Description                                                                                  |
-|--------------------------|---------------------------------------|----------------------------------------------------------------------------------------------|
-| db_connection_port       | environment specific                  | Port number the DBMS server is listening on.                                                 |
-| db_connection_prefix     | **`postgresql+psycopg2://`**          | Front part of the database URL.                                                              |
-| db_database              | environment specific                  | **DCR** database name.                                                                       |
-| db_database_admin        | environment specific                  | Administrative database name.                                                                |
-| db_dialect               | **`postgresql`**                      | DBMS used, currently: only PostgreSQL allowed.                                               |
-| db_host                  | **`localhost`**                       | Host name of the DBMS server.                                                                |
-| db_password              | **`postgresql`**                      | **DCR** database user password.                                                              |
-| db_password_admin        | **`postgresql`**                      | Administrative database password.                                                            |
-| db_schema                | **`dcr_schema`**                      | Database schema name.                                                                        |
-| db_user                  | **`postgresql`**                      | **DCR** database user name.                                                                  |
-| db_user_admin            | **`postgresql`**                      | Administrative database user name.                                                           |
-| dcr_version              | **`0.9.1`**                           | Current version number of the **DCR** application.                                           |
-| delete_auxiliary_files   | **`true`**                            | Delete the auxiliary files after a successful <br>processing step.                           |
-| directory_inbox          | **`data/inbox`**                      | Directory for the new documents received.                                                    |
-| directory_inbox_accepted | **`data/inbox_accepted`**             | Directory for the accepted documents.                                                        |
-| directory_inbox_rejected | **`data/inbox_rejected`**             | Complete file name for the JSON file with the <br>database initialisation data.              |
-| ignore_duplicates        | **`false`**                           | Accept presumably duplicated documents <br/>based on a SHA256 hash key.                      |
-| initial_database_data    | **`data/initial_database_data.json`** | File with initial database contents.                                                         |
-| line_footer_max_distance | **`3`**                               | Maximum Levenshtein distance for a footer line.                                              |
-| line_footer_max_lines    | **`3`**                               | Maximum number of footers.                                                                   |
-| line_footer_preference   | **`true`**                            | Prefer the footer lines when determining the line type.                                      |
-| line_header_max_distance | **`3`**                               | Maximum Levenshtein distance for a header line.                                              |
-| line_header_max_lines    | **`3`**                               | Maximum number of headers.                                                                   |
-| pdfimage_type            | **`jpeg`**                            | Format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**.      |
-| simulate_parser          | **`false`**                           | Simulate the parsing process for testing purposes.                                           |
-| spacy_tkn_attr_...       |                                       | Possible token attributes - a detailed description is below.                                 |
-| tesseract_timeout        | **`30`**                              | Terminate the tesseract job after a <br>period of time (seconds).                            |
-| tetml_line               | **`true`**                            | PDFlib TET granularity 'line'.                                                               |
-| tetml_page               | **`false`**                           | PDFlib TET granularity 'page'.                                                               |
-| tetml_word               | **`false`**                           | PDFlib TET granularity 'word'.                                                               |
-| verbose                  | **`true`**                            | Display progress messages for processing.                                                    |
-| verbose_line_type        | **`false`**                           | Display progress messages for line type determination.                                       |
-| verbose_parser           | **`none`**                            | Display progress messages for parsing xml (TETML) : <br>**`all`**, **`none`** or **`text`**. |
+| Parameter                | Default value                         | Description                                                                                        |
+|--------------------------|---------------------------------------|----------------------------------------------------------------------------------------------------|
+| db_connection_port       | environment specific                  | Port number the DBMS server is listening on.                                                       |
+| db_connection_prefix     | **`postgresql+psycopg2://`**          | Front part of the database URL.                                                                    |
+| db_database              | environment specific                  | **DCR** database name.                                                                             |
+| db_database_admin        | environment specific                  | Administrative database name.                                                                      |
+| db_dialect               | **`postgresql`**                      | DBMS used, currently: only PostgreSQL allowed.                                                     |
+| db_host                  | **`localhost`**                       | Host name of the DBMS server.                                                                      |
+| db_password              | **`postgresql`**                      | **DCR** database user password.                                                                    |
+| db_password_admin        | **`postgresql`**                      | Administrative database password.                                                                  |
+| db_schema                | **`dcr_schema`**                      | Database schema name.                                                                              |
+| db_user                  | **`postgresql`**                      | **DCR** database user name.                                                                        |
+| db_user_admin            | **`postgresql`**                      | Administrative database user name.                                                                 |
+| dcr_version              | **`0.9.1`**                           | Current version number of the **DCR** application.                                                 |
+| delete_auxiliary_files   | **`true`**                            | Delete the auxiliary files after a successful <br>processing step.                                 |
+| directory_inbox          | **`data/inbox`**                      | Directory for the new documents received.                                                          |
+| directory_inbox_accepted | **`data/inbox_accepted`**             | Directory for the accepted documents.                                                              |
+| directory_inbox_rejected | **`data/inbox_rejected`**             | Complete file name for the JSON file with the <br>database initialisation data.                    |
+| ignore_duplicates        | **`false`**                           | Accept presumably duplicated documents <br/>based on a SHA256 hash key.                            |
+| initial_database_data    | **`data/initial_database_data.json`** | File with initial database contents.                                                               |
+| line_footer_max_distance | **`3`**                               | Maximum Levenshtein distance for a footer line.                                                    |
+| line_footer_max_lines    | **`3`**                               | Maximum number of footers.                                                                         |
+| line_footer_preference   | **`true`**                            | Prefer the footer lines when determining the line type.                                            |
+| line_header_max_distance | **`3`**                               | Maximum Levenshtein distance for a header line.                                                    |
+| line_header_max_lines    | **`3`**                               | Maximum number of headers.                                                                         |
+| pdfimage_type            | **`jpeg`**                            | Format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**.            |
+| simulate_parser          | **`false`**                           | Simulate the parsing process for testing purposes.                                                 |
+| spacy_tkn_attr_...       |                                       | Possible token attributes - a detailed description is below.                                       |
+| tesseract_timeout        | **`30`**                              | Terminate the tesseract job after a <br>period of time (seconds).                                  |
+| tetml_line               | **`true`**                            | PDFlib TET granularity 'line'.                                                                     |
+| tetml_page               | **`false`**                           | PDFlib TET granularity 'page'.                                                                     |
+| tetml_word               | **`false`**                           | PDFlib TET granularity 'word'.                                                                     |
+| verbose                  | **`true`**                            | Display progress messages for processing.                                                          |
+| verbose_line_type        | **`false`**                           | Display progress messages for line type determination.                                             |
+| verbose_parser           | **`none`**                            | Display progress messages for parsing **`xml`** (TETML) : <br>**`all`**, **`none`** or **`text`**. |
 
 The configuration parameters can be set differently for the individual environments (`dev`, `prod` and `test`).
 

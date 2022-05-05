@@ -250,7 +250,7 @@ def parse_tag_doc_info(parent_tag: str, parent: typing.Iterable[str]) -> None:
             case cfg.glob.PARSE_TAG_AUTHOR:
                 cfg.glob.parse_result_author = child.text
             case cfg.glob.PARSE_TAG_CREATION_DATE:
-                cfg.glob.parse_result_creation_date = datetime.datetime.strptime(child.text, "%Y-%m-%dT%H:%M:%S%z")
+                cfg.glob.parse_result_creation_date = child.text
             case (
                 cfg.glob.PARSE_TAG_CREATOR
                 | cfg.glob.PARSE_TAG_PRODUCER
