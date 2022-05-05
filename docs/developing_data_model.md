@@ -23,7 +23,7 @@ If required, a PostgreSQL Docker image can be downloaded and a PostgreSQL Docker
 
 #### 2.2.1 Database Table **`content_tetml_line`**
 
-This database table contains the results from the parsing process.
+This database table contains the results of the parsing process in the granularity document line.
 
 **Example rows**:
 
@@ -49,7 +49,7 @@ This database table contains the results from the parsing process.
 
 #### 2.2.2 Database Table **`content_tetml_page`**
 
-This database table contains the results from the parsing process.
+This database table contains the results of the parsing process in the granularity document page.
 
 **Example rows**:
 
@@ -73,7 +73,7 @@ This database table contains the results from the parsing process.
 
 #### 2.2.3 Database Table **`content_tetml_word`**
 
-This database table contains the results from the parsing process.
+This database table contains the results of the parsing process in the granularity document word.
 
 **Example rows**:
 
@@ -99,7 +99,7 @@ This database table contains the results from the parsing process.
 
 #### 2.2.4 Database Table **`content_token`**
 
-This database table contains the results from the parsing process.
+This database table contains the tokens determined by [spaCy](https://spacy.io){:target="_blank"} together with selected attributes.
 
 **Example rows**:
 
