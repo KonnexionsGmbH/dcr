@@ -13,9 +13,6 @@ import pytest
 # @pytest.mark.issue
 
 
-CONFIG_PARAM_NO: int = 60
-
-
 # -----------------------------------------------------------------------------
 # Test Function - get_config().
 # -----------------------------------------------------------------------------
@@ -28,7 +25,7 @@ def test_get_config(fxtr_setup_logger_environment):
 
     cfg.glob.setup = cfg.setup.Setup()
 
-    assert len(cfg.glob.setup._config) == CONFIG_PARAM_NO, "cfg:: complete"
+    assert len(cfg.glob.setup._config) == cfg.glob.setup._CONFIG_PARAM_NO, "cfg:: complete"
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
@@ -96,34 +93,60 @@ def test_get_config_coverage_false(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_SPACY,
         [
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_DOC, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_HEAD, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_I, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IDX, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_ASCII, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_BRACKET, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_CURRENCY, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_DIGIT, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_LEFT_PUNCT, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_LOWER, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_OOV, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_QUOTE, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_RIGHT_PUNCT, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_END, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_START, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_SPACE, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_UPPER, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEMMA_, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEX, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEX_ID, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_EMAIL, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LOWER_, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_MORPH, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_NORM_, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ORTH_, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_POS_, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_PREFIX_, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_PROB, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_RANK, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SENT, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SENTIMENT, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SUFFIX_, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TAG_, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TENSOR, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TEXT, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, "false"),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB, "false"),
             (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_, "false"),
         ],
     )
@@ -131,59 +154,7 @@ def test_get_config_coverage_false(fxtr_setup_logger_environment):
     cfg.glob.setup = cfg.setup.Setup()
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
-        values_original,
-    )
-
-    # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test Function - get_config() - coverage - true.
-# -----------------------------------------------------------------------------
-def test_get_config_coverage_true(fxtr_setup_logger_environment):
-    """Test: test_get_config_coverage_true()."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
-        [
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_I, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_CURRENCY, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_DIGIT, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_OOV, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_END, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_START, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEMMA_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_EMAIL, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_NORM_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_POS_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TAG_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TEXT, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_, "true"),
-        ],
-    )
-
-    cfg.glob.setup = cfg.setup.Setup()
-
-    pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_SPACY,
         values_original,
     )
 
@@ -252,7 +223,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     cfg.glob.setup = cfg.setup.Setup()
 
-    assert len(cfg.glob.setup._config) == CONFIG_PARAM_NO, "cfg:: complete"
+    assert len(cfg.glob.setup._config) == cfg.glob.setup._CONFIG_PARAM_NO, "cfg:: complete"
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.delete_config_param(
@@ -608,7 +579,7 @@ def test_get_config_unknown(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     cfg.glob.setup = cfg.setup.Setup()
 
-    assert len(cfg.glob.setup._config) == CONFIG_PARAM_NO, "cfg:: complete"
+    assert len(cfg.glob.setup._config) == cfg.glob.setup._CONFIG_PARAM_NO, "cfg:: complete"
 
     # -------------------------------------------------------------------------
     pytest.helpers.insert_config_param(

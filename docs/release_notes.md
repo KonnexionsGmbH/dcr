@@ -11,7 +11,7 @@ Release Date: dd.mm.2022
 
 ### 1.1 New Features
 
-- TBD
+- selectable spaCy token attributes completed.
 
 ### 1.2 Modified Features
 

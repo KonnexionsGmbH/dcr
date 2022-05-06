@@ -24,7 +24,7 @@ def test_connect_db(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    config_section = cfg.glob.setup._DCR_CFG_SECTION_TEST
+    config_section = cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST
 
     values_original = pytest.helpers.backup_config_params(
         config_section,
@@ -58,7 +58,7 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    config_section = cfg.glob.setup._DCR_CFG_SECTION_TEST
+    config_section = cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST
 
     values_original = pytest.helpers.backup_config_params(
         config_section,
