@@ -3,6 +3,7 @@
 import typing
 
 import cfg.glob
+import db.run
 import jellyfish
 import pytest
 import roman
@@ -109,11 +110,11 @@ def test_run_action_store_from_parser_coverage(verbose_parser: str, fxtr_rmdir_o
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_STORE_FROM_PARSER])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,
@@ -178,11 +179,11 @@ def test_run_action_store_from_parser_coverage_line_type(fxtr_rmdir_opt, fxtr_se
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_STORE_FROM_PARSER])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,
@@ -259,17 +260,17 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDF2IMAGE])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_IMAGE_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_TESSERACT])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_NON_PDF_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PANDOC])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_STORE_FROM_PARSER])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,
@@ -335,17 +336,17 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDF2IMAGE])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_IMAGE_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_TESSERACT])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_NON_PDF_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PANDOC])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_STORE_FROM_PARSER])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,

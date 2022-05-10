@@ -213,7 +213,7 @@ The configuration parameters can be set differently for the individual environme
     db_database = dcr_db_test
     db_database_admin = dcr_db_test_admin
 
-### 3.1 Possible [spaCy](https://spacy.io){:target="_blank"} Token Attributes
+### 3.1 [spaCy](https://spacy.io){:target="_blank"} Token Attributes
 
 The tokens derived from the documents can be qualified via various attributes. 
 The available options are described below.

@@ -1,9 +1,15 @@
 """Library Stub."""
 import logging
 import os
-import typing
+from typing import Dict
+from typing import List
+from typing import Type
 
 import cfg.setup
+import db.action
+import db.base
+import db.language
+import db.run
 import nlp.line_type
 import psycopg2.extensions
 import sqlalchemy
@@ -13,9 +19,12 @@ import sqlalchemy
 # -----------------------------------------------------------------------------
 DB_DIALECT_POSTGRESQL: str
 
-DBC_ACTION: str
+DBC_ACTION_CODE: str
+DBC_ACTION_CODE_LAST: str
+DBC_ACTION_TEXT: str
+DBC_ACTION_TEXT_LAST: str
+DBC_ACTION_FINISHED: str
 DBC_ACTIVE: str
-DBC_CHILD_NO: str
 DBC_CODE_ISO_639_3: str
 DBC_CODE_PANDOC: str
 DBC_CODE_SPACY: str
@@ -30,31 +39,45 @@ DBC_DOCUMENT_ID_BASE: str
 DBC_DOCUMENT_ID_PARENT: str
 DBC_DURATION_NS: str
 DBC_ERROR_CODE: str
+DBC_ERROR_CODE_LAST: str
 DBC_ERROR_MSG: str
+DBC_ERROR_MSG_LAST: str
 DBC_ERROR_NO: str
 DBC_FILE_NAME: str
 DBC_FILE_SIZE_BYTES: str
 DBC_FILE_TYPE: str
 DBC_FUNCTION_NAME: str
 DBC_ID: str
+DBC_ID_BASE: str
+DBC_ID_LANGUAGE: str
+DBC_ID_PARENT: str
+DBC_ID_RUN: str
+DBC_ID_RUN_LAST: str
+DBC_IN_FILE_NAME: str
+DBC_IN_FILE_SIZE_BYTES: str
 DBC_ISO_LANGUAGE_NAME: str
-DBC_LANGUAGE_ID: str
+DBC_LAST_STEP: str
 DBC_MODIFIED_AT: str
 DBC_MODULE_NAME: str
 DBC_NEXT_STEP: str
+DBC_NO_CHILDREN: str
+DBC_NO_PDF_PAGES: str
+DBC_OUT_FILE_NAME: str
+DBC_OUT_FILE_SIZE_BYTES: str
 DBC_PAGE_DATA: str
 DBC_PAGE_NO: str
-DBC_PDF_PAGES_NO: str
-DBC_RUN_ID: str
+DBC_PROCESSING_STEP: str
 DBC_SENTENCE_TEXT: str
 DBC_SHA256: str
 DBC_STATUS: str
 DBC_STEM_NAME: str
 DBC_TOTAL_ERRONEOUS: str
-DBC_TOTAL_OK_PROCESSED: str
-DBC_TOTAL_TO_BE_PROCESSED: str
+DBC_TOTAL_PROCESSED_OK: str
+DBC_TOTAL_PROCESSED_TO_BE: str
 DBC_VERSION: str
 
+DBT_ACTION: str
+DBT_BASE: str
 DBT_CONTENT_TETML_LINE: str
 DBT_CONTENT_TETML_PAGE: str
 DBT_CONTENT_TETML_WORD: str
@@ -85,10 +108,10 @@ DOCUMENT_ERROR_CODE_REJ_PDFLIB: str
 DOCUMENT_ERROR_CODE_REJ_TESSERACT: str
 
 DOCUMENT_FILE_TYPE_JPG: str
-DOCUMENT_FILE_TYPE_PANDOC: typing.List[str]
+DOCUMENT_FILE_TYPE_PANDOC: List[str]
 DOCUMENT_FILE_TYPE_PDF: str
 DOCUMENT_FILE_TYPE_PNG: str
-DOCUMENT_FILE_TYPE_TESSERACT: typing.List[str]
+DOCUMENT_FILE_TYPE_TESSERACT: List[str]
 DOCUMENT_FILE_TYPE_TIF: str
 DOCUMENT_FILE_TYPE_TIFF: str
 DOCUMENT_FILE_TYPE_XML: str
@@ -101,16 +124,6 @@ DOCUMENT_STATUS_ABORT: str
 DOCUMENT_STATUS_END: str
 DOCUMENT_STATUS_ERROR: str
 DOCUMENT_STATUS_START: str
-
-DOCUMENT_STEP_INBOX: str
-DOCUMENT_STEP_PANDOC: str
-DOCUMENT_STEP_PARSER_LINE: str
-DOCUMENT_STEP_PARSER_WORD: str
-DOCUMENT_STEP_PDF2IMAGE: str
-DOCUMENT_STEP_PDFLIB: str
-DOCUMENT_STEP_PYPDF2: str
-DOCUMENT_STEP_TESSERACT: str
-DOCUMENT_STEP_TOKENIZE: str
 
 ERROR_01_901: str
 ERROR_01_902: str
@@ -280,27 +293,15 @@ PARSE_TAG_TITLE: str
 PARSE_TAG_WORD: str
 PARSE_TAG_XFA: str
 
-RUN_ACTION_ALL_COMPLETE: str
-RUN_ACTION_CREATE_DB: str
-RUN_ACTION_IMAGE_2_PDF: str
-RUN_ACTION_NON_PDF_2_PDF: str
-RUN_ACTION_PDF_2_IMAGE: str
-RUN_ACTION_PROCESS_INBOX: str
-RUN_ACTION_STORE_FROM_PARSER: str
-RUN_ACTION_TEXT_FROM_PDF: str
-RUN_ACTION_TOKENIZE: str
-RUN_ACTION_UPGRADE_DB: str
-
-RUN_STATUS_END: str
-RUN_STATUS_START: str
-
 TESTS_INBOX_NAME: str
-
-VERBOSE_TRUE: str
 
 # -----------------------------------------------------------------------------
 # Global Variables.
 # -----------------------------------------------------------------------------
+action: Type[db.action.Action]
+
+base: Type[db.base.Base]
+
 db_current_database: str
 db_current_user: str
 db_driver_conn: psycopg2.extensions.connection | None = None
@@ -312,7 +313,7 @@ directory_inbox: os.PathLike[str] | str
 directory_inbox_accepted: os.PathLike[str] | str
 directory_inbox_rejected: os.PathLike[str] | str
 
-document_child_child_no: sqlalchemy.Integer | None
+document_child_no_children: sqlalchemy.Integer | None
 document_child_directory_name: str
 document_child_directory_type: str
 document_child_error_code: str | None
@@ -321,9 +322,9 @@ document_child_file_type: str
 document_child_id: sqlalchemy.Integer
 document_child_id_base: sqlalchemy.Integer | None
 document_child_id_parent: sqlalchemy.Integer | None
-document_child_language_id: sqlalchemy.Integer
+document_child_id_language: sqlalchemy.Integer
 document_child_next_step: str | None
-document_child_no: sqlalchemy.Integer | None
+document_no_children: sqlalchemy.Integer | None
 document_child_status: str
 document_child_stem_name: str
 
@@ -336,28 +337,31 @@ document_file_type: str
 document_id: sqlalchemy.Integer
 document_id_base: sqlalchemy.Integer | None
 document_id_parent: sqlalchemy.Integer | None
-document_language_id: sqlalchemy.Integer
+document_id_language: sqlalchemy.Integer
 document_next_step: str | None
 document_sha256: str | None
 document_status: str
 document_stem_name: str
 
-language_directory_inbox: os.PathLike[str]
-language_erroneous: int
-language_id: sqlalchemy.Integer
-language_iso_language_name: str
-language_ok_processed: int
-language_ok_processed_pandoc: int
-language_ok_processed_pdf2image: int
-language_ok_processed_pdflib: int
-language_ok_processed_tesseract: int
-language_to_be_processed: int
+language: Type[db.language.Language]
 
-languages_pandoc: typing.Dict[sqlalchemy.Integer, str]
-languages_spacy: typing.Dict[sqlalchemy.Integer, str]
-languages_tesseract: typing.Dict[sqlalchemy.Integer, str]
+# wwe
+# language_directory_inbox: os.PathLike[str]
+# language_erroneous: int
+# id_language: sqlalchemy.Integer
+# language_iso_language_name: str
+# language_ok_processed: int
+# language_ok_processed_pandoc: int
+# language_ok_processed_pdf2image: int
+# language_ok_processed_pdflib: int
+# language_ok_processed_tesseract: int
+# language_to_be_processed: int
 
-line_type: typing.Type[nlp.line_type.LineType]
+languages_pandoc: Dict[sqlalchemy.Integer, str]
+languages_spacy: Dict[sqlalchemy.Integer, str]
+languages_tesseract: Dict[sqlalchemy.Integer, str]
+
+line_type: Type[nlp.line_type.LineType]
 
 logger: logging.Logger
 
@@ -371,19 +375,17 @@ parse_result_no_words_in_line: int
 parse_result_no_words_in_page: int
 parse_result_no_words_in_para: int
 parse_result_page_index_doc: int
-parse_result_page_lines: typing.Dict[str, int | typing.List[typing.Dict[str, int | str]]]
-parse_result_page_words: typing.Dict[str, int | typing.List[typing.Dict[str, int | str]]]
+parse_result_page_lines: Dict[str, int | List[Dict[str, int | str]]]
+parse_result_page_words: Dict[str, int | List[Dict[str, int | str]]]
 parse_result_para_index_page: int
 parse_result_text: str
 parse_result_word_index_line: int
 parse_result_word_index_page: int
 parse_result_word_index_para: int
 
-run_action: str
-run_id: sqlalchemy.Integer
-run_run_id: sqlalchemy.Integer
+run: Type[db.run.Run]
 
-setup: typing.Type[cfg.setup.Setup]
+setup: Type[cfg.setup.Setup]
 
 spacy_tkn_attr_cluster: bool
 spacy_tkn_attr_dep_: bool

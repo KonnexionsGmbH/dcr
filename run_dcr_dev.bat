@@ -45,8 +45,8 @@ if ["%1"] EQU [""] (
 echo.
 echo Script %0 is now running
 
-if exist run_dcr_dev_debug.log (
-    del /f /q run_dcr_dev_debug.log
+if exist run_dcr_debug.log (
+    del /f /q run_dcr_debug.log
 )
 
 echo =======================================================================

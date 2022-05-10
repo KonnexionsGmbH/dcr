@@ -2,7 +2,8 @@
 import datetime
 import os
 import time
-import typing
+from typing import Dict
+from typing import Iterable
 
 import cfg.glob
 import db.dml
@@ -14,9 +15,7 @@ import utils
 # -----------------------------------------------------------------------------
 # Debug an XML element detailed.
 # -----------------------------------------------------------------------------
-def debug_xml_element_all(
-    event: str, parent_tag: str, attrib: typing.Dict[str, str], text: typing.Iterable[str | None]
-) -> None:
+def debug_xml_element_all(event: str, parent_tag: str, attrib: Dict[str, str], text: Iterable[str | None]) -> None:
     """Debug an XML element detailed.
 
     Args:
@@ -136,7 +135,7 @@ def insert_content_tetml_line() -> None:
         db.dml.insert_dbt_row(
             cfg.glob.DBT_CONTENT_TETML_LINE,
             {
-                cfg.glob.DBC_DOCUMENT_ID: cfg.glob.document_id_base,
+                cfg.glob.DBC_DOCUMENT_ID: cfg.glob.base.base_id_base,
                 cfg.glob.DBC_PAGE_NO: cfg.glob.parse_result_no_pages_in_doc,
                 cfg.glob.DBC_PAGE_DATA: cfg.glob.parse_result_page_lines,
             },
@@ -156,7 +155,7 @@ def insert_content_tetml_word() -> None:
         db.dml.insert_dbt_row(
             cfg.glob.DBT_CONTENT_TETML_WORD,
             {
-                cfg.glob.DBC_DOCUMENT_ID: cfg.glob.document_id_base,
+                cfg.glob.DBC_DOCUMENT_ID: cfg.glob.base.base_id_base,
                 cfg.glob.DBC_PAGE_NO: cfg.glob.parse_result_no_pages_in_doc,
                 cfg.glob.DBC_PAGE_DATA: cfg.glob.parse_result_page_words,
             },
@@ -166,7 +165,7 @@ def insert_content_tetml_word() -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Box.
 # -----------------------------------------------------------------------------
-def parse_tag_box(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_box(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Box'.
 
     Args:
@@ -187,7 +186,7 @@ def parse_tag_box(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Cell.
 # -----------------------------------------------------------------------------
-def parse_tag_cell(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_cell(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Cell'.
 
     Args:
@@ -208,7 +207,7 @@ def parse_tag_cell(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag 'Content'.
 # -----------------------------------------------------------------------------
-def parse_tag_content(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_content(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Content'.
 
     Args:
@@ -234,7 +233,7 @@ def parse_tag_content(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag 'DocInfo'.
 # -----------------------------------------------------------------------------
-def parse_tag_doc_info(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_doc_info(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'DocInfo'.
 
     Args:
@@ -266,7 +265,7 @@ def parse_tag_doc_info(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag 'Document'.
 # -----------------------------------------------------------------------------
-def parse_tag_document(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_document(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Document'.
 
     Args:
@@ -304,7 +303,7 @@ def parse_tag_document(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Line.
 # -----------------------------------------------------------------------------
-def parse_tag_line(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Line'.
 
     Args:
@@ -350,7 +349,7 @@ def parse_tag_line(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag 'Page'.
 # -----------------------------------------------------------------------------
-def parse_tag_page(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Page'.
 
     Args:
@@ -403,7 +402,7 @@ def parse_tag_page(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag 'Pages'.
 # -----------------------------------------------------------------------------
-def parse_tag_pages(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Pages'.
 
     Args:
@@ -437,7 +436,7 @@ def parse_tag_pages(parent_tag: str, parent: typing.Iterable[str]) -> None:
     utils.progress_msg_line_type(f"LineType: End document                       ={cfg.glob.document_file_name}")
     if cfg.glob.setup.is_parsing_line:
         if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
-            cfg.glob.line_type.process_document(cfg.glob.document_id_base)
+            cfg.glob.line_type.process_document(cfg.glob.base.base_id_base)
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -445,7 +444,7 @@ def parse_tag_pages(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Para.
 # -----------------------------------------------------------------------------
-def parse_tag_para(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Para'.
 
     Args:
@@ -472,7 +471,7 @@ def parse_tag_para(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Row.
 # -----------------------------------------------------------------------------
-def parse_tag_row(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_row(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Row'.
 
     Args:
@@ -493,7 +492,7 @@ def parse_tag_row(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Table.
 # -----------------------------------------------------------------------------
-def parse_tag_table(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_table(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Table'.
 
     Args:
@@ -514,7 +513,7 @@ def parse_tag_table(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Text.
 # -----------------------------------------------------------------------------
-def parse_tag_text(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_text(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Text'.
 
     Args:
@@ -531,7 +530,7 @@ def parse_tag_text(parent_tag: str, parent: typing.Iterable[str]) -> None:
 # -----------------------------------------------------------------------------
 # Processing tag Word.
 # -----------------------------------------------------------------------------
-def parse_tag_word(parent_tag: str, parent: typing.Iterable[str]) -> None:
+def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
     """Processing tag 'Word'.
 
     Args:
@@ -587,7 +586,7 @@ def parse_tetml() -> None:
     utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, cfg.glob.DOCUMENT_STEP_PARSER_LINE)
+        rows = db.dml.select_document(conn, dbt, db.run.Run.ACTION_CODE_PARSER_LINE)
 
         for row in rows:
             # ------------------------------------------------------------------
@@ -608,14 +607,14 @@ def parse_tetml() -> None:
                 if cfg.glob.setup.is_verbose:
                     utils.progress_msg(
                         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-                        f"Document: {cfg.glob.document_id:6d} "
-                        f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
+                        f"Document: {cfg.glob.base.base_id:6d} "
+                        f"[{db.dml.select_document_file_name_id(cfg.glob.base.base_id)}]"
                     )
 
         conn.close()
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, cfg.glob.DOCUMENT_STEP_PARSER_WORD)
+        rows = db.dml.select_document(conn, dbt, db.run.Run.ACTION_CODE_PARSER_WORD)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
@@ -633,8 +632,8 @@ def parse_tetml() -> None:
                 if cfg.glob.setup.is_verbose:
                     utils.progress_msg(
                         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-                        f"Document: {cfg.glob.document_id:6d} "
-                        f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
+                        f"Document: {cfg.glob.base.base_id:6d} "
+                        f"[{db.dml.select_document_file_name_id(cfg.glob.base.base_id)}]"
                     )
 
         conn.close()
@@ -654,7 +653,7 @@ def parse_tetml_file_line() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PARSER_LINE
+    cfg.glob.document_current_step = db.run.Run.ACTION_CODE_PARSER_LINE
 
     file_name = os.path.join(
         cfg.glob.document_directory_name,
@@ -694,7 +693,7 @@ def parse_tetml_file_word() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    cfg.glob.document_current_step = cfg.glob.DOCUMENT_STEP_PARSER_WORD
+    cfg.glob.document_current_step = db.run.Run.ACTION_CODE_PARSER_WORD
 
     file_name = os.path.join(
         cfg.glob.document_directory_name,

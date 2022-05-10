@@ -1,46 +1,14 @@
 """Module db.dml: Database Manipulation Management."""
 import os
 import time
-import typing
 
 import cfg.glob
 import db.dml
-import PyPDF2
-import PyPDF2.utils
+import db.utils
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
 import utils
-
-# -----------------------------------------------------------------------------
-# Type declaration.
-# -----------------------------------------------------------------------------
-Columns: typing.TypeAlias = typing.Dict[str, typing.Union[os.PathLike[str], sqlalchemy.Integer, str]]
-
-
-# -----------------------------------------------------------------------------
-# Determine the number of pages in a pdf document.
-# -----------------------------------------------------------------------------
-def get_pdf_pages_no(
-    file_name: str,
-    file_type: str,
-) -> int | None:
-    """Determine the number of pages in a pdf document.
-
-    Args:
-        file_name (str): File name.
-        file_type (str): File type.
-
-    Returns:
-        sqlalchemy.Integer|None: The number of pages found.
-    """
-    if file_type != cfg.glob.DOCUMENT_FILE_TYPE_PDF:
-        return None
-
-    try:
-        return PyPDF2.PdfFileReader(file_name).numPages
-    except PyPDF2.utils.PdfReadError:
-        return -1
 
 
 # -----------------------------------------------------------------------------
@@ -48,7 +16,7 @@ def get_pdf_pages_no(
 # -----------------------------------------------------------------------------
 def insert_dbt_row(
     table_name: str,
-    columns: Columns,
+    columns: db.utils.Columns,
 ) -> sqlalchemy.Integer:
     """Insert a new row into a database table.
 
@@ -76,7 +44,7 @@ def insert_document_base() -> None:
     """Insert a new base document."""
     file_path = os.path.join(cfg.glob.document_directory_name, cfg.glob.document_file_name)
 
-    cfg.glob.document_id = db.dml.insert_dbt_row(
+    cfg.glob.base.base_id = db.dml.insert_dbt_row(
         cfg.glob.DBT_DOCUMENT,
         {
             cfg.glob.DBC_CURRENT_STEP: cfg.glob.document_current_step,
@@ -87,23 +55,23 @@ def insert_document_base() -> None:
             cfg.glob.DBC_FILE_NAME: cfg.glob.document_file_name,
             cfg.glob.DBC_FILE_SIZE_BYTES: os.path.getsize(file_path),
             cfg.glob.DBC_FILE_TYPE: cfg.glob.document_file_type,
-            cfg.glob.DBC_LANGUAGE_ID: cfg.glob.language_id,
-            cfg.glob.DBC_NEXT_STEP: cfg.glob.DOCUMENT_STEP_INBOX,
-            cfg.glob.DBC_PDF_PAGES_NO: get_pdf_pages_no(file_path, cfg.glob.document_file_type),
-            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_ID_LANGUAGE: cfg.glob.language.language_id,
+            cfg.glob.DBC_NEXT_STEP: db.run.Run.ACTION_CODE_INBOX,
+            cfg.glob.DBC_NO_PDF_PAGES: utils.get_pdf_pages_no(file_path),
+            cfg.glob.DBC_ID_RUN: cfg.glob.run.run_id_run,
             cfg.glob.DBC_SHA256: cfg.glob.document_sha256,
             cfg.glob.DBC_STATUS: cfg.glob.DOCUMENT_STATUS_START,
             cfg.glob.DBC_STEM_NAME: cfg.glob.document_stem_name,
         },
     )
 
-    cfg.glob.document_id_base = cfg.glob.document_id
+    cfg.glob.base.base_id_base = cfg.glob.base.base_id
 
     db.dml.update_dbt_id(
         cfg.glob.DBT_DOCUMENT,
-        cfg.glob.document_id,
+        cfg.glob.base.base_id,
         {
-            cfg.glob.DBC_DOCUMENT_ID_BASE: cfg.glob.document_id_base,
+            cfg.glob.DBC_DOCUMENT_ID_BASE: cfg.glob.base.base_id_base,
         },
     )
 
@@ -118,7 +86,7 @@ def insert_document_child() -> None:
     cfg.glob.document_child_id = db.dml.insert_dbt_row(
         cfg.glob.DBT_DOCUMENT,
         {
-            cfg.glob.DBC_CHILD_NO: cfg.glob.document_child_child_no,
+            cfg.glob.DBC_NO_CHILDREN: cfg.glob.document_child_no_children,
             cfg.glob.DBC_CURRENT_STEP: cfg.glob.document_current_step,
             cfg.glob.DBC_DIRECTORY_NAME: str(cfg.glob.document_child_directory_name),
             cfg.glob.DBC_DIRECTORY_TYPE: cfg.glob.document_child_directory_type,
@@ -131,11 +99,11 @@ def insert_document_child() -> None:
             cfg.glob.DBC_FILE_SIZE_BYTES: os.path.getsize(file_path),
             cfg.glob.DBC_FILE_TYPE: cfg.glob.document_child_file_type,
             cfg.glob.DBC_NEXT_STEP: cfg.glob.document_child_next_step,
-            cfg.glob.DBC_LANGUAGE_ID: cfg.glob.language_id
-            if cfg.glob.run_action == cfg.glob.RUN_ACTION_PROCESS_INBOX
-            else cfg.glob.document_child_language_id,
-            cfg.glob.DBC_PDF_PAGES_NO: get_pdf_pages_no(file_path, cfg.glob.document_child_file_type),
-            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_ID_LANGUAGE: cfg.glob.language.language_id
+            if cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_INBOX
+            else cfg.glob.document_child_id_language,
+            cfg.glob.DBC_NO_PDF_PAGES: utils.get_pdf_pages_no(file_path),
+            cfg.glob.DBC_ID_RUN: cfg.glob.run.run_id_run,
             cfg.glob.DBC_STATUS: cfg.glob.document_child_status,
             cfg.glob.DBC_STEM_NAME: cfg.glob.document_child_stem_name,
         },
@@ -209,14 +177,14 @@ def select_document(
     return conn.execute(
         sqlalchemy.select(
             dbt.c.id,
-            dbt.c.child_no,
+            dbt.c.no_children,
             dbt.c.directory_name,
             dbt.c.directory_type,
             dbt.c.document_id_base,
             dbt.c.document_id_parent,
             dbt.c.file_name,
             dbt.c.file_type,
-            dbt.c.language_id,
+            dbt.c.id_language,
             dbt.c.status,
             dbt.c.stem_name,
         )
@@ -253,7 +221,7 @@ def select_document_base_file_name() -> str | None:
     with cfg.glob.db_orm_engine.connect() as conn:
         row = conn.execute(
             sqlalchemy.select(dbt.c.directory_name, dbt.c.file_name).where(
-                dbt.c.document_id_parent == cfg.glob.document_id_base,
+                dbt.c.document_id_parent == cfg.glob.base.base_id_base,
             )
         ).fetchone()
         conn.close()
@@ -344,11 +312,7 @@ def select_language(conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table) -
         engine.CursorResult: The languages found.
     """
     return conn.execute(
-        sqlalchemy.select(
-            dbt.c.id,
-            dbt.c.directory_name_inbox,
-            dbt.c.iso_language_name,
-        )
+        sqlalchemy.select(dbt)
         .where(
             dbt.c.active,
         )
@@ -357,10 +321,10 @@ def select_language(conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table) -
 
 
 # -----------------------------------------------------------------------------
-# Get the last run_id from database table run.
+# Get the last id_run from database table run.
 # -----------------------------------------------------------------------------
-def select_run_run_id_last() -> int | sqlalchemy.Integer:
-    """Get the last run_id from database table run.
+def select_run_id_run_last() -> int | sqlalchemy.Integer:
+    """Get the last id_run from database table run.
 
     Returns:
         sqlalchemy.Integer: The last run id found.
@@ -368,7 +332,7 @@ def select_run_run_id_last() -> int | sqlalchemy.Integer:
     dbt = sqlalchemy.Table(cfg.glob.DBT_RUN, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        row = conn.execute(sqlalchemy.select(sqlalchemy.func.max(dbt.c.run_id))).fetchone()
+        row = conn.execute(sqlalchemy.select(sqlalchemy.func.max(dbt.c.id_run))).fetchone()
         conn.close()
 
     if row[0] is None:
@@ -417,14 +381,14 @@ def select_version_version_unique() -> str:
 # -----------------------------------------------------------------------------
 def update_dbt_id(
     table_name: str,
-    id_where: sqlalchemy.Integer,
-    columns: typing.Dict[str, str],
+    id_where: int | sqlalchemy.Integer,
+    columns: db.utils.Columns,
 ) -> None:
     """Update a database row based on its id column.
 
     Args:
         table_name (str): sqlalchemy.Table name.
-        id_where (sqlalchemy.Integer): Content of column id.
+        id_where (int | sqlalchemy.Integer): Content of column id.
         columns (Columns): Pairs of column name and value.
     """
     dbt = sqlalchemy.Table(table_name, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
@@ -447,7 +411,7 @@ def update_document_error(document_id: sqlalchemy.Integer, error_code: str, erro
     """
     dbt = sqlalchemy.Table(cfg.glob.DBT_DOCUMENT, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
-    cfg.glob.total_erroneous += 1
+    cfg.glob.run.run_total_erroneous += 1
 
     duration_ns = time.perf_counter_ns() - cfg.glob.start_time_document
 
@@ -466,8 +430,8 @@ def update_document_error(document_id: sqlalchemy.Integer, error_code: str, erro
     if cfg.glob.setup.is_verbose:
         utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {cfg.glob.document_id:6d} "
-            f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}] - "
+            f"Document: {cfg.glob.base.base_id:6d} "
+            f"[{db.dml.select_document_file_name_id(cfg.glob.base.base_id)}] - "
             f"Error: {error_msg} "
         )
 

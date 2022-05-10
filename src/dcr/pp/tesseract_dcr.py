@@ -25,7 +25,7 @@ def convert_image_2_pdf() -> None:
     utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, cfg.glob.DOCUMENT_STEP_TESSERACT)
+        rows = db.dml.select_document(conn, dbt, db.run.Run.ACTION_CODE_TESSERACT)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
@@ -54,7 +54,7 @@ def convert_image_2_pdf_file() -> None:
 
     if os.path.exists(target_file_name):
         db.dml.update_document_error(
-            document_id=cfg.glob.document_id,
+            document_id=cfg.glob.base.base_id,
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=cfg.glob.ERROR_41_903.replace("{file_name}", target_file_name),
         )
@@ -65,7 +65,7 @@ def convert_image_2_pdf_file() -> None:
         pdf = pytesseract.image_to_pdf_or_hocr(
             extension="pdf",
             image=source_file_name,
-            lang=cfg.glob.languages_tesseract[cfg.glob.document_language_id],
+            lang=cfg.glob.languages_tesseract[cfg.glob.base.base_id_language],
             timeout=cfg.glob.setup.tesseract_timeout,
         )
 
@@ -75,7 +75,7 @@ def convert_image_2_pdf_file() -> None:
 
         utils.prepare_document_4_next_step(
             next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_PDF,
-            next_step=cfg.glob.DOCUMENT_STEP_PDFLIB,
+            next_step=db.run.Run.ACTION_CODE_PDFLIB,
         )
 
         cfg.glob.document_child_file_name = cfg.glob.document_stem_name + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
@@ -84,7 +84,7 @@ def convert_image_2_pdf_file() -> None:
 
         db.dml.insert_document_child()
 
-        if cfg.glob.document_id_base != cfg.glob.document_id_parent:
+        if cfg.glob.base.base_id_base != cfg.glob.base.base_id_parent:
             utils.delete_auxiliary_file(source_file_name)
 
         # Document successfully converted to pdf format
@@ -93,12 +93,12 @@ def convert_image_2_pdf_file() -> None:
         if cfg.glob.setup.is_verbose:
             utils.progress_msg(
                 f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-                f"Document: {cfg.glob.document_id:6d} "
-                f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
+                f"Document: {cfg.glob.base.base_id:6d} "
+                f"[{db.dml.select_document_file_name_id(cfg.glob.base.base_id)}]"
             )
     except RuntimeError as err:
         db.dml.update_document_error(
-            document_id=cfg.glob.document_id,
+            document_id=cfg.glob.base.base_id,
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
             error_msg=cfg.glob.ERROR_41_901.replace("{source_file}", source_file_name)
             .replace("{target_file}", target_file_name)
@@ -129,7 +129,7 @@ def reunite_pdfs() -> None:
                 dbt.c.id.in_(
                     sqlalchemy.select(dbt.c.document_id_base)
                     .where(dbt.c.status == cfg.glob.DOCUMENT_STATUS_START)
-                    .where(dbt.c.next_step == cfg.glob.DOCUMENT_STEP_PDFLIB)
+                    .where(dbt.c.next_step == db.run.Run.ACTION_CODE_PDFLIB)
                     .group_by(dbt.c.document_id_base)
                     .having(sqlalchemy.func.count(dbt.c.document_id_base) > 1)
                     .scalar_subquery()
@@ -158,7 +158,7 @@ def reunite_pdfs_file() -> None:
     """Reunite the related pdf documents of a specific base document."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    cfg.glob.document_child_stem_name = cfg.glob.document_stem_name + "_" + str(cfg.glob.document_id_base) + "_0"
+    cfg.glob.document_child_stem_name = cfg.glob.document_stem_name + "_" + str(cfg.glob.base.base_id_base) + "_0"
     cfg.glob.document_child_file_name = cfg.glob.document_child_stem_name + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
 
     target_file_path = os.path.join(
@@ -168,7 +168,7 @@ def reunite_pdfs_file() -> None:
 
     if os.path.exists(target_file_path):
         db.dml.update_document_error(
-            document_id=cfg.glob.document_id,
+            document_id=cfg.glob.base.base_id,
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=cfg.glob.ERROR_41_904.replace("{file_name}", str(target_file_path)),
         )
@@ -184,8 +184,8 @@ def reunite_pdfs_file() -> None:
         rows = conn.execute(
             sqlalchemy.select(dbt)
             .where(dbt.c.status == cfg.glob.DOCUMENT_STATUS_START)
-            .where(dbt.c.next_step == cfg.glob.DOCUMENT_STEP_PDFLIB)
-            .where(dbt.c.document_id_base == cfg.glob.document_id_base)
+            .where(dbt.c.next_step == db.run.Run.ACTION_CODE_PDFLIB)
+            .where(dbt.c.document_id_base == cfg.glob.base.base_id_base)
             .order_by(dbt.c.id)
         )
 
@@ -212,7 +212,7 @@ def reunite_pdfs_file() -> None:
                 row.id,
                 {
                     cfg.glob.DBC_DURATION_NS: duration_ns,
-                    cfg.glob.DBC_NEXT_STEP: cfg.glob.DOCUMENT_STEP_PYPDF2,
+                    cfg.glob.DBC_NEXT_STEP: db.run.Run.ACTION_CODE_PYPDF2,
                     cfg.glob.DBC_STATUS: cfg.glob.DOCUMENT_STATUS_END,
                 },
             )
@@ -227,7 +227,7 @@ def reunite_pdfs_file() -> None:
 
     utils.prepare_document_4_next_step(
         next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_PDF,
-        next_step=cfg.glob.DOCUMENT_STEP_PDFLIB,
+        next_step=db.run.Run.ACTION_CODE_PDFLIB,
     )
 
     cfg.glob.document_child_directory_name = cfg.glob.setup.directory_inbox_accepted
@@ -241,8 +241,8 @@ def reunite_pdfs_file() -> None:
     if cfg.glob.setup.is_verbose:
         utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {cfg.glob.document_id:6d} "
-            f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
+            f"Document: {cfg.glob.base.base_id:6d} "
+            f"[{db.dml.select_document_file_name_id(cfg.glob.base.base_id)}]"
         )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

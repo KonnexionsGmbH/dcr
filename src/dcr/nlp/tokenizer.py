@@ -2,7 +2,8 @@
 database."""
 
 import time
-import typing
+from typing import Dict
+from typing import List
 
 import cfg.glob
 import db.dml
@@ -17,7 +18,7 @@ import utils
 # -----------------------------------------------------------------------------
 # Extract the text from the page lines.
 # -----------------------------------------------------------------------------
-def get_text_from_page_lines(page_data: typing.Dict[str, str | typing.List[typing.Dict[str, int | str]]]) -> str:
+def get_text_from_page_lines(page_data: Dict[str, str | List[Dict[str, int | str]]]) -> str:
     """Extract the text from the page data.
 
     Args:
@@ -38,14 +39,14 @@ def get_text_from_page_lines(page_data: typing.Dict[str, str | typing.List[typin
 # -----------------------------------------------------------------------------
 # Determine the requested token attributes.
 # -----------------------------------------------------------------------------
-def get_token_attributes(token: spacy.tokens.Token) -> typing.Dict[str, bool | float | int | str]:  # noqa: C901
+def get_token_attributes(token: spacy.tokens.Token) -> Dict[str, bool | float | int | str]:  # noqa: C901
     """Determine the requested token attributes.
 
     Args:
         token (spacy.tokens.Token): spaCy token.
 
     Returns:
-        typing.Dict[str, bool | float | int | str]: Requested token attributes.
+        Dict[str, bool | float | int | str]: Requested token attributes.
     """
     token_attr = {}
 
@@ -289,7 +290,7 @@ def tokenize() -> None:
     utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt_document, cfg.glob.DOCUMENT_STEP_TOKENIZE)
+        rows = db.dml.select_document(conn, dbt_document, db.run.Run.ACTION_CODE_TOKENIZE)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
@@ -298,7 +299,7 @@ def tokenize() -> None:
                 document=row,
             )
 
-            spacy_model = cfg.glob.languages_spacy[cfg.glob.document_language_id]
+            spacy_model = cfg.glob.languages_spacy[cfg.glob.base.base_id_language]
 
             if spacy_model != spacy_model_current:
                 nlp = spacy.load(spacy_model)
@@ -312,8 +313,8 @@ def tokenize() -> None:
             if cfg.glob.setup.is_verbose:
                 utils.progress_msg(
                     f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-                    f"Document: {cfg.glob.document_id:6d} "
-                    f"[base: {db.dml.select_document_file_name_id(cfg.glob.document_id_base)}]"
+                    f"Document: {cfg.glob.base.base_id:6d} "
+                    f"[base: {db.dml.select_document_file_name_id(cfg.glob.base.base_id_base)}]"
                 )
 
         conn.close()
@@ -334,12 +335,12 @@ def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> Non
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_content_tetml(conn, dbt_content, cfg.glob.document_id_base)
+        rows = db.dml.select_content_tetml(conn, dbt_content, cfg.glob.base.base_id_base)
         for row in rows:
             # ------------------------------------------------------------------
             # Processing a single page
             # ------------------------------------------------------------------
-            page_tokens: typing.List[typing.Dict[str, bool | str]] = []
+            page_tokens: List[Dict[str, bool | str]] = []
 
             page_no = row[1]
             text = get_text_from_page_lines(row[2]) if cfg.glob.setup.is_tetml_line else row[2]
@@ -350,7 +351,7 @@ def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> Non
             db.dml.insert_dbt_row(
                 cfg.glob.DBT_CONTENT_TOKEN,
                 {
-                    cfg.glob.DBC_DOCUMENT_ID: cfg.glob.document_id_base,
+                    cfg.glob.DBC_DOCUMENT_ID: cfg.glob.base.base_id_base,
                     cfg.glob.DBC_PAGE_NO: page_no,
                     cfg.glob.DBC_PAGE_DATA: page_tokens,
                 },

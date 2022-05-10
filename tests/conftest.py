@@ -15,6 +15,7 @@ import typing
 import cfg.glob
 import cfg.setup
 import db.driver
+import db.run
 import pytest
 import sqlalchemy
 
@@ -265,7 +266,7 @@ def fxtr_setup_empty_db_and_inbox(
     """Fixture: Setup empty database and empty inboxes."""
     backup_setup_cfg()
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_CREATE_DB])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_CREATE_DB])
 
     fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
     fxtr_mkdir(cfg.glob.setup.directory_inbox)
@@ -331,7 +332,7 @@ def help_run_action_all_complete_duplicate_file(
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_ALL_COMPLETE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     verify_content_of_directory(
@@ -365,7 +366,7 @@ def help_run_action_process_inbox_normal(
     pytest.helpers.copy_files_4_pytest_2_dir([(stem_name, file_ext)], cfg.glob.setup.directory_inbox)
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
     # -------------------------------------------------------------------------
     document_id: int = 1
 

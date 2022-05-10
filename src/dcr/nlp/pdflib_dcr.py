@@ -29,13 +29,13 @@ def create_child_document() -> None:
         cfg.glob.DBT_DOCUMENT,
         {
             cfg.glob.DBC_CURRENT_STEP: cfg.glob.document_current_step,
-            cfg.glob.DBC_DOCUMENT_ID_BASE: cfg.glob.document_id_base,
-            cfg.glob.DBC_DOCUMENT_ID_PARENT: cfg.glob.document_id,
+            cfg.glob.DBC_DOCUMENT_ID_BASE: cfg.glob.base.base_id_base,
+            cfg.glob.DBC_DOCUMENT_ID_PARENT: cfg.glob.base.base_id,
             cfg.glob.DBC_DURATION_NS: 0,
             cfg.glob.DBC_ERROR_NO: 0,
-            cfg.glob.DBC_NEXT_STEP: cfg.glob.DOCUMENT_STEP_TOKENIZE,
-            cfg.glob.DBC_LANGUAGE_ID: cfg.glob.document_language_id,
-            cfg.glob.DBC_RUN_ID: cfg.glob.run_run_id,
+            cfg.glob.DBC_NEXT_STEP: db.run.Run.ACTION_CODE_TOKENIZE,
+            cfg.glob.DBC_ID_LANGUAGE: cfg.glob.base.base_id_language,
+            cfg.glob.DBC_ID_RUN: cfg.glob.run.run_id_run,
             cfg.glob.DBC_STATUS: cfg.glob.DOCUMENT_STATUS_START,
         },
     )
@@ -56,7 +56,7 @@ def extract_text_from_pdf() -> None:
     utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, cfg.glob.DOCUMENT_STEP_PDFLIB)
+        rows = db.dml.select_document(conn, dbt, db.run.Run.ACTION_CODE_PDFLIB)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
@@ -99,7 +99,7 @@ def extract_text_from_pdf_file_line() -> None:
     source_file = tet.open_document(source_file_name, doc_opt_list)
     if source_file == -1:
         db.dml.update_document_error(
-            document_id=cfg.glob.document_id,
+            document_id=cfg.glob.base.base_id,
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
             error_msg=cfg.glob.ERROR_51_901.replace("{file_name}", source_file_name)
             .replace("{error_no}", str(tet.get_errnum()))
@@ -122,7 +122,7 @@ def extract_text_from_pdf_file_line() -> None:
 
     utils.prepare_document_4_next_step(
         next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_XML,
-        next_step=cfg.glob.DOCUMENT_STEP_PARSER_LINE,
+        next_step=db.run.Run.ACTION_CODE_PARSER_LINE,
     )
 
     cfg.glob.document_child_file_name = (
@@ -145,8 +145,8 @@ def extract_text_from_pdf_file_line() -> None:
     if cfg.glob.setup.is_verbose:
         utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {cfg.glob.document_id:6d} "
-            f"[line version: {db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
+            f"Document: {cfg.glob.base.base_id:6d} "
+            f"[line version: {db.dml.select_document_file_name_id(cfg.glob.base.base_id)}]"
         )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -169,7 +169,7 @@ def extract_text_from_pdf_file_page() -> None:
     source_file = tet.open_document(file_name, PAGE_TET_DOCUMENT_OPT_LIST)
     if source_file == -1:
         db.dml.update_document_error(
-            document_id=cfg.glob.document_id,
+            document_id=cfg.glob.base.base_id,
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
             error_msg=cfg.glob.ERROR_51_901.replace("{file_name}", file_name)
             .replace("{error_no}", str(tet.get_errnum()))
@@ -188,7 +188,7 @@ def extract_text_from_pdf_file_page() -> None:
         db.dml.insert_dbt_row(
             cfg.glob.DBT_CONTENT_TETML_PAGE,
             {
-                cfg.glob.DBC_DOCUMENT_ID: cfg.glob.document_id_base,
+                cfg.glob.DBC_DOCUMENT_ID: cfg.glob.base.base_id_base,
                 cfg.glob.DBC_PAGE_NO: page_no,
                 cfg.glob.DBC_PAGE_DATA: tet.get_text(page_handle),
             },
@@ -209,8 +209,8 @@ def extract_text_from_pdf_file_page() -> None:
     if cfg.glob.setup.is_verbose:
         utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {cfg.glob.document_id:6d} "
-            f"[page version: {db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
+            f"Document: {cfg.glob.base.base_id:6d} "
+            f"[page version: {db.dml.select_document_file_name_id(cfg.glob.base.base_id)}]"
         )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -234,7 +234,7 @@ def extract_text_from_pdf_file_word() -> None:
     source_file = tet.open_document(source_file_name, doc_opt_list)
     if source_file == -1:
         db.dml.update_document_error(
-            document_id=cfg.glob.document_id,
+            document_id=cfg.glob.base.base_id,
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
             error_msg=cfg.glob.ERROR_51_901.replace("{file_name}", source_file_name)
             .replace("{error_no}", str(tet.get_errnum()))
@@ -257,7 +257,7 @@ def extract_text_from_pdf_file_word() -> None:
 
     utils.prepare_document_4_next_step(
         next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_XML,
-        next_step=cfg.glob.DOCUMENT_STEP_PARSER_WORD,
+        next_step=db.run.Run.ACTION_CODE_PARSER_WORD,
     )
 
     cfg.glob.document_child_file_name = (
@@ -277,8 +277,8 @@ def extract_text_from_pdf_file_word() -> None:
     if cfg.glob.setup.is_verbose:
         utils.progress_msg(
             f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {cfg.glob.document_id:6d} "
-            f"[word version: {db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
+            f"Document: {cfg.glob.base.base_id:6d} "
+            f"[word version: {db.dml.select_document_file_name_id(cfg.glob.base.base_id)}]"
         )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

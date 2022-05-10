@@ -1,6 +1,7 @@
 # pylint: disable=unused-argument
 """Testing Module pp.pandoc_dcr."""
 import cfg.glob
+import db.run
 import pytest
 
 import dcr
@@ -28,9 +29,9 @@ def test_run_action_non_pdf_2_pdf_coverage(fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_NON_PDF_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PANDOC])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -89,9 +90,9 @@ def test_run_action_non_pdf_2_pdf_normal_keep(fxtr_setup_empty_db_and_inbox):
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_NON_PDF_2_PDF])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PANDOC])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,
@@ -149,7 +150,7 @@ def test_run_action_non_pdf_2_pdf_special(fxtr_rmdir_opt, fxtr_setup_empty_db_an
     fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
 
     with pytest.raises(SystemExit) as expt:
-        dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_NON_PDF_2_PDF])
+        dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PANDOC])
 
     assert expt.type == SystemExit, "inbox_accepted directory missing"
     assert expt.value.code == 1, "inbox_accepted, directory missing"

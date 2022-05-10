@@ -1,15 +1,17 @@
-"""Module comm.utils: Helper functions."""
+"""Module utils: Helper functions."""
 import datetime
 import hashlib
 import os
 import pathlib
 import sys
 import traceback
-import typing
+from typing import Tuple
 
 import cfg.glob
 import db.dml
 import db.driver
+import PyPDF2
+import PyPDF2.utils
 import sqlalchemy.engine
 import utils
 
@@ -79,12 +81,77 @@ def delete_auxiliary_file(file_name: str) -> None:
 def finalize_file_processing() -> int:
     """Finalise the file processing."""
     duration_ns = db.dml.update_document_statistics(
-        document_id=cfg.glob.document_id, status=cfg.glob.DOCUMENT_STATUS_END
+        document_id=cfg.glob.base.base_id, status=cfg.glob.DOCUMENT_STATUS_END
     )
 
-    cfg.glob.total_ok_processed += 1
+    cfg.glob.run.run_total_processed_ok += 1
 
     return duration_ns
+
+
+# -----------------------------------------------------------------------------
+# Get the file type from a file name.
+# -----------------------------------------------------------------------------
+def get_file_type(file_name: pathlib.Path | str | None) -> str | None:
+    """Get the file type from a file name.
+
+    Args:
+        file_name (pathlib.Path | str | None): File name or file path.
+
+    Returns:
+        str | None: File type.
+    """
+    if file_name is None:
+        return None
+
+    if isinstance(file_name, str):
+        file_name = pathlib.Path(file_name)
+
+    return file_name.suffix[1:].lower()
+
+
+# -----------------------------------------------------------------------------
+# Determine the number of pages in a pdf document.
+# -----------------------------------------------------------------------------
+def get_pdf_pages_no(
+    file_name: str,
+) -> int:
+    """Determine the number of pages in a pdf document.
+
+    Args:
+        file_name (str): File name.
+
+    Returns:
+        int: The number of pages found.
+    """
+    if get_file_type(file_name) != cfg.glob.DOCUMENT_FILE_TYPE_PDF:
+        return -1
+
+    try:
+        return PyPDF2.PdfFileReader(file_name).numPages
+    except PyPDF2.utils.PdfReadError:
+        return -1
+
+
+# -----------------------------------------------------------------------------
+# Get the stem name from a file name.
+# -----------------------------------------------------------------------------
+def get_stem_name(file_name: pathlib.Path | str | None) -> str | None:
+    """Get the stem name from a file name.
+
+    Args:
+        file_name (pathlib.Path | str | None): File name or file path.
+
+    Returns:
+        str | None: Stem name.
+    """
+    if file_name is None:
+        return None
+
+    if isinstance(file_name, str):
+        file_name = pathlib.Path(file_name)
+
+    return file_name.suffix[1:].lower()
 
 
 # -----------------------------------------------------------------------------
@@ -101,9 +168,9 @@ def prepare_document_4_next_step(next_file_type: str, next_step: str) -> None:
     cfg.glob.document_child_directory_type = cfg.glob.document_directory_type
     cfg.glob.document_child_error_code = None
     cfg.glob.document_child_file_type = next_file_type
-    cfg.glob.document_child_id_base = cfg.glob.document_id_base
-    cfg.glob.document_child_id_parent = cfg.glob.document_id
-    cfg.glob.document_child_language_id = cfg.glob.document_language_id
+    cfg.glob.document_child_id_base = cfg.glob.base.base_id_base
+    cfg.glob.document_child_id_parent = cfg.glob.base.base_id
+    cfg.glob.document_child_id_language = cfg.glob.base.base_id_language
     cfg.glob.document_child_next_step = next_step
     cfg.glob.document_child_status = cfg.glob.DOCUMENT_STATUS_START
 
@@ -113,7 +180,7 @@ def prepare_document_4_next_step(next_file_type: str, next_step: str) -> None:
 # -----------------------------------------------------------------------------
 def prepare_file_names(
     file_extension: str,
-) -> typing.Tuple[str, str]:
+) -> Tuple[str, str]:
     """Prepare the source and target file names.
 
     Args:
@@ -240,7 +307,7 @@ def reset_statistics_language() -> None:
     cfg.glob.language_ok_processed_pdf2image = 0
     cfg.glob.language_ok_processed_pdflib = 0
     cfg.glob.language_ok_processed_tesseract = 0
-    cfg.glob.language_to_be_processed = 0
+    cfg.glob.language.total_processed_to_be = 0
 
 
 # -----------------------------------------------------------------------------
@@ -248,16 +315,16 @@ def reset_statistics_language() -> None:
 # -----------------------------------------------------------------------------
 def reset_statistics_total() -> None:
     """Reset the total statistic counters."""
-    cfg.glob.total_erroneous = 0
+    cfg.glob.run.run_total_erroneous = 0
     cfg.glob.total_generated = 0
-    cfg.glob.total_ok_processed = 0
-    cfg.glob.total_ok_processed_pandoc = 0
-    cfg.glob.total_ok_processed_pdf2image = 0
-    cfg.glob.total_ok_processed_pdflib = 0
-    cfg.glob.total_ok_processed_tesseract = 0
+    cfg.glob.run.run_total_processed_ok = 0
+    cfg.glob.run.run_total_processed_ok_pandoc = 0
+    cfg.glob.run.run_total_processed_ok_pdf2image = 0
+    cfg.glob.run.run_total_processed_ok_pdflib = 0
+    cfg.glob.run.run_total_processed_ok_tesseract = 0
     cfg.glob.total_status_error = 0
     cfg.glob.total_status_ready = 0
-    cfg.glob.total_to_be_processed = 0
+    cfg.glob.run.run_total_processed_to_be = 0
 
 
 # -----------------------------------------------------------------------------
@@ -266,9 +333,9 @@ def reset_statistics_total() -> None:
 def show_statistics_language() -> None:
     """Show the language related statistics of the run."""
     utils.progress_msg("===============================> Summary Language")
-    utils.progress_msg(f"Number documents to be processed:          {cfg.glob.language_to_be_processed:6d}")
+    utils.progress_msg(f"Number documents to be processed:          {cfg.glob.language.total_processed_to_be:6d}")
 
-    if cfg.glob.language_to_be_processed > 0:
+    if cfg.glob.language.total_processed_to_be > 0:
         utils.progress_msg(f"Number documents accepted - " f"Pandoc:        {cfg.glob.language_ok_processed_pandoc:6d}")
         utils.progress_msg(
             f"Number documents accepted - " f"pdf2image:     {cfg.glob.language_ok_processed_pdf2image:6d}"
@@ -287,39 +354,41 @@ def show_statistics_language() -> None:
 def show_statistics_total() -> None:
     """Show the total statistics of the run."""
     utils.progress_msg("==================================> Summary Total")
-    utils.progress_msg(f"Number documents to be processed:          {cfg.glob.total_to_be_processed:6d}")
+    utils.progress_msg(f"Number documents to be processed:          {cfg.glob.run.run_total_processed_to_be:6d}")
 
-    if cfg.glob.total_to_be_processed > 0:
+    if cfg.glob.run.run_total_processed_to_be > 0:
         if cfg.glob.total_status_ready > 0 or cfg.glob.total_status_error > 0:
             utils.progress_msg(f"Number with document status ready:         {cfg.glob.total_status_ready:6d}")
             utils.progress_msg(f"Number with document status error:         {cfg.glob.total_status_error:6d}")
 
-        if cfg.glob.run_action == cfg.glob.RUN_ACTION_PROCESS_INBOX:
+        if cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_INBOX:
             utils.progress_msg(
-                f"Number documents accepted - " f"Pandoc:        {cfg.glob.total_ok_processed_pandoc:6d}"
+                f"Number documents accepted - " f"Pandoc:        {cfg.glob.run.run_total_processed_ok_pandoc:6d}"
             )
             utils.progress_msg(
-                f"Number documents accepted - " f"pdf2image:     {cfg.glob.total_ok_processed_pdf2image:6d}"
+                f"Number documents accepted - " f"pdf2image:     {cfg.glob.run.run_total_processed_ok_pdf2image:6d}"
             )
             utils.progress_msg(
-                f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.total_ok_processed_pdflib:6d}"
+                f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.run.run_total_processed_ok_pdflib:6d}"
             )
             utils.progress_msg(
-                f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.total_ok_processed_tesseract:6d}"
+                f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.run.run_total_processed_ok_tesseract:6d}"
             )
-            utils.progress_msg("Number documents accepted - " + f"Total:         {cfg.glob.total_ok_processed:6d}")
-        elif cfg.glob.run_action == cfg.glob.RUN_ACTION_TEXT_FROM_PDF:
-            utils.progress_msg(f"Number documents extracted:                {cfg.glob.total_ok_processed:6d}")
+            utils.progress_msg(
+                "Number documents accepted - " + f"Total:         {cfg.glob.run.run_total_processed_ok:6d}"
+            )
+        elif cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_PDFLIB:
+            utils.progress_msg(f"Number documents extracted:                {cfg.glob.run.run_total_processed_ok:6d}")
         else:
-            utils.progress_msg(f"Number documents converted:                {cfg.glob.total_ok_processed:6d}")
+            utils.progress_msg(f"Number documents converted:                {cfg.glob.run.run_total_processed_ok:6d}")
 
         if cfg.glob.total_generated > 0:
             utils.progress_msg(f"Number documents generated:                {cfg.glob.total_generated:6d}")
 
-        if cfg.glob.run_action == cfg.glob.RUN_ACTION_PROCESS_INBOX:
-            utils.progress_msg(f"Number documents rejected:                 {cfg.glob.total_erroneous:6d}")
+        if cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_INBOX:
+            utils.progress_msg(f"Number documents rejected:                 {cfg.glob.run.run_total_erroneous:6d}")
         else:
-            utils.progress_msg(f"Number documents erroneous:                {cfg.glob.total_erroneous:6d}")
+            utils.progress_msg(f"Number documents erroneous:                {cfg.glob.run.run_total_erroneous:6d}")
 
 
 # -----------------------------------------------------------------------------
@@ -331,23 +400,23 @@ def start_document_processing(document: sqlalchemy.engine.Row) -> None:
     Args:
         document (Row):       Database row document.
     """
-    cfg.glob.total_to_be_processed += 1
+    cfg.glob.run.run_total_processed_to_be += 1
 
-    cfg.glob.document_child_child_no = document.child_no
+    cfg.glob.document_child_no_children = document.no_children
     cfg.glob.document_directory_name = document.directory_name
     cfg.glob.document_directory_type = document.directory_type
     cfg.glob.document_file_name = document.file_name
     cfg.glob.document_file_type = document.file_type
-    cfg.glob.document_id = document.id
-    cfg.glob.document_id_base = document.document_id_base
-    cfg.glob.document_id_parent = document.document_id_parent
-    cfg.glob.document_language_id = document.language_id
+    cfg.glob.base.base_id = document.id
+    cfg.glob.base.base_id_base = document.document_id_base
+    cfg.glob.base.base_id_parent = document.document_id_parent
+    cfg.glob.base.base_id_language = document.id_language
     cfg.glob.document_status = document.status
     cfg.glob.document_stem_name = document.stem_name
 
     db.dml.update_dbt_id(
         cfg.glob.DBT_DOCUMENT,
-        cfg.glob.document_id,
+        cfg.glob.base.base_id,
         {
             cfg.glob.DBC_STATUS: cfg.glob.DOCUMENT_STATUS_START,
         },

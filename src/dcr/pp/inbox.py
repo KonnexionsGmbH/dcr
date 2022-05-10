@@ -12,7 +12,11 @@ import shutil
 import time
 
 import cfg.glob
+import db.action
+import db.base
 import db.dml
+import db.language
+import db.run
 import fitz
 import sqlalchemy
 import sqlalchemy.orm
@@ -60,89 +64,56 @@ def create_directory(directory_type: str, directory_name: str) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Initialise the next action in the dataaction.
+# -----------------------------------------------------------------------------
+def initialise_action(action_code:str="",
+                      directory_name:str="",
+                      directory_type:str="",
+                      file_name:str="",) -> None:
+    """Initialise the next action in the dataaction."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    cfg.glob.action = db.action.Action(
+        action_code_last=action_code,
+        directory_name=directory_name,
+        directory_type=directory_type,
+        file_name=file_name,
+        id_base=cfg.glob.base.base_id,
+        id_parent=cfg.glob.base.base_id,
+        id_run_last=cfg.glob.run.run_id,
+        status=cfg.glob.DOCUMENT_STATUS_START,
+    )
+
+    cfg.glob.action.insert()
+
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Initialise the base document in the database.
 # -----------------------------------------------------------------------------
-def initialise_document_base(file_path: pathlib.Path) -> None:
+def initialise_base(file_path: pathlib.Path) -> None:
     """Initialise the base document in the database.
-
-    Analyses the file name and creates an entry in each of the two database
-    table 'document'.
 
     Args:
         file_path (pathlib.Path): File.
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    prepare_document_base(file_path)
-
-    db.dml.insert_document_base()
-
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Prepare the base document data.
-# -----------------------------------------------------------------------------
-def prepare_document_base(file_path: pathlib.Path) -> None:
-    """Prepare the base document data.
-
-    Args:
-        file_path (pathlib.Path): File.
-    """
-    # Example: data\inbox
-    cfg.glob.document_directory_name = str(file_path.parent)
-    cfg.glob.document_directory_type = cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX
-    cfg.glob.document_error_code = None
-
-    # Example: pdf_scanned_ok.pdf
-    cfg.glob.document_file_name = file_path.name
-
-    # Example: pdf
-    cfg.glob.document_file_type = file_path.suffix[1:].lower()
-
-    cfg.glob.document_id_base = None
-
-    cfg.glob.document_id_parent = None
-    cfg.glob.document_next_step = None
-
-    if cfg.glob.setup.is_ignore_duplicates:
-        cfg.glob.document_sha256 = None
-    else:
-        cfg.glob.document_sha256 = utils.compute_sha256(file_path)
-
-    cfg.glob.document_status = cfg.glob.DOCUMENT_STATUS_START
-
-    # Example: pdf_scanned_ok
-    cfg.glob.document_stem_name = pathlib.PurePath(file_path).stem
-
-
-# -----------------------------------------------------------------------------
-# Prepare the base child document data - from inbox to inbox_accepted.
-# -----------------------------------------------------------------------------
-def prepare_document_child_accepted() -> None:
-    """Prepare the base child document data - from inbox to inbox_accepted."""
-    cfg.glob.document_child_child_no = None
-    cfg.glob.document_child_error_code = None
-
-    cfg.glob.document_child_file_name = (
-        cfg.glob.document_stem_name
-        + "_"
-        + str(cfg.glob.document_id)
-        + "."
-        + (
-            cfg.glob.document_file_type
-            if cfg.glob.document_file_type != cfg.glob.DOCUMENT_FILE_TYPE_TIF
-            else cfg.glob.DOCUMENT_FILE_TYPE_TIFF
-        )
+    cfg.glob.base = db.base.Base(
+        action_code_last=cfg.glob.run.run_action_code,
+        directory_name=str(file_path.parent),
+        file_name=file_path.name,
+        id_language=cfg.glob.language.language_id,
+        id_run_last=cfg.glob.run.run_id,
     )
 
-    cfg.glob.document_child_file_type = cfg.glob.document_file_type
-    cfg.glob.document_child_id_base = cfg.glob.document_id
-    cfg.glob.document_child_id_parent = cfg.glob.document_id
-    cfg.glob.document_child_next_step = None
-    cfg.glob.document_child_status = cfg.glob.DOCUMENT_STATUS_START
+    if not cfg.glob.setup.is_ignore_duplicates:
+        cfg.glob.base.base_sha256 = utils.compute_sha256(file_path)
 
-    cfg.glob.document_child_stem_name = cfg.glob.document_stem_name + "_" + str(cfg.glob.document_id)
+    cfg.glob.base.insert()
+
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -159,22 +130,20 @@ def prepare_pdf(file_path: pathlib.Path) -> None:
     try:
         extracted_text = "".join([page.get_text() for page in fitz.open(file_path)])
 
-        prepare_document_child_accepted()
-
         if bool(extracted_text):
-            next_step: str = cfg.glob.DOCUMENT_STEP_PDFLIB
+            action_code = db.run.Run.ACTION_CODE_PDFLIB
             cfg.glob.language_ok_processed_pdflib += 1
-            cfg.glob.total_ok_processed_pdflib += 1
+            cfg.glob.run.run_total_processed_ok_pdflib += 1
         else:
-            next_step: str = cfg.glob.DOCUMENT_STEP_PDF2IMAGE
+            action_code = db.run.Run.ACTION_CODE_PDF2IMAGE
             cfg.glob.language_ok_processed_pdf2image += 1
-            cfg.glob.total_ok_processed_pdf2image += 1
+            cfg.glob.run.run_total_processed_ok_pdf2image += 1
 
-        process_inbox_accepted(next_step)
+        process_inbox_accepted(action_code)
     except RuntimeError as err:
         process_inbox_rejected(
             cfg.glob.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
-            cfg.glob.ERROR_01_903.replace("{source_file}", cfg.glob.document_file_name).replace(
+            cfg.glob.ERROR_01_903.replace("{source_file}", cfg.glob.base.base_file_name).replace(
                 "{error_msg}", str(err)
             ),
         )
@@ -216,17 +185,14 @@ def process_inbox() -> None:
 
     with cfg.glob.db_orm_engine.connect() as conn:
         for row in db.dml.select_language(conn, dbt):
-            cfg.glob.language_id = row.id
-            cfg.glob.language_directory_inbox = row.directory_name_inbox
-            cfg.glob.language_iso_language_name = row.iso_language_name
-
-            if cfg.glob.language_directory_inbox is None:
-                cfg.glob.language_directory_inbox = pathlib.Path(
+            cfg.glob.language = db.language.Language.from_row(row)
+            if cfg.glob.language.language_directory_name_inbox is None:
+                cfg.glob.language.language_directory_name_inbox = pathlib.Path(
                     str(cfg.glob.setup.directory_inbox),
-                    cfg.glob.language_iso_language_name.lower(),
+                    cfg.glob.language.language_iso_language_name.lower(),
                 )
 
-            if os.path.isdir(pathlib.Path(str(cfg.glob.language_directory_inbox))):
+            if os.path.isdir(pathlib.Path(str(cfg.glob.language.language_directory_name_inbox))):
                 process_inbox_language()
 
         conn.close()
@@ -239,46 +205,44 @@ def process_inbox() -> None:
 # -----------------------------------------------------------------------------
 # Accept a new document.
 # -----------------------------------------------------------------------------
-def process_inbox_accepted(next_step: str) -> None:
+def process_inbox_accepted(action_code: str) -> None:
     """Accept a new document.
 
     Args:
-        next_step (str): Next processing step.
+        action_code (str): Action code.
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    cfg.glob.document_child_directory_name = cfg.glob.setup.directory_inbox_accepted
-    cfg.glob.document_child_directory_type = cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED
-    cfg.glob.document_child_next_step = next_step
-    cfg.glob.document_child_status = cfg.glob.DOCUMENT_STATUS_START
+    source_file = os.path.join(cfg.glob.base.base_directory_name, cfg.glob.base.base_file_name)
+    target_file = os.path.join(cfg.glob.action.action_directory_name, cfg.glob.action.action_file_name)
 
-    source_file = os.path.join(cfg.glob.document_directory_name, cfg.glob.document_file_name)
-    target_file = os.path.join(cfg.glob.document_child_directory_name, cfg.glob.document_child_file_name)
+    initialise_action(action_code=action_code,
+                      directory_name=cfg.glob.setup.directory_inbox_accepted,
+                      directory_type=cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED,
+                      file_name = target_file,
+                      )
 
     if os.path.exists(target_file):
-        db.dml.update_document_error(
-            document_id=cfg.glob.document_id,
+        cfg.glob.action.finalise_error(
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=cfg.glob.ERROR_01_906.replace("{file_name}", target_file),
         )
     else:
         shutil.move(source_file, target_file)
 
-        db.dml.insert_document_child()
-
         duration_ns = db.dml.update_document_statistics(
-            document_id=cfg.glob.document_id, status=cfg.glob.DOCUMENT_STATUS_END
+            document_id=cfg.glob.base.base_id, status=cfg.glob.DOCUMENT_STATUS_END
         )
 
         if cfg.glob.setup.is_verbose:
             utils.progress_msg(
                 f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-                f"Document: {cfg.glob.document_id:6d} "
-                f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
+                f"Document: {cfg.glob.base.base_id:6d} "
+                f"[{db.dml.select_document_file_name_id(cfg.glob.base.base_id)}]"
             )
 
         cfg.glob.language_ok_processed += 1
-        cfg.glob.total_ok_processed += 1
+        cfg.glob.run.run_total_processed_ok += 1
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -294,10 +258,11 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     """
     cfg.glob.session = sqlalchemy.orm.Session(cfg.glob.db_orm_engine)
 
-    initialise_document_base(file_path)
+    initialise_base(file_path)
+    # wwe   initialise_document_base(file_path)
 
     if not cfg.glob.setup.is_ignore_duplicates:
-        file_name = db.dml.select_document_file_name_sha256(cfg.glob.document_id, cfg.glob.document_sha256)
+        file_name = db.dml.select_document_file_name_sha256(cfg.glob.base.base_id, cfg.glob.base.base_sha256)
     else:
         file_name = None
 
@@ -306,18 +271,16 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
             cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             cfg.glob.ERROR_01_905.replace("{file_name}", file_name),
         )
-    elif cfg.glob.document_file_type == cfg.glob.DOCUMENT_FILE_TYPE_PDF:
+    elif cfg.glob.base.get_file_type() == cfg.glob.DOCUMENT_FILE_TYPE_PDF:
         prepare_pdf(file_path)
-    elif cfg.glob.document_file_type in cfg.glob.DOCUMENT_FILE_TYPE_PANDOC:
-        prepare_document_child_accepted()
-        process_inbox_accepted(cfg.glob.DOCUMENT_STEP_PANDOC)
+    elif cfg.glob.base.get_file_type() in cfg.glob.DOCUMENT_FILE_TYPE_PANDOC:
+        process_inbox_accepted(db.run.Run.ACTION_CODE_PANDOC)
         cfg.glob.language_ok_processed_pandoc += 1
-        cfg.glob.total_ok_processed_pandoc += 1
-    elif cfg.glob.document_file_type in cfg.glob.DOCUMENT_FILE_TYPE_TESSERACT:
-        prepare_document_child_accepted()
-        process_inbox_accepted(cfg.glob.DOCUMENT_STEP_TESSERACT)
+        cfg.glob.run.run_total_processed_ok_pandoc += 1
+    elif cfg.glob.base.get_file_type() in cfg.glob.DOCUMENT_FILE_TYPE_TESSERACT:
+        process_inbox_accepted(db.run.Run.ACTION_CODE_TESSERACT)
         cfg.glob.language_ok_processed_tesseract += 1
-        cfg.glob.total_ok_processed_tesseract += 1
+        cfg.glob.run.run_total_processed_ok_tesseract += 1
     else:
         process_inbox_rejected(
             cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
@@ -339,11 +302,11 @@ def process_inbox_language() -> None:
        unchanged to the inbox_ocr directory.
     4. All other documents are copied to the inbox_rejected directory.
     """
-    utils.progress_msg(f"Start of processing for language '{cfg.glob.language_iso_language_name}'")
+    utils.progress_msg(f"Start of processing for language '{cfg.glob.language.language_iso_language_name}'")
 
     utils.reset_statistics_language()
 
-    for file in sorted(pathlib.Path(cfg.glob.language_directory_inbox).iterdir()):
+    for file in sorted(pathlib.Path(cfg.glob.language.language_directory_name_inbox).iterdir()):
         if file.is_file():
             cfg.glob.start_time_document = time.perf_counter_ns()
 
@@ -351,15 +314,15 @@ def process_inbox_language() -> None:
                 utils.progress_msg("Attention: All files with the file name 'README.md' are ignored")
                 continue
 
-            cfg.glob.language_to_be_processed += 1
-            cfg.glob.total_to_be_processed += 1
+            cfg.glob.language.total_processed_to_be += 1
+            cfg.glob.run.run_total_processed_to_be += 1
 
             process_inbox_file(file)
 
     utils.show_statistics_language()
 
     utils.progress_msg(
-        f"End   of processing for language '{cfg.glob.language_iso_language_name}'",
+        f"End   of processing for language '{cfg.glob.language.language_iso_language_name}'",
     )
 
 
@@ -375,34 +338,32 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    prepare_document_child_accepted()
+    source_file = os.path.join(cfg.glob.base.base_directory_name, cfg.glob.base.base_file_name)
+    target_file = os.path.join(cfg.glob.action.action_directory_name, cfg.glob.action.action_file_name)
 
-    cfg.glob.document_child_directory_name = cfg.glob.setup.directory_inbox_rejected
-    cfg.glob.document_child_directory_type = cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX_REJECTED
-    cfg.glob.document_child_error_code = error_code
-    cfg.glob.document_child_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    initialise_action(action_code = "",
+                          directory_name = cfg.glob.setup.directory_inbox_rejected,
+                          directory_type = cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX_REJECTED,
+                          error_code=error_code,
+                          file_name = "",
+                          status = cfg.glob.DOCUMENT_STATUS_ERROR,)
 
-    source_file = os.path.join(cfg.glob.document_directory_name, cfg.glob.document_file_name)
-    target_file = os.path.join(cfg.glob.document_child_directory_name, cfg.glob.document_child_file_name)
+    cfg.glob.action.insert()
 
     # Move the document file from directory inbox to directory inbox_rejected - if not yet existing
     if os.path.exists(target_file):
-        db.dml.update_document_error(
-            document_id=cfg.glob.document_id,
+        cfg.glob.action.finalise_error(
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=cfg.glob.ERROR_01_906.replace("{file_name}", target_file),
         )
     else:
         shutil.move(source_file, target_file)
 
-        db.dml.insert_document_child()
-
-        db.dml.update_document_error(
-            document_id=cfg.glob.document_id,
+        cfg.glob.action.finalise_error(
             error_code=error_code,
             error_msg=error_msg,
         )
 
-        cfg.glob.language_erroneous += 1
+    cfg.glob.language_erroneous += 1
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

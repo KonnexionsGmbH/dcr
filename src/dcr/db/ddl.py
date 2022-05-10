@@ -2,11 +2,15 @@
 import json
 import os
 import pathlib
-import typing
+from typing import List
 
 import cfg.glob
+import db.action
+import db.base
 import db.dml
 import db.driver
+import db.language
+import db.run
 import sqlalchemy
 import sqlalchemy.event
 import sqlalchemy.orm
@@ -16,6 +20,7 @@ import utils
 # -----------------------------------------------------------------------------
 # Create the trigger function.
 # -----------------------------------------------------------------------------
+# pylint: disable=R0801
 def create_db_trigger_function(column_name: str) -> None:
     """Create the trigger function.
 
@@ -117,7 +122,7 @@ CREATE TRIGGER trigger_modified_at_{table_name}
 # -----------------------------------------------------------------------------
 # Create the triggers for the database tables.
 # -----------------------------------------------------------------------------
-def create_db_triggers(table_names: typing.List[str]) -> None:
+def create_db_triggers(table_names: List[str]) -> None:
     """Create the triggers for the database tables.
 
     Args:
@@ -374,20 +379,9 @@ def create_dbt_document(table_name: str) -> None:
             cfg.glob.DBC_MODIFIED_AT,
             sqlalchemy.DateTime,
         ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_CHILD_NO,
-            sqlalchemy.Integer,
-            nullable=True,
-        ),
         sqlalchemy.Column(cfg.glob.DBC_CURRENT_STEP, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(cfg.glob.DBC_DIRECTORY_NAME, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(cfg.glob.DBC_DIRECTORY_TYPE, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(
-            cfg.glob.DBC_DOCUMENT_ID_BASE,
-            sqlalchemy.Integer,
-            sqlalchemy.ForeignKey(cfg.glob.DBT_DOCUMENT + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
-            nullable=True,
-        ),
         sqlalchemy.Column(
             cfg.glob.DBC_DOCUMENT_ID_PARENT,
             sqlalchemy.Integer,
@@ -396,125 +390,39 @@ def create_dbt_document(table_name: str) -> None:
         ),
         sqlalchemy.Column(cfg.glob.DBC_DURATION_NS, sqlalchemy.BigInteger, nullable=False),
         sqlalchemy.Column(cfg.glob.DBC_ERROR_CODE, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(cfg.glob.DBC_ERROR_NO, sqlalchemy.BigInteger, nullable=False),
+        sqlalchemy.Column(cfg.glob.DBC_ERROR_NO, sqlalchemy.Integer, nullable=False),
         sqlalchemy.Column(cfg.glob.DBC_ERROR_MSG, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(cfg.glob.DBC_FILE_NAME, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(cfg.glob.DBC_FILE_SIZE_BYTES, sqlalchemy.Integer, nullable=True),
         sqlalchemy.Column(cfg.glob.DBC_FILE_TYPE, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(
-            cfg.glob.DBC_LANGUAGE_ID,
+            cfg.glob.DBC_DOCUMENT_ID_BASE,
+            sqlalchemy.Integer,
+            sqlalchemy.ForeignKey(cfg.glob.DBT_DOCUMENT + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
+            nullable=True,
+        ),
+        sqlalchemy.Column(
+            cfg.glob.DBC_ID_LANGUAGE,
             sqlalchemy.Integer,
             sqlalchemy.ForeignKey(cfg.glob.DBT_LANGUAGE + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
-        sqlalchemy.Column(cfg.glob.DBC_NEXT_STEP, sqlalchemy.String, nullable=True),
-        sqlalchemy.Column(cfg.glob.DBC_PDF_PAGES_NO, sqlalchemy.Integer, nullable=True),
         sqlalchemy.Column(
-            cfg.glob.DBC_RUN_ID,
+            cfg.glob.DBC_ID_RUN,
             sqlalchemy.Integer,
             sqlalchemy.ForeignKey(cfg.glob.DBT_RUN + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
             nullable=False,
         ),
+        sqlalchemy.Column(cfg.glob.DBC_NEXT_STEP, sqlalchemy.String, nullable=True),
+        sqlalchemy.Column(
+            cfg.glob.DBC_NO_CHILDREN,
+            sqlalchemy.Integer,
+            nullable=True,
+        ),
+        sqlalchemy.Column(cfg.glob.DBC_NO_PDF_PAGES, sqlalchemy.Integer, nullable=True),
         sqlalchemy.Column(cfg.glob.DBC_SHA256, sqlalchemy.String, nullable=True),
         sqlalchemy.Column(cfg.glob.DBC_STATUS, sqlalchemy.String, nullable=False),
         sqlalchemy.Column(cfg.glob.DBC_STEM_NAME, sqlalchemy.String, nullable=True),
-    )
-
-    utils.progress_msg(f"The database table '{table_name}' has now been created")
-
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Create the database table language.
-# -----------------------------------------------------------------------------
-def create_dbt_language(table_name: str) -> None:
-    """Create the database table language.
-
-    Args:
-        table_name (str): Table name.
-    """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    sqlalchemy.Table(
-        table_name,
-        cfg.glob.db_orm_metadata,
-        sqlalchemy.Column(
-            cfg.glob.DBC_ID,
-            sqlalchemy.Integer,
-            autoincrement=True,
-            nullable=False,
-            primary_key=True,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_CREATED_AT,
-            sqlalchemy.DateTime,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_MODIFIED_AT,
-            sqlalchemy.DateTime,
-        ),
-        sqlalchemy.Column(cfg.glob.DBC_ACTIVE, sqlalchemy.Boolean, default=True, nullable=False),
-        sqlalchemy.Column(cfg.glob.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False, unique=True),
-        sqlalchemy.Column(cfg.glob.DBC_CODE_PANDOC, sqlalchemy.String, nullable=False, unique=True),
-        sqlalchemy.Column(cfg.glob.DBC_CODE_SPACY, sqlalchemy.String, nullable=False, unique=True),
-        sqlalchemy.Column(cfg.glob.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True),
-        sqlalchemy.Column(cfg.glob.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True),
-        sqlalchemy.Column(cfg.glob.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True),
-    )
-
-    utils.progress_msg(f"The database table '{table_name}' has now been created")
-
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Create the database table run.
-# -----------------------------------------------------------------------------
-def create_dbt_run(table_name: str) -> None:
-    """Create the database table run.
-
-    Args:
-        table_name (str): Table name.
-    """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    sqlalchemy.Table(
-        table_name,
-        cfg.glob.db_orm_metadata,
-        sqlalchemy.Column(
-            cfg.glob.DBC_ID,
-            sqlalchemy.Integer,
-            autoincrement=True,
-            nullable=False,
-            primary_key=True,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_CREATED_AT,
-            sqlalchemy.DateTime,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_MODIFIED_AT,
-            sqlalchemy.DateTime,
-        ),
-        sqlalchemy.Column(cfg.glob.DBC_ACTION, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(cfg.glob.DBC_RUN_ID, sqlalchemy.Integer, nullable=False),
-        sqlalchemy.Column(cfg.glob.DBC_STATUS, sqlalchemy.String, nullable=False),
-        sqlalchemy.Column(
-            cfg.glob.DBC_TOTAL_ERRONEOUS,
-            sqlalchemy.Integer,
-            nullable=True,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_TOTAL_OK_PROCESSED,
-            sqlalchemy.Integer,
-            nullable=True,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_TOTAL_TO_BE_PROCESSED,
-            sqlalchemy.Integer,
-            nullable=True,
-        ),
     )
 
     utils.progress_msg(f"The database table '{table_name}' has now been created")
@@ -591,11 +499,13 @@ def create_schema() -> None:
 
         conn.close()
 
-    create_dbt_language(cfg.glob.DBT_LANGUAGE)
-    create_dbt_run(cfg.glob.DBT_RUN)
+    db.language.Language.create_dbt()
+    db.run.Run.create_dbt()
     create_dbt_version(cfg.glob.DBT_VERSION)
     # FK: language
+    db.base.Base.create_dbt()
     # FK: run
+    db.action.Action.create_dbt()
     create_dbt_document(cfg.glob.DBT_DOCUMENT)
     # FK: document
     create_dbt_content_tetml_line(cfg.glob.DBT_CONTENT_TETML_LINE)
@@ -606,6 +516,8 @@ def create_schema() -> None:
     # Create the database triggers.
     create_db_triggers(
         [
+            cfg.glob.DBT_ACTION,
+            cfg.glob.DBT_BASE,
             cfg.glob.DBT_CONTENT_TETML_LINE,
             cfg.glob.DBT_CONTENT_TETML_PAGE,
             cfg.glob.DBT_CONTENT_TETML_WORD,
@@ -675,6 +587,8 @@ def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
 
             if table_name not in ["language"]:
                 if table_name in [
+                    "action",
+                    "base",
                     "content_tetml_line",
                     "content_tetml_page",
                     "content_tetml_word",

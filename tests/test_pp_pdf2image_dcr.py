@@ -1,6 +1,7 @@
 # pylint: disable=unused-argument
 """Testing Module pp.pdf2image_dcr."""
 import cfg.glob
+import db.run
 import pytest
 
 import dcr
@@ -38,7 +39,7 @@ def test_run_action_pdf_2_image_normal_jpeg_keep(fxtr_rmdir_opt, fxtr_setup_empt
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDF2IMAGE])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,
@@ -73,7 +74,7 @@ def test_run_action_pdf_2_image_normal_jpeg_keep(fxtr_rmdir_opt, fxtr_setup_empt
     fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
 
     with pytest.raises(SystemExit) as expt:
-        dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
+        dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDF2IMAGE])
 
     assert expt.type == SystemExit, "inbox_accepted directory missing"
     assert expt.value.code == 1, "inbox_accepted, directory missing"
@@ -147,7 +148,7 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDF2IMAGE])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,

@@ -42,7 +42,7 @@ fi
 echo ""
 echo "Script $0 is now running"
 
-rm -f run_dcr_prod_debug.log
+rm -f run_dcr_debug.log
 export LOG_FILE=run_dcr_prod_${DCR_CHOICE_ACTION}.log
 rm -f run_dcr_prod_${DCR_CHOICE_ACTION}.log
 
