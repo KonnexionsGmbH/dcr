@@ -2,6 +2,7 @@
 import os
 import pathlib
 import time
+from typing import ClassVar
 
 import cfg.glob
 import db.dml
@@ -18,6 +19,11 @@ class Action:
     Returns:
         _type_: Application configuration parameters.
     """
+
+    # -----------------------------------------------------------------------------
+    # Class variables.
+    # -----------------------------------------------------------------------------
+    pdf2image_file_type: ClassVar[str] = cfg.glob.DOCUMENT_FILE_TYPE_JPG
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
@@ -55,7 +61,7 @@ class Action:
         self.action_file_size_bytes: int = file_size_bytes
         self.action_id: int | sqlalchemy.Integer = action_id
         self.action_id_base: int | sqlalchemy.Integer = id_base
-        self.action_id_parent: int | sqlalchemy.Integer = id_parent if id_parent !=0 else 1
+        self.action_id_parent: int | sqlalchemy.Integer = id_parent if id_parent != 0 else 1
         self.action_id_run_last: int | sqlalchemy.Integer = id_run_last
         self.action_no_children: int | sqlalchemy.Integer = no_children
         self.action_no_pdf_pages: int = no_pdf_pages
@@ -194,7 +200,7 @@ class Action:
         cfg.glob.base.base_id_run_last = cfg.glob.run.run_id
         cfg.glob.base.base_status = cfg.glob.DOCUMENT_STATUS_END
 
-        cfg.glob.base.update()
+        cfg.glob.base.update()  # type: ignore
 
         utils.progress_msg(
             f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
@@ -227,13 +233,39 @@ class Action:
         cfg.glob.base.base_id_run_last = cfg.glob.run.run_id
         cfg.glob.base.base_status = cfg.glob.DOCUMENT_STATUS_ERROR
 
-        cfg.glob.base.update()
+        cfg.glob.base.update()  # type: ignore
 
         utils.progress_msg(
             f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
             f"Document: {cfg.glob.base.base_id:6d} "
             f"[{cfg.glob.base.base_file_name}] - "
             f"Error: {error_msg} "
+        )
+
+    # -----------------------------------------------------------------------------
+    # Initialise from a database row.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def from_row(cls, row: sqlalchemy.engine.Row) -> Action:
+        """Initialise from a database row."""
+
+        return cls(
+            action_code=row[cfg.glob.DBC_ACTION_CODE],
+            action_id=row[cfg.glob.DBC_ID],
+            directory_name=row[cfg.glob.DBC_DIRECTORY_NAME],
+            directory_type=row[cfg.glob.DBC_DIRECTORY_TYPE],
+            duration_ns=row[cfg.glob.DBC_DURATION_NS],
+            error_code=row[cfg.glob.DBC_ERROR_CODE],
+            error_msg=row[cfg.glob.DBC_ERROR_MSG],
+            error_no=row[cfg.glob.DBC_ERROR_NO],
+            file_name=row[cfg.glob.DBC_FILE_NAME],
+            file_size_bytes=row[cfg.glob.DBC_FILE_SIZE_BYTES],
+            id_base=row[cfg.glob.DBC_ID_BASE],
+            id_parent=row[cfg.glob.DBC_ID_PARENT],
+            id_run_last=row[cfg.glob.DBC_ID_RUN_LAST],
+            no_children=row[cfg.glob.DBC_NO_CHILDREN],
+            no_pdf_pages=row[cfg.glob.DBC_NO_PDF_PAGES],
+            status=row[cfg.glob.DBC_STATUS],
         )
 
     # -----------------------------------------------------------------------------
@@ -273,3 +305,39 @@ class Action:
             table_name=cfg.glob.DBT_ACTION,
             columns=self._get_columns(),
         )
+
+    # -----------------------------------------------------------------------------
+    # Select the actions to be processed based on action_code.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def select_by_action_code(cls, action_code: str) -> sqlalchemy.engine.CursorResult:
+        """Select the actions to be processed based on action_code.
+
+        Args:
+            action_code (str): The requested action code.
+
+        Returns:
+            engine.CursorResult: The actions found.
+        """
+        dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
+
+        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+            rows = conn.execute(
+                sqlalchemy.select(dbt)
+                .where(
+                    sqlalchemy.and_(
+                        dbt.c.action_code == action_code,
+                        dbt.c.status.in_(
+                            [
+                                cfg.glob.DOCUMENT_STATUS_ERROR,
+                                cfg.glob.DOCUMENT_STATUS_START,
+                            ]
+                        ),
+                    )
+                )
+                .order_by(dbt.c.id.asc())
+            )
+
+            conn.close()
+
+        return rows

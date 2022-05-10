@@ -254,6 +254,7 @@ def main(argv: List[str]) -> None:
 # -----------------------------------------------------------------------------
 # Convert image documents to pdf files.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def process_convert_image_2_pdf() -> None:
     """Convert image documents to pdf files."""
     utils.progress_msg_empty_before("Start: Convert image documents to pdf files ... Tesseract OCR")
@@ -280,6 +281,7 @@ def process_convert_image_2_pdf() -> None:
 # -----------------------------------------------------------------------------
 # Convert non-pdf documents to pdf files.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def process_convert_non_pdf_2_pdf() -> None:
     """Convert non-pdf documents to pdf files."""
     utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]")
@@ -296,6 +298,7 @@ def process_convert_non_pdf_2_pdf() -> None:
 # -----------------------------------------------------------------------------
 # Convert pdf documents to image files.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def process_convert_pdf_2_image() -> None:
     """Convert pdf documents to image files."""
     utils.progress_msg_empty_before("Start: Convert pdf documents to image files ... pdf2image [Poppler]")
@@ -326,7 +329,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Check the version of the database.
     check_db_up_to_date()
 
-    cfg.glob.run = db.run.Run()
+    cfg.glob.run = db.run.Run(id_run=db.run.Run.id_run_umbrella)
 
     # Load the data from the database table 'language'.
     load_data_from_dbt_language()
@@ -388,6 +391,7 @@ def process_documents(args: dict[str, bool]) -> None:
 # -----------------------------------------------------------------------------
 # Extract text and metadata from pdf documents.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def process_extract_text_from_pdf() -> None:
     """Extract text and metadata from pdf documents."""
     utils.progress_msg_empty_before("Start: Extract text and metadata from pdf documents ... PDFlib TET")
@@ -404,6 +408,7 @@ def process_extract_text_from_pdf() -> None:
 # -----------------------------------------------------------------------------
 # Process the inbox directory.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def process_inbox_directory() -> None:
     """Process the inbox directory."""
     utils.progress_msg_empty_before("Start: Process the inbox directory ... PyMuPDF [fitz]")
@@ -420,6 +425,7 @@ def process_inbox_directory() -> None:
 # -----------------------------------------------------------------------------
 # Store the document structure from the parser result.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def process_store_from_parser() -> None:
     """Store the document structure from the parser result."""
     utils.progress_msg_empty_before("Start: Store document structure ... defusedxml [xml.etree.ElementTree]")
@@ -436,6 +442,7 @@ def process_store_from_parser() -> None:
 # -----------------------------------------------------------------------------
 # Create document tokens.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def process_tokenize() -> None:
     """Create document tokens."""
     utils.progress_msg_empty_before("Start: Create document tokens ... spaCy")

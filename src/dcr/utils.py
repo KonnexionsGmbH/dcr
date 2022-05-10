@@ -352,6 +352,7 @@ def show_statistics_total() -> None:
             utils.progress_msg(f"Number with document status ready:         {cfg.glob.run.total_status_ready:6d}")
             utils.progress_msg(f"Number with document status error:         {cfg.glob.run.total_status_error:6d}")
 
+        # noinspection PyUnresolvedReferences
         if cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_INBOX:
             utils.progress_msg(
                 f"Number documents accepted - " f"Pandoc:        {cfg.glob.run.total_processed_pandoc:6d}"
@@ -376,6 +377,7 @@ def show_statistics_total() -> None:
         if cfg.glob.run.total_generated > 0:
             utils.progress_msg(f"Number documents generated:                {cfg.glob.run.total_generated:6d}")
 
+        # noinspection PyUnresolvedReferences
         if cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_INBOX:
             utils.progress_msg(f"Number documents rejected:                 {cfg.glob.run.run_total_erroneous:6d}")
         else:

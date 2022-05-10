@@ -408,18 +408,6 @@ document_stem_name: str
 
 language: Type[db.language.Language]
 
-# wwe
-# language_directory_inbox: os.PathLike[str]
-# language_erroneous: int
-# id_language: sqlalchemy.Integer
-# language_iso_language_name: str
-# language_ok_processed: int
-# language_ok_processed_pandoc: int
-# language_ok_processed_pdf2image: int
-# language_ok_processed_pdflib: int
-# language_ok_processed_tesseract: int
-# language_to_be_processed: int
-
 languages_pandoc: Dict[sqlalchemy.Integer, str]
 languages_spacy: Dict[sqlalchemy.Integer, str]
 languages_tesseract: Dict[sqlalchemy.Integer, str]
@@ -505,15 +493,3 @@ spacy_tkn_attr_vocab: bool = False
 spacy_tkn_attr_whitespace_: bool = True
 
 start_time_document: int
-
-# wwe
-# total_erroneous: int
-# total_generated: int
-# total_ok_processed: int
-# total_ok_processed_pandoc: int
-# total_ok_processed_pdf2image: int
-# total_ok_processed_pdflib: int
-# total_ok_processed_tesseract: int
-# total_status_error: int
-# total_status_ready: int
-# total_to_be_processed: int

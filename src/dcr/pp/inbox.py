@@ -67,6 +67,7 @@ def create_directory(directory_type: str, directory_name: str) -> None:
 # -----------------------------------------------------------------------------
 # Get the target file name.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def get_target_file_name() -> str:
     """Get the target file name.
 
@@ -94,7 +95,7 @@ def initialise_action(
     directory_name: str = "",
     directory_type: str = "",
     file_name: str = "",
-        id_parent=0,
+    id_parent: int = 0,
 ) -> Type[db.action.Action]:
     """Initialise the next action in the database.
 
@@ -103,6 +104,7 @@ def initialise_action(
         directory_name (str, optional): Directory name. Defaults to "".
         directory_type (str, optional): Directory Type. Defaults to "".
         file_name (str, optional): File name. Defaults to "".
+        id_parent (int, optional): File name. Defaults to "".
 
     Returns:
         Type[db.action.Action]: A new Action instance.
@@ -244,6 +246,7 @@ def process_inbox() -> None:
 # -----------------------------------------------------------------------------
 # Accept a new document.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def process_inbox_accepted(action_code: str) -> None:
     """Accept a new document.
 
@@ -289,6 +292,7 @@ def process_inbox_accepted(action_code: str) -> None:
 # -----------------------------------------------------------------------------
 # Process the next inbox file.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def process_inbox_file(file_path: pathlib.Path) -> None:
     """Process the next inbox file.
 
@@ -366,6 +370,7 @@ def process_inbox_language() -> None:
 # -----------------------------------------------------------------------------
 # Reject a new document that is faulty.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     """Reject a new document that is faulty.
 

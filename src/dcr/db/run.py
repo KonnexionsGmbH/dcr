@@ -49,6 +49,8 @@ class Run:
     ACTION_CODE_TOKENIZE: ClassVar[str] = "tkn"
     ACTION_CODE_UPGRADE_DB: ClassVar[str] = "db_u"
 
+    id_run_umbrella: ClassVar[int] = db.run.Run.get_id_latest() + 1
+
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
@@ -56,6 +58,7 @@ class Run:
         self,
         action_code: str | sqlalchemy.String = "",
         action_text: str | sqlalchemy.String = "",
+        id_run: int | sqlalchemy.Integer = 0,
         status: str | sqlalchemy.String = "",
         total_erroneous: int | sqlalchemy.Integer = 0,
         total_processed_ok: int | sqlalchemy.Integer = 0,
@@ -67,7 +70,7 @@ class Run:
         self.run_action_code: str | sqlalchemy.String = action_code
         self.run_action_text: str | sqlalchemy.String = action_text
         self.run_id: int | sqlalchemy.Integer = 0
-        self.run_id_run: int = self._get_id_latest() + 1
+        self.run_id_run: int | sqlalchemy.Integer = id_run
         self.run_status: str | sqlalchemy.String = status
         self.run_total_erroneous: int | sqlalchemy.Integer = total_erroneous
         self.run_total_processed_ok: int | sqlalchemy.Integer = total_processed_ok
@@ -101,27 +104,6 @@ class Run:
             cfg.glob.DBC_TOTAL_PROCESSED_OK: self.run_total_processed_ok,
             cfg.glob.DBC_TOTAL_PROCESSED_TO_BE: self.run_total_processed_to_be,
         }
-
-    # -----------------------------------------------------------------------------
-    # Get the latest id from database table.
-    # -----------------------------------------------------------------------------
-    @staticmethod
-    def _get_id_latest() -> int:
-        """Get the latest id from database table.
-
-        Returns:
-            int: Latest id.
-        """
-        dbt = sqlalchemy.Table(cfg.glob.DBT_RUN, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
-
-        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
-            row = conn.execute(sqlalchemy.select(sqlalchemy.func.max(dbt.c.id_run))).fetchone()
-            conn.close()
-
-        if row == (None,):
-            return 0
-
-        return row[0]  # type: ignore
 
     # -----------------------------------------------------------------------------
     # Create the database table.
@@ -229,6 +211,27 @@ class Run:
                 )
 
         return action_text
+
+    # -----------------------------------------------------------------------------
+    # Get the latest id from database table.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def get_id_latest(cls) -> int:
+        """Get the latest id from database table.
+
+        Returns:
+            int: Latest id.
+        """
+        dbt = sqlalchemy.Table(cfg.glob.DBT_RUN, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
+
+        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+            row = conn.execute(sqlalchemy.select(sqlalchemy.func.max(dbt.c.id_run))).fetchone()
+            conn.close()
+
+        if row == (None,):
+            return 0
+
+        return row[0]  # type: ignore
 
     # -----------------------------------------------------------------------------
     # Insert a new row.

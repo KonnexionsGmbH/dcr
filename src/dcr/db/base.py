@@ -34,7 +34,7 @@ class Base:
         id_language: int | sqlalchemy.Integer = 0,
         id_run_last: int | sqlalchemy.Integer = 0,
         sha256: str | sqlalchemy.String = "",
-            status: str | sqlalchemy.String = "",
+        status: str | sqlalchemy.String = "",
     ) -> None:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
