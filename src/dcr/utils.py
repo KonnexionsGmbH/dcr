@@ -151,7 +151,7 @@ def get_stem_name(file_name: pathlib.Path | str | None) -> str | None:
     if isinstance(file_name, str):
         file_name = pathlib.Path(file_name)
 
-    return file_name.suffix[1:].lower()
+    return file_name.stem
 
 
 # -----------------------------------------------------------------------------
@@ -297,34 +297,21 @@ def progress_msg_line_type(msg: str) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Reset the language related statistic counters.
-# -----------------------------------------------------------------------------
-def reset_statistics_language() -> None:
-    """Reset the language related statistic counters."""
-    cfg.glob.language_erroneous = 0
-    cfg.glob.language_ok_processed = 0
-    cfg.glob.language_ok_processed_pandoc = 0
-    cfg.glob.language_ok_processed_pdf2image = 0
-    cfg.glob.language_ok_processed_pdflib = 0
-    cfg.glob.language_ok_processed_tesseract = 0
-    cfg.glob.language.total_processed_to_be = 0
-
-
-# -----------------------------------------------------------------------------
 # Reset the total statistic counters.
 # -----------------------------------------------------------------------------
 def reset_statistics_total() -> None:
     """Reset the total statistic counters."""
     cfg.glob.run.run_total_erroneous = 0
-    cfg.glob.total_generated = 0
     cfg.glob.run.run_total_processed_ok = 0
-    cfg.glob.run.run_total_processed_ok_pandoc = 0
-    cfg.glob.run.run_total_processed_ok_pdf2image = 0
-    cfg.glob.run.run_total_processed_ok_pdflib = 0
-    cfg.glob.run.run_total_processed_ok_tesseract = 0
-    cfg.glob.total_status_error = 0
-    cfg.glob.total_status_ready = 0
     cfg.glob.run.run_total_processed_to_be = 0
+
+    cfg.glob.run.total_generated = 0
+    cfg.glob.run.total_processed_pandoc = 0
+    cfg.glob.run.total_processed_pdf2image = 0
+    cfg.glob.run.total_processed_pdflib = 0
+    cfg.glob.run.total_processed_tesseract = 0
+    cfg.glob.run.total_status_error = 0
+    cfg.glob.run.total_status_ready = 0
 
 
 # -----------------------------------------------------------------------------
@@ -336,16 +323,20 @@ def show_statistics_language() -> None:
     utils.progress_msg(f"Number documents to be processed:          {cfg.glob.language.total_processed_to_be:6d}")
 
     if cfg.glob.language.total_processed_to_be > 0:
-        utils.progress_msg(f"Number documents accepted - " f"Pandoc:        {cfg.glob.language_ok_processed_pandoc:6d}")
         utils.progress_msg(
-            f"Number documents accepted - " f"pdf2image:     {cfg.glob.language_ok_processed_pdf2image:6d}"
+            f"Number documents accepted - " f"Pandoc:        {cfg.glob.language.total_processed_pandoc:6d}"
         )
-        utils.progress_msg(f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.language_ok_processed_pdflib:6d}")
         utils.progress_msg(
-            f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.language_ok_processed_tesseract:6d}"
+            f"Number documents accepted - " f"pdf2image:     {cfg.glob.language.total_processed_pdf2image:6d}"
         )
-        utils.progress_msg(f"Number documents accepted - " f"Total:         {cfg.glob.language_ok_processed:6d}")
-        utils.progress_msg(f"Number documents rejected:                 {cfg.glob.language_erroneous:6d}")
+        utils.progress_msg(
+            f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.language.total_processed_pdflib:6d}"
+        )
+        utils.progress_msg(
+            f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.language.total_processed_tesseract:6d}"
+        )
+        utils.progress_msg(f"Number documents accepted - " f"Total:         {cfg.glob.language.total_processed:6d}")
+        utils.progress_msg(f"Number documents rejected:                 {cfg.glob.language.total_erroneous:6d}")
 
 
 # -----------------------------------------------------------------------------
@@ -357,22 +348,22 @@ def show_statistics_total() -> None:
     utils.progress_msg(f"Number documents to be processed:          {cfg.glob.run.run_total_processed_to_be:6d}")
 
     if cfg.glob.run.run_total_processed_to_be > 0:
-        if cfg.glob.total_status_ready > 0 or cfg.glob.total_status_error > 0:
-            utils.progress_msg(f"Number with document status ready:         {cfg.glob.total_status_ready:6d}")
-            utils.progress_msg(f"Number with document status error:         {cfg.glob.total_status_error:6d}")
+        if cfg.glob.run.total_status_ready > 0 or cfg.glob.run.total_status_error > 0:
+            utils.progress_msg(f"Number with document status ready:         {cfg.glob.run.total_status_ready:6d}")
+            utils.progress_msg(f"Number with document status error:         {cfg.glob.run.total_status_error:6d}")
 
         if cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_INBOX:
             utils.progress_msg(
-                f"Number documents accepted - " f"Pandoc:        {cfg.glob.run.run_total_processed_ok_pandoc:6d}"
+                f"Number documents accepted - " f"Pandoc:        {cfg.glob.run.total_processed_pandoc:6d}"
             )
             utils.progress_msg(
-                f"Number documents accepted - " f"pdf2image:     {cfg.glob.run.run_total_processed_ok_pdf2image:6d}"
+                f"Number documents accepted - " f"pdf2image:     {cfg.glob.run.total_processed_pdf2image:6d}"
             )
             utils.progress_msg(
-                f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.run.run_total_processed_ok_pdflib:6d}"
+                f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.run.total_processed_pdflib:6d}"
             )
             utils.progress_msg(
-                f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.run.run_total_processed_ok_tesseract:6d}"
+                f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.run.total_processed_tesseract:6d}"
             )
             utils.progress_msg(
                 "Number documents accepted - " + f"Total:         {cfg.glob.run.run_total_processed_ok:6d}"
@@ -382,8 +373,8 @@ def show_statistics_total() -> None:
         else:
             utils.progress_msg(f"Number documents converted:                {cfg.glob.run.run_total_processed_ok:6d}")
 
-        if cfg.glob.total_generated > 0:
-            utils.progress_msg(f"Number documents generated:                {cfg.glob.total_generated:6d}")
+        if cfg.glob.run.total_generated > 0:
+            utils.progress_msg(f"Number documents generated:                {cfg.glob.run.total_generated:6d}")
 
         if cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_INBOX:
             utils.progress_msg(f"Number documents rejected:                 {cfg.glob.run.run_total_erroneous:6d}")
@@ -424,9 +415,9 @@ def start_document_processing(document: sqlalchemy.engine.Row) -> None:
 
     if cfg.glob.document_status == cfg.glob.DOCUMENT_STATUS_ERROR:
         # not testable
-        cfg.glob.total_status_error += 1
+        cfg.glob.run.total_status_error += 1
     else:
-        cfg.glob.total_status_ready += 1
+        cfg.glob.run.total_status_ready += 1
 
 
 # -----------------------------------------------------------------------------

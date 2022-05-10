@@ -22,7 +22,7 @@ class Action:
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(  # pylint: disable=R0913
+    def __init__(  # pylint: disable=R0913, R0914
         self,
         action_code: str = "",
         action_id: int | sqlalchemy.Integer = 0,
@@ -33,31 +33,33 @@ class Action:
         error_msg: str | sqlalchemy.String = "",
         error_no: int = 0,
         file_name: str = "",
+        file_size_bytes: int = 0,
         id_base: int | sqlalchemy.Integer = 0,
         id_parent: int | sqlalchemy.Integer = 0,
         id_run_last: int | sqlalchemy.Integer = 0,
         no_children: int | sqlalchemy.Integer = 0,
+        no_pdf_pages: int = 0,
         status: str | sqlalchemy.String = "",
     ) -> None:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         self.action_action_code: str = action_code
-        self.action_directory_name: str | sqlalchemy.String = directory_name
+        self.action_directory_name: str = directory_name
         self.action_directory_type: str | sqlalchemy.String = directory_type
         self.action_duration_ns: int | sqlalchemy.BigInteger = duration_ns
         self.action_error_code_last: str | sqlalchemy.String = error_code
         self.action_error_msg_last: str | sqlalchemy.String = error_msg
         self.action_error_no: int = error_no
         self.action_file_name: str = file_name
-        self.action_file_size_bytes: int = 0
+        self.action_file_size_bytes: int = file_size_bytes
         self.action_id: int | sqlalchemy.Integer = action_id
         self.action_id_base: int | sqlalchemy.Integer = id_base
-        self.action_id_parent: int | sqlalchemy.Integer = id_parent
+        self.action_id_parent: int | sqlalchemy.Integer = id_parent if id_parent !=0 else 1
         self.action_id_run_last: int | sqlalchemy.Integer = id_run_last
         self.action_no_children: int | sqlalchemy.Integer = no_children
-        self.action_no_pdf_pages: int = 0
-        self.action_status: str | sqlalchemy.String = status
+        self.action_no_pdf_pages: int = no_pdf_pages
+        self.action_status: str | sqlalchemy.String = status if status != "" else cfg.glob.DOCUMENT_STATUS_START
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -94,6 +96,10 @@ class Action:
     # -----------------------------------------------------------------------------
     def _update(self) -> None:
         """Update the current row."""
+        if self.action_id_parent == 1:
+            if self.action_id_parent != self.action_id:
+                self.action_id_parent = self.action_id
+
         db.dml.update_dbt_id(
             table_name=cfg.glob.DBT_ACTION,
             id_where=self.action_id,
@@ -169,15 +175,31 @@ class Action:
     def finalise(self) -> None:
         """Finalise the current action."""
         self.action_duration_ns = time.perf_counter_ns() - cfg.glob.start_time_document
-        self.action_file_size_bytes: int = os.path.getsize(pathlib.Path(self.action_directory_name, self.action_file_name))
-        self.action_no_pdf_pages: int = utils.get_pdf_pages_no(str(pathlib.Path(self.action_directory_name, self.action_file_name)))
+
+        if self.action_file_size_bytes == 0:
+            self.action_file_size_bytes = os.path.getsize(
+                pathlib.Path(self.action_directory_name, self.action_file_name)
+            )
+
+        if self.action_no_pdf_pages == 0:
+            self.action_no_pdf_pages = utils.get_pdf_pages_no(
+                str(pathlib.Path(self.action_directory_name, self.action_file_name))
+            )
+
+        self.action_status = cfg.glob.DOCUMENT_STATUS_END
 
         self._update()
 
+        cfg.glob.base.base_action_code_last = self.action_action_code
+        cfg.glob.base.base_id_run_last = cfg.glob.run.run_id
+        cfg.glob.base.base_status = cfg.glob.DOCUMENT_STATUS_END
+
+        cfg.glob.base.update()
+
         utils.progress_msg(
             f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {cfg.glob.base.base_id:6d} "
-            f"[{cfg.glob.base.base_file_name}]"
+            f"Document: {self.action_id_parent:6d} "
+            f"[{self.action_file_name}]"
         )
 
     # -----------------------------------------------------------------------------
@@ -194,8 +216,18 @@ class Action:
         self.action_error_code_last = error_code
         self.action_error_msg_last = error_msg
         self.action_error_no += 1
+        self.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
 
         self._update()
+
+        cfg.glob.base.base_action_code_last = self.action_action_code
+        cfg.glob.base.base_error_code_last = self.action_error_code_last
+        cfg.glob.base.base_error_no += 1
+        cfg.glob.base.base_error_msg_last = self.action_error_msg_last
+        cfg.glob.base.base_id_run_last = cfg.glob.run.run_id
+        cfg.glob.base.base_status = cfg.glob.DOCUMENT_STATUS_ERROR
+
+        cfg.glob.base.update()
 
         utils.progress_msg(
             f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "

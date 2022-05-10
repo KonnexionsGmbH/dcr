@@ -73,6 +73,14 @@ class Run:
         self.run_total_processed_ok: int | sqlalchemy.Integer = total_processed_ok
         self.run_total_processed_to_be: int | sqlalchemy.Integer = total_processed_to_be
 
+        self.total_generated: int = 0
+        self.total_processed_pandoc: int = 0
+        self.total_processed_pdf2image: int = 0
+        self.total_processed_pdflib: int = 0
+        self.total_processed_tesseract: int = 0
+        self.total_status_error: int = 0
+        self.total_status_ready: int = 0
+
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------

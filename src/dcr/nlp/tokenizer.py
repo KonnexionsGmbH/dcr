@@ -287,8 +287,6 @@ def tokenize() -> None:
     nlp: spacy.Language
     spacy_model_current: str | None = None
 
-    utils.reset_statistics_total()
-
     with cfg.glob.db_orm_engine.connect() as conn:
         rows = db.dml.select_document(conn, dbt_document, db.run.Run.ACTION_CODE_TOKENIZE)
 

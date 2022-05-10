@@ -360,7 +360,8 @@ TESTS_INBOX_NAME: str = "tests/__PYTEST_FILES__/"
 # -----------------------------------------------------------------------------
 # Global Variables.
 # -----------------------------------------------------------------------------
-action: Type[db.action.Action]
+action_curr: Type[db.action.Action]
+action_next: Type[db.action.Action]
 
 base: Type[db.base.Base]
 
@@ -505,13 +506,14 @@ spacy_tkn_attr_whitespace_: bool = True
 
 start_time_document: int
 
-total_erroneous: int
-total_generated: int
-total_ok_processed: int
-total_ok_processed_pandoc: int
-total_ok_processed_pdf2image: int
-total_ok_processed_pdflib: int
-total_ok_processed_tesseract: int
-total_status_error: int
-total_status_ready: int
-total_to_be_processed: int
+# wwe
+# total_erroneous: int
+# total_generated: int
+# total_ok_processed: int
+# total_ok_processed_pandoc: int
+# total_ok_processed_pdf2image: int
+# total_ok_processed_pdflib: int
+# total_ok_processed_tesseract: int
+# total_status_error: int
+# total_status_ready: int
+# total_to_be_processed: int

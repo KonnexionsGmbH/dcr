@@ -43,7 +43,13 @@ class Language:
         self.language_id: int | sqlalchemy.Integer = language_id
         self.language_iso_language_name: str | sqlalchemy.String = iso_language_name
 
+        self.total_erroneous: int = 0
+        self.total_processed: int = 0
         self.total_processed_to_be: int = 0
+        self.total_processed_pandoc: int = 0
+        self.total_processed_pdf2image = 0
+        self.total_processed_pdflib = 0
+        self.total_processed_tesseract = 0
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 

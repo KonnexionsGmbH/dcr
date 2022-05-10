@@ -95,7 +95,7 @@ def convert_pdf_2_image_file() -> None:
 
             db.dml.insert_document_child()
 
-            cfg.glob.total_generated += 1
+            cfg.glob.run.total_generated += 1
 
     utils.delete_auxiliary_file(file_name_parent)
 

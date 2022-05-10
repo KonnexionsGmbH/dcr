@@ -34,6 +34,7 @@ class Base:
         id_language: int | sqlalchemy.Integer = 0,
         id_run_last: int | sqlalchemy.Integer = 0,
         sha256: str | sqlalchemy.String = "",
+            status: str | sqlalchemy.String = "",
     ) -> None:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -50,6 +51,7 @@ class Base:
         self.base_id_run_last: int | sqlalchemy.Integer = id_run_last
         self.base_no_pdf_pages: int = utils.get_pdf_pages_no(str(pathlib.Path(directory_name, file_name)))
         self.base_sha256: str | sqlalchemy.String = sha256
+        self.base_status: str | sqlalchemy.String = status if status != "" else cfg.glob.DOCUMENT_STATUS_START
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -75,6 +77,7 @@ class Base:
             cfg.glob.DBC_ID_RUN_LAST: self.base_id_run_last,
             cfg.glob.DBC_NO_PDF_PAGES: self.base_no_pdf_pages,
             cfg.glob.DBC_SHA256: self.base_sha256,
+            cfg.glob.DBC_STATUS: self.base_status,
         }
 
     # -----------------------------------------------------------------------------
@@ -137,6 +140,7 @@ class Base:
             sqlalchemy.Column(cfg.glob.DBC_NO_PDF_PAGES, sqlalchemy.Integer, nullable=True),
             sqlalchemy.Column(cfg.glob.DBC_ID_RUN_LAST, sqlalchemy.Integer, nullable=False),
             sqlalchemy.Column(cfg.glob.DBC_SHA256, sqlalchemy.String, nullable=True),
+            sqlalchemy.Column(cfg.glob.DBC_STATUS, sqlalchemy.String, nullable=False),
         )
 
         utils.progress_msg(f"The database table '{cfg.glob.DBT_BASE}' has now been created")
@@ -148,6 +152,8 @@ class Base:
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
         """Finalise the current row."""
+        self.base_status = cfg.glob.DOCUMENT_STATUS_END
+
         self._update()
 
     # -----------------------------------------------------------------------------
@@ -163,6 +169,7 @@ class Base:
         self.base_error_code_last = error_code
         self.base_error_msg_last = error_msg
         self.base_error_no += 1
+        self.base_status = cfg.glob.DOCUMENT_STATUS_ERROR
 
         self._update()
 
@@ -201,5 +208,16 @@ class Base:
         """Insert a new row."""
         self.base_id = db.dml.insert_dbt_row(
             table_name=cfg.glob.DBT_BASE,
+            columns=self._get_columns(),
+        )
+
+    # -----------------------------------------------------------------------------
+    # Update the current row.
+    # -----------------------------------------------------------------------------
+    def update(self) -> None:
+        """Update the current row."""
+        db.dml.update_dbt_id(
+            table_name=cfg.glob.DBT_BASE,
+            id_where=self.base_id,
             columns=self._get_columns(),
         )
