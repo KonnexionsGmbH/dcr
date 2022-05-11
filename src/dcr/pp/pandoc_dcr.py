@@ -29,7 +29,7 @@ def convert_non_pdf_2_pdf() -> None:
     utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, db.run.Run.ACTION_CODE_PANDOC)
+        rows = db.dml.select_document(conn, dbt, db.cls_run.Run.ACTION_CODE_PANDOC)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
@@ -91,7 +91,7 @@ def convert_non_pdf_2_pdf_file() -> None:
 
         utils.prepare_document_4_next_step(
             next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_PDF,
-            next_step=db.run.Run.ACTION_CODE_PDFLIB,
+            next_step=db.cls_run.Run.ACTION_CODE_PDFLIB,
         )
 
         cfg.glob.document_child_file_name = cfg.glob.document_stem_name + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF

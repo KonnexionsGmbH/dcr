@@ -1,4 +1,4 @@
-"""Module db.language: Managing the language statistics."""
+"""Module db.cls_language: Managing the language statistics."""
 from __future__ import annotations
 
 import cfg.glob
@@ -22,6 +22,7 @@ class Language:
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913
         self,
+        _row_id: int | sqlalchemy.Integer = 0,
         active: bool | sqlalchemy.Boolean = False,
         code_iso_639_3: str | sqlalchemy.String = "",
         code_pandoc: str | sqlalchemy.String = "",
@@ -29,7 +30,6 @@ class Language:
         code_tesseract: str | sqlalchemy.String = "",
         directory_name_inbox: str | sqlalchemy.String = "",
         iso_language_name: str | sqlalchemy.String = "",
-        language_id: int | sqlalchemy.Integer = 0,
     ) -> None:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -40,7 +40,7 @@ class Language:
         self.language_code_spacy: str | sqlalchemy.String = code_spacy
         self.language_code_tesseract: str | sqlalchemy.String = code_tesseract
         self.language_directory_name_inbox: str | sqlalchemy.String = directory_name_inbox
-        self.language_id: int | sqlalchemy.Integer = language_id
+        self.language_id: int | sqlalchemy.Integer = _row_id
         self.language_iso_language_name: str | sqlalchemy.String = iso_language_name
 
         self.total_erroneous: int = 0
@@ -115,7 +115,7 @@ class Language:
 
         if row == ():
             utils.terminate_fatal(
-                f"Th language with id={id_language} does not exist in the database table 'language'",
+                f"The language with id={id_language} does not exist in the database table 'language'",
             )
 
         return Language.from_row(row)  # type: ignore
@@ -128,6 +128,7 @@ class Language:
         """Initialise from a database row."""
 
         return cls(
+            _row_id=row[cfg.glob.DBC_ID],
             active=row[cfg.glob.DBC_ACTIVE],
             code_iso_639_3=row[cfg.glob.DBC_CODE_ISO_639_3],
             code_pandoc=row[cfg.glob.DBC_CODE_PANDOC],
@@ -135,5 +136,4 @@ class Language:
             code_tesseract=row[cfg.glob.DBC_CODE_TESSERACT],
             directory_name_inbox=row[cfg.glob.DBC_DIRECTORY_NAME_INBOX],
             iso_language_name=row[cfg.glob.DBC_ISO_LANGUAGE_NAME],
-            language_id=row[cfg.glob.DBC_ID],
         )

@@ -1,13 +1,17 @@
-"""Module db.action: Managing the document processing steps."""
+"""Module db.cls_action: Managing the document processing steps."""
+from __future__ import annotations
+
 import os
 import pathlib
 import time
 from typing import ClassVar
 
 import cfg.glob
+import db.cls_run
 import db.dml
 import sqlalchemy
 import utils
+from sqlalchemy.engine import Connection
 
 
 # pylint: disable=R0801
@@ -23,20 +27,21 @@ class Action:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    pdf2image_file_type: ClassVar[str] = cfg.glob.DOCUMENT_FILE_TYPE_JPG
+    pdf2image_file_type: ClassVar[str] = ""
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913, R0914
         self,
+        _row_id: int | sqlalchemy.Integer = 0,
         action_code: str = "",
-        action_id: int | sqlalchemy.Integer = 0,
+        action_text: str = "",
         directory_name: str = "",
         directory_type: str = "",
         duration_ns: int = 0,
-        error_code: str | sqlalchemy.String = "",
-        error_msg: str | sqlalchemy.String = "",
+        error_code_last: str | sqlalchemy.String = "",
+        error_msg_last: str | sqlalchemy.String = "",
         error_no: int = 0,
         file_name: str = "",
         file_size_bytes: int = 0,
@@ -51,21 +56,28 @@ class Action:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         self.action_action_code: str = action_code
+        self.action_action_text: str = action_text
         self.action_directory_name: str = directory_name
         self.action_directory_type: str | sqlalchemy.String = directory_type
         self.action_duration_ns: int | sqlalchemy.BigInteger = duration_ns
-        self.action_error_code_last: str | sqlalchemy.String = error_code
-        self.action_error_msg_last: str | sqlalchemy.String = error_msg
+        self.action_error_code_last: str | sqlalchemy.String = error_code_last
+        self.action_error_msg_last: str | sqlalchemy.String = error_msg_last
         self.action_error_no: int = error_no
         self.action_file_name: str = file_name
         self.action_file_size_bytes: int = file_size_bytes
-        self.action_id: int | sqlalchemy.Integer = action_id
+        self.action_id: int | sqlalchemy.Integer = _row_id
         self.action_id_base: int | sqlalchemy.Integer = id_base
         self.action_id_parent: int | sqlalchemy.Integer = id_parent if id_parent != 0 else 1
         self.action_id_run_last: int | sqlalchemy.Integer = id_run_last
         self.action_no_children: int | sqlalchemy.Integer = no_children
         self.action_no_pdf_pages: int = no_pdf_pages
-        self.action_status: str | sqlalchemy.String = status if status != "" else cfg.glob.DOCUMENT_STATUS_START
+        self.action_status: str | sqlalchemy.String = status
+
+        if Action.pdf2image_file_type == "":
+            Action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_JPG
+
+        if self.action_id == 0:
+            self.persist_2_db()
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -96,21 +108,6 @@ class Action:
             cfg.glob.DBC_NO_PDF_PAGES: self.action_no_pdf_pages,
             cfg.glob.DBC_STATUS: self.action_status,
         }
-
-    # -----------------------------------------------------------------------------
-    # Update the current row.
-    # -----------------------------------------------------------------------------
-    def _update(self) -> None:
-        """Update the current row."""
-        if self.action_id_parent == 1:
-            if self.action_id_parent != self.action_id:
-                self.action_id_parent = self.action_id
-
-        db.dml.update_dbt_id(
-            table_name=cfg.glob.DBT_ACTION,
-            id_where=self.action_id,
-            columns=self._get_columns(),
-        )
 
     # -----------------------------------------------------------------------------
     # Create the database table.
@@ -194,19 +191,26 @@ class Action:
 
         self.action_status = cfg.glob.DOCUMENT_STATUS_END
 
-        self._update()
+        self.persist_2_db()
 
         cfg.glob.base.base_action_code_last = self.action_action_code
         cfg.glob.base.base_id_run_last = cfg.glob.run.run_id
         cfg.glob.base.base_status = cfg.glob.DOCUMENT_STATUS_END
 
-        cfg.glob.base.update()  # type: ignore
+        cfg.glob.base.persist_2_db()  # type: ignore
 
-        utils.progress_msg(
-            f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {self.action_id_parent:6d} "
-            f"[{self.action_file_name}]"
-        )
+        if self.action_action_code == db.cls_run.Run.ACTION_CODE_INBOX:
+            utils.progress_msg(
+                f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
+                f"Document: {cfg.glob.base.base_id:6d} "
+                f"[{cfg.glob.base.base_file_name}]"
+            )
+        else:
+            utils.progress_msg(
+                f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
+                f"Document: {self.action_id:6d} "
+                f"[{self.action_file_name}]"
+            )
 
     # -----------------------------------------------------------------------------
     # Finalise the current action with error.
@@ -224,7 +228,7 @@ class Action:
         self.action_error_no += 1
         self.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
 
-        self._update()
+        self.persist_2_db()
 
         cfg.glob.base.base_action_code_last = self.action_action_code
         cfg.glob.base.base_error_code_last = self.action_error_code_last
@@ -233,14 +237,22 @@ class Action:
         cfg.glob.base.base_id_run_last = cfg.glob.run.run_id
         cfg.glob.base.base_status = cfg.glob.DOCUMENT_STATUS_ERROR
 
-        cfg.glob.base.update()  # type: ignore
+        cfg.glob.base.persist_2_db()  # type: ignore
 
-        utils.progress_msg(
-            f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {cfg.glob.base.base_id:6d} "
-            f"[{cfg.glob.base.base_file_name}] - "
-            f"Error: {error_msg} "
-        )
+        if self.action_action_code == db.cls_run.Run.ACTION_CODE_INBOX:
+            utils.progress_msg(
+                f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
+                f"Document: {cfg.glob.base.base_id:6d} "
+                f"[{cfg.glob.base.base_file_name}] - "
+                f"Error: {error_msg}."
+            )
+        else:
+            utils.progress_msg(
+                f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
+                f"Document: {cfg.glob.action_curr.action_id:6d} "
+                f"[{cfg.glob.action_curr.action_file_name}] - "
+                f"Error: {error_msg}."
+            )
 
     # -----------------------------------------------------------------------------
     # Initialise from a database row.
@@ -250,13 +262,14 @@ class Action:
         """Initialise from a database row."""
 
         return cls(
+            _row_id=row[cfg.glob.DBC_ID],
             action_code=row[cfg.glob.DBC_ACTION_CODE],
-            action_id=row[cfg.glob.DBC_ID],
+            action_text=row[cfg.glob.DBC_ACTION_TEXT],
             directory_name=row[cfg.glob.DBC_DIRECTORY_NAME],
             directory_type=row[cfg.glob.DBC_DIRECTORY_TYPE],
             duration_ns=row[cfg.glob.DBC_DURATION_NS],
-            error_code=row[cfg.glob.DBC_ERROR_CODE],
-            error_msg=row[cfg.glob.DBC_ERROR_MSG],
+            error_code_last=row[cfg.glob.DBC_ERROR_CODE_LAST],
+            error_msg_last=row[cfg.glob.DBC_ERROR_MSG_LAST],
             error_no=row[cfg.glob.DBC_ERROR_NO],
             file_name=row[cfg.glob.DBC_FILE_NAME],
             file_size_bytes=row[cfg.glob.DBC_FILE_SIZE_BYTES],
@@ -271,73 +284,103 @@ class Action:
     # -----------------------------------------------------------------------------
     # Get the file type from the file name.
     # -----------------------------------------------------------------------------
-    def get_file_type(self) -> str | None:
+    def get_file_type(self) -> str:
         """Get the file type from the file name.
 
         Returns:
-            str | None: File type.
+            str: File type.
         """
-        if self.action_file_name is None:
-            return None
+        if self.action_file_name == "":
+            return self.action_file_name
 
         return utils.get_file_type(pathlib.Path(str(self.action_file_name)))
 
     # -----------------------------------------------------------------------------
+    # Get the full file from a directory name or path and a file name or path.
+    # -----------------------------------------------------------------------------
+    def get_full_name(self) -> str:
+        """Get the full file from a directory name or path and a file name or
+        path.
+
+        Returns:
+            str: Full file name.
+        """
+        return utils.get_full_name(
+            directory_name=self.action_directory_name,
+            file_name=self.action_file_name,
+        )
+
+    # -----------------------------------------------------------------------------
     # Get the stem name from the file name.
     # -----------------------------------------------------------------------------
-    def get_in_stem_name(self) -> str | None:
+    def get_stem_name(self) -> str:
         """Get the stem name from the file name.
 
         Returns:
-            str | None: Stem name.
+            str: Stem name.
         """
-        if self.action_file_name is None:
-            return None
+        if self.action_file_name == "":
+            return self.action_file_name
 
         return utils.get_stem_name(str(self.action_file_name))
 
     # -----------------------------------------------------------------------------
-    # Insert a new row.
+    # Persist the object in the database.
     # -----------------------------------------------------------------------------
-    def insert(self) -> None:
-        """Insert a new row."""
-        self.action_id = db.dml.insert_dbt_row(
-            table_name=cfg.glob.DBT_ACTION,
-            columns=self._get_columns(),
-        )
+    def persist_2_db(self) -> None:
+        """Persist the object in the database."""
+        if self.action_id == 0:
+            self.action_file_size_bytes = os.path.getsize(
+                pathlib.Path(self.action_directory_name, self.action_file_name)
+            )
+            self.action_no_pdf_pages = utils.get_pdf_pages_no(
+                str(pathlib.Path(self.action_directory_name, self.action_file_name))
+            )
+            self.action_status = self.action_status if self.action_status != "" else cfg.glob.DOCUMENT_STATUS_START
+
+            self.action_id = db.dml.insert_dbt_row(
+                table_name=cfg.glob.DBT_ACTION,
+                columns=self._get_columns(),
+            )
+        else:
+            if self.action_id_parent == 1:
+                if self.action_id_parent != self.action_id:
+                    self.action_id_parent = self.action_id
+
+            db.dml.update_dbt_id(
+                table_name=cfg.glob.DBT_ACTION,
+                id_where=self.action_id,
+                columns=self._get_columns(),
+            )
 
     # -----------------------------------------------------------------------------
     # Select the actions to be processed based on action_code.
     # -----------------------------------------------------------------------------
     @classmethod
-    def select_by_action_code(cls, action_code: str) -> sqlalchemy.engine.CursorResult:
+    def select_by_action_code(cls, conn: Connection, action_code: str) -> sqlalchemy.engine.CursorResult:
         """Select the actions to be processed based on action_code.
 
         Args:
+            conn (Connection): The database connection.
             action_code (str): The requested action code.
 
         Returns:
-            engine.CursorResult: The actions found.
+            sqlalchemy.engine.CursorResult: The rows found.
         """
         dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
-        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
-            rows = conn.execute(
-                sqlalchemy.select(dbt)
-                .where(
-                    sqlalchemy.and_(
-                        dbt.c.action_code == action_code,
-                        dbt.c.status.in_(
-                            [
-                                cfg.glob.DOCUMENT_STATUS_ERROR,
-                                cfg.glob.DOCUMENT_STATUS_START,
-                            ]
-                        ),
-                    )
+        return conn.execute(
+            sqlalchemy.select(dbt)
+            .where(
+                sqlalchemy.and_(
+                    dbt.c.action_code == action_code,
+                    dbt.c.status.in_(
+                        [
+                            cfg.glob.DOCUMENT_STATUS_ERROR,
+                            cfg.glob.DOCUMENT_STATUS_START,
+                        ]
+                    ),
                 )
-                .order_by(dbt.c.id.asc())
             )
-
-            conn.close()
-
-        return rows
+            .order_by(dbt.c.id.asc())
+        )

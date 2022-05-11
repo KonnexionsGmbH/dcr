@@ -13,11 +13,11 @@ import time
 from typing import Type
 
 import cfg.glob
-import db.action
-import db.base
+import db.cls_action
+import db.cls_base
+import db.cls_language
+import db.cls_run
 import db.dml
-import db.language
-import db.run
 import fitz
 import sqlalchemy
 import sqlalchemy.orm
@@ -65,29 +65,6 @@ def create_directory(directory_type: str, directory_name: str) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Get the target file name.
-# -----------------------------------------------------------------------------
-# noinspection PyArgumentList
-def get_target_file_name() -> str:
-    """Get the target file name.
-
-    Returns:
-        str: Target file name
-    """
-    return (
-        cfg.glob.base.get_stem_name()
-        + "_"
-        + str(cfg.glob.base.base_id)
-        + "."
-        + (
-            cfg.glob.base.get_file_type()
-            if cfg.glob.base.get_file_type() != cfg.glob.DOCUMENT_FILE_TYPE_TIF
-            else cfg.glob.DOCUMENT_FILE_TYPE_TIFF
-        )
-    )
-
-
-# -----------------------------------------------------------------------------
 # Initialise the next action in the database.
 # -----------------------------------------------------------------------------
 def initialise_action(
@@ -96,7 +73,7 @@ def initialise_action(
     directory_type: str = "",
     file_name: str = "",
     id_parent: int = 0,
-) -> Type[db.action.Action]:
+) -> Type[db.cls_action.Action]:
     """Initialise the next action in the database.
 
     Args:
@@ -107,11 +84,11 @@ def initialise_action(
         id_parent (int, optional): File name. Defaults to "".
 
     Returns:
-        Type[db.action.Action]: A new Action instance.
+        Type[db.cls_action.Action]: A new Action instance.
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    action = db.action.Action(
+    action = db.cls_action.Action(
         action_code=action_code,
         directory_name=directory_name,
         directory_type=directory_type,
@@ -122,8 +99,6 @@ def initialise_action(
         id_run_last=cfg.glob.run.run_id,
         no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(directory_name, file_name))),
     )
-
-    action.insert()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -141,7 +116,7 @@ def initialise_base(file_path: pathlib.Path) -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    cfg.glob.base = db.base.Base(
+    cfg.glob.base = db.cls_base.Base(
         action_code_last=cfg.glob.run.run_action_code,
         directory_name=str(file_path.parent),
         file_name=file_path.name,
@@ -151,8 +126,6 @@ def initialise_base(file_path: pathlib.Path) -> None:
 
     if not cfg.glob.setup.is_ignore_duplicates:
         cfg.glob.base.base_sha256 = utils.compute_sha256(file_path)
-
-    cfg.glob.base.insert()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -172,11 +145,11 @@ def prepare_pdf(file_path: pathlib.Path) -> None:
         extracted_text = "".join([page.get_text() for page in fitz.open(file_path)])
 
         if bool(extracted_text):
-            action_code = db.run.Run.ACTION_CODE_PDFLIB
+            action_code = db.cls_run.Run.ACTION_CODE_PDFLIB
             cfg.glob.language.total_processed_pdflib += 1
             cfg.glob.run.total_processed_pdflib += 1
         else:
-            action_code = db.run.Run.ACTION_CODE_PDF2IMAGE
+            action_code = db.cls_run.Run.ACTION_CODE_PDF2IMAGE
             cfg.glob.language.total_processed_pdf2image += 1
             cfg.glob.run.total_processed_pdf2image += 1
 
@@ -226,7 +199,7 @@ def process_inbox() -> None:
 
     with cfg.glob.db_orm_engine.connect() as conn:
         for row in db.dml.select_language(conn, dbt):
-            cfg.glob.language = db.language.Language.from_row(row)
+            cfg.glob.language = db.cls_language.Language.from_row(row)
             if cfg.glob.language.language_directory_name_inbox is None:
                 cfg.glob.language.language_directory_name_inbox = pathlib.Path(
                     str(cfg.glob.setup.directory_inbox),
@@ -255,8 +228,8 @@ def process_inbox_accepted(action_code: str) -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    source_file = os.path.join(cfg.glob.base.base_directory_name, cfg.glob.base.base_file_name)
-    target_file = os.path.join(cfg.glob.setup.directory_inbox_accepted, get_target_file_name())
+    source_file = cfg.glob.base.get_full_name()
+    target_file = utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, utils.get_file_name_original())
 
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,
@@ -277,7 +250,7 @@ def process_inbox_accepted(action_code: str) -> None:
             action_code=action_code,
             directory_name=cfg.glob.setup.directory_inbox_accepted,
             directory_type=cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED,
-            file_name=get_target_file_name(),
+            file_name=utils.get_file_name_original(),
             id_parent=cfg.glob.action_curr.action_id,
         )
 
@@ -317,11 +290,11 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     elif cfg.glob.base.get_file_type() == cfg.glob.DOCUMENT_FILE_TYPE_PDF:
         prepare_pdf(file_path)
     elif cfg.glob.base.get_file_type() in cfg.glob.DOCUMENT_FILE_TYPE_PANDOC:
-        process_inbox_accepted(db.run.Run.ACTION_CODE_PANDOC)
+        process_inbox_accepted(db.cls_run.Run.ACTION_CODE_PANDOC)
         cfg.glob.language.total_processed_pandoc += 1
         cfg.glob.run.total_processed_pandoc += 1
     elif cfg.glob.base.get_file_type() in cfg.glob.DOCUMENT_FILE_TYPE_TESSERACT:
-        process_inbox_accepted(db.run.Run.ACTION_CODE_TESSERACT)
+        process_inbox_accepted(db.cls_run.Run.ACTION_CODE_TESSERACT)
         cfg.glob.language.total_processed_tesseract += 1
         cfg.glob.run.total_processed_tesseract += 1
     else:
@@ -380,8 +353,8 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    source_file = os.path.join(cfg.glob.base.base_directory_name, cfg.glob.base.base_file_name)
-    target_file = os.path.join(cfg.glob.setup.directory_inbox_rejected, get_target_file_name())
+    source_file = cfg.glob.base.get_full_name()
+    target_file = utils.get_full_name(cfg.glob.setup.directory_inbox_rejected, utils.get_file_name_original())
 
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,

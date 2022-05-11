@@ -2,7 +2,7 @@
 """Testing Module nlp.tokenize."""
 
 import cfg.glob
-import db.run
+import db.cls_run
 import pytest
 
 import dcr
@@ -99,13 +99,13 @@ def test_run_action_tokenize_attributes_true(fxtr_rmdir_opt, fxtr_setup_empty_db
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDFLIB])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PARSER])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_TOKENIZE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION_SPACY,
@@ -183,13 +183,13 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDFLIB])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PARSER])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_TOKENIZE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION_SPACY,
@@ -254,13 +254,13 @@ def test_run_action_tokenize_normal(tetml_line: str, tetml_page: str, fxtr_rmdir
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDFLIB])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PARSER])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_TOKENIZE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,

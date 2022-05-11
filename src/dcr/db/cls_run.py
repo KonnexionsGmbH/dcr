@@ -1,7 +1,10 @@
-"""Module db.run: Managing the run statistics."""
+"""Module db.cls_run: Managing the run statistics."""
+from __future__ import annotations
+
 from typing import ClassVar
 
 import cfg.glob
+import db.cls_run
 import db.dml
 import sqlalchemy
 import sqlalchemy.engine
@@ -49,16 +52,17 @@ class Run:
     ACTION_CODE_TOKENIZE: ClassVar[str] = "tkn"
     ACTION_CODE_UPGRADE_DB: ClassVar[str] = "db_u"
 
-    id_run_umbrella: ClassVar[int] = db.run.Run.get_id_latest() + 1
+    id_run_umbrella: ClassVar[int] = 0
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913
         self,
-        action_code: str | sqlalchemy.String = "",
-        action_text: str | sqlalchemy.String = "",
-        id_run: int | sqlalchemy.Integer = 0,
+        _row_id: int | sqlalchemy.Integer = 0,
+        action_code: str = "",
+        action_text: str = "",
+        id_run: int | sqlalchemy.Integer = id_run_umbrella,
         status: str | sqlalchemy.String = "",
         total_erroneous: int | sqlalchemy.Integer = 0,
         total_processed_ok: int | sqlalchemy.Integer = 0,
@@ -67,14 +71,25 @@ class Run:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self.run_action_code: str | sqlalchemy.String = action_code
-        self.run_action_text: str | sqlalchemy.String = action_text
-        self.run_id: int | sqlalchemy.Integer = 0
+        if Run.id_run_umbrella == 0:
+            Run.id_run_umbrella = Run.get_id_latest() + 1
+
+        self.run_action_code: str = action_code
+        self.run_action_text: str = action_text
+        self.run_id: int | sqlalchemy.Integer = _row_id
+
         self.run_id_run: int | sqlalchemy.Integer = id_run
+
+        if self.run_id_run == 0:
+            self.run_id_run = Run.id_run_umbrella
+
         self.run_status: str | sqlalchemy.String = status
         self.run_total_erroneous: int | sqlalchemy.Integer = total_erroneous
         self.run_total_processed_ok: int | sqlalchemy.Integer = total_processed_ok
         self.run_total_processed_to_be: int | sqlalchemy.Integer = total_processed_to_be
+
+        if self.run_id == 0:
+            self.persist_2_db()
 
         self.total_generated: int = 0
         self.total_processed_pandoc: int = 0
@@ -97,7 +112,7 @@ class Run:
         """
         return {
             cfg.glob.DBC_ACTION_CODE: self.run_action_code,
-            cfg.glob.DBC_ACTION_TEXT: self.run_action_text,
+            cfg.glob.DBC_ACTION_TEXT: Run.get_action_text(self.run_action_code),
             cfg.glob.DBC_ID_RUN: self.run_id_run,
             cfg.glob.DBC_STATUS: self.run_status,
             cfg.glob.DBC_TOTAL_ERRONEOUS: self.run_total_erroneous,
@@ -170,6 +185,52 @@ class Run:
         )
 
     # -----------------------------------------------------------------------------
+    # Initialise from id.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def from_id(cls, id_run: int | sqlalchemy.Integer) -> Run:
+        """Initialise from id."""
+
+        dbt = sqlalchemy.Table(
+            cfg.glob.DBT_RUN,
+            cfg.glob.db_orm_metadata,
+            autoload_with=cfg.glob.db_orm_engine,
+        )
+
+        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+            row = conn.execute(
+                sqlalchemy.select(dbt).where(
+                    dbt.c.id == id_run,
+                )
+            ).fetchone()
+            conn.close()
+
+        if row == ():
+            utils.terminate_fatal(
+                f"The run with id={id_run} does not exist in the database table 'run'",
+            )
+
+        return Run.from_row(row)  # type: ignore
+
+    # -----------------------------------------------------------------------------
+    # Initialise from a database row.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def from_row(cls, row: sqlalchemy.engine.Row) -> Run:
+        """Initialise from a database row."""
+
+        return cls(
+            _row_id=row[cfg.glob.DBC_ID],
+            action_code=row[cfg.glob.DBC_ACTION_CODE],
+            action_text=row[cfg.glob.DBC_ACTION_TEXT],
+            id_run=row[cfg.glob.DBC_ID_RUN],
+            status=row[cfg.glob.DBC_STATUS],
+            total_erroneous=row[cfg.glob.DBC_TOTAL_ERRONEOUS],
+            total_processed_ok=row[cfg.glob.DBC_TOTAL_PROCESSED_OK],
+            total_processed_to_be=row[cfg.glob.DBC_TOTAL_PROCESSED_TO_BE],
+        )
+
+    # -----------------------------------------------------------------------------
     # Get the action text from the action code.
     # -----------------------------------------------------------------------------
     @classmethod
@@ -234,22 +295,18 @@ class Run:
         return row[0]  # type: ignore
 
     # -----------------------------------------------------------------------------
-    # Insert a new row.
+    # Persist the object in the database.
     # -----------------------------------------------------------------------------
-    def insert(self, action_code: str) -> None:
-        """Insert a new row.
-
-        Args:
-            action_code (str): Action code.
-        """
-        self.run_action_code = action_code
-        self.run_action_text = Run.get_action_text(action_code)
-        self.run_status = cfg.glob.DOCUMENT_STATUS_START
-        self.run_total_erroneous = 0
-        self.run_total_processed_ok = 0
-        self.run_total_processed_to_be = 0
-
-        self.run_id = db.dml.insert_dbt_row(
-            cfg.glob.DBT_RUN,
-            self._get_columns(),
-        )
+    def persist_2_db(self) -> None:
+        """Persist the object in the database."""
+        if self.run_id == 0:
+            self.run_id = db.dml.insert_dbt_row(
+                cfg.glob.DBT_RUN,
+                self._get_columns(),
+            )
+        else:
+            db.dml.update_dbt_id(
+                table_name=cfg.glob.DBT_RUN,
+                id_where=self.run_id,
+                columns=self._get_columns(),
+            )

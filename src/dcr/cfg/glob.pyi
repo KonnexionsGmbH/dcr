@@ -1,16 +1,18 @@
 """Library Stub."""
+from __future__ import annotations
+
 import logging
 import os
 from typing import Dict
 from typing import List
 from typing import Type
 
-import cfg.setup
-import db.action
-import db.base
-import db.language
-import db.run
-import nlp.line_type
+import cfg.cls_setup
+import db.cls_action
+import db.cls_base
+import db.cls_language
+import db.cls_run
+import nlp.cls_line_type
 import psycopg2.extensions
 import sqlalchemy
 
@@ -298,10 +300,10 @@ TESTS_INBOX_NAME: str
 # -----------------------------------------------------------------------------
 # Global Variables.
 # -----------------------------------------------------------------------------
-action_curr: Type[db.action.Action]
-action_next: Type[db.action.Action]
+action_curr: Type[db.cls_action.Action]
+action_next: Type[db.cls_action.Action]
 
-base: Type[db.base.Base]
+base: Type[db.cls_base.Base]
 
 db_current_database: str
 db_current_user: str
@@ -344,13 +346,13 @@ document_sha256: str | None
 document_status: str
 document_stem_name: str
 
-language: Type[db.language.Language]
+language: Type[db.cls_language.Language]
 
 languages_pandoc: Dict[sqlalchemy.Integer, str]
 languages_spacy: Dict[sqlalchemy.Integer, str]
 languages_tesseract: Dict[sqlalchemy.Integer, str]
 
-line_type: Type[nlp.line_type.LineType]
+line_type: Type[nlp.cls_line_type.LineType]
 
 logger: logging.Logger
 
@@ -372,9 +374,9 @@ parse_result_word_index_line: int
 parse_result_word_index_page: int
 parse_result_word_index_para: int
 
-run: Type[db.run.Run]
+run: Type[db.cls_run.Run]
 
-setup: Type[cfg.setup.Setup]
+setup: Type[cfg.cls_setup.Setup]
 
 spacy_tkn_attr_cluster: bool
 spacy_tkn_attr_dep_: bool

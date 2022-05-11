@@ -3,7 +3,7 @@
 import typing
 
 import cfg.glob
-import db.run
+import db.cls_run
 import pytest
 
 import dcr
@@ -38,11 +38,11 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_TESSERACT])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,
@@ -114,9 +114,9 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_TESSERACT])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,
@@ -225,11 +225,11 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_TESSERACT])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,
@@ -288,11 +288,11 @@ def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_TESSERACT])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,

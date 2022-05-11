@@ -1,9 +1,9 @@
 # pylint: disable=unused-argument
-"""Testing Module cfg.setup."""
+"""Testing Module cfg.cls_setup."""
 import os
 
+import cfg.cls_setup
 import cfg.glob
-import cfg.setup
 import pytest
 
 # -----------------------------------------------------------------------------
@@ -23,7 +23,7 @@ def test_get_config(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     cfg.glob.setup.is_ignore_duplicates = False
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert len(cfg.glob.setup._config) == cfg.glob.setup._CONFIG_PARAM_NO, "cfg:: complete"
 
@@ -35,7 +35,7 @@ def test_get_config(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert not cfg.glob.setup.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: false (any not true)"
 
@@ -52,7 +52,7 @@ def test_get_config(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: true"
 
@@ -70,7 +70,7 @@ def test_get_config(fxtr_setup_logger_environment):
     )
 
     with pytest.raises(SystemExit) as expt:
-        cfg.glob.setup = cfg.setup.Setup()
+        cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert expt.type == SystemExit, "DCR_CFG_PDF2IMAGE_TYPE: invalid"
     assert expt.value.code == 1, "DCR_CFG_PDF2IMAGE_TYPE: invalid"
@@ -151,7 +151,7 @@ def test_get_config_coverage_false(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION_SPACY,
@@ -180,7 +180,7 @@ def test_get_config_line_footer_preference(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.is_line_footer_preferred, "DCR_CFG_LINE_FOOTER_PREFERENCE: true (not false)"
 
@@ -197,7 +197,7 @@ def test_get_config_line_footer_preference(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert not cfg.glob.setup.is_line_footer_preferred, "DCR_CFG_LINE_FOOTER_PREFERENCE: false"
 
@@ -221,7 +221,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert len(cfg.glob.setup._config) == cfg.glob.setup._CONFIG_PARAM_NO, "cfg:: complete"
 
@@ -231,7 +231,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     )
 
     with pytest.raises(SystemExit) as expt:
-        cfg.glob.setup = cfg.setup.Setup()
+        cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert expt.type == SystemExit, "DCR_CFG_DIRECTORY_INBOX: missing"
     assert expt.value.code == 1, "DCR_CFG_DIRECTORY_INBOX: missing"
@@ -247,7 +247,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     )
 
     with pytest.raises(SystemExit) as expt:
-        cfg.glob.setup = cfg.setup.Setup()
+        cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert expt.type == SystemExit, "DCR_CFG_DIRECTORY_INBOX_ACCEPTED: missing"
     assert expt.value.code == 1, "DCR_CFG_DIRECTORY_INBOX_ACCEPTED: missing"
@@ -263,7 +263,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     )
 
     with pytest.raises(SystemExit) as expt:
-        cfg.glob.setup = cfg.setup.Setup()
+        cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert expt.type == SystemExit, "DCR_CFG_DIRECTORY_INBOX_REJECTED: missing"
     assert expt.value.code == 1, "DCR_CFG_DIRECTORY_INBOX_REJECTED: missing"
@@ -280,7 +280,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     cfg.glob.setup.is_ignore_duplicates = False
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert not cfg.glob.setup.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: false (missing)"
 
@@ -296,7 +296,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     cfg.glob.setup.pdf2image_type = cfg.glob.setup.PDF2IMAGE_TYPE_JPEG
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.pdf2image_type == cfg.glob.setup.PDF2IMAGE_TYPE_JPEG, (
         "DCR_CFG_PDF2IMAGE_TYPE: default should not be '" + cfg.glob.setup.pdf2image_type + "'"
@@ -312,7 +312,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
         cfg.glob.setup._DCR_CFG_SECTION, cfg.glob.setup._DCR_CFG_SIMULATE_PARSER
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert not cfg.glob.setup.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: false (missing)"
 
@@ -328,7 +328,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     cfg.glob.setup.is_verbose = True
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.is_verbose, "DCR_CFG_VERBOSE: true (missing)"
 
@@ -342,7 +342,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
         cfg.glob.setup._DCR_CFG_SECTION, cfg.glob.setup._DCR_CFG_VERBOSE_PARSER
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.verbose_parser == "none", "DCR_CFG_VERBOSE_PARSER: none (missing)"
 
@@ -370,7 +370,7 @@ def test_get_config_simulate_parser(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert not cfg.glob.setup.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: false (not true)"
 
@@ -387,7 +387,7 @@ def test_get_config_simulate_parser(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: true"
 
@@ -415,7 +415,7 @@ def test_get_config_tetml_line(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.is_tetml_line, "DCR_CFG_TETML_LINE: true (not false)"
 
@@ -433,7 +433,7 @@ def test_get_config_tetml_line(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert not cfg.glob.setup.is_tetml_line, "DCR_CFG_TETML_LINE: false"
 
@@ -465,7 +465,7 @@ def test_get_config_tetml_line_page(fxtr_setup_logger_environment):
     )
 
     with pytest.raises(SystemExit) as expt:
-        cfg.glob.setup = cfg.setup.Setup()
+        cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert expt.type == SystemExit, "DCR_CFG_TETML_LINE and DCR_CFG_TETML_PAGE: both 'false' not allowed"
     assert expt.value.code == 1, "DCR_CFG_TETML_LINE and DCR_CFG_TETML_PAGE: both 'false' not allowed"
@@ -494,7 +494,7 @@ def test_get_config_tetml_page(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert not cfg.glob.setup.is_tetml_page, "DCR_CFG_TETML_PAGE: false (not true)"
 
@@ -511,7 +511,7 @@ def test_get_config_tetml_page(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.is_tetml_page, "DCR_CFG_TETML_PAGE: true"
 
@@ -539,7 +539,7 @@ def test_get_config_tetml_word(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert not cfg.glob.setup.is_tetml_word, "DCR_CFG_TETML_WORD: false (not true)"
 
@@ -556,7 +556,7 @@ def test_get_config_tetml_word(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.is_tetml_word, "DCR_CFG_TETML_WORD: true"
 
@@ -577,7 +577,7 @@ def test_get_config_unknown(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert len(cfg.glob.setup._config) == cfg.glob.setup._CONFIG_PARAM_NO, "cfg:: complete"
 
@@ -589,7 +589,7 @@ def test_get_config_unknown(fxtr_setup_logger_environment):
     )
 
     with pytest.raises(SystemExit) as expt:
-        cfg.glob.setup = cfg.setup.Setup()
+        cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert expt.type == SystemExit, "UNKNOWN: unknown"
     assert expt.value.code == 1, "UNKNOWN: unknown"
@@ -620,7 +620,7 @@ def test_get_config_verbose(fxtr_setup_logger_environment):
 
     cfg.glob.setup.is_verbose = True
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert not cfg.glob.setup.is_verbose, "DCR_CFG_VERBOSE: false"
 
@@ -639,7 +639,7 @@ def test_get_config_verbose(fxtr_setup_logger_environment):
 
     cfg.glob.setup.is_verbose = True
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.is_verbose, "DCR_CFG_VERBOSE: true (not false)"
 
@@ -667,7 +667,7 @@ def test_get_config_verbose_line_type(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert not cfg.glob.setup.is_verbose_line_type, "DCR_CFG_VERBOSE_LINE_TYPE: false (not true)"
 
@@ -684,7 +684,7 @@ def test_get_config_verbose_line_type(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.is_verbose_line_type, "DCR_CFG_VERBOSE_LINE_TYPE: true"
 
@@ -712,7 +712,7 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.verbose_parser == "all", "DCR_CFG_VERBOSE_PARSER: all"
 
@@ -729,7 +729,7 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.verbose_parser == "none", "DCR_CFG_VERBOSE_PARSER: none (not all or text)"
 
@@ -746,7 +746,7 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.verbose_parser == "text", "DCR_CFG_VERBOSE_PARSER: all"
 
@@ -767,7 +767,7 @@ def test_get_environment(fxtr_setup_logger):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     os.environ[cfg.glob.setup._DCR_ENVIRONMENT_TYPE] = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
 

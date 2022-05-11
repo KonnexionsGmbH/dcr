@@ -33,7 +33,7 @@ def create_child_document() -> None:
             cfg.glob.DBC_DOCUMENT_ID_PARENT: cfg.glob.base.base_id,
             cfg.glob.DBC_DURATION_NS: 0,
             cfg.glob.DBC_ERROR_NO: 0,
-            cfg.glob.DBC_NEXT_STEP: db.run.Run.ACTION_CODE_TOKENIZE,
+            cfg.glob.DBC_NEXT_STEP: db.cls_run.Run.ACTION_CODE_TOKENIZE,
             cfg.glob.DBC_ID_LANGUAGE: cfg.glob.base.base_id_language,
             cfg.glob.DBC_ID_RUN: cfg.glob.run.run_id_run,
             cfg.glob.DBC_STATUS: cfg.glob.DOCUMENT_STATUS_START,
@@ -56,7 +56,7 @@ def extract_text_from_pdf() -> None:
     utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, db.run.Run.ACTION_CODE_PDFLIB)
+        rows = db.dml.select_document(conn, dbt, db.cls_run.Run.ACTION_CODE_PDFLIB)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
@@ -122,7 +122,7 @@ def extract_text_from_pdf_file_line() -> None:
 
     utils.prepare_document_4_next_step(
         next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_XML,
-        next_step=db.run.Run.ACTION_CODE_PARSER_LINE,
+        next_step=db.cls_run.Run.ACTION_CODE_PARSER_LINE,
     )
 
     cfg.glob.document_child_file_name = (
@@ -257,7 +257,7 @@ def extract_text_from_pdf_file_word() -> None:
 
     utils.prepare_document_4_next_step(
         next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_XML,
-        next_step=db.run.Run.ACTION_CODE_PARSER_WORD,
+        next_step=db.cls_run.Run.ACTION_CODE_PARSER_WORD,
     )
 
     cfg.glob.document_child_file_name = (

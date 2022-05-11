@@ -8,7 +8,7 @@ from typing import Iterable
 import cfg.glob
 import db.dml
 import defusedxml.ElementTree
-import nlp.line_type
+import nlp.cls_line_type
 import utils
 
 
@@ -418,7 +418,7 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
     cfg.glob.parse_result_word_index_line = 0
 
     if cfg.glob.setup.is_parsing_line:
-        cfg.glob.line_type = nlp.line_type.LineType()
+        cfg.glob.line_type = nlp.cls_line_type.LineType()
 
     utils.progress_msg_line_type("LineType")
     utils.progress_msg_line_type(f"LineType: Start document                     ={cfg.glob.document_file_name}")
@@ -586,7 +586,7 @@ def parse_tetml() -> None:
     utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, db.run.Run.ACTION_CODE_PARSER_LINE)
+        rows = db.dml.select_document(conn, dbt, db.cls_run.Run.ACTION_CODE_PARSER_LINE)
 
         for row in rows:
             # ------------------------------------------------------------------
@@ -614,7 +614,7 @@ def parse_tetml() -> None:
         conn.close()
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, db.run.Run.ACTION_CODE_PARSER_WORD)
+        rows = db.dml.select_document(conn, dbt, db.cls_run.Run.ACTION_CODE_PARSER_WORD)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
@@ -653,7 +653,7 @@ def parse_tetml_file_line() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    cfg.glob.document_current_step = db.run.Run.ACTION_CODE_PARSER_LINE
+    cfg.glob.document_current_step = db.cls_run.Run.ACTION_CODE_PARSER_LINE
 
     file_name = os.path.join(
         cfg.glob.document_directory_name,
@@ -693,7 +693,7 @@ def parse_tetml_file_word() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    cfg.glob.document_current_step = db.run.Run.ACTION_CODE_PARSER_WORD
+    cfg.glob.document_current_step = db.cls_run.Run.ACTION_CODE_PARSER_WORD
 
     file_name = os.path.join(
         cfg.glob.document_directory_name,

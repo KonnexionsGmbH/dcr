@@ -9,11 +9,11 @@ import sys
 import time
 from typing import List
 
+import cfg.cls_setup
 import cfg.glob
-import cfg.setup
+import db.cls_run
 import db.dml
 import db.driver
-import db.run
 import nlp.parser
 import nlp.pdflib_dcr
 import nlp.tokenizer
@@ -108,37 +108,37 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         utils.terminate_fatal("The specific command line arguments are missing")
 
     args = {
-        db.run.Run.ACTION_CODE_CREATE_DB: False,
-        db.run.Run.ACTION_CODE_INBOX: False,
-        db.run.Run.ACTION_CODE_PANDOC: False,
-        db.run.Run.ACTION_CODE_PARSER: False,
-        db.run.Run.ACTION_CODE_PDF2IMAGE: False,
-        db.run.Run.ACTION_CODE_PDFLIB: False,
-        db.run.Run.ACTION_CODE_TESSERACT: False,
-        db.run.Run.ACTION_CODE_TOKENIZE: False,
-        db.run.Run.ACTION_CODE_UPGRADE_DB: False,
+        db.cls_run.Run.ACTION_CODE_CREATE_DB: False,
+        db.cls_run.Run.ACTION_CODE_INBOX: False,
+        db.cls_run.Run.ACTION_CODE_PANDOC: False,
+        db.cls_run.Run.ACTION_CODE_PARSER: False,
+        db.cls_run.Run.ACTION_CODE_PDF2IMAGE: False,
+        db.cls_run.Run.ACTION_CODE_PDFLIB: False,
+        db.cls_run.Run.ACTION_CODE_TESSERACT: False,
+        db.cls_run.Run.ACTION_CODE_TOKENIZE: False,
+        db.cls_run.Run.ACTION_CODE_UPGRADE_DB: False,
     }
 
     for i in range(1, num):
         arg = argv[i].lower()
-        if arg == db.run.Run.ACTION_CODE_ALL_COMPLETE:
-            args[db.run.Run.ACTION_CODE_INBOX] = True
-            args[db.run.Run.ACTION_CODE_PANDOC] = True
-            args[db.run.Run.ACTION_CODE_PARSER] = True
-            args[db.run.Run.ACTION_CODE_PDF2IMAGE] = True
-            args[db.run.Run.ACTION_CODE_PDFLIB] = True
-            args[db.run.Run.ACTION_CODE_TESSERACT] = True
-            args[db.run.Run.ACTION_CODE_TOKENIZE] = True
+        if arg == db.cls_run.Run.ACTION_CODE_ALL_COMPLETE:
+            args[db.cls_run.Run.ACTION_CODE_INBOX] = True
+            args[db.cls_run.Run.ACTION_CODE_PANDOC] = True
+            args[db.cls_run.Run.ACTION_CODE_PARSER] = True
+            args[db.cls_run.Run.ACTION_CODE_PDF2IMAGE] = True
+            args[db.cls_run.Run.ACTION_CODE_PDFLIB] = True
+            args[db.cls_run.Run.ACTION_CODE_TESSERACT] = True
+            args[db.cls_run.Run.ACTION_CODE_TOKENIZE] = True
         elif arg in (
-            db.run.Run.ACTION_CODE_CREATE_DB,
-            db.run.Run.ACTION_CODE_INBOX,
-            db.run.Run.ACTION_CODE_PANDOC,
-            db.run.Run.ACTION_CODE_PARSER,
-            db.run.Run.ACTION_CODE_PDF2IMAGE,
-            db.run.Run.ACTION_CODE_PDFLIB,
-            db.run.Run.ACTION_CODE_TESSERACT,
-            db.run.Run.ACTION_CODE_TOKENIZE,
-            db.run.Run.ACTION_CODE_UPGRADE_DB,
+            db.cls_run.Run.ACTION_CODE_CREATE_DB,
+            db.cls_run.Run.ACTION_CODE_INBOX,
+            db.cls_run.Run.ACTION_CODE_PANDOC,
+            db.cls_run.Run.ACTION_CODE_PARSER,
+            db.cls_run.Run.ACTION_CODE_PDF2IMAGE,
+            db.cls_run.Run.ACTION_CODE_PDFLIB,
+            db.cls_run.Run.ACTION_CODE_TESSERACT,
+            db.cls_run.Run.ACTION_CODE_TOKENIZE,
+            db.cls_run.Run.ACTION_CODE_UPGRADE_DB,
         ):
             args[arg] = True
         else:
@@ -226,17 +226,17 @@ def main(argv: List[str]) -> None:
     locale.setlocale(locale.LC_ALL, cfg.glob.LOCALE)
 
     # Load the configuration parameters.
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     # Load the command line arguments.
     args = get_args(argv)
 
-    if args[db.run.Run.ACTION_CODE_CREATE_DB]:
+    if args[db.cls_run.Run.ACTION_CODE_CREATE_DB]:
         # Create the database.
         utils.progress_msg_empty_before("Start: Create the database ...")
         db.driver.create_database()
         utils.progress_msg("End  : Create the database ...")
-    elif args[db.run.Run.ACTION_CODE_UPGRADE_DB]:
+    elif args[db.cls_run.Run.ACTION_CODE_UPGRADE_DB]:
         # Upgrade the database.
         utils.progress_msg_empty_before("Start: Upgrade the database ...")
         db.driver.upgrade_database()
@@ -259,7 +259,7 @@ def process_convert_image_2_pdf() -> None:
     """Convert image documents to pdf files."""
     utils.progress_msg_empty_before("Start: Convert image documents to pdf files ... Tesseract OCR")
 
-    cfg.glob.run.insert(db.run.Run.ACTION_CODE_TESSERACT)
+    cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_TESSERACT)
 
     pp.tesseract_dcr.convert_image_2_pdf()
 
@@ -269,7 +269,7 @@ def process_convert_image_2_pdf() -> None:
 
     utils.progress_msg_empty_before("Start: Reunite the related pdf files ... PyPDF2")
 
-    cfg.glob.run.insert(db.run.Run.ACTION_CODE_PYPDF2)
+    cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PYPDF2)
 
     pp.tesseract_dcr.reunite_pdfs()
 
@@ -286,7 +286,7 @@ def process_convert_non_pdf_2_pdf() -> None:
     """Convert non-pdf documents to pdf files."""
     utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]")
 
-    cfg.glob.run.insert(db.run.Run.ACTION_CODE_PANDOC)
+    cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PANDOC)
 
     pp.pandoc_dcr.convert_non_pdf_2_pdf()
 
@@ -303,7 +303,7 @@ def process_convert_pdf_2_image() -> None:
     """Convert pdf documents to image files."""
     utils.progress_msg_empty_before("Start: Convert pdf documents to image files ... pdf2image [Poppler]")
 
-    cfg.glob.run.insert(db.run.Run.ACTION_CODE_PDF2IMAGE)
+    cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PDF2IMAGE)
 
     pp.pdf2image_dcr.convert_pdf_2_image()
 
@@ -329,56 +329,48 @@ def process_documents(args: dict[str, bool]) -> None:
     # Check the version of the database.
     check_db_up_to_date()
 
-    cfg.glob.run = db.run.Run(id_run=db.run.Run.id_run_umbrella)
-
     # Load the data from the database table 'language'.
     load_data_from_dbt_language()
 
     # Process the documents in the inbox file directory.
-    if args[db.run.Run.ACTION_CODE_INBOX]:
+    if args[db.cls_run.Run.ACTION_CODE_INBOX]:
         start_time_process = time.perf_counter_ns()
-        cfg.glob.run.run_action_code = db.run.Run.ACTION_CODE_INBOX
         process_inbox_directory()
         utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Convert the scanned image pdf documents to image files.
-    if args[db.run.Run.ACTION_CODE_PDF2IMAGE]:
+    if args[db.cls_run.Run.ACTION_CODE_PDF2IMAGE]:
         start_time_process = time.perf_counter_ns()
-        cfg.glob.run.run_action_code = db.run.Run.ACTION_CODE_PDF2IMAGE
         process_convert_pdf_2_image()
         utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Convert the image documents to pdf files.
-    if args[db.run.Run.ACTION_CODE_TESSERACT]:
+    if args[db.cls_run.Run.ACTION_CODE_TESSERACT]:
         start_time_process = time.perf_counter_ns()
-        cfg.glob.run.run_action_code = db.run.Run.ACTION_CODE_TESSERACT
         process_convert_image_2_pdf()
         utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Convert the non-pdf documents to pdf files.
-    if args[db.run.Run.ACTION_CODE_PANDOC]:
+    if args[db.cls_run.Run.ACTION_CODE_PANDOC]:
         start_time_process = time.perf_counter_ns()
-        cfg.glob.run.run_action_code = db.run.Run.ACTION_CODE_PANDOC
         process_convert_non_pdf_2_pdf()
         utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Extract text and metadata from pdf documents.
-    if args[db.run.Run.ACTION_CODE_PDFLIB]:
+    if args[db.cls_run.Run.ACTION_CODE_PDFLIB]:
         start_time_process = time.perf_counter_ns()
-        cfg.glob.run.run_action_code = db.run.Run.ACTION_CODE_PDFLIB
         process_extract_text_from_pdf()
         utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Store the document structure from the parser result.
-    if args[db.run.Run.ACTION_CODE_PARSER]:
+    if args[db.cls_run.Run.ACTION_CODE_PARSER]:
         start_time_process = time.perf_counter_ns()
         process_store_from_parser()
         utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Create document token.
-    if args[db.run.Run.ACTION_CODE_TOKENIZE]:
+    if args[db.cls_run.Run.ACTION_CODE_TOKENIZE]:
         start_time_process = time.perf_counter_ns()
-        cfg.glob.run.run_action_code = db.run.Run.ACTION_CODE_TOKENIZE
         process_tokenize()
         utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
@@ -396,7 +388,7 @@ def process_extract_text_from_pdf() -> None:
     """Extract text and metadata from pdf documents."""
     utils.progress_msg_empty_before("Start: Extract text and metadata from pdf documents ... PDFlib TET")
 
-    cfg.glob.run.insert(db.run.Run.ACTION_CODE_PDFLIB)
+    cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PDFLIB)
 
     nlp.pdflib_dcr.extract_text_from_pdf()
 
@@ -413,7 +405,7 @@ def process_inbox_directory() -> None:
     """Process the inbox directory."""
     utils.progress_msg_empty_before("Start: Process the inbox directory ... PyMuPDF [fitz]")
 
-    cfg.glob.run.insert(db.run.Run.ACTION_CODE_INBOX)
+    cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_INBOX)
 
     pp.inbox.process_inbox()
 
@@ -430,7 +422,7 @@ def process_store_from_parser() -> None:
     """Store the document structure from the parser result."""
     utils.progress_msg_empty_before("Start: Store document structure ... defusedxml [xml.etree.ElementTree]")
 
-    cfg.glob.run.insert(db.run.Run.ACTION_CODE_PARSER)
+    cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PARSER)
 
     nlp.parser.parse_tetml()
 
@@ -447,7 +439,7 @@ def process_tokenize() -> None:
     """Create document tokens."""
     utils.progress_msg_empty_before("Start: Create document tokens ... spaCy")
 
-    cfg.glob.run.insert(db.run.Run.ACTION_CODE_TOKENIZE)
+    cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE)
 
     nlp.tokenizer.tokenize()
 

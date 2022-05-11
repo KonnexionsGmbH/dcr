@@ -5,7 +5,7 @@ import pathlib
 import shutil
 
 import cfg.glob
-import db.run
+import db.cls_run
 import pytest
 
 import dcr
@@ -27,41 +27,41 @@ def test_get_args(fxtr_setup_logger_environment):
     args = dcr.get_args([cfg.glob.DCR_ARGV_0, "AlL"])
 
     assert len(args) == 9, "arg: all"
-    assert args[db.run.Run.ACTION_CODE_TESSERACT], "arg: all"
-    assert args[db.run.Run.ACTION_CODE_PANDOC], "arg: all"
-    assert args[db.run.Run.ACTION_CODE_PDF2IMAGE], "arg: all"
-    assert args[db.run.Run.ACTION_CODE_INBOX], "arg: all"
-    assert args[db.run.Run.ACTION_CODE_PARSER], "arg: all"
-    assert args[db.run.Run.ACTION_CODE_PDFLIB], "arg: all"
-    assert args[db.run.Run.ACTION_CODE_TOKENIZE], "arg: all"
-    assert not args[db.run.Run.ACTION_CODE_CREATE_DB], "arg: all"
-    assert not args[db.run.Run.ACTION_CODE_UPGRADE_DB], "arg: all"
+    assert args[db.cls_run.Run.ACTION_CODE_TESSERACT], "arg: all"
+    assert args[db.cls_run.Run.ACTION_CODE_PANDOC], "arg: all"
+    assert args[db.cls_run.Run.ACTION_CODE_PDF2IMAGE], "arg: all"
+    assert args[db.cls_run.Run.ACTION_CODE_INBOX], "arg: all"
+    assert args[db.cls_run.Run.ACTION_CODE_PARSER], "arg: all"
+    assert args[db.cls_run.Run.ACTION_CODE_PDFLIB], "arg: all"
+    assert args[db.cls_run.Run.ACTION_CODE_TOKENIZE], "arg: all"
+    assert not args[db.cls_run.Run.ACTION_CODE_CREATE_DB], "arg: all"
+    assert not args[db.cls_run.Run.ACTION_CODE_UPGRADE_DB], "arg: all"
 
     # -------------------------------------------------------------------------
     args = dcr.get_args([cfg.glob.DCR_ARGV_0, "Db_C"])
 
-    assert args[db.run.Run.ACTION_CODE_CREATE_DB], "arg: db_c"
-    assert not args[db.run.Run.ACTION_CODE_TESSERACT], "arg: all"
-    assert not args[db.run.Run.ACTION_CODE_PANDOC], "arg: all"
-    assert not args[db.run.Run.ACTION_CODE_PDF2IMAGE], "arg: db_c"
-    assert not args[db.run.Run.ACTION_CODE_INBOX], "arg: db_c"
-    assert not args[db.run.Run.ACTION_CODE_PARSER], "arg: db_c"
-    assert not args[db.run.Run.ACTION_CODE_PDFLIB], "arg: db_c"
-    assert not args[db.run.Run.ACTION_CODE_TOKENIZE], "arg: db_c"
-    assert not args[db.run.Run.ACTION_CODE_UPGRADE_DB], "arg: db_c"
+    assert args[db.cls_run.Run.ACTION_CODE_CREATE_DB], "arg: db_c"
+    assert not args[db.cls_run.Run.ACTION_CODE_TESSERACT], "arg: all"
+    assert not args[db.cls_run.Run.ACTION_CODE_PANDOC], "arg: all"
+    assert not args[db.cls_run.Run.ACTION_CODE_PDF2IMAGE], "arg: db_c"
+    assert not args[db.cls_run.Run.ACTION_CODE_INBOX], "arg: db_c"
+    assert not args[db.cls_run.Run.ACTION_CODE_PARSER], "arg: db_c"
+    assert not args[db.cls_run.Run.ACTION_CODE_PDFLIB], "arg: db_c"
+    assert not args[db.cls_run.Run.ACTION_CODE_TOKENIZE], "arg: db_c"
+    assert not args[db.cls_run.Run.ACTION_CODE_UPGRADE_DB], "arg: db_c"
 
     # -------------------------------------------------------------------------
     args = dcr.get_args([cfg.glob.DCR_ARGV_0, "Db_U"])
 
-    assert args[db.run.Run.ACTION_CODE_UPGRADE_DB], "arg: db_u"
-    assert not args[db.run.Run.ACTION_CODE_CREATE_DB], "arg: db_u"
-    assert not args[db.run.Run.ACTION_CODE_TESSERACT], "arg: all"
-    assert not args[db.run.Run.ACTION_CODE_PANDOC], "arg: all"
-    assert not args[db.run.Run.ACTION_CODE_PDF2IMAGE], "arg: db_u"
-    assert not args[db.run.Run.ACTION_CODE_INBOX], "arg: db_u"
-    assert not args[db.run.Run.ACTION_CODE_PARSER], "arg: db_u"
-    assert not args[db.run.Run.ACTION_CODE_PDFLIB], "arg: db_u"
-    assert not args[db.run.Run.ACTION_CODE_TOKENIZE], "arg: db_u"
+    assert args[db.cls_run.Run.ACTION_CODE_UPGRADE_DB], "arg: db_u"
+    assert not args[db.cls_run.Run.ACTION_CODE_CREATE_DB], "arg: db_u"
+    assert not args[db.cls_run.Run.ACTION_CODE_TESSERACT], "arg: all"
+    assert not args[db.cls_run.Run.ACTION_CODE_PANDOC], "arg: all"
+    assert not args[db.cls_run.Run.ACTION_CODE_PDF2IMAGE], "arg: db_u"
+    assert not args[db.cls_run.Run.ACTION_CODE_INBOX], "arg: db_u"
+    assert not args[db.cls_run.Run.ACTION_CODE_PARSER], "arg: db_u"
+    assert not args[db.cls_run.Run.ACTION_CODE_PDFLIB], "arg: db_u"
+    assert not args[db.cls_run.Run.ACTION_CODE_TOKENIZE], "arg: db_u"
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -96,7 +96,7 @@ def test_main_all(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_ALL_COMPLETE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -107,7 +107,7 @@ def test_main_db_c(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_CREATE_DB])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -118,7 +118,7 @@ def test_main_p_i(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -129,7 +129,7 @@ def test_main_p_2_i(fxtr_mkdir, fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -140,7 +140,7 @@ def test_main_db_u(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_UPGRADE_DB])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_UPGRADE_DB])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -166,7 +166,7 @@ def test_unknown_dbt(fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_CREATE_DB])
+        dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     assert expt.type == SystemExit, "api_version: wrong"
     assert expt.value.code == 1, "api_version: wrong"
@@ -201,7 +201,7 @@ def test_wrong_api_version(fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_CREATE_DB])
+        dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     assert expt.type == SystemExit, "api_version: wrong"
     assert expt.value.code == 1, "api_version: wrong"
@@ -236,7 +236,7 @@ def test_wrong_dbt(fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_CREATE_DB])
+        dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     assert expt.type == SystemExit, "api_version: wrong"
     assert expt.value.code == 1, "api_version: wrong"

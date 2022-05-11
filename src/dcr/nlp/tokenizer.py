@@ -288,7 +288,7 @@ def tokenize() -> None:
     spacy_model_current: str | None = None
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt_document, db.run.Run.ACTION_CODE_TOKENIZE)
+        rows = db.dml.select_document(conn, dbt_document, db.cls_run.Run.ACTION_CODE_TOKENIZE)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()

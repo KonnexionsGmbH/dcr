@@ -12,10 +12,10 @@ import pathlib
 import shutil
 import typing
 
+import cfg.cls_setup
 import cfg.glob
-import cfg.setup
+import db.cls_run
 import db.driver
-import db.run
 import pytest
 import sqlalchemy
 
@@ -266,7 +266,7 @@ def fxtr_setup_empty_db_and_inbox(
     """Fixture: Setup empty database and empty inboxes."""
     backup_setup_cfg()
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_CREATE_DB])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
     fxtr_mkdir(cfg.glob.setup.directory_inbox)
@@ -303,7 +303,7 @@ def fxtr_setup_logger():
 @pytest.fixture()
 def fxtr_setup_logger_environment():
     """Fixture: Setup logger & environment."""
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
     cfg.glob.setup.environment_type = cfg.glob.setup._ENVIRONMENT_TYPE_TEST
 
@@ -332,7 +332,7 @@ def help_run_action_all_complete_duplicate_file(
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_ALL_COMPLETE])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     verify_content_of_directory(
@@ -366,7 +366,7 @@ def help_run_action_process_inbox_normal(
     pytest.helpers.copy_files_4_pytest_2_dir([(stem_name, file_ext)], cfg.glob.setup.directory_inbox)
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, db.run.Run.ACTION_CODE_INBOX])
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
     # -------------------------------------------------------------------------
     document_id: int = 1
 
@@ -441,7 +441,7 @@ def restore_config_params(
     with open(cfg.glob.setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
-    cfg.glob.setup = cfg.setup.Setup()
+    cfg.glob.setup = cfg.cls_setup.Setup()
 
 
 # -----------------------------------------------------------------------------

@@ -1,4 +1,6 @@
-"""Module nlp.LineType: Determine footer and header lines."""
+"""Module nlp.cls_line_type: Determine footer and header lines."""
+from __future__ import annotations
+
 from typing import Dict
 from typing import List
 from typing import Tuple
@@ -20,10 +22,10 @@ class LineType:
     """
 
     # -----------------------------------------------------------------------------
-    # Initialise the instance variables.
+    # Initialise the instance.
     # -----------------------------------------------------------------------------
     def __init__(self) -> None:
-        """Initialise and load the application configuration parameters."""
+        """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         # [ (line_ind, line_text) ]
@@ -92,13 +94,84 @@ class LineType:
         return page_lines_distance
 
     # -----------------------------------------------------------------------------
+    # Save the footers of the current page.
+    # -----------------------------------------------------------------------------
+    # Example : [ (line_ind, line_text) ]:
+    #
+    # line_text_footer_curr = [(8, 'Footer 2'),
+    #                          (9, 'Footer 3 pg. 1'),
+    #                          (10, 'Footer 4')]
+    # -----------------------------------------------------------------------------
+    def _save_lines_footer_curr(self, page_lines: List[Dict[str, int | str]]) -> None:
+        """Save the footers of the current page.
+
+        Args:
+            page_lines (List[Dict[str, int | str]]):
+                    All lines of the current page.
+        """
+        count = len(page_lines) - cfg.glob.setup.line_footer_max_lines
+
+        self._line_text_footer_curr = []
+
+        for _ in range(cfg.glob.setup.line_footer_max_lines):
+            if count < 0:
+                self._line_text_footer_curr.append((-1, cfg.glob.INFORMATION_NOT_YET_AVAILABLE))
+            else:
+                page_line: Dict[str, int | str] = page_lines[count]
+                self._line_text_footer_curr.append(
+                    (
+                        page_line[cfg.glob.JSON_NAME_LINE_INDEX_PAGE],
+                        page_line[cfg.glob.JSON_NAME_LINE_TEXT],
+                    )  # type: ignore
+                )
+            count += 1
+
+        utils.progress_msg_line_type(f"LineType: Value of line_text_footer_prev     ={self._line_text_footer_prev}")
+        utils.progress_msg_line_type(f"LineType: Value of line_text_footer_curr     ={self._line_text_footer_curr}")
+
+    # -----------------------------------------------------------------------------
+    # Save the headers of the current page.
+    # -----------------------------------------------------------------------------
+    # Example : [ (line_ind, line_text) ]:
+    #
+    # line_text_header_curr = [(0, 'Header 1'),
+    #                          (1, 'Header 2'),
+    #                          (2, 'Header 3')]
+    # -----------------------------------------------------------------------------
+    def _save_lines_header_curr(self, page_lines: List[Dict[str, int | str]]) -> None:
+        """Save the headers of the current page.
+
+        Args:
+            page_lines (List[Dict[str, int | str]]):
+                    All lines of the current page.
+        """
+        page_lines_max = len(page_lines)
+
+        self._line_text_header_curr = []
+
+        for ind in range(cfg.glob.setup.line_header_max_lines):
+            if ind < page_lines_max:
+                page_line: Dict[str, int | str] = page_lines[ind]
+                self._line_text_header_curr.append(
+                    (
+                        page_line[cfg.glob.JSON_NAME_LINE_INDEX_PAGE],
+                        page_line[cfg.glob.JSON_NAME_LINE_TEXT],
+                    )  # type: ignore
+                )
+            else:
+                self._line_text_header_curr.append((-1, cfg.glob.INFORMATION_NOT_YET_AVAILABLE))
+
+        utils.progress_msg_line_type(f"LineType: Value of line_text_header_prev     ={self._line_text_header_prev}")
+        utils.progress_msg_line_type(f"LineType: Value of line_text_header_curr     ={self._line_text_header_curr}")
+
+    # -----------------------------------------------------------------------------
     # Determine the footer lines.
     # -----------------------------------------------------------------------------
     def determine_footer_lines(self, page_ind_max: int) -> None:
         """Determine the footer lines.
 
         Args:
-            page_ind_max (_type_): Highest page index.
+            page_ind_max (int): Highest page index.
         """
         utils.progress_msg_line_type(
             f"LineType: Value of page_lines_distance_footer={self._page_lines_distance_footer}"
@@ -138,7 +211,7 @@ class LineType:
         """Determine the header lines.
 
         Args:
-            page_ind_max (_type_): Highest page index.
+            page_ind_max (int): Highest page index.
         """
         utils.progress_msg_line_type(
             f"LineType: Value of page_lines_distance_header={self._page_lines_distance_header}"
@@ -247,77 +320,6 @@ class LineType:
             self._line_text_footer_curr = []
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-    # -----------------------------------------------------------------------------
-    # Save the footers of the current page.
-    # -----------------------------------------------------------------------------
-    # Example : [ (line_ind, line_text) ]:
-    #
-    # line_text_footer_curr = [(8, 'Footer 2'),
-    #                          (9, 'Footer 3 pg. 1'),
-    #                          (10, 'Footer 4')]
-    # -----------------------------------------------------------------------------
-    def _save_lines_footer_curr(self, page_lines: List[Dict[str, int | str]]) -> None:
-        """Save the footers of the current page.
-
-        Args:
-            page_lines (List[Dict[str, int | str]]):
-                    All lines of the current page.
-        """
-        count = len(page_lines) - cfg.glob.setup.line_footer_max_lines
-
-        self._line_text_footer_curr = []
-
-        for _ in range(cfg.glob.setup.line_footer_max_lines):
-            if count < 0:
-                self._line_text_footer_curr.append((-1, cfg.glob.INFORMATION_NOT_YET_AVAILABLE))
-            else:
-                page_line: Dict[str, int | str] = page_lines[count]
-                self._line_text_footer_curr.append(
-                    (
-                        page_line[cfg.glob.JSON_NAME_LINE_INDEX_PAGE],
-                        page_line[cfg.glob.JSON_NAME_LINE_TEXT],
-                    )  # type: ignore
-                )
-            count += 1
-
-        utils.progress_msg_line_type(f"LineType: Value of line_text_footer_prev     ={self._line_text_footer_prev}")
-        utils.progress_msg_line_type(f"LineType: Value of line_text_footer_curr     ={self._line_text_footer_curr}")
-
-    # -----------------------------------------------------------------------------
-    # Save the headers of the current page.
-    # -----------------------------------------------------------------------------
-    # Example : [ (line_ind, line_text) ]:
-    #
-    # line_text_header_curr = [(0, 'Header 1'),
-    #                          (1, 'Header 2'),
-    #                          (2, 'Header 3')]
-    # -----------------------------------------------------------------------------
-    def _save_lines_header_curr(self, page_lines: List[Dict[str, int | str]]) -> None:
-        """Save the headers of the current page.
-
-        Args:
-            page_lines (List[Dict[str, int | str]]):
-                    All lines of the current page.
-        """
-        page_lines_max = len(page_lines)
-
-        self._line_text_header_curr = []
-
-        for ind in range(cfg.glob.setup.line_header_max_lines):
-            if ind < page_lines_max:
-                page_line: Dict[str, int | str] = page_lines[ind]
-                self._line_text_header_curr.append(
-                    (
-                        page_line[cfg.glob.JSON_NAME_LINE_INDEX_PAGE],
-                        page_line[cfg.glob.JSON_NAME_LINE_TEXT],
-                    )  # type: ignore
-                )
-            else:
-                self._line_text_header_curr.append((-1, cfg.glob.INFORMATION_NOT_YET_AVAILABLE))
-
-        utils.progress_msg_line_type(f"LineType: Value of line_text_header_prev     ={self._line_text_header_prev}")
-        utils.progress_msg_line_type(f"LineType: Value of line_text_header_curr     ={self._line_text_header_curr}")
 
     # -----------------------------------------------------------------------------
     # Update the database table 'content_tetml_line'.

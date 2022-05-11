@@ -38,45 +38,6 @@ def insert_dbt_row(
 
 
 # -----------------------------------------------------------------------------
-# Insert a new base document.
-# -----------------------------------------------------------------------------
-def insert_document_base() -> None:
-    """Insert a new base document."""
-    file_path = os.path.join(cfg.glob.document_directory_name, cfg.glob.document_file_name)
-
-    cfg.glob.base.base_id = db.dml.insert_dbt_row(
-        cfg.glob.DBT_DOCUMENT,
-        {
-            cfg.glob.DBC_CURRENT_STEP: cfg.glob.document_current_step,
-            cfg.glob.DBC_DIRECTORY_NAME: cfg.glob.document_directory_name,
-            cfg.glob.DBC_DIRECTORY_TYPE: cfg.glob.document_directory_type,
-            cfg.glob.DBC_DURATION_NS: 0,
-            cfg.glob.DBC_ERROR_NO: 0,
-            cfg.glob.DBC_FILE_NAME: cfg.glob.document_file_name,
-            cfg.glob.DBC_FILE_SIZE_BYTES: os.path.getsize(file_path),
-            cfg.glob.DBC_FILE_TYPE: cfg.glob.document_file_type,
-            cfg.glob.DBC_ID_LANGUAGE: cfg.glob.language.language_id,
-            cfg.glob.DBC_NEXT_STEP: db.run.Run.ACTION_CODE_INBOX,
-            cfg.glob.DBC_NO_PDF_PAGES: utils.get_pdf_pages_no(file_path),
-            cfg.glob.DBC_ID_RUN: cfg.glob.run.run_id_run,
-            cfg.glob.DBC_SHA256: cfg.glob.document_sha256,
-            cfg.glob.DBC_STATUS: cfg.glob.DOCUMENT_STATUS_START,
-            cfg.glob.DBC_STEM_NAME: cfg.glob.document_stem_name,
-        },
-    )
-
-    cfg.glob.base.base_id_base = cfg.glob.base.base_id
-
-    db.dml.update_dbt_id(
-        cfg.glob.DBT_DOCUMENT,
-        cfg.glob.base.base_id,
-        {
-            cfg.glob.DBC_DOCUMENT_ID_BASE: cfg.glob.base.base_id_base,
-        },
-    )
-
-
-# -----------------------------------------------------------------------------
 # Insert a new child document of the base document.
 # -----------------------------------------------------------------------------
 def insert_document_child() -> None:
@@ -100,7 +61,7 @@ def insert_document_child() -> None:
             cfg.glob.DBC_FILE_TYPE: cfg.glob.document_child_file_type,
             cfg.glob.DBC_NEXT_STEP: cfg.glob.document_child_next_step,
             cfg.glob.DBC_ID_LANGUAGE: cfg.glob.language.language_id
-            if cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_INBOX
+            if cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_INBOX
             else cfg.glob.document_child_id_language,
             cfg.glob.DBC_NO_PDF_PAGES: utils.get_pdf_pages_no(file_path),
             cfg.glob.DBC_ID_RUN: cfg.glob.run.run_id_run,

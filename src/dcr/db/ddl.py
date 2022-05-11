@@ -5,12 +5,12 @@ import pathlib
 from typing import List
 
 import cfg.glob
-import db.action
-import db.base
+import db.cls_action
+import db.cls_base
+import db.cls_language
+import db.cls_run
 import db.dml
 import db.driver
-import db.language
-import db.run
 import sqlalchemy
 import sqlalchemy.event
 import sqlalchemy.orm
@@ -499,13 +499,13 @@ def create_schema() -> None:
 
         conn.close()
 
-    db.language.Language.create_dbt()
-    db.run.Run.create_dbt()
+    db.cls_language.Language.create_dbt()
+    db.cls_run.Run.create_dbt()
     create_dbt_version(cfg.glob.DBT_VERSION)
     # FK: language
-    db.base.Base.create_dbt()
+    db.cls_base.Base.create_dbt()
     # FK: run
-    db.action.Action.create_dbt()
+    db.cls_action.Action.create_dbt()
     create_dbt_document(cfg.glob.DBT_DOCUMENT)
     # FK: document
     create_dbt_content_tetml_line(cfg.glob.DBT_CONTENT_TETML_LINE)

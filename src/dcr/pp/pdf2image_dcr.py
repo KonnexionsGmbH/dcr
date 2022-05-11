@@ -5,9 +5,9 @@ import pathlib
 import time
 
 import cfg.glob
-import db.action
+import db.cls_action
+import db.cls_run
 import db.dml
-import db.run
 import pdf2image
 import utils
 
@@ -23,24 +23,26 @@ def convert_pdf_2_image() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     if cfg.glob.setup.pdf2image_type == cfg.glob.setup.PDF2IMAGE_TYPE_PNG:
-        db.action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_PNG
+        db.cls_action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_PNG
     else:
-        db.action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_JPG
+        db.cls_action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_JPG
 
-    with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.action.Action.select_by_action_code(action_code=db.run.Run.ACTION_CODE_PDF2IMAGE)
+    with cfg.glob.db_orm_engine.begin() as conn:
+        rows = db.cls_action.Action.select_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDF2IMAGE)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
 
             cfg.glob.run.run_total_processed_to_be += 1
 
-            cfg.glob.action_curr = db.action.Action.from_row(row)
+            cfg.glob.action_curr = db.cls_action.Action.from_row(row)
 
             if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
                 cfg.glob.run.total_status_error += 1
             else:
                 cfg.glob.run.total_status_ready += 1
+
+            cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
 
             convert_pdf_2_image_file()
 
@@ -68,13 +70,15 @@ def convert_pdf_2_image_file() -> None:
 
     cfg.glob.action_curr.action_no_children = 0
 
+    is_no_error: bool = True
+
     # Store the image pages
     for img in images:
         cfg.glob.action_curr.action_no_children += 1
 
         stem_name = cfg.glob.action_curr.get_stem_name() + "_" + str(cfg.glob.action_curr.action_no_children)
 
-        file_name = stem_name + "." + db.action.Action.pdf2image_file_type
+        file_name = stem_name + "." + db.cls_action.Action.pdf2image_file_type
 
         file_name_next = os.path.join(
             cfg.glob.action_curr.action_directory_name,
@@ -82,22 +86,23 @@ def convert_pdf_2_image_file() -> None:
         )
 
         if os.path.exists(file_name_next):
-            db.dml.update_document_error(
-                document_id=cfg.glob.action_curr.action_base_id,
+            cfg.glob.action_curr.finalise_error(
                 error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
                 error_msg=cfg.glob.ERROR_21_903.replace("{file_name}", file_name_next),
             )
+
+            is_no_error = False
         else:
             img.save(
                 file_name_next,
                 cfg.glob.setup.pdf2image_type,
             )
 
-            cfg.glob.action_next = db.action.Action(
-                action_code=db.run.Run.ACTION_CODE_TESSERACT,
+            cfg.glob.action_next = db.cls_action.Action(
+                action_code=db.cls_run.Run.ACTION_CODE_TESSERACT,
                 directory_name=cfg.glob.action_curr.action_directory_name,
                 directory_type=cfg.glob.action_curr.action_directory_type,
-                file_name=file_name_next,
+                file_name=file_name,
                 file_size_bytes=os.path.getsize(pathlib.Path(file_name_next)),
                 id_base=cfg.glob.action_curr.action_id_base,
                 id_parent=cfg.glob.action_curr.action_id,
@@ -105,14 +110,15 @@ def convert_pdf_2_image_file() -> None:
                 no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(file_name_next))),
             )
 
-            cfg.glob.action_next.insert()
+            cfg.glob.action_next.persist_2_db()
 
             cfg.glob.run.total_generated += 1
 
-    utils.delete_auxiliary_file(file_name_current)
+    if is_no_error:
+        utils.delete_auxiliary_file(file_name_current)
 
-    cfg.glob.action_curr.finalise()
+        cfg.glob.action_curr.finalise()
 
-    cfg.glob.run.run_total_processed_ok += 1
+        cfg.glob.run.run_total_processed_ok += 1
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

@@ -67,7 +67,7 @@ def delete_auxiliary_file(file_name: str) -> None:
         return
 
     # Don't remove the base document !!!
-    if file_name == db.dml.select_document_base_file_name():
+    if file_name == get_full_name(cfg.glob.action_curr.action_directory_name, utils.get_file_name_original):
         return
 
     if os.path.isfile(file_name):
@@ -90,9 +90,32 @@ def finalize_file_processing() -> int:
 
 
 # -----------------------------------------------------------------------------
+# Get the file name of the original document.
+# -----------------------------------------------------------------------------
+# noinspection PyArgumentList
+def get_file_name_original() -> str:
+    """Get the file name of the original document.
+
+    Returns:
+        str: File name of the original document.
+    """
+    return (
+        cfg.glob.base.get_stem_name()
+        + "_"
+        + str(cfg.glob.base.base_id)
+        + "."
+        + (
+            cfg.glob.base.get_file_type()
+            if cfg.glob.base.get_file_type() != cfg.glob.DOCUMENT_FILE_TYPE_TIF
+            else cfg.glob.DOCUMENT_FILE_TYPE_TIFF
+        )
+    )
+
+
+# -----------------------------------------------------------------------------
 # Get the file type from a file name.
 # -----------------------------------------------------------------------------
-def get_file_type(file_name: pathlib.Path | str | None) -> str | None:
+def get_file_type(file_name: pathlib.Path | str | None) -> str:
     """Get the file type from a file name.
 
     Args:
@@ -102,12 +125,37 @@ def get_file_type(file_name: pathlib.Path | str | None) -> str | None:
         str | None: File type.
     """
     if file_name is None:
-        return None
+        return ""
 
     if isinstance(file_name, str):
         file_name = pathlib.Path(file_name)
 
     return file_name.suffix[1:].lower()
+
+
+# -----------------------------------------------------------------------------
+# Get the full file from a directory name or path and a file name or path.
+# -----------------------------------------------------------------------------
+def get_full_name(directory_name: pathlib.Path | str | None, file_name: pathlib.Path | str | None) -> str:
+    """Get the full file from a directory name or path and a file name or path.
+
+    Args:
+        directory_name (pathlib.Path | str | None): Directory name or directory path.
+        file_name (pathlib.Path | str | None): File name or file path.
+
+    Returns:
+        str: Full file name.
+    """
+    if directory_name is None and file_name is None:
+        return ""
+
+    if isinstance(directory_name, str):
+        directory_name = pathlib.Path(directory_name)
+
+    if isinstance(file_name, str):
+        file_name = pathlib.Path(file_name)
+
+    return os.path.join(directory_name, file_name)
 
 
 # -----------------------------------------------------------------------------
@@ -136,7 +184,7 @@ def get_pdf_pages_no(
 # -----------------------------------------------------------------------------
 # Get the stem name from a file name.
 # -----------------------------------------------------------------------------
-def get_stem_name(file_name: pathlib.Path | str | None) -> str | None:
+def get_stem_name(file_name: pathlib.Path | str | None) -> str:
     """Get the stem name from a file name.
 
     Args:
@@ -146,7 +194,7 @@ def get_stem_name(file_name: pathlib.Path | str | None) -> str | None:
         str | None: Stem name.
     """
     if file_name is None:
-        return None
+        return ""
 
     if isinstance(file_name, str):
         file_name = pathlib.Path(file_name)
@@ -353,7 +401,7 @@ def show_statistics_total() -> None:
             utils.progress_msg(f"Number with document status error:         {cfg.glob.run.total_status_error:6d}")
 
         # noinspection PyUnresolvedReferences
-        if cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_INBOX:
+        if cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_INBOX:
             utils.progress_msg(
                 f"Number documents accepted - " f"Pandoc:        {cfg.glob.run.total_processed_pandoc:6d}"
             )
@@ -369,7 +417,7 @@ def show_statistics_total() -> None:
             utils.progress_msg(
                 "Number documents accepted - " + f"Total:         {cfg.glob.run.run_total_processed_ok:6d}"
             )
-        elif cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_PDFLIB:
+        elif cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_PDFLIB:
             utils.progress_msg(f"Number documents extracted:                {cfg.glob.run.run_total_processed_ok:6d}")
         else:
             utils.progress_msg(f"Number documents converted:                {cfg.glob.run.run_total_processed_ok:6d}")
@@ -378,7 +426,7 @@ def show_statistics_total() -> None:
             utils.progress_msg(f"Number documents generated:                {cfg.glob.run.total_generated:6d}")
 
         # noinspection PyUnresolvedReferences
-        if cfg.glob.run.run_action_code == db.run.Run.ACTION_CODE_INBOX:
+        if cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_INBOX:
             utils.progress_msg(f"Number documents rejected:                 {cfg.glob.run.run_total_erroneous:6d}")
         else:
             utils.progress_msg(f"Number documents erroneous:                {cfg.glob.run.run_total_erroneous:6d}")

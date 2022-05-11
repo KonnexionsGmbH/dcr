@@ -1,4 +1,6 @@
-"""Module cfg.Setup: Managing the application configuration parameters."""
+"""Module cfg.cls_setup: Managing the application configuration parameters."""
+from __future__ import annotations
+
 import configparser
 import os
 from typing import ClassVar
@@ -127,10 +129,10 @@ class Setup:
     PDF2IMAGE_TYPE_PNG: ClassVar[str] = "png"
 
     # -----------------------------------------------------------------------------
-    # Initialise and load the application configuration parameters.
+    # Initialise the instance.
     # -----------------------------------------------------------------------------
     def __init__(self) -> None:  # pylint: disable=too-many-statements
-        """Initialise and load the application configuration parameters."""
+        """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         self._get_environment_variant()

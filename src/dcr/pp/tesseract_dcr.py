@@ -25,7 +25,7 @@ def convert_image_2_pdf() -> None:
     utils.reset_statistics_total()
 
     with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, db.run.Run.ACTION_CODE_TESSERACT)
+        rows = db.dml.select_document(conn, dbt, db.cls_run.Run.ACTION_CODE_TESSERACT)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
@@ -75,7 +75,7 @@ def convert_image_2_pdf_file() -> None:
 
         utils.prepare_document_4_next_step(
             next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_PDF,
-            next_step=db.run.Run.ACTION_CODE_PDFLIB,
+            next_step=db.cls_run.Run.ACTION_CODE_PDFLIB,
         )
 
         cfg.glob.document_child_file_name = cfg.glob.document_stem_name + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
@@ -129,7 +129,7 @@ def reunite_pdfs() -> None:
                 dbt.c.id.in_(
                     sqlalchemy.select(dbt.c.document_id_base)
                     .where(dbt.c.status == cfg.glob.DOCUMENT_STATUS_START)
-                    .where(dbt.c.next_step == db.run.Run.ACTION_CODE_PDFLIB)
+                    .where(dbt.c.next_step == db.cls_run.Run.ACTION_CODE_PDFLIB)
                     .group_by(dbt.c.document_id_base)
                     .having(sqlalchemy.func.count(dbt.c.document_id_base) > 1)
                     .scalar_subquery()
@@ -184,7 +184,7 @@ def reunite_pdfs_file() -> None:
         rows = conn.execute(
             sqlalchemy.select(dbt)
             .where(dbt.c.status == cfg.glob.DOCUMENT_STATUS_START)
-            .where(dbt.c.next_step == db.run.Run.ACTION_CODE_PDFLIB)
+            .where(dbt.c.next_step == db.cls_run.Run.ACTION_CODE_PDFLIB)
             .where(dbt.c.document_id_base == cfg.glob.base.base_id_base)
             .order_by(dbt.c.id)
         )
@@ -212,7 +212,7 @@ def reunite_pdfs_file() -> None:
                 row.id,
                 {
                     cfg.glob.DBC_DURATION_NS: duration_ns,
-                    cfg.glob.DBC_NEXT_STEP: db.run.Run.ACTION_CODE_PYPDF2,
+                    cfg.glob.DBC_NEXT_STEP: db.cls_run.Run.ACTION_CODE_PYPDF2,
                     cfg.glob.DBC_STATUS: cfg.glob.DOCUMENT_STATUS_END,
                 },
             )
@@ -227,7 +227,7 @@ def reunite_pdfs_file() -> None:
 
     utils.prepare_document_4_next_step(
         next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_PDF,
-        next_step=db.run.Run.ACTION_CODE_PDFLIB,
+        next_step=db.cls_run.Run.ACTION_CODE_PDFLIB,
     )
 
     cfg.glob.document_child_directory_name = cfg.glob.setup.directory_inbox_accepted
