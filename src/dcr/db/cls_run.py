@@ -178,11 +178,7 @@ class Run:
         """Finalise the current row."""
         self.run_status = cfg.glob.DOCUMENT_STATUS_END
 
-        db.dml.update_dbt_id(
-            cfg.glob.DBT_RUN,
-            self.run_id,
-            self._get_columns(),
-        )
+        self.persist_2_db()
 
     # -----------------------------------------------------------------------------
     # Initialise from id.
@@ -303,6 +299,15 @@ class Run:
             self.run_id = db.dml.insert_dbt_row(
                 cfg.glob.DBT_RUN,
                 self._get_columns(),
+            )
+            return
+
+        if (self.run_total_erroneous == 0 and
+            self.run_total_processed_ok == 0 and
+            self.run_total_processed_to_be == 0):
+            db.dml.delete_dbt_id(
+                table_name=cfg.glob.DBT_RUN,
+                id_where=self.run_id,
             )
         else:
             db.dml.update_dbt_id(

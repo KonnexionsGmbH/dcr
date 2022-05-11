@@ -67,7 +67,7 @@ def delete_auxiliary_file(file_name: str) -> None:
         return
 
     # Don't remove the base document !!!
-    if file_name == get_full_name(cfg.glob.action_curr.action_directory_name, utils.get_file_name_original):
+    if file_name == get_full_name(cfg.glob.action_curr.action_directory_name, utils.get_file_name_original()):
         return
 
     if os.path.isfile(file_name):
@@ -134,10 +134,10 @@ def get_file_type(file_name: pathlib.Path | str | None) -> str:
 
 
 # -----------------------------------------------------------------------------
-# Get the full file from a directory name or path and a file name or path.
+# Get the full file name from a directory name or path and a file name or path.
 # -----------------------------------------------------------------------------
 def get_full_name(directory_name: pathlib.Path | str | None, file_name: pathlib.Path | str | None) -> str:
-    """Get the full file from a directory name or path and a file name or path.
+    """Get the full file name from a directory name or path and a file name or path.
 
     Args:
         directory_name (pathlib.Path | str | None): Directory name or directory path.

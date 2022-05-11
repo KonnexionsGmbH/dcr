@@ -12,6 +12,45 @@ import utils
 
 
 # -----------------------------------------------------------------------------
+# Delete a database row based on its id column.
+# -----------------------------------------------------------------------------
+def delete_dbt_id(
+    table_name: str,
+    id_where: int | sqlalchemy.Integer,
+) -> None:
+    """Delete a database row based on its id column.
+
+    Args:
+        table_name (str): sqlalchemy.Table name.
+        id_where (int | sqlalchemy.Integer): Content of column id.
+    """
+    dbt = sqlalchemy.Table(table_name, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
+
+    with cfg.glob.db_orm_engine.connect().execution_options(autocommit=True) as conn:
+        conn.execute(sqlalchemy.delete(dbt).where(dbt.c.id == id_where))
+        conn.close()
+
+
+# -----------------------------------------------------------------------------
+# Preparation of a database table for DML operations.
+# -----------------------------------------------------------------------------
+def dml_prepare(dbt_name: str) -> sqlalchemy.Table:
+    """Preparation of a database table for DML operations.
+
+    Returns:
+        sqlalchemy.Table: Database table document,
+    """
+    # Check the inbox file directories.
+    utils.check_directories()
+
+    return sqlalchemy.Table(
+        dbt_name,
+        cfg.glob.db_orm_metadata,
+        autoload_with=cfg.glob.db_orm_engine,
+    )
+
+
+# -----------------------------------------------------------------------------
 # Insert a new row into a database table.
 # -----------------------------------------------------------------------------
 def insert_dbt_row(
@@ -68,25 +107,6 @@ def insert_document_child() -> None:
             cfg.glob.DBC_STATUS: cfg.glob.document_child_status,
             cfg.glob.DBC_STEM_NAME: cfg.glob.document_child_stem_name,
         },
-    )
-
-
-# -----------------------------------------------------------------------------
-# Preparation of a database table for DML operations.
-# -----------------------------------------------------------------------------
-def dml_prepare(dbt_name: str) -> sqlalchemy.Table:
-    """Preparation of a database table for DML operations.
-
-    Returns:
-        sqlalchemy.Table: Database table document,
-    """
-    # Check the inbox file directories.
-    utils.check_directories()
-
-    return sqlalchemy.Table(
-        dbt_name,
-        cfg.glob.db_orm_metadata,
-        autoload_with=cfg.glob.db_orm_engine,
     )
 
 
