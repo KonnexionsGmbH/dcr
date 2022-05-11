@@ -137,7 +137,8 @@ def get_file_type(file_name: pathlib.Path | str | None) -> str:
 # Get the full file name from a directory name or path and a file name or path.
 # -----------------------------------------------------------------------------
 def get_full_name(directory_name: pathlib.Path | str | None, file_name: pathlib.Path | str | None) -> str:
-    """Get the full file name from a directory name or path and a file name or path.
+    """Get the full file name from a directory name or path and a file name or
+    path.
 
     Args:
         directory_name (pathlib.Path | str | None): Directory name or directory path.

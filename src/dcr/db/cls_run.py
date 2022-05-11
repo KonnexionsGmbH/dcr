@@ -302,9 +302,7 @@ class Run:
             )
             return
 
-        if (self.run_total_erroneous == 0 and
-            self.run_total_processed_ok == 0 and
-            self.run_total_processed_to_be == 0):
+        if self.run_total_erroneous == 0 and self.run_total_processed_ok == 0 and self.run_total_processed_to_be == 0:
             db.dml.delete_dbt_id(
                 table_name=cfg.glob.DBT_RUN,
                 id_where=self.run_id,

@@ -275,7 +275,6 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     cfg.glob.session = sqlalchemy.orm.Session(cfg.glob.db_orm_engine)
 
     initialise_base(file_path)
-    # wwe   initialise_document_base(file_path)
 
     if not cfg.glob.setup.is_ignore_duplicates:
         file_name = db.dml.select_document_file_name_sha256(cfg.glob.base.base_id, cfg.glob.base.base_sha256)
