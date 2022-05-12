@@ -67,11 +67,11 @@ def extract_text_from_pdf() -> None:
 
             if cfg.glob.setup.is_tetml_page:
                 if is_no_error:
-                        is_no_error = extract_text_from_pdf_file(
-                            document_opt_list=PAGE_TET_DOCUMENT_OPT_LIST,
-                            page_opt_list=PAGE_TET_PAGE_OPT_LIST,
-                            xml_variation=PAGE_XML_VARIATION,
-                        )
+                    is_no_error = extract_text_from_pdf_file(
+                        document_opt_list=PAGE_TET_DOCUMENT_OPT_LIST,
+                        page_opt_list=PAGE_TET_PAGE_OPT_LIST,
+                        xml_variation=PAGE_XML_VARIATION,
+                    )
 
             if cfg.glob.setup.is_tetml_word:
                 if is_no_error:
@@ -147,6 +147,11 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
 
     tet.close_document(file_curr)
 
+    if xml_variation == WORD_XML_VARIATION or xml_variation == PAGE_XML_VARIATION and cfg.glob.setup.is_tetml_line:
+        status = cfg.glob.DOCUMENT_STATUS_END
+    else:
+        status = cfg.glob.DOCUMENT_STATUS_START
+
     cfg.glob.action_next = db.cls_action.Action(
         action_code=db.cls_run.Run.ACTION_CODE_PARSER,
         directory_name=cfg.glob.action_curr.action_directory_name,
@@ -157,6 +162,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
         id_parent=cfg.glob.action_curr.action_id,
         id_run_last=cfg.glob.run.run_id,
         no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(full_name_next))),
+        status=status,
     )
 
     tet.delete()
