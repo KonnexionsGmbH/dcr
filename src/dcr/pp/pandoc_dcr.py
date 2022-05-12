@@ -64,7 +64,7 @@ def convert_non_pdf_2_pdf_file() -> None:
 
     file_name_next = cfg.glob.action_curr.get_stem_name() + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
     full_name_next = utils.get_full_name(
-        cfg.glob.document_directory_name,
+        cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )
 
@@ -104,6 +104,10 @@ def convert_non_pdf_2_pdf_file() -> None:
         )
 
         utils.delete_auxiliary_file(full_name_curr)
+
+        cfg.glob.action_curr.finalise()
+
+        cfg.glob.run.run_total_processed_ok += 1
     except RuntimeError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,

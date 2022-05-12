@@ -63,12 +63,12 @@ def convert_pdf_2_image_file() -> None:
     """Convert a scanned image pdf document to an image file."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    full_name_current = os.path.join(
+    full_name_curr = os.path.join(
         cfg.glob.action_curr.action_directory_name,
         cfg.glob.action_curr.action_file_name,
     )
 
-    images = pdf2image.convert_from_path(full_name_current)
+    images = pdf2image.convert_from_path(full_name_curr)
 
     cfg.glob.action_curr.action_no_children = 0
 
@@ -115,7 +115,7 @@ def convert_pdf_2_image_file() -> None:
             cfg.glob.run.total_generated += 1
 
     if is_no_error:
-        utils.delete_auxiliary_file(full_name_current)
+        utils.delete_auxiliary_file(full_name_curr)
 
         cfg.glob.action_curr.finalise()
 
