@@ -14,24 +14,24 @@ set PYTHONPATH=%PYTHONPATH%;src\dcr
 
 if ["%1"] EQU [""] (
     echo =========================================================
-    echo aui   - Run the administration user interface.
+    echo aui          - Run the administration user interface.
     echo ---------------------------------------------------------
-    echo all   - Run the complete core processing of all new documents.
+    echo all          - Run the complete core processing of all new documents.
     echo ---------------------------------------------------------
-    echo p_i   - 1. Process the inbox directory.
-    echo p_2_i - 2. Convert pdf documents to image files:          pdf2image / Poppler.
-    echo ocr   - 3. Convert image documents to pdf files:          Tesseract OCR / Tex Live.
-    echo n_2_p - 2. Convert non-pdf documents to pdf files:        Pandoc
+    echo p_i          - 1. Process the inbox directory.
+    echo p_2_i[_only] - 2. Convert pdf documents to image files:          pdf2image / Poppler.
+    echo ocr[_only]   - 3. Convert image documents to pdf files:          Tesseract OCR / Tex Live.
+    echo n_2_p[_only] - 2. Convert non-pdf documents to pdf files:        Pandoc
     echo ---------------------------------------------------------
-    echo tet   - 4. Extract text and metdata from pdf documents:   PDFlib TET.
-    echo s_f_p - 5. Store the parser result in the database.
-    echo tkn   - 6. Create qualified document tokens.              SpaCy.
+    echo tet[_only]   - 4. Extract text and metdata from pdf documents:   PDFlib TET.
+    echo s_f_p[_only] - 5. Store the parser result in the database.
+    echo tkn[_only]   - 6. Create qualified document tokens.              SpaCy.
     echo ---------------------------------------------------------
-    echo db_c  - Create the database.
-    echo db_u  - Upgrade the database.
+    echo db_c         - Create the database.
+    echo db_u         - Upgrade the database.
     echo ---------------------------------------------------------
-    echo m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem.
-    echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules.
+    echo m_d          - Run the installation of the necessary 3rd party packages for development and run the development ecosystem.
+    echo m_p          - Run the installation of the necessary 3rd party packages for production and compile all packages and modules.
     echo ---------------------------------------------------------
     set /P DCR_CHOICE_ACTION="Enter the desired action [default: %DCR_CHOICE_ACTION_DEFAULT%] "
 
@@ -120,8 +120,14 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"] (
 if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
+if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p_only"] (
+    set _CHOICE=%DCR_CHOICE_ACTION%
+)
 
 if ["%DCR_CHOICE_ACTION%"] EQU ["ocr"] (
+    set _CHOICE=%DCR_CHOICE_ACTION%
+)
+if ["%DCR_CHOICE_ACTION%"] EQU ["ocr_only"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
@@ -144,16 +150,28 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["p_i"] (
 if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
+if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i_only"] (
+    set _CHOICE=%DCR_CHOICE_ACTION%
+)
 
 if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
+    set _CHOICE=%DCR_CHOICE_ACTION%
+)
+if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p_only"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
 if ["%DCR_CHOICE_ACTION%"] EQU ["tet"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
+if ["%DCR_CHOICE_ACTION%"] EQU ["tet_only"] (
+    set _CHOICE=%DCR_CHOICE_ACTION%
+)
 
 if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
+    set _CHOICE=%DCR_CHOICE_ACTION%
+)
+if ["%DCR_CHOICE_ACTION%"] EQU ["tkn_only"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
@@ -161,29 +179,49 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
         set DCR_CHOICE_ACTION=p_i %DCR_CHOICE_ACTION%
     )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i_only"] (
+        set DCR_CHOICE_ACTION=p_2_i
+    )
     if ["%DCR_CHOICE_ACTION%"] EQU ["ocr"] (
         set DCR_CHOICE_ACTION=p_i p_2_i %DCR_CHOICE_ACTION%
+    )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["ocr_only"] (
+        set DCR_CHOICE_ACTION=ocr
     )
     if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr %DCR_CHOICE_ACTION%
     )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p_only"] (
+        set DCR_CHOICE_ACTION=n_2_p
+    )
     if ["%DCR_CHOICE_ACTION%"] EQU ["tet"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p %DCR_CHOICE_ACTION%
+    )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["tet_only"] (
+        set DCR_CHOICE_ACTION=tet
     )
     if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet %DCR_CHOICE_ACTION%
     )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p_only"] (
+        set DCR_CHOICE_ACTION=s_f_p
+    )
     if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_f_p tkn %DCR_CHOICE_ACTION%
     )
+    if ["%DCR_CHOICE_ACTION%"] EQU ["tkn_only"] (
+        set DCR_CHOICE_ACTION=tkn
+    )
+
     pipenv run python src\dcr\dcr.py !DCR_CHOICE_ACTION!
     if ERRORLEVEL 1 (
         echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
     )
+
     goto normal_exit
 )
 
-echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | s_f_p | tet | tkn"
+echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | n_2_p[_only] | ocr[_only] | p_i | p_2_i[_only] | s_f_p[_only] | tet[_only] | tkn[_only]"
 
 :normal_exit
 echo -----------------------------------------------------------------------

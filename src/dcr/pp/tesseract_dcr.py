@@ -1,12 +1,15 @@
 """Module pp.tesseract_dcr: Convert image documents to pdf files."""
 import os
+import pathlib
 import time
 
 import cfg.glob
+import db.cls_action
+import db.cls_base
+import db.cls_run
 import db.dml
 import PyPDF2
 import pytesseract
-import sqlalchemy
 import utils
 
 
@@ -20,19 +23,24 @@ def convert_image_2_pdf() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    dbt = db.dml.dml_prepare(cfg.glob.DBT_DOCUMENT)
-
-    utils.reset_statistics_total()
-
-    with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, db.cls_run.Run.ACTION_CODE_TESSERACT)
+    with cfg.glob.db_orm_engine.begin() as conn:
+        rows = db.cls_action.Action.select_action_by_action_code(
+            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TESSERACT
+        )
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
 
-            utils.start_document_processing(
-                document=row,
-            )
+            cfg.glob.run.run_total_processed_to_be += 1
+
+            cfg.glob.action_curr = db.cls_action.Action.from_row(row)
+
+            if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+                cfg.glob.run.total_status_error += 1
+            else:
+                cfg.glob.run.total_status_ready += 1
+
+            cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
 
             convert_image_2_pdf_file()
 
@@ -46,17 +54,23 @@ def convert_image_2_pdf() -> None:
 # -----------------------------------------------------------------------------
 # Convert image documents to pdf files (step: ocr).
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def convert_image_2_pdf_file() -> None:
     """Convert scanned image pdf documents to image files."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    source_file_name, target_file_name = utils.prepare_file_names(cfg.glob.DOCUMENT_FILE_TYPE_PDF)
+    full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    if os.path.exists(target_file_name):
-        db.dml.update_document_error(
-            document_id=cfg.glob.base.base_id,
+    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
+    full_name_next = utils.get_full_name(
+        cfg.glob.action_curr.action_directory_name,
+        file_name_next,
+    )
+
+    if os.path.exists(full_name_next):
+        cfg.glob.action_curr.finalise_error(
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error_msg=cfg.glob.ERROR_41_903.replace("{file_name}", target_file_name),
+            error_msg=cfg.glob.ERROR_41_903.replace("{full_name}", full_name_next),
         )
         return
 
@@ -64,44 +78,35 @@ def convert_image_2_pdf_file() -> None:
     try:
         pdf = pytesseract.image_to_pdf_or_hocr(
             extension="pdf",
-            image=source_file_name,
+            image=full_name_curr,
             lang=cfg.glob.languages_tesseract[cfg.glob.base.base_id_language],
             timeout=cfg.glob.setup.tesseract_timeout,
         )
 
-        with open(target_file_name, "w+b") as target_file:
+        with open(full_name_next, "w+b") as target_file:
             # pdf type is bytes by default
             target_file.write(pdf)
 
-        utils.prepare_document_4_next_step(
-            next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_PDF,
-            next_step=db.cls_run.Run.ACTION_CODE_PDFLIB,
+        cfg.glob.action_next = db.cls_action.Action(
+            action_code=db.cls_run.Run.ACTION_CODE_PDFLIB,
+            directory_name=cfg.glob.action_curr.action_directory_name,
+            directory_type=cfg.glob.action_curr.action_directory_type,
+            file_name=file_name_next,
+            file_size_bytes=os.path.getsize(pathlib.Path(full_name_next)),
+            id_base=cfg.glob.action_curr.action_id_base,
+            id_parent=cfg.glob.action_curr.action_id,
+            id_run_last=cfg.glob.run.run_id,
+            no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(full_name_next))),
         )
 
-        cfg.glob.document_child_file_name = cfg.glob.document_stem_name + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
+        utils.delete_auxiliary_file(full_name_curr)
 
-        cfg.glob.document_child_stem_name = cfg.glob.document_stem_name
-
-        db.dml.insert_document_child()
-
-        if cfg.glob.base.base_id_base != cfg.glob.base.base_id_parent:
-            utils.delete_auxiliary_file(source_file_name)
-
-        # Document successfully converted to pdf format
-        duration_ns = utils.finalize_file_processing()
-
-        if cfg.glob.setup.is_verbose:
-            utils.progress_msg(
-                f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-                f"Document: {cfg.glob.base.base_id:6d} "
-                f"[{db.dml.select_document_file_name_id(cfg.glob.base.base_id)}]"
-            )
+        cfg.glob.action_curr.finalise()
     except RuntimeError as err:
-        db.dml.update_document_error(
-            document_id=cfg.glob.base.base_id,
+        cfg.glob.action_curr.finalise_error(
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-            error_msg=cfg.glob.ERROR_41_901.replace("{source_file}", source_file_name)
-            .replace("{target_file}", target_file_name)
+            error_msg=cfg.glob.ERROR_41_901.replace("{full_name_curr}", full_name_curr)
+            .replace("{full_name_next}", full_name_next)
             .replace("{type_error}", str(type(err)))
             .replace("{error}", str(err)),
         )
@@ -119,28 +124,32 @@ def reunite_pdfs() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    dbt = db.dml.dml_prepare(cfg.glob.DBT_DOCUMENT)
-
-    utils.reset_statistics_total()
-
-    with cfg.glob.db_orm_engine.connect() as conn:
-        rows = conn.execute(
-            sqlalchemy.select(dbt).where(
-                dbt.c.id.in_(
-                    sqlalchemy.select(dbt.c.document_id_base)
-                    .where(dbt.c.status == cfg.glob.DOCUMENT_STATUS_START)
-                    .where(dbt.c.next_step == db.cls_run.Run.ACTION_CODE_PDFLIB)
-                    .group_by(dbt.c.document_id_base)
-                    .having(sqlalchemy.func.count(dbt.c.document_id_base) > 1)
-                    .scalar_subquery()
-                )
-            )
+    with cfg.glob.db_orm_engine.begin() as conn:
+        rows = db.cls_action.Action.select_id_base_by_action_code_pypdf2(
+            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDFLIB
         )
 
         for row in rows:
-            utils.start_document_processing(
-                document=row,
+            cfg.glob.start_time_document = time.perf_counter_ns()
+
+            cfg.glob.run.run_total_processed_to_be += 1
+
+            cfg.glob.action_curr = db.cls_action.Action.from_id(row[0])
+
+            cfg.glob.action_curr.action_action_code = db.cls_run.Run.ACTION_CODE_PYPDF2
+            cfg.glob.action_curr.action_file_name = (
+                cfg.glob.action_curr.get_stem_name()[0:-2] + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
             )
+            cfg.glob.action_curr.action_file_size_bytes = -1
+            cfg.glob.action_curr.action_id = 0
+            cfg.glob.action_curr.action_no_pdf_pages = -1
+
+            if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+                cfg.glob.run.total_status_error += 1
+            else:
+                cfg.glob.run.total_status_ready += 1
+
+            cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
 
             reunite_pdfs_file()
 
@@ -154,95 +163,77 @@ def reunite_pdfs() -> None:
 # -----------------------------------------------------------------------------
 # Reunite the related pdf documents of a specific base document.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def reunite_pdfs_file() -> None:
     """Reunite the related pdf documents of a specific base document."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    cfg.glob.document_child_stem_name = cfg.glob.document_stem_name + "_" + str(cfg.glob.base.base_id_base) + "_0"
-    cfg.glob.document_child_file_name = cfg.glob.document_child_stem_name + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
+    stem_name_next = cfg.glob.action_curr.get_stem_name() + "_0"
+    file_name_next = stem_name_next + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
 
-    target_file_path = os.path.join(
-        cfg.glob.setup.directory_inbox_accepted,
-        cfg.glob.document_child_file_name,
+    full_name_next = utils.get_full_name(
+        cfg.glob.action_curr.action_directory_name,
+        file_name_next,
     )
 
-    if os.path.exists(target_file_path):
-        db.dml.update_document_error(
-            document_id=cfg.glob.base.base_id,
+    if os.path.exists(full_name_next):
+        cfg.glob.action_curr.finalise_error(
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error_msg=cfg.glob.ERROR_41_904.replace("{file_name}", str(target_file_path)),
+            error_msg=cfg.glob.ERROR_41_904.replace("{full_name}", str(full_name_next)),
         )
         return
 
     pdf_writer = PyPDF2.PdfFileWriter()
 
-    cfg.glob.documents_to_be_reunited = []
-
-    dbt = db.dml.dml_prepare(cfg.glob.DBT_DOCUMENT)
-
-    with cfg.glob.db_orm_engine.connect() as conn:
-        rows = conn.execute(
-            sqlalchemy.select(dbt)
-            .where(dbt.c.status == cfg.glob.DOCUMENT_STATUS_START)
-            .where(dbt.c.next_step == db.cls_run.Run.ACTION_CODE_PDFLIB)
-            .where(dbt.c.document_id_base == cfg.glob.base.base_id_base)
-            .order_by(dbt.c.id)
+    with cfg.glob.db_orm_engine.begin() as conn:
+        rows = db.cls_action.Action.select_action_by_action_code_id_base(
+            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDFLIB, id_base=cfg.glob.action_curr.action_id_base
         )
-
-        cfg.glob.document_child_id_parent = 0
 
         for row in rows:
             start_time_document = time.perf_counter_ns()
 
-            cfg.glob.document_child_id_parent = row.id
+            cfg.glob.run.total_generated += 1
 
-            source_file_path = os.path.join(row.directory_name, row.file_name)
+            cfg.glob.document_child_id_parent = row
 
-            pdf_reader = PyPDF2.PdfFileReader(source_file_path)
+            action_part = db.cls_action.Action.from_row(row)
+
+            full_name_curr = action_part.get_full_name()
+
+            pdf_reader = PyPDF2.PdfFileReader(full_name_curr)
             for page in range(pdf_reader.getNumPages()):
                 # Add each page to the writer object
                 pdf_writer.addPage(pdf_reader.getPage(page))
 
-            utils.delete_auxiliary_file(str(source_file_path))
+            utils.delete_auxiliary_file(str(full_name_curr))
 
-            duration_ns = time.perf_counter_ns() - start_time_document
+            action_part.action_code = db.cls_run.Run.ACTION_CODE_PYPDF2
+            action_part.action_duration_ns = time.perf_counter_ns() - start_time_document
+            action_part.action_status = cfg.glob.DOCUMENT_STATUS_END
 
-            db.dml.update_dbt_id(
-                cfg.glob.DBT_DOCUMENT,
-                row.id,
-                {
-                    cfg.glob.DBC_DURATION_NS: duration_ns,
-                    cfg.glob.DBC_NEXT_STEP: db.cls_run.Run.ACTION_CODE_PYPDF2,
-                    cfg.glob.DBC_STATUS: cfg.glob.DOCUMENT_STATUS_END,
-                },
-            )
-
-            cfg.glob.document_child_id_parent = row.id
+            action_part.persist_2_db()
 
         conn.close()
 
     # Write out the merged PDF
-    with open(target_file_path, "wb") as out:
+    with open(full_name_next, "wb") as out:
         pdf_writer.write(out)
 
-    utils.prepare_document_4_next_step(
-        next_file_type=cfg.glob.DOCUMENT_FILE_TYPE_PDF,
-        next_step=db.cls_run.Run.ACTION_CODE_PDFLIB,
+    cfg.glob.action_next = db.cls_action.Action(
+        action_code=db.cls_run.Run.ACTION_CODE_PDFLIB,
+        directory_name=cfg.glob.action_curr.action_directory_name,
+        directory_type=cfg.glob.action_curr.action_directory_type,
+        file_name=file_name_next,
+        file_size_bytes=os.path.getsize(pathlib.Path(full_name_next)),
+        id_base=cfg.glob.action_curr.action_id_base,
+        id_parent=cfg.glob.action_curr.action_id,
+        id_run_last=cfg.glob.run.run_id,
+        no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(full_name_next))),
     )
 
-    cfg.glob.document_child_directory_name = cfg.glob.setup.directory_inbox_accepted
-    cfg.glob.document_child_directory_type = cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED
+    cfg.glob.action_curr.finalise()
 
-    db.dml.insert_document_child()
-
-    # Child document successfully reunited to one pdf document
-    duration_ns = utils.finalize_file_processing()
-
-    if cfg.glob.setup.is_verbose:
-        utils.progress_msg(
-            f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {cfg.glob.base.base_id:6d} "
-            f"[{db.dml.select_document_file_name_id(cfg.glob.base.base_id)}]"
-        )
+    cfg.glob.run.run_total_processed_ok += 1
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

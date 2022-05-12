@@ -90,6 +90,9 @@ class Action:
         Returns:
             db.utils.Columns: Database columns.
         """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
         return {
             cfg.glob.DBC_ACTION_CODE: self.action_action_code,
             cfg.glob.DBC_ACTION_TEXT: cfg.glob.run.get_action_text(self.action_action_code),
@@ -177,6 +180,8 @@ class Action:
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
         """Finalise the current action."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
         self.action_duration_ns = time.perf_counter_ns() - cfg.glob.start_time_document
 
         if self.action_file_size_bytes == 0:
@@ -212,6 +217,8 @@ class Action:
                 f"[{self.action_file_name}]"
             )
 
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
     # -----------------------------------------------------------------------------
     # Finalise the current action with error.
     # -----------------------------------------------------------------------------
@@ -222,6 +229,8 @@ class Action:
             error_code (str)                : Error code.
             error_msg (str)                 : Error message.
         """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
         self.action_duration_ns = time.perf_counter_ns() - cfg.glob.start_time_document
         self.action_error_code_last = error_code
         self.action_error_msg_last = error_msg
@@ -254,12 +263,47 @@ class Action:
                 f"Error: {error_msg}."
             )
 
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+    # -----------------------------------------------------------------------------
+    # Initialise from id.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def from_id(cls, id_action: int | sqlalchemy.Integer) -> Action:
+        """Initialise from id."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+        dbt = sqlalchemy.Table(
+            cfg.glob.DBT_ACTION,
+            cfg.glob.db_orm_metadata,
+            autoload_with=cfg.glob.db_orm_engine,
+        )
+
+        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+            row = conn.execute(
+                sqlalchemy.select(dbt).where(
+                    dbt.c.id == id_action,
+                )
+            ).fetchone()
+            conn.close()
+
+        if row == ():
+            utils.terminate_fatal(
+                f"The action with id={id_action} does not exist in the database table 'action'",
+            )
+
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+        return Action.from_row(row)  # type: ignore
+
     # -----------------------------------------------------------------------------
     # Initialise from a database row.
     # -----------------------------------------------------------------------------
     @classmethod
     def from_row(cls, row: sqlalchemy.engine.Row) -> Action:
         """Initialise from a database row."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return cls(
             _row_id=row[cfg.glob.DBC_ID],
@@ -329,13 +373,19 @@ class Action:
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
         if self.action_id == 0:
-            self.action_file_size_bytes = os.path.getsize(
-                pathlib.Path(self.action_directory_name, self.action_file_name)
-            )
-            self.action_no_pdf_pages = utils.get_pdf_pages_no(
-                str(pathlib.Path(self.action_directory_name, self.action_file_name))
-            )
+            if self.action_file_size_bytes == 0:
+                self.action_file_size_bytes = os.path.getsize(
+                    pathlib.Path(self.action_directory_name, self.action_file_name)
+                )
+
+            if self.action_no_pdf_pages == 0:
+                self.action_no_pdf_pages = utils.get_pdf_pages_no(
+                    str(pathlib.Path(self.action_directory_name, self.action_file_name))
+                )
+
             self.action_status = self.action_status if self.action_status != "" else cfg.glob.DOCUMENT_STATUS_START
 
             self.action_id = db.dml.insert_dbt_row(
@@ -353,12 +403,14 @@ class Action:
                 columns=self._get_columns(),
             )
 
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
     # -----------------------------------------------------------------------------
-    # Select the actions to be processed based on action_code.
+    # Select unprocessed actions based on action_code.
     # -----------------------------------------------------------------------------
     @classmethod
-    def select_by_action_code(cls, conn: Connection, action_code: str) -> sqlalchemy.engine.CursorResult:
-        """Select the actions to be processed based on action_code.
+    def select_action_by_action_code(cls, conn: Connection, action_code: str) -> sqlalchemy.engine.CursorResult:
+        """Select unprocessed actions based on action_code.
 
         Args:
             conn (Connection): The database connection.
@@ -369,7 +421,7 @@ class Action:
         """
         dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
-        return conn.execute(
+        stmnt = (
             sqlalchemy.select(dbt)
             .where(
                 sqlalchemy.and_(
@@ -384,3 +436,100 @@ class Action:
             )
             .order_by(dbt.c.id.asc())
         )
+
+        cfg.glob.logger.debug("SQL Statment=%s", stmnt)
+
+        return conn.execute(stmnt)
+
+    # -----------------------------------------------------------------------------
+    # Select unprocessed actions based on action_code und base id.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def select_action_by_action_code_id_base(
+        cls, conn: Connection, action_code: str, id_base: int
+    ) -> sqlalchemy.engine.CursorResult:
+        """Select unprocessed actions based on action_code und parent id.
+
+        Args:
+            conn (Connection): The database connection.
+            action_code (str): The requested action code.
+            id_base (int): The requested parent id.
+
+        Returns:
+            sqlalchemy.engine.CursorResult: The rows found.
+        """
+        dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
+
+        stmnt = (
+            sqlalchemy.select(dbt)
+            .where(
+                sqlalchemy.and_(
+                    dbt.c.action_code == action_code,
+                    dbt.c.id_base == id_base,
+                    dbt.c.status.in_(
+                        [
+                            cfg.glob.DOCUMENT_STATUS_ERROR,
+                            cfg.glob.DOCUMENT_STATUS_START,
+                        ]
+                    ),
+                )
+            )
+            .order_by(dbt.c.id.asc())
+        )
+
+        cfg.glob.logger.debug("SQL Statment=%s", stmnt)
+
+        return conn.execute(stmnt)
+
+    # -----------------------------------------------------------------------------
+    # Select parents with more than one unprocessed child based on action code.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def select_id_base_by_action_code_pypdf2(cls, conn: Connection, action_code: str) -> sqlalchemy.engine.CursorResult:
+        """Select parents with more than one unprocessed child based on action
+        code.
+
+        Args:
+            conn (Connection): The database connection.
+            action_code (str): The requested action code.
+
+        Returns:
+            sqlalchemy.engine.CursorResult: The rows found.
+        """
+        dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
+
+        sub_query = (
+            sqlalchemy.select(dbt.c.id_base)
+            .where(dbt.c.action_code == action_code)
+            .where(
+                dbt.c.status.in_(
+                    [
+                        cfg.glob.DOCUMENT_STATUS_ERROR,
+                        cfg.glob.DOCUMENT_STATUS_START,
+                    ]
+                )
+            )
+            .group_by(dbt.c.id_base)
+            .having(sqlalchemy.func.count(dbt.c.id_base) > 1)
+            .scalar_subquery()
+        )
+
+        stmnt = (
+            sqlalchemy.select(sqlalchemy.func.min(dbt.c.id))
+            .where(dbt.c.id_base.in_(sub_query))
+            .where(dbt.c.action_code == action_code)
+            .where(
+                dbt.c.status.in_(
+                    [
+                        cfg.glob.DOCUMENT_STATUS_ERROR,
+                        cfg.glob.DOCUMENT_STATUS_START,
+                    ]
+                )
+            )
+            .group_by(dbt.c.id_base)
+            .order_by(dbt.c.id_base)
+        )
+
+        cfg.glob.logger.debug("SQL Statment=%s", stmnt)
+
+        return conn.execute(stmnt)

@@ -147,52 +147,28 @@ DOCUMENT_STATUS_ERROR: str = "error"
 DOCUMENT_STATUS_START: str = "start"
 
 ERROR_01_901: str = "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
-ERROR_01_902: str = (
-    "01.902 Issue (p_i): Moving '{source_file}' to '{target_file}' " + "- error: code='{error_code}' msg='{error_msg}'."
-)
 ERROR_01_903: str = (
-    "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{source_file}' " + "- error: '{error_msg}'."
-)
-ERROR_01_904: str = (
-    "01.904 Issue (p_i): File permission with file '{source_file}' " + "- error: code='{error_code}' msg='{error_msg}'."
+    "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{file_name}' " + "- error: '{error_msg}'."
 )
 ERROR_01_905: str = (
     "01.905 Issue (p_i): The same file has probably already been processed " + "once under the file name '{file_name}'."
 )
-ERROR_01_906: str = "01.906 Issue (p_i): The target file '{file_name}' already exists."
+ERROR_01_906: str = "01.906 Issue (p_i): The target file '{full_name}' already exists."
 
-ERROR_21_901: str = (
-    "21.901 Issue (p_2_i): The 'pdf' document '{file_name}' cannot be converted to an "
-    + "image format - error: '{error_msg}'."
-)
-ERROR_21_902: str = (
-    "21.902 Issue (p_2_i): The child image file number '{no_children}' with file name "
-    + "'{file_name}' cannot be stored "
-    + "- error: code='{error_code}' msg='{error_msg}'."
-)
-ERROR_21_903: str = "21.903 Issue (p_2_i): The target file '{file_name}' already exists."
+ERROR_21_903: str = "21.903 Issue (p_2_i): The target file '{full_name}' already exists."
 
-ERROR_31_901: str = (
-    "31.901 Issue (n_2_p): Converting the file '{source_file}' to the file "
-    + "'{target_file}' with Pandoc and TeX Live failed - output='{output}'."
-)
 ERROR_31_902: str = (
-    "31.902 Issue (n_2_p): The file '{file_name}' cannot be converted to an " + "'pdf' document - error: '{error_msg}'."
+    "31.902 Issue (n_2_p): The file '{full_name}' cannot be converted to an " + "'pdf' document - error: '{error_msg}'."
 )
-ERROR_31_903: str = "31.903 Issue (n_2_p): The target file '{file_name}' already exists."
+ERROR_31_903: str = "31.903 Issue (n_2_p): The target file '{full_name}' already exists."
 
 ERROR_41_901: str = (
-    "41.901 Issue (ocr): Converting the file '{source_file}' to the file "
-    + "'{target_file}' with Tesseract OCR failed - "
+    "41.901 Issue (ocr): Converting the file '{full_name_curr}' to the file "
+    + "'{full_name_next}' with Tesseract OCR failed - "
     + "error type: '{error_type}' - error: '{error}'."
 )
-ERROR_41_902: str = (
-    "41.902 Issue (ocr): Converting the file '{source_file}' to the file "
-    + "'{target_file}' with Tesseract OCR failed - "
-    + "error status: '{error_status}' - error: '{error}'."
-)
-ERROR_41_903: str = "41.903 Issue (ocr): The target file '{file_name}' already exists."
-ERROR_41_904: str = "41.904 Issue (ocr): The target file '{file_name}' already exists."
+ERROR_41_903: str = "41.903 Issue (ocr): The target file '{full_name}' already exists."
+ERROR_41_904: str = "41.904 Issue (pypdf2): The target file '{full_name}' already exists."
 
 ERROR_51_901: str = (
     "51.901 Issue (tet): Opening document '{file_name}' - "

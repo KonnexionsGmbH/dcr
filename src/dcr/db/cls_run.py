@@ -110,6 +110,9 @@ class Run:
         Returns:
             db.utils.Columns: Database columns.
         """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
         return {
             cfg.glob.DBC_ACTION_CODE: self.run_action_code,
             cfg.glob.DBC_ACTION_TEXT: Run.get_action_text(self.run_action_code),
@@ -176,9 +179,13 @@ class Run:
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
         """Finalise the current row."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
         self.run_status = cfg.glob.DOCUMENT_STATUS_END
 
         self.persist_2_db()
+
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Initialise from id.
@@ -186,6 +193,7 @@ class Run:
     @classmethod
     def from_id(cls, id_run: int | sqlalchemy.Integer) -> Run:
         """Initialise from id."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
             cfg.glob.DBT_RUN,
@@ -206,6 +214,8 @@ class Run:
                 f"The run with id={id_run} does not exist in the database table 'run'",
             )
 
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
         return Run.from_row(row)  # type: ignore
 
     # -----------------------------------------------------------------------------
@@ -214,6 +224,8 @@ class Run:
     @classmethod
     def from_row(cls, row: sqlalchemy.engine.Row) -> Run:
         """Initialise from a database row."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return cls(
             _row_id=row[cfg.glob.DBC_ID],
@@ -255,6 +267,8 @@ class Run:
                 action_text = Run._ACTION_TEXT_PDF2IMAGE
             case Run.ACTION_CODE_PDFLIB:
                 action_text = Run._ACTION_TEXT_PDFLIB
+            case Run.ACTION_CODE_PYPDF2:
+                action_text = Run._ACTION_TEXT_PYPDF2
             case Run.ACTION_CODE_TESSERACT:
                 action_text = Run._ACTION_TEXT_TESSERACT
             case Run.ACTION_CODE_TOKENIZE:
@@ -295,6 +309,8 @@ class Run:
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
         if self.run_id == 0:
             self.run_id = db.dml.insert_dbt_row(
                 cfg.glob.DBT_RUN,
@@ -313,3 +329,5 @@ class Run:
                 id_where=self.run_id,
                 columns=self._get_columns(),
             )
+
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)

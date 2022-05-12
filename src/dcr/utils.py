@@ -424,7 +424,10 @@ def show_statistics_total() -> None:
             utils.progress_msg(f"Number documents converted:                {cfg.glob.run.run_total_processed_ok:6d}")
 
         if cfg.glob.run.total_generated > 0:
-            utils.progress_msg(f"Number documents generated:                {cfg.glob.run.total_generated:6d}")
+            if cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_PYPDF2:
+                utils.progress_msg(f"Number generated pdf documents:            {cfg.glob.run.total_generated:6d}")
+            else:
+                utils.progress_msg(f"Number pdf documents generated:            {cfg.glob.run.total_generated:6d}")
 
         # noinspection PyUnresolvedReferences
         if cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_INBOX:

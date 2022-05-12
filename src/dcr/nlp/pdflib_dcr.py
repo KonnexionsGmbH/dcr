@@ -129,7 +129,7 @@ def extract_text_from_pdf_file_line() -> None:
         cfg.glob.document_stem_name + "." + xml_variation + cfg.glob.DOCUMENT_FILE_TYPE_XML
     )
 
-    cfg.glob.document_child_stem_name = cfg.glob.document_stem_name
+    cfg.glob.target_stem_name = cfg.glob.document_stem_name
 
     db.dml.insert_document_child()
 
@@ -263,7 +263,7 @@ def extract_text_from_pdf_file_word() -> None:
     cfg.glob.document_child_file_name = (
         cfg.glob.document_stem_name + "." + xml_variation + cfg.glob.DOCUMENT_FILE_TYPE_XML
     )
-    cfg.glob.document_child_stem_name = cfg.glob.document_stem_name
+    cfg.glob.target_stem_name = cfg.glob.document_stem_name
 
     db.dml.insert_document_child()
 

@@ -98,6 +98,7 @@ class Language:
     @classmethod
     def from_id(cls, id_language: int | sqlalchemy.Integer) -> Language:
         """Initialise from id."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
             cfg.glob.DBT_LANGUAGE,
@@ -118,6 +119,8 @@ class Language:
                 f"The language with id={id_language} does not exist in the database table 'language'",
             )
 
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
         return Language.from_row(row)  # type: ignore
 
     # -----------------------------------------------------------------------------
@@ -126,6 +129,8 @@ class Language:
     @classmethod
     def from_row(cls, row: sqlalchemy.engine.Row) -> Language:
         """Initialise from a database row."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return cls(
             _row_id=row[cfg.glob.DBC_ID],

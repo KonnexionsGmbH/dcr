@@ -128,22 +128,16 @@ DOCUMENT_STATUS_ERROR: str
 DOCUMENT_STATUS_START: str
 
 ERROR_01_901: str
-ERROR_01_902: str
 ERROR_01_903: str
-ERROR_01_904: str
 ERROR_01_905: str
 ERROR_01_906: str
 
-ERROR_21_901: str
-ERROR_21_902: str
 ERROR_21_903: str
 
-ERROR_31_901: str
 ERROR_31_902: str
 ERROR_31_903: str
 
 ERROR_41_901: str
-ERROR_41_902: str
 ERROR_41_903: str
 ERROR_41_904: str
 
@@ -329,7 +323,7 @@ document_child_id_language: sqlalchemy.Integer
 document_child_next_step: str | None
 document_no_children: sqlalchemy.Integer | None
 document_child_status: str
-document_child_stem_name: str
+target_stem_name: str
 
 document_current_step: str
 document_directory_name: str

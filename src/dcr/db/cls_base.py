@@ -73,6 +73,9 @@ class Base:
         Returns:
             db.utils.Columns: Database columns.
         """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
         return {
             cfg.glob.DBC_ACTION_CODE_LAST: self.base_action_code_last,
             cfg.glob.DBC_ACTION_TEXT_LAST: db.cls_run.Run.get_action_text(self.base_action_code_last),
@@ -150,9 +153,13 @@ class Base:
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
         """Finalise the current row."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
         self.base_status = cfg.glob.DOCUMENT_STATUS_END
 
         self.persist_2_db()
+
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Finalise the current row with error.
@@ -164,6 +171,8 @@ class Base:
             error_code (str)                : Error code.
             error_msg (str)                 : Error message.
         """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
         self.base_error_code_last = error_code
         self.base_error_msg_last = error_msg
         self.base_error_no += 1
@@ -171,12 +180,15 @@ class Base:
 
         self.persist_2_db()
 
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
     # -----------------------------------------------------------------------------
     # Initialise from id.
     # -----------------------------------------------------------------------------
     @classmethod
     def from_id(cls, id_base: int | sqlalchemy.Integer) -> Base:
         """Initialise from id."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
             cfg.glob.DBT_BASE,
@@ -197,6 +209,8 @@ class Base:
                 f"The base with id={id_base} does not exist in the database table 'base'",
             )
 
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
         return Base.from_row(row)  # type: ignore
 
     # -----------------------------------------------------------------------------
@@ -205,6 +219,8 @@ class Base:
     @classmethod
     def from_row(cls, row: sqlalchemy.engine.Row) -> Base:
         """Initialise from a database row."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return cls(
             _row_id=row[cfg.glob.DBC_ID],
@@ -271,6 +287,8 @@ class Base:
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
         if self.base_id == 0:
             self.base_file_size_bytes = os.path.getsize(pathlib.Path(self.base_directory_name, self.base_file_name))
             self.base_no_pdf_pages = utils.get_pdf_pages_no(
@@ -288,3 +306,5 @@ class Base:
                 id_where=self.base_id,
                 columns=self._get_columns(),
             )
+
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)

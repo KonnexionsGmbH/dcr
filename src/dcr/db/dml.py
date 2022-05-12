@@ -105,7 +105,7 @@ def insert_document_child() -> None:
             cfg.glob.DBC_NO_PDF_PAGES: utils.get_pdf_pages_no(file_path),
             cfg.glob.DBC_ID_RUN: cfg.glob.run.run_id_run,
             cfg.glob.DBC_STATUS: cfg.glob.document_child_status,
-            cfg.glob.DBC_STEM_NAME: cfg.glob.document_child_stem_name,
+            cfg.glob.DBC_STEM_NAME: cfg.glob.target_stem_name,
         },
     )
 

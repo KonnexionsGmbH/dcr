@@ -14,24 +14,24 @@ export PYTHONPATH=${PYTHONPATH}:src/dcr
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
-    echo "aui   - Run the administration user interface."
+    echo "aui          - Run the administration user interface."
     echo "------------------------------------------------------------------------------"
-    echo "all   - Run the complete processing of all new documents."
+    echo "all          - Run the complete processing of all new documents."
     echo "------------------------------------------------------------------------------"
-    echo "p_i   - 1. Process the inbox directory."
-    echo "p_2_i - 2. Convert pdf documents to image files:         pdf2image / Poppler."
-    echo "ocr   - 3. Convert image documents to pdf files:         Tesseract OCR / Tex Live."
-    echo "n_2_p - 2. Convert non-pdf documents to pdf files:       Pandoc."
+    echo "p_i          - 1. Process the inbox directory."
+    echo "p_2_i[_only] - 2. Convert pdf documents to image files:         pdf2image / Poppler."
+    echo "ocr[_only]   - 3. Convert image documents to pdf files:         Tesseract OCR / Tex Live."
+    echo "n_2_p[_only] - 2. Convert non-pdf documents to pdf files:       Pandoc."
     echo "------------------------------------------------------------------------------"
-    echo "tet   - 4. Extract text and metadata from pdf documents: PDFlib TET."
-    echo "s_f_p - 5. Store the parser result in the database."
-    echo "tkn   - 6. Create qualified document tokens.             SpaCy."
+    echo "tet[_only]   - 4. Extract text and metadata from pdf documents: PDFlib TET."
+    echo "s_f_p[_only] - 5. Store the parser result in the database."
+    echo "tkn[_only]   - 6. Create qualified document tokens.             SpaCy."
     echo "------------------------------------------------------------------------------"
-    echo "db_c  - Create the database."
-    echo "db_u  - Upgrade the database."
+    echo "db_c         - Create the database."
+    echo "db_u         - Upgrade the database."
     echo "------------------------------------------------------------------------------"
-    echo "m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem."
-    echo "m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules."
+    echo "m_d          - Run the installation of the necessary 3rd party packages for development and run the development ecosystem."
+    echo "m_p          - Run the installation of the necessary 3rd party packages for production and compile all packages and modules."
     echo "------------------------------------------------------------------------------"
     read -rp "Enter the desired action [default: ${DCR_CHOICE_ACTION_DEFAULT}] " DCR_CHOICE_ACTION
     export DCR_CHOICE_ACTION=${DCR_CHOICE_ACTION:-$DCR_CHOICE_ACTION_DEFAULT}
@@ -84,23 +84,41 @@ case "${DCR_CHOICE_ACTION}" in
     ;;
   db_u|n_2_p|ocr|p_2_i|s_f_p|tet|tkn)
     case "${DCR_CHOICE_ACTION}" in
-      p_2_i)
-        export DCR_CHOICE_ACTION=p_i ${DCR_CHOICE_ACTION}
+      n_2_p)
+        export DCR_CHOICE_ACTION=p_i p_2_i ocr ${DCR_CHOICE_ACTION}
+        ;;
+      n_2_p_only)
+        export DCR_CHOICE_ACTION=n_2_p
         ;;
       ocr)
         export DCR_CHOICE_ACTION=p_i p_2_i ${DCR_CHOICE_ACTION}
         ;;
-      n_2_p)
-        export DCR_CHOICE_ACTION=p_i p_2_i ocr ${DCR_CHOICE_ACTION}
+      ocr_only)
+        export DCR_CHOICE_ACTION=ocr
         ;;
-      tet)
-        export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p ${DCR_CHOICE_ACTION}
+      p_2_i)
+        export DCR_CHOICE_ACTION=p_i ${DCR_CHOICE_ACTION}
+        ;;
+      p_2_i_only)
+        export DCR_CHOICE_ACTION=p_2_i
         ;;
       s_f_p)
         export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet ${DCR_CHOICE_ACTION}
         ;;
+      s_f_p_only)
+        export DCR_CHOICE_ACTION=s_f_p
+        ;;
+      tet)
+        export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p ${DCR_CHOICE_ACTION}
+        ;;
+      tet_only)
+        export DCR_CHOICE_ACTION=tet
+        ;;
       tkn)
         export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_f_p ${DCR_CHOICE_ACTION}
+        ;;
+      tkn_only)
+        export DCR_CHOICE_ACTION=tkn
         ;;
       *)
         ;;
@@ -115,7 +133,7 @@ case "${DCR_CHOICE_ACTION}" in
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
-    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p | ocr | p_i | p_2_i | s_f_p | tet | tkn"
+    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p[_only] | ocr[_only] | p_i | p_2_i[_only] | s_f_p[_only] | tet[_only] | tkn[_only]"
     ;;
 esac
 

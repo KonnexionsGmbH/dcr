@@ -157,9 +157,7 @@ def prepare_pdf(file_path: pathlib.Path) -> None:
     except RuntimeError as err:
         process_inbox_rejected(
             cfg.glob.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
-            cfg.glob.ERROR_01_903.replace("{source_file}", cfg.glob.base.base_file_name).replace(
-                "{error_msg}", str(err)
-            ),
+            cfg.glob.ERROR_01_903.replace("{file_name}", cfg.glob.base.base_file_name).replace("{error_msg}", str(err)),
         )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -228,8 +226,8 @@ def process_inbox_accepted(action_code: str) -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    source_file = cfg.glob.base.get_full_name()
-    target_file = utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, utils.get_file_name_original())
+    full_name_curr = cfg.glob.base.get_full_name()
+    full_name_next = utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, utils.get_file_name_original())
 
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,
@@ -238,13 +236,13 @@ def process_inbox_accepted(action_code: str) -> None:
         file_name=cfg.glob.base.base_file_name,
     )
 
-    if os.path.exists(target_file):
+    if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error_msg=cfg.glob.ERROR_01_906.replace("{file_name}", target_file),
+            error_msg=cfg.glob.ERROR_01_906.replace("{full_name}", full_name_next),
         )
     else:
-        shutil.move(source_file, target_file)
+        shutil.move(full_name_curr, full_name_next)
 
         cfg.glob.action_next = initialise_action(
             action_code=action_code,
@@ -352,8 +350,8 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    source_file = cfg.glob.base.get_full_name()
-    target_file = utils.get_full_name(cfg.glob.setup.directory_inbox_rejected, utils.get_file_name_original())
+    full_name_curr = cfg.glob.base.get_full_name()
+    full_name_next = utils.get_full_name(cfg.glob.setup.directory_inbox_rejected, utils.get_file_name_original())
 
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,
@@ -363,13 +361,13 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     )
 
     # Move the document file from directory inbox to directory inbox_rejected - if not yet existing
-    if os.path.exists(target_file):
+    if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error_msg=cfg.glob.ERROR_01_906.replace("{file_name}", target_file),
+            error_msg=cfg.glob.ERROR_01_906.replace("{full_name}", full_name_next),
         )
     else:
-        shutil.move(source_file, target_file)
+        shutil.move(full_name_curr, full_name_next)
 
         cfg.glob.action_curr.finalise_error(
             error_code=error_code,
