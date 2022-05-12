@@ -195,58 +195,6 @@ def create_dbt_content_tetml_line(table_name: str) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Create the database table content_tetml_page.
-# -----------------------------------------------------------------------------
-def create_dbt_content_tetml_page(table_name: str) -> None:
-    """Create the database table content_tetml_page.
-
-    Args:
-        table_name (str): Table name.
-    """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    sqlalchemy.Table(
-        table_name,
-        cfg.glob.db_orm_metadata,
-        sqlalchemy.Column(
-            cfg.glob.DBC_ID,
-            sqlalchemy.Integer,
-            autoincrement=True,
-            nullable=False,
-            primary_key=True,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_CREATED_AT,
-            sqlalchemy.DateTime,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_MODIFIED_AT,
-            sqlalchemy.DateTime,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_DOCUMENT_ID,
-            sqlalchemy.Integer,
-            sqlalchemy.ForeignKey(cfg.glob.DBT_DOCUMENT + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
-            nullable=False,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_PAGE_NO,
-            sqlalchemy.Integer,
-            nullable=False,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_PAGE_DATA,
-            sqlalchemy.TEXT,
-            nullable=False,
-        ),
-    )
-
-    utils.progress_msg(f"The database table '{table_name}' has now been created")
-
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
 # Create the database table content_tetml_word.
 # -----------------------------------------------------------------------------
 def create_dbt_content_tetml_word(table_name: str) -> None:
@@ -509,7 +457,6 @@ def create_schema() -> None:
     create_dbt_document(cfg.glob.DBT_DOCUMENT)
     # FK: document
     create_dbt_content_tetml_line(cfg.glob.DBT_CONTENT_TETML_LINE)
-    create_dbt_content_tetml_page(cfg.glob.DBT_CONTENT_TETML_PAGE)
     create_dbt_content_tetml_word(cfg.glob.DBT_CONTENT_TETML_WORD)
     create_dbt_content_token(cfg.glob.DBT_CONTENT_TOKEN)
 
@@ -519,7 +466,6 @@ def create_schema() -> None:
             cfg.glob.DBT_ACTION,
             cfg.glob.DBT_BASE,
             cfg.glob.DBT_CONTENT_TETML_LINE,
-            cfg.glob.DBT_CONTENT_TETML_PAGE,
             cfg.glob.DBT_CONTENT_TETML_WORD,
             cfg.glob.DBT_CONTENT_TOKEN,
             cfg.glob.DBT_DOCUMENT,
@@ -590,7 +536,6 @@ def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
                     "action",
                     "base",
                     "content_tetml_line",
-                    "content_tetml_page",
                     "content_tetml_word",
                     "content_token",
                     "document",

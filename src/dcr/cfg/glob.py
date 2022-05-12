@@ -81,7 +81,6 @@ DBC_VERSION: str = "version"
 DBT_ACTION: str = "action"
 DBT_BASE: str = "base"
 DBT_CONTENT_TETML_LINE: str = "content_tetml_line"
-DBT_CONTENT_TETML_PAGE: str = "content_tetml_page"
 DBT_CONTENT_TETML_WORD: str = "content_tetml_word"
 DBT_CONTENT_TOKEN: str = "content_token"
 DBT_DOCUMENT: str = "document"
@@ -171,11 +170,7 @@ ERROR_41_903: str = "41.903 Issue (ocr): The target file '{full_name}' already e
 ERROR_41_904: str = "41.904 Issue (pypdf2): The target file '{full_name}' already exists."
 
 ERROR_51_901: str = (
-    "51.901 Issue (tet): Opening document '{file_name}' - "
-    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-)
-ERROR_51_902: str = (
-    "51.902 Issue (tet): TETML data could not be retrieved from document '{file_name}' - "
+    "51.901 Issue (tet): Opening document '{full_name}' - "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
 ERROR_51_903: str = (
@@ -183,6 +178,7 @@ ERROR_51_903: str = (
     + "'{target_file}' failed: "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
+ERROR_51_904: str = "51.904 Issue (pdflib): The target file '{full_name}' already exists."
 
 ERROR_61_901: str = (
     "61.901 Issue (s_f_p): {function}: Unknown child tag '{child_tag}' - " + "in parent tag '{parent_tag}'."
