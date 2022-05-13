@@ -144,7 +144,6 @@ The customisable entries are:
     line_header_max_distance = 3
     line_header_max_lines = 3
     pdf2image_type = jpeg
-    simulate_parser = false
     spacy_tkn_attr_...
     tesseract_timeout = 30
     tetml_line = true
@@ -180,7 +179,6 @@ The customisable entries are:
 | line_header_max_distance | **`3`**                               | Maximum Levenshtein distance for a header line.                                                    |
 | line_header_max_lines    | **`3`**                               | Maximum number of headers.                                                                         |
 | pdfimage_type            | **`jpeg`**                            | Format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**.            |
-| simulate_parser          | **`false`**                           | Simulate the parsing process for testing purposes.                                                 |
 | tesseract_timeout        | **`30`**                              | Terminate the tesseract job after a <br>period of time (seconds).                                  |
 | tetml_line               | **`true`**                            | PDFlib TET granularity 'line'.                                                                     |
 | tetml_page               | **`false`**                           | PDFlib TET granularity 'page'.                                                                     |

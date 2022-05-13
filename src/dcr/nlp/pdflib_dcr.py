@@ -147,23 +147,38 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
 
     tet.close_document(file_curr)
 
-    if xml_variation == WORD_XML_VARIATION or xml_variation == PAGE_XML_VARIATION and cfg.glob.setup.is_tetml_line:
+    if xml_variation == PAGE_XML_VARIATION and cfg.glob.setup.is_tetml_line:
         status = cfg.glob.DOCUMENT_STATUS_END
     else:
         status = cfg.glob.DOCUMENT_STATUS_START
 
-    cfg.glob.action_next = db.cls_action.Action(
-        action_code=db.cls_run.Run.ACTION_CODE_PARSER,
-        directory_name=cfg.glob.action_curr.action_directory_name,
-        directory_type=cfg.glob.action_curr.action_directory_type,
-        file_name=file_name_next,
-        file_size_bytes=os.path.getsize(pathlib.Path(full_name_next)),
-        id_base=cfg.glob.action_curr.action_id_base,
-        id_parent=cfg.glob.action_curr.action_id,
-        id_run_last=cfg.glob.run.run_id,
-        no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(full_name_next))),
-        status=status,
-    )
+    if xml_variation == LINE_XML_VARIATION or xml_variation == PAGE_XML_VARIATION and not cfg.glob.setup.is_tetml_line:
+        db.cls_action.Action(
+            action_code=db.cls_run.Run.ACTION_CODE_PARSER_LINE,
+            directory_name=cfg.glob.action_curr.action_directory_name,
+            directory_type=cfg.glob.action_curr.action_directory_type,
+            file_name=file_name_next,
+            file_size_bytes=os.path.getsize(pathlib.Path(full_name_next)),
+            id_base=cfg.glob.action_curr.action_id_base,
+            id_parent=cfg.glob.action_curr.action_id,
+            id_run_last=cfg.glob.run.run_id,
+            no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(full_name_next))),
+            status=status,
+        )
+
+    if xml_variation == WORD_XML_VARIATION:
+        db.cls_action.Action(
+            action_code=db.cls_run.Run.ACTION_CODE_PARSER_WORD,
+            directory_name=cfg.glob.action_curr.action_directory_name,
+            directory_type=cfg.glob.action_curr.action_directory_type,
+            file_name=file_name_next,
+            file_size_bytes=os.path.getsize(pathlib.Path(full_name_next)),
+            id_base=cfg.glob.action_curr.action_id_base,
+            id_parent=cfg.glob.action_curr.action_id,
+            id_run_last=cfg.glob.run.run_id,
+            no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(full_name_next))),
+            status=status,
+        )
 
     tet.delete()
 

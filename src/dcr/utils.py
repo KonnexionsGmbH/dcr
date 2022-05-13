@@ -12,7 +12,6 @@ import db.dml
 import db.driver
 import PyPDF2
 import PyPDF2.utils
-import sqlalchemy.engine
 import utils
 
 
@@ -46,9 +45,9 @@ def compute_sha256(file: pathlib.Path) -> str:
     """
     sha256_hash = hashlib.sha256()
 
-    with open(file, "rb") as file_content:
+    with open(file, "rb") as file_handle:
         # Read and update hash string value in blocks of 4K
-        for byte_block in iter(lambda: file_content.read(4096), b""):
+        for byte_block in iter(lambda: file_handle.read(4096), b""):
             sha256_hash.update(byte_block)
 
     return sha256_hash.hexdigest()
@@ -67,49 +66,12 @@ def delete_auxiliary_file(file_name: str) -> None:
         return
 
     # Don't remove the base document !!!
-    if file_name == get_full_name(cfg.glob.action_curr.action_directory_name, utils.get_file_name_original()):
+    if file_name == get_full_name(cfg.glob.action_curr.action_directory_name, cfg.glob.base.get_file_name_next()):
         return
 
     if os.path.isfile(file_name):
         os.remove(file_name)
         utils.progress_msg(f"Auxiliary file '{file_name}' deleted")
-
-
-# -----------------------------------------------------------------------------
-# Finalise the file processing.
-# -----------------------------------------------------------------------------
-def finalize_file_processing() -> int:
-    """Finalise the file processing."""
-    duration_ns = db.dml.update_document_statistics(
-        document_id=cfg.glob.base.base_id, status=cfg.glob.DOCUMENT_STATUS_END
-    )
-
-    cfg.glob.run.run_total_processed_ok += 1
-
-    return duration_ns
-
-
-# -----------------------------------------------------------------------------
-# Get the file name of the original document.
-# -----------------------------------------------------------------------------
-# noinspection PyArgumentList
-def get_file_name_original() -> str:
-    """Get the file name of the original document.
-
-    Returns:
-        str: File name of the original document.
-    """
-    return (
-        cfg.glob.base.get_stem_name()
-        + "_"
-        + str(cfg.glob.base.base_id)
-        + "."
-        + (
-            cfg.glob.base.get_file_type()
-            if cfg.glob.base.get_file_type() != cfg.glob.DOCUMENT_FILE_TYPE_TIF
-            else cfg.glob.DOCUMENT_FILE_TYPE_TIFF
-        )
-    )
 
 
 # -----------------------------------------------------------------------------
@@ -134,11 +96,10 @@ def get_file_type(file_name: pathlib.Path | str | None) -> str:
 
 
 # -----------------------------------------------------------------------------
-# Get the full file name from a directory name or path and a file name or path.
+# Get the full name from a directory name or path and a file name or path.
 # -----------------------------------------------------------------------------
 def get_full_name(directory_name: pathlib.Path | str | None, file_name: pathlib.Path | str | None) -> str:
-    """Get the full file name from a directory name or path and a file name or
-    path.
+    """Get the full name from a directory name or path and a file name or path.
 
     Args:
         directory_name (pathlib.Path | str | None): Directory name or directory path.
@@ -434,44 +395,6 @@ def show_statistics_total() -> None:
             utils.progress_msg(f"Number documents rejected:                 {cfg.glob.run.run_total_erroneous:6d}")
         else:
             utils.progress_msg(f"Number documents erroneous:                {cfg.glob.run.run_total_erroneous:6d}")
-
-
-# -----------------------------------------------------------------------------
-# Start document processing.
-# -----------------------------------------------------------------------------
-def start_document_processing(document: sqlalchemy.engine.Row) -> None:
-    """Start document processing.
-
-    Args:
-        document (Row):       Database row document.
-    """
-    cfg.glob.run.run_total_processed_to_be += 1
-
-    cfg.glob.document_child_no_children = document.no_children
-    cfg.glob.document_directory_name = document.directory_name
-    cfg.glob.document_directory_type = document.directory_type
-    cfg.glob.document_file_name = document.file_name
-    cfg.glob.document_file_type = document.file_type
-    cfg.glob.base.base_id = document.id
-    cfg.glob.base.base_id_base = document.document_id_base
-    cfg.glob.base.base_id_parent = document.document_id_parent
-    cfg.glob.base.base_id_language = document.id_language
-    cfg.glob.document_status = document.status
-    cfg.glob.document_stem_name = document.stem_name
-
-    db.dml.update_dbt_id(
-        cfg.glob.DBT_DOCUMENT,
-        cfg.glob.base.base_id,
-        {
-            cfg.glob.DBC_STATUS: cfg.glob.DOCUMENT_STATUS_START,
-        },
-    )
-
-    if cfg.glob.document_status == cfg.glob.DOCUMENT_STATUS_ERROR:
-        # not testable
-        cfg.glob.run.total_status_error += 1
-    else:
-        cfg.glob.run.total_status_ready += 1
 
 
 # -----------------------------------------------------------------------------

@@ -6,10 +6,7 @@ from typing import List
 from typing import Tuple
 
 import cfg.glob
-import db.dml
-import db.driver
 import jellyfish
-import sqlalchemy
 import utils
 
 
@@ -247,12 +244,8 @@ class LineType:
     # -----------------------------------------------------------------------------
     # Process the document related data.
     # -----------------------------------------------------------------------------
-    def process_document(self, document_id: sqlalchemy.Integer) -> None:
-        """Process the document related data.
-
-        Args:
-            document_id (sqlalchemy.Integer): Document identification.
-        """
+    def process_document(self) -> None:
+        """Process the document related data."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         page_ind_max = len(self._page_lines_distance_header)
@@ -271,23 +264,27 @@ class LineType:
         if len(self._page_line_type) == 0:
             return
 
-        self.update_content_tetml_line(document_id)
+        self.update_content_tetml_line()
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Process the page-related data.
     # -----------------------------------------------------------------------------
-    def process_page(self, page_no: int, page_lines: List[Dict[str, int | str]]) -> None:
+    def process_page(self, page_no: int) -> None:
         """Process the page-related data.
 
         Args:
             page_no (int):
                     The number of the current page.
-            page_lines (List[Dict[str, int  |  str]]):
-                    The lines of the current page.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+        print(f"wwe map={cfg.glob.parse_result_pages_line[cfg.glob.JSON_NAME_PAGES]}")
+
+        page_lines = cfg.glob.parse_result_pages_line[cfg.glob.JSON_NAME_PAGES][page_no - 1][
+            cfg.glob.JSON_NAME_PAGE_LINES
+        ]
 
         if cfg.glob.setup.line_header_max_lines > 0:
             self._save_lines_header_curr(
@@ -339,58 +336,57 @@ class LineType:
     #                   (2, 9, 'f'),
     #                   (2, 10, 'f')].
     # -----------------------------------------------------------------------------
-    def update_content_tetml_line(self, document_id: sqlalchemy.Integer) -> None:
-        """Update the database table 'content_tetml_line'.
-
-        Args:
-            document_id (sqlalchemy.Integer): Document identification.
-        """
-        utils.progress_msg_line_type(f"LineType: Value of page_line_type raw        ={self._page_line_type}")
-
-        self._page_line_type.sort()
-
-        utils.progress_msg_line_type(f"LineType: Value of page_line_type sorted     ={self._page_line_type}")
-
-        dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(cfg.glob.DBT_CONTENT_TETML_LINE)
-
-        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
-            rows = db.dml.select_content_tetml(conn, dbt_content_tetml, document_id)
-
-            for row in rows:
-                content_tetml_id = row[0]
-                content_tetml_page_no = row[1]
-                cfg.glob.parse_result_page_lines = row[2]
-
-                content_tetml_page_lines = cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES]
-
-                is_changed = False
-
-                for (page_no, line_ind, line_type) in self._page_line_type:
-                    if page_no < content_tetml_page_no:
-                        continue
-                    if page_no > content_tetml_page_no:
-                        break
-
-                    line_type_curr = content_tetml_page_lines[line_ind][cfg.glob.JSON_NAME_LINE_TYPE]  # type: ignore
-
-                    if (
-                        line_type_curr == cfg.glob.DOCUMENT_LINE_TYPE_FOOTER
-                        and cfg.glob.setup.is_line_footer_preferred
-                        or line_type_curr == cfg.glob.DOCUMENT_LINE_TYPE_HEADER
-                        and not cfg.glob.setup.is_line_footer_preferred
-                    ):
-                        continue
-
-                    content_tetml_page_lines[line_ind][cfg.glob.JSON_NAME_LINE_TYPE] = line_type  # type: ignore
-
-                    is_changed = True
-
-                if is_changed:
-                    cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES] = content_tetml_page_lines
-                    db.dml.update_dbt_id(
-                        cfg.glob.DBT_CONTENT_TETML_LINE,
-                        content_tetml_id,
-                        {
-                            cfg.glob.DBC_PAGE_DATA: cfg.glob.parse_result_page_lines,  # type: ignore
-                        },
-                    )
+    def update_content_tetml_line(
+        self,
+    ) -> None:
+        """Update the database table 'content_tetml_line'."""
+        pass
+        # utils.progress_msg_line_type(f"LineType: Value of page_line_type raw        ={self._page_line_type}")
+        #
+        # self._page_line_type.sort()
+        #
+        # utils.progress_msg_line_type(f"LineType: Value of page_line_type sorted     ={self._page_line_type}")
+        #
+        # dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(cfg.glob.DBT_CONTENT_TETML_LINE)
+        #
+        # with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+        #     rows = db.dml.select_content_tetml(conn, dbt_content_tetml, document_id)
+        #
+        #     for row in rows:
+        #         content_tetml_id = row[0]
+        #         content_tetml_page_no = row[1]
+        #         cfg.glob.parse_result_page_lines = row[2]
+        #
+        #         content_tetml_page_lines = cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES]
+        #
+        #         is_changed = False
+        #
+        #         for (page_no, line_ind, line_type) in self._page_line_type:
+        #             if page_no < content_tetml_page_no:
+        #                 continue
+        #             if page_no > content_tetml_page_no:
+        #                 break
+        #
+        #             line_type_curr = content_tetml_page_lines[line_ind][cfg.glob.JSON_NAME_LINE_TYPE]  # type: ignore
+        #
+        #             if (
+        #                 line_type_curr == cfg.glob.DOCUMENT_LINE_TYPE_FOOTER
+        #                 and cfg.glob.setup.is_line_footer_preferred
+        #                 or line_type_curr == cfg.glob.DOCUMENT_LINE_TYPE_HEADER
+        #                 and not cfg.glob.setup.is_line_footer_preferred
+        #             ):
+        #                 continue
+        #
+        #             content_tetml_page_lines[line_ind][cfg.glob.JSON_NAME_LINE_TYPE] = line_type  # type: ignore
+        #
+        #             is_changed = True
+        #
+        #         if is_changed:
+        #             cfg.glob.parse_result_page_lines[cfg.glob.JSON_NAME_PAGE_LINES] = content_tetml_page_lines
+        #             db.dml.update_dbt_id(
+        #                 cfg.glob.DBT_CONTENT_TETML_LINE,
+        #                 content_tetml_id,
+        #                 {
+        #                     cfg.glob.DBC_PAGE_DATA: cfg.glob.parse_result_page_lines,  # type: ignore
+        #                 },
+        #             )

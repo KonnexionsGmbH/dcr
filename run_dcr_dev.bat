@@ -24,7 +24,7 @@ if ["%1"] EQU [""] (
     echo n_2_p[_only] - 2. Convert non-pdf documents to pdf files:        Pandoc
     echo ---------------------------------------------------------
     echo tet[_only]   - 4. Extract text and metdata from pdf documents:   PDFlib TET.
-    echo s_f_p[_only] - 5. Store the parser result in the database.
+    echo s_p_j[_only] - 5. Store the parser result in a JSON file.
     echo tkn[_only]   - 6. Create qualified document tokens.              SpaCy.
     echo ---------------------------------------------------------
     echo db_c         - Create the database.
@@ -154,10 +154,10 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i_only"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
-if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
+if ["%DCR_CHOICE_ACTION%"] EQU ["s_p_j"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
-if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p_only"] (
+if ["%DCR_CHOICE_ACTION%"] EQU ["s_p_j_only"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
@@ -200,14 +200,14 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     if ["%DCR_CHOICE_ACTION%"] EQU ["tet_only"] (
         set DCR_CHOICE_ACTION=tet
     )
-    if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["s_p_j"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet %DCR_CHOICE_ACTION%
     )
-    if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p_only"] (
-        set DCR_CHOICE_ACTION=s_f_p
+    if ["%DCR_CHOICE_ACTION%"] EQU ["s_p_j_only"] (
+        set DCR_CHOICE_ACTION=s_p_j
     )
     if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
-        set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_f_p tkn %DCR_CHOICE_ACTION%
+        set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_p_j tkn %DCR_CHOICE_ACTION%
     )
     if ["%DCR_CHOICE_ACTION%"] EQU ["tkn_only"] (
         set DCR_CHOICE_ACTION=tkn
@@ -221,7 +221,7 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     goto normal_exit
 )
 
-echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | n_2_p[_only] | ocr[_only] | p_i | p_2_i[_only] | s_f_p[_only] | tet[_only] | tkn[_only]"
+echo Usage: "run_dcr_dev[.bat] all | db_c | db_u | m_d | m_p | n_2_p[_only] | ocr[_only] | p_i | p_2_i[_only] | s_p_j[_only] | tet[_only] | tkn[_only]"
 
 :normal_exit
 echo -----------------------------------------------------------------------

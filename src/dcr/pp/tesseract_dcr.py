@@ -83,9 +83,9 @@ def convert_image_2_pdf_file() -> None:
             timeout=cfg.glob.setup.tesseract_timeout,
         )
 
-        with open(full_name_next, "w+b") as target_file:
+        with open(full_name_next, "w+b") as file_handle:
             # pdf type is bytes by default
-            target_file.write(pdf)
+            file_handle.write(pdf)
 
         cfg.glob.action_next = db.cls_action.Action(
             action_code=db.cls_run.Run.ACTION_CODE_PDFLIB,
@@ -217,8 +217,8 @@ def reunite_pdfs_file() -> None:
         conn.close()
 
     # Write out the merged PDF
-    with open(full_name_next, "wb") as out:
-        pdf_writer.write(out)
+    with open(full_name_next, "wb") as file_handle:
+        pdf_writer.write(file_handle)
 
     cfg.glob.action_next = db.cls_action.Action(
         action_code=db.cls_run.Run.ACTION_CODE_PDFLIB,

@@ -76,7 +76,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         ocr   - Convert image documents to pdf files:               Tesseract OCR / Tex Live.
         p_2_i - Convert pdf documents to image files:               pdf2image / Poppler.
         p_i   - Process the inbox directory.
-        s_f_p - Store the parser result in the database.
+        s_p_j - Store the parser result in a JSON file.
         tet   - Extract text and metadata from pdf documents:       PDFlib TET.
         tkn   - Create document tokens:                             spaCy.
 
@@ -88,7 +88,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         3. n_2_p
         4. ocr
         5. tet
-        6. s_f_p
+        6. s_p_j
         7. tkn
 
     Args:
@@ -156,8 +156,8 @@ def get_args(argv: List[str]) -> dict[str, bool]:
 # -----------------------------------------------------------------------------
 def initialise_logger() -> None:
     """Initialise the root logging functionality."""
-    with open(cfg.glob.LOGGER_CFG_FILE, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file:
-        log_config = yaml.safe_load(file.read())
+    with open(cfg.glob.LOGGER_CFG_FILE, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        log_config = yaml.safe_load(file_handle.read())
 
     logging.config.dictConfig(log_config)
     cfg.glob.logger = logging.getLogger("dcr.py")
@@ -365,7 +365,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Store the document structure from the parser result.
     if args[db.cls_run.Run.ACTION_CODE_PARSER]:
         start_time_process = time.perf_counter_ns()
-        process_store_from_parser()
+        process_store_parse_result_in_json()
         utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Create document token.
@@ -418,7 +418,7 @@ def process_inbox_directory() -> None:
 # Store the document structure from the parser result.
 # -----------------------------------------------------------------------------
 # noinspection PyArgumentList
-def process_store_from_parser() -> None:
+def process_store_parse_result_in_json() -> None:
     """Store the document structure from the parser result."""
     utils.progress_msg_empty_before("Start: Store document structure ... defusedxml [xml.etree.ElementTree]")
 

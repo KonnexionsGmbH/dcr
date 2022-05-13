@@ -55,7 +55,6 @@ class Setup:
     _DCR_CFG_SECTION: ClassVar[str] = "dcr"
     _DCR_CFG_SECTION_ENV_TEST: ClassVar[str] = "dcr.env.test"
     _DCR_CFG_SECTION_SPACY: ClassVar[str] = "dcr.spacy"
-    _DCR_CFG_SIMULATE_PARSER: ClassVar[str] = "simulate_parser"
 
     _DCR_CFG_SPACY_TKN_ATTR_CLUSTER: ClassVar[str] = "spacy_tkn_attr_cluster"
     _DCR_CFG_SPACY_TKN_ATTR_DEP_: ClassVar[str] = "spacy_tkn_attr_dep_"
@@ -159,7 +158,6 @@ class Setup:
         self.is_delete_auxiliary_files: bool = True
         self.is_ignore_duplicates: bool = False
         self.is_line_footer_preferred: bool = True
-        self.is_simulate_parser: bool = False
         self.is_spacy_tkn_attr_cluster: bool = False
         self.is_spacy_tkn_attr_dep_: bool = False
         self.is_spacy_tkn_attr_doc: bool = False
@@ -244,7 +242,6 @@ class Setup:
         self._check_config_ignore_duplicates()
         self._check_config_line_footer_preference()
         self._check_config_pdf2image_type()
-        self._check_config_simulate_parser()
         self._check_config_spacy_tkn_attr_cluster()
         self._check_config_spacy_tkn_attr_dep_()
         self._check_config_spacy_tkn_attr_doc()
@@ -387,15 +384,6 @@ class Setup:
                 utils.terminate_fatal_setup(
                     f"Invalid configuration parameter value for parameter " f"'pdf2image_type': '{self.pdf2image_type}'"
                 )
-
-    # -----------------------------------------------------------------------------
-    # Check the configuration parameter - simulate_parser.
-    # -----------------------------------------------------------------------------
-    def _check_config_simulate_parser(self) -> None:
-        """Check the configuration parameter - simulate_parser."""
-        if Setup._DCR_CFG_SIMULATE_PARSER in self._config:
-            if str(self._config[Setup._DCR_CFG_SIMULATE_PARSER]).lower() == "true":
-                self.is_simulate_parser = True
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - spacy_tkn_attr_cluster.
@@ -1017,7 +1005,6 @@ class Setup:
                     | Setup._DCR_CFG_IGNORE_DUPLICATES
                     | Setup._DCR_CFG_LINE_FOOTER_PREFERENCE
                     | Setup._DCR_CFG_PDF2IMAGE_TYPE
-                    | Setup._DCR_CFG_SIMULATE_PARSER
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_DOC

@@ -28,23 +28,22 @@ class Run:
     _ACTION_TEXT_INBOX: ClassVar[str] = "inbox       (preprocessor)"
     _ACTION_TEXT_PANDOC: ClassVar[str] = "pandoc      (preprocessor)"
     _ACTION_TEXT_PARSER: ClassVar[str] = "parser      (nlp)"
-    # wwe
-    # _ACTION_TEXT_PARSER_LINE: ClassVar[str] = "parser_line (nlp)"
-    # _ACTION_TEXT_PARSER_WORD: ClassVar[str] = "parser_word (nlp)"
+    _ACTION_TEXT_PARSER_LINE: ClassVar[str] = "parser_line (nlp)"
+    _ACTION_TEXT_PARSER_WORD: ClassVar[str] = "parser_word (nlp)"
     _ACTION_TEXT_PDF2IMAGE: ClassVar[str] = "pdf2image   (preprocessor)"
     _ACTION_TEXT_PDFLIB: ClassVar[str] = "pdflib      (nlp)"
     _ACTION_TEXT_PYPDF2: ClassVar[str] = "pypdf2      (preprocessor)"
     _ACTION_TEXT_TESSERACT: ClassVar[str] = "tesseract   (preprocessor)"
     _ACTION_TEXT_TOKENIZE: ClassVar[str] = "tokenize    (nlp)"
-    # _ACTION_TEXT_UPGRADE_DB: ClassVar[str] = "Upgrade Database"
+    _ACTION_TEXT_UPGRADE_DB: ClassVar[str] = "Upgrade Database"
 
     ACTION_CODE_ALL_COMPLETE: ClassVar[str] = "all"
     ACTION_CODE_CREATE_DB: ClassVar[str] = "db_c"
     ACTION_CODE_INBOX: ClassVar[str] = "p_i"
     ACTION_CODE_PANDOC: ClassVar[str] = "n_2_p"
-    ACTION_CODE_PARSER: ClassVar[str] = "s_f_p"
-    ACTION_CODE_PARSER_LINE: ClassVar[str] = "s_f_p_line"
-    ACTION_CODE_PARSER_WORD: ClassVar[str] = "s_f_p_word"
+    ACTION_CODE_PARSER: ClassVar[str] = "s_p_j"
+    ACTION_CODE_PARSER_LINE: ClassVar[str] = "s_p_j_line"
+    ACTION_CODE_PARSER_WORD: ClassVar[str] = "s_p_j_word"
     ACTION_CODE_PDF2IMAGE: ClassVar[str] = "p_2_i"
     ACTION_CODE_PDFLIB: ClassVar[str] = "tet"
     ACTION_CODE_PYPDF2: ClassVar[str] = "pypdf2"
@@ -263,6 +262,10 @@ class Run:
                 action_text = Run._ACTION_TEXT_PANDOC
             case Run.ACTION_CODE_PARSER:
                 action_text = Run._ACTION_TEXT_PARSER
+            case Run.ACTION_CODE_PARSER_LINE:
+                action_text = Run._ACTION_TEXT_PARSER_LINE
+            case Run.ACTION_CODE_PARSER_WORD:
+                action_text = Run._ACTION_TEXT_PARSER_WORD
             case Run.ACTION_CODE_PDF2IMAGE:
                 action_text = Run._ACTION_TEXT_PDF2IMAGE
             case Run.ACTION_CODE_PDFLIB:
@@ -273,9 +276,8 @@ class Run:
                 action_text = Run._ACTION_TEXT_TESSERACT
             case Run.ACTION_CODE_TOKENIZE:
                 action_text = Run._ACTION_TEXT_TOKENIZE
-            # wwe
-            # case Run.ACTION_CODE_UPGRADE_DB:
-            #     action_text = Run._ACTION_TEXT_UPGRADE_DB
+            case Run.ACTION_CODE_UPGRADE_DB:
+                action_text = Run._ACTION_TEXT_UPGRADE_DB
             case _:
                 utils.terminate_fatal(
                     f"Action code {action_code} is not supported in function get_action_text()",

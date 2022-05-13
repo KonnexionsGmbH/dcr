@@ -25,7 +25,6 @@ DBC_ACTION_CODE: str
 DBC_ACTION_CODE_LAST: str
 DBC_ACTION_TEXT: str
 DBC_ACTION_TEXT_LAST: str
-DBC_ACTION_FINISHED: str
 DBC_ACTIVE: str
 DBC_CODE_ISO_639_3: str
 DBC_CODE_PANDOC: str
@@ -36,9 +35,6 @@ DBC_CURRENT_STEP: str
 DBC_DIRECTORY_NAME: str
 DBC_DIRECTORY_NAME_INBOX: str
 DBC_DIRECTORY_TYPE: str
-DBC_DOCUMENT_ID: str
-DBC_DOCUMENT_ID_BASE: str
-DBC_DOCUMENT_ID_PARENT: str
 DBC_DURATION_NS: str
 DBC_ERROR_CODE: str
 DBC_ERROR_CODE_LAST: str
@@ -47,32 +43,21 @@ DBC_ERROR_MSG_LAST: str
 DBC_ERROR_NO: str
 DBC_FILE_NAME: str
 DBC_FILE_SIZE_BYTES: str
-DBC_FILE_TYPE: str
-DBC_FUNCTION_NAME: str
 DBC_ID: str
 DBC_ID_BASE: str
 DBC_ID_LANGUAGE: str
 DBC_ID_PARENT: str
 DBC_ID_RUN: str
 DBC_ID_RUN_LAST: str
-DBC_IN_FILE_NAME: str
-DBC_IN_FILE_SIZE_BYTES: str
 DBC_ISO_LANGUAGE_NAME: str
 DBC_LAST_STEP: str
 DBC_MODIFIED_AT: str
-DBC_MODULE_NAME: str
-DBC_NEXT_STEP: str
 DBC_NO_CHILDREN: str
 DBC_NO_PDF_PAGES: str
-DBC_OUT_FILE_NAME: str
-DBC_OUT_FILE_SIZE_BYTES: str
 DBC_PAGE_DATA: str
 DBC_PAGE_NO: str
-DBC_PROCESSING_STEP: str
-DBC_SENTENCE_TEXT: str
 DBC_SHA256: str
 DBC_STATUS: str
-DBC_STEM_NAME: str
 DBC_TOTAL_ERRONEOUS: str
 DBC_TOTAL_PROCESSED_OK: str
 DBC_TOTAL_PROCESSED_TO_BE: str
@@ -80,10 +65,7 @@ DBC_VERSION: str
 
 DBT_ACTION: str
 DBT_BASE: str
-DBT_CONTENT_TETML_LINE: str
-DBT_CONTENT_TETML_WORD: str
 DBT_CONTENT_TOKEN: str
-DBT_DOCUMENT: str
 DBT_LANGUAGE: str
 DBT_RUN: str
 DBT_VERSION: str
@@ -109,6 +91,7 @@ DOCUMENT_ERROR_CODE_REJ_PDFLIB: str
 DOCUMENT_ERROR_CODE_REJ_TESSERACT: str
 
 DOCUMENT_FILE_TYPE_JPG: str
+DOCUMENT_FILE_TYPE_JSON: str
 DOCUMENT_FILE_TYPE_PANDOC: List[str]
 DOCUMENT_FILE_TYPE_PDF: str
 DOCUMENT_FILE_TYPE_PNG: str
@@ -152,6 +135,8 @@ FILE_ENCODING_DEFAULT: str
 
 INFORMATION_NOT_YET_AVAILABLE: str
 JSON_NAME_API_VERSION: str
+JSON_NAME_BASE_FILE_NAME: str
+JSON_NAME_BASE_ID: str
 JSON_NAME_COLUMN_NAME: str
 JSON_NAME_COLUMN_VALUE: str
 JSON_NAME_DATA: str
@@ -160,6 +145,7 @@ JSON_NAME_LINE_INDEX_PARA: str
 JSON_NAME_LINE_WORDS: str
 JSON_NAME_LINE_TEXT: str
 JSON_NAME_LINE_TYPE: str
+JSON_NAME_LINES: str
 JSON_NAME_NO_LINES_IN_PAGE: str
 JSON_NAME_NO_LINES_IN_PARA: str
 JSON_NAME_NO_PAGES_IN_DOC: str
@@ -169,7 +155,9 @@ JSON_NAME_NO_WORDS_IN_PAGE: str
 JSON_NAME_NO_WORDS_IN_PARA: str
 JSON_NAME_PAGE_INDEX_DOC: str
 JSON_NAME_PAGE_LINES: str
+JSON_NAME_PAGE_NO: str
 JSON_NAME_PAGE_WORDS: str
+JSON_NAME_PAGES: str
 JSON_NAME_PARA_INDEX_PAGE: str
 JSON_NAME_ROW: str
 JSON_NAME_ROWS: str
@@ -324,7 +312,6 @@ document_no_children: sqlalchemy.Integer | None
 document_child_status: str
 target_stem_name: str
 
-document_current_step: str
 document_directory_name: str
 document_directory_type: str
 document_error_code: str | None
@@ -349,6 +336,11 @@ line_type: Type[nlp.cls_line_type.LineType]
 
 logger: logging.Logger
 
+# parse_result_line_0_line: Dict[str, int | str]
+parse_result_line_1_lines: List[Dict[str, int | str]]
+# parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
+parse_result_line_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
+parse_result_line_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
 parse_result_line_index_page: int
 parse_result_line_index_para: int
 parse_result_no_lines_in_page: int
@@ -361,8 +353,15 @@ parse_result_no_words_in_para: int
 parse_result_page_index_doc: int
 parse_result_page_lines: Dict[str, int | List[Dict[str, int | str]]]
 parse_result_page_words: Dict[str, int | List[Dict[str, int | str]]]
+parse_result_pages_line: Dict[str, int | List[Dict[str, int | List[Dict[str, int | str]]]]]
+parse_result_pages_word: Dict[str, int | List[Dict[str, int | List[Dict[str, int | str]]]]]
 parse_result_para_index_page: int
 parse_result_text: str
+# parse_result_word_0_word: Dict[str, int | str]
+parse_result_word_1_words: List[Dict[str, int | str]]
+# parse_result_word_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
+parse_result_word_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
+parse_result_word_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
 parse_result_word_index_line: int
 parse_result_word_index_page: int
 parse_result_word_index_para: int

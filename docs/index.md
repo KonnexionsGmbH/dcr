@@ -266,7 +266,7 @@ The output is written to a **`xml`** file named `<file_name>_<doc_id>.word.xml`:
 
 <div style="page-break-after: always;"></div>
 
-### 2.2.3 Store the parser result in the database (step: **`s_f_p`**)
+### 2.2.3 Store the parser result in a JSON file (step: **`s_p_j`**)
 
 From the **xml** files of the granularity document `line` (`<file_name>_<doc_id>.line.xml`) or document `word` (`<file_name>_<doc_id>.word.xml`) created in the previous step, the text contained is now extracted with the existing metadata using **xml** parsing and stored in a JSON format in the database tables `content_tetml_line` and `content_tetml_word`.
 

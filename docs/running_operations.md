@@ -17,7 +17,7 @@ The following actions are available:
 | **`ocr`**   | Convert image documents to **`pdf`** files.                                                                        |
 | **`p_2_i`** | Convert **`pdf`** documents to image files.                                                                        |
 | **`p_i`**   | Process the inbox directory.                                                                                       |
-| **`s_f_p`** | Store the parser result in the database.                                                                           |
+| **`s_p_j`** | Store the parser result in a JSON file.                                                                           |
 | **`tet`**   | Extract text from **`pdf`** documents.                                                                             |
 | **`tkn`**   | Create qualified document tokens.                                                                                  |
 
@@ -30,7 +30,7 @@ The action **`all - run the complete processing of all new documents`** includes
 | **`ocr`**   | Convert image documents to **`pdf`** files.         |
 | **`n_2_p`** | Convert non **`pdf`** documents to **`pdf`** files. |
 | **`tet`**   | Extract text from **`pdf`** documents.              |
-| **`s_f_p`** | Store the parser result in the database.            |
+| **`s_p_j`** | Store the parser result in a JSON file.            |
 | **`tkn`**   | Create qualified document tokens.                   |
 
 The action **`db_c - create the database`** is only required once when installing **`DCR`**.  

@@ -293,9 +293,10 @@ def tokenize() -> None:
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
 
-            utils.start_document_processing(
-                document=row,
-            )
+            # wwe ???
+            # utils.start_document_processing(
+            #     document=row,
+            # )
 
             spacy_model = cfg.glob.languages_spacy[cfg.glob.base.base_id_language]
 
@@ -305,15 +306,16 @@ def tokenize() -> None:
 
             tokenize_document(nlp, dbt_content_tetml)
 
-            # Document successfully converted to pdf format
-            duration_ns = utils.finalize_file_processing()
-
-            if cfg.glob.setup.is_verbose:
-                utils.progress_msg(
-                    f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-                    f"Document: {cfg.glob.base.base_id:6d} "
-                    f"[base: {db.dml.select_document_file_name_id(cfg.glob.base.base_id_base)}]"
-                )
+            # wwe ???
+            # # Document successfully converted to pdf format
+            # duration_ns = utils.finalize_file_processing()
+            #
+            # if cfg.glob.setup.is_verbose:
+            #     utils.progress_msg(
+            #         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
+            #         f"Document: {cfg.glob.base.base_id:6d} "
+            #         f"[base: {db.dml.select_document_file_name_id(cfg.glob.base.base_id_base)}]"
+            #     )
 
         conn.close()
 
@@ -349,7 +351,7 @@ def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> Non
             db.dml.insert_dbt_row(
                 cfg.glob.DBT_CONTENT_TOKEN,
                 {
-                    cfg.glob.DBC_DOCUMENT_ID: cfg.glob.base.base_id_base,
+                    cfg.glob.DBC_ID_BASE: cfg.glob.base.base_id_base,
                     cfg.glob.DBC_PAGE_NO: page_no,
                     cfg.glob.DBC_PAGE_DATA: page_tokens,
                 },

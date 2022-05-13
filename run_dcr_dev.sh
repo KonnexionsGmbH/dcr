@@ -24,7 +24,7 @@ if [ -z "$1" ]; then
     echo "n_2_p[_only] - 2. Convert non-pdf documents to pdf files:       Pandoc."
     echo "------------------------------------------------------------------------------"
     echo "tet[_only]   - 4. Extract text and metadata from pdf documents: PDFlib TET."
-    echo "s_f_p[_only] - 5. Store the parser result in the database."
+    echo "s_p_j[_only] - 5. Store the parser result in a JSON file."
     echo "tkn[_only]   - 6. Create qualified document tokens.             SpaCy."
     echo "------------------------------------------------------------------------------"
     echo "db_c         - Create the database."
@@ -82,7 +82,7 @@ case "${DCR_CHOICE_ACTION}" in
   db_c)
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
-  db_u|n_2_p|ocr|p_2_i|s_f_p|tet|tkn)
+  db_u|n_2_p|ocr|p_2_i|s_p_j|tet|tkn)
     case "${DCR_CHOICE_ACTION}" in
       n_2_p)
         export DCR_CHOICE_ACTION=p_i p_2_i ocr ${DCR_CHOICE_ACTION}
@@ -102,11 +102,11 @@ case "${DCR_CHOICE_ACTION}" in
       p_2_i_only)
         export DCR_CHOICE_ACTION=p_2_i
         ;;
-      s_f_p)
+      s_p_j)
         export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet ${DCR_CHOICE_ACTION}
         ;;
-      s_f_p_only)
-        export DCR_CHOICE_ACTION=s_f_p
+      s_p_j_only)
+        export DCR_CHOICE_ACTION=s_p_j
         ;;
       tet)
         export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p ${DCR_CHOICE_ACTION}
@@ -115,7 +115,7 @@ case "${DCR_CHOICE_ACTION}" in
         export DCR_CHOICE_ACTION=tet
         ;;
       tkn)
-        export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_f_p ${DCR_CHOICE_ACTION}
+        export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_p_j ${DCR_CHOICE_ACTION}
         ;;
       tkn_only)
         export DCR_CHOICE_ACTION=tkn
@@ -133,7 +133,7 @@ case "${DCR_CHOICE_ACTION}" in
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
-    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p[_only] | ocr[_only] | p_i | p_2_i[_only] | s_f_p[_only] | tet[_only] | tkn[_only]"
+    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p[_only] | ocr[_only] | p_i | p_2_i[_only] | s_p_j[_only] | tet[_only] | tkn[_only]"
     ;;
 esac
 

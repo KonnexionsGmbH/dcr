@@ -86,7 +86,9 @@ def test_levenshtein_roman():
 # Test RUN_ACTION_STORE_FROM_PARSER - coverage.
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("verbose_parser", ["all", "none", "text"])
-def test_run_action_store_from_parser_coverage(verbose_parser: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+def test_run_action_store_parse_result_in_json_coverage(
+    verbose_parser: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
+):
     """Test RUN_ACTION_STORE_FROM_PARSER - coverage."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -122,7 +124,7 @@ def test_run_action_store_from_parser_coverage(verbose_parser: str, fxtr_rmdir_o
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_store_from_parser_coverage <=========")
+    cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_coverage <=========")
 
     pytest.helpers.verify_content_of_directory(
         cfg.glob.setup.directory_inbox,
@@ -151,7 +153,7 @@ def test_run_action_store_from_parser_coverage(verbose_parser: str, fxtr_rmdir_o
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - coverage - LineType.
 # -----------------------------------------------------------------------------
-def test_run_action_store_from_parser_coverage_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - coverage - LineType."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -191,7 +193,7 @@ def test_run_action_store_from_parser_coverage_line_type(fxtr_rmdir_opt, fxtr_se
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_store_from_parser_coverage <=========")
+    cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_coverage <=========")
 
     pytest.helpers.verify_content_of_directory(
         cfg.glob.setup.directory_inbox,
@@ -235,7 +237,7 @@ def test_run_action_store_from_parser_coverage_line_type(fxtr_rmdir_opt, fxtr_se
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - normal.
 # -----------------------------------------------------------------------------
-def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - normal."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -278,7 +280,7 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_store_from_parser_normal <=========")
+    cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_normal <=========")
 
     pytest.helpers.verify_content_of_directory(
         cfg.glob.setup.directory_inbox,
@@ -311,7 +313,7 @@ def test_run_action_store_from_parser_normal(fxtr_rmdir_opt, fxtr_setup_empty_db
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - normal - keep.
 # -----------------------------------------------------------------------------
-def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - normal - keep."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -354,7 +356,7 @@ def test_run_action_store_from_parser_normal_keep(fxtr_rmdir_opt, fxtr_setup_emp
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_store_from_parser_normal_keep <=========")
+    cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_normal_keep <=========")
 
     pytest.helpers.verify_content_of_directory(
         cfg.glob.setup.directory_inbox,

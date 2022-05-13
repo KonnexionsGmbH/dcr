@@ -24,7 +24,7 @@ if ["%1"] EQU [""] (
     echo n_2_p - 2. Convert non-pdf documents to pdf files:        Pandoc
     echo ---------------------------------------------------------
     echo tet   - 4. Extract text and metdata from pdf documents:   PDFlib TET.
-    echo s_f_p - 5. Store the parser result in the database.
+    echo s_p_j - 5. Store the parser result in a JSON file.
     echo tkn   - 6. Create qualified document tokens.              SpaCy.
     echo ---------------------------------------------------------
     echo db_c  - Create the database.
@@ -125,7 +125,7 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
-if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
+if ["%DCR_CHOICE_ACTION%"] EQU ["s_p_j"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
@@ -150,11 +150,11 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     if ["%DCR_CHOICE_ACTION%"] EQU ["tet"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p %DCR_CHOICE_ACTION%
     )
-    if ["%DCR_CHOICE_ACTION%"] EQU ["s_f_p"] (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["s_p_j"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet %DCR_CHOICE_ACTION%
     )
     if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
-        set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_f_p tkn %DCR_CHOICE_ACTION%
+        set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_p_j tkn %DCR_CHOICE_ACTION%
     )
     pipenv run python src\dcr\dcr.py !DCR_CHOICE_ACTION!
     if ERRORLEVEL 1 (
@@ -164,7 +164,7 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     goto normal_exit
 )
 
-echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | s_f_p | tet | tkn"
+echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
 exit -1073741510
 
 :normal_exit

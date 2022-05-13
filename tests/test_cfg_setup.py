@@ -309,20 +309,6 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.delete_config_param(
-        cfg.glob.setup._DCR_CFG_SECTION, cfg.glob.setup._DCR_CFG_SIMULATE_PARSER
-    )
-
-    cfg.glob.setup = cfg.cls_setup.Setup()
-
-    assert not cfg.glob.setup.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: false (missing)"
-
-    pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
-        values_original,
-    )
-
-    # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
         cfg.glob.setup._DCR_CFG_SECTION, cfg.glob.setup._DCR_CFG_VERBOSE
     )
 
@@ -345,51 +331,6 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert cfg.glob.setup.verbose_parser == "none", "DCR_CFG_VERBOSE_PARSER: none (missing)"
-
-    pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
-        values_original,
-    )
-
-    # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test Function - get_config().
-# -----------------------------------------------------------------------------
-def test_get_config_simulate_parser(fxtr_setup_logger_environment):
-    """Test: test_get_config_simulate_parser()."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
-        [
-            (cfg.glob.setup._DCR_CFG_SIMULATE_PARSER, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
-        ],
-    )
-
-    cfg.glob.setup = cfg.cls_setup.Setup()
-
-    assert not cfg.glob.setup.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: false (not true)"
-
-    pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
-        values_original,
-    )
-
-    # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
-        [
-            (cfg.glob.setup._DCR_CFG_SIMULATE_PARSER, "tRUE"),
-        ],
-    )
-
-    cfg.glob.setup = cfg.cls_setup.Setup()
-
-    assert cfg.glob.setup.is_simulate_parser, "DCR_CFG_SIMULATE_PARSER: true"
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION,

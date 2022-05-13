@@ -25,7 +25,6 @@ DBC_ACTION_CODE: str = "action_code"
 DBC_ACTION_CODE_LAST: str = "action_code_last"
 DBC_ACTION_TEXT: str = "action_text"
 DBC_ACTION_TEXT_LAST: str = "action_text_last"
-DBC_ACTION_FINISHED: str = "action_finished"
 DBC_ACTIVE: str = "active"
 DBC_CODE_ISO_639_3: str = "code_iso_639_3"
 DBC_CODE_PANDOC: str = "code_pandoc"
@@ -36,9 +35,6 @@ DBC_CURRENT_STEP: str = "current_step"
 DBC_DIRECTORY_NAME: str = "directory_name"
 DBC_DIRECTORY_NAME_INBOX: str = "directory_name_inbox"
 DBC_DIRECTORY_TYPE: str = "directory_type"
-DBC_DOCUMENT_ID: str = "document_id"
-DBC_DOCUMENT_ID_BASE: str = "document_id_base"
-DBC_DOCUMENT_ID_PARENT: str = "document_id_parent"
 DBC_DURATION_NS: str = "duration_ns"
 DBC_ERROR_CODE: str = "error_code"
 DBC_ERROR_CODE_LAST: str = "error_code_last"
@@ -47,32 +43,21 @@ DBC_ERROR_MSG_LAST: str = "error_msg_last"
 DBC_ERROR_NO: str = "error_no"
 DBC_FILE_NAME: str = "file_name"
 DBC_FILE_SIZE_BYTES: str = "file_size_bytes"
-DBC_FILE_TYPE: str = "file_type"
-DBC_FUNCTION_NAME: str = "function_name"
 DBC_ID: str = "id"
 DBC_ID_BASE: str = "id_base"
 DBC_ID_LANGUAGE: str = "id_language"
 DBC_ID_PARENT: str = "id_parent"
 DBC_ID_RUN: str = "id_run"
 DBC_ID_RUN_LAST: str = "id_run_last"
-DBC_IN_FILE_NAME: str = "in_file_name"
-DBC_IN_FILE_SIZE_BYTES: str = "in_file_size_bytes"
 DBC_ISO_LANGUAGE_NAME: str = "iso_language_name"
 DBC_LAST_STEP: str = "last_step"
 DBC_MODIFIED_AT: str = "modified_at"
-DBC_MODULE_NAME: str = "module_name"
-DBC_NEXT_STEP: str = "next_step"
 DBC_NO_CHILDREN: str = "no_children"
 DBC_NO_PDF_PAGES: str = "no_pdf_pages"
-DBC_OUT_FILE_NAME: str = "out_file_name"
-DBC_OUT_FILE_SIZE_BYTES: str = "out_file_size_bytes"
 DBC_PAGE_DATA: str = "page_data"
 DBC_PAGE_NO: str = "page_no"
-DBC_PROCESSING_STEP: str = "processing_step"
-DBC_SENTENCE_TEXT: str = "sentence_text"
 DBC_SHA256: str = "sha256"
 DBC_STATUS: str = "status"
-DBC_STEM_NAME: str = "stem_name"
 DBC_TOTAL_ERRONEOUS: str = "total_erroneous"
 DBC_TOTAL_PROCESSED_OK: str = "total_processed_ok"
 DBC_TOTAL_PROCESSED_TO_BE: str = "total_processed_to_be"
@@ -80,10 +65,7 @@ DBC_VERSION: str = "version"
 
 DBT_ACTION: str = "action"
 DBT_BASE: str = "base"
-DBT_CONTENT_TETML_LINE: str = "content_tetml_line"
-DBT_CONTENT_TETML_WORD: str = "content_tetml_word"
 DBT_CONTENT_TOKEN: str = "content_token"
-DBT_DOCUMENT: str = "document"
 DBT_LANGUAGE: str = "language"
 DBT_RUN: str = "run"
 DBT_VERSION: str = "version"
@@ -109,6 +91,7 @@ DOCUMENT_ERROR_CODE_REJ_PDFLIB: str = "Issue with PDFlib TET"
 DOCUMENT_ERROR_CODE_REJ_TESSERACT: str = "Issue with Tesseract OCR"
 
 DOCUMENT_FILE_TYPE_JPG: str = "jpg"
+DOCUMENT_FILE_TYPE_JSON: str = "json"
 DOCUMENT_FILE_TYPE_PANDOC: List[str] = [
     "csv",
     "docx",
@@ -181,11 +164,11 @@ ERROR_51_903: str = (
 ERROR_51_904: str = "51.904 Issue (pdflib): The target file '{full_name}' already exists."
 
 ERROR_61_901: str = (
-    "61.901 Issue (s_f_p): {function}: Unknown child tag '{child_tag}' - " + "in parent tag '{parent_tag}'."
+    "61.901 Issue (s_p_j): {function}: Unknown child tag '{child_tag}' - " + "in parent tag '{parent_tag}'."
 )
-ERROR_61_902: str = "61.902 Issue (s_f_p): Expected tag '{expected_tag}' - " + " but found tag '{found_tag}'."
+ERROR_61_902: str = "61.902 Issue (s_p_j): Expected tag '{expected_tag}' - " + " but found tag '{found_tag}'."
 ERROR_61_903: str = (
-    "61.903 Issue (s_f_p): Text missing: document {document_id} page {page_no} " + "paragraph {para_no} line {line_no}."
+    "61.903 Issue (s_p_j): Text missing: document {document_id} page {page_no} " + "paragraph {para_no} line {line_no}."
 )
 
 FILE_ENCODING_DEFAULT: str = "utf-8"
@@ -193,6 +176,8 @@ FILE_ENCODING_DEFAULT: str = "utf-8"
 INFORMATION_NOT_YET_AVAILABLE: str = "n/a"
 
 JSON_NAME_API_VERSION: str = "apiVersion"
+JSON_NAME_BASE_FILE_NAME: str = "baseFileName"
+JSON_NAME_BASE_ID: str = "baseId"
 JSON_NAME_COLUMN_NAME: str = "columnName"
 JSON_NAME_COLUMN_VALUE: str = "columnValue"
 JSON_NAME_DATA: str = "data"
@@ -201,6 +186,7 @@ JSON_NAME_LINE_INDEX_PARA: str = "lineIndexPara"
 JSON_NAME_LINE_WORDS: str = "lineWords"
 JSON_NAME_LINE_TEXT: str = "lineText"
 JSON_NAME_LINE_TYPE: str = "lineType"
+JSON_NAME_LINES: str = "lines"
 JSON_NAME_NO_LINES_IN_PAGE: str = "noLinesInPage"
 JSON_NAME_NO_LINES_IN_PARA: str = "noLinesInPara"
 JSON_NAME_NO_PAGES_IN_DOC: str = "noPagesInDoc"
@@ -210,7 +196,9 @@ JSON_NAME_NO_WORDS_IN_PAGE: str = "noWordsInPage"
 JSON_NAME_NO_WORDS_IN_PARA: str = "noWordsInPara"
 JSON_NAME_PAGE_INDEX_DOC: str = "pageIndexDoc"
 JSON_NAME_PAGE_LINES: str = "pageLines"
+JSON_NAME_PAGE_NO: str = "pageNo"
 JSON_NAME_PAGE_WORDS: str = "pageWords"
+JSON_NAME_PAGES: str = "pages"
 JSON_NAME_PARA_INDEX_PAGE: str = "paraIndexPage"
 JSON_NAME_ROW: str = "row"
 JSON_NAME_ROWS: str = "rows"
@@ -365,7 +353,6 @@ document_no_children: sqlalchemy.Integer | None
 document_child_status: str
 document_child_stem_name: str
 
-document_current_step: str
 document_directory_name: str
 document_directory_type: str
 document_error_code: str | None
@@ -390,6 +377,35 @@ line_type: Type[nlp.cls_line_type.LineType]
 
 logger: logging.Logger
 
+# {
+#     "lineIndexPage": 0,
+#     "paraIndexPage": 0,
+#     "lineIndexPara": 0,
+#     "lineText": "Start Document ...",
+#     "lineType": "b"
+# },
+# parse_result_line_0_line: Dict[str, int | str]
+
+parse_result_line_1_lines: List[Dict[str, int | str]]
+
+# {
+#     "pageNo": 1,
+#     "noLinesInPage": 21,
+#     "noParasInPage": 10,
+#     "lines": [
+#         {
+# parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
+
+parse_result_line_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
+
+# {
+#   "baseId": 3,
+#   "baseFileName": "case_3_pdf_text_route_inbox_pdflib.pdf",
+#   "noPagesInDoc": 3,
+#   "pages": [
+#     {
+parse_result_line_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
+
 parse_result_line_index_page: int
 parse_result_line_index_para: int
 parse_result_no_lines_in_page: int
@@ -400,10 +416,37 @@ parse_result_no_words_in_line: int
 parse_result_no_words_in_page: int
 parse_result_no_words_in_para: int
 parse_result_page_index_doc: int
-parse_result_page_lines: Dict[str, int | List[Dict[str, int | str]]]
 parse_result_page_words: Dict[str, int | List[Dict[str, int | str]]]
+parse_result_pages_word: Dict[str, int | List[Dict[str, int | List[Dict[str, int | str]]]]]
 parse_result_para_index_page: int
 parse_result_text: str
+
+# {
+#     "lineIndexPage": 0,
+#     "wordIndexLine": 0,
+#     "wordText": "Start"
+# },
+# parse_result_word_0_word: Dict[str, int | str]
+
+parse_result_word_1_words: List[Dict[str, int | str]]
+
+# {
+#     "pageNo": 1,
+#     "lines": [
+#         {
+# parse_result_word_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
+
+
+parse_result_word_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
+
+# {
+#   "baseId": 3,
+#   "baseFileName": "case_3_pdf_text_route_inbox_pdflib.pdf",
+#   "noPagesInDoc": 3,
+#   "pages": [
+#     {
+parse_result_word_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
+
 parse_result_word_index_line: int
 parse_result_word_index_page: int
 parse_result_word_index_para: int

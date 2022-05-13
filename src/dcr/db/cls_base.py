@@ -240,6 +240,25 @@ class Base:
         )
 
     # -----------------------------------------------------------------------------
+    # Get the file name from the first processed document.
+    # -----------------------------------------------------------------------------
+    def get_file_name_next(self) -> str:
+        """Get the file name from the first processed document.
+
+        Returns:
+            str: File name.
+        """
+        return (
+            self.get_stem_name_next()
+            + "."
+            + (
+                self.get_file_type()
+                if self.get_file_type() != cfg.glob.DOCUMENT_FILE_TYPE_TIF
+                else cfg.glob.DOCUMENT_FILE_TYPE_TIFF
+            )
+        )
+
+    # -----------------------------------------------------------------------------
     # Get the file type from the file name.
     # -----------------------------------------------------------------------------
     def get_file_type(self) -> str:
@@ -254,7 +273,7 @@ class Base:
         return utils.get_file_type(pathlib.Path(str(self.base_file_name)))
 
     # -----------------------------------------------------------------------------
-    # Get the full file from a directory name or path and a file name or path.
+    # Get the full name from a directory name / path and a file name / path.
     # -----------------------------------------------------------------------------
     def get_full_name(self) -> str:
         """Get the full file from a directory name or path and a file name or
@@ -283,6 +302,20 @@ class Base:
         return utils.get_stem_name(str(self.base_file_name))
 
     # -----------------------------------------------------------------------------
+    # Get the stem name from the first processed document.
+    # -----------------------------------------------------------------------------
+    def get_stem_name_next(self) -> str:
+        """Get the stem name from the first processed document.
+
+        Returns:
+            str: Stem name.
+        """
+        if self.base_file_name == "":
+            return self.base_file_name
+
+        return utils.get_stem_name(str(self.base_file_name)) + "_" + str(self.base_id)
+
+    # -----------------------------------------------------------------------------
     # Persist the object in the database.
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
@@ -308,3 +341,42 @@ class Base:
             )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+    # -----------------------------------------------------------------------------
+    # Get the duplicate file name based on the hash key.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def select_duplicate_file_name_by_sha256(cls, id_base: sqlalchemy.Integer, sha256: str) -> str | None:
+        """Get the duplicate file name based on the hash key.
+
+        Args:
+            id_base (sqlalchemy.Integer): Document id.
+            sha256 (str): Hash key.
+
+        Returns:
+            str | None: The file name found.
+        """
+        dbt = sqlalchemy.Table(
+            cfg.glob.DBT_BASE,
+            cfg.glob.db_orm_metadata,
+            autoload_with=cfg.glob.db_orm_engine,
+        )
+
+        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+            stmnt = sqlalchemy.select(dbt.c.file_name).where(
+                sqlalchemy.and_(
+                    dbt.c.id != id_base,
+                    dbt.c.sha256 == sha256,
+                )
+            )
+
+            cfg.glob.logger.debug("SQL Statement=%s", stmnt)
+
+            row = conn.execute(stmnt).fetchone()
+
+            conn.close()
+
+            if row is None:
+                return row
+
+            return row[0]  # type: ignore
