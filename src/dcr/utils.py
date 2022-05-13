@@ -5,7 +5,6 @@ import os
 import pathlib
 import sys
 import traceback
-from typing import Tuple
 
 import cfg.glob
 import db.dml
@@ -162,54 +161,6 @@ def get_stem_name(file_name: pathlib.Path | str | None) -> str:
         file_name = pathlib.Path(file_name)
 
     return file_name.stem
-
-
-# -----------------------------------------------------------------------------
-# Prepare the document data for the next step.
-# -----------------------------------------------------------------------------
-def prepare_document_4_next_step(next_file_type: str, next_step: str) -> None:
-    """Prepare the document data for the next step.
-
-    Args:
-        next_file_type (str): File type of next document
-        next_step (str): Next processing step
-    """
-    cfg.glob.document_child_directory_name = cfg.glob.document_directory_name
-    cfg.glob.document_child_directory_type = cfg.glob.document_directory_type
-    cfg.glob.document_child_error_code = None
-    cfg.glob.document_child_file_type = next_file_type
-    cfg.glob.document_child_id_base = cfg.glob.base.base_id_base
-    cfg.glob.document_child_id_parent = cfg.glob.base.base_id
-    cfg.glob.document_child_id_language = cfg.glob.base.base_id_language
-    cfg.glob.document_child_next_step = next_step
-    cfg.glob.document_child_status = cfg.glob.DOCUMENT_STATUS_START
-
-
-# -----------------------------------------------------------------------------
-# Prepare the source and target file names.
-# -----------------------------------------------------------------------------
-def prepare_file_names(
-    file_extension: str,
-) -> Tuple[str, str]:
-    """Prepare the source and target file names.
-
-    Args:
-        file_extension (str): File extension, default value 'pdf'.
-
-    Returns:
-        Tuple(str,str): Source file name and target file name.
-    """
-    source_file = os.path.join(
-        cfg.glob.document_directory_name,
-        cfg.glob.document_file_name,
-    )
-
-    target_file = os.path.join(
-        cfg.glob.document_directory_name,
-        cfg.glob.document_stem_name + "." + file_extension,
-    )
-
-    return source_file, target_file
 
 
 # -----------------------------------------------------------------------------

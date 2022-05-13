@@ -1,26 +1,26 @@
 """Library Stub."""
-import db.utils
+import os
+import pathlib
+from typing import Dict
+from typing import TypeAlias
+
 import sqlalchemy.engine
+
+Columns: TypeAlias = Dict[
+    str, bool | sqlalchemy.Boolean | int | sqlalchemy.Integer | str | os.PathLike[str] | sqlalchemy.String | None
+]
 
 def delete_dbt_id(
     table_name: str,
     id_where: int | sqlalchemy.Integer,
 ) -> None: ...
-def dml_prepare(dbt_name: str) -> sqlalchemy.Table: ...
 def insert_dbt_row(
     table_name: str,
-    columns: db.utils.Columns,
+    columns: Columns,
 ) -> sqlalchemy.Integer: ...
-def select_content_tetml(
-    conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table, document_id: sqlalchemy.Integer
-) -> sqlalchemy.engine.CursorResult: ...
-def select_document(
-    conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table, next_step: str
-) -> sqlalchemy.engine.CursorResult: ...
-def select_language(conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table) -> sqlalchemy.engine.CursorResult: ...
-def select_version_version_unique() -> str: ...
+def load_db_data_from_json(initial_database_data: pathlib.Path) -> None: ...
 def update_dbt_id(
     table_name: str,
     id_where: int | sqlalchemy.Integer,
-    columns: db.utils.Columns,
+    columns: Columns,
 ) -> None: ...

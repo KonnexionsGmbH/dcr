@@ -292,8 +292,8 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
 
     if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
         utils.progress_msg_line_type(
-        f"LineType: Start page                         ={cfg.glob.parse_result_no_pages_in_doc}"
-    )
+            f"LineType: Start page                         ={cfg.glob.parse_result_no_pages_in_doc}"
+        )
 
     # Process the page related tags.
     for child in parent:
@@ -315,7 +315,7 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
     if cfg.glob.setup.is_parsing_line:
         if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
             cfg.glob.line_type.process_page(
-                page_no=cfg.glob.parse_result_no_pages_in_doc,
+                page_no=cfg.glob.parse_result_no_pages_in_doc, line_lines=cfg.glob.parse_result_line_1_lines
             )
         cfg.glob.parse_result_line_3_pages.append(
             {
@@ -386,14 +386,14 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
         )
 
     if cfg.glob.setup.is_parsing_line:
+        if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
+            cfg.glob.line_type.process_document(cfg.glob.parse_result_line_3_pages)
         cfg.glob.parse_result_line_4_document = {
             cfg.glob.JSON_NAME_BASE_ID: cfg.glob.base.base_id,
             cfg.glob.JSON_NAME_BASE_FILE_NAME: cfg.glob.base.base_file_name,
             cfg.glob.JSON_NAME_NO_PAGES_IN_DOC: cfg.glob.parse_result_no_pages_in_doc,
             cfg.glob.JSON_NAME_PAGES: cfg.glob.parse_result_line_3_pages,
         }
-        if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
-            cfg.glob.line_type.process_document()
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(cfg.glob.parse_result_line_4_document, file_handle)
     elif cfg.glob.setup.is_parsing_word:

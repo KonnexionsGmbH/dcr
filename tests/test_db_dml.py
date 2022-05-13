@@ -1,5 +1,9 @@
 # pylint: disable=unused-argument
 """Testing Module db.dml."""
+import os
+import pathlib
+import shutil
+
 import cfg.glob
 import db.dml
 import db.driver
@@ -63,37 +67,76 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test Function - select_version_version_unique().
+# Test Load Database Data - disallowed database table.
 # -----------------------------------------------------------------------------
-def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
-    """Test: select_version_version_unique()."""
+def test_load_db_data_from_json_content(fxtr_setup_empty_db_and_inbox):
+    """Test Load Database Data - disallowed database table."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    initial_database_data_path = pathlib.Path(cfg.glob.setup.initial_database_data)
+    initial_database_data_path_directory = os.path.dirname(initial_database_data_path)
+    initial_database_data_path_file_name = os.path.basename(initial_database_data_path)
 
-    db.dml.insert_dbt_row(cfg.glob.DBT_VERSION, {cfg.glob.DBC_VERSION: "0.0.0"})
+    initial_database_data_path_file_name_test = "initial_database_data_content.json"
+
+    # backup original file
+    shutil.copy(initial_database_data_path, cfg.glob.TESTS_INBOX_NAME)
+    # copy test file
+    shutil.copy(
+        os.path.join(cfg.glob.TESTS_INBOX_NAME, initial_database_data_path_file_name_test),
+        os.path.join(initial_database_data_path_directory, initial_database_data_path_file_name),
+    )
 
     with pytest.raises(SystemExit) as expt:
-        db.dml.select_version_version_unique()
+        db.dml.load_db_data_from_json(initial_database_data_path)
 
-    db.driver.disconnect_db()
+    # restore original file
+    shutil.copy(
+        os.path.join(cfg.glob.TESTS_INBOX_NAME, initial_database_data_path_file_name),
+        initial_database_data_path_directory,
+    )
 
-    assert expt.type == SystemExit, "Version not unique (orm)"
-    assert expt.value.code == 1, "Version not unique (orm)"
+    assert expt.type == SystemExit
+    assert expt.value.code == 1
 
     # -------------------------------------------------------------------------
-    pytest.helpers.delete_version_version()
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
-    db.driver.connect_db()
+
+# -----------------------------------------------------------------------------
+# Test Load Database Data - unknown database table.
+# -----------------------------------------------------------------------------
+def test_load_db_data_from_json_unknown(fxtr_setup_empty_db_and_inbox):
+    """Test Load Database Data - unknown database table."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    initial_database_data_path = pathlib.Path(cfg.glob.setup.initial_database_data)
+    initial_database_data_path_directory = os.path.dirname(initial_database_data_path)
+    initial_database_data_path_file_name = os.path.basename(initial_database_data_path)
+
+    initial_database_data_path_file_name_test = "initial_database_data_unknown.json"
+
+    # backup original file
+    shutil.copy(initial_database_data_path, cfg.glob.TESTS_INBOX_NAME)
+    # copy test file
+    shutil.copy(
+        os.path.join(cfg.glob.TESTS_INBOX_NAME, initial_database_data_path_file_name_test),
+        os.path.join(initial_database_data_path_directory, initial_database_data_path_file_name),
+    )
 
     with pytest.raises(SystemExit) as expt:
-        db.dml.select_version_version_unique()
+        db.dml.load_db_data_from_json(initial_database_data_path)
 
-    db.driver.disconnect_db()
+    # restore original file
+    shutil.copy(
+        os.path.join(cfg.glob.TESTS_INBOX_NAME, initial_database_data_path_file_name),
+        initial_database_data_path_directory,
+    )
 
-    assert expt.type == SystemExit, "Version missing (orm)"
-    assert expt.value.code == 1, "Version missing (orm)"
+    assert expt.type == SystemExit
+    assert expt.value.code == 1
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

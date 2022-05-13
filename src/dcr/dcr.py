@@ -12,6 +12,7 @@ from typing import List
 import cfg.cls_setup
 import cfg.glob
 import db.cls_run
+import db.cls_version
 import db.dml
 import db.driver
 import nlp.parser
@@ -43,7 +44,7 @@ def check_db_up_to_date() -> None:
             "The database table 'version' does not yet exist.",
         )
 
-    current_version = db.dml.select_version_version_unique()
+    current_version = db.cls_version.Version.select_version_version_unique()
 
     if cfg.glob.setup.dcr_version != current_version:
         utils.terminate_fatal(

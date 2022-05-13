@@ -285,51 +285,6 @@ def test_drop_database(fxtr_setup_logger_environment):
 
 
 # -----------------------------------------------------------------------------
-# Test Function - select_version_version_unique().
-# -----------------------------------------------------------------------------
-def test_select_version_version_unique(fxtr_setup_empty_db_and_inbox):
-    """Test: select_version_version_unique()."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    db.driver.connect_db()
-
-    db.dml.insert_dbt_row(cfg.glob.DBT_VERSION, {cfg.glob.DBC_VERSION: "0.0.0"})
-
-    db.driver.disconnect_db()
-
-    db.driver.connect_db()
-
-    cfg.glob.db_driver_cur = cfg.glob.db_driver_conn.cursor()
-
-    with pytest.raises(SystemExit) as expt:
-        db.dml.select_version_version_unique()
-
-    db.driver.disconnect_db()
-
-    assert expt.type == SystemExit, "Version not unique (driver)"
-    assert expt.value.code == 1, "Version not unique (driver)"
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.delete_version_version()
-
-    db.driver.connect_db()
-
-    cfg.glob.db_driver_cur = cfg.glob.db_driver_conn.cursor()
-
-    with pytest.raises(SystemExit) as expt:
-        db.dml.select_version_version_unique()
-
-    db.driver.disconnect_db()
-
-    assert expt.type == SystemExit, "Version missing (driver)"
-    assert expt.value.code == 1, "Version missing (driver)"
-
-    # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
 # Test Function - upgrade_database().
 # -----------------------------------------------------------------------------
 def test_upgrade_database(fxtr_setup_empty_db_and_inbox):

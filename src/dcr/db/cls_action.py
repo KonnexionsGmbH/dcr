@@ -1,4 +1,4 @@
-"""Module db.cls_action: Managing the document processing steps."""
+"""Module db.cls_action: Managing the database table  action."""
 from __future__ import annotations
 
 import os
@@ -84,11 +84,11 @@ class Action:
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.utils.Columns:
+    def _get_columns(self) -> db.dml.Columns:
         """Get the database columns.
 
         Returns:
-            db.utils.Columns: Database columns.
+            db.dml.Columns: Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -437,7 +437,7 @@ class Action:
             .order_by(dbt.c.id.asc())
         )
 
-        cfg.glob.logger.debug("SQL Statment=%s", stmnt)
+        cfg.glob.logger.debug("SQL Statement=%s", stmnt)
 
         return conn.execute(stmnt)
 
@@ -477,7 +477,7 @@ class Action:
             .order_by(dbt.c.id.asc())
         )
 
-        cfg.glob.logger.debug("SQL Statment=%s", stmnt)
+        cfg.glob.logger.debug("SQL Statement=%s", stmnt)
 
         return conn.execute(stmnt)
 
@@ -530,6 +530,6 @@ class Action:
             .order_by(dbt.c.id_base)
         )
 
-        cfg.glob.logger.debug("SQL Statment=%s", stmnt)
+        cfg.glob.logger.debug("SQL Statement=%s", stmnt)
 
         return conn.execute(stmnt)

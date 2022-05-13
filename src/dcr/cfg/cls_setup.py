@@ -24,7 +24,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO: int = 86
+    _CONFIG_PARAM_NO: int = 87
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -114,6 +114,8 @@ class Setup:
     _DCR_CFG_TETML_LINE: ClassVar[str] = "tetml_line"
     _DCR_CFG_TETML_PAGE: ClassVar[str] = "tetml_page"
     _DCR_CFG_TETML_WORD: ClassVar[str] = "tetml_word"
+    _DCR_CFG_TOKENIZE_2_DATABASE: ClassVar[str] = "tokenize_2_database"
+    _DCR_CFG_TOKENIZE_2_JSONFILE: ClassVar[str] = "tokenize_2_jsonfile"
     _DCR_CFG_VERBOSE: ClassVar[str] = "verbose"
     _DCR_CFG_VERBOSE_LINE_TYPE: ClassVar[str] = "verbose_line_type"
     _DCR_CFG_VERBOSE_PARSER: ClassVar[str] = "verbose_parser"
@@ -214,6 +216,8 @@ class Setup:
         self.is_tetml_line: bool = True
         self.is_tetml_page: bool = False
         self.is_tetml_word: bool = False
+        self.is_tokenize_2_database: bool = True
+        self.is_tokenize_2_jsonfile: bool = False
         self.is_verbose: bool = True
         self.is_verbose_line_type: bool = False
         self.line_footer_max_distance: int = 3
@@ -299,6 +303,8 @@ class Setup:
         self._check_config_tetml_line()
         self._check_config_tetml_page()
         self._check_config_tetml_word()
+        self._check_config_tokenize_2_database()
+        self._check_config_tokenize_2_jsonfile()
         self._check_config_verbose()
         self._check_config_verbose_line_type()
         self._check_config_verbose_parser()
@@ -904,6 +910,31 @@ class Setup:
                 self.is_tetml_word = True
 
     # -----------------------------------------------------------------------------
+    # Check the configuration parameter - tokenize_2_database.
+    # -----------------------------------------------------------------------------
+    def _check_config_tokenize_2_database(self) -> None:
+        """Check the configuration parameter - tokenize_2_database."""
+        if Setup._DCR_CFG_TOKENIZE_2_DATABASE in self._config:
+            if str(self._config[Setup._DCR_CFG_TOKENIZE_2_DATABASE]).lower() == "false":
+                self.is_tokenize_2_database = False
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - tokenize_2_jsonfile.
+    # -----------------------------------------------------------------------------
+    def _check_config_tokenize_2_jsonfile(self) -> None:
+        """Check the configuration parameter - tokenize_2_jsonfile."""
+        if Setup._DCR_CFG_TOKENIZE_2_JSONFILE in self._config:
+            if str(self._config[Setup._DCR_CFG_TOKENIZE_2_JSONFILE]).lower() == "true":
+                self.is_tokenize_2_jsonfile = True
+
+        if not self.is_tokenize_2_database:
+            if not self.is_tokenize_2_jsonfile:
+                utils.terminate_fatal_setup(
+                    "At least one of the configuration parameters 'tokenize_2_database' or "
+                    + "'tokenize_2_jsonfile' must be 'true'"
+                )
+
+    # -----------------------------------------------------------------------------
     # Check the configuration parameter - verbose.
     # -----------------------------------------------------------------------------
     def _check_config_verbose(self) -> None:
@@ -1062,6 +1093,8 @@ class Setup:
                     | Setup._DCR_CFG_TETML_LINE
                     | Setup._DCR_CFG_TETML_PAGE
                     | Setup._DCR_CFG_TETML_WORD
+                    | Setup._DCR_CFG_TOKENIZE_2_DATABASE
+                    | Setup._DCR_CFG_TOKENIZE_2_JSONFILE
                     | Setup._DCR_CFG_VERBOSE
                     | Setup._DCR_CFG_VERBOSE_LINE_TYPE
                     | Setup._DCR_CFG_VERBOSE_PARSER

@@ -1,5 +1,4 @@
 """Module db.ddl: Database Definition Management."""
-import json
 import os
 import pathlib
 from typing import List
@@ -9,6 +8,8 @@ import db.cls_action
 import db.cls_base
 import db.cls_language
 import db.cls_run
+import db.cls_token
+import db.cls_version
 import db.dml
 import db.driver
 import sqlalchemy
@@ -143,101 +144,6 @@ def create_db_triggers(table_names: List[str]) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Create the database table content_token.
-# -----------------------------------------------------------------------------
-def create_dbt_content_token(table_name: str) -> None:
-    """Create the database table content_token.
-
-    Args:
-        table_name (str): Table name.
-    """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    sqlalchemy.Table(
-        table_name,
-        cfg.glob.db_orm_metadata,
-        sqlalchemy.Column(
-            cfg.glob.DBC_ID,
-            sqlalchemy.Integer,
-            autoincrement=True,
-            nullable=False,
-            primary_key=True,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_CREATED_AT,
-            sqlalchemy.DateTime,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_MODIFIED_AT,
-            sqlalchemy.DateTime,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_ID_BASE,
-            sqlalchemy.Integer,
-            sqlalchemy.ForeignKey(cfg.glob.DBT_BASE + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
-            nullable=False,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_PAGE_NO,
-            sqlalchemy.Integer,
-            nullable=False,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_PAGE_DATA,
-            sqlalchemy.JSON,
-            nullable=False,
-        ),
-    )
-
-    utils.progress_msg(f"The database table '{table_name}' has now been created")
-
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Create and initialise the database table version.
-# -----------------------------------------------------------------------------
-def create_dbt_version(
-    table_name: str,
-) -> None:
-    """Create and initialise the database table version.
-
-    If the database table is not yet included in the database schema, then the
-    database table is created and the current version number of DCR is
-    inserted.
-
-    Args:
-        table_name (str): Table name.
-    """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    sqlalchemy.Table(
-        table_name,
-        cfg.glob.db_orm_metadata,
-        sqlalchemy.Column(
-            cfg.glob.DBC_ID,
-            sqlalchemy.Integer,
-            autoincrement=True,
-            nullable=False,
-            primary_key=True,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_CREATED_AT,
-            sqlalchemy.DateTime,
-        ),
-        sqlalchemy.Column(
-            cfg.glob.DBC_MODIFIED_AT,
-            sqlalchemy.DateTime,
-        ),
-        sqlalchemy.Column(cfg.glob.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True),
-    )
-
-    utils.progress_msg(f"The database table '{table_name}' has now been created")
-
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
 # Create the database tables and triggers.
 # -----------------------------------------------------------------------------
 def create_schema() -> None:
@@ -265,22 +171,22 @@ def create_schema() -> None:
 
     db.cls_language.Language.create_dbt()
     db.cls_run.Run.create_dbt()
-    create_dbt_version(cfg.glob.DBT_VERSION)
+    db.cls_version.Version.create_dbt()
     # FK: language
     db.cls_base.Base.create_dbt()
     # FK: run
     db.cls_action.Action.create_dbt()
     # FK: document
-    create_dbt_content_token(cfg.glob.DBT_CONTENT_TOKEN)
+    db.cls_token.Token.create_dbt()
 
     # Create the database triggers.
     create_db_triggers(
         [
             cfg.glob.DBT_ACTION,
             cfg.glob.DBT_BASE,
-            cfg.glob.DBT_CONTENT_TOKEN,
             cfg.glob.DBT_LANGUAGE,
             cfg.glob.DBT_RUN,
+            cfg.glob.DBT_TOKEN,
             cfg.glob.DBT_VERSION,
         ],
     )
@@ -309,7 +215,7 @@ def create_schema() -> None:
     if cfg.glob.setup.initial_database_data:
         initial_database_data_path = pathlib.Path(cfg.glob.setup.initial_database_data)
         if os.path.isfile(initial_database_data_path):
-            load_db_data_from_json(initial_database_data_path)
+            db.dml.load_db_data_from_json(initial_database_data_path)
         else:
             utils.terminate_fatal(
                 f"File with initial database data is missing - " f"file name '{cfg.glob.setup.initial_database_data}'"
@@ -319,49 +225,3 @@ def create_schema() -> None:
     db.driver.disconnect_db()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Load database data from a JSON file.
-# -----------------------------------------------------------------------------
-def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
-    """Load database data from a JSON file.
-
-    Args:
-        initial_database_data (Path): JSON file.
-    """
-    with open(initial_database_data, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
-        json_data = json.load(file_handle)
-
-        api_version = json_data[cfg.glob.JSON_NAME_API_VERSION]
-        if api_version != cfg.glob.setup.dcr_version:
-            utils.terminate_fatal(f"Expected api version is' {cfg.glob.setup.dcr_version}' " f"- got '{api_version}'")
-
-        data = json_data[cfg.glob.JSON_NAME_DATA]
-        for json_table in data[cfg.glob.JSON_NAME_TABLES]:
-            table_name = json_table[cfg.glob.JSON_NAME_TABLE_NAME].lower()
-
-            if table_name not in ["language"]:
-                if table_name in [
-                    "action",
-                    "base",
-                    "content_token",
-                    "run",
-                    "version",
-                ]:
-                    utils.terminate_fatal(f"The database table '{table_name}' must not be changed via the JSON file.")
-                else:
-                    utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
-
-            for json_row in json_table[cfg.glob.JSON_NAME_ROWS]:
-                db_columns = {}
-
-                for json_column in json_row[cfg.glob.JSON_NAME_ROW]:
-                    db_columns[json_column[cfg.glob.JSON_NAME_COLUMN_NAME]] = json_column[
-                        cfg.glob.JSON_NAME_COLUMN_VALUE
-                    ]
-
-                db.dml.insert_dbt_row(
-                    table_name,
-                    db_columns,
-                )

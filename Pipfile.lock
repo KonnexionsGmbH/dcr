@@ -1331,7 +1331,7 @@
                 "sha256:62e61019c5178463a08c890abb2b1a1f9de24aefb97a3ce6a6c803278c94a19d",
                 "sha256:69e400387a92f04b429ca640f23f027ef15745e4deba15cfb1c7193968fb9760"
             ],
-            "markers": "python_version >= '3.7' and python_version < '4.0'",
+            "markers": "python_version >= '3.7' and python_version < '4'",
             "version": "==1.5.2"
         },
         "databind.core": {
@@ -1339,7 +1339,7 @@
                 "sha256:106d95a365ccc0d955ff1a7c79bee0101fe64f2447ee1d6b4b5666ad1422dd33",
                 "sha256:3939b2878a751015bf74dd62ab02884d4aa28a11baebeea7dac22140ba2bdeaf"
             ],
-            "markers": "python_version >= '3.7' and python_version < '4.0'",
+            "markers": "python_version >= '3.7' and python_version < '4'",
             "version": "==1.5.2"
         },
         "databind.json": {
@@ -1347,7 +1347,7 @@
                 "sha256:1ed60b6b46b88cfdf21941523e6ea021c651f2afb280ffe85b68c7ce1dd6a19d",
                 "sha256:25680d75b9002bc5dafd49018d508603b885d10c4a339f6618fd970df7d4d743"
             ],
-            "markers": "python_version >= '3.7' and python_version < '4.0'",
+            "markers": "python_version >= '3.7' and python_version < '4'",
             "version": "==1.5.2"
         },
         "deprecated": {
@@ -1384,7 +1384,7 @@
                 "sha256:0a70cbd2a057279adc88b6d0c0dc74ee90e46d3741b3556336f822abe2d185ac",
                 "sha256:b13328f8eb709da3e1d26c3ab6d2cef16c72744bf4bac575f08e4509ea8fd51b"
             ],
-            "markers": "python_version >= '3.7' and python_version < '4.0'",
+            "markers": "python_version >= '3.7' and python_version < '4'",
             "version": "==2.0.1"
         },
         "docspec-python": {
@@ -1392,7 +1392,7 @@
                 "sha256:9e5a8f9104f727f8f8a568c974e079f65d3bdbb1b4297bd6f6f7f8757928147f",
                 "sha256:f43bbd1590b0b9f3d7c82576d364c97604f2232e38c27430a1aeaf6672afb43f"
             ],
-            "markers": "python_version >= '3.7' and python_version < '4.0'",
+            "markers": "python_version >= '3.7' and python_version < '4'",
             "version": "==2.0.1"
         },
         "docstring-parser": {
@@ -1664,7 +1664,7 @@
                 "sha256:2513458a7bffca4b67b0c19aabf09792d2062faed59c214b54e3b17d3c50c4c9",
                 "sha256:fc4562d41cf1276d469cbd2797d02886e52133f12db1145ac9a209a44181c601"
             ],
-            "markers": "python_version >= '3.7' and python_version < '4.0'",
+            "markers": "python_version >= '3.7' and python_version < '4'",
             "version": "==0.8.11"
         },
         "packaging": {
@@ -1756,11 +1756,11 @@
         },
         "pylint": {
             "hashes": [
-                "sha256:ced8968c3b699df0615e2a709554dec3ddac2f5cd06efadb69554a69eeca364a",
-                "sha256:f87e863a0b08f64b5230e7e779bcb75276346995737b2c0dc2793070487b1ff6"
+                "sha256:095567c96e19e6f57b5b907e67d265ff535e588fe26b12b5ebe1fc5645b2c731",
+                "sha256:705c620d388035bdd9ff8b44c5bcdd235bfb49d276d488dd2c8ff1736aa42526"
             ],
             "index": "pypi",
-            "version": "==2.13.8"
+            "version": "==2.13.9"
         },
         "pymdown-extensions": {
             "hashes": [

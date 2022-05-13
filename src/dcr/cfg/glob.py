@@ -65,9 +65,9 @@ DBC_VERSION: str = "version"
 
 DBT_ACTION: str = "action"
 DBT_BASE: str = "base"
-DBT_CONTENT_TOKEN: str = "content_token"
 DBT_LANGUAGE: str = "language"
 DBT_RUN: str = "run"
+DBT_TOKEN: str = "token"
 DBT_VERSION: str = "version"
 
 DCR_ARGV_0: str = "src/dcr/dcr.py"

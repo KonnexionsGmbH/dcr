@@ -1,10 +1,9 @@
-"""Module db.cls_run: Managing the run statistics."""
+"""Module db.cls_run: Managing the database table run."""
 from __future__ import annotations
 
 from typing import ClassVar
 
 import cfg.glob
-import db.cls_run
 import db.dml
 import sqlalchemy
 import sqlalchemy.engine
@@ -103,11 +102,11 @@ class Run:
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.utils.Columns:
+    def _get_columns(self) -> db.dml.Columns:
         """Get the database columns.
 
         Returns:
-            db.utils.Columns: Database columns.
+            db.dml.Columns: Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)

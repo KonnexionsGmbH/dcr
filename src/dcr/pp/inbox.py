@@ -189,14 +189,8 @@ def process_inbox() -> None:
 
     utils.reset_statistics_total()
 
-    dbt = sqlalchemy.Table(
-        cfg.glob.DBT_LANGUAGE,
-        cfg.glob.db_orm_metadata,
-        autoload_with=cfg.glob.db_orm_engine,
-    )
-
     with cfg.glob.db_orm_engine.connect() as conn:
-        for row in db.dml.select_language(conn, dbt):
+        for row in db.cls_language.Language.select_active_languages(conn):
             cfg.glob.language = db.cls_language.Language.from_row(row)
             if cfg.glob.language.language_directory_name_inbox is None:
                 cfg.glob.language.language_directory_name_inbox = pathlib.Path(

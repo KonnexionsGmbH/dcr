@@ -1,4 +1,4 @@
-"""Module db.cls_language: Managing the language statistics."""
+"""Module db.cls_language: Managing the database table language."""
 from __future__ import annotations
 
 import cfg.glob
@@ -141,4 +141,31 @@ class Language:
             code_tesseract=row[cfg.glob.DBC_CODE_TESSERACT],
             directory_name_inbox=row[cfg.glob.DBC_DIRECTORY_NAME_INBOX],
             iso_language_name=row[cfg.glob.DBC_ISO_LANGUAGE_NAME],
+        )
+
+    # -----------------------------------------------------------------------------
+    # Get the active languages.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def select_active_languages(cls, conn: sqlalchemy.engine.Connection) -> sqlalchemy.engine.CursorResult:
+        """Get the languages to be processed.
+
+        Args:
+            conn (Connection): Database connection.
+
+        Returns:
+            engine.CursorResult: The languages found.
+        """
+        dbt = sqlalchemy.Table(
+            cfg.glob.DBT_LANGUAGE,
+            cfg.glob.db_orm_metadata,
+            autoload_with=cfg.glob.db_orm_engine,
+        )
+
+        return conn.execute(
+            sqlalchemy.select(dbt)
+            .where(
+                dbt.c.active,
+            )
+            .order_by(dbt.c.id.asc())
         )

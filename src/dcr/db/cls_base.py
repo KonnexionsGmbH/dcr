@@ -1,4 +1,4 @@
-"""Module db.cls_base: Managing the document status."""
+"""Module db.cls_base: Managing the database table base."""
 from __future__ import annotations
 
 import os
@@ -67,11 +67,11 @@ class Base:
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.utils.Columns:
+    def _get_columns(self) -> db.dml.Columns:
         """Get the database columns.
 
         Returns:
-            db.utils.Columns: Database columns.
+            db.dml.Columns: Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)

@@ -1,11 +1,24 @@
 """Module db.dml: Database Manipulation Management."""
+import json
+import os
+import pathlib
+from typing import Dict
+from typing import TypeAlias
 
 import cfg.glob
-import db.utils
+import db.dml
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
+
+# -----------------------------------------------------------------------------
+# Type declaration.
+# -----------------------------------------------------------------------------
 import utils
+
+Columns: TypeAlias = Dict[
+    str, bool | sqlalchemy.Boolean | int | sqlalchemy.Integer | str | os.PathLike[str] | sqlalchemy.String | None
+]
 
 
 # -----------------------------------------------------------------------------
@@ -29,30 +42,11 @@ def delete_dbt_id(
 
 
 # -----------------------------------------------------------------------------
-# Preparation of a database table for DML operations.
-# -----------------------------------------------------------------------------
-def dml_prepare(dbt_name: str) -> sqlalchemy.Table:
-    """Preparation of a database table for DML operations.
-
-    Returns:
-        sqlalchemy.Table: Database table document,
-    """
-    # Check the inbox file directories.
-    utils.check_directories()
-
-    return sqlalchemy.Table(
-        dbt_name,
-        cfg.glob.db_orm_metadata,
-        autoload_with=cfg.glob.db_orm_engine,
-    )
-
-
-# -----------------------------------------------------------------------------
 # Insert a new row into a database table.
 # -----------------------------------------------------------------------------
 def insert_dbt_row(
     table_name: str,
-    columns: db.utils.Columns,
+    columns: Columns,
 ) -> sqlalchemy.Integer:
     """Insert a new row into a database table.
 
@@ -74,134 +68,49 @@ def insert_dbt_row(
 
 
 # -----------------------------------------------------------------------------
-# Select the content pages to be processed.
+# Load database data from a JSON file.
 # -----------------------------------------------------------------------------
-def select_content_tetml(
-    conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table, document_id: sqlalchemy.Integer
-) -> sqlalchemy.engine.CursorResult:
-    """Select the content pages to be processed.
+def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
+    """Load database data from a JSON file.
 
     Args:
-        conn (Connection): Database connection.
-        dbt (sqlalchemy.Table): database table document.
-        document_id (sqlalchemy.Integer): Document id.
-
-    Returns:
-        engine.CursorResult: The content pages found.
+        initial_database_data (Path): JSON file.
     """
-    return conn.execute(
-        sqlalchemy.select(
-            dbt.c.id,
-            dbt.c.page_no,
-            dbt.c.page_data,
-        )
-        .where(
-            dbt.c.document_id == document_id,
-        )
-        .order_by(dbt.c.id.asc())
-    )
+    with open(initial_database_data, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        json_data = json.load(file_handle)
 
+        api_version = json_data[cfg.glob.JSON_NAME_API_VERSION]
+        if api_version != cfg.glob.setup.dcr_version:
+            utils.terminate_fatal(f"Expected api version is' {cfg.glob.setup.dcr_version}' " f"- got '{api_version}'")
 
-# -----------------------------------------------------------------------------
-# Select the documents to be processed.
-# -----------------------------------------------------------------------------
-def select_document(
-    conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table, next_step: str
-) -> sqlalchemy.engine.CursorResult:
-    """Select the documents to be processed.
+        data = json_data[cfg.glob.JSON_NAME_DATA]
+        for json_table in data[cfg.glob.JSON_NAME_TABLES]:
+            table_name = json_table[cfg.glob.JSON_NAME_TABLE_NAME].lower()
 
-    Args:
-        conn (Connection): Database connection.
-        dbt (sqlalchemy.Table): database table document.
-        next_step (str): Next processing step.
+            if table_name not in ["language"]:
+                if table_name in [
+                    "action",
+                    "base",
+                    "run",
+                    "token",
+                    "version",
+                ]:
+                    utils.terminate_fatal(f"The database table '{table_name}' must not be changed via the JSON file.")
+                else:
+                    utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
 
-    Returns:
-        engine.CursorResult: The documents found.
-    """
-    return conn.execute(
-        sqlalchemy.select(
-            dbt.c.id,
-            dbt.c.no_children,
-            dbt.c.directory_name,
-            dbt.c.directory_type,
-            dbt.c.document_id_base,
-            dbt.c.document_id_parent,
-            dbt.c.file_name,
-            dbt.c.file_type,
-            dbt.c.id_language,
-            dbt.c.status,
-            dbt.c.stem_name,
-        )
-        .where(
-            sqlalchemy.and_(
-                dbt.c.next_step == next_step,
-                dbt.c.status.in_(
-                    [
-                        cfg.glob.DOCUMENT_STATUS_ERROR,
-                        cfg.glob.DOCUMENT_STATUS_START,
+            for json_row in json_table[cfg.glob.JSON_NAME_ROWS]:
+                db_columns = {}
+
+                for json_column in json_row[cfg.glob.JSON_NAME_ROW]:
+                    db_columns[json_column[cfg.glob.JSON_NAME_COLUMN_NAME]] = json_column[
+                        cfg.glob.JSON_NAME_COLUMN_VALUE
                     ]
-                ),
-            )
-        )
-        .order_by(dbt.c.id.asc())
-    )
 
-
-# -----------------------------------------------------------------------------
-# Get the languages to be processed.
-# -----------------------------------------------------------------------------
-def select_language(conn: sqlalchemy.engine.Connection, dbt: sqlalchemy.Table) -> sqlalchemy.engine.CursorResult:
-    """Get the languages to be processed.
-
-    Args:
-        conn (Connection): Database connection.
-        dbt (sqlalchemy.Table): database table language.
-
-    Returns:
-        engine.CursorResult: The languages found.
-    """
-    return conn.execute(
-        sqlalchemy.select(dbt)
-        .where(
-            dbt.c.active,
-        )
-        .order_by(dbt.c.id.asc())
-    )
-
-
-# -----------------------------------------------------------------------------
-# Get the version number from the database table version.
-# -----------------------------------------------------------------------------
-def select_version_version_unique() -> str:
-    """Get the version number.
-
-    Get the version number from the database table `version`.
-
-    Returns:
-        str: The version number found.
-    """
-    dbt = sqlalchemy.Table(
-        cfg.glob.DBT_VERSION,
-        cfg.glob.db_orm_metadata,
-        autoload_with=cfg.glob.db_orm_engine,
-    )
-
-    current_version: str = ""
-
-    with cfg.glob.db_orm_engine.connect() as conn:
-        for row in conn.execute(sqlalchemy.select(dbt.c.version)):
-            if current_version == "":
-                current_version = row.version
-            else:
-                utils.terminate_fatal(
-                    "Column version in database table version not unique",
+                db.dml.insert_dbt_row(
+                    table_name,
+                    db_columns,
                 )
-        conn.close()
-
-    if current_version == "":
-        utils.terminate_fatal("Column version in database table version not found")
-
-    return current_version
 
 
 # -----------------------------------------------------------------------------
@@ -210,7 +119,7 @@ def select_version_version_unique() -> str:
 def update_dbt_id(
     table_name: str,
     id_where: int | sqlalchemy.Integer,
-    columns: db.utils.Columns,
+    columns: Columns,
 ) -> None:
     """Update a database row based on its id column.
 

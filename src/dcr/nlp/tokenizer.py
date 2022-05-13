@@ -1,11 +1,15 @@
 """Module nlp.tokenizer: Store the document tokens page by page in the
 database."""
 
+import json
 import time
 from typing import Dict
 from typing import List
 
 import cfg.glob
+import db.cls_action
+import db.cls_base
+import db.cls_run
 import db.dml
 import spacy
 import spacy.tokens
@@ -282,21 +286,30 @@ def tokenize() -> None:
     else:
         dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(cfg.glob.DBT_CONTENT_TETML_PAGE)
 
-    dbt_document = db.dml.dml_prepare(cfg.glob.DBT_DOCUMENT)
-
     nlp: spacy.Language
     spacy_model_current: str | None = None
 
-    with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt_document, db.cls_run.Run.ACTION_CODE_TOKENIZE)
+    with cfg.glob.db_orm_engine.begin() as conn:
+        rows = db.cls_action.Action.select_action_by_action_code(
+            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE
+        )
 
         for row in rows:
+            # ------------------------------------------------------------------
+            # Processing a single document
+            # ------------------------------------------------------------------
             cfg.glob.start_time_document = time.perf_counter_ns()
 
-            # wwe ???
-            # utils.start_document_processing(
-            #     document=row,
-            # )
+            cfg.glob.run.run_total_processed_to_be += 1
+
+            cfg.glob.action_curr = db.cls_action.Action.from_row(row)
+
+            if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+                cfg.glob.run.total_status_error += 1
+            else:
+                cfg.glob.run.total_status_ready += 1
+
+            cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
 
             spacy_model = cfg.glob.languages_spacy[cfg.glob.base.base_id_language]
 
@@ -305,17 +318,6 @@ def tokenize() -> None:
                 spacy_model_current = spacy_model
 
             tokenize_document(nlp, dbt_content_tetml)
-
-            # wwe ???
-            # # Document successfully converted to pdf format
-            # duration_ns = utils.finalize_file_processing()
-            #
-            # if cfg.glob.setup.is_verbose:
-            #     utils.progress_msg(
-            #         f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-            #         f"Document: {cfg.glob.base.base_id:6d} "
-            #         f"[base: {db.dml.select_document_file_name_id(cfg.glob.base.base_id_base)}]"
-            #     )
 
         conn.close()
 
@@ -334,29 +336,41 @@ def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> Non
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_content_tetml(conn, dbt_content, cfg.glob.base.base_id_base)
-        for row in rows:
+    full_name_curr = cfg.glob.action_curr.get_full_name()
+
+    # wwe
+    # if cfg.glob.setup.is_tokenize_jsonfile:
+    #     file_name_next = cfg.glob.action_curr.get_stem_name() + ".token." + cfg.glob.DOCUMENT_FILE_TYPE_JSON
+    #     full_name_next = utils.get_full_name(
+    #         cfg.glob.action_curr.action_directory_name,
+    #         file_name_next,
+    #     )
+
+    with open(full_name_curr, "r") as file_handle:
+        line_4_document = json.load(file_handle)
+
+        line_3_pages = line_4_document[cfg.glob.JSON_NAME_PAGES]
+        for line_2_page in line_3_pages:
             # ------------------------------------------------------------------
             # Processing a single page
             # ------------------------------------------------------------------
             page_tokens: List[Dict[str, bool | str]] = []
 
-            page_no = row[1]
-            text = get_text_from_page_lines(row[2]) if cfg.glob.setup.is_tetml_line else row[2]
+            page_no = line_2_page[cfg.glob.JSON_NAME_PAGE_NO]
+            # wwe ?
+            # text = get_text_from_page_lines(row[2]) if cfg.glob.setup.is_tetml_line else row[2]
+            text = []
 
             for token in nlp(text):
                 page_tokens.append(get_token_attributes(token))
 
             db.dml.insert_dbt_row(
-                cfg.glob.DBT_CONTENT_TOKEN,
+                cfg.glob.DBT_TOKEN,
                 {
                     cfg.glob.DBC_ID_BASE: cfg.glob.base.base_id_base,
                     cfg.glob.DBC_PAGE_NO: page_no,
                     cfg.glob.DBC_PAGE_DATA: page_tokens,
                 },
             )
-
-        conn.close()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

@@ -1,5 +1,6 @@
 """Module db.driver: Database Administration."""
 import cfg.glob
+import db.cls_version
 import db.ddl
 import db.dml
 import psycopg2
@@ -238,12 +239,12 @@ def upgrade_database() -> None:
 
     utils.progress_msg("Upgrade the database tables ...")
 
-    current_version: str = db.dml.select_version_version_unique()
+    current_version: str = db.cls_version.Version.select_version_version_unique()
 
     if current_version == cfg.glob.setup.dcr_version:
         utils.progress_msg(f"The database is already up to date, version number='{current_version}'")
     else:
-        while db.dml.select_version_version_unique() != cfg.glob.setup.dcr_version:
+        while db.cls_version.Version.select_version_version_unique() != cfg.glob.setup.dcr_version:
             upgrade_database_version()
 
     disconnect_db()
@@ -258,7 +259,7 @@ def upgrade_database_version() -> None:
     """Upgrade the current database schema - from one version to the next."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    current_version: str = db.dml.select_version_version_unique()
+    current_version: str = db.cls_version.Version.select_version_version_unique()
 
     if current_version == "0.5.0":
         utils.terminate_fatal("An automatic upgrade of the database version is only " + "supported from version 1.0.0.")
