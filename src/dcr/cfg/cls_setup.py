@@ -111,7 +111,6 @@ class Setup:
     _DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_: ClassVar[str] = "spacy_tkn_attr_whitespace_"
 
     _DCR_CFG_TESSERACT_TIMEOUT: ClassVar[str] = "tesseract_timeout"
-    _DCR_CFG_TETML_LINE: ClassVar[str] = "tetml_line"
     _DCR_CFG_TETML_PAGE: ClassVar[str] = "tetml_page"
     _DCR_CFG_TETML_WORD: ClassVar[str] = "tetml_word"
     _DCR_CFG_TOKENIZE_2_DATABASE: ClassVar[str] = "tokenize_2_database"
@@ -213,7 +212,6 @@ class Setup:
         self.is_spacy_tkn_attr_text_with_ws: bool = False
         self.is_spacy_tkn_attr_vocab: bool = False
         self.is_spacy_tkn_attr_whitespace_: bool = True
-        self.is_tetml_line: bool = True
         self.is_tetml_page: bool = False
         self.is_tetml_word: bool = False
         self.is_tokenize_2_database: bool = True
@@ -300,7 +298,6 @@ class Setup:
         self._check_config_spacy_tkn_attr_vocab()
         self._check_config_spacy_tkn_attr_whitespace_()
         self._check_config_tesseract_timeout()
-        self._check_config_tetml_line()
         self._check_config_tetml_page()
         self._check_config_tetml_word()
         self._check_config_tokenize_2_database()
@@ -877,15 +874,6 @@ class Setup:
             self.tesseract_timeout = int(str(self._config[Setup._DCR_CFG_TESSERACT_TIMEOUT]))
 
     # -----------------------------------------------------------------------------
-    # Check the configuration parameter - tetml_line.
-    # -----------------------------------------------------------------------------
-    def _check_config_tetml_line(self) -> None:
-        """Check the configuration parameter - tetml_line."""
-        if Setup._DCR_CFG_TETML_LINE in self._config:
-            if str(self._config[Setup._DCR_CFG_TETML_LINE]).lower() == "false":
-                self.is_tetml_line = False
-
-    # -----------------------------------------------------------------------------
     # Check the configuration parameter - tetml_page.
     # -----------------------------------------------------------------------------
     def _check_config_tetml_page(self) -> None:
@@ -893,12 +881,6 @@ class Setup:
         if Setup._DCR_CFG_TETML_PAGE in self._config:
             if str(self._config[Setup._DCR_CFG_TETML_PAGE]).lower() == "true":
                 self.is_tetml_page = True
-
-        if not self.is_tetml_page:
-            if not self.is_tetml_line:
-                utils.terminate_fatal_setup(
-                    "At least one of the configuration parameters 'tetml_line' or " + "'tetml_page' must be 'true'"
-                )
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - tetml_word.
@@ -1090,7 +1072,6 @@ class Setup:
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_
                     | Setup._DCR_CFG_TESSERACT_TIMEOUT
-                    | Setup._DCR_CFG_TETML_LINE
                     | Setup._DCR_CFG_TETML_PAGE
                     | Setup._DCR_CFG_TETML_WORD
                     | Setup._DCR_CFG_TOKENIZE_2_DATABASE

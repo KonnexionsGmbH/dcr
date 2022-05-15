@@ -20,6 +20,7 @@ import utils
 # Global variables.
 # -----------------------------------------------------------------------------
 TETML_TYPE_LINE: str = "line"
+TETML_TYPE_PAGE: str = "page"
 TETML_TYPE_WORD: str = "word"
 
 
@@ -50,6 +51,21 @@ def debug_xml_element_all(event: str, parent_tag: str, attrib: Dict[str, str], t
 # -----------------------------------------------------------------------------
 def debug_xml_element_text_line() -> None:
     """Debug an XML element only 'text - variant line."""
+    if cfg.glob.setup.verbose_parser == "text":
+        print(
+            f"page_i_doc={cfg.glob.parse_result_page_index_doc:2d} "
+            f"para_i_page={cfg.glob.parse_result_para_index_page:2d} "
+            f"line_i_page={cfg.glob.parse_result_line_index_page:2d} "
+            f"line_i_para={cfg.glob.parse_result_line_index_para:2d} "
+            f"text='{cfg.glob.parse_result_text}'"
+        )
+
+
+# -----------------------------------------------------------------------------
+# Debug an XML element only 'text' - variant page.
+# -----------------------------------------------------------------------------
+def debug_xml_element_text_page() -> None:
+    """Debug an XML element only 'text - variant page."""
     if cfg.glob.setup.verbose_parser == "text":
         print(
             f"page_i_doc={cfg.glob.parse_result_page_index_doc:2d} "
@@ -95,6 +111,8 @@ def parse_tag_box(parent_tag: str, parent: Iterable[str]) -> None:
         match child_tag:
             case cfg.glob.PARSE_TAG_LINE:
                 parse_tag_line(child_tag, child)
+            case cfg.glob.PARSE_TAG_TEXT:
+                parse_tag_text(child_tag, child)
 
     debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -243,9 +261,8 @@ def parse_tag_line(parent_tag: str, parent: Iterable[str]) -> None:
             case cfg.glob.PARSE_TAG_WORD:
                 parse_tag_word(child_tag, child)
 
-    debug_xml_element_text_line()
-
     if cfg.glob.setup.is_parsing_line:
+        debug_xml_element_text_line()
         cfg.glob.parse_result_line_1_lines.append(
             {
                 cfg.glob.JSON_NAME_LINE_INDEX_PAGE: cfg.glob.parse_result_line_index_page,
@@ -278,6 +295,8 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
     # Initialize the parse result variables of a page.
     if cfg.glob.setup.is_parsing_line:
         cfg.glob.parse_result_line_1_lines = []
+    elif cfg.glob.setup.is_parsing_page:
+        cfg.glob.parse_result_page_0_paras = []
     elif cfg.glob.setup.is_parsing_word:
         cfg.glob.parse_result_word_1_words = []
 
@@ -289,11 +308,6 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
     cfg.glob.parse_result_page_index_doc += 1  # relative 0
     cfg.glob.parse_result_para_index_page = 0
     cfg.glob.parse_result_word_index_page = 0
-
-    if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
-        utils.progress_msg_line_type(
-            f"LineType: Start page                         ={cfg.glob.parse_result_no_pages_in_doc}"
-        )
 
     # Process the page related tags.
     for child in parent:
@@ -313,16 +327,20 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
 
     # Process the page related variables.
     if cfg.glob.setup.is_parsing_line:
-        if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
-            cfg.glob.line_type.process_page(
-                page_no=cfg.glob.parse_result_no_pages_in_doc, line_lines=cfg.glob.parse_result_line_1_lines
-            )
+        cfg.glob.line_type.process_page()
         cfg.glob.parse_result_line_3_pages.append(
             {
                 cfg.glob.JSON_NAME_PAGE_NO: cfg.glob.parse_result_no_pages_in_doc,
                 cfg.glob.JSON_NAME_NO_LINES_IN_PAGE: cfg.glob.parse_result_no_lines_in_page,
                 cfg.glob.JSON_NAME_NO_PARAS_IN_PAGE: cfg.glob.parse_result_no_paras_in_page,
                 cfg.glob.JSON_NAME_LINES: cfg.glob.parse_result_line_1_lines,
+            }
+        )
+    elif cfg.glob.setup.is_parsing_page:
+        cfg.glob.parse_result_page_2_pages.append(
+            {
+                cfg.glob.JSON_NAME_PAGE_NO: cfg.glob.parse_result_no_pages_in_doc,
+                cfg.glob.JSON_NAME_PAGE_TEXT: cfg.glob.parse_result_page_0_paras,
             }
         )
     elif cfg.glob.setup.is_parsing_word:
@@ -352,6 +370,8 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
     # Initialize the parse result variables of a document.
     if cfg.glob.setup.is_parsing_line:
         cfg.glob.parse_result_line_3_pages = []
+    elif cfg.glob.setup.is_parsing_page:
+        cfg.glob.parse_result_page_2_pages = []
     elif cfg.glob.setup.is_parsing_word:
         cfg.glob.parse_result_word_3_pages = []
 
@@ -365,11 +385,6 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
         if cfg.glob.setup.is_parsing_line:
             cfg.glob.line_type = nlp.cls_line_type.LineType()
 
-        utils.progress_msg_line_type("LineType")
-        utils.progress_msg_line_type(
-            f"LineType: Start document                     ={cfg.glob.action_curr.action_file_name}"
-        )
-
     # Process the tags of all document pages.
     for child in parent:
         child_tag = child.tag[cfg.glob.PARSE_TAG_FROM :]
@@ -379,15 +394,8 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
             case cfg.glob.PARSE_TAG_PAGE:
                 parse_tag_page(child_tag, child)
 
-    if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
-        # Process the document related variables.
-        utils.progress_msg_line_type(
-            f"LineType: End document                       ={cfg.glob.action_curr.action_file_name}"
-        )
-
     if cfg.glob.setup.is_parsing_line:
-        if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
-            cfg.glob.line_type.process_document(cfg.glob.parse_result_line_3_pages)
+        cfg.glob.line_type.process_document()
         cfg.glob.parse_result_line_4_document = {
             cfg.glob.JSON_NAME_BASE_ID: cfg.glob.base.base_id,
             cfg.glob.JSON_NAME_BASE_FILE_NAME: cfg.glob.base.base_file_name,
@@ -396,6 +404,15 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
         }
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(cfg.glob.parse_result_line_4_document, file_handle)
+    elif cfg.glob.setup.is_parsing_page:
+        cfg.glob.parse_result_page_3_document = {
+            cfg.glob.JSON_NAME_BASE_ID: cfg.glob.base.base_id,
+            cfg.glob.JSON_NAME_BASE_FILE_NAME: cfg.glob.base.base_file_name,
+            cfg.glob.JSON_NAME_NO_PAGES_IN_DOC: cfg.glob.parse_result_no_pages_in_doc,
+            cfg.glob.JSON_NAME_PAGES: cfg.glob.parse_result_page_2_pages,
+        }
+        with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+            json.dump(cfg.glob.parse_result_page_3_document, file_handle)
     elif cfg.glob.setup.is_parsing_word:
         cfg.glob.parse_result_word_4_document = {
             cfg.glob.JSON_NAME_BASE_ID: cfg.glob.base.base_id,
@@ -434,6 +451,10 @@ def parse_tag_para(parent_tag: str, parent: Iterable[str]) -> None:
         match child_tag:
             case cfg.glob.PARSE_TAG_BOX:
                 parse_tag_box(child_tag, child)
+
+    if cfg.glob.setup.is_parsing_page:
+        debug_xml_element_text_page()
+        cfg.glob.parse_result_page_0_paras.append(cfg.glob.parse_result_text)
 
     cfg.glob.parse_result_para_index_page += 1
 
@@ -525,9 +546,8 @@ def parse_tag_word(parent_tag: str, parent: Iterable[str]) -> None:
     cfg.glob.parse_result_no_words_in_page += 1
     cfg.glob.parse_result_no_words_in_para += 1
 
-    debug_xml_element_text_word()
-
     if cfg.glob.setup.is_parsing_word:
+        debug_xml_element_text_word()
         cfg.glob.parse_result_word_1_words.append(
             {
                 cfg.glob.JSON_NAME_LINE_INDEX_PAGE: cfg.glob.parse_result_line_index_page,
@@ -551,54 +571,59 @@ def parse_tetml() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    with cfg.glob.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_action_by_action_code(
-            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PARSER_LINE
-        )
+    for (tetml_type, action_code, is_parsing_line, is_parsing_page, is_parsing_word,) in [
+        (
+            TETML_TYPE_LINE,
+            db.cls_run.Run.ACTION_CODE_PARSER_LINE,
+            True,
+            False,
+            False,
+        ),
+        (
+            TETML_TYPE_PAGE,
+            db.cls_run.Run.ACTION_CODE_PARSER_PAGE,
+            False,
+            True,
+            False,
+        ),
+        (
+            TETML_TYPE_WORD,
+            db.cls_run.Run.ACTION_CODE_PARSER_WORD,
+            False,
+            False,
+            True,
+        ),
+    ]:
+        utils.progress_msg(f"Start of processing for tetml type '{tetml_type}'")
 
-        for row in rows:
-            # ------------------------------------------------------------------
-            # Processing a single document
-            # ------------------------------------------------------------------
-            cfg.glob.start_time_document = time.perf_counter_ns()
+        cfg.glob.setup.is_parsing_line = is_parsing_line
+        cfg.glob.setup.is_parsing_page = is_parsing_page
+        cfg.glob.setup.is_parsing_word = is_parsing_word
 
-            cfg.glob.run.run_total_processed_to_be += 1
+        with cfg.glob.db_orm_engine.begin() as conn:
+            rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=action_code)
 
-            cfg.glob.action_curr = db.cls_action.Action.from_row(row)
+            for row in rows:
+                # ------------------------------------------------------------------
+                # Processing a single document
+                # ------------------------------------------------------------------
+                cfg.glob.start_time_document = time.perf_counter_ns()
 
-            if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
-                cfg.glob.run.total_status_error += 1
-            else:
-                cfg.glob.run.total_status_ready += 1
+                cfg.glob.run.run_total_processed_to_be += 1
 
-            cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
+                cfg.glob.action_curr = db.cls_action.Action.from_row(row)
 
-            parse_tetml_file(tetml_type=TETML_TYPE_LINE)
+                if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+                    cfg.glob.run.total_status_error += 1
+                else:
+                    cfg.glob.run.total_status_ready += 1
 
-        conn.close()
+                cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
 
-    with cfg.glob.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_action_by_action_code(
-            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PARSER_WORD
-        )
+                parse_tetml_file()
 
-        for row in rows:
-            cfg.glob.start_time_document = time.perf_counter_ns()
-
-            cfg.glob.run.run_total_processed_to_be += 1
-
-            cfg.glob.action_curr = db.cls_action.Action.from_row(row)
-
-            if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
-                cfg.glob.run.total_status_error += 1
-            else:
-                cfg.glob.run.total_status_ready += 1
-
-            cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
-
-            parse_tetml_file(tetml_type=TETML_TYPE_WORD)
-
-        conn.close()
+            conn.close()
+        utils.progress_msg(f"End   of processing for tetml type '{tetml_type}'")
 
     utils.show_statistics_total()
 
@@ -609,7 +634,7 @@ def parse_tetml() -> None:
 # Parse the TETML file (step: s_p_j).
 # -----------------------------------------------------------------------------
 # noinspection PyArgumentList
-def parse_tetml_file(tetml_type: str) -> None:
+def parse_tetml_file() -> None:
     """Parse the TETML file.
 
     TBD
@@ -624,18 +649,16 @@ def parse_tetml_file(tetml_type: str) -> None:
         file_name_next,
     )
 
-    if tetml_type == TETML_TYPE_LINE:
-        cfg.glob.setup.is_parsing_line = True
-        cfg.glob.setup.is_parsing_word = False
-    else:
-        cfg.glob.setup.is_parsing_line = False
-        cfg.glob.setup.is_parsing_word = True
-
     # Create the Element tree object
     tree = defusedxml.ElementTree.parse(full_name_curr)
 
     # Get the root Element
     root = tree.getroot()
+
+    if cfg.glob.setup.is_parsing_line:
+        status = cfg.glob.DOCUMENT_STATUS_START
+    else:
+        status = cfg.glob.DOCUMENT_STATUS_END
 
     cfg.glob.action_next = db.cls_action.Action(
         action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
@@ -647,6 +670,7 @@ def parse_tetml_file(tetml_type: str) -> None:
         id_parent=cfg.glob.action_curr.action_id,
         id_run_last=cfg.glob.run.run_id,
         no_pdf_pages=-1,
+        status=status,
     )
 
     for child in root:
@@ -660,11 +684,10 @@ def parse_tetml_file(tetml_type: str) -> None:
     cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(pathlib.Path(full_name_next)),)
     cfg.glob.action_next.action_no_pdf_pages = utils.get_pdf_pages_no(str(pathlib.Path(full_name_next)))
 
-    cfg.glob.action_next.persist_2_db()
+    # wwe ? cfg.glob.action_next.persist_2_db()
+    cfg.glob.action_curr.finalise()
 
     utils.delete_auxiliary_file(full_name_curr)
-
-    cfg.glob.action_curr.finalise()
 
     cfg.glob.run.run_total_processed_ok += 1
 

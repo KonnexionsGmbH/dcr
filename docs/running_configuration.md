@@ -132,7 +132,7 @@ The customisable entries are:
     db_user = dcr_user
     db_user_admin = dcr_user_admin
     dcr_version = 0.9.2
-    delete_auxiliary_files = false
+    delete_auxiliary_files = true
     directory_inbox = data/inbox
     directory_inbox_accepted = data/inbox_accepted
     directory_inbox_rejected = data/inbox_rejected
@@ -144,12 +144,12 @@ The customisable entries are:
     line_header_max_distance = 3
     line_header_max_lines = 3
     pdf2image_type = jpeg
-    spacy_tkn_attr_...
     tesseract_timeout = 30
-    tetml_line = true
     tetml_page = false
     tetml_word = false
-    verbose = true
+    tokenize_2_database = true
+    tokenize_2_jsonfile = false
+    verbose = false
     verbose_line_type = false
     verbose_parser = none
     
@@ -180,9 +180,10 @@ The customisable entries are:
 | line_header_max_lines    | **`3`**                               | Maximum number of headers.                                                                         |
 | pdfimage_type            | **`jpeg`**                            | Format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**.            |
 | tesseract_timeout        | **`30`**                              | Terminate the tesseract job after a <br>period of time (seconds).                                  |
-| tetml_line               | **`true`**                            | PDFlib TET granularity 'line'.                                                                     |
 | tetml_page               | **`false`**                           | PDFlib TET granularity 'page'.                                                                     |
 | tetml_word               | **`false`**                           | PDFlib TET granularity 'word'.                                                                     |
+| tokenize_2_database      | **`true`**                            | Store the tokens in the database table **`token`**.                                                |
+| tokenize_2_jsonfile      | **`false`**                           | Store the tokens in a JSON flat file.                                                              |
 | verbose                  | **`true`**                            | Display progress messages for processing.                                                          |
 | verbose_line_type        | **`false`**                           | Display progress messages for line type determination.                                             |
 | verbose_parser           | **`none`**                            | Display progress messages for parsing **`xml`** (TETML) : <br>**`all`**, **`none`** or **`text`**. |
@@ -198,6 +199,12 @@ The configuration parameters can be set differently for the individual environme
     directory_inbox = data/inbox_dev
     directory_inbox_accepted = data/inbox_dev_accepted
     directory_inbox_rejected = data/inbox_dev_rejected
+    tetml_page = true
+    tetml_word = true
+    tokenize_2_jsonfile = true
+    verbose = true
+    verbose_line_type = true
+    verbose_parser = none
     
     [dcr.env.prod]
     db_connection_port = 5433

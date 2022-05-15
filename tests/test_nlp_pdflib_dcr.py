@@ -35,7 +35,6 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
         cfg.glob.setup._DCR_CFG_SECTION,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
             (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
@@ -98,7 +97,6 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
         cfg.glob.setup._DCR_CFG_SECTION,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_LINE, "false"),
             (cfg.glob.setup._DCR_CFG_TETML_PAGE, "true"),
         ],
     )
@@ -159,7 +157,6 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
         cfg.glob.setup._DCR_CFG_SECTION,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
             (cfg.glob.setup._DCR_CFG_TETML_PAGE, "false"),
         ],
     )
@@ -232,7 +229,6 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
         cfg.glob.setup._DCR_CFG_SECTION,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_LINE, "false"),
             (cfg.glob.setup._DCR_CFG_TETML_PAGE, "true"),
         ],
     )

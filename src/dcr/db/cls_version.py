@@ -181,7 +181,7 @@ class Version:
 
         current_version: str = ""
 
-        with cfg.glob.db_orm_engine.connect() as conn:
+        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
             for row in conn.execute(sqlalchemy.select(dbt.c.version)):
                 if current_version == "":
                     current_version = row.version

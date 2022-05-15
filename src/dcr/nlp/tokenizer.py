@@ -4,7 +4,6 @@ database."""
 import json
 import time
 from typing import Dict
-from typing import List
 
 import cfg.glob
 import db.cls_action
@@ -13,7 +12,6 @@ import db.cls_run
 import db.dml
 import spacy
 import spacy.tokens
-import sqlalchemy
 import utils
 
 
@@ -22,22 +20,19 @@ import utils
 # -----------------------------------------------------------------------------
 # Extract the text from the page lines.
 # -----------------------------------------------------------------------------
-def get_text_from_page_lines(page_data: Dict[str, str | List[Dict[str, int | str]]]) -> str:
+def get_text_from_line_2_page() -> str:
     """Extract the text from the page data.
-
-    Args:
-        page_data (Dict[str, str | List[Dict[str, int | str]]]): Page data.
 
     Returns:
         str: Reconstructed text.
     """
-    text_lines = []
+    line_0_lines = []
 
-    for page_line in page_data[cfg.glob.JSON_NAME_PAGE_LINES]:
-        if page_line[cfg.glob.JSON_NAME_LINE_TYPE] == cfg.glob.DOCUMENT_LINE_TYPE_BODY:
-            text_lines.append(page_line[cfg.glob.JSON_NAME_LINE_TEXT])
+    for cfg.glob.parse_result_line_0_line in cfg.glob.parse_result_line_2_page[cfg.glob.JSON_NAME_LINES]:
+        if cfg.glob.parse_result_line_0_line[cfg.glob.JSON_NAME_LINE_TYPE] == cfg.glob.DOCUMENT_LINE_TYPE_BODY:
+            line_0_lines.append(cfg.glob.parse_result_line_0_line[cfg.glob.JSON_NAME_LINE_TEXT])
 
-    return "\n".join(text_lines)
+    return "\n".join(line_0_lines)
 
 
 # -----------------------------------------------------------------------------
@@ -281,11 +276,6 @@ def tokenize() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    if cfg.glob.setup.is_tetml_line:
-        dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(cfg.glob.DBT_CONTENT_TETML_LINE)
-    else:
-        dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(cfg.glob.DBT_CONTENT_TETML_PAGE)
-
     nlp: spacy.Language
     spacy_model_current: str | None = None
 
@@ -317,7 +307,7 @@ def tokenize() -> None:
                 nlp = spacy.load(spacy_model)
                 spacy_model_current = spacy_model
 
-            tokenize_document(nlp, dbt_content_tetml)
+            tokenize_file(nlp)
 
         conn.close()
 
@@ -329,7 +319,8 @@ def tokenize() -> None:
 # -----------------------------------------------------------------------------
 # Create the tokens of a document page by page (step: tkn).
 # -----------------------------------------------------------------------------
-def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> None:
+# noinspection PyArgumentList
+def tokenize_file(nlp: spacy.Language) -> None:
     """Create the tokens of a document page by page.
 
     TBD
@@ -338,39 +329,68 @@ def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> Non
 
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    # wwe
-    # if cfg.glob.setup.is_tokenize_jsonfile:
-    #     file_name_next = cfg.glob.action_curr.get_stem_name() + ".token." + cfg.glob.DOCUMENT_FILE_TYPE_JSON
-    #     full_name_next = utils.get_full_name(
-    #         cfg.glob.action_curr.action_directory_name,
-    #         file_name_next,
-    #     )
+    if cfg.glob.setup.is_tokenize_2_jsonfile:
+        file_name_next = cfg.glob.action_curr.get_stem_name() + ".token." + cfg.glob.DOCUMENT_FILE_TYPE_JSON
+        full_name_next = utils.get_full_name(
+            cfg.glob.action_curr.action_directory_name,
+            file_name_next,
+        )
+    else:
+        full_name_next = None
 
-    with open(full_name_curr, "r") as file_handle:
-        line_4_document = json.load(file_handle)
+    with open(full_name_curr, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        cfg.glob.parse_result_line_4_document = json.load(file_handle)
 
-        line_3_pages = line_4_document[cfg.glob.JSON_NAME_PAGES]
-        for line_2_page in line_3_pages:
+        cfg.glob.token_3_pages = []
+
+        for cfg.glob.parse_result_line_2_page in cfg.glob.parse_result_line_4_document[cfg.glob.JSON_NAME_PAGES]:
             # ------------------------------------------------------------------
             # Processing a single page
             # ------------------------------------------------------------------
-            page_tokens: List[Dict[str, bool | str]] = []
+            page_no = cfg.glob.parse_result_line_2_page[cfg.glob.JSON_NAME_PAGE_NO]
 
-            page_no = line_2_page[cfg.glob.JSON_NAME_PAGE_NO]
-            # wwe ?
-            # text = get_text_from_page_lines(row[2]) if cfg.glob.setup.is_tetml_line else row[2]
-            text = []
+            text = get_text_from_line_2_page()
+
+            cfg.glob.token_1_tokens = []
 
             for token in nlp(text):
-                page_tokens.append(get_token_attributes(token))
+                cfg.glob.token_1_tokens.append(get_token_attributes(token))
 
             db.dml.insert_dbt_row(
                 cfg.glob.DBT_TOKEN,
                 {
-                    cfg.glob.DBC_ID_BASE: cfg.glob.base.base_id_base,
+                    cfg.glob.DBC_ID_BASE: cfg.glob.base.base_id,
                     cfg.glob.DBC_PAGE_NO: page_no,
-                    cfg.glob.DBC_PAGE_DATA: page_tokens,
+                    cfg.glob.DBC_PAGE_DATA: cfg.glob.token_1_tokens,
                 },
+            )
+
+            if cfg.glob.setup.is_tokenize_2_jsonfile:
+                cfg.glob.token_3_pages.append(
+                    {
+                        cfg.glob.JSON_NAME_PAGE_NO: page_no,
+                        cfg.glob.JSON_NAME_NO_LINES_IN_PAGE: cfg.glob.parse_result_line_2_page[
+                            cfg.glob.JSON_NAME_NO_LINES_IN_PAGE
+                        ],
+                        cfg.glob.JSON_NAME_NO_PARAS_IN_PAGE: cfg.glob.parse_result_line_2_page[
+                            cfg.glob.JSON_NAME_NO_PARAS_IN_PAGE
+                        ],
+                        cfg.glob.JSON_NAME_TOKENS: cfg.glob.token_1_tokens.append,
+                    }
+                )
+
+    if cfg.glob.setup.is_tokenize_2_jsonfile:
+        with open(full_name_next, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+            json.dump(
+                {
+                    cfg.glob.JSON_NAME_BASE_ID: cfg.glob.base.base_id,
+                    cfg.glob.JSON_NAME_BASE_FILE_NAME: cfg.glob.base.base_file_name,
+                    cfg.glob.JSON_NAME_NO_PAGES_IN_DOC: cfg.glob.parse_result_line_4_document[
+                        cfg.glob.JSON_NAME_NO_PAGES_IN_DOC
+                    ],
+                    cfg.glob.JSON_NAME_PAGES: cfg.glob.token_3_pages,
+                },
+                file_handle,
             )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

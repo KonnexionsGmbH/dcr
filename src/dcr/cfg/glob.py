@@ -193,6 +193,7 @@ JSON_NAME_NO_WORDS_IN_PARA: str = "noWordsInPara"
 JSON_NAME_PAGE_INDEX_DOC: str = "pageIndexDoc"
 JSON_NAME_PAGE_LINES: str = "pageLines"
 JSON_NAME_PAGE_NO: str = "pageNo"
+JSON_NAME_PAGE_TEXT: str = "pageText"
 JSON_NAME_PAGE_WORDS: str = "pageWords"
 JSON_NAME_PAGES: str = "pages"
 JSON_NAME_PARA_INDEX_PAGE: str = "paraIndexPage"
@@ -254,6 +255,8 @@ JSON_NAME_TOKEN_TEXT: str = "tknText"
 JSON_NAME_TOKEN_TEXT_WITH_WS: str = "tknTextWithWs"
 JSON_NAME_TOKEN_VOCAB: str = "tknVocab"
 JSON_NAME_TOKEN_WHITESPACE_: str = "tknWhitespace_"
+
+JSON_NAME_TOKENS: str = "tokens"
 
 JSON_NAME_WORD_INDEX_LINE: str = "wordIndexLine"
 JSON_NAME_WORD_INDEX_PAGE: str = "wordIndexPage"
@@ -378,10 +381,10 @@ logger: logging.Logger
 #     "lineIndexPage": 0,
 #     "paraIndexPage": 0,
 #     "lineIndexPara": 0,
-#     "lineText": "Start Document ...",
+#     "lineText": "...",
 #     "lineType": "b"
 # },
-# parse_result_line_0_line: Dict[str, int | str]
+parse_result_line_0_line: Dict[str, int | str]
 
 parse_result_line_1_lines: List[Dict[str, int | str]]
 
@@ -391,13 +394,13 @@ parse_result_line_1_lines: List[Dict[str, int | str]]
 #     "noParasInPage": 10,
 #     "lines": [
 #         {
-# parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
+parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
 
 parse_result_line_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
 
 # {
 #   "baseId": 3,
-#   "baseFileName": "case_3_pdf_text_route_inbox_pdflib.pdf",
+#   "baseFileName": "...",
 #   "noPagesInDoc": 3,
 #   "pages": [
 #     {
@@ -412,6 +415,25 @@ parse_result_no_paras_in_page: int
 parse_result_no_words_in_line: int
 parse_result_no_words_in_page: int
 parse_result_no_words_in_para: int
+
+parse_result_page_0_paras: List[str]
+
+# {
+#     "pageNo": 1,
+#     "pageText": "..."
+# },
+# parse_result_page_1_page: Dict[str, int | str | List[str]]
+
+parse_result_page_2_pages: List[Dict[str, int | str | List[str]]]
+
+# {
+#   "baseId": 3,
+#   "baseFileName": "...",
+#   "noPagesInDoc": 3,
+#   "pages": [
+#     {
+parse_result_page_3_document: Dict[str, int | str | List[Dict[str, int | str | List[str]]]]
+
 parse_result_page_index_doc: int
 parse_result_page_words: Dict[str, int | List[Dict[str, int | str]]]
 parse_result_pages_word: Dict[str, int | List[Dict[str, int | List[Dict[str, int | str]]]]]
@@ -421,7 +443,7 @@ parse_result_text: str
 # {
 #     "lineIndexPage": 0,
 #     "wordIndexLine": 0,
-#     "wordText": "Start"
+#     "wordText": "..."
 # },
 # parse_result_word_0_word: Dict[str, int | str]
 
@@ -438,7 +460,7 @@ parse_result_word_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]
 
 # {
 #   "baseId": 3,
-#   "baseFileName": "case_3_pdf_text_route_inbox_pdflib.pdf",
+#   "baseFileName": "...",
 #   "noPagesInDoc": 3,
 #   "pages": [
 #     {
@@ -507,3 +529,9 @@ spacy_tkn_attr_vocab: bool = False
 spacy_tkn_attr_whitespace_: bool = True
 
 start_time_document: int
+
+token_0_token: Dict[str, bool | str]
+token_1_tokens: List[Dict[str, bool | str]]
+token_2_page: Dict[str, int | str | List[Dict[str, bool | str]]]
+token_3_pages: List[Dict[str, int | str | List[Dict[str, bool | str]]]]
+token_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, bool | str]]]]]

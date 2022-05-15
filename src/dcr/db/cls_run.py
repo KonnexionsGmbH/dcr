@@ -24,16 +24,18 @@ class Run:
     # Class variables.
     # -----------------------------------------------------------------------------
     # _ACTION_TEXT_CREATE_DB: ClassVar[str] = "Create Database"
-    _ACTION_TEXT_INBOX: ClassVar[str] = "inbox       (preprocessor)"
-    _ACTION_TEXT_PANDOC: ClassVar[str] = "pandoc      (preprocessor)"
-    _ACTION_TEXT_PARSER: ClassVar[str] = "parser      (nlp)"
-    _ACTION_TEXT_PARSER_LINE: ClassVar[str] = "parser_line (nlp)"
-    _ACTION_TEXT_PARSER_WORD: ClassVar[str] = "parser_word (nlp)"
-    _ACTION_TEXT_PDF2IMAGE: ClassVar[str] = "pdf2image   (preprocessor)"
-    _ACTION_TEXT_PDFLIB: ClassVar[str] = "pdflib      (nlp)"
-    _ACTION_TEXT_PYPDF2: ClassVar[str] = "pypdf2      (preprocessor)"
-    _ACTION_TEXT_TESSERACT: ClassVar[str] = "tesseract   (preprocessor)"
-    _ACTION_TEXT_TOKENIZE: ClassVar[str] = "tokenize    (nlp)"
+    _ACTION_TEXT_INBOX: ClassVar[str] = "inbox         (preprocessor)"
+    _ACTION_TEXT_PANDOC: ClassVar[str] = "pandoc        (preprocessor)"
+    _ACTION_TEXT_PARSER: ClassVar[str] = "parser        (nlp)"
+    _ACTION_TEXT_PARSER_LINE: ClassVar[str] = "parser_line   (nlp)"
+    _ACTION_TEXT_PARSER_PAGE: ClassVar[str] = "parser_page   (nlp)"
+    _ACTION_TEXT_PARSER_WORD: ClassVar[str] = "parser_word   (nlp)"
+    _ACTION_TEXT_PDF2IMAGE: ClassVar[str] = "pdf2image     (preprocessor)"
+    _ACTION_TEXT_PDFLIB: ClassVar[str] = "pdflib        (nlp)"
+    _ACTION_TEXT_PYPDF2: ClassVar[str] = "pypdf2        (preprocessor)"
+    _ACTION_TEXT_TESSERACT: ClassVar[str] = "tesseract     (preprocessor)"
+    _ACTION_TEXT_TOKENIZE: ClassVar[str] = "tokenize      (nlp)"
+    _ACTION_TEXT_TOKENIZE_LINE: ClassVar[str] = "tokenize_line (nlp)"
     _ACTION_TEXT_UPGRADE_DB: ClassVar[str] = "Upgrade Database"
 
     ACTION_CODE_ALL_COMPLETE: ClassVar[str] = "all"
@@ -42,12 +44,14 @@ class Run:
     ACTION_CODE_PANDOC: ClassVar[str] = "n_2_p"
     ACTION_CODE_PARSER: ClassVar[str] = "s_p_j"
     ACTION_CODE_PARSER_LINE: ClassVar[str] = "s_p_j_line"
+    ACTION_CODE_PARSER_PAGE: ClassVar[str] = "s_p_j_page"
     ACTION_CODE_PARSER_WORD: ClassVar[str] = "s_p_j_word"
     ACTION_CODE_PDF2IMAGE: ClassVar[str] = "p_2_i"
     ACTION_CODE_PDFLIB: ClassVar[str] = "tet"
     ACTION_CODE_PYPDF2: ClassVar[str] = "pypdf2"
     ACTION_CODE_TESSERACT: ClassVar[str] = "ocr"
     ACTION_CODE_TOKENIZE: ClassVar[str] = "tkn"
+    ACTION_CODE_TOKENIZE_LINE: ClassVar[str] = "tkn_line"
     ACTION_CODE_UPGRADE_DB: ClassVar[str] = "db_u"
 
     id_run_umbrella: ClassVar[int] = 0
@@ -263,6 +267,8 @@ class Run:
                 action_text = Run._ACTION_TEXT_PARSER
             case Run.ACTION_CODE_PARSER_LINE:
                 action_text = Run._ACTION_TEXT_PARSER_LINE
+            case Run.ACTION_CODE_PARSER_PAGE:
+                action_text = Run._ACTION_TEXT_PARSER_PAGE
             case Run.ACTION_CODE_PARSER_WORD:
                 action_text = Run._ACTION_TEXT_PARSER_WORD
             case Run.ACTION_CODE_PDF2IMAGE:
@@ -275,6 +281,8 @@ class Run:
                 action_text = Run._ACTION_TEXT_TESSERACT
             case Run.ACTION_CODE_TOKENIZE:
                 action_text = Run._ACTION_TEXT_TOKENIZE
+            case Run.ACTION_CODE_TOKENIZE_LINE:
+                action_text = Run._ACTION_TEXT_TOKENIZE_LINE
             case Run.ACTION_CODE_UPGRADE_DB:
                 action_text = Run._ACTION_TEXT_UPGRADE_DB
             case _:

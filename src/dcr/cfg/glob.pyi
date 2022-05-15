@@ -130,6 +130,7 @@ ERROR_61_903: str
 FILE_ENCODING_DEFAULT: str
 
 INFORMATION_NOT_YET_AVAILABLE: str
+
 JSON_NAME_API_VERSION: str
 JSON_NAME_BASE_FILE_NAME: str
 JSON_NAME_BASE_ID: str
@@ -152,6 +153,7 @@ JSON_NAME_NO_WORDS_IN_PARA: str
 JSON_NAME_PAGE_INDEX_DOC: str
 JSON_NAME_PAGE_LINES: str
 JSON_NAME_PAGE_NO: str
+JSON_NAME_PAGE_TEXT: str
 JSON_NAME_PAGE_WORDS: str
 JSON_NAME_PAGES: str
 JSON_NAME_PARA_INDEX_PAGE: str
@@ -213,6 +215,8 @@ JSON_NAME_TOKEN_TEXT: str
 JSON_NAME_TOKEN_TEXT_WITH_WS: str
 JSON_NAME_TOKEN_VOCAB: str
 JSON_NAME_TOKEN_WHITESPACE_: str
+
+JSON_NAME_TOKENS: str
 
 JSON_NAME_WORD_INDEX_LINE: str
 JSON_NAME_WORD_INDEX_PAGE: str
@@ -332,9 +336,9 @@ line_type: Type[nlp.cls_line_type.LineType]
 
 logger: logging.Logger
 
-# parse_result_line_0_line: Dict[str, int | str]
+parse_result_line_0_line: Dict[str, int | str]
 parse_result_line_1_lines: List[Dict[str, int | str]]
-# parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
+parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
 parse_result_line_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
 parse_result_line_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
 parse_result_line_index_page: int
@@ -346,6 +350,10 @@ parse_result_no_paras_in_page: int
 parse_result_no_words_in_line: int
 parse_result_no_words_in_page: int
 parse_result_no_words_in_para: int
+parse_result_page_0_paras: List[str]
+# parse_result_page_1_page: Dict[str, int | str | List[str]]
+parse_result_page_2_pages: List[Dict[str, int | str | List[str]]]
+parse_result_page_3_document: Dict[str, int | str | List[Dict[str, int | str | List[str]]]]
 parse_result_page_index_doc: int
 parse_result_page_lines: Dict[str, int | List[Dict[str, int | str]]]
 parse_result_page_words: Dict[str, int | List[Dict[str, int | str]]]
@@ -421,3 +429,9 @@ spacy_tkn_attr_vocab: bool
 spacy_tkn_attr_whitespace_: bool
 
 start_time_document: int
+
+token_0_token: Dict[str, bool | str]
+token_1_tokens: List[Dict[str, bool | str]]
+token_2_page: Dict[str, int | str | List[Dict[str, bool | str]]]
+token_3_pages: List[Dict[str, int | str | List[Dict[str, bool | str]]]]
+token_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, bool | str]]]]]
