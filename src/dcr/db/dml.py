@@ -3,6 +3,7 @@ import json
 import os
 import pathlib
 from typing import Dict
+from typing import Tuple
 from typing import TypeAlias
 
 import cfg.glob
@@ -18,6 +19,10 @@ import utils
 
 Columns: TypeAlias = Dict[
     str, bool | sqlalchemy.Boolean | int | sqlalchemy.Integer | str | os.PathLike[str] | sqlalchemy.String | None
+]
+
+ColumnValues: TypeAlias = Tuple[
+    bool | sqlalchemy.Boolean | int | sqlalchemy.Integer | str | os.PathLike[str] | sqlalchemy.String | None
 ]
 
 

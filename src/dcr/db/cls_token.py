@@ -7,6 +7,8 @@ import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
 import utils
+from sqlalchemy import Integer
+from sqlalchemy import String
 
 
 class Token:
@@ -24,6 +26,7 @@ class Token:
         _row_id: int | sqlalchemy.Integer = 0,
         id_base: int | sqlalchemy.Integer = 0,
         page_data: str | sqlalchemy.String = "",
+        page_no: int | sqlalchemy.Integer = 0,
     ) -> None:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -31,6 +34,7 @@ class Token:
         self.token_id: int | sqlalchemy.Integer = _row_id
         self.token_id_base: int | sqlalchemy.Integer = id_base
         self.token_page_data: str | sqlalchemy.String = page_data
+        self.token_page_no: int | sqlalchemy.Integer = page_no
 
         if self.token_id == 0:
             self.persist_2_db()
@@ -52,6 +56,7 @@ class Token:
         return {
             cfg.glob.DBC_ID_BASE: self.token_id_base,
             cfg.glob.DBC_PAGE_DATA: self.token_page_data,
+            cfg.glob.DBC_PAGE_NO: self.token_page_no,
         }
 
     # -----------------------------------------------------------------------------
@@ -87,13 +92,13 @@ class Token:
                 nullable=False,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_PAGE_NO,
-                sqlalchemy.Integer,
+                cfg.glob.DBC_PAGE_DATA,
+                sqlalchemy.JSON,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_PAGE_DATA,
-                sqlalchemy.JSON,
+                cfg.glob.DBC_PAGE_NO,
+                sqlalchemy.Integer,
                 nullable=False,
             ),
         )
@@ -157,6 +162,29 @@ class Token:
             _row_id=row[cfg.glob.DBC_ID],
             id_base=row[cfg.glob.DBC_ID_BASE],
             page_data=row[cfg.glob.DBC_PAGE_DATA],
+            page_no=row[cfg.glob.DBC_PAGE_NO],
+        )
+
+    # -----------------------------------------------------------------------------
+    # Get the database columns in a tuple.
+    # -----------------------------------------------------------------------------
+    def get_columns_in_tuple(
+        self,
+    ) -> tuple[int | Integer, int | Integer, str | String, int | Integer]:
+        """Get the database columns in a tuple.
+
+        Returns:
+            tuple[int | Integer, int | Integer, str | String, int | Integer]:
+                    Column values in a tuple.
+        """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+        return (
+            self.token_id,
+            self.token_id_base,
+            self.token_page_data,
+            self.token_page_no,
         )
 
     # -----------------------------------------------------------------------------

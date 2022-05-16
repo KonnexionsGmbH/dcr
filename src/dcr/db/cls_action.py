@@ -5,12 +5,16 @@ import os
 import pathlib
 import time
 from typing import ClassVar
+from typing import Tuple
+from typing import Union
 
 import cfg.glob
 import db.cls_run
 import db.dml
 import sqlalchemy
 import utils
+from sqlalchemy import Integer
+from sqlalchemy import String
 from sqlalchemy.engine import Connection
 
 
@@ -324,6 +328,57 @@ class Action:
             no_pdf_pages=row[cfg.glob.DBC_NO_PDF_PAGES],
             status=row[cfg.glob.DBC_STATUS],
         )
+
+    # -----------------------------------------------------------------------------
+    # Get the database columns in a tuple.
+    # -----------------------------------------------------------------------------
+    def get_columns_in_tuple(
+        self, is_duration_ns: bool = True, is_file_size_bytes: bool = True
+    ) -> Tuple[Union[str, int, Integer, String], ...]:
+        """Get the database columns in a tuple.
+
+        Args:
+            is_duration_ns (bool, optional): Including column duration_ns? Defaults to True.
+            is_file_size_bytes (bool, optional): Including column file_size_bytes?. Defaults to True.
+
+        Returns:
+                Tuple[Union[str, int, Integer, String], ...]:
+                        Column values in a tuple.
+        """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+        column_01_05 = (
+            self.action_id,
+            self.action_action_code,
+            self.action_action_text,
+            self.action_directory_name,
+            self.action_directory_type,
+        )
+
+        column_duration_ns = (self.action_duration_ns,)
+
+        column_07_10 = (
+            self.action_error_code_last,
+            self.action_error_msg_last,
+            self.action_error_no,
+            self.action_file_name,
+        )
+
+        column_file_size_bytes = (self.action_file_size_bytes,)
+
+        column_12_17 = (
+            self.action_id_base,
+            self.action_id_parent,
+            self.action_id_run_last,
+            self.action_no_children,
+            self.action_no_pdf_pages,
+            self.action_status,
+        )
+
+        columns = column_01_05 + (column_duration_ns + column_07_10 if is_duration_ns else column_07_10)
+
+        return columns + (column_file_size_bytes + column_12_17 if is_file_size_bytes else column_12_17)
 
     # -----------------------------------------------------------------------------
     # Get the file type from the file name.

@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 from typing import ClassVar
+from typing import Tuple
+from typing import Union
 
 import cfg.glob
 import db.dml
@@ -9,6 +11,8 @@ import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
 import utils
+from sqlalchemy import Integer
+from sqlalchemy import String
 
 
 # pylint: disable=R0801
@@ -291,6 +295,49 @@ class Run:
                 )
 
         return action_text
+
+    # -----------------------------------------------------------------------------
+    # Get the database columns in a tuple.
+    # -----------------------------------------------------------------------------
+    def get_columns_in_tuple(
+        self,
+    ) -> Tuple[
+        Union[int, Integer],
+        str,
+        str,
+        Union[int, Integer],
+        Union[str, String],
+        Union[int, Integer],
+        Union[int, Integer],
+        Union[int, Integer],
+    ]:
+        """Get the database columns in a tuple.
+
+            Returns:
+                Tuple[
+            Union[int, Integer],
+            str,
+            str,
+            Union[int, Integer],
+            Union[str, String],
+            Union[int, Integer],
+            Union[int, Integer],
+            Union[int, Integer],
+        ]:          Column values in a tuple.
+        """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+        return (
+            self.run_id,
+            self.run_action_code,
+            self.run_action_text,
+            self.run_id_run,
+            self.run_status,
+            self.run_total_erroneous,
+            self.run_total_processed_ok,
+            self.run_total_processed_to_be,
+        )
 
     # -----------------------------------------------------------------------------
     # Get the latest id from database table.

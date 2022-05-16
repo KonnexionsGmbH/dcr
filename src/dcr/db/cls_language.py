@@ -6,6 +6,9 @@ import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
 import utils
+from sqlalchemy import Boolean
+from sqlalchemy import Integer
+from sqlalchemy import String
 
 
 # pylint: disable=R0801
@@ -141,6 +144,49 @@ class Language:
             code_tesseract=row[cfg.glob.DBC_CODE_TESSERACT],
             directory_name_inbox=row[cfg.glob.DBC_DIRECTORY_NAME_INBOX],
             iso_language_name=row[cfg.glob.DBC_ISO_LANGUAGE_NAME],
+        )
+
+    # -----------------------------------------------------------------------------
+    # Get the database columns in a tuple.
+    # -----------------------------------------------------------------------------
+    def get_columns_in_tuple(
+        self,
+    ) -> tuple[
+        int | Integer,
+        bool | Boolean,
+        str | String,
+        str | String,
+        str | String,
+        str | String,
+        str | String,
+        str | String,
+    ]:
+        """Get the database columns in a tuple.
+
+            Returns:
+                tuple[
+            int | Integer,
+            bool | Boolean,
+            str | String,
+            str | String,
+            str | String,
+            str | String,
+            str | String,
+            str | String,
+        ]: Column values in a tuple.
+        """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+        return (
+            self.language_id,
+            self.language_active,
+            self.language_code_iso_639_3,
+            self.language_code_pandoc,
+            self.language_code_spacy,
+            self.language_code_tesseract,
+            self.language_directory_name_inbox,
+            self.language_iso_language_name,
         )
 
     # -----------------------------------------------------------------------------

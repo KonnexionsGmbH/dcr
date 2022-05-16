@@ -123,6 +123,8 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
         cfg.glob.setup.directory_inbox_accepted,
         [],
         [
+            "pdf_text_ok_protected_1.line.xml",
+            "pdf_text_ok_protected_1.page.xml",
             "pdf_text_ok_protected_1.pdf",
         ],
     )
@@ -147,7 +149,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         [
-            ("case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
+            ("case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
         ],
         cfg.glob.setup.directory_inbox,
     )
@@ -170,7 +172,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
     os.remove(
         os.path.join(
             cfg.glob.setup.directory_inbox_accepted,
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
+            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
         )
     )
 
@@ -194,8 +196,8 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
         cfg.glob.setup.directory_inbox_accepted,
         [],
         [
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpeg",
+            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
+            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpg",
         ],
     )
 
@@ -219,7 +221,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         [
-            ("case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
+            ("case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
         ],
         cfg.glob.setup.directory_inbox,
     )
@@ -242,7 +244,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
     os.remove(
         os.path.join(
             cfg.glob.setup.directory_inbox_accepted,
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
+            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
         )
     )
 
@@ -266,8 +268,8 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
         cfg.glob.setup.directory_inbox_accepted,
         [],
         [
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpeg",
+            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
+            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpg",
         ],
     )
 

@@ -7,27 +7,12 @@ import sys
 import traceback
 
 import cfg.glob
+import db.cls_run
 import db.dml
 import db.driver
 import PyPDF2
 import PyPDF2.utils
 import utils
-
-
-# -----------------------------------------------------------------------------
-# Check the inbox file directories.
-# -----------------------------------------------------------------------------
-def check_directories() -> None:
-    """Check the inbox file directories.
-
-    The file directory inbox_accepted must exist.
-    """
-    if not os.path.isdir(cfg.glob.setup.directory_inbox_accepted):
-        utils.terminate_fatal(
-            f"The inbox_accepted directory with the name "
-            f"'{str(cfg.glob.setup.directory_inbox_accepted)}' "
-            f"does not exist - error={str(OSError)}",
-        )
 
 
 # -----------------------------------------------------------------------------
@@ -55,6 +40,7 @@ def compute_sha256(file: pathlib.Path) -> str:
 # -----------------------------------------------------------------------------
 # Delete the given auxiliary file.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def delete_auxiliary_file(file_name: str) -> None:
     """Delete the given auxiliary file.
 
@@ -65,7 +51,9 @@ def delete_auxiliary_file(file_name: str) -> None:
         return
 
     # Don't remove the base document !!!
-    if file_name == get_full_name(cfg.glob.action_curr.action_directory_name, cfg.glob.base.get_file_name_next()):
+    if file_name.replace(("\\" if os.sep == "/" else "/"), os.sep) == get_full_name(
+        cfg.glob.action_curr.action_directory_name, cfg.glob.base.get_file_name_next()
+    ):
         return
 
     if os.path.isfile(file_name):

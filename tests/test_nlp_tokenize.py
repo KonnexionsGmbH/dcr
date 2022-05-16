@@ -129,7 +129,9 @@ def test_run_action_tokenize_attributes_true(fxtr_rmdir_opt, fxtr_setup_empty_db
         cfg.glob.setup.directory_inbox_accepted,
         [],
         [
+            "tokenizer_coverage_1.page.json",
             "tokenizer_coverage_1.pdf",
+            "tokenizer_coverage_1.word.json",
         ],
     )
 
@@ -212,7 +214,9 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
         cfg.glob.setup.directory_inbox_accepted,
         [],
         [
+            "tokenizer_coverage_1.page.json",
             "tokenizer_coverage_1.pdf",
+            "tokenizer_coverage_1.word.json",
         ],
     )
 

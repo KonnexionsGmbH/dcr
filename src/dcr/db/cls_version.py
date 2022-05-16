@@ -3,10 +3,12 @@ from __future__ import annotations
 
 import cfg.glob
 import db.dml
+import db.driver
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
 import utils
+from sqlalchemy import Integer
 
 
 class Version:
@@ -103,6 +105,8 @@ class Version:
         """Initialise from id."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        db.driver.connect_db()
+
         dbt = sqlalchemy.Table(
             cfg.glob.DBT_VERSION,
             cfg.glob.db_orm_metadata,
@@ -138,6 +142,23 @@ class Version:
         return cls(
             _row_id=row[cfg.glob.DBC_ID],
             version=row[cfg.glob.DBC_VERSION],
+        )
+
+    # -----------------------------------------------------------------------------
+    # Get the database columns in a tuple.
+    # -----------------------------------------------------------------------------
+    def get_columns_in_tuple(self) -> tuple[int | Integer, str]:
+        """Get the database columns in a tuple.
+
+        Returns:
+            tuple[int | Integer, str]: Column values in a tuple.
+        """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+        return (
+            self.version_id,
+            self.version_version,
         )
 
     # -----------------------------------------------------------------------------

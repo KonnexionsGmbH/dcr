@@ -3,12 +3,16 @@ from __future__ import annotations
 
 import os
 import pathlib
+from typing import Tuple
+from typing import Union
 
 import cfg.glob
 import db.cls_run
 import db.dml
 import sqlalchemy
 import utils
+from sqlalchemy import Integer
+from sqlalchemy import String
 
 
 # pylint: disable=R0801
@@ -139,7 +143,6 @@ class Base:
                 nullable=False,
             ),
             sqlalchemy.Column(cfg.glob.DBC_NO_PDF_PAGES, sqlalchemy.Integer, nullable=True),
-            sqlalchemy.Column(cfg.glob.DBC_ID_RUN_LAST, sqlalchemy.Integer, nullable=False),
             sqlalchemy.Column(cfg.glob.DBC_SHA256, sqlalchemy.String, nullable=True),
             sqlalchemy.Column(cfg.glob.DBC_STATUS, sqlalchemy.String, nullable=False),
         )
@@ -238,6 +241,45 @@ class Base:
             sha256=row[cfg.glob.DBC_SHA256],
             status=row[cfg.glob.DBC_STATUS],
         )
+
+    # -----------------------------------------------------------------------------
+    # Get the database columns in a tuple.
+    # -----------------------------------------------------------------------------
+    def get_columns_in_tuple(self, is_file_size_bytes: bool = True) -> Tuple[Union[str, int, Integer, String], ...]:
+        """Get the database columns in a tuple.
+
+        Args:
+            is_file_size_bytes (bool, optional): Including column file_size_bytes?. Defaults to True.
+
+        Returns:
+                Tuple[Union[str, int, Integer, String], ...]:
+                        Column values in a tuple.
+        """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+        column_01_08 = (
+            self.base_id,
+            self.base_action_code_last,
+            self.base_action_text_last,
+            self.base_directory_name,
+            self.base_error_code_last,
+            self.base_error_msg_last,
+            self.base_error_no,
+            self.base_file_name,
+        )
+
+        column_file_size_bytes = (self.base_file_size_bytes,)
+
+        column_10_14 = (
+            self.base_id_language,
+            self.base_id_run_last,
+            self.base_no_pdf_pages,
+            self.base_sha256,
+            self.base_status,
+        )
+
+        return column_01_08 + (column_file_size_bytes + column_10_14 if is_file_size_bytes else column_10_14)
 
     # -----------------------------------------------------------------------------
     # Get the file name from the first processed document.

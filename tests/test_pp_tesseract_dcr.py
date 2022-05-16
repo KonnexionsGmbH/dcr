@@ -352,7 +352,8 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
-            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "false"),
+            (cfg.glob.setup._DCR_CFG_TETML_WORD, "false"),
         ],
     )
 

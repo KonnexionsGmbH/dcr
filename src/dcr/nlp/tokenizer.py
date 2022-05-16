@@ -367,8 +367,8 @@ def tokenize_file(nlp: spacy.Language) -> None:
                     cfg.glob.DBT_TOKEN,
                     {
                         cfg.glob.DBC_ID_BASE: cfg.glob.base.base_id,
-                        cfg.glob.DBC_PAGE_NO: page_no,
                         cfg.glob.DBC_PAGE_DATA: cfg.glob.token_2_page,
+                        cfg.glob.DBC_PAGE_NO: page_no,
                     },
                 )
 

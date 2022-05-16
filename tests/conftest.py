@@ -14,7 +14,12 @@ import typing
 
 import cfg.cls_setup
 import cfg.glob
+import db.cls_action
+import db.cls_base
+import db.cls_language
 import db.cls_run
+import db.cls_token
+import db.cls_version
 import db.driver
 import pytest
 import sqlalchemy
@@ -70,6 +75,150 @@ def backup_setup_cfg() -> None:
     """Backup the 'setup.cfg' file."""
     if not os.path.isfile(FILE_NAME_SETUP_CFG_BACKUP):
         shutil.copy2(FILE_NAME_SETUP_CFG, FILE_NAME_SETUP_CFG_BACKUP)
+
+
+# -----------------------------------------------------------------------------
+# Check the content of database table action.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def check_dbt_action(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]) -> None:
+    """Check the content of database table action.
+
+    Args:
+        param (typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]):
+                Tuples with the contents of the table columns.
+    """
+    (id_row, actual_values) = param
+
+    dbt = db.cls_action.Action.from_id(id_row)
+
+    expected_values = dbt.get_columns_in_tuple(is_duration_ns=False, is_file_size_bytes=False)
+
+    if actual_values != expected_values:
+        print(f"issue with dbt action and id={id_row}:")
+        print(f"values expected={expected_values}")
+        print(f"values actual  ={actual_values}")
+        assert False, f"issue with dbt action and id={id_row} - see above"
+
+
+# -----------------------------------------------------------------------------
+# Check the content of database table base.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def check_dbt_base(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]) -> None:
+    """Check the content of database table base.
+
+    Args:
+        param (typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]):
+                Tuples with the contents of the table columns.
+    """
+    (id_row, actual_values) = param
+
+    dbt = db.cls_base.Base.from_id(id_row)
+
+    expected_values = dbt.get_columns_in_tuple(is_file_size_bytes=False)
+
+    if actual_values != expected_values:
+        print(f"issue with dbt base and id={id_row}:")
+        print(f"values expected={expected_values}")
+        print(f"values actual  ={actual_values}")
+        assert False, f"issue with dbt base and id={id_row} - see above"
+
+
+# -----------------------------------------------------------------------------
+# Check the content of database table language.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def check_dbt_language(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]) -> None:
+    """Check the content of database table language.
+
+    Args:
+        param (typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]):
+                Tuples with the contents of the table columns.
+    """
+    (id_row, actual_values) = param
+
+    dbt = db.cls_language.Language.from_id(id_row)
+
+    expected_values = dbt.get_columns_in_tuple()
+
+    if actual_values != expected_values:
+        print(f"issue with dbt language and id={id_row}:")
+        print(f"values expected={expected_values}")
+        print(f"values actual  ={actual_values}")
+        assert False, f"issue with dbt language and id={id_row} - see above"
+
+
+# -----------------------------------------------------------------------------
+# Check the content of database table run.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def check_dbt_run(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]) -> None:
+    """Check the content of database table run.
+
+    Args:
+        param (typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]):
+                Tuples with the contents of the table columns.
+    """
+    (id_row, actual_values) = param
+
+    dbt = db.cls_run.Run.from_id(id_row)
+
+    expected_values = dbt.get_columns_in_tuple()
+
+    if actual_values != expected_values:
+        print(f"issue with dbt run and id={id_row}:")
+        print(f"values expected={expected_values}")
+        print(f"values actual  ={actual_values}")
+        assert False, f"issue with dbt run and id={id_row} - see above"
+
+
+# -----------------------------------------------------------------------------
+# Check the content of database table token.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def check_dbt_token(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]) -> None:
+    """Check the content of database table token.
+
+    Args:
+        param (typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]):
+                Tuples with the contents of the table columns.
+    """
+    (id_row, actual_values) = param
+
+    dbt = db.cls_token.Token.from_id(id_row)
+
+    expected_values = dbt.get_columns_in_tuple()
+
+    if actual_values != expected_values:
+        print(f"issue with dbt token and id={id_row}:")
+        print(f"values expected={expected_values}")
+        print(f"values actual  ={actual_values}")
+        assert False, f"issue with dbt token and id={id_row} - see above"
+
+
+# -----------------------------------------------------------------------------
+# Check the content of database table version.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def check_dbt_version(param: typing.Tuple[int, typing.Tuple[int, str]]) -> None:
+    """Check the content of database table version.
+
+    Args:
+        param (typing.Tuple[int, typing.Tuple[int, str]]):
+                Tuples with the contents of the table columns.
+    """
+    (id_row, actual_values) = param
+
+    dbt = db.cls_version.Version.from_id(id_row)
+
+    expected_values = dbt.get_columns_in_tuple()
+
+    if actual_values != expected_values:
+        print(f"issue with dbt version and id={id_row}:")
+        print(f"values expected={expected_values}")
+        print(f"values actual  ={actual_values}")
+        assert False, f"issue with dbt version and id={id_row} - see above"
 
 
 # -----------------------------------------------------------------------------
@@ -326,6 +475,8 @@ def help_run_action_all_complete_duplicate_file(
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
     pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], cfg.glob.setup.directory_inbox_accepted)
 
+    print(f"wwe file_1={cfg.glob.setup.directory_inbox_accepted, stem_name_1 + '.' + file_ext_1}")
+    print(f"wwe file_2={cfg.glob.setup.directory_inbox_accepted, stem_name_2 + '.' + file_ext_2}")
     os.rename(
         os.path.join(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
         os.path.join(cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
