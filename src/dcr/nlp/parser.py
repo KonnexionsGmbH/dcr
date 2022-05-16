@@ -347,7 +347,7 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
         cfg.glob.parse_result_word_3_pages.append(
             {
                 cfg.glob.JSON_NAME_PAGE_NO: cfg.glob.parse_result_no_pages_in_doc,
-                cfg.glob.JSON_NAME_LINES: cfg.glob.parse_result_word_1_words,
+                cfg.glob.JSON_NAME_WORDS: cfg.glob.parse_result_word_1_words,
             }
         )
 

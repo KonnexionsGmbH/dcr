@@ -356,28 +356,24 @@ def tokenize_file(nlp: spacy.Language) -> None:
             for token in nlp(text):
                 cfg.glob.token_1_tokens.append(get_token_attributes(token))
 
-            db.dml.insert_dbt_row(
-                cfg.glob.DBT_TOKEN,
-                {
-                    cfg.glob.DBC_ID_BASE: cfg.glob.base.base_id,
-                    cfg.glob.DBC_PAGE_NO: page_no,
-                    cfg.glob.DBC_PAGE_DATA: cfg.glob.token_1_tokens,
-                },
-            )
+            cfg.glob.token_2_page = {
+                cfg.glob.JSON_NAME_PAGE_NO: page_no,
+                cfg.glob.JSON_NAME_NO_TOKENS_IN_PAGE: len(cfg.glob.token_1_tokens),
+                cfg.glob.JSON_NAME_TOKENS: cfg.glob.token_1_tokens,
+            }
+
+            if cfg.glob.setup.is_tokenize_2_database:
+                db.dml.insert_dbt_row(
+                    cfg.glob.DBT_TOKEN,
+                    {
+                        cfg.glob.DBC_ID_BASE: cfg.glob.base.base_id,
+                        cfg.glob.DBC_PAGE_NO: page_no,
+                        cfg.glob.DBC_PAGE_DATA: cfg.glob.token_2_page,
+                    },
+                )
 
             if cfg.glob.setup.is_tokenize_2_jsonfile:
-                cfg.glob.token_3_pages.append(
-                    {
-                        cfg.glob.JSON_NAME_PAGE_NO: page_no,
-                        cfg.glob.JSON_NAME_NO_LINES_IN_PAGE: cfg.glob.parse_result_line_2_page[
-                            cfg.glob.JSON_NAME_NO_LINES_IN_PAGE
-                        ],
-                        cfg.glob.JSON_NAME_NO_PARAS_IN_PAGE: cfg.glob.parse_result_line_2_page[
-                            cfg.glob.JSON_NAME_NO_PARAS_IN_PAGE
-                        ],
-                        cfg.glob.JSON_NAME_TOKENS: cfg.glob.token_1_tokens.append,
-                    }
-                )
+                cfg.glob.token_3_pages.append(cfg.glob.token_2_page)
 
     if cfg.glob.setup.is_tokenize_2_jsonfile:
         with open(full_name_next, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
@@ -392,5 +388,9 @@ def tokenize_file(nlp: spacy.Language) -> None:
                 },
                 file_handle,
             )
+
+    utils.delete_auxiliary_file(full_name_curr)
+
+    cfg.glob.run.run_total_processed_ok += 1
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

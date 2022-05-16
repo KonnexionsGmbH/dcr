@@ -187,6 +187,7 @@ JSON_NAME_NO_LINES_IN_PAGE: str = "noLinesInPage"
 JSON_NAME_NO_LINES_IN_PARA: str = "noLinesInPara"
 JSON_NAME_NO_PAGES_IN_DOC: str = "noPagesInDoc"
 JSON_NAME_NO_PARAS_IN_PAGE: str = "noParasInPage"
+JSON_NAME_NO_TOKENS_IN_PAGE: str = "noTokensInPage"
 JSON_NAME_NO_WORDS_IN_LINE: str = "noWordsInLine"
 JSON_NAME_NO_WORDS_IN_PAGE: str = "noWordsInPage"
 JSON_NAME_NO_WORDS_IN_PARA: str = "noWordsInPara"
@@ -262,6 +263,7 @@ JSON_NAME_WORD_INDEX_LINE: str = "wordIndexLine"
 JSON_NAME_WORD_INDEX_PAGE: str = "wordIndexPage"
 JSON_NAME_WORD_INDEX_PARA: str = "wordIndexPara"
 JSON_NAME_WORD_TEXT: str = "wordText"
+JSON_NAME_WORDS: str = "words"
 
 LOCALE: str = "en_US.UTF-8"
 
@@ -377,21 +379,21 @@ line_type: Type[nlp.cls_line_type.LineType]
 
 logger: logging.Logger
 
-# {
+#   {
 #     "lineIndexPage": 0,
 #     "paraIndexPage": 0,
 #     "lineIndexPara": 0,
-#     "lineText": "...",
+#     "lineText": "Header 1",
 #     "lineType": "b"
-# },
+#   },
 parse_result_line_0_line: Dict[str, int | str]
 
 parse_result_line_1_lines: List[Dict[str, int | str]]
 
-# {
+#   {
 #     "pageNo": 1,
-#     "noLinesInPage": 21,
-#     "noParasInPage": 10,
+#     "noLinesInPage": 5,
+#     "noParasInPage": 3,
 #     "lines": [
 #         {
 parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
@@ -399,9 +401,9 @@ parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
 parse_result_line_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
 
 # {
-#   "baseId": 3,
-#   "baseFileName": "...",
-#   "noPagesInDoc": 3,
+#   "baseId": 1,
+#   "baseFileName": "p_2_header_1_footer_1.pdf",
+#   "noPagesInDoc": 2,
 #   "pages": [
 #     {
 parse_result_line_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
@@ -420,16 +422,20 @@ parse_result_page_0_paras: List[str]
 
 # {
 #     "pageNo": 1,
-#     "pageText": "..."
-# },
+#     "pageText": [
+#         "Header 1",
+#         "Seite 1 Zeile 1 This chapter uses Volto to change displaying ...",
+#         "Footer 1 pg. 1"
+#     ]
+# }
 # parse_result_page_1_page: Dict[str, int | str | List[str]]
 
 parse_result_page_2_pages: List[Dict[str, int | str | List[str]]]
 
 # {
-#   "baseId": 3,
-#   "baseFileName": "...",
-#   "noPagesInDoc": 3,
+#   "baseId": 1,
+#   "baseFileName": "p_2_header_1_footer_1.pdf",
+#   "noPagesInDoc": 2,
 #   "pages": [
 #     {
 parse_result_page_3_document: Dict[str, int | str | List[Dict[str, int | str | List[str]]]]
@@ -440,28 +446,23 @@ parse_result_pages_word: Dict[str, int | List[Dict[str, int | List[Dict[str, int
 parse_result_para_index_page: int
 parse_result_text: str
 
-# {
-#     "lineIndexPage": 0,
-#     "wordIndexLine": 0,
-#     "wordText": "..."
-# },
+# {"lineIndexPage": 0, "wordIndexLine": 0, "wordText": "Header"}
 # parse_result_word_0_word: Dict[str, int | str]
 
 parse_result_word_1_words: List[Dict[str, int | str]]
 
 # {
 #     "pageNo": 1,
-#     "lines": [
-#         {
+#     "words": [
 # parse_result_word_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
 
 
 parse_result_word_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
 
 # {
-#   "baseId": 3,
-#   "baseFileName": "...",
-#   "noPagesInDoc": 3,
+#   "baseId": 1,
+#   "baseFileName": "p_2_header_1_footer_1.pdf",
+#   "noPagesInDoc": 2,
 #   "pages": [
 #     {
 parse_result_word_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
