@@ -119,9 +119,11 @@ class Run:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
+        self.run_action_text = Run.get_action_text(self.run_action_code)
+
         return {
             cfg.glob.DBC_ACTION_CODE: self.run_action_code,
-            cfg.glob.DBC_ACTION_TEXT: Run.get_action_text(self.run_action_code),
+            cfg.glob.DBC_ACTION_TEXT: self.run_action_text,
             cfg.glob.DBC_ID_RUN: self.run_id_run,
             cfg.glob.DBC_STATUS: self.run_status,
             cfg.glob.DBC_TOTAL_ERRONEOUS: self.run_total_erroneous,
@@ -260,9 +262,6 @@ class Run:
         action_text: str = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
 
         match action_code:
-            # wwe
-            # case Run.ACTION_CODE_CREATE_DB:
-            #     action_text = Run._ACTION_TEXT_CREATE_DB
             case Run.ACTION_CODE_INBOX:
                 action_text = Run._ACTION_TEXT_INBOX
             case Run.ACTION_CODE_PANDOC:
@@ -287,8 +286,6 @@ class Run:
                 action_text = Run._ACTION_TEXT_TOKENIZE
             case Run.ACTION_CODE_TOKENIZE_LINE:
                 action_text = Run._ACTION_TEXT_TOKENIZE_LINE
-            case Run.ACTION_CODE_UPGRADE_DB:
-                action_text = Run._ACTION_TEXT_UPGRADE_DB
             case _:
                 utils.terminate_fatal(
                     f"Action code {action_code} is not supported in function get_action_text()",

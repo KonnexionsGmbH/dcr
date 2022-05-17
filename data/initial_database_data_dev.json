@@ -1,0 +1,108 @@
+{
+  "apiVersion": "0.9.2",
+  "data": {
+    "tables": [
+      {
+        "tableName": "language",
+        "rows": [
+          {
+            "row": [
+              {
+                "columnName": "active",
+                "columnValue": true
+              },
+              {
+                "columnName": "code_iso_639_3",
+                "columnValue": "deu"
+              },
+              {
+                "columnName": "code_pandoc",
+                "columnValue": "de"
+              },
+              {
+                "columnName": "code_spacy",
+                "columnValue": "de_dep_news_trf"
+              },
+              {
+                "columnName": "code_tesseract",
+                "columnValue": "deu"
+              },
+              {
+                "columnName": "directory_name_inbox",
+                "columnValue": null
+              },
+              {
+                "columnName": "iso_language_name",
+                "columnValue": "Deutsch"
+              }
+            ]
+          },
+          {
+            "row": [
+              {
+                "columnName": "active",
+                "columnValue": false
+              },
+              {
+                "columnName": "code_iso_639_3",
+                "columnValue": "fra"
+              },
+              {
+                "columnName": "code_pandoc",
+                "columnValue": "fr"
+              },
+              {
+                "columnName": "code_spacy",
+                "columnValue": "fr_dep_news_trf"
+              },
+              {
+                "columnName": "code_tesseract",
+                "columnValue": "fra"
+              },
+              {
+                "columnName": "directory_name_inbox",
+                "columnValue": null
+              },
+              {
+                "columnName": "iso_language_name",
+                "columnValue": "French"
+              }
+            ]
+          },
+          {
+            "row": [
+              {
+                "columnName": "active",
+                "columnValue": false
+              },
+              {
+                "columnName": "code_iso_639_3",
+                "columnValue": "ita"
+              },
+              {
+                "columnName": "code_pandoc",
+                "columnValue": "it"
+              },
+              {
+                "columnName": "code_spacy",
+                "columnValue": "it_core_news_lg"
+              },
+              {
+                "columnName": "code_tesseract",
+                "columnValue": "ita"
+              },
+              {
+                "columnName": "directory_name_inbox",
+                "columnValue": null
+              },
+              {
+                "columnName": "iso_language_name",
+                "columnValue": "Italian"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
