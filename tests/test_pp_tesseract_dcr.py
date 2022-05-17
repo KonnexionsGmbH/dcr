@@ -32,7 +32,7 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
         ],
@@ -45,7 +45,7 @@ def test_run_action_image_2_pdf_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -107,7 +107,7 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
             (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
@@ -119,7 +119,7 @@ def test_run_action_image_2_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -218,7 +218,7 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
             (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "1"),
@@ -232,7 +232,7 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -281,7 +281,7 @@ def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
@@ -295,7 +295,7 @@ def test_run_action_image_2_pdf_reunite(fxtr_rmdir_opt, fxtr_setup_empty_db_and_
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -348,7 +348,7 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     file_ext_2: str = "pdf"
 
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
@@ -360,7 +360,7 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 

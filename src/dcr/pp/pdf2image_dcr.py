@@ -102,13 +102,13 @@ def convert_pdf_2_image_file() -> None:
 
             cfg.glob.action_next = db.cls_action.Action(
                 action_code=db.cls_run.Run.ACTION_CODE_TESSERACT,
+                id_run_last=cfg.glob.run.run_id,
                 directory_name=cfg.glob.action_curr.action_directory_name,
                 directory_type=cfg.glob.action_curr.action_directory_type,
                 file_name=file_name_next,
                 file_size_bytes=os.path.getsize(pathlib.Path(full_name_next)),
                 id_base=cfg.glob.action_curr.action_id_base,
                 id_parent=cfg.glob.action_curr.action_id,
-                id_run_last=cfg.glob.run.run_id,
                 no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(full_name_next))),
             )
 

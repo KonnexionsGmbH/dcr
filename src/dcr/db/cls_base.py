@@ -30,17 +30,17 @@ class Base:
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913
         self,
+        action_code_last: str,
+        directory_name: str,
+        file_name: str,
+        id_language: int | sqlalchemy.Integer,
+        id_run_last: int | sqlalchemy.Integer,
         _row_id: int | sqlalchemy.Integer = 0,
-        action_code_last: str = "",
         action_text_last: str = "",
-        directory_name: str = "",
         error_code_last: str | sqlalchemy.String = "",
         error_msg_last: str | sqlalchemy.String = "",
         error_no: int = 0,
-        file_name: str = "",
         file_size_bytes: int = 0,
-        id_language: int | sqlalchemy.Integer = 0,
-        id_run_last: int | sqlalchemy.Integer = 0,
         no_pdf_pages: int = 0,
         sha256: str | sqlalchemy.String = "",
         status: str | sqlalchemy.String = "",
@@ -207,7 +207,7 @@ class Base:
             ).fetchone()
             conn.close()
 
-        if row == ():
+        if row is None:
             utils.terminate_fatal(
                 f"The base with id={id_base} does not exist in the database table 'base'",
             )
@@ -279,7 +279,7 @@ class Base:
             self.base_status,
         )
 
-        return column_01_08 + (column_file_size_bytes + column_10_14 if is_file_size_bytes else column_10_14)
+        return column_01_08 + ((column_file_size_bytes + column_10_14) if is_file_size_bytes else column_10_14)
 
     # -----------------------------------------------------------------------------
     # Get the file name from the first processed document.

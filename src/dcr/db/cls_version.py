@@ -121,7 +121,7 @@ class Version:
             ).fetchone()
             conn.close()
 
-        if row == ():
+        if row is None:
             utils.terminate_fatal(
                 f"The version with id={id_version} does not exist in the database table 'version'",
             )

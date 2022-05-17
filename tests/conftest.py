@@ -607,6 +607,72 @@ def restore_setup_cfg():
 
 
 # -----------------------------------------------------------------------------
+# Set all SpaCy configuration parameters to the same logical value.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def set_complete_cfg_spacy(false_or_true: str):
+    """Set all SpaCy configuration parameters to the same logical value."""
+    return pytest.helpers.backup_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION_SPACY,
+        [
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_DOC, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_HEAD, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_I, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IDX, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_ASCII, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_BRACKET, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_CURRENCY, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_DIGIT, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_LEFT_PUNCT, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_LOWER, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_OOV, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_QUOTE, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_RIGHT_PUNCT, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_END, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_START, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_SPACE, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_UPPER, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEMMA_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEX, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEX_ID, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_EMAIL, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LOWER_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_MORPH, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_NORM_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ORTH_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_POS_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_PREFIX_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_PROB, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_RANK, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SENT, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SENTIMENT, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SUFFIX_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TAG_, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TENSOR, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TEXT, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB, false_or_true),
+            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_, false_or_true),
+        ],
+    )
+
+
+# -----------------------------------------------------------------------------
 # Run before all tests.
 # -----------------------------------------------------------------------------
 @pytest.fixture(scope="session", autouse=True)

@@ -23,10 +23,10 @@ class Token:
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913
         self,
+        id_base: int | sqlalchemy.Integer,
+        page_data: str | sqlalchemy.String,
+        page_no: int | sqlalchemy.Integer,
         _row_id: int | sqlalchemy.Integer = 0,
-        id_base: int | sqlalchemy.Integer = 0,
-        page_data: str | sqlalchemy.String = "",
-        page_no: int | sqlalchemy.Integer = 0,
     ) -> None:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -140,7 +140,7 @@ class Token:
             ).fetchone()
             conn.close()
 
-        if row == ():
+        if row is None:
             utils.terminate_fatal(
                 f"The token with id={id_token} does not exist in the database table 'token'",
             )

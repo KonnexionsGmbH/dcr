@@ -65,8 +65,8 @@ class Run:
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913
         self,
+        action_code: str,
         _row_id: int | sqlalchemy.Integer = 0,
-        action_code: str = "",
         action_text: str = "",
         id_run: int | sqlalchemy.Integer = id_run_umbrella,
         status: str | sqlalchemy.String = "",
@@ -162,17 +162,17 @@ class Run:
             sqlalchemy.Column(
                 cfg.glob.DBC_TOTAL_ERRONEOUS,
                 sqlalchemy.Integer,
-                nullable=True,
+                nullable=False,
             ),
             sqlalchemy.Column(
                 cfg.glob.DBC_TOTAL_PROCESSED_OK,
                 sqlalchemy.Integer,
-                nullable=True,
+                nullable=False,
             ),
             sqlalchemy.Column(
                 cfg.glob.DBC_TOTAL_PROCESSED_TO_BE,
                 sqlalchemy.Integer,
-                nullable=True,
+                nullable=False,
             ),
         )
 
@@ -215,7 +215,7 @@ class Run:
             ).fetchone()
             conn.close()
 
-        if row == ():
+        if row is None:
             utils.terminate_fatal(
                 f"The run with id={id_run} does not exist in the database table 'run'",
             )

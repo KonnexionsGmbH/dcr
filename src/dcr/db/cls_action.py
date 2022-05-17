@@ -38,8 +38,9 @@ class Action:
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913, R0914
         self,
+        action_code: str,
+        id_run_last: int | sqlalchemy.Integer,
         _row_id: int | sqlalchemy.Integer = 0,
-        action_code: str = "",
         action_text: str = "",
         directory_name: str = "",
         directory_type: str = "",
@@ -51,7 +52,6 @@ class Action:
         file_size_bytes: int = 0,
         id_base: int | sqlalchemy.Integer = 0,
         id_parent: int | sqlalchemy.Integer = 0,
-        id_run_last: int | sqlalchemy.Integer = 0,
         no_children: int | sqlalchemy.Integer = 0,
         no_pdf_pages: int = 0,
         status: str | sqlalchemy.String = "",
@@ -291,7 +291,7 @@ class Action:
             ).fetchone()
             conn.close()
 
-        if row == ():
+        if row is None:
             utils.terminate_fatal(
                 f"The action with id={id_action} does not exist in the database table 'action'",
             )

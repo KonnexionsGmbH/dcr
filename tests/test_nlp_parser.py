@@ -102,7 +102,7 @@ def test_run_action_store_parse_result_in_json_coverage(
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.glob.setup._DCR_CFG_VERBOSE_PARSER, verbose_parser),
@@ -118,7 +118,7 @@ def test_run_action_store_parse_result_in_json_coverage(
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -173,7 +173,7 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
@@ -186,7 +186,7 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -251,7 +251,7 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
@@ -272,7 +272,7 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -326,7 +326,7 @@ def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
             (cfg.glob.setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
@@ -347,7 +347,7 @@ def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 

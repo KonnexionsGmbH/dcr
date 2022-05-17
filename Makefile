@@ -227,5 +227,10 @@ pytest-issue:       ## Run only the tests with pytest which are marked with 'iss
 	@echo DCR_ENVIRONMENT_TYPE=${DCR_ENVIRONMENT_TYPE}
 	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -m issue -s --setup-show -v -x tests
 	@echo "Info **********  End:   pytest **************************************"
+pytest-module:      ## Run tests of specific module(s) with pytest - test_db_cls.
+	@echo "Info **********  Start: pytest **************************************"
+	pipenv run pytest --version
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -v tests/test_db_cls.py
+	@echo "Info **********  End:   pytest **************************************"
 
 ## ============================================================================

@@ -90,13 +90,13 @@ def initialise_action(
 
     action = db.cls_action.Action(
         action_code=action_code,
+        id_run_last=cfg.glob.run.run_id,
         directory_name=directory_name,
         directory_type=directory_type,
         file_name=file_name,
         file_size_bytes=os.path.getsize(pathlib.Path(directory_name, file_name)),
         id_base=cfg.glob.base.base_id,
         id_parent=id_parent,
-        id_run_last=cfg.glob.run.run_id,
         no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(directory_name, file_name))),
     )
 

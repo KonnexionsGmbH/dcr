@@ -94,7 +94,7 @@ def test_run_action_process_inbox_accepted_delete_auxiliary_file(fxtr_setup_empt
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
         ],
@@ -107,7 +107,7 @@ def test_run_action_process_inbox_accepted_delete_auxiliary_file(fxtr_setup_empt
     utils.delete_auxiliary_file(os.path.join(cfg.glob.setup.directory_inbox_accepted, "pdf_text_ok_1.pdf"))
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -267,7 +267,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_VERBOSE, "false"),
         ],
@@ -276,7 +276,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_db_and_inbox):
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -350,7 +350,7 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_IGNORE_DUPLICATES, "true"),
         ],
@@ -359,7 +359,7 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -406,7 +406,7 @@ def test_run_action_process_inbox_normal(fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
@@ -419,7 +419,7 @@ def test_run_action_process_inbox_normal(fxtr_setup_empty_db_and_inbox):
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -477,7 +477,7 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_IGNORE_DUPLICATES, "false"),
         ],
@@ -486,7 +486,7 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 

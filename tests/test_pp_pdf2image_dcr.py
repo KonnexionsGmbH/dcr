@@ -33,7 +33,7 @@ def test_run_action_pdf_2_image_normal_jpeg_keep(fxtr_rmdir_opt, fxtr_setup_empt
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
@@ -42,7 +42,7 @@ def test_run_action_pdf_2_image_normal_jpeg_keep(fxtr_rmdir_opt, fxtr_setup_empt
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -92,7 +92,7 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
@@ -113,7 +113,7 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
 
     # -------------------------------------------------------------------------
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -141,7 +141,7 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
             (cfg.glob.setup._DCR_CFG_PDF2IMAGE_TYPE, cfg.glob.setup.PDF2IMAGE_TYPE_PNG),
@@ -151,7 +151,7 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 

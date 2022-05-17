@@ -24,9 +24,49 @@ def check_db_content() -> None:  # pylint: disable=R0915
     """Check the database content."""
     db.driver.connect_db()
 
+    check_db_content_action()
+
+    check_db_content_base()
+
+    check_db_content_language()
+
+    check_db_content_run()
+
+    check_db_content_version()
+
     # -----------------------------------------------------------------------------
-    # Database table action.
+    # Database table language.
     # -----------------------------------------------------------------------------
+    pytest.helpers.check_dbt_language(
+        (1, (1, True, "eng", "en", "en_core_web_trf", "eng", "data/inbox_test", "English"))
+    )
+    pytest.helpers.check_dbt_language((2, (2, True, "deu", "de", "de_dep_news_trf", "deu", None, "Deutsch")))
+    pytest.helpers.check_dbt_language((3, (3, False, "fra", "fr", "fr_dep_news_trf", "fra", None, "French")))
+    pytest.helpers.check_dbt_language((4, (4, False, "ita", "it", "it_core_news_lg", "ita", None, "Italian")))
+
+    # -----------------------------------------------------------------------------
+    # Database table run.
+    # -----------------------------------------------------------------------------
+    pytest.helpers.check_dbt_run((1, (1, "p_i", "inbox         (preprocessor)", 1, "end", 1, 5, 6)))
+    pytest.helpers.check_dbt_run((2, (2, "p_2_i", "pdf2image     (preprocessor)", 1, "end", 0, 2, 2)))
+    pytest.helpers.check_dbt_run((3, (3, "ocr", "tesseract     (preprocessor)", 1, "end", 0, 0, 4)))
+    pytest.helpers.check_dbt_run((4, (4, "pypdf2", "pypdf2        (preprocessor)", 1, "end", 0, 1, 1)))
+    pytest.helpers.check_dbt_run((5, (5, "n_2_p", "pandoc        (preprocessor)", 1, "end", 0, 1, 1)))
+    pytest.helpers.check_dbt_run((6, (6, "tet", "pdflib        (nlp)", 1, "end", 0, 5, 5)))
+    pytest.helpers.check_dbt_run((7, (7, "s_p_j", "parser        (nlp)", 1, "end", 0, 5, 5)))
+    pytest.helpers.check_dbt_run((8, (8, "tkn", "tokenize      (nlp)", 1, "end", 0, 5, 5)))
+
+    # -----------------------------------------------------------------------------
+    # Database table version.
+    # -----------------------------------------------------------------------------
+    pytest.helpers.check_dbt_version((1, (1, cfg.glob.setup.dcr_version)))
+
+
+# -----------------------------------------------------------------------------
+# Check the database content - database table action.
+# -----------------------------------------------------------------------------
+def check_db_content_action() -> None:  # pylint: disable=R0915
+    """Check the database content - database table action."""
     pytest.helpers.check_dbt_action(
         (
             1,
@@ -711,9 +751,12 @@ def check_db_content() -> None:  # pylint: disable=R0915
         )
     )
 
-    # -----------------------------------------------------------------------------
-    # Database table base.
-    # -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Check the database content - database table base.
+# -----------------------------------------------------------------------------
+def check_db_content_base() -> None:  # pylint: disable=R0915
+    """Check the database content - database table base."""
     pytest.helpers.check_dbt_base(
         (
             1,
@@ -836,9 +879,12 @@ def check_db_content() -> None:  # pylint: disable=R0915
         )
     )
 
-    # -----------------------------------------------------------------------------
-    # Database table language.
-    # -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Check the database content - database table language.
+# -----------------------------------------------------------------------------
+def check_db_content_language() -> None:  # pylint: disable=R0915
+    """Check the database content - database table language."""
     pytest.helpers.check_dbt_language(
         (1, (1, True, "eng", "en", "en_core_web_trf", "eng", "data/inbox_test", "English"))
     )
@@ -846,9 +892,12 @@ def check_db_content() -> None:  # pylint: disable=R0915
     pytest.helpers.check_dbt_language((3, (3, False, "fra", "fr", "fr_dep_news_trf", "fra", None, "French")))
     pytest.helpers.check_dbt_language((4, (4, False, "ita", "it", "it_core_news_lg", "ita", None, "Italian")))
 
-    # -----------------------------------------------------------------------------
-    # Database table run.
-    # -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Check the database content- database table run.
+# -----------------------------------------------------------------------------
+def check_db_content_run() -> None:  # pylint: disable=R0915
+    """Check the database content- database table run."""
     pytest.helpers.check_dbt_run((1, (1, "p_i", "inbox         (preprocessor)", 1, "end", 1, 5, 6)))
     pytest.helpers.check_dbt_run((2, (2, "p_2_i", "pdf2image     (preprocessor)", 1, "end", 0, 2, 2)))
     pytest.helpers.check_dbt_run((3, (3, "ocr", "tesseract     (preprocessor)", 1, "end", 0, 0, 4)))
@@ -858,16 +907,18 @@ def check_db_content() -> None:  # pylint: disable=R0915
     pytest.helpers.check_dbt_run((7, (7, "s_p_j", "parser        (nlp)", 1, "end", 0, 5, 5)))
     pytest.helpers.check_dbt_run((8, (8, "tkn", "tokenize      (nlp)", 1, "end", 0, 5, 5)))
 
-    # -----------------------------------------------------------------------------
-    # Database table version.
-    # -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Check the database content - database table version.
+# -----------------------------------------------------------------------------
+def check_db_content_version() -> None:  # pylint: disable=R0915
+    """Check the database content - database table version."""
     pytest.helpers.check_dbt_version((1, (1, cfg.glob.setup.dcr_version)))
 
 
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -925,7 +976,6 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = false.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = false."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

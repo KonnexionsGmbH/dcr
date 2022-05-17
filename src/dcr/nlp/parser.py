@@ -662,13 +662,13 @@ def parse_tetml_file() -> None:
 
     cfg.glob.action_next = db.cls_action.Action(
         action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run_last=cfg.glob.run.run_id,
         directory_name=cfg.glob.action_curr.action_directory_name,
         directory_type=cfg.glob.action_curr.action_directory_type,
         file_name=file_name_next,
         file_size_bytes=-1,
         id_base=cfg.glob.action_curr.action_id_base,
         id_parent=cfg.glob.action_curr.action_id,
-        id_run_last=cfg.glob.run.run_id,
         no_pdf_pages=-1,
         status=status,
     )

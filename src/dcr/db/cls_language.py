@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import cfg.glob
+import db.dml
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
@@ -25,14 +26,14 @@ class Language:
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913
         self,
+        code_iso_639_3: str | sqlalchemy.String,
+        code_pandoc: str | sqlalchemy.String,
+        code_spacy: str | sqlalchemy.String,
+        code_tesseract: str | sqlalchemy.String,
+        iso_language_name: str | sqlalchemy.String,
         _row_id: int | sqlalchemy.Integer = 0,
         active: bool | sqlalchemy.Boolean = False,
-        code_iso_639_3: str | sqlalchemy.String = "",
-        code_pandoc: str | sqlalchemy.String = "",
-        code_spacy: str | sqlalchemy.String = "",
-        code_tesseract: str | sqlalchemy.String = "",
         directory_name_inbox: str | sqlalchemy.String = "",
-        iso_language_name: str | sqlalchemy.String = "",
     ) -> None:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -55,6 +56,28 @@ class Language:
         self.total_processed_tesseract = 0
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+    # -----------------------------------------------------------------------------
+    # Get the database columns.
+    # -----------------------------------------------------------------------------
+    def _get_columns(self) -> db.dml.Columns:
+        """Get the database columns.
+
+        Returns:
+            db.dml.Columns: Database columns.
+        """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+        return {
+            cfg.glob.DBC_ACTIVE: self.language_active,
+            cfg.glob.DBC_CODE_ISO_639_3: self.language_code_iso_639_3,
+            cfg.glob.DBC_CODE_PANDOC: self.language_code_pandoc,
+            cfg.glob.DBC_CODE_SPACY: self.language_code_spacy,
+            cfg.glob.DBC_CODE_TESSERACT: self.language_code_tesseract,
+            cfg.glob.DBC_DIRECTORY_NAME_INBOX: self.language_directory_name_inbox,
+            cfg.glob.DBC_ISO_LANGUAGE_NAME: self.language_iso_language_name,
+        }
 
     # -----------------------------------------------------------------------------
     # Create the database table.
@@ -117,7 +140,7 @@ class Language:
             ).fetchone()
             conn.close()
 
-        if row == ():
+        if row is None:
             utils.terminate_fatal(
                 f"The language with id={id_language} does not exist in the database table 'language'",
             )
@@ -188,6 +211,27 @@ class Language:
             self.language_directory_name_inbox,
             self.language_iso_language_name,
         )
+
+    # -----------------------------------------------------------------------------
+    # Persist the object in the database.
+    # -----------------------------------------------------------------------------
+    def persist_2_db(self) -> None:
+        """Persist the object in the database."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+        if self.language_id == 0:
+            self.language_id = db.dml.insert_dbt_row(
+                cfg.glob.DBT_LANGUAGE,
+                self._get_columns(),
+            )
+        else:
+            db.dml.update_dbt_id(
+                table_name=cfg.glob.DBT_LANGUAGE,
+                id_where=self.language_id,
+                columns=self._get_columns(),
+            )
+
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the active languages.
