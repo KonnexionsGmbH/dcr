@@ -201,6 +201,8 @@ class Language:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
+        print(f"wwe get_columns_in_tuple(): self.language_directory_name_inbox={self.language_directory_name_inbox}")
+
         return (
             self.language_id,
             self.language_active,

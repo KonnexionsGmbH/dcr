@@ -6,6 +6,7 @@ import db.cls_run
 import db.cls_version
 import db.driver
 import pytest
+import utils
 
 import dcr
 
@@ -38,11 +39,23 @@ def check_db_content() -> None:  # pylint: disable=R0915
     # Database table language.
     # -----------------------------------------------------------------------------
     pytest.helpers.check_dbt_language(
-        (1, (1, True, "eng", "en", "en_core_web_trf", "eng", "data/inbox_test", "English"))
+        (
+            1,
+            (
+                1,
+                True,
+                "eng",
+                "en",
+                "en_core_web_trf",
+                "eng",
+                utils.get_os_independent_name("data/inbox_test"),
+                "English",
+            ),
+        )
     )
-    pytest.helpers.check_dbt_language((2, (2, True, "deu", "de", "de_dep_news_trf", "deu", None, "Deutsch")))
-    pytest.helpers.check_dbt_language((3, (3, False, "fra", "fr", "fr_dep_news_trf", "fra", None, "French")))
-    pytest.helpers.check_dbt_language((4, (4, False, "ita", "it", "it_core_news_lg", "ita", None, "Italian")))
+    pytest.helpers.check_dbt_language((2, (2, True, "deu", "de", "de_dep_news_trf", "deu", "", "Deutsch")))
+    pytest.helpers.check_dbt_language((3, (3, False, "fra", "fr", "fr_dep_news_trf", "fra", "", "French")))
+    pytest.helpers.check_dbt_language((4, (4, False, "ita", "it", "it_core_news_lg", "ita", "", "Italian")))
 
     # -----------------------------------------------------------------------------
     # Database table run.
@@ -74,7 +87,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 1,
                 "p_i",
                 "inbox         (preprocessor)",
-                "data/inbox_test",
+                utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "",
                 "",
@@ -96,7 +109,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 2,
                 "n_2_p",
                 "pandoc        (preprocessor)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -118,7 +131,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 3,
                 "p_i",
                 "inbox         (preprocessor)",
-                "data/inbox_test",
+                utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "",
                 "",
@@ -140,7 +153,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 4,
                 "ocr",
                 "tesseract     (preprocessor)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -162,7 +175,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 5,
                 "p_i",
                 "inbox         (preprocessor)",
-                "data/inbox_test",
+                utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "",
                 "",
@@ -184,7 +197,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 6,
                 "p_2_i",
                 "pdf2image     (preprocessor)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -206,7 +219,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 7,
                 "p_i",
                 "inbox         (preprocessor)",
-                "data/inbox_test",
+                utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "",
                 "",
@@ -228,7 +241,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 8,
                 "tet",
                 "pdflib        (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -250,7 +263,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 9,
                 "p_i",
                 "inbox         (preprocessor)",
-                "data/inbox_test",
+                utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "No 'pdf' format",
                 "01.903 Issue (p_i): Runtime error with fitz.open() processing of "
@@ -273,7 +286,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 10,
                 "p_i",
                 "inbox         (preprocessor)",
-                "data/inbox_test",
+                utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "",
                 "",
@@ -295,7 +308,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 11,
                 "p_2_i",
                 "pdf2image     (preprocessor)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -317,7 +330,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 12,
                 "ocr",
                 "tesseract     (preprocessor)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -339,7 +352,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 13,
                 "ocr",
                 "tesseract     (preprocessor)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -361,7 +374,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 14,
                 "ocr",
                 "tesseract     (preprocessor)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -383,7 +396,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 15,
                 "tet",
                 "pdflib        (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -405,7 +418,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 16,
                 "tet",
                 "pdflib        (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -427,7 +440,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 17,
                 "tet",
                 "pdflib        (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -449,7 +462,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 18,
                 "tet",
                 "pdflib        (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -471,7 +484,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 19,
                 "tet",
                 "pdflib        (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -493,7 +506,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 20,
                 "pypdf2",
                 "pypdf2        (preprocessor)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -515,7 +528,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 21,
                 "tet",
                 "pdflib        (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -537,7 +550,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 22,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -559,7 +572,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 23,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -581,7 +594,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 24,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -603,7 +616,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 25,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -625,7 +638,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 26,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -647,7 +660,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 27,
                 "tkn",
                 "tokenize      (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -669,7 +682,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 28,
                 "tkn",
                 "tokenize      (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -691,7 +704,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 29,
                 "tkn",
                 "tokenize      (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -713,7 +726,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 30,
                 "tkn",
                 "tokenize      (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -735,7 +748,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 31,
                 "tkn",
                 "tokenize      (nlp)",
-                "data/inbox_test_accepted",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -886,11 +899,23 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
 def check_db_content_language() -> None:  # pylint: disable=R0915
     """Check the database content - database table language."""
     pytest.helpers.check_dbt_language(
-        (1, (1, True, "eng", "en", "en_core_web_trf", "eng", "data/inbox_test", "English"))
+        (
+            1,
+            (
+                1,
+                True,
+                "eng",
+                "en",
+                "en_core_web_trf",
+                "eng",
+                utils.get_os_independent_name("data/inbox_test"),
+                "English",
+            ),
+        )
     )
-    pytest.helpers.check_dbt_language((2, (2, True, "deu", "de", "de_dep_news_trf", "deu", None, "Deutsch")))
-    pytest.helpers.check_dbt_language((3, (3, False, "fra", "fr", "fr_dep_news_trf", "fra", None, "French")))
-    pytest.helpers.check_dbt_language((4, (4, False, "ita", "it", "it_core_news_lg", "ita", None, "Italian")))
+    pytest.helpers.check_dbt_language((2, (2, True, "deu", "de", "de_dep_news_trf", "deu", "", "Deutsch")))
+    pytest.helpers.check_dbt_language((3, (3, False, "fra", "fr", "fr_dep_news_trf", "fra", "", "French")))
+    pytest.helpers.check_dbt_language((4, (4, False, "ita", "it", "it_core_news_lg", "ita", "", "Italian")))
 
 
 # -----------------------------------------------------------------------------

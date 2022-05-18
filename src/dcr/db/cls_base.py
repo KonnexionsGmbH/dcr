@@ -395,7 +395,7 @@ class Base:
     # Get the duplicate file name based on the hash key.
     # -----------------------------------------------------------------------------
     @classmethod
-    def select_duplicate_file_name_by_sha256(cls, id_base: int | sqlalchemy.Integer, sha256: str) -> str | None:
+    def select_duplicate_file_name_by_sha256(cls, id_base: int | sqlalchemy.Integer, sha256: str) -> str:
         """Get the duplicate file name based on the hash key.
 
         Args:
@@ -426,6 +426,6 @@ class Base:
             conn.close()
 
             if row is None:
-                return row
+                return ""
 
             return row[0]  # type: ignore

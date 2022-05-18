@@ -10,7 +10,7 @@ import configparser
 import os
 import pathlib
 import shutil
-import typing
+from typing import List, Tuple
 
 import cfg.cls_setup
 import cfg.glob
@@ -42,18 +42,18 @@ FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
 @pytest.helpers.register
 def backup_config_params(
     config_section: str,
-    config_params: typing.List[typing.Tuple[str, str]],
-) -> typing.List[typing.Tuple[str, str]]:
+    config_params: List[Tuple[str, str]],
+) -> List[Tuple[str, str]]:
     """Backup and modify configuration parameter values.
 
     Args:
         config_section (str): Configuration section.
-        config_params (typing.List[typing.Tuple[str, str]]): Configuration parameter modifications.
+        config_params (List[Tuple[str, str]]): Configuration parameter modifications.
 
     Returns:
-        typing.List[typing.Tuple[str, str]]: Original configuration parameter.
+        List[Tuple[str, str]]: Original configuration parameter.
     """
-    config_params_backup: typing.List[typing.Tuple[str, str]] = []
+    config_params_backup: List[Tuple[str, str]] = []
 
     CONFIG_PARSER.read(cfg.glob.setup._DCR_CFG_FILE)
 
@@ -81,20 +81,20 @@ def backup_setup_cfg() -> None:
 # Check the content of database table action.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_action(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_action(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table action.
 
     Args:
-        param (typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]):
+        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
                 Tuples with the contents of the table columns.
     """
-    (id_row, actual_values) = param
+    (id_row, expected_values) = param
 
     dbt = db.cls_action.Action.from_id(id_row)
 
-    expected_values = dbt.get_columns_in_tuple(is_duration_ns=False, is_file_size_bytes=False)
+    actual_values = dbt.get_columns_in_tuple(is_duration_ns=False, is_file_size_bytes=False)
 
-    if actual_values != expected_values:
+    if expected_values != actual_values:
         print(f"issue with dbt action and id={id_row}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -105,20 +105,20 @@ def check_dbt_action(param: typing.Tuple[int, typing.Tuple[int, str, str, int, s
 # Check the content of database table base.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_base(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_base(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table base.
 
     Args:
-        param (typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]):
+        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
                 Tuples with the contents of the table columns.
     """
-    (id_row, actual_values) = param
+    (id_row, expected_values) = param
 
     dbt = db.cls_base.Base.from_id(id_row)
 
-    expected_values = dbt.get_columns_in_tuple(is_file_size_bytes=False)
+    actual_values = dbt.get_columns_in_tuple(is_file_size_bytes=False)
 
-    if actual_values != expected_values:
+    if expected_values != actual_values:
         print(f"issue with dbt base and id={id_row}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -129,20 +129,23 @@ def check_dbt_base(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str
 # Check the content of database table language.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_language(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_language(param: Tuple[int, Tuple[int, bool, str, str, str, str, str, str, str]]) -> None:
     """Check the content of database table language.
 
     Args:
-        param (typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]):
+        param (Tuple[int, Tuple[int, bool, str, str, str, str, str, str, str]]):
                 Tuples with the contents of the table columns.
     """
-    (id_row, actual_values) = param
+    (id_row, expected_values) = param
 
     dbt = db.cls_language.Language.from_id(id_row)
 
-    expected_values = dbt.get_columns_in_tuple()
+    actual_values = dbt.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    print(f"wwe check_dbt_language(): expected  ={expected_values[6]}")
+    print(f"wwe check_dbt_language(): actual={actual_values[6]}")
+
+    if expected_values != actual_values:
         print(f"issue with dbt language and id={id_row}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -153,20 +156,20 @@ def check_dbt_language(param: typing.Tuple[int, typing.Tuple[int, str, str, int,
 # Check the content of database table run.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_run(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_run(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table run.
 
     Args:
-        param (typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]):
+        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
                 Tuples with the contents of the table columns.
     """
-    (id_row, actual_values) = param
+    (id_row, expected_values) = param
 
     dbt = db.cls_run.Run.from_id(id_row)
 
-    expected_values = dbt.get_columns_in_tuple()
+    actual_values = dbt.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if expected_values != actual_values:
         print(f"issue with dbt run and id={id_row}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -177,20 +180,20 @@ def check_dbt_run(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str,
 # Check the content of database table token.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_token(param: typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_token(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table token.
 
     Args:
-        param (typing.Tuple[int, typing.Tuple[int, str, str, int, str, int, int, int]]):
+        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
                 Tuples with the contents of the table columns.
     """
-    (id_row, actual_values) = param
+    (id_row, expected_values) = param
 
     dbt = db.cls_token.Token.from_id(id_row)
 
-    expected_values = dbt.get_columns_in_tuple()
+    actual_values = dbt.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if expected_values != actual_values:
         print(f"issue with dbt token and id={id_row}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -201,20 +204,20 @@ def check_dbt_token(param: typing.Tuple[int, typing.Tuple[int, str, str, int, st
 # Check the content of database table version.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_version(param: typing.Tuple[int, typing.Tuple[int, str]]) -> None:
+def check_dbt_version(param: Tuple[int, Tuple[int, str]]) -> None:
     """Check the content of database table version.
 
     Args:
-        param (typing.Tuple[int, typing.Tuple[int, str]]):
+        param (Tuple[int, Tuple[int, str]]):
                 Tuples with the contents of the table columns.
     """
-    (id_row, actual_values) = param
+    (id_row, expected_values) = param
 
     dbt = db.cls_version.Version.from_id(id_row)
 
-    expected_values = dbt.get_columns_in_tuple()
+    actual_values = dbt.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if expected_values != actual_values:
         print(f"issue with dbt version and id={id_row}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -226,13 +229,13 @@ def check_dbt_version(param: typing.Tuple[int, typing.Tuple[int, str]]) -> None:
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def copy_directories_4_pytest_2_dir(
-    source_directories: typing.List[str],
+    source_directories: List[str],
     target_dir: str,
 ) -> None:
     """Copy directories from the sample test file directory.
 
     Args:
-        source_directories: typing.List[str]: Source directory names.
+        source_directories: List[str]: Source directory names.
         target_dir: str: Target directory.
     """
     assert os.path.isdir(cfg.glob.TESTS_INBOX_NAME), "source base directory '" + cfg.glob.TESTS_INBOX_NAME + "' missing"
@@ -250,19 +253,19 @@ def copy_directories_4_pytest_2_dir(
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def copy_files_4_pytest(
-    file_list: typing.List[
-        typing.Tuple[typing.Tuple[str, str | None], typing.Tuple[pathlib.Path, typing.List[str], str | None]]
+    file_list: List[
+        Tuple[Tuple[str, str | None], Tuple[pathlib.Path, List[str], str | None]]
     ]
 ) -> None:
     """Copy files from the sample test file directory.
 
     Args:
-        file_list (typing.List[
-            typing.Tuple[
-                typing.Tuple[str, str | None],
-                typing.Tuple[pathlib.Path, typing.List[str], str | None]
+        file_list (List[
+            Tuple[
+                Tuple[str, str | None],
+                Tuple[pathlib.Path, List[str], str | None]
             ]
-        ]): typing.List of files to be copied.
+        ]): List of files to be copied.
     """
     assert os.path.isdir(cfg.glob.TESTS_INBOX_NAME), "source directory '" + cfg.glob.TESTS_INBOX_NAME + "' missing"
 
@@ -287,13 +290,13 @@ def copy_files_4_pytest(
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def copy_files_4_pytest_2_dir(
-    source_files: typing.List[typing.Tuple[str, str | None]],
+    source_files: List[Tuple[str, str | None]],
     target_path: pathlib.Path,
 ) -> None:
     """Copy files from the sample test file directory.
 
     Args:
-        source_files: typing.List[typing.Tuple[str, str | None]]: Source file names.
+        source_files: List[Tuple[str, str | None]]: Source file names.
         target_path: Path: Target directory.
     """
     for source_file in source_files:
@@ -305,7 +308,7 @@ def copy_files_4_pytest_2_dir(
 # Delete the original configuration parameter value.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def delete_config_param(config_section: str, config_param: str) -> typing.List[typing.Tuple[str, str]]:
+def delete_config_param(config_section: str, config_param: str) -> List[Tuple[str, str]]:
     """Delete the original configuration parameter value.
 
     Args:
@@ -313,7 +316,7 @@ def delete_config_param(config_section: str, config_param: str) -> typing.List[t
         config_param (str): Configuration parameter.
 
     Returns:
-        typing.List[typing.Tuple[str,str]]: Original configuration parameter.
+        List[Tuple[str,str]]: Original configuration parameter.
     """
     CONFIG_PARSER.read(cfg.glob.setup._DCR_CFG_FILE)
 
@@ -578,13 +581,13 @@ def insert_config_param(
 @pytest.helpers.register
 def restore_config_params(
     config_section: str,
-    config_params: typing.List[typing.Tuple[str, str]],
+    config_params: List[Tuple[str, str]],
 ) -> None:
     """Restore the original configuration parameter.
 
     Args:
         config_section (str): Configuration section.
-        config_params (typing.List[typing.Tuple[str, str]]): Configuration parameter modifications.
+        config_params (List[Tuple[str, str]]): Configuration parameter modifications.
     """
     for (config_param, config_value) in config_params:
         CONFIG_PARSER[config_section][config_param] = config_value
@@ -718,18 +721,18 @@ def store_config_param(
 @pytest.helpers.register
 def verify_content_of_directory(
     directory_name: str,
-    expected_directories: typing.List[str],
-    expected_files: typing.List[str],
+    expected_directories: List[str],
+    expected_files: List[str],
 ) -> None:
     """Verify the content of a file directory.
 
     Args:
         directory_name: str:
                    Name of the file directory to be checked.
-        expected_directories: typing.List[str]:
-                   typing.List of the expected directory names.
-        expected_files: typing.List[str]:
-                   typing.List of the expected file names.
+        expected_directories: List[str]:
+                   List of the expected directory names.
+        expected_files: List[str]:
+                   List of the expected file names.
     """
     cfg.glob.logger.info("directory name   =%s", directory_name)
 

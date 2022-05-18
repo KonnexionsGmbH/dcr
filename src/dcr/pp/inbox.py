@@ -277,7 +277,7 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     else:
         file_name = None
 
-    if file_name is not None:
+    if file_name != "":
         process_inbox_rejected(
             cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             cfg.glob.ERROR_01_905.replace("{file_name}", file_name),

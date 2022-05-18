@@ -133,7 +133,7 @@ def get_os_independent_name(name: pathlib.Path | str | None) -> str:
 # -----------------------------------------------------------------------------
 # Get the path name from a directory name or a file name.
 # -----------------------------------------------------------------------------
-def get_path_name(name: pathlib.Path | str | None) -> pathlib.Path | None:
+def get_path_name(name: pathlib.Path | str | None) -> pathlib.Path | str:
     """Get the full name from a directory name or path and a file name or path.
 
     Args:
@@ -143,7 +143,7 @@ def get_path_name(name: pathlib.Path | str | None) -> pathlib.Path | None:
         str: Full file name.
     """
     if name is None:
-        return None
+        return ""
 
     return pathlib.Path(name)
 
