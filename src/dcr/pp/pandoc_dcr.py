@@ -1,6 +1,5 @@
 """Module pp.pandoc_dcr: Convert non-pdf documents to pdf files."""
 import os
-import pathlib
 import time
 
 import cfg.glob

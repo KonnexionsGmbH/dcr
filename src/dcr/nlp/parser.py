@@ -2,7 +2,6 @@
 import datetime
 import json
 import os
-import pathlib
 import time
 from typing import Dict
 from typing import Iterable

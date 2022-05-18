@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import os
-import pathlib
 import time
 from typing import ClassVar
 from typing import Tuple

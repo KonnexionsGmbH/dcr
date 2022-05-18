@@ -1,6 +1,5 @@
 """Module pp.tesseract_dcr: Convert image documents to pdf files."""
 import os
-import pathlib
 import time
 
 import cfg.glob

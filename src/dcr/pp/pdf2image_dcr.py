@@ -1,7 +1,6 @@
 """Module pp.pdf2image_dcr: Convert scanned image pdf documents to image
 files."""
 import os
-import pathlib
 import time
 
 import cfg.glob

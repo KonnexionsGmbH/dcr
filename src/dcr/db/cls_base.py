@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import os
-import pathlib
 from typing import Tuple
 from typing import Union
 
@@ -367,7 +366,9 @@ class Base:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         if self.base_file_size_bytes == 0:
-            self.base_file_size_bytes = os.path.getsize(utils.get_full_name(self.base_directory_name, self.base_file_name))
+            self.base_file_size_bytes = os.path.getsize(
+                utils.get_full_name(self.base_directory_name, self.base_file_name)
+            )
 
         if self.base_no_pdf_pages == 0:
             self.base_no_pdf_pages = utils.get_pdf_pages_no(

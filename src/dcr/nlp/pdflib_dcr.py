@@ -1,6 +1,5 @@
 """Module nlp.pdflib_dcr: Extract text from pdf documents."""
 import os
-import pathlib
 import time
 
 import cfg.glob
