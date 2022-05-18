@@ -61,7 +61,7 @@ class Action:
 
         self.action_action_code: str = action_code
         self.action_action_text: str = action_text
-        self.action_directory_name: str = directory_name
+        self.action_directory_name: str = utils.get_os_independent_name(directory_name)
         self.action_directory_type: str | sqlalchemy.String = directory_type
         self.action_duration_ns: int | sqlalchemy.BigInteger = duration_ns
         self.action_error_code_last: str | sqlalchemy.String = error_code_last
@@ -190,12 +190,12 @@ class Action:
 
         if self.action_file_size_bytes == 0:
             self.action_file_size_bytes = os.path.getsize(
-                pathlib.Path(self.action_directory_name, self.action_file_name)
+                utils.get_full_name(self.action_directory_name, self.action_file_name)
             )
 
         if self.action_no_pdf_pages == 0:
             self.action_no_pdf_pages = utils.get_pdf_pages_no(
-                str(pathlib.Path(self.action_directory_name, self.action_file_name))
+                utils.get_full_name(self.action_directory_name, self.action_file_name)
             )
 
         self.action_status = cfg.glob.DOCUMENT_STATUS_END
@@ -392,7 +392,7 @@ class Action:
         if self.action_file_name == "":
             return self.action_file_name
 
-        return utils.get_file_type(pathlib.Path(str(self.action_file_name)))
+        return utils.get_file_type(utils.get_os_independent_name(self.action_file_name))
 
     # -----------------------------------------------------------------------------
     # Get the full file from a directory name or path and a file name or path.
@@ -433,12 +433,12 @@ class Action:
         if self.action_id == 0:
             if self.action_file_size_bytes == 0:
                 self.action_file_size_bytes = os.path.getsize(
-                    pathlib.Path(self.action_directory_name, self.action_file_name)
+                    utils.get_full_name(self.action_directory_name, self.action_file_name)
                 )
 
             if self.action_no_pdf_pages == 0:
                 self.action_no_pdf_pages = utils.get_pdf_pages_no(
-                    str(pathlib.Path(self.action_directory_name, self.action_file_name))
+                    utils.get_full_name(self.action_directory_name, self.action_file_name)
                 )
 
             self.action_status = self.action_status if self.action_status != "" else cfg.glob.DOCUMENT_STATUS_START

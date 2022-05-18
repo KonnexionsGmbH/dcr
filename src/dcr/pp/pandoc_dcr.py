@@ -97,10 +97,10 @@ def convert_non_pdf_2_pdf_file() -> None:
             directory_name=cfg.glob.action_curr.action_directory_name,
             directory_type=cfg.glob.action_curr.action_directory_type,
             file_name=file_name_next,
-            file_size_bytes=os.path.getsize(pathlib.Path(full_name_next)),
+            file_size_bytes=os.path.getsize(full_name_next),
             id_base=cfg.glob.action_curr.action_id_base,
             id_parent=cfg.glob.action_curr.action_id,
-            no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(full_name_next))),
+            no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
         )
 
         utils.delete_auxiliary_file(full_name_curr)

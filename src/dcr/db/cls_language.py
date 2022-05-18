@@ -43,7 +43,9 @@ class Language:
         self.language_code_pandoc: str | sqlalchemy.String = code_pandoc
         self.language_code_spacy: str | sqlalchemy.String = code_spacy
         self.language_code_tesseract: str | sqlalchemy.String = code_tesseract
-        self.language_directory_name_inbox: str | sqlalchemy.String = directory_name_inbox
+        self.language_directory_name_inbox: str | sqlalchemy.String = utils.get_os_independent_name(
+            directory_name_inbox
+        )
         self.language_id: int | sqlalchemy.Integer = _row_id
         self.language_iso_language_name: str | sqlalchemy.String = iso_language_name
 

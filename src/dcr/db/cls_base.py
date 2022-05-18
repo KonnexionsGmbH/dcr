@@ -80,9 +80,11 @@ class Base:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
+        self.base_action_text_last = db.cls_run.Run.get_action_text(self.base_action_code_last)
+
         return {
             cfg.glob.DBC_ACTION_CODE_LAST: self.base_action_code_last,
-            cfg.glob.DBC_ACTION_TEXT_LAST: db.cls_run.Run.get_action_text(self.base_action_code_last),
+            cfg.glob.DBC_ACTION_TEXT_LAST: self.base_action_text_last,
             cfg.glob.DBC_DIRECTORY_NAME: self.base_directory_name,
             cfg.glob.DBC_ERROR_CODE_LAST: self.base_error_code_last,
             cfg.glob.DBC_ERROR_MSG_LAST: self.base_error_msg_last,
@@ -229,7 +231,7 @@ class Base:
             _row_id=row[cfg.glob.DBC_ID],
             action_code_last=row[cfg.glob.DBC_ACTION_CODE_LAST],
             action_text_last=row[cfg.glob.DBC_ACTION_TEXT_LAST],
-            directory_name=row[cfg.glob.DBC_DIRECTORY_NAME],
+            directory_name=utils.get_os_independent_name(row[cfg.glob.DBC_DIRECTORY_NAME]),
             error_code_last=row[cfg.glob.DBC_ERROR_CODE_LAST],
             error_msg_last=row[cfg.glob.DBC_ERROR_MSG_LAST],
             error_no=row[cfg.glob.DBC_ERROR_NO],
@@ -312,7 +314,7 @@ class Base:
         if self.base_file_name == "":
             return self.base_file_name
 
-        return utils.get_file_type(pathlib.Path(str(self.base_file_name)))
+        return utils.get_file_type(utils.get_os_independent_name(self.base_file_name))
 
     # -----------------------------------------------------------------------------
     # Get the full name from a directory name / path and a file name / path.
@@ -364,11 +366,15 @@ class Base:
         """Persist the object in the database."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        if self.base_id == 0:
-            self.base_file_size_bytes = os.path.getsize(pathlib.Path(self.base_directory_name, self.base_file_name))
+        if self.base_file_size_bytes == 0:
+            self.base_file_size_bytes = os.path.getsize(utils.get_full_name(self.base_directory_name, self.base_file_name))
+
+        if self.base_no_pdf_pages == 0:
             self.base_no_pdf_pages = utils.get_pdf_pages_no(
-                str(pathlib.Path(self.base_directory_name, self.base_file_name))
+                utils.get_full_name(self.base_directory_name, self.base_file_name)
             )
+
+        if self.base_id == 0:
             self.base_status = self.base_status if self.base_status != "" else cfg.glob.DOCUMENT_STATUS_START
 
             self.base_id = db.dml.insert_dbt_row(
@@ -388,7 +394,7 @@ class Base:
     # Get the duplicate file name based on the hash key.
     # -----------------------------------------------------------------------------
     @classmethod
-    def select_duplicate_file_name_by_sha256(cls, id_base: sqlalchemy.Integer, sha256: str) -> str | None:
+    def select_duplicate_file_name_by_sha256(cls, id_base: int | sqlalchemy.Integer, sha256: str) -> str | None:
         """Get the duplicate file name based on the hash key.
 
         Args:

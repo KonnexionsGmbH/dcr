@@ -41,19 +41,19 @@ def compute_sha256(file: pathlib.Path) -> str:
 # Delete the given auxiliary file.
 # -----------------------------------------------------------------------------
 # noinspection PyArgumentList
-def delete_auxiliary_file(file_name: str) -> None:
+def delete_auxiliary_file(file_name: pathlib.Path | str) -> None:
     """Delete the given auxiliary file.
 
     Args:
-        file_name (str): File name.
+        file_name (pathlib.Path | str): File name.
     """
     if not cfg.glob.setup.is_delete_auxiliary_files:
         return
 
+    file_name = get_os_independent_name(file_name)
+
     # Don't remove the base document !!!
-    if file_name.replace(("\\" if os.sep == "/" else "/"), os.sep) == get_full_name(
-        cfg.glob.action_curr.action_directory_name, cfg.glob.base.get_file_name_next()
-    ):
+    if file_name == get_full_name(cfg.glob.action_curr.action_directory_name, cfg.glob.base.get_file_name_next()):
         return
 
     if os.path.isfile(file_name):
@@ -71,7 +71,7 @@ def get_file_type(file_name: pathlib.Path | str | None) -> str:
         file_name (pathlib.Path | str | None): File name or file path.
 
     Returns:
-        str | None: File type.
+        str: File type.
     """
     if file_name is None:
         return ""
@@ -98,25 +98,66 @@ def get_full_name(directory_name: pathlib.Path | str | None, file_name: pathlib.
     if directory_name is None and file_name is None:
         return ""
 
-    if isinstance(directory_name, str):
-        directory_name = pathlib.Path(directory_name)
+    if isinstance(directory_name, pathlib.Path):
+        directory_name = str(directory_name)
 
-    if isinstance(file_name, str):
-        file_name = pathlib.Path(file_name)
+    if isinstance(file_name, pathlib.Path):
+        file_name = str(file_name)
 
-    return os.path.join(directory_name, file_name)
+    print(f"wwe os.path.join(directory_name, file_name)={str(os.path.join(directory_name, file_name))}")
+
+    return str(os.path.join(directory_name, file_name))
+
+
+# -----------------------------------------------------------------------------
+# Get the platform-independent name.
+# -----------------------------------------------------------------------------
+def get_os_independent_name(name: pathlib.Path | str | None) -> str:
+    """Get the platform-independent name..
+
+    Args:
+        name (pathlib.Path | str | None): File name or file path.
+
+    Returns:
+        str: Platform-independent name.
+    """
+    if name is None:
+        return ""
+
+    if isinstance(name, str):
+        return name.replace(("\\" if os.sep == "/" else "/"), os.sep)
+
+    return str(name)
+
+
+# -----------------------------------------------------------------------------
+# Get the path name from a directory name or a file name.
+# -----------------------------------------------------------------------------
+def get_path_name(name: pathlib.Path | str | None) -> pathlib.Path | None:
+    """Get the full name from a directory name or path and a file name or path.
+
+    Args:
+        name (pathlib.Path | str | None): Directory name or file name.
+
+    Returns:
+        str: Full file name.
+    """
+    if name is None:
+        return None
+
+    return pathlib.Path(name)
 
 
 # -----------------------------------------------------------------------------
 # Determine the number of pages in a pdf document.
 # -----------------------------------------------------------------------------
 def get_pdf_pages_no(
-    file_name: str,
+    file_name: pathlib.Path | str,
 ) -> int:
     """Determine the number of pages in a pdf document.
 
     Args:
-        file_name (str): File name.
+        file_name (pathlib.Path | str): File name.
 
     Returns:
         int: The number of pages found.
@@ -140,7 +181,7 @@ def get_stem_name(file_name: pathlib.Path | str | None) -> str:
         file_name (pathlib.Path | str | None): File name or file path.
 
     Returns:
-        str | None: Stem name.
+        str: Stem name.
     """
     if file_name is None:
         return ""

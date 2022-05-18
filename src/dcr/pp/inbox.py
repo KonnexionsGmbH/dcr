@@ -88,16 +88,18 @@ def initialise_action(
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+    full_name = utils.get_full_name(directory_name, file_name)
+
     action = db.cls_action.Action(
         action_code=action_code,
         id_run_last=cfg.glob.run.run_id,
         directory_name=directory_name,
         directory_type=directory_type,
         file_name=file_name,
-        file_size_bytes=os.path.getsize(pathlib.Path(directory_name, file_name)),
+        file_size_bytes=os.path.getsize(full_name),
         id_base=cfg.glob.base.base_id,
         id_parent=id_parent,
-        no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(directory_name, file_name))),
+        no_pdf_pages=utils.get_pdf_pages_no(full_name),
     )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -192,13 +194,13 @@ def process_inbox() -> None:
     with cfg.glob.db_orm_engine.connect() as conn:
         for row in db.cls_language.Language.select_active_languages(conn):
             cfg.glob.language = db.cls_language.Language.from_row(row)
-            if cfg.glob.language.language_directory_name_inbox is None:
-                cfg.glob.language.language_directory_name_inbox = pathlib.Path(
-                    str(cfg.glob.setup.directory_inbox),
+            if cfg.glob.language.language_directory_name_inbox == "":
+                cfg.glob.language.language_directory_name_inbox = utils.get_full_name(
+                    cfg.glob.setup.directory_inbox,
                     cfg.glob.language.language_iso_language_name.lower(),
                 )
 
-            if os.path.isdir(pathlib.Path(str(cfg.glob.language.language_directory_name_inbox))):
+            if os.path.isdir(utils.get_path_name(cfg.glob.language.language_directory_name_inbox)):
                 process_inbox_language()
 
         conn.close()
@@ -311,9 +313,11 @@ def process_inbox_language() -> None:
        unchanged to the inbox_ocr directory.
     4. All other documents are copied to the inbox_rejected directory.
     """
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
     utils.progress_msg(f"Start of processing for language '{cfg.glob.language.language_iso_language_name}'")
 
-    for file in sorted(pathlib.Path(cfg.glob.language.language_directory_name_inbox).iterdir()):
+    for file in sorted(utils.get_path_name(cfg.glob.language.language_directory_name_inbox).iterdir()):
         if file.is_file():
             cfg.glob.start_time_document = time.perf_counter_ns()
 
@@ -331,6 +335,8 @@ def process_inbox_language() -> None:
     utils.progress_msg(
         f"End   of processing for language '{cfg.glob.language.language_iso_language_name}'",
     )
+
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------

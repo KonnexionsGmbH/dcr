@@ -213,7 +213,7 @@ def create_schema() -> None:
     )
 
     if cfg.glob.setup.initial_database_data:
-        initial_database_data_path = pathlib.Path(cfg.glob.setup.initial_database_data)
+        initial_database_data_path = utils.get_os_independent_name(cfg.glob.setup.initial_database_data)
         if os.path.isfile(initial_database_data_path):
             db.dml.load_db_data_from_json(initial_database_data_path)
         else:

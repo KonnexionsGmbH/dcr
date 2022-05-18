@@ -63,7 +63,7 @@ def convert_pdf_2_image_file() -> None:
     """Convert a scanned image pdf document to an image file."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    full_name_curr = os.path.join(
+    full_name_curr = utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         cfg.glob.action_curr.action_file_name,
     )
@@ -82,7 +82,7 @@ def convert_pdf_2_image_file() -> None:
 
         file_name_next = stem_name_next + "." + db.cls_action.Action.pdf2image_file_type
 
-        full_name_next = os.path.join(
+        full_name_next = utils.get_full_name(
             cfg.glob.action_curr.action_directory_name,
             file_name_next,
         )
@@ -106,10 +106,10 @@ def convert_pdf_2_image_file() -> None:
                 directory_name=cfg.glob.action_curr.action_directory_name,
                 directory_type=cfg.glob.action_curr.action_directory_type,
                 file_name=file_name_next,
-                file_size_bytes=os.path.getsize(pathlib.Path(full_name_next)),
+                file_size_bytes=os.path.getsize(full_name_next),
                 id_base=cfg.glob.action_curr.action_id_base,
                 id_parent=cfg.glob.action_curr.action_id,
-                no_pdf_pages=utils.get_pdf_pages_no(str(pathlib.Path(full_name_next))),
+                no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
             )
 
             cfg.glob.run.total_generated += 1

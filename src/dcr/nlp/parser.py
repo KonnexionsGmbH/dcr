@@ -681,8 +681,8 @@ def parse_tetml_file() -> None:
             case cfg.glob.PARSE_TAG_CREATION:
                 pass
 
-    cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(pathlib.Path(full_name_next)),)
-    cfg.glob.action_next.action_no_pdf_pages = utils.get_pdf_pages_no(str(pathlib.Path(full_name_next)))
+    cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(full_name_next),)
+    cfg.glob.action_next.action_no_pdf_pages = utils.get_pdf_pages_no(str(full_name_next))
 
     # wwe ? cfg.glob.action_next.persist_2_db()
     cfg.glob.action_curr.finalise()

@@ -152,10 +152,10 @@ class Setup:
         self.db_user: str = "postgresql"
         self.db_user_admin: str = "postgresql"
         self.dcr_version: str = "0.9.2"
-        self.directory_inbox: str = "data/inbox"
-        self.directory_inbox_accepted: str = "data/inbox_accepted"
-        self.directory_inbox_rejected: str = "data/inbox_rejected"
-        self.initial_database_data: str = "data/initial_database_data.json"
+        self.directory_inbox: str = utils.get_os_independent_name("data/inbox")
+        self.directory_inbox_accepted: str = utils.get_os_independent_name("data/inbox_accepted")
+        self.directory_inbox_rejected: str = utils.get_os_independent_name("data/inbox_rejected")
+        self.initial_database_data: str = utils.get_os_independent_name("data/initial_database_data.json")
         self.is_delete_auxiliary_files: bool = True
         self.is_ignore_duplicates: bool = False
         self.is_line_footer_preferred: bool = True
@@ -323,7 +323,7 @@ class Setup:
         if Setup._DCR_CFG_DIRECTORY_INBOX in self._config:
             self._config[Setup._DCR_CFG_DIRECTORY_INBOX] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX])
 
-            self.directory_inbox = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX])
+            self.directory_inbox = utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX]))
         else:
             utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
 
@@ -337,7 +337,9 @@ class Setup:
                 self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
             )
 
-            self.directory_inbox_accepted = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
+            self.directory_inbox_accepted = utils.get_os_independent_name(
+                str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
+            )
         else:
             utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'")
 
@@ -351,7 +353,9 @@ class Setup:
                 self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED]
             )
 
-            self.directory_inbox_rejected = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED])
+            self.directory_inbox_rejected = utils.get_os_independent_name(
+                str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED])
+            )
         else:
             utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'")
 
@@ -1082,7 +1086,7 @@ class Setup:
                 ):
                     continue
                 case Setup._DCR_CFG_INITIAL_DATABASE_DATA:
-                    self.initial_database_data = str(item)
+                    self.initial_database_data = utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_LINE_FOOTER_MAX_DISTANCE:
                     self.line_footer_max_distance = int(item)
                 case Setup._DCR_CFG_LINE_FOOTER_MAX_LINES:
