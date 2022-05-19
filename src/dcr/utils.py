@@ -41,24 +41,24 @@ def compute_sha256(file: pathlib.Path) -> str:
 # Delete the given auxiliary file.
 # -----------------------------------------------------------------------------
 # noinspection PyArgumentList
-def delete_auxiliary_file(file_name: pathlib.Path | str) -> None:
+def delete_auxiliary_file(full_name: pathlib.Path | str) -> None:
     """Delete the given auxiliary file.
 
     Args:
-        file_name (pathlib.Path | str): File name.
+        full_name (pathlib.Path | str): File name.
     """
     if not cfg.glob.setup.is_delete_auxiliary_files:
         return
 
-    file_name = get_os_independent_name(file_name)
+    full_name = get_os_independent_name(full_name)
 
     # Don't remove the base document !!!
-    if file_name == get_full_name(cfg.glob.action_curr.action_directory_name, cfg.glob.base.get_file_name_next()):
+    if full_name == get_full_name(cfg.glob.action_next.action_directory_name, cfg.glob.base.get_file_name_next()):
         return
 
-    if os.path.isfile(file_name):
-        os.remove(file_name)
-        utils.progress_msg(f"Auxiliary file '{file_name}' deleted")
+    if os.path.isfile(full_name):
+        os.remove(full_name)
+        utils.progress_msg(f"Auxiliary file '{full_name}' deleted")
 
 
 # -----------------------------------------------------------------------------
@@ -103,8 +103,6 @@ def get_full_name(directory_name: pathlib.Path | str | None, file_name: pathlib.
 
     if isinstance(file_name, pathlib.Path):
         file_name = str(file_name)
-
-    print(f"wwe os.path.join(directory_name, file_name)={str(os.path.join(directory_name, file_name))}")
 
     return str(os.path.join(directory_name, file_name))
 

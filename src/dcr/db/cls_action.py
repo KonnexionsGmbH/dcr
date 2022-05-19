@@ -77,7 +77,7 @@ class Action:
         self.action_status: str | sqlalchemy.String = status
 
         if Action.pdf2image_file_type == "":
-            Action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_JPG
+            Action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_JPEG
 
         if self.action_id == 0:
             self.persist_2_db()

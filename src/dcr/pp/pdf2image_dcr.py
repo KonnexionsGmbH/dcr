@@ -24,7 +24,7 @@ def convert_pdf_2_image() -> None:
     if cfg.glob.setup.pdf2image_type == cfg.glob.setup.PDF2IMAGE_TYPE_PNG:
         db.cls_action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_PNG
     else:
-        db.cls_action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_JPG
+        db.cls_action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_JPEG
 
     with cfg.glob.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code(
@@ -41,6 +41,7 @@ def convert_pdf_2_image() -> None:
             if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
                 cfg.glob.run.total_status_error += 1
             else:
+                # not testable
                 cfg.glob.run.total_status_ready += 1
 
             cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
@@ -79,7 +80,7 @@ def convert_pdf_2_image_file() -> None:
 
         stem_name_next = cfg.glob.action_curr.get_stem_name() + "_" + str(cfg.glob.action_curr.action_no_children)
 
-        file_name_next = stem_name_next + "." + db.cls_action.Action.pdf2image_file_type
+        file_name_next = stem_name_next + "." + db.cls_action.pdf2image_file_type
 
         full_name_next = utils.get_full_name(
             cfg.glob.action_curr.action_directory_name,

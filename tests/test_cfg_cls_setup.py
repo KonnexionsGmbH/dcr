@@ -648,7 +648,6 @@ def test_get_config_missing(fxtr_setup_logger_environment):  # pylint: disable=R
 # -----------------------------------------------------------------------------
 # Test Function - get_config() - unknown.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_get_config_unknown(fxtr_setup_logger_environment):
     """Test: get_config() - unknown."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -757,7 +756,7 @@ def test_get_environment(fxtr_setup_logger):
     with pytest.raises(SystemExit) as expt:
         cfg.glob.setup._get_environment_variant()
 
-    os.environ[cfg.glob.setup._DCR_ENVIRONMENT_TYPE] = cfg.glob.setup._ENVIRONMENT_TYPE_TEST
+    os.environ[cfg.glob.setup._DCR_ENVIRONMENT_TYPE] = cfg.glob.setup.ENVIRONMENT_TYPE_TEST
 
     assert expt.type == SystemExit, "_DCR_ENVIRONMENT_TYPE: invalid"
     assert expt.value.code == 1, "_DCR_ENVIRONMENT_TYPE: invalid"
@@ -768,7 +767,7 @@ def test_get_environment(fxtr_setup_logger):
     with pytest.raises(SystemExit) as expt:
         cfg.glob.setup._get_environment_variant()
 
-    os.environ[cfg.glob.setup._DCR_ENVIRONMENT_TYPE] = cfg.glob.setup._ENVIRONMENT_TYPE_TEST
+    os.environ[cfg.glob.setup._DCR_ENVIRONMENT_TYPE] = cfg.glob.setup.ENVIRONMENT_TYPE_TEST
 
     assert expt.type == SystemExit, "_DCR_ENVIRONMENT_TYPE: missing"
     assert expt.value.code == 1, "_DCR_ENVIRONMENT_TYPE: missing"
@@ -776,7 +775,7 @@ def test_get_environment(fxtr_setup_logger):
     # -------------------------------------------------------------------------
     cfg.glob.setup._get_environment_variant()
 
-    assert cfg.glob.setup.environment_variant == cfg.glob.setup._ENVIRONMENT_TYPE_TEST, "_DCR_ENVIRONMENT_TYPE: ok"
+    assert cfg.glob.setup.environment_variant == cfg.glob.setup.ENVIRONMENT_TYPE_TEST, "_DCR_ENVIRONMENT_TYPE: ok"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

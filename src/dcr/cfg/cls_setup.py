@@ -121,9 +121,9 @@ class Setup:
 
     _DCR_ENVIRONMENT_TYPE: ClassVar[str] = "DCR_ENVIRONMENT_TYPE"
 
-    _ENVIRONMENT_TYPE_DEV: ClassVar[str] = "dev"
-    _ENVIRONMENT_TYPE_PROD: ClassVar[str] = "prod"
-    _ENVIRONMENT_TYPE_TEST: ClassVar[str] = "test"
+    ENVIRONMENT_TYPE_DEV: ClassVar[str] = "dev"
+    ENVIRONMENT_TYPE_PROD: ClassVar[str] = "prod"
+    ENVIRONMENT_TYPE_TEST: ClassVar[str] = "test"
 
     PDF2IMAGE_TYPE_JPEG: ClassVar[str] = "jpeg"
     PDF2IMAGE_TYPE_PNG: ClassVar[str] = "png"
@@ -952,7 +952,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     def _get_environment_variant(self) -> None:
         """Determine and check the environment variant."""
-        self.environment_variant = Setup._ENVIRONMENT_TYPE_PROD
+        self.environment_variant = Setup.ENVIRONMENT_TYPE_PROD
 
         try:
             self.environment_variant = os.environ[Setup._DCR_ENVIRONMENT_TYPE]
@@ -960,9 +960,9 @@ class Setup:
             utils.terminate_fatal_setup(f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' is missing")
 
         if self.environment_variant not in [
-            Setup._ENVIRONMENT_TYPE_DEV,
-            Setup._ENVIRONMENT_TYPE_PROD,
-            Setup._ENVIRONMENT_TYPE_TEST,
+            Setup.ENVIRONMENT_TYPE_DEV,
+            Setup.ENVIRONMENT_TYPE_PROD,
+            Setup.ENVIRONMENT_TYPE_TEST,
         ]:
             utils.terminate_fatal_setup(
                 f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' "

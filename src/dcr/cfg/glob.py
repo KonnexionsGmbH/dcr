@@ -86,6 +86,7 @@ DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT: str = "No 'pdf' format"
 DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE: str = "Issue with pdf2image"
 DOCUMENT_ERROR_CODE_REJ_TESSERACT: str = "Issue with Tesseract OCR"
 
+DOCUMENT_FILE_TYPE_JPEG: str = "jpeg"
 DOCUMENT_FILE_TYPE_JPG: str = "jpg"
 DOCUMENT_FILE_TYPE_JSON: str = "json"
 DOCUMENT_FILE_TYPE_PANDOC: List[str] = [

@@ -1,4 +1,5 @@
 """Module db.driver: Database Administration."""
+import cfg.cls_setup
 import cfg.glob
 import db.cls_version
 import db.ddl
@@ -25,6 +26,16 @@ def connect_db() -> None:
     prepare_connect_db()
 
     cfg.glob.db_orm_metadata = sqlalchemy.MetaData()
+
+    if cfg.glob.setup.environment_variant in [
+        cfg.cls_setup.Setup.ENVIRONMENT_TYPE_DEV,
+        cfg.cls_setup.Setup.ENVIRONMENT_TYPE_TEST,
+    ]:
+        cfg.glob.logger.debug("Database connection parameter: host:    '%s'", cfg.glob.setup.db_host)
+        cfg.glob.logger.debug("Database connection parameter: port:    '%s'", cfg.glob.setup.db_connection_port)
+        cfg.glob.logger.debug("Database connection parameter: database '%s'", cfg.glob.db_current_database)
+        cfg.glob.logger.debug("Database connection parameter: user     '%s'", cfg.glob.db_current_user)
+        cfg.glob.logger.debug("Database connection parameter: password '%s'", cfg.glob.setup.db_password)
 
     cfg.glob.db_orm_engine = sqlalchemy.create_engine(
         cfg.glob.setup.db_connection_prefix
@@ -62,6 +73,16 @@ def connect_db_admin() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     prepare_connect_db_admin()
+
+    if cfg.glob.setup.environment_variant in [
+        cfg.cls_setup.Setup.ENVIRONMENT_TYPE_DEV,
+        cfg.cls_setup.Setup.ENVIRONMENT_TYPE_TEST,
+    ]:
+        cfg.glob.logger.debug("Database connection parameter: host:    '%s'", cfg.glob.setup.db_host)
+        cfg.glob.logger.debug("Database connection parameter: port:    '%s'", cfg.glob.setup.db_connection_port)
+        cfg.glob.logger.debug("Database connection parameter: database '%s'", cfg.glob.db_current_database)
+        cfg.glob.logger.debug("Database connection parameter: user     '%s'", cfg.glob.db_current_user)
+        cfg.glob.logger.debug("Database connection parameter: password '%s'", cfg.glob.setup.db_password_admin)
 
     try:
         cfg.glob.db_driver_conn = psycopg2.connect(

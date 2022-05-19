@@ -335,7 +335,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 "",
                 "",
                 0,
-                "pdf_scanned_ok_3_1.jpg",
+                "pdf_scanned_ok_3_1.jpeg",
                 3,
                 6,
                 2,
@@ -357,7 +357,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 "",
                 "",
                 0,
-                "Translating_SQL_Into_Relational_Algebra_p01_02_6_1.jpg",
+                "Translating_SQL_Into_Relational_Algebra_p01_02_6_1.jpeg",
                 6,
                 11,
                 2,
@@ -379,7 +379,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 "",
                 "",
                 0,
-                "Translating_SQL_Into_Relational_Algebra_p01_02_6_2.jpg",
+                "Translating_SQL_Into_Relational_Algebra_p01_02_6_2.jpeg",
                 6,
                 11,
                 2,
@@ -950,7 +950,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("docx_ok", "docx"),
             ("jpeg_pdf_text_ok", "jpeg"),
             ("pdf_scanned_ok", "pdf"),
@@ -959,7 +959,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
             ("README", "md"),
             ("Translating_SQL_Into_Relational_Algebra_p01_02", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -970,28 +970,25 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
 
     check_db_content()
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        ["README.md"],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "docx_ok_1.docx",
-            "jpeg_pdf_text_ok_2.jpeg",
-            "pdf_scanned_ok_3.pdf",
-            "pdf_text_ok_4.pdf",
-            "Translating_SQL_Into_Relational_Algebra_p01_02_6.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        ["pdf_wrong_format_5.pdf"],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox=(
+            [],
+            ["README.md"],
+        ),
+        inbox_accepted=(
+            [],
+            [
+                "docx_ok_1.docx",
+                "jpeg_pdf_text_ok_2.jpeg",
+                "pdf_scanned_ok_3.pdf",
+                "pdf_text_ok_4.pdf",
+                "Translating_SQL_Into_Relational_Algebra_p01_02_6.pdf",
+            ],
+        ),
+        inbox_rejected=(
+            [],
+            ["pdf_wrong_format_5.pdf"],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -1007,14 +1004,14 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("docx_ok", "docx"),
             ("jpeg_pdf_text_ok", "jpeg"),
             ("pdf_scanned_ok", "pdf"),
             ("pdf_text_ok", "pdf"),
             ("Translating_SQL_Into_Relational_Algebra_p01_02", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -1035,47 +1032,36 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_kept <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "docx_ok_1.docx",
-            "docx_ok_1.line.json",
-            "docx_ok_1.line.xml",
-            "docx_ok_1.pdf",
-            "jpeg_pdf_text_ok_2.jpeg",
-            "jpeg_pdf_text_ok_2.line.json",
-            "jpeg_pdf_text_ok_2.line.xml",
-            "jpeg_pdf_text_ok_2.pdf",
-            "pdf_scanned_ok_3.pdf",
-            "pdf_scanned_ok_3_1.jpg",
-            "pdf_scanned_ok_3_1.line.json",
-            "pdf_scanned_ok_3_1.line.xml",
-            "pdf_scanned_ok_3_1.pdf",
-            "pdf_text_ok_4.line.json",
-            "pdf_text_ok_4.line.xml",
-            "pdf_text_ok_4.pdf",
-            "Translating_SQL_Into_Relational_Algebra_p01_02_5.pdf",
-            "Translating_SQL_Into_Relational_Algebra_p01_02_5_0.line.json",
-            "Translating_SQL_Into_Relational_Algebra_p01_02_5_0.line.xml",
-            "Translating_SQL_Into_Relational_Algebra_p01_02_5_0.pdf",
-            "Translating_SQL_Into_Relational_Algebra_p01_02_5_1.jpg",
-            "Translating_SQL_Into_Relational_Algebra_p01_02_5_1.pdf",
-            "Translating_SQL_Into_Relational_Algebra_p01_02_5_2.jpg",
-            "Translating_SQL_Into_Relational_Algebra_p01_02_5_2.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "docx_ok_1.docx",
+                "docx_ok_1.line.json",
+                "docx_ok_1.line.xml",
+                "docx_ok_1.pdf",
+                "jpeg_pdf_text_ok_2.jpeg",
+                "jpeg_pdf_text_ok_2.line.json",
+                "jpeg_pdf_text_ok_2.line.xml",
+                "jpeg_pdf_text_ok_2.pdf",
+                "pdf_scanned_ok_3.pdf",
+                "pdf_scanned_ok_3_1.jpeg",
+                "pdf_scanned_ok_3_1.line.json",
+                "pdf_scanned_ok_3_1.line.xml",
+                "pdf_scanned_ok_3_1.pdf",
+                "pdf_text_ok_4.line.json",
+                "pdf_text_ok_4.line.xml",
+                "pdf_text_ok_4.pdf",
+                "Translating_SQL_Into_Relational_Algebra_p01_02_5.pdf",
+                "Translating_SQL_Into_Relational_Algebra_p01_02_5_0.line.json",
+                "Translating_SQL_Into_Relational_Algebra_p01_02_5_0.line.xml",
+                "Translating_SQL_Into_Relational_Algebra_p01_02_5_0.pdf",
+                "Translating_SQL_Into_Relational_Algebra_p01_02_5_1.jpeg",
+                "Translating_SQL_Into_Relational_Algebra_p01_02_5_1.pdf",
+                "Translating_SQL_Into_Relational_Algebra_p01_02_5_2.jpeg",
+                "Translating_SQL_Into_Relational_Algebra_p01_02_5_2.pdf",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------

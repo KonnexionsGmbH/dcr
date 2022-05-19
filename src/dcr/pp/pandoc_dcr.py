@@ -39,6 +39,7 @@ def convert_non_pdf_2_pdf() -> None:
             if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
                 cfg.glob.run.total_status_error += 1
             else:
+                # not testable
                 cfg.glob.run.total_status_ready += 1
 
             cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)

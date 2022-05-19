@@ -10,7 +10,8 @@ import configparser
 import os
 import pathlib
 import shutil
-from typing import List, Tuple
+from typing import List
+from typing import Tuple
 
 import cfg.cls_setup
 import cfg.glob
@@ -23,6 +24,7 @@ import db.cls_version
 import db.driver
 import pytest
 import sqlalchemy
+import utils
 
 import dcr
 
@@ -242,9 +244,9 @@ def copy_directories_4_pytest_2_dir(
 
     for source in source_directories:
         source_dir = cfg.glob.TESTS_INBOX_NAME + "/" + source
-        source_path = os.path.join(cfg.glob.TESTS_INBOX_NAME, pathlib.Path(source))
+        source_path = utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, pathlib.Path(source))
         assert os.path.isdir(source_path), "source language directory '" + str(source_path) + "' missing"
-        target_path = os.path.join(target_dir, pathlib.Path(source))
+        target_path = utils.get_full_name(target_dir, pathlib.Path(source))
         shutil.copytree(source_dir, target_path)
 
 
@@ -253,9 +255,7 @@ def copy_directories_4_pytest_2_dir(
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def copy_files_4_pytest(
-    file_list: List[
-        Tuple[Tuple[str, str | None], Tuple[pathlib.Path, List[str], str | None]]
-    ]
+    file_list: List[Tuple[Tuple[str, str | None], Tuple[pathlib.Path, List[str], str | None]]]
 ) -> None:
     """Copy files from the sample test file directory.
 
@@ -271,14 +271,14 @@ def copy_files_4_pytest(
 
     for ((source_stem, source_ext), (target_dir, target_file_comp, target_ext)) in file_list:
         source_file_name = source_stem if source_ext is None else source_stem + "." + source_ext
-        source_file = os.path.join(cfg.glob.TESTS_INBOX_NAME, source_file_name)
+        source_file = utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, source_file_name)
         assert os.path.isfile(source_file), "source file '" + str(source_file) + "' missing"
 
         assert os.path.isdir(target_dir), "target directory '" + target_dir + "' missing"
         target_file_name = (
             "_".join(target_file_comp) if target_ext is None else "_".join(target_file_comp) + "." + target_ext
         )
-        target_file = os.path.join(target_dir, target_file_name)
+        target_file = utils.get_full_name(target_dir, target_file_name)
         assert os.path.isfile(target_file) is False, "target file '" + str(target_file) + "' already existing"
 
         shutil.copy(source_file, target_file)
@@ -418,6 +418,16 @@ def fxtr_setup_empty_db_and_inbox(
     """Fixture: Setup empty database and empty inboxes."""
     backup_setup_cfg()
 
+    cfg.glob.setup = cfg.cls_setup.Setup()
+
+    # restore original file
+    shutil.copy(
+        utils.get_full_name(
+            cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
+        ),
+        os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
+    )
+
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
@@ -457,7 +467,15 @@ def fxtr_setup_logger_environment():
     """Fixture: Setup logger & environment."""
     cfg.glob.setup = cfg.cls_setup.Setup()
 
-    cfg.glob.setup.environment_type = cfg.glob.setup._ENVIRONMENT_TYPE_TEST
+    # restore original file
+    shutil.copy(
+        utils.get_full_name(
+            cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
+        ),
+        os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
+    )
+
+    cfg.glob.setup.environment_type = cfg.glob.setup.ENVIRONMENT_TYPE_TEST
 
     backup_setup_cfg()
 
@@ -478,11 +496,9 @@ def help_run_action_all_complete_duplicate_file(
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
     pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], cfg.glob.setup.directory_inbox_accepted)
 
-    print(f"wwe file_1={cfg.glob.setup.directory_inbox_accepted, stem_name_1 + '.' + file_ext_1}")
-    print(f"wwe file_2={cfg.glob.setup.directory_inbox_accepted, stem_name_2 + '.' + file_ext_2}")
     os.rename(
-        os.path.join(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
-        os.path.join(cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
+        utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
+        utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
     )
 
     # -------------------------------------------------------------------------
@@ -743,7 +759,7 @@ def verify_content_of_directory(
 
     # check directory content against expectations
     for elem in directory_content:
-        elem_path = os.path.join(directory_name, elem)
+        elem_path = utils.get_full_name(directory_name, elem)
         if os.path.isdir(elem_path):
             assert elem in expected_directories, f"directory {elem} was not expected"
         else:
@@ -752,11 +768,51 @@ def verify_content_of_directory(
     # check expected directories against directory content
     for elem in expected_directories:
         assert elem in directory_content, f"expected directory {elem} is missing"
-        elem_path = os.path.join(directory_name, elem)
+        elem_path = utils.get_full_name(directory_name, elem)
         assert os.path.isdir(elem_path), f"expected directory {elem} is a file"
 
     # check expected files against directory content
     for elem in expected_files:
         assert elem in directory_content, f"expected file {elem} is missing"
-        elem_path = os.path.join(directory_name, elem)
+        elem_path = utils.get_full_name(directory_name, elem)
         assert os.path.isfile(elem_path), f"expected file {elem} is a directory"
+
+
+# -----------------------------------------------------------------------------
+# Verify the content of an inbox directories.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def verify_content_of_inboxes(
+    inbox: Tuple[List[str], List[str]] = ([], []),
+    inbox_accepted: Tuple[List[str], List[str]] = ([], []),
+    inbox_rejected: Tuple[List[str], List[str]] = ([], []),
+) -> None:
+    """Verify the content of an inbox directories..
+
+    Args:
+        inbox: Tuple[List[str],List[str]]:
+                   An optional list of expected directories and
+                   an optional list of expected files in the inbox directory.
+        inbox_accepted: Tuple[List[str],List[str]]:
+                   An optional list of expected directories and
+                   an optional list of expected files in the inbox_accepted directory.
+        inbox_rejected: Tuple[List[str],List[str]]:
+                   An optional list of expected directories and
+                   an optional list of expected files in the inbox_rejected directory.
+    """
+    verify_content_of_directory(
+        directory_name=cfg.glob.setup.directory_inbox,
+        expected_directories=inbox[0],
+        expected_files=inbox[1],
+    )
+
+    verify_content_of_directory(
+        directory_name=cfg.glob.setup.directory_inbox_accepted,
+        expected_directories=inbox_accepted[0],
+        expected_files=inbox_accepted[1],
+    )
+    verify_content_of_directory(
+        directory_name=cfg.glob.setup.directory_inbox_rejected,
+        expected_directories=inbox_rejected[0],
+        expected_files=inbox_rejected[1],
+    )
