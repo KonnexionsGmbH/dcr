@@ -326,7 +326,8 @@ def parse_tag_page(parent_tag: str, parent: Iterable[str]) -> None:
 
     # Process the page related variables.
     if cfg.glob.setup.is_parsing_line:
-        cfg.glob.line_type.process_page()
+        if cfg.glob.setup.is_parsing_line:
+            cfg.glob.line_type.process_page()
         cfg.glob.parse_result_line_3_pages.append(
             {
                 cfg.glob.JSON_NAME_PAGE_NO: cfg.glob.parse_result_no_pages_in_doc,
@@ -380,9 +381,7 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
     cfg.glob.parse_result_no_words_in_line = 0
     cfg.glob.parse_result_word_index_line = 0
 
-    if cfg.glob.setup.line_footer_max_lines > 0 or cfg.glob.setup.line_header_max_lines > 0:
-        if cfg.glob.setup.is_parsing_line:
-            cfg.glob.line_type = nlp.cls_line_type.LineType()
+    cfg.glob.line_type = nlp.cls_line_type.LineType()
 
     # Process the tags of all document pages.
     for child in parent:

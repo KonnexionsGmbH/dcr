@@ -10,7 +10,6 @@ import os
 import pathlib
 import shutil
 import time
-from typing import Type
 
 import cfg.glob
 import db.cls_action
@@ -73,7 +72,7 @@ def initialise_action(
     directory_type: str = "",
     file_name: str = "",
     id_parent: int = 0,
-) -> Type[db.cls_action.Action]:
+) -> db.cls_action.Action:
     """Initialise the next action in the database.
 
     Args:
@@ -194,13 +193,7 @@ def process_inbox() -> None:
     with cfg.glob.db_orm_engine.connect() as conn:
         for row in db.cls_language.Language.select_active_languages(conn):
             cfg.glob.language = db.cls_language.Language.from_row(row)
-            if cfg.glob.language.language_directory_name_inbox == "":
-                cfg.glob.language.language_directory_name_inbox = utils.get_full_name(
-                    cfg.glob.setup.directory_inbox,
-                    cfg.glob.language.language_iso_language_name.lower(),
-                )
-
-            if os.path.isdir(utils.get_path_name(cfg.glob.language.language_directory_name_inbox)):
+            if os.path.isdir(cfg.glob.language.language_directory_name_inbox):
                 process_inbox_language()
 
         conn.close()
@@ -227,7 +220,7 @@ def process_inbox_accepted(action_code: str) -> None:
 
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,
-        directory_name=cfg.glob.setup.directory_inbox,
+        directory_name=cfg.glob.language.language_directory_name_inbox,
         directory_type=cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX,
         file_name=cfg.glob.base.base_file_name,
     )
@@ -264,7 +257,8 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     """Process the next inbox file.
 
     Args:
-        file_path (pathlib.Path): Inbox file.
+        file_path (pathlib.Path):
+                Inbox file.
     """
     cfg.glob.session = sqlalchemy.orm.Session(cfg.glob.db_orm_engine)
 
@@ -277,7 +271,7 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     else:
         file_name = None
 
-    if file_name != "":
+    if not (file_name is None or file_name == ""):
         process_inbox_rejected(
             cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             cfg.glob.ERROR_01_905.replace("{file_name}", file_name),
@@ -328,7 +322,7 @@ def process_inbox_language() -> None:
             cfg.glob.language.total_processed_to_be += 1
             cfg.glob.run.run_total_processed_to_be += 1
 
-            process_inbox_file(file)
+            process_inbox_file(file_path=file)
 
     utils.show_statistics_language()
 
@@ -360,7 +354,7 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
 
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,
-        directory_name=cfg.glob.setup.directory_inbox,
+        directory_name=cfg.glob.language.language_directory_name_inbox,
         directory_type=cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX,
         file_name=cfg.glob.base.base_file_name,
     )

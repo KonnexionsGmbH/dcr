@@ -17,6 +17,35 @@ import dcr
 
 
 # -----------------------------------------------------------------------------
+# Test RUN_ACTION_TEXT_FROM_PDF - normal - duplicate.
+# -----------------------------------------------------------------------------
+def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_TEXT_FROM_PDF - normal - duplicate."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_duplicate <=========")
+
+    stem_name_1: str = "pdf_text_ok_protected"
+    file_ext_1: str = "pdf"
+
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            (stem_name_1, file_ext_1),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    stem_name_2: str = "pdf_text_ok_protected_1.line"
+    file_ext_2: str = "xml"
+
+    pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test RUN_ACTION_TEXT_FROM_PDF - normal - keep.
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
@@ -25,10 +54,10 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("pdf_text_ok_protected", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -52,26 +81,19 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "pdf_text_ok_protected_1.pdf",
-            "pdf_text_ok_protected_1.line.xml",
-            "pdf_text_ok_protected_1.word.xml",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "pdf_text_ok_protected_1.pdf",
+                "pdf_text_ok_protected_1.line.xml",
+                "pdf_text_ok_protected_1.word.xml",
+            ],
+        ),
+        inbox_rejected=(
+            [],
+            [],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -87,10 +109,10 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("pdf_text_ok_protected", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -114,26 +136,15 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep_only_page <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "pdf_text_ok_protected_1.line.xml",
-            "pdf_text_ok_protected_1.page.xml",
-            "pdf_text_ok_protected_1.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "pdf_text_ok_protected_1.line.xml",
+                "pdf_text_ok_protected_1.page.xml",
+                "pdf_text_ok_protected_1.pdf",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -149,10 +160,10 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -187,27 +198,15 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_line <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
+                "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpeg",
+            ],
+        ),
     )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
-            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpg",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
-    )
-
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -221,10 +220,10 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -259,25 +258,14 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_page <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
-            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpg",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
+                "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpeg",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------

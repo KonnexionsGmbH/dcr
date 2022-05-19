@@ -23,10 +23,10 @@ def test_run_action_tokenize_attributes_true(fxtr_rmdir_opt, fxtr_setup_empty_db
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("tokenizer_coverage", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -62,26 +62,15 @@ def test_run_action_tokenize_attributes_true(fxtr_rmdir_opt, fxtr_setup_empty_db
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_tokenize_normal <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "tokenizer_coverage_1.page.json",
-            "tokenizer_coverage_1.pdf",
-            "tokenizer_coverage_1.word.json",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "tokenizer_coverage_1.page.json",
+                "tokenizer_coverage_1.pdf",
+                "tokenizer_coverage_1.word.json",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -97,10 +86,10 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("tokenizer_coverage", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -147,26 +136,15 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_tokenize_normal <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "tokenizer_coverage_1.page.json",
-            "tokenizer_coverage_1.pdf",
-            "tokenizer_coverage_1.word.json",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "tokenizer_coverage_1.page.json",
+                "tokenizer_coverage_1.pdf",
+                "tokenizer_coverage_1.word.json",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------

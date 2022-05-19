@@ -29,7 +29,8 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
-            (stem_name_1, file_ext_1),],
+            (stem_name_1, file_ext_1),
+        ],
         target_path=cfg.glob.setup.directory_inbox,
     )
 
@@ -83,25 +84,14 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 2/2 <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            stem_name + "_" + str(document_id) + "." + file_ext,
-            stem_name + "_" + str(document_id) + "_1." + cfg.glob.setup.pdf2image_type,
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                stem_name + "_" + str(document_id) + "." + file_ext,
+                stem_name + "_" + str(document_id) + "_1." + cfg.glob.setup.pdf2image_type,
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -141,9 +131,7 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
         ],
     )
 
-    pytest.helpers.help_run_action_all_complete_duplicate_file(
-        file_ext_1, file_ext_2, stem_name_1, stem_name_2
-    )
+    pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,

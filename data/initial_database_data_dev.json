@@ -41,7 +41,7 @@
             "row": [
               {
                 "columnName": "active",
-                "columnValue": false
+                "columnValue": true
               },
               {
                 "columnName": "code_iso_639_3",

@@ -106,8 +106,8 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
         inbox_accepted=(
             [],
             [
-            stem_name + "_1.pdf",
-            stem_name + "_1_1." + cfg.glob.setup.PDF2IMAGE_TYPE_PNG,
+                stem_name + "_1.pdf",
+                stem_name + "_1_1." + cfg.glob.setup.PDF2IMAGE_TYPE_PNG,
             ],
         ),
     )

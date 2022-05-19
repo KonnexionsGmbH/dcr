@@ -8,7 +8,6 @@ import cfg.glob
 import db.cls_run
 import db.driver
 import pytest
-import sqlalchemy
 import utils
 
 import dcr
@@ -40,7 +39,9 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
 
     stem_name_2: str = "pdf_text_ok_1"
 
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext)], cfg.glob.setup.directory_inbox_accepted)
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox_accepted
+    )
 
     os.rename(
         utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext),
@@ -57,13 +58,13 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
         inbox=(
             [],
             [
-                [stem_name_1 + "." + file_ext],
+                stem_name_1 + "." + file_ext,
             ],
         ),
         inbox_accepted=(
             [],
             [
-                [stem_name_2 + "." + file_ext],
+                stem_name_2 + "." + file_ext,
             ],
         ),
     )
@@ -75,8 +76,7 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_INBOX - french.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
-def test_run_action_process_inbox_french(fxtr_setup_logger_environment):
+def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
     """Test RUN_ACTION_PROCESS_INBOX - French."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -97,7 +97,9 @@ def test_run_action_process_inbox_french(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     # Copy language subdirectory
-    pytest.helpers.copy_directories_4_pytest_2_dir(["french"], str(cfg.glob.setup.directory_inbox))
+    pytest.helpers.copy_directories_4_pytest_2_dir(
+        source_directories=["french"], target_dir=str(cfg.glob.setup.directory_inbox)
+    )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
@@ -117,27 +119,20 @@ def test_run_action_process_inbox_french(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_inbox_french <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        ["french"],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "docx_french_ok_1.docx",
-            "pdf_french_ok_3.jpg",
-            "pdf_french_ok_5.pdf",
-            "pdf_french_scanned_7.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox=(
+            ["french"],
+            [],
+        ),
+        inbox_accepted=(
+            [],
+            [
+                "docx_french_ok_1.docx",
+                "pdf_french_ok_2.jpg",
+                "pdf_french_ok_3.pdf",
+                "pdf_french_scanned_4.pdf",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -175,11 +170,11 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("pdf_text_ok", "pdf"),
             ("pdf_text_ok_protected", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -200,86 +195,14 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_inbox_ignore_duplicates <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "pdf_text_ok_1.pdf",
-            "pdf_text_ok_protected_3.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
-    )
-
-    # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test RUN_ACTION_PROCESS_INBOX - normal.
-# -----------------------------------------------------------------------------
-def test_run_action_process_inbox_normal(fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_PROCESS_INBOX - normal."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    stem_name: str = "pdf_scanned_ok"
-    file_ext: str = "pdf"
-
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name, file_ext)], cfg.glob.setup.directory_inbox)
-
-    # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-        ],
-    )
-
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
-
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
-
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
-
-    pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-
-    # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_process_inbox_normal <=========")
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            stem_name + "_1." + file_ext,
-            stem_name + "_1_1." + cfg.glob.setup.pdf2image_type,
-            stem_name + "_1_1." + cfg.glob.DOCUMENT_FILE_TYPE_PDF,
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "pdf_text_ok_1.pdf",
+                "pdf_text_ok_protected_2.pdf",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -299,14 +222,14 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
 
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("pdf_text_ok", "pdf"),
             ("pdf_text_ok_protected", "pdf"),
             ("pdf_wrong_format", "pdf"),
             ("unknown_file_extension", "xxx"),
             ("unknown_file_extension_protected", "xxx"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -327,29 +250,26 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "pdf_text_ok_1.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [
-            "pdf_text_ok_protected_3.pdf",
-            "pdf_wrong_format_5.pdf",
-            "unknown_file_extension_7.xxx",
-            "unknown_file_extension_protected_9.xxx",
-        ],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox=(
+            [],
+            [],
+        ),
+        inbox_accepted=(
+            [],
+            [
+                "pdf_text_ok_1.pdf",
+            ],
+        ),
+        inbox_rejected=(
+            [],
+            [
+                "pdf_text_ok_protected_2.pdf",
+                "pdf_wrong_format_3.pdf",
+                "unknown_file_extension_4.xxx",
+                "unknown_file_extension_protected_5.xxx",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -367,11 +287,15 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     stem_name_1: str = "pdf_wrong_format"
     file_ext: str = "pdf"
 
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext)], cfg.glob.setup.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox
+    )
 
     stem_name_2: str = "pdf_wrong_format_1"
 
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext)], cfg.glob.setup.directory_inbox_rejected)
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox_rejected
+    )
 
     os.rename(
         utils.get_full_name(cfg.glob.setup.directory_inbox_rejected, stem_name_1 + "." + file_ext),
@@ -384,26 +308,19 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected_duplicate <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [
-            stem_name_1 + "." + file_ext,
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [
-            stem_name_2 + "." + file_ext,
-        ],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox=(
+            [],
+            [
+                stem_name_1 + "." + file_ext,
+            ],
+        ),
+        inbox_rejected=(
+            [],
+            [
+                stem_name_2 + "." + file_ext,
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------

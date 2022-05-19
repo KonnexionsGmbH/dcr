@@ -144,9 +144,6 @@ def check_dbt_language(param: Tuple[int, Tuple[int, bool, str, str, str, str, st
 
     actual_values = dbt.get_columns_in_tuple()
 
-    print(f"wwe check_dbt_language(): expected  ={expected_values[6]}")
-    print(f"wwe check_dbt_language(): actual={actual_values[6]}")
-
     if expected_values != actual_values:
         print(f"issue with dbt language and id={id_row}:")
         print(f"values expected={expected_values}")
@@ -449,6 +446,45 @@ def fxtr_setup_empty_db_and_inbox(
 
 
 # -----------------------------------------------------------------------------
+# Fixture - Setup empty database and empty inboxes.
+# -----------------------------------------------------------------------------
+@pytest.fixture()
+def fxtr_setup_empty_inbox(
+    fxtr_mkdir,
+    fxtr_rmdir_opt,
+):
+    """Fixture: Setup empty database and empty inboxes."""
+    backup_setup_cfg()
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+
+    # restore original file
+    shutil.copy(
+        utils.get_full_name(
+            cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
+        ),
+        os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
+    )
+
+    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
+    fxtr_mkdir(cfg.glob.setup.directory_inbox)
+    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
+    fxtr_mkdir(cfg.glob.setup.directory_inbox_accepted)
+    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
+    fxtr_mkdir(cfg.glob.setup.directory_inbox_rejected)
+
+    yield
+
+    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
+    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
+    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
+
+    db.driver.drop_database()
+
+    restore_setup_cfg()
+
+
+# -----------------------------------------------------------------------------
 # Fixture - Setup logger.
 # -----------------------------------------------------------------------------
 @pytest.fixture()
@@ -494,7 +530,9 @@ def help_run_action_all_complete_duplicate_file(
     file_ext_1: str, file_ext_2: str, stem_name_1: str, stem_name_2: str
 ) -> None:
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name_1, file_ext_1)], cfg.glob.setup.directory_inbox_accepted)
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[(stem_name_1, file_ext_1)], target_path=cfg.glob.setup.directory_inbox_accepted
+    )
 
     os.rename(
         utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
@@ -533,7 +571,9 @@ def help_run_action_process_inbox_normal(
     file_ext,
 ):
     """Help RUN_ACTION_PROCESS_INBOX - normal."""
-    pytest.helpers.copy_files_4_pytest_2_dir([(stem_name, file_ext)], cfg.glob.setup.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[(stem_name, file_ext)], target_path=cfg.glob.setup.directory_inbox
+    )
 
     # -------------------------------------------------------------------------
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])

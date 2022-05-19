@@ -53,7 +53,21 @@ def check_db_content() -> None:  # pylint: disable=R0915
             ),
         )
     )
-    pytest.helpers.check_dbt_language((2, (2, True, "deu", "de", "de_dep_news_trf", "deu", "", "Deutsch")))
+    pytest.helpers.check_dbt_language(
+        (
+            2,
+            (
+                2,
+                True,
+                "deu",
+                "de",
+                "de_dep_news_trf",
+                "deu",
+                utils.get_os_independent_name("data\\inbox_test\\deutsch"),
+                "Deutsch",
+            ),
+        )
+    )
     pytest.helpers.check_dbt_language((3, (3, False, "fra", "fr", "fr_dep_news_trf", "fra", "", "French")))
     pytest.helpers.check_dbt_language((4, (4, False, "ita", "it", "it_core_news_lg", "ita", "", "Italian")))
 
@@ -913,7 +927,21 @@ def check_db_content_language() -> None:  # pylint: disable=R0915
             ),
         )
     )
-    pytest.helpers.check_dbt_language((2, (2, True, "deu", "de", "de_dep_news_trf", "deu", "", "Deutsch")))
+    pytest.helpers.check_dbt_language(
+        (
+            2,
+            (
+                2,
+                True,
+                "deu",
+                "de",
+                "de_dep_news_trf",
+                "deu",
+                utils.get_os_independent_name("data\\inbox_test\\deutsch"),
+                "Deutsch",
+            ),
+        )
+    )
     pytest.helpers.check_dbt_language((3, (3, False, "fra", "fr", "fr_dep_news_trf", "fra", "", "French")))
     pytest.helpers.check_dbt_language((4, (4, False, "ita", "it", "it_core_news_lg", "ita", "", "Italian")))
 

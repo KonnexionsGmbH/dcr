@@ -230,18 +230,21 @@ pytest-issue:       ## Run only the tests with pytest which are marked with 'iss
 pytest-module:      ## Run tests of specific module(s) with pytest - test_all & test_cfg_cls_setup & test_db_cls.
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
-	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -v tests/test_pp_inbox.py
-#	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -v tests/test_all.py \
-#																	      tests/test_cfg_cls_setup.py \
-#																	      tests/test_db_cls.py \
-#																	      tests/test_db_ddl.py \
-#																	      tests/test_db_dml.py \
-#																	      tests/test_db_driver.py \
-#																	      tests/test_dcr.py \
-#																	      tests/test_pp_inbox.py \
-#																	      tests/test_pp_pandoc_dcr.py \
-#																	      tests/test_pp_pdf2image_dcr.py \
-#																		  tests/test_pp_tesseract_dcr.py
+#	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -v tests/test_nlp_parser.py
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -v tests/test_all.py \
+																	      tests/test_cfg_cls_setup.py \
+																	      tests/test_db_cls.py \
+																	      tests/test_db_ddl.py \
+																	      tests/test_db_dml.py \
+																	      tests/test_db_driver.py \
+																	      tests/test_dcr.py \
+																	      tests/test_nlp_parser.py \
+																	      tests/test_nlp_pdflib_dcr.py \
+																	      tests/test_nlp_tokenize.py \
+																	      tests/test_pp_inbox.py \
+																	      tests/test_pp_pandoc_dcr.py \
+																	      tests/test_pp_pdf2image_dcr.py \
+																		  tests/test_pp_tesseract_dcr.py
 	@echo "Info **********  End:   pytest **************************************"
 
 ## ============================================================================

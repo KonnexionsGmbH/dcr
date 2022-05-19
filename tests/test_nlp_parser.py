@@ -1,6 +1,5 @@
 # pylint: disable=unused-argument
 """Testing Module nlp.parser."""
-import typing
 
 import cfg.glob
 import db.cls_run
@@ -94,10 +93,10 @@ def test_run_action_store_parse_result_in_json_coverage(
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("pdf_mini", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -105,9 +104,11 @@ def test_run_action_store_parse_result_in_json_coverage(
         cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.glob.setup._DCR_CFG_VERBOSE_PARSER, verbose_parser),
+            (cfg.glob.setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "0"),
+            (cfg.glob.setup._DCR_CFG_LINE_HEADER_MAX_LINES, "0"),
             (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
             (cfg.glob.setup._DCR_CFG_VERBOSE_LINE_TYPE, "true"),
+            (cfg.glob.setup._DCR_CFG_VERBOSE_PARSER, verbose_parser),
         ],
     )
 
@@ -125,26 +126,16 @@ def test_run_action_store_parse_result_in_json_coverage(
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_coverage <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "pdf_mini_1.line.json",
+                "pdf_mini_1.word.json",
+                "pdf_mini_1.pdf",
+            ],
+        ),
     )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "pdf_mini_1.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
-    )
-
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -158,7 +149,7 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("p_2_header_0_footer_2_text_0", "pdf"),
             ("p_2_header_2_footer_0_text_0", "pdf"),
             ("p_2_header_2_footer_2_text_0", "pdf"),
@@ -168,7 +159,7 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
             ("p_5_header_2_footer_2_def_3_header", "pdf"),
             ("p_5_header_2_footer_2_man", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -193,39 +184,36 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_coverage <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "p_2_header_0_footer_2_text_0_1.line.xml",
-            "p_2_header_0_footer_2_text_0_1.pdf",
-            "p_2_header_2_footer_0_text_0_3.line.xml",
-            "p_2_header_2_footer_0_text_0_3.pdf",
-            "p_2_header_2_footer_2_text_0_5.line.xml",
-            "p_2_header_2_footer_2_text_0_5.pdf",
-            "p_3_header_0_footer_4_7.line.xml",
-            "p_3_header_0_footer_4_7.pdf",
-            "p_3_header_4_footer_4_9.line.xml",
-            "p_3_header_4_footer_4_9.pdf",
-            "p_5_header_2_footer_2_def_3_footer_11.line.xml",
-            "p_5_header_2_footer_2_def_3_footer_11.pdf",
-            "p_5_header_2_footer_2_def_3_header_13.line.xml",
-            "p_5_header_2_footer_2_def_3_header_13.pdf",
-            "p_5_header_2_footer_2_man_15.line.xml",
-            "p_5_header_2_footer_2_man_15.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "p_2_header_0_footer_2_text_0_1.line.json",
+                "p_2_header_0_footer_2_text_0_1.line.xml",
+                "p_2_header_0_footer_2_text_0_1.pdf",
+                "p_2_header_2_footer_0_text_0_2.line.json",
+                "p_2_header_2_footer_0_text_0_2.line.xml",
+                "p_2_header_2_footer_0_text_0_2.pdf",
+                "p_2_header_2_footer_2_text_0_3.line.json",
+                "p_2_header_2_footer_2_text_0_3.line.xml",
+                "p_2_header_2_footer_2_text_0_3.pdf",
+                "p_3_header_0_footer_4_4.line.json",
+                "p_3_header_0_footer_4_4.line.xml",
+                "p_3_header_0_footer_4_4.pdf",
+                "p_3_header_4_footer_4_5.line.json",
+                "p_3_header_4_footer_4_5.line.xml",
+                "p_3_header_4_footer_4_5.pdf",
+                "p_5_header_2_footer_2_def_3_footer_6.line.json",
+                "p_5_header_2_footer_2_def_3_footer_6.line.xml",
+                "p_5_header_2_footer_2_def_3_footer_6.pdf",
+                "p_5_header_2_footer_2_def_3_header_7.line.json",
+                "p_5_header_2_footer_2_def_3_header_7.line.xml",
+                "p_5_header_2_footer_2_def_3_header_7.pdf",
+                "p_5_header_2_footer_2_man_8.line.json",
+                "p_5_header_2_footer_2_man_8.line.xml",
+                "p_5_header_2_footer_2_man_8.pdf",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -241,12 +229,12 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("pdf_mini", "pdf"),
             ("pdf_scanned_ok", "pdf"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -279,28 +267,21 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_normal <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    files_expected: typing.List = [
-        "pdf_mini_1.pdf",
-        "pdf_scanned_ok_3.pdf",
-        "translating_sql_into_relational_algebra_p01_02_5.pdf",
-    ]
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        files_expected,
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "pdf_mini_1.line.json",
+                "pdf_mini_1.pdf",
+                "pdf_mini_1.word.json",
+                "pdf_scanned_ok_2_1.line.json",
+                "pdf_scanned_ok_2.pdf",
+                "pdf_scanned_ok_2_1.word.json",
+                "translating_sql_into_relational_algebra_p01_02_3_0.line.json",
+                "translating_sql_into_relational_algebra_p01_02_3.pdf",
+                "translating_sql_into_relational_algebra_p01_02_3_0.word.json",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -316,12 +297,12 @@ def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("pdf_mini", "pdf"),
             ("pdf_scanned_ok", "pdf"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -354,48 +335,39 @@ def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_normal_keep <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    files_expected: typing.List = [
-        "pdf_mini_1.pdf",
-        "pdf_mini_1.line.xml",
-        "pdf_mini_1.word.xml",
-        "pdf_scanned_ok_3.pdf",
-        "pdf_scanned_ok_3_1.jpeg",
-        "pdf_scanned_ok_3_1.pdf",
-        "pdf_scanned_ok_3_1.line.xml",
-        "pdf_scanned_ok_3_1.word.xml",
-        "translating_sql_into_relational_algebra_p01_02_5.pdf",
-        "translating_sql_into_relational_algebra_p01_02_5_0.pdf",
-        "translating_sql_into_relational_algebra_p01_02_5_0.line.xml",
-        "translating_sql_into_relational_algebra_p01_02_5_0.word.xml",
-        "translating_sql_into_relational_algebra_p01_02_5_1.jpeg",
-        "translating_sql_into_relational_algebra_p01_02_5_1.pdf",
-        "translating_sql_into_relational_algebra_p01_02_5_2.jpeg",
-        "translating_sql_into_relational_algebra_p01_02_5_2.pdf",
-    ]
-
     # TBD
     # if platform.system() != "Windows":
     #     files_expected.append(
     #         "pdf_scanned_03_ok_11.pdf",
     #     )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        files_expected,
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "pdf_mini_1.line.json",
+                "pdf_mini_1.line.xml",
+                "pdf_mini_1.pdf",
+                "pdf_mini_1.word.json",
+                "pdf_mini_1.word.xml",
+                "pdf_scanned_ok_2.pdf",
+                "pdf_scanned_ok_2_1.jpeg",
+                "pdf_scanned_ok_2_1.line.json",
+                "pdf_scanned_ok_2_1.line.xml",
+                "pdf_scanned_ok_2_1.pdf",
+                "pdf_scanned_ok_2_1.word.json",
+                "pdf_scanned_ok_2_1.word.xml",
+                "translating_sql_into_relational_algebra_p01_02_3.pdf",
+                "translating_sql_into_relational_algebra_p01_02_3_0.line.json",
+                "translating_sql_into_relational_algebra_p01_02_3_0.line.xml",
+                "translating_sql_into_relational_algebra_p01_02_3_0.pdf",
+                "translating_sql_into_relational_algebra_p01_02_3_0.word.json",
+                "translating_sql_into_relational_algebra_p01_02_3_0.word.xml",
+                "translating_sql_into_relational_algebra_p01_02_3_1.jpeg",
+                "translating_sql_into_relational_algebra_p01_02_3_1.pdf",
+                "translating_sql_into_relational_algebra_p01_02_3_2.jpeg",
+                "translating_sql_into_relational_algebra_p01_02_3_2.pdf",
+            ],
+        ),
     )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
-    )
-
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

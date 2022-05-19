@@ -1,6 +1,8 @@
 """Module db.cls_language: Managing the database table language."""
 from __future__ import annotations
 
+import os.path
+
 import cfg.glob
 import db.dml
 import sqlalchemy
@@ -30,7 +32,7 @@ class Language:
         code_pandoc: str | sqlalchemy.String,
         code_spacy: str | sqlalchemy.String,
         code_tesseract: str | sqlalchemy.String,
-        iso_language_name: str | sqlalchemy.String,
+        iso_language_name: str,
         _row_id: int | sqlalchemy.Integer = 0,
         active: bool | sqlalchemy.Boolean = False,
         directory_name_inbox: str = "",
@@ -43,9 +45,16 @@ class Language:
         self.language_code_pandoc: str | sqlalchemy.String = code_pandoc
         self.language_code_spacy: str | sqlalchemy.String = code_spacy
         self.language_code_tesseract: str | sqlalchemy.String = code_tesseract
-        self.language_directory_name_inbox: str = utils.get_os_independent_name(directory_name_inbox)
+
+        if self.language_active and (directory_name_inbox is None or directory_name_inbox == ""):
+            self.language_directory_name_inbox: str = str(
+                os.path.join(cfg.glob.setup.directory_inbox, iso_language_name.lower())
+            )
+        else:
+            self.language_directory_name_inbox = utils.get_os_independent_name(directory_name_inbox)
+
         self.language_id: int | sqlalchemy.Integer = _row_id
-        self.language_iso_language_name: str | sqlalchemy.String = iso_language_name
+        self.language_iso_language_name: str = iso_language_name
 
         self.total_erroneous: int = 0
         self.total_processed: int = 0
@@ -200,8 +209,6 @@ class Language:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-        print(f"wwe get_columns_in_tuple(): self.language_directory_name_inbox={self.language_directory_name_inbox}")
 
         return (
             self.language_id,
