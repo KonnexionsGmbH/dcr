@@ -4,7 +4,7 @@ from typing import List
 
 import cfg.glob
 import db.cls_action
-import db.cls_base
+import db.cls_document
 import db.cls_language
 import db.cls_run
 import db.cls_token
@@ -172,7 +172,7 @@ def create_schema() -> None:
     db.cls_run.Run.create_dbt()
     db.cls_version.Version.create_dbt()
     # FK: language
-    db.cls_base.Base.create_dbt()
+    db.cls_document.Document.create_dbt()
     # FK: run
     db.cls_action.Action.create_dbt()
     # FK: document
@@ -182,7 +182,7 @@ def create_schema() -> None:
     create_db_triggers(
         [
             cfg.glob.DBT_ACTION,
-            cfg.glob.DBT_BASE,
+            cfg.glob.DBT_DOCUMENT,
             cfg.glob.DBT_LANGUAGE,
             cfg.glob.DBT_RUN,
             cfg.glob.DBT_TOKEN,

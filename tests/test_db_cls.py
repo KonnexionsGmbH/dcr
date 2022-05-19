@@ -4,7 +4,7 @@
 import cfg.cls_setup
 import cfg.glob
 import db.cls_action
-import db.cls_base
+import db.cls_document
 import db.cls_language
 import db.cls_run
 import db.cls_token
@@ -87,19 +87,19 @@ def check_existing_action():
     instance.action_file_name = expected_values[8]
 
     # -----------------------------------------------------------------------------
-    # Select unprocessed actions based on action_code und base id.
+    # Select unprocessed actions based on action_code und document id.
     # -----------------------------------------------------------------------------
     with cfg.glob.db_orm_engine.begin() as conn:
-        instance.select_action_by_action_code_id_base(
-            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_INBOX, id_base=1
+        instance.select_action_by_action_code_id_document(
+            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_INBOX, id_document=1
         )
 
 
 # -----------------------------------------------------------------------------
-# Check existing base object.
+# Check existing document object.
 # -----------------------------------------------------------------------------
 def check_existing_base():
-    """Check existing base object."""
+    """Check existing document object."""
     expected_values = (
         1,
         db.cls_run.Run.ACTION_CODE_PARSER_LINE,
@@ -117,20 +117,20 @@ def check_existing_base():
         cfg.glob.DOCUMENT_STATUS_END,
     )
 
-    instance = db.cls_base.Base.from_id(expected_values[0])
+    instance = db.cls_document.Document.from_id(expected_values[0])
 
     actual_values = instance.get_columns_in_tuple()
 
     if actual_values != expected_values:
-        print(f"issue with dbt base instance id={expected_values[0]}:")
+        print(f"issue with dbt document instance id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
-        assert False, f"issue with dbt base id={expected_values[0]} - see above"
+        assert False, f"issue with dbt document id={expected_values[0]} - see above"
 
     # -----------------------------------------------------------------------------
     # Get the duplicate file name based on the hash key.
     # -----------------------------------------------------------------------------
-    db.cls_base.Base.select_duplicate_file_name_by_sha256(MISSING_ID, expected_values[12])
+    db.cls_document.Document.select_duplicate_file_name_by_sha256(MISSING_ID, expected_values[12])
 
     # -----------------------------------------------------------------------------
     # Finalise the current row with error.
@@ -231,7 +231,7 @@ def check_existing_token():
     """Check existing token object."""
     expected_values = (
         1,
-        cfg.glob.base.base_id,
+        cfg.glob.document.document_id,
         {
             "pageNo": 1,
             "noTokensInPage": 221,
@@ -2802,17 +2802,17 @@ def check_missing_action():
 
 
 # -----------------------------------------------------------------------------
-# Check missing base object.
+# Check missing document object.
 # -----------------------------------------------------------------------------
 def check_missing_base():
-    """Check missing base object."""
+    """Check missing document object."""
     db.driver.connect_db()
 
     with pytest.raises(SystemExit) as expt:
-        db.cls_base.Base.from_id(MISSING_ID)
+        db.cls_document.Document.from_id(MISSING_ID)
 
-    assert expt.type == SystemExit, f"issue with missing dbt base instance id={MISSING_ID}"
-    assert expt.value.code == 1, f"issue with missing dbt base instance id={MISSING_ID}"
+    assert expt.type == SystemExit, f"issue with missing dbt document instance id={MISSING_ID}"
+    assert expt.value.code == 1, f"issue with missing dbt document instance id={MISSING_ID}"
 
 
 # -----------------------------------------------------------------------------
@@ -2969,7 +2969,7 @@ def check_new_action():
             "pdf_text_ok.pdf",
             53651,
         )
-        + (cfg.glob.base.base_id,)
+        + (cfg.glob.document.document_id,)
         + (1,)
         + (cfg.glob.run.run_id,)
         + (
@@ -2986,7 +2986,7 @@ def check_new_action():
         directory_type=expected_values[4],
         file_name=expected_values[8],
         file_size_bytes=expected_values[9],
-        id_base=expected_values[10],
+        id_document=expected_values[10],
         id_parent=expected_values[11],
         id_run_last=expected_values[12],
         no_children=expected_values[13],
@@ -3009,7 +3009,7 @@ def check_new_action():
         directory_type=expected_values[4],
         file_name=expected_values[8],
         file_size_bytes=0,
-        id_base=expected_values[10],
+        id_document=expected_values[10],
         id_parent=expected_values[11],
         id_run_last=expected_values[12],
         no_children=expected_values[13],
@@ -3033,7 +3033,7 @@ def check_new_action():
             "pdf_text_ok.pdf",
             53651,
         )
-        + (cfg.glob.base.base_id,)
+        + (cfg.glob.document.document_id,)
         + (2,)
         + (cfg.glob.run.run_id,)
         + (
@@ -3071,7 +3071,7 @@ def check_new_action():
             "pdf_text_ok.pdf",
             53651,
         )
-        + (cfg.glob.base.base_id,)
+        + (cfg.glob.document.document_id,)
         + (1,)
         + (cfg.glob.run.run_id,)
         + (
@@ -3089,7 +3089,7 @@ def check_new_action():
         directory_type=expected_values[4],
         file_name=expected_values[8],
         file_size_bytes=expected_values[9],
-        id_base=expected_values[10],
+        id_document=expected_values[10],
         id_parent=expected_values[11],
         id_run_last=expected_values[12],
         no_children=expected_values[13],
@@ -3106,10 +3106,10 @@ def check_new_action():
 
 
 # -----------------------------------------------------------------------------
-# Check new base object.
+# Check new document object.
 # -----------------------------------------------------------------------------
 def check_new_base():
-    """Check new base object."""
+    """Check new document object."""
     # -----------------------------------------------------------------------------
     # Insert object.
     # -----------------------------------------------------------------------------
@@ -3134,7 +3134,7 @@ def check_new_base():
         )
     )
 
-    instance = db.cls_base.Base(
+    instance = db.cls_document.Document(
         action_code_last=expected_values[1],
         directory_name=expected_values[3],
         file_name=expected_values[7],
@@ -3149,10 +3149,10 @@ def check_new_base():
     actual_values = instance.get_columns_in_tuple()
 
     if actual_values != expected_values:
-        print("issue with new dbt base instance:")
+        print("issue with new dbt document instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
-        assert False, "issue with new dbt base instance - see above"
+        assert False, "issue with new dbt document instance - see above"
 
     # -----------------------------------------------------------------------------
     # Update object.
@@ -3185,10 +3185,10 @@ def check_new_base():
     actual_values = instance.get_columns_in_tuple()
 
     if actual_values != expected_values:
-        print("issue with updated dbt base instance:")
+        print("issue with updated dbt document instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
-        assert False, "issue with updated dbt base instance - see above"
+        assert False, "issue with updated dbt document instance - see above"
 
 
 # -----------------------------------------------------------------------------
@@ -3344,7 +3344,7 @@ def check_new_token():
     # -----------------------------------------------------------------------------
     expected_values = (
         1,
-        cfg.glob.base.base_id,
+        cfg.glob.document.document_id,
         {
             "pageNo": 1,
             "noTokensInPage": 221,
@@ -3380,7 +3380,7 @@ def check_new_token():
     )
 
     cfg.glob.token = db.cls_token.Token(
-        id_base=expected_values[1],
+        id_document=expected_values[1],
         page_data=expected_values[2],
         page_no=expected_values[3],
     )
@@ -3398,7 +3398,7 @@ def check_new_token():
     # -----------------------------------------------------------------------------
     expected_values = (
         1,
-        cfg.glob.base.base_id,
+        cfg.glob.document.document_id,
         {
             "pageNo": 1,
             "noTokensInPage": 221,

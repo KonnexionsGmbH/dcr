@@ -23,7 +23,7 @@ class Token:
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913
         self,
-        id_base: int | sqlalchemy.Integer,
+        id_document: int | sqlalchemy.Integer,
         page_data: str | sqlalchemy.String,
         page_no: int | sqlalchemy.Integer,
         _row_id: int | sqlalchemy.Integer = 0,
@@ -32,7 +32,7 @@ class Token:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         self.token_id: int | sqlalchemy.Integer = _row_id
-        self.token_id_base: int | sqlalchemy.Integer = id_base
+        self.token_id_document: int | sqlalchemy.Integer = id_document
         self.token_page_data: str | sqlalchemy.String = page_data
         self.token_page_no: int | sqlalchemy.Integer = page_no
 
@@ -54,7 +54,7 @@ class Token:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return {
-            cfg.glob.DBC_ID_BASE: self.token_id_base,
+            cfg.glob.DBC_ID_DOCUMENT: self.token_id_document,
             cfg.glob.DBC_PAGE_DATA: self.token_page_data,
             cfg.glob.DBC_PAGE_NO: self.token_page_no,
         }
@@ -86,9 +86,9 @@ class Token:
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_ID_BASE,
+                cfg.glob.DBC_ID_DOCUMENT,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(cfg.glob.DBT_BASE + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
+                sqlalchemy.ForeignKey(cfg.glob.DBT_DOCUMENT + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
                 nullable=False,
             ),
             sqlalchemy.Column(
@@ -160,7 +160,7 @@ class Token:
 
         return cls(
             _row_id=row[cfg.glob.DBC_ID],
-            id_base=row[cfg.glob.DBC_ID_BASE],
+            id_document=row[cfg.glob.DBC_ID_DOCUMENT],
             page_data=row[cfg.glob.DBC_PAGE_DATA],
             page_no=row[cfg.glob.DBC_PAGE_NO],
         )
@@ -182,7 +182,7 @@ class Token:
 
         return (
             self.token_id,
-            self.token_id_base,
+            self.token_id_document,
             self.token_page_data,
             self.token_page_no,
         )

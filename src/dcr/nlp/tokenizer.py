@@ -7,7 +7,7 @@ from typing import Dict
 
 import cfg.glob
 import db.cls_action
-import db.cls_base
+import db.cls_document
 import db.cls_run
 import db.dml
 import spacy
@@ -299,9 +299,9 @@ def tokenize() -> None:
             else:
                 cfg.glob.run.total_status_ready += 1
 
-            cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
+            cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
 
-            spacy_model = cfg.glob.languages_spacy[cfg.glob.base.base_id_language]
+            spacy_model = cfg.glob.languages_spacy[cfg.glob.document.document_id_language]
 
             if spacy_model != spacy_model_current:
                 nlp = spacy.load(spacy_model)
@@ -366,7 +366,7 @@ def tokenize_file(nlp: spacy.Language) -> None:
                 db.dml.insert_dbt_row(
                     cfg.glob.DBT_TOKEN,
                     {
-                        cfg.glob.DBC_ID_BASE: cfg.glob.base.base_id,
+                        cfg.glob.DBC_ID_DOCUMENT: cfg.glob.document.document_id,
                         cfg.glob.DBC_PAGE_DATA: cfg.glob.token_2_page,
                         cfg.glob.DBC_PAGE_NO: page_no,
                     },
@@ -379,8 +379,8 @@ def tokenize_file(nlp: spacy.Language) -> None:
         with open(full_name_next, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
-                    cfg.glob.JSON_NAME_BASE_ID: cfg.glob.base.base_id,
-                    cfg.glob.JSON_NAME_BASE_FILE_NAME: cfg.glob.base.base_file_name,
+                    cfg.glob.JSON_NAME_DOCUMENT_ID: cfg.glob.document.document_id,
+                    cfg.glob.JSON_NAME_DOCUMENT_FILE_NAME: cfg.glob.document.document_file_name,
                     cfg.glob.JSON_NAME_NO_PAGES_IN_DOC: cfg.glob.parse_result_line_4_document[
                         cfg.glob.JSON_NAME_NO_PAGES_IN_DOC
                     ],

@@ -44,7 +44,7 @@ def convert_pdf_2_image() -> None:
                 # not testable
                 cfg.glob.run.total_status_ready += 1
 
-            cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
+            cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
 
             convert_pdf_2_image_file()
 
@@ -107,7 +107,7 @@ def convert_pdf_2_image_file() -> None:
                 directory_type=cfg.glob.action_curr.action_directory_type,
                 file_name=file_name_next,
                 file_size_bytes=os.path.getsize(full_name_next),
-                id_base=cfg.glob.action_curr.action_id_base,
+                id_document=cfg.glob.action_curr.action_id_document,
                 id_parent=cfg.glob.action_curr.action_id,
                 no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
             )

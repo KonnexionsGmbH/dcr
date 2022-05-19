@@ -780,10 +780,10 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
 
 
 # -----------------------------------------------------------------------------
-# Check the database content - database table base.
+# Check the database content - database table document.
 # -----------------------------------------------------------------------------
 def check_db_content_base() -> None:  # pylint: disable=R0915
-    """Check the database content - database table base."""
+    """Check the database content - database table document."""
     pytest.helpers.check_dbt_base(
         (
             1,

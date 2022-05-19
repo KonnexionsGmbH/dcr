@@ -8,7 +8,7 @@ from typing import Iterable
 
 import cfg.glob
 import db.cls_action
-import db.cls_base
+import db.cls_document
 import db.cls_run
 import db.dml
 import defusedxml.ElementTree
@@ -395,8 +395,8 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
     if cfg.glob.setup.is_parsing_line:
         cfg.glob.line_type.process_document()
         cfg.glob.parse_result_line_4_document = {
-            cfg.glob.JSON_NAME_BASE_ID: cfg.glob.base.base_id,
-            cfg.glob.JSON_NAME_BASE_FILE_NAME: cfg.glob.base.base_file_name,
+            cfg.glob.JSON_NAME_DOCUMENT_ID: cfg.glob.document.document_id,
+            cfg.glob.JSON_NAME_DOCUMENT_FILE_NAME: cfg.glob.document.document_file_name,
             cfg.glob.JSON_NAME_NO_PAGES_IN_DOC: cfg.glob.parse_result_no_pages_in_doc,
             cfg.glob.JSON_NAME_PAGES: cfg.glob.parse_result_line_3_pages,
         }
@@ -404,8 +404,8 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
             json.dump(cfg.glob.parse_result_line_4_document, file_handle)
     elif cfg.glob.setup.is_parsing_page:
         cfg.glob.parse_result_page_3_document = {
-            cfg.glob.JSON_NAME_BASE_ID: cfg.glob.base.base_id,
-            cfg.glob.JSON_NAME_BASE_FILE_NAME: cfg.glob.base.base_file_name,
+            cfg.glob.JSON_NAME_DOCUMENT_ID: cfg.glob.document.document_id,
+            cfg.glob.JSON_NAME_DOCUMENT_FILE_NAME: cfg.glob.document.document_file_name,
             cfg.glob.JSON_NAME_NO_PAGES_IN_DOC: cfg.glob.parse_result_no_pages_in_doc,
             cfg.glob.JSON_NAME_PAGES: cfg.glob.parse_result_page_2_pages,
         }
@@ -413,8 +413,8 @@ def parse_tag_pages(parent_tag: str, parent: Iterable[str]) -> None:
             json.dump(cfg.glob.parse_result_page_3_document, file_handle)
     elif cfg.glob.setup.is_parsing_word:
         cfg.glob.parse_result_word_4_document = {
-            cfg.glob.JSON_NAME_BASE_ID: cfg.glob.base.base_id,
-            cfg.glob.JSON_NAME_BASE_FILE_NAME: cfg.glob.base.base_file_name,
+            cfg.glob.JSON_NAME_DOCUMENT_ID: cfg.glob.document.document_id,
+            cfg.glob.JSON_NAME_DOCUMENT_FILE_NAME: cfg.glob.document.document_file_name,
             cfg.glob.JSON_NAME_NO_PAGES_IN_DOC: cfg.glob.parse_result_no_pages_in_doc,
             cfg.glob.JSON_NAME_PAGES: cfg.glob.parse_result_word_3_pages,
         }
@@ -616,7 +616,9 @@ def parse_tetml() -> None:
                 else:
                     cfg.glob.run.total_status_ready += 1
 
-                cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
+                cfg.glob.document = db.cls_document.Document.from_id(
+                    id_document=cfg.glob.action_curr.action_id_document
+                )
 
                 parse_tetml_file()
 
@@ -665,7 +667,7 @@ def parse_tetml_file() -> None:
         directory_type=cfg.glob.action_curr.action_directory_type,
         file_name=file_name_next,
         file_size_bytes=-1,
-        id_base=cfg.glob.action_curr.action_id_base,
+        id_document=cfg.glob.action_curr.action_id_document,
         id_parent=cfg.glob.action_curr.action_id,
         no_pdf_pages=-1,
         status=status,

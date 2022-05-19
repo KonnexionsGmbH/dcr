@@ -42,7 +42,7 @@ def convert_non_pdf_2_pdf() -> None:
                 # not testable
                 cfg.glob.run.total_status_ready += 1
 
-            cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
+            cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
 
             convert_non_pdf_2_pdf_file()
 
@@ -80,7 +80,7 @@ def convert_non_pdf_2_pdf_file() -> None:
     extra_args = [
         f"--pdf-engine={PANDOC_PDF_ENGINE_XELATEX}",
         "-V",
-        f"lang:{cfg.glob.languages_pandoc[cfg.glob.base.base_id_language]}",
+        f"lang:{cfg.glob.languages_pandoc[cfg.glob.document.document_id_language]}",
     ]
 
     try:
@@ -98,7 +98,7 @@ def convert_non_pdf_2_pdf_file() -> None:
             directory_type=cfg.glob.action_curr.action_directory_type,
             file_name=file_name_next,
             file_size_bytes=os.path.getsize(full_name_next),
-            id_base=cfg.glob.action_curr.action_id_base,
+            id_document=cfg.glob.action_curr.action_id_document,
             id_parent=cfg.glob.action_curr.action_id,
             no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
         )

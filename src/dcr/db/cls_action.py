@@ -49,7 +49,7 @@ class Action:
         error_no: int = 0,
         file_name: str = "",
         file_size_bytes: int = 0,
-        id_base: int | sqlalchemy.Integer = 0,
+        id_document: int | sqlalchemy.Integer = 0,
         id_parent: int | sqlalchemy.Integer = 0,
         no_children: int | sqlalchemy.Integer = 0,
         no_pdf_pages: int = 0,
@@ -69,7 +69,7 @@ class Action:
         self.action_file_name: str = file_name
         self.action_file_size_bytes: int = file_size_bytes
         self.action_id: int | sqlalchemy.Integer = _row_id
-        self.action_id_base: int | sqlalchemy.Integer = id_base
+        self.action_id_document: int | sqlalchemy.Integer = id_document
         self.action_id_parent: int | sqlalchemy.Integer = id_parent if id_parent != 0 else 1
         self.action_id_run_last: int | sqlalchemy.Integer = id_run_last
         self.action_no_children: int | sqlalchemy.Integer = no_children
@@ -107,7 +107,7 @@ class Action:
             cfg.glob.DBC_ERROR_NO: self.action_error_no,
             cfg.glob.DBC_FILE_NAME: self.action_file_name,
             cfg.glob.DBC_FILE_SIZE_BYTES: self.action_file_size_bytes,
-            cfg.glob.DBC_ID_BASE: self.action_id_base,
+            cfg.glob.DBC_ID_DOCUMENT: self.action_id_document,
             cfg.glob.DBC_ID_PARENT: self.action_id_parent,
             cfg.glob.DBC_ID_RUN_LAST: self.action_id_run_last,
             cfg.glob.DBC_NO_CHILDREN: self.action_no_children,
@@ -152,9 +152,9 @@ class Action:
             sqlalchemy.Column(cfg.glob.DBC_FILE_NAME, sqlalchemy.String, nullable=True),
             sqlalchemy.Column(cfg.glob.DBC_FILE_SIZE_BYTES, sqlalchemy.Integer, nullable=True),
             sqlalchemy.Column(
-                cfg.glob.DBC_ID_BASE,
+                cfg.glob.DBC_ID_DOCUMENT,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(cfg.glob.DBT_BASE + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
+                sqlalchemy.ForeignKey(cfg.glob.DBT_DOCUMENT + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
                 nullable=True,
             ),
             sqlalchemy.Column(
@@ -201,17 +201,17 @@ class Action:
 
         self.persist_2_db()
 
-        cfg.glob.base.base_action_code_last = self.action_action_code
-        cfg.glob.base.base_id_run_last = cfg.glob.run.run_id
-        cfg.glob.base.base_status = cfg.glob.DOCUMENT_STATUS_END
+        cfg.glob.document.document_action_code_last = self.action_action_code
+        cfg.glob.document.document_id_run_last = cfg.glob.run.run_id
+        cfg.glob.document.document_status = cfg.glob.DOCUMENT_STATUS_END
 
-        cfg.glob.base.persist_2_db()  # type: ignore
+        cfg.glob.document.persist_2_db()  # type: ignore
 
         if self.action_action_code == db.cls_run.Run.ACTION_CODE_INBOX:
             utils.progress_msg(
                 f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
-                f"Document: {cfg.glob.base.base_id:6d} "
-                f"[{cfg.glob.base.base_file_name}]"
+                f"Document: {cfg.glob.document.document_id:6d} "
+                f"[{cfg.glob.document.document_file_name}]"
             )
         else:
             utils.progress_msg(
@@ -242,20 +242,20 @@ class Action:
 
         self.persist_2_db()
 
-        cfg.glob.base.base_action_code_last = self.action_action_code
-        cfg.glob.base.base_error_code_last = self.action_error_code_last
-        cfg.glob.base.base_error_no += 1
-        cfg.glob.base.base_error_msg_last = self.action_error_msg_last
-        cfg.glob.base.base_id_run_last = cfg.glob.run.run_id
-        cfg.glob.base.base_status = cfg.glob.DOCUMENT_STATUS_ERROR
+        cfg.glob.document.document_action_code_last = self.action_action_code
+        cfg.glob.document.document_error_code_last = self.action_error_code_last
+        cfg.glob.document.document_error_no += 1
+        cfg.glob.document.document_error_msg_last = self.action_error_msg_last
+        cfg.glob.document.document_id_run_last = cfg.glob.run.run_id
+        cfg.glob.document.document_status = cfg.glob.DOCUMENT_STATUS_ERROR
 
-        cfg.glob.base.persist_2_db()  # type: ignore
+        cfg.glob.document.persist_2_db()  # type: ignore
 
         if self.action_action_code == db.cls_run.Run.ACTION_CODE_INBOX:
             utils.progress_msg(
                 f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
-                f"Document: {cfg.glob.base.base_id:6d} "
-                f"[{cfg.glob.base.base_file_name}] - "
+                f"Document: {cfg.glob.document.document_id:6d} "
+                f"[{cfg.glob.document.document_file_name}] - "
                 f"Error: {error_msg}."
             )
         else:
@@ -320,7 +320,7 @@ class Action:
             error_no=row[cfg.glob.DBC_ERROR_NO],
             file_name=row[cfg.glob.DBC_FILE_NAME],
             file_size_bytes=row[cfg.glob.DBC_FILE_SIZE_BYTES],
-            id_base=row[cfg.glob.DBC_ID_BASE],
+            id_document=row[cfg.glob.DBC_ID_DOCUMENT],
             id_parent=row[cfg.glob.DBC_ID_PARENT],
             id_run_last=row[cfg.glob.DBC_ID_RUN_LAST],
             no_children=row[cfg.glob.DBC_NO_CHILDREN],
@@ -367,7 +367,7 @@ class Action:
         column_file_size_bytes = (self.action_file_size_bytes,)
 
         column_12_17 = (
-            self.action_id_base,
+            self.action_id_document,
             self.action_id_parent,
             self.action_id_run_last,
             self.action_no_children,
@@ -496,18 +496,18 @@ class Action:
         return conn.execute(stmnt)
 
     # -----------------------------------------------------------------------------
-    # Select unprocessed actions based on action_code und base id.
+    # Select unprocessed actions based on action_code und document id.
     # -----------------------------------------------------------------------------
     @classmethod
-    def select_action_by_action_code_id_base(
-        cls, conn: Connection, action_code: str, id_base: int
+    def select_action_by_action_code_id_document(
+        cls, conn: Connection, action_code: str, id_document: int
     ) -> sqlalchemy.engine.CursorResult:
         """Select unprocessed actions based on action_code und parent id.
 
         Args:
             conn (Connection): The database connection.
             action_code (str): The requested action code.
-            id_base (int): The requested parent id.
+            id_document (int): The requested parent id.
 
         Returns:
             sqlalchemy.engine.CursorResult: The rows found.
@@ -519,7 +519,7 @@ class Action:
             .where(
                 sqlalchemy.and_(
                     dbt.c.action_code == action_code,
-                    dbt.c.id_base == id_base,
+                    dbt.c.id_document == id_document,
                     dbt.c.status.in_(
                         [
                             cfg.glob.DOCUMENT_STATUS_ERROR,
@@ -539,7 +539,9 @@ class Action:
     # Select parents with more than one unprocessed child based on action code.
     # -----------------------------------------------------------------------------
     @classmethod
-    def select_id_base_by_action_code_pypdf2(cls, conn: Connection, action_code: str) -> sqlalchemy.engine.CursorResult:
+    def select_id_document_by_action_code_pypdf2(
+        cls, conn: Connection, action_code: str
+    ) -> sqlalchemy.engine.CursorResult:
         """Select parents with more than one unprocessed child based on action
         code.
 
@@ -553,7 +555,7 @@ class Action:
         dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
         sub_query = (
-            sqlalchemy.select(dbt.c.id_base)
+            sqlalchemy.select(dbt.c.id_document)
             .where(dbt.c.action_code == action_code)
             .where(
                 dbt.c.status.in_(
@@ -563,14 +565,14 @@ class Action:
                     ]
                 )
             )
-            .group_by(dbt.c.id_base)
-            .having(sqlalchemy.func.count(dbt.c.id_base) > 1)
+            .group_by(dbt.c.id_document)
+            .having(sqlalchemy.func.count(dbt.c.id_document) > 1)
             .scalar_subquery()
         )
 
         stmnt = (
             sqlalchemy.select(sqlalchemy.func.min(dbt.c.id))
-            .where(dbt.c.id_base.in_(sub_query))
+            .where(dbt.c.id_document.in_(sub_query))
             .where(dbt.c.action_code == action_code)
             .where(
                 dbt.c.status.in_(
@@ -580,8 +582,8 @@ class Action:
                     ]
                 )
             )
-            .group_by(dbt.c.id_base)
-            .order_by(dbt.c.id_base)
+            .group_by(dbt.c.id_document)
+            .order_by(dbt.c.id_document)
         )
 
         cfg.glob.logger.debug("SQL Statement=%s", stmnt)

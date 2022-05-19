@@ -4,7 +4,7 @@ import time
 
 import cfg.glob
 import db.cls_action
-import db.cls_base
+import db.cls_document
 import db.cls_run
 import db.dml
 import PyPDF2
@@ -40,7 +40,7 @@ def convert_image_2_pdf() -> None:
                 # not testable
                 cfg.glob.run.total_status_ready += 1
 
-            cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
+            cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
 
             convert_image_2_pdf_file()
 
@@ -79,7 +79,7 @@ def convert_image_2_pdf_file() -> None:
         pdf = pytesseract.image_to_pdf_or_hocr(
             extension="pdf",
             image=full_name_curr,
-            lang=cfg.glob.languages_tesseract[cfg.glob.base.base_id_language],
+            lang=cfg.glob.languages_tesseract[cfg.glob.document.document_id_language],
             timeout=cfg.glob.setup.tesseract_timeout,
         )
 
@@ -94,7 +94,7 @@ def convert_image_2_pdf_file() -> None:
             directory_type=cfg.glob.action_curr.action_directory_type,
             file_name=file_name_next,
             file_size_bytes=os.path.getsize(full_name_next),
-            id_base=cfg.glob.action_curr.action_id_base,
+            id_document=cfg.glob.action_curr.action_id_document,
             id_parent=cfg.glob.action_curr.action_id,
             no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
         )
@@ -125,7 +125,7 @@ def reunite_pdfs() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     with cfg.glob.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_id_base_by_action_code_pypdf2(
+        rows = db.cls_action.Action.select_id_document_by_action_code_pypdf2(
             conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDFLIB
         )
 
@@ -150,7 +150,7 @@ def reunite_pdfs() -> None:
                 # not testable
                 cfg.glob.run.total_status_ready += 1
 
-            cfg.glob.base = db.cls_base.Base.from_id(id_base=cfg.glob.action_curr.action_id_base)
+            cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
 
             reunite_pdfs_file()
 
@@ -187,8 +187,10 @@ def reunite_pdfs_file() -> None:
     pdf_writer = PyPDF2.PdfFileWriter()
 
     with cfg.glob.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_action_by_action_code_id_base(
-            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDFLIB, id_base=cfg.glob.action_curr.action_id_base
+        rows = db.cls_action.Action.select_action_by_action_code_id_document(
+            conn=conn,
+            action_code=db.cls_run.Run.ACTION_CODE_PDFLIB,
+            id_document=cfg.glob.action_curr.action_id_document,
         )
 
         for row in rows:
@@ -226,7 +228,7 @@ def reunite_pdfs_file() -> None:
         directory_type=cfg.glob.action_curr.action_directory_type,
         file_name=file_name_next,
         file_size_bytes=os.path.getsize(full_name_next),
-        id_base=cfg.glob.action_curr.action_id_base,
+        id_document=cfg.glob.action_curr.action_id_document,
         id_parent=cfg.glob.action_curr.action_id,
         no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
     )

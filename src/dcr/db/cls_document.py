@@ -1,4 +1,4 @@
-"""Module db.cls_base: Managing the database table base."""
+"""Module db.cls_document: Managing the database table document."""
 from __future__ import annotations
 
 import os
@@ -17,11 +17,11 @@ from sqlalchemy import String
 # pylint: disable=R0801
 # pylint: disable=R0902
 # pylint: disable=R0903
-class Base:
+class Document:
     """Managing the document status.
 
     Returns:
-        _type_: Application configuration parameters.
+        _type_: Document instance.
     """
 
     # -----------------------------------------------------------------------------
@@ -47,22 +47,22 @@ class Base:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self.base_action_code_last: str = action_code_last
-        self.base_action_text_last: str = action_text_last
-        self.base_directory_name: str = directory_name
-        self.base_error_code_last: str | sqlalchemy.String = error_code_last
-        self.base_error_msg_last: str | sqlalchemy.String = error_msg_last
-        self.base_error_no: int = error_no
-        self.base_file_name: str = file_name
-        self.base_file_size_bytes: int = file_size_bytes
-        self.base_id: int | sqlalchemy.Integer = _row_id
-        self.base_id_language: int | sqlalchemy.Integer = id_language
-        self.base_id_run_last: int | sqlalchemy.Integer = id_run_last
-        self.base_no_pdf_pages: int = no_pdf_pages
-        self.base_sha256: str | sqlalchemy.String = sha256
-        self.base_status: str | sqlalchemy.String = status
+        self.document_action_code_last: str = action_code_last
+        self.document_action_text_last: str = action_text_last
+        self.document_directory_name: str = directory_name
+        self.document_error_code_last: str | sqlalchemy.String = error_code_last
+        self.document_error_msg_last: str | sqlalchemy.String = error_msg_last
+        self.document_error_no: int = error_no
+        self.document_file_name: str = file_name
+        self.document_file_size_bytes: int = file_size_bytes
+        self.document_id: int | sqlalchemy.Integer = _row_id
+        self.document_id_language: int | sqlalchemy.Integer = id_language
+        self.document_id_run_last: int | sqlalchemy.Integer = id_run_last
+        self.document_no_pdf_pages: int = no_pdf_pages
+        self.document_sha256: str | sqlalchemy.String = sha256
+        self.document_status: str | sqlalchemy.String = status
 
-        if self.base_id == 0:
+        if self.document_id == 0:
             self.persist_2_db()
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -79,22 +79,22 @@ class Base:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
-        self.base_action_text_last = db.cls_run.Run.get_action_text(self.base_action_code_last)
+        self.document_action_text_last = db.cls_run.Run.get_action_text(self.document_action_code_last)
 
         return {
-            cfg.glob.DBC_ACTION_CODE_LAST: self.base_action_code_last,
-            cfg.glob.DBC_ACTION_TEXT_LAST: self.base_action_text_last,
-            cfg.glob.DBC_DIRECTORY_NAME: self.base_directory_name,
-            cfg.glob.DBC_ERROR_CODE_LAST: self.base_error_code_last,
-            cfg.glob.DBC_ERROR_MSG_LAST: self.base_error_msg_last,
-            cfg.glob.DBC_ERROR_NO: self.base_error_no,
-            cfg.glob.DBC_FILE_NAME: self.base_file_name,
-            cfg.glob.DBC_FILE_SIZE_BYTES: self.base_file_size_bytes,
-            cfg.glob.DBC_ID_LANGUAGE: self.base_id_language,
-            cfg.glob.DBC_ID_RUN_LAST: self.base_id_run_last,
-            cfg.glob.DBC_NO_PDF_PAGES: self.base_no_pdf_pages,
-            cfg.glob.DBC_SHA256: self.base_sha256,
-            cfg.glob.DBC_STATUS: self.base_status,
+            cfg.glob.DBC_ACTION_CODE_LAST: self.document_action_code_last,
+            cfg.glob.DBC_ACTION_TEXT_LAST: self.document_action_text_last,
+            cfg.glob.DBC_DIRECTORY_NAME: self.document_directory_name,
+            cfg.glob.DBC_ERROR_CODE_LAST: self.document_error_code_last,
+            cfg.glob.DBC_ERROR_MSG_LAST: self.document_error_msg_last,
+            cfg.glob.DBC_ERROR_NO: self.document_error_no,
+            cfg.glob.DBC_FILE_NAME: self.document_file_name,
+            cfg.glob.DBC_FILE_SIZE_BYTES: self.document_file_size_bytes,
+            cfg.glob.DBC_ID_LANGUAGE: self.document_id_language,
+            cfg.glob.DBC_ID_RUN_LAST: self.document_id_run_last,
+            cfg.glob.DBC_NO_PDF_PAGES: self.document_no_pdf_pages,
+            cfg.glob.DBC_SHA256: self.document_sha256,
+            cfg.glob.DBC_STATUS: self.document_status,
         }
 
     # -----------------------------------------------------------------------------
@@ -106,7 +106,7 @@ class Base:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         sqlalchemy.Table(
-            cfg.glob.DBT_BASE,
+            cfg.glob.DBT_DOCUMENT,
             cfg.glob.db_orm_metadata,
             sqlalchemy.Column(
                 cfg.glob.DBC_ID,
@@ -148,7 +148,7 @@ class Base:
             sqlalchemy.Column(cfg.glob.DBC_STATUS, sqlalchemy.String, nullable=False),
         )
 
-        utils.progress_msg(f"The database table '{cfg.glob.DBT_BASE}' has now been created")
+        utils.progress_msg(f"The database table '{cfg.glob.DBT_DOCUMENT}' has now been created")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -159,7 +159,7 @@ class Base:
         """Finalise the current row."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self.base_status = cfg.glob.DOCUMENT_STATUS_END
+        self.document_status = cfg.glob.DOCUMENT_STATUS_END
 
         self.persist_2_db()
 
@@ -177,10 +177,10 @@ class Base:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self.base_error_code_last = error_code
-        self.base_error_msg_last = error_msg
-        self.base_error_no += 1
-        self.base_status = cfg.glob.DOCUMENT_STATUS_ERROR
+        self.document_error_code_last = error_code
+        self.document_error_msg_last = error_msg
+        self.document_error_no += 1
+        self.document_status = cfg.glob.DOCUMENT_STATUS_ERROR
 
         self.persist_2_db()
 
@@ -190,12 +190,12 @@ class Base:
     # Initialise from id.
     # -----------------------------------------------------------------------------
     @classmethod
-    def from_id(cls, id_base: int | sqlalchemy.Integer) -> Base:
+    def from_id(cls, id_document: int | sqlalchemy.Integer) -> Document:
         """Initialise from id."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
-            cfg.glob.DBT_BASE,
+            cfg.glob.DBT_DOCUMENT,
             cfg.glob.db_orm_metadata,
             autoload_with=cfg.glob.db_orm_engine,
         )
@@ -203,25 +203,25 @@ class Base:
         with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
             row = conn.execute(
                 sqlalchemy.select(dbt).where(
-                    dbt.c.id == id_base,
+                    dbt.c.id == id_document,
                 )
             ).fetchone()
             conn.close()
 
         if row is None:
             utils.terminate_fatal(
-                f"The base with id={id_base} does not exist in the database table 'base'",
+                f"The document with id={id_document} does not exist in the database table 'document'",
             )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
-        return Base.from_row(row)  # type: ignore
+        return Document.from_row(row)  # type: ignore
 
     # -----------------------------------------------------------------------------
     # Initialise from a database row.
     # -----------------------------------------------------------------------------
     @classmethod
-    def from_row(cls, row: sqlalchemy.engine.Row) -> Base:
+    def from_row(cls, row: sqlalchemy.engine.Row) -> Document:
         """Initialise from a database row."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -260,24 +260,24 @@ class Base:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         column_01_08 = (
-            self.base_id,
-            self.base_action_code_last,
-            self.base_action_text_last,
-            self.base_directory_name,
-            self.base_error_code_last,
-            self.base_error_msg_last,
-            self.base_error_no,
-            self.base_file_name,
+            self.document_id,
+            self.document_action_code_last,
+            self.document_action_text_last,
+            self.document_directory_name,
+            self.document_error_code_last,
+            self.document_error_msg_last,
+            self.document_error_no,
+            self.document_file_name,
         )
 
-        column_file_size_bytes = (self.base_file_size_bytes,)
+        column_file_size_bytes = (self.document_file_size_bytes,)
 
         column_10_14 = (
-            self.base_id_language,
-            self.base_id_run_last,
-            self.base_no_pdf_pages,
-            self.base_sha256,
-            self.base_status,
+            self.document_id_language,
+            self.document_id_run_last,
+            self.document_no_pdf_pages,
+            self.document_sha256,
+            self.document_status,
         )
 
         return column_01_08 + ((column_file_size_bytes + column_10_14) if is_file_size_bytes else column_10_14)
@@ -310,10 +310,10 @@ class Base:
         Returns:
             str: File type.
         """
-        if self.base_file_name == "":
-            return self.base_file_name
+        if self.document_file_name == "":
+            return self.document_file_name
 
-        return utils.get_file_type(utils.get_os_independent_name(self.base_file_name))
+        return utils.get_file_type(utils.get_os_independent_name(self.document_file_name))
 
     # -----------------------------------------------------------------------------
     # Get the full name from a directory name / path and a file name / path.
@@ -326,8 +326,8 @@ class Base:
             str: Full file name.
         """
         return utils.get_full_name(
-            directory_name=self.base_directory_name,
-            file_name=self.base_file_name,
+            directory_name=self.document_directory_name,
+            file_name=self.document_file_name,
         )
 
     # -----------------------------------------------------------------------------
@@ -339,10 +339,10 @@ class Base:
         Returns:
             str: Stem name.
         """
-        if self.base_file_name == "":
-            return self.base_file_name
+        if self.document_file_name == "":
+            return self.document_file_name
 
-        return utils.get_stem_name(str(self.base_file_name))
+        return utils.get_stem_name(str(self.document_file_name))
 
     # -----------------------------------------------------------------------------
     # Get the stem name from the first processed document.
@@ -353,10 +353,10 @@ class Base:
         Returns:
             str: Stem name.
         """
-        if self.base_file_name == "":
-            return self.base_file_name
+        if self.document_file_name == "":
+            return self.document_file_name
 
-        return utils.get_stem_name(str(self.base_file_name)) + "_" + str(self.base_id)
+        return utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
 
     # -----------------------------------------------------------------------------
     # Persist the object in the database.
@@ -365,27 +365,29 @@ class Base:
         """Persist the object in the database."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        if self.base_file_size_bytes == 0:
-            self.base_file_size_bytes = os.path.getsize(
-                utils.get_full_name(self.base_directory_name, self.base_file_name)
+        if self.document_file_size_bytes == 0:
+            self.document_file_size_bytes = os.path.getsize(
+                utils.get_full_name(self.document_directory_name, self.document_file_name)
             )
 
-        if self.base_no_pdf_pages == 0:
-            self.base_no_pdf_pages = utils.get_pdf_pages_no(
-                utils.get_full_name(self.base_directory_name, self.base_file_name)
+        if self.document_no_pdf_pages == 0:
+            self.document_no_pdf_pages = utils.get_pdf_pages_no(
+                utils.get_full_name(self.document_directory_name, self.document_file_name)
             )
 
-        if self.base_id == 0:
-            self.base_status = self.base_status if self.base_status != "" else cfg.glob.DOCUMENT_STATUS_START
+        if self.document_id == 0:
+            self.document_status = (
+                self.document_status if self.document_status != "" else cfg.glob.DOCUMENT_STATUS_START
+            )
 
-            self.base_id = db.dml.insert_dbt_row(
-                table_name=cfg.glob.DBT_BASE,
+            self.document_id = db.dml.insert_dbt_row(
+                table_name=cfg.glob.DBT_DOCUMENT,
                 columns=self._get_columns(),
             )
         else:
             db.dml.update_dbt_id(
-                table_name=cfg.glob.DBT_BASE,
-                id_where=self.base_id,
+                table_name=cfg.glob.DBT_DOCUMENT,
+                id_where=self.document_id,
                 columns=self._get_columns(),
             )
 
@@ -395,18 +397,18 @@ class Base:
     # Get the duplicate file name based on the hash key.
     # -----------------------------------------------------------------------------
     @classmethod
-    def select_duplicate_file_name_by_sha256(cls, id_base: int | sqlalchemy.Integer, sha256: str) -> str:
+    def select_duplicate_file_name_by_sha256(cls, id_document: int | sqlalchemy.Integer, sha256: str) -> str:
         """Get the duplicate file name based on the hash key.
 
         Args:
-            id_base (sqlalchemy.Integer): Document id.
+            id_document (sqlalchemy.Integer): Document id.
             sha256 (str): Hash key.
 
         Returns:
             str | None: The file name found.
         """
         dbt = sqlalchemy.Table(
-            cfg.glob.DBT_BASE,
+            cfg.glob.DBT_DOCUMENT,
             cfg.glob.db_orm_metadata,
             autoload_with=cfg.glob.db_orm_engine,
         )
@@ -414,7 +416,7 @@ class Base:
         with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
             stmnt = sqlalchemy.select(dbt.c.file_name).where(
                 sqlalchemy.and_(
-                    dbt.c.id != id_base,
+                    dbt.c.id != id_document,
                     dbt.c.sha256 == sha256,
                 )
             )

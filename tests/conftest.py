@@ -16,7 +16,7 @@ from typing import Tuple
 import cfg.cls_setup
 import cfg.glob
 import db.cls_action
-import db.cls_base
+import db.cls_document
 import db.cls_language
 import db.cls_run
 import db.cls_token
@@ -104,11 +104,11 @@ def check_dbt_action(param: Tuple[int, Tuple[int, str, str, int, str, int, int, 
 
 
 # -----------------------------------------------------------------------------
-# Check the content of database table base.
+# Check the content of database table document.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def check_dbt_base(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
-    """Check the content of database table base.
+    """Check the content of database table document.
 
     Args:
         param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
@@ -116,15 +116,15 @@ def check_dbt_base(param: Tuple[int, Tuple[int, str, str, int, str, int, int, in
     """
     (id_row, expected_values) = param
 
-    dbt = db.cls_base.Base.from_id(id_row)
+    dbt = db.cls_document.Document.from_id(id_row)
 
     actual_values = dbt.get_columns_in_tuple(is_file_size_bytes=False)
 
     if expected_values != actual_values:
-        print(f"issue with dbt base and id={id_row}:")
+        print(f"issue with dbt document and id={id_row}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
-        assert False, f"issue with dbt base and id={id_row} - see above"
+        assert False, f"issue with dbt document and id={id_row} - see above"
 
 
 # -----------------------------------------------------------------------------

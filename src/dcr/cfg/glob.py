@@ -9,7 +9,7 @@ from typing import Type
 
 import cfg.cls_setup
 import db.cls_action
-import db.cls_base
+import db.cls_document
 import db.cls_language
 import db.cls_run
 import nlp.cls_line_type
@@ -43,7 +43,7 @@ DBC_ERROR_NO: str = "error_no"
 DBC_FILE_NAME: str = "file_name"
 DBC_FILE_SIZE_BYTES: str = "file_size_bytes"
 DBC_ID: str = "id"
-DBC_ID_BASE: str = "id_base"
+DBC_ID_DOCUMENT: str = "id_document"
 DBC_ID_LANGUAGE: str = "id_language"
 DBC_ID_PARENT: str = "id_parent"
 DBC_ID_RUN: str = "id_run"
@@ -62,7 +62,7 @@ DBC_TOTAL_PROCESSED_TO_BE: str = "total_processed_to_be"
 DBC_VERSION: str = "version"
 
 DBT_ACTION: str = "action"
-DBT_BASE: str = "base"
+DBT_DOCUMENT: str = "document"
 DBT_LANGUAGE: str = "language"
 DBT_RUN: str = "run"
 DBT_TOKEN: str = "token"
@@ -154,11 +154,11 @@ FILE_ENCODING_DEFAULT: str = "utf-8"
 INFORMATION_NOT_YET_AVAILABLE: str = "n/a"
 
 JSON_NAME_API_VERSION: str = "apiVersion"
-JSON_NAME_BASE_FILE_NAME: str = "baseFileName"
-JSON_NAME_BASE_ID: str = "baseId"
-JSON_NAME_COLUMN_NAME: str = "columnName"
+JSON_NAME_DOCUMENT_FILE_NAME: str = "documentFileName"
 JSON_NAME_COLUMN_VALUE: str = "columnValue"
 JSON_NAME_DATA: str = "data"
+JSON_NAME_DOCUMENT_ID: str = "documentId"
+JSON_NAME_COLUMN_NAME: str = "columnName"
 JSON_NAME_LINE_INDEX_PAGE: str = "lineIndexPage"
 JSON_NAME_LINE_INDEX_PARA: str = "lineIndexPara"
 JSON_NAME_LINE_TEXT: str = "lineText"
@@ -296,7 +296,7 @@ TESTS_INBOX_NAME: str = "tests/__PYTEST_FILES__/"
 action_curr: Type[db.cls_action.Action]
 action_next: Type[db.cls_action.Action]
 
-base: Type[db.cls_base.Base]
+document: Type[db.cls_document.Document]
 
 db_current_database: str
 db_current_user: str
@@ -341,8 +341,8 @@ parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
 parse_result_line_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
 
 # {
-#   "baseId": 1,
-#   "baseFileName": "p_2_header_1_footer_1.pdf",
+#   "documentId": 1,
+#   "documentFileName": "p_2_header_1_footer_1.pdf",
 #   "noPagesInDoc": 2,
 #   "pages": [
 #     {
@@ -373,8 +373,8 @@ parse_result_page_0_paras: List[str]
 parse_result_page_2_pages: List[Dict[str, int | str | List[str]]]
 
 # {
-#   "baseId": 1,
-#   "baseFileName": "p_2_header_1_footer_1.pdf",
+#   "documentId": 1,
+#   "documentFileName": "p_2_header_1_footer_1.pdf",
 #   "noPagesInDoc": 2,
 #   "pages": [
 #     {
@@ -398,8 +398,8 @@ parse_result_word_1_words: List[Dict[str, int | str]]
 parse_result_word_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
 
 # {
-#   "baseId": 1,
-#   "baseFileName": "p_2_header_1_footer_1.pdf",
+#   "documentId": 1,
+#   "documentFileName": "p_2_header_1_footer_1.pdf",
 #   "noPagesInDoc": 2,
 #   "pages": [
 #     {

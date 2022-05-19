@@ -95,7 +95,7 @@ def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
             if table_name not in ["language"]:
                 if table_name in [
                     "action",
-                    "base",
+                    "document",
                     "run",
                     "token",
                     "version",

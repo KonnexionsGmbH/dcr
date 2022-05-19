@@ -9,7 +9,7 @@ from typing import Type
 
 import cfg.cls_setup
 import db.cls_action
-import db.cls_base
+import db.cls_document
 import db.cls_language
 import db.cls_run
 import nlp.cls_line_type
@@ -43,7 +43,7 @@ DBC_ERROR_NO: str
 DBC_FILE_NAME: str
 DBC_FILE_SIZE_BYTES: str
 DBC_ID: str
-DBC_ID_BASE: str
+DBC_ID_DOCUMENT: str
 DBC_ID_LANGUAGE: str
 DBC_ID_PARENT: str
 DBC_ID_RUN: str
@@ -62,7 +62,7 @@ DBC_TOTAL_PROCESSED_TO_BE: str
 DBC_VERSION: str
 
 DBT_ACTION: str
-DBT_BASE: str
+DBT_DOCUMENT: str
 DBT_TOKEN: str
 DBT_LANGUAGE: str
 DBT_RUN: str
@@ -122,11 +122,11 @@ FILE_ENCODING_DEFAULT: str
 INFORMATION_NOT_YET_AVAILABLE: str
 
 JSON_NAME_API_VERSION: str
-JSON_NAME_BASE_FILE_NAME: str
-JSON_NAME_BASE_ID: str
 JSON_NAME_COLUMN_NAME: str
 JSON_NAME_COLUMN_VALUE: str
 JSON_NAME_DATA: str
+JSON_NAME_DOCUMENT_FILE_NAME: str
+JSON_NAME_DOCUMENT_ID: str
 JSON_NAME_LINE_INDEX_PAGE: str
 JSON_NAME_LINE_INDEX_PARA: str
 JSON_NAME_LINE_TEXT: str
@@ -263,7 +263,7 @@ TESTS_INBOX_NAME: str
 action_curr: Type[db.cls_action.Action]
 action_next: Type[db.cls_action.Action]
 
-base: Type[db.cls_base.Base]
+document: Type[db.cls_document.Document]
 
 db_current_database: str
 db_current_user: str
