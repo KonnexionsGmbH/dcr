@@ -31,7 +31,6 @@ DBC_CODE_PANDOC: str = "code_pandoc"
 DBC_CODE_SPACY: str = "code_spacy"
 DBC_CODE_TESSERACT: str = "code_tesseract"
 DBC_CREATED_AT: str = "created_at"
-DBC_CURRENT_STEP: str = "current_step"
 DBC_DIRECTORY_NAME: str = "directory_name"
 DBC_DIRECTORY_NAME_INBOX: str = "directory_name_inbox"
 DBC_DIRECTORY_TYPE: str = "directory_type"
@@ -50,7 +49,6 @@ DBC_ID_PARENT: str = "id_parent"
 DBC_ID_RUN: str = "id_run"
 DBC_ID_RUN_LAST: str = "id_run_last"
 DBC_ISO_LANGUAGE_NAME: str = "iso_language_name"
-DBC_LAST_STEP: str = "last_step"
 DBC_MODIFIED_AT: str = "modified_at"
 DBC_NO_CHILDREN: str = "no_children"
 DBC_NO_PDF_PAGES: str = "no_pdf_pages"
@@ -77,11 +75,8 @@ DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED: str = "inbox_accepted"
 DOCUMENT_DIRECTORY_TYPE_INBOX_REJECTED: str = "inbox_rejected"
 
 DOCUMENT_ERROR_CODE_REJ_FILE_DUPL: str = "Duplicate file"
-DOCUMENT_ERROR_CODE_REJ_FILE_ERROR: str = "rejected_file_error"
 DOCUMENT_ERROR_CODE_REJ_FILE_EXT: str = "Unknown file extension"
-DOCUMENT_ERROR_CODE_REJ_FILE_MOVE: str = "Issue with file move"
 DOCUMENT_ERROR_CODE_REJ_FILE_OPEN: str = "Issue with file open"
-DOCUMENT_ERROR_CODE_REJ_FILE_RIGHTS: str = "Issue with file permissions"
 DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT: str = "No 'pdf' format"
 DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE: str = "Issue with pdf2image"
 DOCUMENT_ERROR_CODE_REJ_TESSERACT: str = "Issue with Tesseract OCR"
@@ -120,7 +115,6 @@ DOCUMENT_LINE_TYPE_BODY: str = "b"
 DOCUMENT_LINE_TYPE_FOOTER: str = "f"
 DOCUMENT_LINE_TYPE_HEADER: str = "h"
 
-DOCUMENT_STATUS_ABORT: str = "abort"
 DOCUMENT_STATUS_END: str = "end"
 DOCUMENT_STATUS_ERROR: str = "error"
 DOCUMENT_STATUS_START: str = "start"
@@ -153,20 +147,7 @@ ERROR_51_901: str = (
     "51.901 Issue (tet): Opening document '{full_name}' - "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
-ERROR_51_903: str = (
-    "51.903 Issue (tet): Extracting the text and metadata from file '{file_name}' to file "
-    + "'{target_file}' failed: "
-    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-)
 ERROR_51_904: str = "51.904 Issue (pdflib): The target file '{full_name}' already exists."
-
-ERROR_61_901: str = (
-    "61.901 Issue (s_p_j): {function}: Unknown child tag '{child_tag}' - " + "in parent tag '{parent_tag}'."
-)
-ERROR_61_902: str = "61.902 Issue (s_p_j): Expected tag '{expected_tag}' - " + " but found tag '{found_tag}'."
-ERROR_61_903: str = (
-    "61.903 Issue (s_p_j): Text missing: document {document_id} page {page_no} " + "paragraph {para_no} line {line_no}."
-)
 
 FILE_ENCODING_DEFAULT: str = "utf-8"
 
@@ -180,23 +161,15 @@ JSON_NAME_COLUMN_VALUE: str = "columnValue"
 JSON_NAME_DATA: str = "data"
 JSON_NAME_LINE_INDEX_PAGE: str = "lineIndexPage"
 JSON_NAME_LINE_INDEX_PARA: str = "lineIndexPara"
-JSON_NAME_LINE_WORDS: str = "lineWords"
 JSON_NAME_LINE_TEXT: str = "lineText"
 JSON_NAME_LINE_TYPE: str = "lineType"
 JSON_NAME_LINES: str = "lines"
 JSON_NAME_NO_LINES_IN_PAGE: str = "noLinesInPage"
-JSON_NAME_NO_LINES_IN_PARA: str = "noLinesInPara"
 JSON_NAME_NO_PAGES_IN_DOC: str = "noPagesInDoc"
 JSON_NAME_NO_PARAS_IN_PAGE: str = "noParasInPage"
 JSON_NAME_NO_TOKENS_IN_PAGE: str = "noTokensInPage"
-JSON_NAME_NO_WORDS_IN_LINE: str = "noWordsInLine"
-JSON_NAME_NO_WORDS_IN_PAGE: str = "noWordsInPage"
-JSON_NAME_NO_WORDS_IN_PARA: str = "noWordsInPara"
-JSON_NAME_PAGE_INDEX_DOC: str = "pageIndexDoc"
-JSON_NAME_PAGE_LINES: str = "pageLines"
 JSON_NAME_PAGE_NO: str = "pageNo"
 JSON_NAME_PAGE_TEXT: str = "pageText"
-JSON_NAME_PAGE_WORDS: str = "pageWords"
 JSON_NAME_PAGES: str = "pages"
 JSON_NAME_PARA_INDEX_PAGE: str = "paraIndexPage"
 JSON_NAME_ROW: str = "row"
@@ -261,8 +234,6 @@ JSON_NAME_TOKEN_WHITESPACE_: str = "tknWhitespace_"
 JSON_NAME_TOKENS: str = "tokens"
 
 JSON_NAME_WORD_INDEX_LINE: str = "wordIndexLine"
-JSON_NAME_WORD_INDEX_PAGE: str = "wordIndexPage"
-JSON_NAME_WORD_INDEX_PARA: str = "wordIndexPara"
 JSON_NAME_WORD_TEXT: str = "wordText"
 JSON_NAME_WORDS: str = "words"
 
@@ -274,9 +245,6 @@ LOGGER_FATAL_HEAD: str = "FATAL ERROR: program abort =====> "
 LOGGER_FATAL_TAIL: str = " <===== FATAL ERROR"
 LOGGER_PROGRESS_UPDATE: str = "Progress update "
 LOGGER_START: str = "Start"
-
-OS_NT: str = "nt"
-OS_POSIX: str = "posix"
 
 PARSE_NAME_SPACE: str = "{http://www.pdflib.com/XML/TET5/TET-5.0}"
 
@@ -340,35 +308,6 @@ db_orm_metadata: sqlalchemy.MetaData | None = None
 directory_inbox: os.PathLike[str] | str
 directory_inbox_accepted: os.PathLike[str] | str
 directory_inbox_rejected: os.PathLike[str] | str
-
-document_child_no_children: sqlalchemy.Integer | None
-document_child_directory_name: str
-document_child_directory_type: str
-document_child_error_code: str | None
-document_child_file_name: str
-document_child_file_type: str
-document_child_id: sqlalchemy.Integer
-document_child_id_base: sqlalchemy.Integer | None
-document_child_id_parent: sqlalchemy.Integer | None
-document_child_id_language: sqlalchemy.Integer
-document_child_next_step: str | None
-document_no_children: sqlalchemy.Integer | None
-document_child_status: str
-document_child_stem_name: str
-
-document_directory_name: str
-document_directory_type: str
-document_error_code: str | None
-document_file_name: str
-document_file_type: str
-document_id: sqlalchemy.Integer
-document_id_base: sqlalchemy.Integer | None
-document_id_parent: sqlalchemy.Integer | None
-document_id_language: sqlalchemy.Integer
-document_next_step: str | None
-document_sha256: str | None
-document_status: str
-document_stem_name: str
 
 language: Type[db.cls_language.Language]
 
@@ -442,8 +381,6 @@ parse_result_page_2_pages: List[Dict[str, int | str | List[str]]]
 parse_result_page_3_document: Dict[str, int | str | List[Dict[str, int | str | List[str]]]]
 
 parse_result_page_index_doc: int
-parse_result_page_words: Dict[str, int | List[Dict[str, int | str]]]
-parse_result_pages_word: Dict[str, int | List[Dict[str, int | List[Dict[str, int | str]]]]]
 parse_result_para_index_page: int
 parse_result_text: str
 

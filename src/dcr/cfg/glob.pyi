@@ -31,7 +31,6 @@ DBC_CODE_PANDOC: str
 DBC_CODE_SPACY: str
 DBC_CODE_TESSERACT: str
 DBC_CREATED_AT: str
-DBC_CURRENT_STEP: str
 DBC_DIRECTORY_NAME: str
 DBC_DIRECTORY_NAME_INBOX: str
 DBC_DIRECTORY_TYPE: str
@@ -50,7 +49,6 @@ DBC_ID_PARENT: str
 DBC_ID_RUN: str
 DBC_ID_RUN_LAST: str
 DBC_ISO_LANGUAGE_NAME: str
-DBC_LAST_STEP: str
 DBC_MODIFIED_AT: str
 DBC_NO_CHILDREN: str
 DBC_NO_PDF_PAGES: str
@@ -77,11 +75,8 @@ DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED: str
 DOCUMENT_DIRECTORY_TYPE_INBOX_REJECTED: str
 
 DOCUMENT_ERROR_CODE_REJ_FILE_DUPL: str
-DOCUMENT_ERROR_CODE_REJ_FILE_ERROR: str
 DOCUMENT_ERROR_CODE_REJ_FILE_EXT: str
-DOCUMENT_ERROR_CODE_REJ_FILE_MOVE: str
 DOCUMENT_ERROR_CODE_REJ_FILE_OPEN: str
-DOCUMENT_ERROR_CODE_REJ_FILE_RIGHTS: str
 DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT: str
 DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE: str
 DOCUMENT_ERROR_CODE_REJ_TESSERACT: str
@@ -101,7 +96,6 @@ DOCUMENT_LINE_TYPE_BODY: str
 DOCUMENT_LINE_TYPE_FOOTER: str
 DOCUMENT_LINE_TYPE_HEADER: str
 
-DOCUMENT_STATUS_ABORT: str
 DOCUMENT_STATUS_END: str
 DOCUMENT_STATUS_ERROR: str
 DOCUMENT_STATUS_START: str
@@ -121,12 +115,7 @@ ERROR_41_903: str
 ERROR_41_904: str
 
 ERROR_51_901: str
-ERROR_51_903: str
 ERROR_51_904: str
-
-ERROR_61_901: str
-ERROR_61_902: str
-ERROR_61_903: str
 
 FILE_ENCODING_DEFAULT: str
 
@@ -140,23 +129,15 @@ JSON_NAME_COLUMN_VALUE: str
 JSON_NAME_DATA: str
 JSON_NAME_LINE_INDEX_PAGE: str
 JSON_NAME_LINE_INDEX_PARA: str
-JSON_NAME_LINE_WORDS: str
 JSON_NAME_LINE_TEXT: str
 JSON_NAME_LINE_TYPE: str
 JSON_NAME_LINES: str
 JSON_NAME_NO_LINES_IN_PAGE: str
-JSON_NAME_NO_LINES_IN_PARA: str
 JSON_NAME_NO_PAGES_IN_DOC: str
 JSON_NAME_NO_PARAS_IN_PAGE: str
 JSON_NAME_NO_TOKENS_IN_PAGE: str
-JSON_NAME_NO_WORDS_IN_LINE: str
-JSON_NAME_NO_WORDS_IN_PAGE: str
-JSON_NAME_NO_WORDS_IN_PARA: str
-JSON_NAME_PAGE_INDEX_DOC: str
-JSON_NAME_PAGE_LINES: str
 JSON_NAME_PAGE_NO: str
 JSON_NAME_PAGE_TEXT: str
-JSON_NAME_PAGE_WORDS: str
 JSON_NAME_PAGES: str
 JSON_NAME_PARA_INDEX_PAGE: str
 JSON_NAME_ROW: str
@@ -221,8 +202,6 @@ JSON_NAME_TOKEN_WHITESPACE_: str
 JSON_NAME_TOKENS: str
 
 JSON_NAME_WORD_INDEX_LINE: str
-JSON_NAME_WORD_INDEX_PAGE: str
-JSON_NAME_WORD_INDEX_PARA: str
 JSON_NAME_WORD_TEXT: str
 JSON_NAME_WORDS: str
 
@@ -233,9 +212,6 @@ LOGGER_FATAL_HEAD: str
 LOGGER_FATAL_TAIL: str
 LOGGER_PROGRESS_UPDATE: str
 LOGGER_START: str
-
-OS_NT: str
-OS_POSIX: str
 
 PARSE_NAME_SPACE: str
 
@@ -300,35 +276,6 @@ directory_inbox: os.PathLike[str] | str
 directory_inbox_accepted: os.PathLike[str] | str
 directory_inbox_rejected: os.PathLike[str] | str
 
-document_child_no_children: sqlalchemy.Integer | None
-document_child_directory_name: str
-document_child_directory_type: str
-document_child_error_code: str | None
-document_child_file_name: str
-document_child_file_type: str
-document_child_id: sqlalchemy.Integer
-document_child_id_base: sqlalchemy.Integer | None
-document_child_id_parent: sqlalchemy.Integer | None
-document_child_id_language: sqlalchemy.Integer
-document_child_next_step: str | None
-document_no_children: sqlalchemy.Integer | None
-document_child_status: str
-target_stem_name: str
-
-document_directory_name: str
-document_directory_type: str
-document_error_code: str | None
-document_file_name: str
-document_file_type: str
-document_id: sqlalchemy.Integer
-document_id_base: sqlalchemy.Integer | None
-document_id_parent: sqlalchemy.Integer | None
-document_id_language: sqlalchemy.Integer
-document_next_step: str | None
-document_sha256: str | None
-document_status: str
-document_stem_name: str
-
 language: Type[db.cls_language.Language]
 
 languages_pandoc: Dict[sqlalchemy.Integer, str]
@@ -358,10 +305,6 @@ parse_result_page_0_paras: List[str]
 parse_result_page_2_pages: List[Dict[str, int | str | List[str]]]
 parse_result_page_3_document: Dict[str, int | str | List[Dict[str, int | str | List[str]]]]
 parse_result_page_index_doc: int
-parse_result_page_lines: Dict[str, int | List[Dict[str, int | str]]]
-parse_result_page_words: Dict[str, int | List[Dict[str, int | str]]]
-parse_result_pages_line: Dict[str, int | List[Dict[str, int | List[Dict[str, int | str]]]]]
-parse_result_pages_word: Dict[str, int | List[Dict[str, int | List[Dict[str, int | str]]]]]
 parse_result_para_index_page: int
 parse_result_text: str
 # parse_result_word_0_word: Dict[str, int | str]

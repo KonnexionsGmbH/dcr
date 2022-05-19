@@ -196,8 +196,6 @@ def reunite_pdfs_file() -> None:
 
             cfg.glob.run.total_generated += 1
 
-            cfg.glob.document_child_id_parent = row
-
             action_part = db.cls_action.Action.from_row(row)
 
             full_name_curr = action_part.get_full_name()
