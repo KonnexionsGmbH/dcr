@@ -11,12 +11,24 @@ import db.dml
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
+import utils
+
+# -----------------------------------------------------------------------------
+# Global constants.
+# -----------------------------------------------------------------------------
+JSON_NAME_API_VERSION: str = "apiVersion"
+JSON_NAME_COLUMN_NAME: str = "columnName"
+JSON_NAME_COLUMN_VALUE: str = "columnValue"
+JSON_NAME_DATA: str = "data"
+JSON_NAME_ROW: str = "row"
+JSON_NAME_ROWS: str = "rows"
+JSON_NAME_TABLES: str = "tables"
+JSON_NAME_TABLE_NAME: str = "tableName"
+
 
 # -----------------------------------------------------------------------------
 # Type declaration.
 # -----------------------------------------------------------------------------
-import utils
-
 Columns: TypeAlias = Dict[
     str, bool | sqlalchemy.Boolean | int | sqlalchemy.Integer | str | os.PathLike[str] | sqlalchemy.String | None
 ]
@@ -84,13 +96,13 @@ def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
     with open(initial_database_data, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
         json_data = json.load(file_handle)
 
-        api_version = json_data[cfg.glob.JSON_NAME_API_VERSION]
+        api_version = json_data[JSON_NAME_API_VERSION]
         if api_version != cfg.glob.setup.dcr_version:
             utils.terminate_fatal(f"Expected api version is' {cfg.glob.setup.dcr_version}' " f"- got '{api_version}'")
 
-        data = json_data[cfg.glob.JSON_NAME_DATA]
-        for json_table in data[cfg.glob.JSON_NAME_TABLES]:
-            table_name = json_table[cfg.glob.JSON_NAME_TABLE_NAME].lower()
+        data = json_data[JSON_NAME_DATA]
+        for json_table in data[JSON_NAME_TABLES]:
+            table_name = json_table[JSON_NAME_TABLE_NAME].lower()
 
             if table_name not in ["language"]:
                 if table_name in [
@@ -104,13 +116,11 @@ def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
                 else:
                     utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
 
-            for json_row in json_table[cfg.glob.JSON_NAME_ROWS]:
+            for json_row in json_table[JSON_NAME_ROWS]:
                 db_columns = {}
 
-                for json_column in json_row[cfg.glob.JSON_NAME_ROW]:
-                    db_columns[json_column[cfg.glob.JSON_NAME_COLUMN_NAME]] = json_column[
-                        cfg.glob.JSON_NAME_COLUMN_VALUE
-                    ]
+                for json_column in json_row[JSON_NAME_ROW]:
+                    db_columns[json_column[JSON_NAME_COLUMN_NAME]] = json_column[JSON_NAME_COLUMN_VALUE]
 
                 db.dml.insert_dbt_row(
                     table_name,

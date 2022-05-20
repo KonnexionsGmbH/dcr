@@ -2,7 +2,11 @@
 """Testing Module all."""
 
 import cfg.glob
+import db.cls_action
+import db.cls_document
+import db.cls_language
 import db.cls_run
+import db.cls_token
 import db.cls_version
 import db.driver
 import pytest
@@ -991,6 +995,8 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
+    db.cls_run.Run.id_run_umbrella = 0
+
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
@@ -1018,9 +1024,6 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
             ["pdf_wrong_format_5.pdf"],
         ),
     )
-
-    # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1088,6 +1091,90 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
                 "Translating_SQL_Into_Relational_Algebra_p01_02_5_1.pdf",
                 "Translating_SQL_Into_Relational_Algebra_p01_02_5_2.jpeg",
                 "Translating_SQL_Into_Relational_Algebra_p01_02_5_2.pdf",
+            ],
+        ),
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_PROCESS_ALL_COMPLETE - status: error.
+# -----------------------------------------------------------------------------
+def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PROCESS_ALL_COMPLETE - dtstus: error."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("docx_ok", "docx"),
+            ("jpeg_pdf_text_ok", "jpeg"),
+            ("pdf_scanned_ok", "pdf"),
+            ("pdf_text_ok", "pdf"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    db.cls_run.Run.id_run_umbrella = 0
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    db.driver.connect_db()
+
+    cfg.glob.action_curr = db.cls_action.Action.from_id(2)
+    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.persist_2_db()
+
+    cfg.glob.action_curr = db.cls_action.Action.from_id(4)
+    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.persist_2_db()
+
+    cfg.glob.action_curr = db.cls_action.Action.from_id(6)
+    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.persist_2_db()
+
+    cfg.glob.action_curr = db.cls_action.Action.from_id(8)
+    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.persist_2_db()
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    db.driver.connect_db()
+
+    cfg.glob.action_curr = db.cls_action.Action.from_id(13)
+    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.persist_2_db()
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    db.driver.connect_db()
+
+    cfg.glob.action_curr = db.cls_action.Action.from_id(17)
+    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.persist_2_db()
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_status_error <=========")
+
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "docx_ok_1.docx",
+                "jpeg_pdf_text_ok_2.jpeg",
+                "pdf_scanned_ok_3.pdf",
+                "pdf_text_ok_4.pdf",
             ],
         ),
     )

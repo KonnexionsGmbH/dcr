@@ -141,6 +141,50 @@ def test_run_action_store_parse_result_in_json_coverage(
 
 
 # -----------------------------------------------------------------------------
+# Test RUN_ACTION_STORE_FROM_PARSER - coverage - page.
+# -----------------------------------------------------------------------------
+def test_run_action_store_parse_result_in_json_coverage_page(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_STORE_FROM_PARSER - coverage."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("pdf_mini", "pdf"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.glob.setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "0"),
+            (cfg.glob.setup._DCR_CFG_LINE_HEADER_MAX_LINES, "0"),
+            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "true"),
+            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.glob.setup._DCR_CFG_VERBOSE_LINE_TYPE, "true"),
+            (cfg.glob.setup._DCR_CFG_VERBOSE_PARSER, "text"),
+        ],
+    )
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    pytest.helpers.restore_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - coverage - LineType.
 # -----------------------------------------------------------------------------
 def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):

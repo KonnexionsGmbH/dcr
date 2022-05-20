@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module cfg.cls_setup."""
+"""Testing Module cfg.cls_..."""
 import os
 
 import cfg.cls_setup

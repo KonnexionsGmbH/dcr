@@ -19,6 +19,12 @@ class LineType:
     """
 
     # -----------------------------------------------------------------------------
+    # Class variables.
+    # -----------------------------------------------------------------------------
+    _JSON_NAME_LINE_INDEX_PAGE: str = "lineIndexPage"
+    _JSON_NAME_LINE_TEXT: str = "lineText"
+
+    # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
     def __init__(self) -> None:
@@ -109,7 +115,7 @@ class LineType:
     # -----------------------------------------------------------------------------
     def _save_lines_footer_curr(self) -> None:
         """Save the footers of the current page."""
-        line_1_lines_max = len(cfg.glob.parse_result_line_1_lines) - cfg.glob.setup.line_footer_max_lines
+        line_1_lines_max = len(cfg.glob.text_parser.parse_result_line_1_lines) - cfg.glob.setup.line_footer_max_lines
 
         self._line_text_footer_curr = []
 
@@ -117,16 +123,16 @@ class LineType:
             if line_1_lines_max < 0:
                 self._line_text_footer_curr.append((-1, cfg.glob.INFORMATION_NOT_YET_AVAILABLE))
             else:
-                line_1_line: Dict[str, int | str] = cfg.glob.parse_result_line_1_lines[line_1_lines_max]
+                line_1_line: Dict[str, int | str] = cfg.glob.text_parser.parse_result_line_1_lines[line_1_lines_max]
                 self._line_text_footer_curr.append(
                     (
-                        line_1_line[cfg.glob.JSON_NAME_LINE_INDEX_PAGE],
-                        line_1_line[cfg.glob.JSON_NAME_LINE_TEXT],
+                        line_1_line[LineType._JSON_NAME_LINE_INDEX_PAGE],
+                        line_1_line[LineType._JSON_NAME_LINE_TEXT],
                     )  # type: ignore
                 )
             line_1_lines_max += 1
 
-        if cfg.glob.parse_result_no_pages_in_doc > 1:
+        if cfg.glob.text_parser.parse_result_no_pages_in_doc > 1:
             utils.progress_msg_line_type(
                 f"LineType: Value of line_text_footer_prev       ={self._line_text_footer_prev}"
             )
@@ -145,23 +151,23 @@ class LineType:
     # -----------------------------------------------------------------------------
     def _save_lines_header_curr(self) -> None:
         """Save the headers of the current page."""
-        line_1_lines_max = len(cfg.glob.parse_result_line_1_lines)
+        line_1_lines_max = len(cfg.glob.text_parser.parse_result_line_1_lines)
 
         self._line_text_header_curr = []
 
         for ind in range(cfg.glob.setup.line_header_max_lines):
             if ind < line_1_lines_max:
-                page_line: Dict[str, int | str] = cfg.glob.parse_result_line_1_lines[ind]
+                page_line: Dict[str, int | str] = cfg.glob.text_parser.parse_result_line_1_lines[ind]
                 self._line_text_header_curr.append(
                     (
-                        page_line[cfg.glob.JSON_NAME_LINE_INDEX_PAGE],
-                        page_line[cfg.glob.JSON_NAME_LINE_TEXT],
+                        page_line[LineType._JSON_NAME_LINE_INDEX_PAGE],
+                        page_line[LineType._JSON_NAME_LINE_TEXT],
                     )  # type: ignore
                 )
             else:
                 self._line_text_header_curr.append((-1, cfg.glob.INFORMATION_NOT_YET_AVAILABLE))
 
-        if cfg.glob.parse_result_no_pages_in_doc > 1:
+        if cfg.glob.text_parser.parse_result_no_pages_in_doc > 1:
             utils.progress_msg_line_type(
                 f"LineType: Value of line_text_header_prev       ={self._line_text_header_prev}"
             )
@@ -178,7 +184,7 @@ class LineType:
         Args:
             page_ind_max (int): Highest page index.
         """
-        if cfg.glob.parse_result_no_pages_in_doc > 1:
+        if cfg.glob.text_parser.parse_result_no_pages_in_doc > 1:
             utils.progress_msg_line_type(
                 f"LineType: Value of line_1_lines_distance_footer={self._line_1_lines_distance_footer}"
             )
@@ -219,7 +225,7 @@ class LineType:
         Args:
             page_ind_max (int): Highest page index.
         """
-        if cfg.glob.parse_result_no_pages_in_doc > 2:
+        if cfg.glob.text_parser.parse_result_no_pages_in_doc > 2:
             utils.progress_msg_line_type(
                 f"LineType: Value of line_1_lines_distance_header={self._line_1_lines_distance_header}"
             )
@@ -295,12 +301,12 @@ class LineType:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         utils.progress_msg_line_type(
-            f"LineType: Start page                           ={cfg.glob.parse_result_no_pages_in_doc}"
+            f"LineType: Start page                           ={cfg.glob.text_parser.parse_result_no_pages_in_doc}"
         )
 
         if cfg.glob.setup.line_header_max_lines > 0:
             self._save_lines_header_curr()
-            if cfg.glob.parse_result_no_pages_in_doc > 1:
+            if cfg.glob.text_parser.parse_result_no_pages_in_doc > 1:
                 self._line_1_lines_distance_header.append(
                     self._calc_levenshtein(
                         self._line_text_header_prev,
@@ -313,7 +319,7 @@ class LineType:
 
         if cfg.glob.setup.line_footer_max_lines > 0:
             self._save_lines_footer_curr()
-            if cfg.glob.parse_result_no_pages_in_doc > 1:
+            if cfg.glob.text_parser.parse_result_no_pages_in_doc > 1:
                 self._line_1_lines_distance_footer.append(
                     self._calc_levenshtein(
                         self._line_text_footer_prev,
@@ -325,7 +331,7 @@ class LineType:
             self._line_text_footer_curr = []
 
         utils.progress_msg_line_type(
-            f"LineType: End   page                           ={cfg.glob.parse_result_no_pages_in_doc}"
+            f"LineType: End   page                           ={cfg.glob.text_parser.parse_result_no_pages_in_doc}"
         )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)

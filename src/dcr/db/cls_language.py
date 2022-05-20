@@ -17,7 +17,7 @@ from sqlalchemy import String
 # pylint: disable=R0801
 # pylint: disable=R0902
 class Language:
-    """Managing the language data.
+    """Managing the database table language.
 
     Returns:
         _type_: Language instance.

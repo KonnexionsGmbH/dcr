@@ -12,7 +12,7 @@ from sqlalchemy import Integer
 
 
 class Version:
-    """Managing the version data.
+    """Managing the database table version.
 
     Returns:
         _type_: Version instance.

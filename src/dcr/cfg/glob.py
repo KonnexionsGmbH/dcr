@@ -13,6 +13,7 @@ import db.cls_document
 import db.cls_language
 import db.cls_run
 import nlp.cls_line_type
+import nlp.cls_text_parser
 import psycopg2.extensions
 import sqlalchemy
 
@@ -153,90 +154,6 @@ FILE_ENCODING_DEFAULT: str = "utf-8"
 
 INFORMATION_NOT_YET_AVAILABLE: str = "n/a"
 
-JSON_NAME_API_VERSION: str = "apiVersion"
-JSON_NAME_DOCUMENT_FILE_NAME: str = "documentFileName"
-JSON_NAME_COLUMN_VALUE: str = "columnValue"
-JSON_NAME_DATA: str = "data"
-JSON_NAME_DOCUMENT_ID: str = "documentId"
-JSON_NAME_COLUMN_NAME: str = "columnName"
-JSON_NAME_LINE_INDEX_PAGE: str = "lineIndexPage"
-JSON_NAME_LINE_INDEX_PARA: str = "lineIndexPara"
-JSON_NAME_LINE_TEXT: str = "lineText"
-JSON_NAME_LINE_TYPE: str = "lineType"
-JSON_NAME_LINES: str = "lines"
-JSON_NAME_NO_LINES_IN_PAGE: str = "noLinesInPage"
-JSON_NAME_NO_PAGES_IN_DOC: str = "noPagesInDoc"
-JSON_NAME_NO_PARAS_IN_PAGE: str = "noParasInPage"
-JSON_NAME_NO_TOKENS_IN_PAGE: str = "noTokensInPage"
-JSON_NAME_PAGE_NO: str = "pageNo"
-JSON_NAME_PAGE_TEXT: str = "pageText"
-JSON_NAME_PAGES: str = "pages"
-JSON_NAME_PARA_INDEX_PAGE: str = "paraIndexPage"
-JSON_NAME_ROW: str = "row"
-JSON_NAME_ROWS: str = "rows"
-JSON_NAME_TABLES: str = "tables"
-JSON_NAME_TABLE_NAME: str = "tableName"
-
-JSON_NAME_TOKEN_CLUSTER: str = "tknCluster"
-JSON_NAME_TOKEN_DEP_: str = "tknDep_"
-JSON_NAME_TOKEN_DOC: str = "tknDoc"
-JSON_NAME_TOKEN_ENT_IOB_: str = "tknEntIob_"
-JSON_NAME_TOKEN_ENT_KB_ID_: str = "tknEntKbId_"
-JSON_NAME_TOKEN_ENT_TYPE_: str = "tknEntType_"
-JSON_NAME_TOKEN_HEAD: str = "tknHead"
-JSON_NAME_TOKEN_I: str = "tknI"
-JSON_NAME_TOKEN_IDX: str = "tknIdx"
-JSON_NAME_TOKEN_IS_ALPHA: str = "tknIsAlpha"
-JSON_NAME_TOKEN_IS_ASCII: str = "tknIsAscii"
-JSON_NAME_TOKEN_IS_BRACKET: str = "tknIsBracket"
-JSON_NAME_TOKEN_IS_CURRENCY: str = "tknIsCurrency"
-JSON_NAME_TOKEN_IS_DIGIT: str = "tknIsDigit"
-JSON_NAME_TOKEN_IS_LEFT_PUNCT: str = "tknIsLeftPunct"
-JSON_NAME_TOKEN_IS_LOWER: str = "tknIsLower"
-JSON_NAME_TOKEN_IS_OOV: str = "tknIsOov"
-JSON_NAME_TOKEN_IS_PUNCT: str = "tknIsPunct"
-JSON_NAME_TOKEN_IS_QUOTE: str = "tknIsQuote"
-JSON_NAME_TOKEN_IS_RIGHT_PUNCT: str = "tknIsRightPunct"
-JSON_NAME_TOKEN_IS_SENT_END: str = "tknIsSentEnd"
-JSON_NAME_TOKEN_IS_SENT_START: str = "tknIsSentStart"
-JSON_NAME_TOKEN_IS_SPACE: str = "tknIsSpace"
-JSON_NAME_TOKEN_IS_STOP: str = "tknIsStop"
-JSON_NAME_TOKEN_IS_TITLE: str = "tknIsTitle"
-JSON_NAME_TOKEN_IS_UPPER: str = "tknIsUpper"
-JSON_NAME_TOKEN_LANG_: str = "tknLang_"
-JSON_NAME_TOKEN_LEFT_EDGE: str = "tknLeftEdge"
-JSON_NAME_TOKEN_LEMMA_: str = "tknLemma_"
-JSON_NAME_TOKEN_LEX: str = "tknLex"
-JSON_NAME_TOKEN_LEX_ID: str = "tknLexId"
-JSON_NAME_TOKEN_LIKE_EMAIL: str = "tknLikeEmail"
-JSON_NAME_TOKEN_LIKE_NUM: str = "tknLikeNum"
-JSON_NAME_TOKEN_LIKE_URL: str = "tknLikeUrl"
-JSON_NAME_TOKEN_LOWER_: str = "tknLower_"
-JSON_NAME_TOKEN_MORPH: str = "tknMorph"
-JSON_NAME_TOKEN_NORM_: str = "tknNorm_"
-JSON_NAME_TOKEN_ORTH_: str = "tknOrth_"
-JSON_NAME_TOKEN_POS_: str = "tknPos_"
-JSON_NAME_TOKEN_PREFIX_: str = "tknPrefix_"
-JSON_NAME_TOKEN_PROB: str = "tknProb"
-JSON_NAME_TOKEN_RANK: str = "tknRank"
-JSON_NAME_TOKEN_RIGHT_EDGE: str = "tknRightEdge"
-JSON_NAME_TOKEN_SENT: str = "tknSent"
-JSON_NAME_TOKEN_SENTIMENT: str = "tknSentiment"
-JSON_NAME_TOKEN_SHAPE_: str = "tknShape_"
-JSON_NAME_TOKEN_SUFFIX_: str = "tknSuffix_"
-JSON_NAME_TOKEN_TAG_: str = "tknTag_"
-JSON_NAME_TOKEN_TENSOR: str = "tknTensor"
-JSON_NAME_TOKEN_TEXT: str = "tknText"
-JSON_NAME_TOKEN_TEXT_WITH_WS: str = "tknTextWithWs"
-JSON_NAME_TOKEN_VOCAB: str = "tknVocab"
-JSON_NAME_TOKEN_WHITESPACE_: str = "tknWhitespace_"
-
-JSON_NAME_TOKENS: str = "tokens"
-
-JSON_NAME_WORD_INDEX_LINE: str = "wordIndexLine"
-JSON_NAME_WORD_TEXT: str = "wordText"
-JSON_NAME_WORDS: str = "words"
-
 LOCALE: str = "en_US.UTF-8"
 
 LOGGER_CFG_FILE: str = "logging_cfg.yaml"
@@ -245,48 +162,6 @@ LOGGER_FATAL_HEAD: str = "FATAL ERROR: program abort =====> "
 LOGGER_FATAL_TAIL: str = " <===== FATAL ERROR"
 LOGGER_PROGRESS_UPDATE: str = "Progress update "
 LOGGER_START: str = "Start"
-
-PARSE_NAME_SPACE: str = "{http://www.pdflib.com/XML/TET5/TET-5.0}"
-
-PARSE_TAG_ACTION: str = "Action"
-PARSE_TAG_ANNOTATIONS: str = "Annotations"
-PARSE_TAG_ATTACHMENTS: str = "Attachments"
-PARSE_TAG_AUTHOR: str = "Author"
-PARSE_TAG_BOOKMARKS: str = "Bookmarks"
-PARSE_TAG_BOX: str = "Box"
-PARSE_TAG_CELL: str = "Cell"
-PARSE_TAG_CONTENT: str = "Content"
-PARSE_TAG_CREATION: str = "Creation"
-PARSE_TAG_CREATION_DATE: str = "CreationDate"
-PARSE_TAG_CREATOR: str = "Creator"
-PARSE_TAG_CUSTOM: str = "Custom"
-PARSE_TAG_DESTINATIONS: str = "Destinations"
-PARSE_TAG_DOCUMENT: str = "Document"
-PARSE_TAG_DOC_INFO: str = "DocInfo"
-PARSE_TAG_ENCRYPTION: str = "Encryption"
-PARSE_TAG_EXCEPTION: str = "Exception"
-PARSE_TAG_FIELDS: str = "Fields"
-PARSE_TAG_FROM: int = len(PARSE_NAME_SPACE)
-PARSE_TAG_GRAPHICS: str = "Graphics"
-PARSE_TAG_JAVA_SCRIPTS: str = "JavaScripts"
-PARSE_TAG_LINE: str = "Line"
-PARSE_TAG_METADATA: str = "Metadata"
-PARSE_TAG_MOD_DATE: str = "ModDate"
-PARSE_TAG_OPTIONS: str = "Options"
-PARSE_TAG_OUTPUT_INTENTS: str = "OutputIntents"
-PARSE_TAG_PAGE: str = "Page"
-PARSE_TAG_PAGES: str = "Pages"
-PARSE_TAG_PARA: str = "Para"
-PARSE_TAG_PLACED_IMAGE: str = "PlacedImage"
-PARSE_TAG_PRODUCER: str = "Producer"
-PARSE_TAG_RESOURCES: str = "Resources"
-PARSE_TAG_ROW: str = "Row"
-PARSE_TAG_SIGNATURE_FIELDS: str = "SignatureFields"
-PARSE_TAG_TABLE: str = "Table"
-PARSE_TAG_TEXT: str = "Text"
-PARSE_TAG_TITLE: str = "Title"
-PARSE_TAG_WORD: str = "Word"
-PARSE_TAG_XFA: str = "XFA"
 
 TESTS_INBOX_NAME: str = "tests/__PYTEST_FILES__/"
 
@@ -318,96 +193,6 @@ languages_tesseract: Dict[sqlalchemy.Integer, str]
 line_type: Type[nlp.cls_line_type.LineType]
 
 logger: logging.Logger
-
-#   {
-#     "lineIndexPage": 0,
-#     "paraIndexPage": 0,
-#     "lineIndexPara": 0,
-#     "lineText": "Header 1",
-#     "lineType": "b"
-#   },
-parse_result_line_0_line: Dict[str, int | str]
-
-parse_result_line_1_lines: List[Dict[str, int | str]]
-
-#   {
-#     "pageNo": 1,
-#     "noLinesInPage": 5,
-#     "noParasInPage": 3,
-#     "lines": [
-#         {
-parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
-
-parse_result_line_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
-
-# {
-#   "documentId": 1,
-#   "documentFileName": "p_2_header_1_footer_1.pdf",
-#   "noPagesInDoc": 2,
-#   "pages": [
-#     {
-parse_result_line_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
-
-parse_result_line_index_page: int
-parse_result_line_index_para: int
-parse_result_no_lines_in_page: int
-parse_result_no_lines_in_para: int
-parse_result_no_pages_in_doc: int
-parse_result_no_paras_in_page: int
-parse_result_no_words_in_line: int
-parse_result_no_words_in_page: int
-parse_result_no_words_in_para: int
-
-parse_result_page_0_paras: List[str]
-
-# {
-#     "pageNo": 1,
-#     "pageText": [
-#         "Header 1",
-#         "Seite 1 Zeile 1 This chapter uses Volto to change displaying ...",
-#         "Footer 1 pg. 1"
-#     ]
-# }
-# parse_result_page_1_page: Dict[str, int | str | List[str]]
-
-parse_result_page_2_pages: List[Dict[str, int | str | List[str]]]
-
-# {
-#   "documentId": 1,
-#   "documentFileName": "p_2_header_1_footer_1.pdf",
-#   "noPagesInDoc": 2,
-#   "pages": [
-#     {
-parse_result_page_3_document: Dict[str, int | str | List[Dict[str, int | str | List[str]]]]
-
-parse_result_page_index_doc: int
-parse_result_para_index_page: int
-parse_result_text: str
-
-# {"lineIndexPage": 0, "wordIndexLine": 0, "wordText": "Header"}
-# parse_result_word_0_word: Dict[str, int | str]
-
-parse_result_word_1_words: List[Dict[str, int | str]]
-
-# {
-#     "pageNo": 1,
-#     "words": [
-# parse_result_word_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
-
-
-parse_result_word_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
-
-# {
-#   "documentId": 1,
-#   "documentFileName": "p_2_header_1_footer_1.pdf",
-#   "noPagesInDoc": 2,
-#   "pages": [
-#     {
-parse_result_word_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
-
-parse_result_word_index_line: int
-parse_result_word_index_page: int
-parse_result_word_index_para: int
 
 run: Type[db.cls_run.Run]
 
@@ -468,6 +253,8 @@ spacy_tkn_attr_vocab: bool = False
 spacy_tkn_attr_whitespace_: bool = True
 
 start_time_document: int
+
+text_parser: Type[nlp.cls_text_parser.TextParser]
 
 token_0_token: Dict[str, bool | str]
 token_1_tokens: List[Dict[str, bool | str]]

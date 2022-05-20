@@ -1,4 +1,4 @@
-"""Module db.cls_action: Managing the database table  action."""
+"""Module db.cls_action: Managing the database table action."""
 from __future__ import annotations
 
 import os
@@ -21,7 +21,7 @@ from sqlalchemy.engine import Connection
 # pylint: disable=R0902
 # pylint: disable=R0903
 class Action:
-    """Managing the document processing steps.
+    """Managing the database table action.
 
     Returns:
         _type_: Action instance.

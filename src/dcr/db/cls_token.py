@@ -12,7 +12,7 @@ from sqlalchemy import String
 
 
 class Token:
-    """Managing the token data.
+    """Managing the database table token.
 
     Returns:
         _type_: Token instance.

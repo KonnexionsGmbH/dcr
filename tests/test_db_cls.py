@@ -1,5 +1,6 @@
 # pylint: disable=unused-argument
-"""Testing Module db.cls."""
+"""Testing Module db.cls_..."""
+import time
 
 import cfg.cls_setup
 import cfg.glob
@@ -12,16 +13,15 @@ import db.cls_version
 import db.dml
 import db.driver
 import pytest
+import utils
+
+import dcr
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
 # pylint: disable=C0302
 # @pytest.mark.issue
-import utils
-
-import dcr
-
 MISSING_ID: int = 4711
 
 
@@ -49,9 +49,9 @@ def check_existing_action():
         cfg.glob.DOCUMENT_STATUS_END,
     )
 
-    instance = db.cls_action.Action.from_id(expected_values[0])
+    cfg.glob.action_curr = db.cls_action.Action.from_id(expected_values[0])
 
-    actual_values = instance.get_columns_in_tuple(is_duration_ns=False)
+    actual_values = cfg.glob.action_curr.get_columns_in_tuple(is_duration_ns=False)
 
     if actual_values != expected_values:
         print(f"issue with dbt action instance id={expected_values[0]}:")
@@ -62,35 +62,35 @@ def check_existing_action():
     # -----------------------------------------------------------------------------
     # Finalise the current action with error.
     # -----------------------------------------------------------------------------
-    instance.finalise_error("error_code", "error_msg")
+    cfg.glob.action_curr.finalise_error("error_code", "error_msg")
 
     # -----------------------------------------------------------------------------
     # Get the file type from the file name.
     # -----------------------------------------------------------------------------
-    instance.get_file_type()
+    cfg.glob.action_curr.get_file_type()
 
-    instance.action_file_name = ""
+    cfg.glob.action_curr.action_file_name = ""
 
-    instance.get_file_type()
+    cfg.glob.action_curr.get_file_type()
 
-    instance.action_file_name = expected_values[8]
+    cfg.glob.action_curr.action_file_name = expected_values[8]
 
     # -----------------------------------------------------------------------------
     # Get the stem name from the file name.
     # -----------------------------------------------------------------------------
-    instance.get_stem_name()
+    cfg.glob.action_curr.get_stem_name()
 
-    instance.action_file_name = ""
+    cfg.glob.action_curr.action_file_name = ""
 
-    instance.get_stem_name()
+    cfg.glob.action_curr.get_stem_name()
 
-    instance.action_file_name = expected_values[8]
+    cfg.glob.action_curr.action_file_name = expected_values[8]
 
     # -----------------------------------------------------------------------------
     # Select unprocessed actions based on action_code und document id.
     # -----------------------------------------------------------------------------
     with cfg.glob.db_orm_engine.begin() as conn:
-        instance.select_action_by_action_code_id_document(
+        cfg.glob.action_curr.select_action_by_action_code_id_document(
             conn=conn, action_code=db.cls_run.Run.ACTION_CODE_INBOX, id_document=1
         )
 
@@ -98,7 +98,7 @@ def check_existing_action():
 # -----------------------------------------------------------------------------
 # Check existing document object.
 # -----------------------------------------------------------------------------
-def check_existing_base():
+def check_existing_document():
     """Check existing document object."""
     expected_values = (
         1,
@@ -117,12 +117,12 @@ def check_existing_base():
         cfg.glob.DOCUMENT_STATUS_END,
     )
 
-    instance = db.cls_document.Document.from_id(expected_values[0])
+    cfg.glob.document = db.cls_document.Document.from_id(expected_values[0])
 
-    actual_values = instance.get_columns_in_tuple()
+    actual_values = cfg.glob.document.get_columns_in_tuple()
 
     if actual_values != expected_values:
-        print(f"issue with dbt document instance id={expected_values[0]}:")
+        print(f"issue with dbt document cfg.glob.document id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt document id={expected_values[0]} - see above"
@@ -135,39 +135,39 @@ def check_existing_base():
     # -----------------------------------------------------------------------------
     # Finalise the current row with error.
     # -----------------------------------------------------------------------------
-    instance.finalise_error("error_code", "error_msg")
+    cfg.glob.document.finalise_error("error_code", "error_msg")
 
     # -----------------------------------------------------------------------------
     # Get the file type from the file name.
     # -----------------------------------------------------------------------------
-    instance.base_file_name = ""
+    cfg.glob.document.document_file_name = ""
 
-    instance.get_file_type()
+    cfg.glob.document.get_file_type()
 
-    instance.base_file_name = expected_values[7]
+    cfg.glob.document.document_file_name = expected_values[7]
 
     # -----------------------------------------------------------------------------
     # Get the stem name from the file name - positive.
     # -----------------------------------------------------------------------------
-    instance.get_stem_name()
+    cfg.glob.document.get_stem_name()
 
     # -----------------------------------------------------------------------------
     # Get the stem name from the file name - negative.
     # -----------------------------------------------------------------------------
-    instance.base_file_name = ""
+    cfg.glob.document.document_file_name = ""
 
-    instance.get_stem_name()
+    cfg.glob.document.get_stem_name()
 
-    instance.base_file_name = expected_values[7]
+    cfg.glob.document.document_file_name = expected_values[7]
 
     # -----------------------------------------------------------------------------
     # Get the stem name from the first processed document.
     # -----------------------------------------------------------------------------
-    instance.base_file_name = ""
+    cfg.glob.document.document_file_name = ""
 
-    instance.get_stem_name_next()
+    cfg.glob.document.get_stem_name_next()
 
-    instance.base_file_name = expected_values[7]
+    cfg.glob.document.document_file_name = expected_values[7]
 
 
 # -----------------------------------------------------------------------------
@@ -186,12 +186,12 @@ def check_existing_language():
         "English",
     )
 
-    instance = db.cls_language.Language.from_id(expected_values[0])
+    cfg.glob.language = db.cls_language.Language.from_id(expected_values[0])
 
-    actual_values = instance.get_columns_in_tuple()
+    actual_values = cfg.glob.language.get_columns_in_tuple()
 
     if actual_values != expected_values:
-        print(f"issue with dbt language instance id={expected_values[0]}:")
+        print(f"issue with dbt language cfg.glob.language id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt language id={expected_values[0]} - see above"
@@ -213,12 +213,12 @@ def check_existing_run():
         1,
     )
 
-    instance = db.cls_run.Run.from_id(expected_values[0])
+    cfg.glob.run = db.cls_run.Run.from_id(expected_values[0])
 
-    actual_values = instance.get_columns_in_tuple()
+    actual_values = cfg.glob.run.get_columns_in_tuple()
 
     if actual_values != expected_values:
-        print(f"issue with dbt run instance id={expected_values[0]}:")
+        print(f"issue with dbt run cfg.glob.run id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt run id={expected_values[0]} - see above"
@@ -2758,12 +2758,12 @@ def check_existing_token():
         1,
     )
 
-    instance = db.cls_token.Token.from_id(expected_values[0])
+    cfg.glob.token = db.cls_token.Token.from_id(expected_values[0])
 
-    actual_values = instance.get_columns_in_tuple()
+    actual_values = cfg.glob.token.get_columns_in_tuple()
 
     if actual_values != expected_values:
-        print(f"issue with dbt token instance id={expected_values[0]}:")
+        print(f"issue with dbt token cfg.glob.token id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt token id={expected_values[0]} - see above"
@@ -2776,12 +2776,12 @@ def check_existing_version():
     """Check existing version object."""
     expected_values = (1, cfg.glob.setup.dcr_version)
 
-    instance = db.cls_version.Version.from_id(expected_values[0])
+    cfg.glob.version = db.cls_version.Version.from_id(expected_values[0])
 
-    actual_values = instance.get_columns_in_tuple()
+    actual_values = cfg.glob.version.get_columns_in_tuple()
 
     if actual_values != expected_values:
-        print(f"issue with dbt version instance id={expected_values[0]}:")
+        print(f"issue with dbt version cfg.glob.version id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt version id={expected_values[0]} - see above"
@@ -2804,7 +2804,7 @@ def check_missing_action():
 # -----------------------------------------------------------------------------
 # Check missing document object.
 # -----------------------------------------------------------------------------
-def check_missing_base():
+def check_missing_document():
     """Check missing document object."""
     db.driver.connect_db()
 
@@ -2921,17 +2921,17 @@ def check_missing_version():
     # -----------------------------------------------------------------------------
     db.driver.connect_db()
 
-    instance = db.cls_version.Version(
+    cfg.glob.version = db.cls_version.Version(
         version="1",
     )
 
-    instance.persist_2_db()
+    cfg.glob.version.persist_2_db()
 
-    instance = db.cls_version.Version(
+    cfg.glob.version = db.cls_version.Version(
         version="2",
     )
 
-    instance.persist_2_db()
+    cfg.glob.version.persist_2_db()
 
     with pytest.raises(SystemExit) as expt:
         db.cls_version.Version.select_version_version_unique()
@@ -2979,7 +2979,7 @@ def check_new_action():
         )
     )
 
-    cfg.glob.action = db.cls_action.Action(
+    cfg.glob.action_curr = db.cls_action.Action(
         action_code=expected_values[1],
         action_text=expected_values[2],
         directory_name=expected_values[3],
@@ -2994,7 +2994,7 @@ def check_new_action():
         status=expected_values[15],
     )
 
-    actual_values = cfg.glob.action.get_columns_in_tuple(is_duration_ns=False)
+    actual_values = cfg.glob.action_curr.get_columns_in_tuple(is_duration_ns=False)
 
     if actual_values != expected_values:
         print("issue with new dbt action instance:")
@@ -3002,7 +3002,7 @@ def check_new_action():
         print(f"values actual  ={actual_values}")
         assert False, "issue with new dbt action instance - see above"
 
-    cfg.glob.action = db.cls_action.Action(
+    cfg.glob.action_curr = db.cls_action.Action(
         action_code=expected_values[1],
         action_text=expected_values[2],
         directory_name=expected_values[3],
@@ -3043,11 +3043,11 @@ def check_new_action():
         )
     )
 
-    cfg.glob.action.action_status = expected_values[15]
+    cfg.glob.action_curr.action_status = expected_values[15]
 
-    cfg.glob.action.persist_2_db()
+    cfg.glob.action_curr.persist_2_db()
 
-    actual_values = cfg.glob.action.get_columns_in_tuple(is_duration_ns=False)
+    actual_values = cfg.glob.action_curr.get_columns_in_tuple(is_duration_ns=False)
 
     if actual_values != expected_values:
         print("issue with updated dbt action instance:")
@@ -3081,7 +3081,7 @@ def check_new_action():
         )
     )
 
-    cfg.glob.action = db.cls_action.Action(
+    cfg.glob.action_curr = db.cls_action.Action(
         _row_id=0,
         action_code=expected_values[1],
         action_text=expected_values[2],
@@ -3097,18 +3097,18 @@ def check_new_action():
         status=expected_values[15],
     )
 
-    cfg.glob.action.action_file_size_bytes = 0
-    cfg.glob.action.action_no_pdf_pages = 0
+    cfg.glob.action_curr.action_file_size_bytes = 0
+    cfg.glob.action_curr.action_no_pdf_pages = 0
 
-    cfg.glob.action.finalise()
+    cfg.glob.action_curr.finalise()
 
-    cfg.glob.action.finalise_error("error_code", "error_msg")
+    cfg.glob.action_curr.finalise_error("error_code", "error_msg")
 
 
 # -----------------------------------------------------------------------------
 # Check new document object.
 # -----------------------------------------------------------------------------
-def check_new_base():
+def check_new_document():
     """Check new document object."""
     # -----------------------------------------------------------------------------
     # Insert object.
@@ -3134,7 +3134,7 @@ def check_new_base():
         )
     )
 
-    instance = db.cls_document.Document(
+    cfg.glob.document = db.cls_document.Document(
         action_code_last=expected_values[1],
         directory_name=expected_values[3],
         file_name=expected_values[7],
@@ -3146,13 +3146,13 @@ def check_new_base():
         status=expected_values[13],
     )
 
-    actual_values = instance.get_columns_in_tuple()
+    actual_values = cfg.glob.document.get_columns_in_tuple()
 
     if actual_values != expected_values:
-        print("issue with new dbt document instance:")
+        print("issue with new dbt document cfg.glob.document:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
-        assert False, "issue with new dbt document instance - see above"
+        assert False, "issue with new dbt document cfg.glob.document - see above"
 
     # -----------------------------------------------------------------------------
     # Update object.
@@ -3178,17 +3178,17 @@ def check_new_base():
         )
     )
 
-    instance.base_status = expected_values[13]
+    cfg.glob.document.document_status = expected_values[13]
 
-    instance.finalise()
+    cfg.glob.document.finalise()
 
-    actual_values = instance.get_columns_in_tuple()
+    actual_values = cfg.glob.document.get_columns_in_tuple()
 
     if actual_values != expected_values:
-        print("issue with updated dbt document instance:")
+        print("issue with updated dbt document cfg.glob.document:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
-        assert False, "issue with updated dbt document instance - see above"
+        assert False, "issue with updated dbt document cfg.glob.document - see above"
 
 
 # -----------------------------------------------------------------------------
@@ -3499,6 +3499,7 @@ def check_new_version():
 # -----------------------------------------------------------------------------
 # Test Function - existing objects.
 # -----------------------------------------------------------------------------
+@pytest.mark.issue
 def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     """Test Function - existing objects."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -3512,6 +3513,8 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
+    db.cls_run.Run.id_run_umbrella = 0
+
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
@@ -3521,7 +3524,7 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     check_existing_run()
     check_existing_version()
 
-    check_existing_base()
+    check_existing_document()
 
     check_existing_action()
 
@@ -3543,7 +3546,7 @@ def test_missing_objects(fxtr_setup_empty_db_and_inbox):
     check_missing_run()
     check_missing_version()
 
-    check_missing_base()
+    check_missing_document()
 
     check_missing_action()
 
@@ -3556,6 +3559,7 @@ def test_missing_objects(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 # Test Function - new objects.
 # -----------------------------------------------------------------------------
+@pytest.mark.issue
 def test_new_objects(fxtr_setup_empty_db_and_inbox):
     """Test Function - new objects."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -3563,11 +3567,15 @@ def test_new_objects(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
+    cfg.glob.start_time_document = time.perf_counter_ns()
+
+    db.cls_run.Run.id_run_umbrella = 0
+
     check_new_language()
     check_new_run()
     check_new_version()
 
-    check_new_base()
+    check_new_document()
 
     check_new_action()
 

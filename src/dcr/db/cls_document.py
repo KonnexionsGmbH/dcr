@@ -18,7 +18,7 @@ from sqlalchemy import String
 # pylint: disable=R0902
 # pylint: disable=R0903
 class Document:
-    """Managing the document status.
+    """Managing the database table document.
 
     Returns:
         _type_: Document instance.

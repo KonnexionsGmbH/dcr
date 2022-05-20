@@ -13,6 +13,7 @@ import db.cls_document
 import db.cls_language
 import db.cls_run
 import nlp.cls_line_type
+import nlp.cls_text_parser
 import psycopg2.extensions
 import sqlalchemy
 
@@ -121,90 +122,6 @@ FILE_ENCODING_DEFAULT: str
 
 INFORMATION_NOT_YET_AVAILABLE: str
 
-JSON_NAME_API_VERSION: str
-JSON_NAME_COLUMN_NAME: str
-JSON_NAME_COLUMN_VALUE: str
-JSON_NAME_DATA: str
-JSON_NAME_DOCUMENT_FILE_NAME: str
-JSON_NAME_DOCUMENT_ID: str
-JSON_NAME_LINE_INDEX_PAGE: str
-JSON_NAME_LINE_INDEX_PARA: str
-JSON_NAME_LINE_TEXT: str
-JSON_NAME_LINE_TYPE: str
-JSON_NAME_LINES: str
-JSON_NAME_NO_LINES_IN_PAGE: str
-JSON_NAME_NO_PAGES_IN_DOC: str
-JSON_NAME_NO_PARAS_IN_PAGE: str
-JSON_NAME_NO_TOKENS_IN_PAGE: str
-JSON_NAME_PAGE_NO: str
-JSON_NAME_PAGE_TEXT: str
-JSON_NAME_PAGES: str
-JSON_NAME_PARA_INDEX_PAGE: str
-JSON_NAME_ROW: str
-JSON_NAME_ROWS: str
-JSON_NAME_TABLES: str
-JSON_NAME_TABLE_NAME: str
-
-JSON_NAME_TOKEN_CLUSTER: str
-JSON_NAME_TOKEN_DEP_: str
-JSON_NAME_TOKEN_DOC: str
-JSON_NAME_TOKEN_ENT_IOB_: str
-JSON_NAME_TOKEN_ENT_KB_ID_: str
-JSON_NAME_TOKEN_ENT_TYPE_: str
-JSON_NAME_TOKEN_HEAD: str
-JSON_NAME_TOKEN_I: str
-JSON_NAME_TOKEN_IDX: str
-JSON_NAME_TOKEN_IS_ALPHA: str
-JSON_NAME_TOKEN_IS_ASCII: str
-JSON_NAME_TOKEN_IS_BRACKET: str
-JSON_NAME_TOKEN_IS_CURRENCY: str
-JSON_NAME_TOKEN_IS_DIGIT: str
-JSON_NAME_TOKEN_IS_LEFT_PUNCT: str
-JSON_NAME_TOKEN_IS_LOWER: str
-JSON_NAME_TOKEN_IS_OOV: str
-JSON_NAME_TOKEN_IS_PUNCT: str
-JSON_NAME_TOKEN_IS_QUOTE: str
-JSON_NAME_TOKEN_IS_RIGHT_PUNCT: str
-JSON_NAME_TOKEN_IS_SENT_END: str
-JSON_NAME_TOKEN_IS_SENT_START: str
-JSON_NAME_TOKEN_IS_SPACE: str
-JSON_NAME_TOKEN_IS_STOP: str
-JSON_NAME_TOKEN_IS_TITLE: str
-JSON_NAME_TOKEN_IS_UPPER: str
-JSON_NAME_TOKEN_LANG_: str
-JSON_NAME_TOKEN_LEFT_EDGE: str
-JSON_NAME_TOKEN_LEMMA_: str
-JSON_NAME_TOKEN_LEX: str
-JSON_NAME_TOKEN_LEX_ID: str
-JSON_NAME_TOKEN_LIKE_EMAIL: str
-JSON_NAME_TOKEN_LIKE_NUM: str
-JSON_NAME_TOKEN_LIKE_URL: str
-JSON_NAME_TOKEN_LOWER_: str
-JSON_NAME_TOKEN_MORPH: str
-JSON_NAME_TOKEN_NORM_: str
-JSON_NAME_TOKEN_ORTH_: str
-JSON_NAME_TOKEN_POS_: str
-JSON_NAME_TOKEN_PREFIX_: str
-JSON_NAME_TOKEN_PROB: str
-JSON_NAME_TOKEN_RANK: str
-JSON_NAME_TOKEN_RIGHT_EDGE: str
-JSON_NAME_TOKEN_SENT: str
-JSON_NAME_TOKEN_SENTIMENT: str
-JSON_NAME_TOKEN_SHAPE_: str
-JSON_NAME_TOKEN_SUFFIX_: str
-JSON_NAME_TOKEN_TAG_: str
-JSON_NAME_TOKEN_TENSOR: str
-JSON_NAME_TOKEN_TEXT: str
-JSON_NAME_TOKEN_TEXT_WITH_WS: str
-JSON_NAME_TOKEN_VOCAB: str
-JSON_NAME_TOKEN_WHITESPACE_: str
-
-JSON_NAME_TOKENS: str
-
-JSON_NAME_WORD_INDEX_LINE: str
-JSON_NAME_WORD_TEXT: str
-JSON_NAME_WORDS: str
-
 LOCALE: str
 LOGGER_CFG_FILE: str
 LOGGER_END: str
@@ -212,48 +129,6 @@ LOGGER_FATAL_HEAD: str
 LOGGER_FATAL_TAIL: str
 LOGGER_PROGRESS_UPDATE: str
 LOGGER_START: str
-
-PARSE_NAME_SPACE: str
-
-PARSE_TAG_ACTION: str
-PARSE_TAG_ANNOTATIONS: str
-PARSE_TAG_ATTACHMENTS: str
-PARSE_TAG_AUTHOR: str
-PARSE_TAG_BOOKMARKS: str
-PARSE_TAG_BOX: str
-PARSE_TAG_CELL: str
-PARSE_TAG_CONTENT: str
-PARSE_TAG_CREATION: str
-PARSE_TAG_CREATION_DATE: str
-PARSE_TAG_CREATOR: str
-PARSE_TAG_CUSTOM: str
-PARSE_TAG_DESTINATIONS: str
-PARSE_TAG_DOCUMENT: str
-PARSE_TAG_DOC_INFO: str
-PARSE_TAG_ENCRYPTION: str
-PARSE_TAG_EXCEPTION: str
-PARSE_TAG_FIELDS: str
-PARSE_TAG_FROM: int
-PARSE_TAG_GRAPHICS: str
-PARSE_TAG_JAVA_SCRIPTS: str
-PARSE_TAG_LINE: str
-PARSE_TAG_METADATA: str
-PARSE_TAG_MOD_DATE: str
-PARSE_TAG_OPTIONS: str
-PARSE_TAG_OUTPUT_INTENTS: str
-PARSE_TAG_PAGE: str
-PARSE_TAG_PAGES: str
-PARSE_TAG_PARA: str
-PARSE_TAG_PLACED_IMAGE: str
-PARSE_TAG_PRODUCER: str
-PARSE_TAG_RESOURCES: str
-PARSE_TAG_ROW: str
-PARSE_TAG_SIGNATURE_FIELDS: str
-PARSE_TAG_TABLE: str
-PARSE_TAG_TEXT: str
-PARSE_TAG_TITLE: str
-PARSE_TAG_WORD: str
-PARSE_TAG_XFA: str
 
 TESTS_INBOX_NAME: str
 
@@ -285,36 +160,6 @@ languages_tesseract: Dict[sqlalchemy.Integer, str]
 line_type: Type[nlp.cls_line_type.LineType]
 
 logger: logging.Logger
-
-parse_result_line_0_line: Dict[str, int | str]
-parse_result_line_1_lines: List[Dict[str, int | str]]
-parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
-parse_result_line_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
-parse_result_line_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
-parse_result_line_index_page: int
-parse_result_line_index_para: int
-parse_result_no_lines_in_page: int
-parse_result_no_lines_in_para: int
-parse_result_no_pages_in_doc: int
-parse_result_no_paras_in_page: int
-parse_result_no_words_in_line: int
-parse_result_no_words_in_page: int
-parse_result_no_words_in_para: int
-parse_result_page_0_paras: List[str]
-# parse_result_page_1_page: Dict[str, int | str | List[str]]
-parse_result_page_2_pages: List[Dict[str, int | str | List[str]]]
-parse_result_page_3_document: Dict[str, int | str | List[Dict[str, int | str | List[str]]]]
-parse_result_page_index_doc: int
-parse_result_para_index_page: int
-parse_result_text: str
-# parse_result_word_0_word: Dict[str, int | str]
-parse_result_word_1_words: List[Dict[str, int | str]]
-# parse_result_word_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
-parse_result_word_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
-parse_result_word_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
-parse_result_word_index_line: int
-parse_result_word_index_page: int
-parse_result_word_index_para: int
 
 run: Type[db.cls_run.Run]
 
@@ -375,6 +220,8 @@ spacy_tkn_attr_vocab: bool
 spacy_tkn_attr_whitespace_: bool
 
 start_time_document: int
+
+text_parser: Type[nlp.cls_text_parser.TextParser]
 
 token_0_token: Dict[str, bool | str]
 token_1_tokens: List[Dict[str, bool | str]]

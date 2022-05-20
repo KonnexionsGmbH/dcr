@@ -41,7 +41,6 @@ def convert_pdf_2_image() -> None:
             if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
                 cfg.glob.run.total_status_error += 1
             else:
-                # not testable
                 cfg.glob.run.total_status_ready += 1
 
             cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)

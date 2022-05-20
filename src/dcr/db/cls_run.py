@@ -18,7 +18,7 @@ from sqlalchemy import String
 # pylint: disable=R0801
 # pylint: disable=R0902
 class Run:
-    """Managing the run data.
+    """Managing the database table run.
 
     Returns:
         _type_: Run instance.
