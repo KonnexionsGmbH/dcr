@@ -10,8 +10,8 @@ The GitHub Actions are used to enforce the following good practices of the softw
 - execution of the software testing framework, and
 - creation of up-to-date user documentation.
 
-The action **`ubuntu_20_04_standards`** in the GitHub Actions guarantees compliance with the required standards, the action **`ubuntu_all_production`** ensures error-free compilation for production use and the action **`ubuntu_all_development`** runs the tests against various operating system and **`Python`** versions.
-The actions **`ubuntu_all_development`** and **`ubuntu_all_production`** must be able to run error-free on operating systems **`Ubuntu 20.04`** and **`Ubuntu 22.04`**~~, **`Micrsoft Windows Server 2019`** and **`2022`**~~ and with **`Python`** version **`3.10`**, the action **`ubuntu_20_04_standards`** is only required error-free for the latest versions of **`Ubuntu`** and **`Python`**.
+The action **`ubuntu_22_04_standards`** in the GitHub Actions guarantees compliance with the required standards, the action **`ubuntu_all_production`** ensures error-free compilation for production use and the action **`ubuntu_all_development`** runs the tests against various operating system and **`Python`** versions.
+The actions **`ubuntu_all_development`** and **`ubuntu_all_production`** must be able to run error-free on operating systems **`Ubuntu 22.04`** and **`Ubuntu 22.04`**~~, **`Micrsoft Windows Server 2019`** and **`2022`**~~ and with **`Python`** version **`3.10`**, the action **`ubuntu_20_04_standards`** is only required error-free for the latest versions of **`Ubuntu`** and **`Python`**.
 
 The individual steps to be carried out 
 

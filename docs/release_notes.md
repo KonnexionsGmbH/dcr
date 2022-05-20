@@ -35,22 +35,22 @@ Release Date: dd.mm.2022
 
 #### 1.3.1 Unix-specific Software
 
-| Software                                                        | Version         | Remark                    | Status |
-|:----------------------------------------------------------------|:----------------|:--------------------------|--------|
-| asdf                                                            | v0.10.0-a9caa5b | base version (optional)   |        |
-| cURL                                                            | 7.6.80          | base version              |        |
-| dos2unix                                                        | 7.4.0           | base version              |        |
-| GCC & G++                                                       | 9.4.0           | base version              |        |
-| GNU Autoconf                                                    | 2.69            | base version              |        |
-| GNU Automake                                                    | 1.16.1          | base version              |        |
-| GNU make                                                        | 4.2.1           | base version              |        |
-| [htop](https://htop.dev){:target="_blank"}                      | 3.2.0           | optional                  |        |
-| [OpenSSL](https://www.openssl.org){:target="_blank"}            | 1.1.1f          | base version              |        |
-| [procps](https://github.com/warmchang/procps){:target="_blank"} | 3.3.16          | base version (optional)   |        |
-| [tmux](https://github.com/tmux/tmux/wiki){:target="_blank"}     | 3.2a            | optional                  |        |
-| Ubuntu                                                          | 20.04.4 LTS     | base version              |        |
-| Vim                                                             | 8.1.3741        | base version (optional)   |        |
-| Wget                                                            | 1.20.3          |                           |        |
+| Software                                                        | Version         | Remark                    | Status  |
+|:----------------------------------------------------------------|:----------------|:--------------------------|---------|
+| asdf                                                            | v0.10.0-a9caa5b | base version (optional)   |         |
+| cURL                                                            | 7.6.80          | base version              |         |
+| dos2unix                                                        | 7.4.0           | base version              |         |
+| GCC & G++                                                       | 9.4.0           | base version              |         |
+| GNU Autoconf                                                    | 2.69            | base version              |         |
+| GNU Automake                                                    | 1.16.1          | base version              |         |
+| GNU make                                                        | 4.2.1           | base version              |         |
+| [htop](https://htop.dev){:target="_blank"}                      | 3.2.0           | optional                  |         |
+| [OpenSSL](https://www.openssl.org){:target="_blank"}            | 1.1.1f          | base version              |         |
+| [procps](https://github.com/warmchang/procps){:target="_blank"} | 3.3.16          | base version (optional)   |         |
+| [tmux](https://github.com/tmux/tmux/wiki){:target="_blank"}     | 3.2a            | optional                  |         |
+| Ubuntu                                                          | 22.04.4 LTS     | base version              | upgrade |
+| Vim                                                             | 8.1.3741        | base version (optional)   |         |
+| Wget                                                            | 1.20.3          |                           |         |
 
 
 #### 1.3.2 Windows-specific Software

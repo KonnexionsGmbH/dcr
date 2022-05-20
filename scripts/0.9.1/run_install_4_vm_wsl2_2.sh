@@ -4,7 +4,7 @@ set -e
 
 # ----------------------------------------------------------------------------------
 #
-# run_install_4_vm_wsl2_2.sh: Install a dcr_dev environment for Ubuntu 20.04 - Step 2.
+# run_install_4_vm_wsl2_2.sh: Install a dcr_dev environment for Ubuntu 22.04 - Step 2.
 #
 # ------------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ sleep .1
 echo "=============================================================================="
 echo "Start $0"
 echo "------------------------------------------------------------------------------"
-echo "Install a dcr_dev environment for Ubuntu 20.04 - Step 2."
+echo "Install a dcr_dev environment for Ubuntu 22.04 - Step 2."
 echo "------------------------------------------------------------------------------"
 echo "HOST_ENVIRONMENT                  : ${HOST_ENVIRONMENT}"
 echo "USER                              : ${USER}"

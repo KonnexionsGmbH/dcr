@@ -10,7 +10,7 @@ The subdirectory `0.9.2` contains the following scripts:
 `run_install_4_vm_wsl2_1.sh` and
 `run_install_4_vm_wsl2_2.sh`
 
-These two scripts install the necessary tools for development and operation in an Ubuntu 20.04 environment as an alternative.
+These two scripts install the necessary tools for development and operation in an Ubuntu 22.04 environment as an alternative.
 Ubuntu can be provided either native, via a virtual machine or via the WSL2 (Windows Subsystem for Linux).
 If Ubuntu runs under WSL2, the installation of Docker Desktop is not necessary - Docker Desktop must then be installed in Windows 10.
 The first script expects the following input parameter:
