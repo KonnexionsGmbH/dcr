@@ -21,7 +21,7 @@ class Run:
     """Managing the run data.
 
     Returns:
-        _type_: Application configuration parameters.
+        _type_: Run instance.
     """
 
     # -----------------------------------------------------------------------------

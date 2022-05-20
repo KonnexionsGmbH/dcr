@@ -15,7 +15,7 @@ class Token:
     """Managing the token data.
 
     Returns:
-        _type_: Application configuration parameters.
+        _type_: Token instance.
     """
 
     # -----------------------------------------------------------------------------

@@ -15,7 +15,7 @@ class Version:
     """Managing the version data.
 
     Returns:
-        _type_: Application configuration parameters.
+        _type_: Version instance.
     """
 
     # -----------------------------------------------------------------------------

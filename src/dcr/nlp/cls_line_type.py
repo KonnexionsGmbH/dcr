@@ -15,7 +15,7 @@ class LineType:
     """Determine footer and header lines.
 
     Returns:
-        _type_: Instance object.
+        _type_: LineType instance.
     """
 
     # -----------------------------------------------------------------------------

@@ -20,7 +20,7 @@ class Language:
     """Managing the language data.
 
     Returns:
-        _type_: Application configuration parameters.
+        _type_: Language instance.
     """
 
     # -----------------------------------------------------------------------------

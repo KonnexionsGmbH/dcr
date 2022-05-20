@@ -24,7 +24,7 @@ class Action:
     """Managing the document processing steps.
 
     Returns:
-        _type_: Application configuration parameters.
+        _type_: Action instance.
     """
 
     # -----------------------------------------------------------------------------
