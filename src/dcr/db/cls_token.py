@@ -28,7 +28,18 @@ class Token:
         page_no: int | sqlalchemy.Integer,
         _row_id: int | sqlalchemy.Integer = 0,
     ) -> None:
-        """Initialise the instance."""
+        """Initialise the instance.
+
+        Args:
+            id_document (int | sqlalchemy.Integer):
+                    Row id of the document
+            page_data (str | sqlalchemy.String):
+                    Page data
+            page_no (int | sqlalchemy.Integer):
+                    Page number.
+            _row_id (int | sqlalchemy.Integer, optional):
+                    Row id. Defaults to 0.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         self.token_id: int | sqlalchemy.Integer = _row_id
@@ -39,6 +50,8 @@ class Token:
         if self.token_id == 0:
             self.persist_2_db()
 
+        self._exist = True
+
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
@@ -48,7 +61,8 @@ class Token:
         """Get the database columns.
 
         Returns:
-            db.dml.Columns: Database columns.
+            db.dml.Columns:
+                    Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -108,6 +122,17 @@ class Token:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
+    # Check the object existence.
+    # -----------------------------------------------------------------------------
+    def exists(self) -> bool:
+        """Check the object existence.
+
+        Returns:
+            bool:   Always true
+        """
+        return self._exist
+
+    # -----------------------------------------------------------------------------
     # Finalise the current row.
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
@@ -123,7 +148,15 @@ class Token:
     # -----------------------------------------------------------------------------
     @classmethod
     def from_id(cls, id_token: int | sqlalchemy.Integer) -> Token:
-        """Initialise from id."""
+        """Initialise from row id.
+
+        Args:
+            id_token (int | sqlalchemy.Integer):
+                    The required row id.
+
+        Returns:
+            Token:  The object instance found.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
@@ -154,7 +187,15 @@ class Token:
     # -----------------------------------------------------------------------------
     @classmethod
     def from_row(cls, row: sqlalchemy.engine.Row) -> Token:
-        """Initialise from a database row."""
+        """Initialise from a database row.
+
+        Args:
+            row (sqlalchemy.engine.Row):
+                    A appropriate database row.
+
+        Returns:
+            Token:  The object instance matching the specified database row.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 

@@ -10,6 +10,7 @@ import jellyfish
 import utils
 
 
+# pylint: disable=R0902
 # pylint: disable=R0903
 class LineType:
     """Determine footer and header lines.
@@ -48,6 +49,8 @@ class LineType:
 
         # [ (page_no, line_ind, line_type) ]
         self._page_line_type: List[Tuple[int, int, str]] = []
+
+        self._exist = True
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -256,6 +259,17 @@ class LineType:
             (line_ind_prev, line_ind_curr, distance) = self._line_1_lines_distance_header[page_ind_max][line]
             if distance <= cfg.glob.setup.line_header_max_distance:
                 self._page_line_type.append((page_ind_max + 2, line_ind_curr, cfg.glob.DOCUMENT_LINE_TYPE_HEADER))
+
+    # -----------------------------------------------------------------------------
+    # Check the object existence.
+    # -----------------------------------------------------------------------------
+    def exists(self) -> bool:
+        """Check the object existence.
+
+        Returns:
+            bool:   Always true
+        """
+        return self._exist
 
     # -----------------------------------------------------------------------------
     # Process the document related data.

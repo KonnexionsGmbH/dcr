@@ -53,11 +53,13 @@ def check_existing_action():
 
     actual_values = cfg.glob.action_curr.get_columns_in_tuple(is_duration_ns=False)
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print(f"issue with dbt action instance id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt action id={expected_values[0]} - see above"
+
+    cfg.glob.action_curr.exists()
 
     # -----------------------------------------------------------------------------
     # Finalise the current action with error.
@@ -100,32 +102,26 @@ def check_existing_action():
 # -----------------------------------------------------------------------------
 def check_existing_document():
     """Check existing document object."""
-    expected_values = (
-        1,
-        db.cls_run.Run.ACTION_CODE_PARSER_LINE,
-        db.cls_run.Run.get_action_text(db.cls_run.Run.ACTION_CODE_PARSER_LINE),
-        cfg.glob.setup.directory_inbox,
-        "",
-        "",
-        0,
-        "pdf_text_ok.pdf",
-        53651,
-        1,
-        7,
-        3,
-        "e2402cc28e178911ee5941b1f9ac0d596beb7730f101da715f996dc992acbe25",
-        cfg.glob.DOCUMENT_STATUS_END,
-    )
+    expected_values = pytest.helpers.get_values_document()
+
+    expected_values[0] = 1
+    expected_values[1] = "s_p_j_line"
+    expected_values[2] = "parser_line   (nlp)"
+    expected_values[10] = 7
+    expected_values[11] = 3
+    expected_values[13] = cfg.glob.DOCUMENT_STATUS_END
 
     cfg.glob.document = db.cls_document.Document.from_id(expected_values[0])
 
     actual_values = cfg.glob.document.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print(f"issue with dbt document cfg.glob.document id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt document id={expected_values[0]} - see above"
+
+    cfg.glob.document.exists()
 
     # -----------------------------------------------------------------------------
     # Get the duplicate file name based on the hash key.
@@ -175,7 +171,7 @@ def check_existing_document():
 # -----------------------------------------------------------------------------
 def check_existing_language():
     """Check existing language object."""
-    expected_values = (
+    expected_values = [
         1,
         True,
         "eng",
@@ -184,17 +180,19 @@ def check_existing_language():
         "eng",
         utils.get_os_independent_name("data/inbox_test"),
         "English",
-    )
+    ]
 
     cfg.glob.language = db.cls_language.Language.from_id(expected_values[0])
 
     actual_values = cfg.glob.language.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print(f"issue with dbt language cfg.glob.language id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt language id={expected_values[0]} - see above"
+
+    cfg.glob.language.exists()
 
 
 # -----------------------------------------------------------------------------
@@ -202,26 +200,25 @@ def check_existing_language():
 # -----------------------------------------------------------------------------
 def check_existing_run():
     """Check existing run object."""
-    expected_values = (
-        1,
-        db.cls_run.Run.ACTION_CODE_INBOX,
-        db.cls_run.Run.get_action_text(db.cls_run.Run.ACTION_CODE_INBOX),
-        1,
-        cfg.glob.DOCUMENT_STATUS_END,
-        0,
-        1,
-        1,
-    )
+    expected_values = pytest.helpers.get_values_run()
+
+    expected_values[0] = 1
+    expected_values[4] = cfg.glob.DOCUMENT_STATUS_END
+    expected_values[5] = 0
+    expected_values[6] = 1
+    expected_values[7] = 1
 
     cfg.glob.run = db.cls_run.Run.from_id(expected_values[0])
 
     actual_values = cfg.glob.run.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print(f"issue with dbt run cfg.glob.run id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt run id={expected_values[0]} - see above"
+
+    cfg.glob.run.exists()
 
 
 # -----------------------------------------------------------------------------
@@ -229,7 +226,9 @@ def check_existing_run():
 # -----------------------------------------------------------------------------
 def check_existing_token():
     """Check existing token object."""
-    expected_values = (
+    db.driver.connect_db()
+
+    expected_values = [
         1,
         cfg.glob.document.document_id,
         {
@@ -2756,17 +2755,19 @@ def check_existing_token():
             ],
         },
         1,
-    )
+    ]
 
     cfg.glob.token = db.cls_token.Token.from_id(expected_values[0])
 
     actual_values = cfg.glob.token.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print(f"issue with dbt token cfg.glob.token id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt token id={expected_values[0]} - see above"
+
+    cfg.glob.token.exists()
 
 
 # -----------------------------------------------------------------------------
@@ -2774,17 +2775,19 @@ def check_existing_token():
 # -----------------------------------------------------------------------------
 def check_existing_version():
     """Check existing version object."""
-    expected_values = (1, cfg.glob.setup.dcr_version)
+    expected_values = [1, cfg.glob.setup.dcr_version]
 
     cfg.glob.version = db.cls_version.Version.from_id(expected_values[0])
 
     actual_values = cfg.glob.version.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print(f"issue with dbt version cfg.glob.version id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt version id={expected_values[0]} - see above"
+
+    cfg.glob.version.exists()
 
 
 # -----------------------------------------------------------------------------
@@ -2845,6 +2848,8 @@ def check_missing_run():
     # -----------------------------------------------------------------------------
     # Invalid action code.
     # -----------------------------------------------------------------------------
+    db.driver.connect_db()
+
     with pytest.raises(SystemExit) as expt:
         db.cls_run.Run(
             _row_id=0,
@@ -2943,6 +2948,7 @@ def check_missing_version():
 # -----------------------------------------------------------------------------
 # Check new action object.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def check_new_action():
     """Check new action object."""
 
@@ -2956,47 +2962,13 @@ def check_new_action():
     # -----------------------------------------------------------------------------
     # Insert object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        (
-            1,
-            db.cls_run.Run.ACTION_CODE_INBOX,
-            db.cls_run.Run.get_action_text(db.cls_run.Run.ACTION_CODE_INBOX),
-            cfg.glob.setup.directory_inbox,
-            "inbox",
-            "",
-            "",
-            0,
-            "pdf_text_ok.pdf",
-            53651,
-        )
-        + (cfg.glob.document.document_id,)
-        + (1,)
-        + (cfg.glob.run.run_id,)
-        + (
-            0,
-            3,
-            cfg.glob.DOCUMENT_STATUS_START,
-        )
-    )
+    expected_values = pytest.helpers.create_action()
 
-    cfg.glob.action_curr = db.cls_action.Action(
-        action_code=expected_values[1],
-        action_text=expected_values[2],
-        directory_name=expected_values[3],
-        directory_type=expected_values[4],
-        file_name=expected_values[8],
-        file_size_bytes=expected_values[9],
-        id_document=expected_values[10],
-        id_parent=expected_values[11],
-        id_run_last=expected_values[12],
-        no_children=expected_values[13],
-        no_pdf_pages=expected_values[14],
-        status=expected_values[15],
-    )
+    cfg.glob.action_curr = db.cls_action.Action.from_id(expected_values[0])
 
     actual_values = cfg.glob.action_curr.get_columns_in_tuple(is_duration_ns=False)
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with new dbt action instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3020,28 +2992,9 @@ def check_new_action():
     # -----------------------------------------------------------------------------
     # Update object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        (
-            2,
-            db.cls_run.Run.ACTION_CODE_INBOX,
-            db.cls_run.Run.get_action_text(db.cls_run.Run.ACTION_CODE_INBOX),
-            cfg.glob.setup.directory_inbox,
-            "inbox",
-            "",
-            "",
-            0,
-            "pdf_text_ok.pdf",
-            53651,
-        )
-        + (cfg.glob.document.document_id,)
-        + (2,)
-        + (cfg.glob.run.run_id,)
-        + (
-            0,
-            3,
-            cfg.glob.DOCUMENT_STATUS_END,
-        )
-    )
+    cfg.glob.action_curr = db.cls_action.Action.from_id(expected_values[0])
+
+    expected_values[15] = cfg.glob.DOCUMENT_STATUS_END
 
     cfg.glob.action_curr.action_status = expected_values[15]
 
@@ -3049,7 +3002,7 @@ def check_new_action():
 
     actual_values = cfg.glob.action_curr.get_columns_in_tuple(is_duration_ns=False)
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with updated dbt action instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3058,30 +3011,11 @@ def check_new_action():
     # -----------------------------------------------------------------------------
     # coverage.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        (
-            5,
-            db.cls_run.Run.ACTION_CODE_PARSER_LINE,
-            db.cls_run.Run.get_action_text(db.cls_run.Run.ACTION_CODE_PARSER_LINE),
-            cfg.glob.setup.directory_inbox,
-            "inbox",
-            "",
-            "",
-            0,
-            "pdf_text_ok.pdf",
-            53651,
-        )
-        + (cfg.glob.document.document_id,)
-        + (1,)
-        + (cfg.glob.run.run_id,)
-        + (
-            0,
-            3,
-            cfg.glob.DOCUMENT_STATUS_START,
-        )
-    )
+    expected_values[0] = 5
+    expected_values[1] = "s_p_j_line"
+    expected_values[2] = "parser_line   (nlp)"
 
-    cfg.glob.action_curr = db.cls_action.Action(
+    instance = db.cls_action.Action(
         _row_id=0,
         action_code=expected_values[1],
         action_text=expected_values[2],
@@ -3097,58 +3031,30 @@ def check_new_action():
         status=expected_values[15],
     )
 
-    cfg.glob.action_curr.action_file_size_bytes = 0
-    cfg.glob.action_curr.action_no_pdf_pages = 0
+    instance.action_file_size_bytes = 0
+    instance.action_no_pdf_pages = 0
 
-    cfg.glob.action_curr.finalise()
+    instance.finalise()
 
-    cfg.glob.action_curr.finalise_error("error_code", "error_msg")
+    instance.finalise_error("error_code", "error_msg")
 
 
 # -----------------------------------------------------------------------------
 # Check new document object.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def check_new_document():
     """Check new document object."""
     # -----------------------------------------------------------------------------
     # Insert object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        (
-            1,
-            db.cls_run.Run.ACTION_CODE_PARSER_LINE,
-            db.cls_run.Run.get_action_text(db.cls_run.Run.ACTION_CODE_PARSER_LINE),
-            cfg.glob.setup.directory_inbox,
-            "",
-            "",
-            0,
-            "pdf_text_ok.pdf",
-            53651,
-        )
-        + (cfg.glob.language.language_id,)
-        + (cfg.glob.run.run_id,)
-        + (
-            3,
-            "e2402cc28e178911ee5941b1f9ac0d596beb7730f101da715f996dc992acbe25",
-            cfg.glob.DOCUMENT_STATUS_START,
-        )
-    )
+    expected_values = pytest.helpers.create_document()
 
-    cfg.glob.document = db.cls_document.Document(
-        action_code_last=expected_values[1],
-        directory_name=expected_values[3],
-        file_name=expected_values[7],
-        file_size_bytes=expected_values[8],
-        id_language=expected_values[9],
-        id_run_last=expected_values[10],
-        no_pdf_pages=expected_values[11],
-        sha256=expected_values[12],
-        status=expected_values[13],
-    )
+    cfg.glob.document = db.cls_document.Document.from_id(expected_values[0])
 
     actual_values = cfg.glob.document.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with new dbt document cfg.glob.document:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3157,26 +3063,7 @@ def check_new_document():
     # -----------------------------------------------------------------------------
     # Update object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        (
-            1,
-            db.cls_run.Run.ACTION_CODE_PARSER_LINE,
-            db.cls_run.Run.get_action_text(db.cls_run.Run.ACTION_CODE_PARSER_LINE),
-            cfg.glob.setup.directory_inbox,
-            "",
-            "",
-            0,
-            "pdf_text_ok.pdf",
-            53651,
-        )
-        + (cfg.glob.language.language_id,)
-        + (cfg.glob.run.run_id,)
-        + (
-            3,
-            "e2402cc28e178911ee5941b1f9ac0d596beb7730f101da715f996dc992acbe25",
-            cfg.glob.DOCUMENT_STATUS_END,
-        )
-    )
+    expected_values[13] = cfg.glob.DOCUMENT_STATUS_END
 
     cfg.glob.document.document_status = expected_values[13]
 
@@ -3184,7 +3071,7 @@ def check_new_document():
 
     actual_values = cfg.glob.document.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with updated dbt document cfg.glob.document:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3194,37 +3081,19 @@ def check_new_document():
 # -----------------------------------------------------------------------------
 # Check new language object.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def check_new_language():
     """Check new language object."""
     # -----------------------------------------------------------------------------
     # Insert object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        5,
-        True,
-        "xxx_code_iso_639_3",
-        "xxx_code_pandoc",
-        "xxx_code_spacy",
-        "xxx_code_tesseract",
-        "xxx_directory_name_inbox",
-        "xxx_iso_language_name",
-    )
+    expected_values = pytest.helpers.create_language()
 
-    cfg.glob.language = db.cls_language.Language(
-        active=expected_values[1],
-        code_iso_639_3=expected_values[2],
-        code_pandoc=expected_values[3],
-        code_spacy=expected_values[4],
-        code_tesseract=expected_values[5],
-        directory_name_inbox=expected_values[6],
-        iso_language_name=expected_values[7],
-    )
-
-    cfg.glob.language.persist_2_db()
+    cfg.glob.language = db.cls_language.Language.from_id(expected_values[0])
 
     actual_values = cfg.glob.language.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with new dbt language instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3233,16 +3102,7 @@ def check_new_language():
     # -----------------------------------------------------------------------------
     # Update object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        5,
-        True,
-        "xxx_code_iso_639_3",
-        "xxx_code_pandoc",
-        "xxx_code_spacy",
-        "xxx_code_tesseract",
-        "",
-        "xxx_iso_language_name",
-    )
+    expected_values[6] = ""
 
     cfg.glob.language.language_directory_name_inbox = expected_values[6]
 
@@ -3250,7 +3110,7 @@ def check_new_language():
 
     actual_values = cfg.glob.language.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with updated dbt language instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3260,34 +3120,19 @@ def check_new_language():
 # -----------------------------------------------------------------------------
 # Check new run object.
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def check_new_run():
     """Check new run object."""
     # -----------------------------------------------------------------------------
     # Insert object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        1,
-        db.cls_run.Run.ACTION_CODE_INBOX,
-        db.cls_run.Run.get_action_text(db.cls_run.Run.ACTION_CODE_INBOX),
-        1,
-        cfg.glob.DOCUMENT_STATUS_START,
-        1,
-        0,
-        0,
-    )
+    expected_values = pytest.helpers.create_run()
 
-    cfg.glob.run = db.cls_run.Run(
-        _row_id=0,
-        action_code=expected_values[1],
-        status=expected_values[4],
-        total_erroneous=1,
-    )
-
-    cfg.glob.run.persist_2_db()
+    cfg.glob.run = db.cls_run.Run.from_id(expected_values[0])
 
     actual_values = cfg.glob.run.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with new dbt run instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3296,16 +3141,7 @@ def check_new_run():
     # -----------------------------------------------------------------------------
     # Update object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        1,
-        db.cls_run.Run.ACTION_CODE_INBOX,
-        "inbox         (preprocessor)",
-        1,
-        cfg.glob.DOCUMENT_STATUS_END,
-        1,
-        0,
-        0,
-    )
+    expected_values[4] = cfg.glob.DOCUMENT_STATUS_END
 
     cfg.glob.run.run_status = expected_values[4]
 
@@ -3313,7 +3149,7 @@ def check_new_run():
 
     actual_values = cfg.glob.run.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with updated dbt run instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3342,52 +3178,13 @@ def check_new_token():
     # -----------------------------------------------------------------------------
     # Insert object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        1,
-        cfg.glob.document.document_id,
-        {
-            "pageNo": 1,
-            "noTokensInPage": 221,
-            "tokens": [
-                {
-                    "tknEntIob_": "O",
-                    "tknI": 0,
-                    "tknIsOov": True,
-                    "tknIsSentStart": True,
-                    "tknIsTitle": True,
-                    "tknLemma_": "Start",
-                    "tknNorm_": "start",
-                    "tknPos_": "PROPN",
-                    "tknTag_": "NNP",
-                    "tknText": "Start",
-                    "tknWhitespace_": " ",
-                },
-                {
-                    "tknEntIob_": "O",
-                    "tknI": 220,
-                    "tknIsOov": True,
-                    "tknIsPunct": True,
-                    "tknIsSentEnd": True,
-                    "tknLemma_": ".",
-                    "tknNorm_": ".",
-                    "tknPos_": "PUNCT",
-                    "tknTag_": ".",
-                    "tknText": ".",
-                },
-            ],
-        },
-        1,
-    )
+    expected_values = pytest.helpers.create_token()
 
-    cfg.glob.token = db.cls_token.Token(
-        id_document=expected_values[1],
-        page_data=expected_values[2],
-        page_no=expected_values[3],
-    )
+    cfg.glob.token = db.cls_token.Token.from_id(expected_values[0])
 
     actual_values = cfg.glob.token.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with new dbt token instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3396,42 +3193,7 @@ def check_new_token():
     # -----------------------------------------------------------------------------
     # Update object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        1,
-        cfg.glob.document.document_id,
-        {
-            "pageNo": 1,
-            "noTokensInPage": 221,
-            "tokens": [
-                {
-                    "tknEntIob_": "O",
-                    "tknI": 0,
-                    "tknIsOov": True,
-                    "tknIsSentStart": True,
-                    "tknIsTitle": True,
-                    "tknLemma_": "Start",
-                    "tknNorm_": "start",
-                    "tknPos_": "PROPN",
-                    "tknTag_": "NNP",
-                    "tknText": "Start",
-                    "tknWhitespace_": " ",
-                },
-                {
-                    "tknEntIob_": "O",
-                    "tknI": 220,
-                    "tknIsOov": True,
-                    "tknIsPunct": True,
-                    "tknIsSentEnd": True,
-                    "tknLemma_": ".",
-                    "tknNorm_": ".",
-                    "tknPos_": "PUNCT",
-                    "tknTag_": ".",
-                    "tknText": ".",
-                },
-            ],
-        },
-        2,
-    )
+    expected_values[3] = 2
 
     cfg.glob.token.token_page_no = expected_values[3]
 
@@ -3439,7 +3201,7 @@ def check_new_token():
 
     actual_values = cfg.glob.token.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with updated dbt token instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3456,20 +3218,13 @@ def check_new_version():
     # -----------------------------------------------------------------------------
     # Insert object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        2,
-        "xxx_version",
-    )
+    expected_values = pytest.helpers.create_version()
 
-    cfg.glob.version = db.cls_version.Version(
-        version=expected_values[1],
-    )
-
-    cfg.glob.version.persist_2_db()
+    cfg.glob.version = db.cls_version.Version.from_id(expected_values[0])
 
     actual_values = cfg.glob.version.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with new dbt version instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3478,10 +3233,7 @@ def check_new_version():
     # -----------------------------------------------------------------------------
     # Update object.
     # -----------------------------------------------------------------------------
-    expected_values = (
-        2,
-        "",
-    )
+    expected_values[1] = ""
 
     cfg.glob.version.version_version = expected_values[1]
 
@@ -3489,7 +3241,7 @@ def check_new_version():
 
     actual_values = cfg.glob.version.get_columns_in_tuple()
 
-    if actual_values != expected_values:
+    if actual_values != tuple(expected_values):
         print("issue with updated dbt version instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3499,7 +3251,6 @@ def check_new_version():
 # -----------------------------------------------------------------------------
 # Test Function - existing objects.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     """Test Function - existing objects."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -3559,7 +3310,6 @@ def test_missing_objects(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 # Test Function - new objects.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_new_objects(fxtr_setup_empty_db_and_inbox):
     """Test Function - new objects."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

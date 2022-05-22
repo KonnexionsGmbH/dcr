@@ -230,6 +230,8 @@ class Setup:
 
         utils.progress_msg_core("The configuration parameters are checked and loaded")
 
+        self._exist = True
+
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
@@ -1099,3 +1101,14 @@ class Setup:
                     utils.terminate_fatal_setup(f"Unknown configuration parameter '{key}'")
 
         self._check_config()
+
+    # -----------------------------------------------------------------------------
+    # Check the object existence.
+    # -----------------------------------------------------------------------------
+    def exists(self) -> bool:
+        """Check the object existence.
+
+        Returns:
+            bool:   Always true
+        """
+        return self._exist

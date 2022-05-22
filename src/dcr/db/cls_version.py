@@ -26,7 +26,14 @@ class Version:
         _row_id: int | sqlalchemy.Integer = 0,
         version: str = "",
     ) -> None:
-        """Initialise the instance."""
+        """Initialise the instance.
+
+        Args:
+            _row_id (int | sqlalchemy.Integer, optional):
+                    Row id. Defaults to 0.
+            version (str, optional):
+                    Version number. Defaults to "".
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         self.version_id: int | sqlalchemy.Integer = _row_id
@@ -34,6 +41,8 @@ class Version:
 
         if self.version_id == 0:
             self.persist_2_db()
+
+        self._exist = True
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -44,7 +53,8 @@ class Version:
         """Get the database columns.
 
         Returns:
-            db.dml.Columns: Database columns.
+            db.dml.Columns:
+                    Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -87,6 +97,17 @@ class Version:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
+    # Check the object existence.
+    # -----------------------------------------------------------------------------
+    def exists(self) -> bool:
+        """Check the object existence.
+
+        Returns:
+            bool:   Always true
+        """
+        return self._exist
+
+    # -----------------------------------------------------------------------------
     # Finalise the current row.
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
@@ -102,7 +123,16 @@ class Version:
     # -----------------------------------------------------------------------------
     @classmethod
     def from_id(cls, id_version: int | sqlalchemy.Integer) -> Version:
-        """Initialise from id."""
+        """Initialise from row id.
+
+        Args:
+            id_version (int | sqlalchemy.Integer):
+                    The required row id.
+
+        Returns:
+            Version:
+                    The object instance found.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         db.driver.connect_db()
@@ -135,7 +165,16 @@ class Version:
     # -----------------------------------------------------------------------------
     @classmethod
     def from_row(cls, row: sqlalchemy.engine.Row) -> Version:
-        """Initialise from a database row."""
+        """Initialise from a database row.
+
+        Args:
+            row (sqlalchemy.engine.Row):
+                    A appropriate database row.
+
+        Returns:
+            Version:
+                    The object instance matching the specified database row.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -151,7 +190,8 @@ class Version:
         """Get the database columns in a tuple.
 
         Returns:
-            tuple[int | Integer, str]: Column values in a tuple.
+            tuple[int | Integer, str]:
+                    Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)

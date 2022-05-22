@@ -199,7 +199,12 @@ def progress_msg(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    if cfg.glob.setup.is_verbose:
+    try:
+        cfg.glob.setup.exists()
+
+        if cfg.glob.setup.is_verbose:
+            progress_msg_core(msg)
+    except AttributeError:
         progress_msg_core(msg)
 
 
@@ -208,7 +213,15 @@ def progress_msg(msg: str) -> None:
 # -----------------------------------------------------------------------------
 def progress_msg_connected() -> None:
     """Create a progress message: connected to database."""
-    if cfg.glob.setup.is_verbose:
+    try:
+        cfg.glob.setup.exists()
+
+        if cfg.glob.setup.is_verbose:
+            print("")
+            progress_msg(
+                f"User '{cfg.glob.db_current_user}' is now connected " f"to database '{cfg.glob.db_current_database}'"
+            )
+    except AttributeError:
         print("")
         progress_msg(
             f"User '{cfg.glob.db_current_user}' is now connected " f"to database '{cfg.glob.db_current_database}'"
@@ -236,25 +249,32 @@ def progress_msg_core(msg: str) -> None:
 # -----------------------------------------------------------------------------
 def progress_msg_disconnected() -> None:
     """Create a progress message: disconnected from database."""
-    if cfg.glob.setup.is_verbose:
-        if cfg.glob.db_current_database is None and cfg.glob.db_current_user is None:
+    try:
+        cfg.glob.setup.exists()
+
+        if cfg.glob.setup.is_verbose:
+            if cfg.glob.db_current_database is None and cfg.glob.db_current_user is None:
+                print("")
+                utils.progress_msg("Database is now disconnected")
+                return
+
+            database = (
+                cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+                if cfg.glob.db_current_database is None
+                else cfg.glob.db_current_database
+            )
+
+            user = (
+                cfg.glob.INFORMATION_NOT_YET_AVAILABLE if cfg.glob.db_current_user is None else cfg.glob.db_current_user
+            )
+
             print("")
-            utils.progress_msg("Database is now disconnected")
-            return
+            utils.progress_msg(f"User '{user}' is now disconnected from database '{database}'")
 
-        database = (
-            cfg.glob.INFORMATION_NOT_YET_AVAILABLE
-            if cfg.glob.db_current_database is None
-            else cfg.glob.db_current_database
-        )
-
-        user = cfg.glob.INFORMATION_NOT_YET_AVAILABLE if cfg.glob.db_current_user is None else cfg.glob.db_current_user
-
-        print("")
-        utils.progress_msg(f"User '{user}' is now disconnected from database '{database}'")
-
-        cfg.glob.db_current_database = None
-        cfg.glob.db_current_user = None
+            cfg.glob.db_current_database = None
+            cfg.glob.db_current_user = None
+    except AttributeError:
+        pass
 
 
 # -----------------------------------------------------------------------------
@@ -266,7 +286,12 @@ def progress_msg_empty_before(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    if cfg.glob.setup.is_verbose:
+    try:
+        cfg.glob.setup.exists()
+        if cfg.glob.setup.is_verbose:
+            print("")
+            progress_msg(msg)
+    except AttributeError:
         print("")
         progress_msg(msg)
 
@@ -384,7 +409,12 @@ def terminate_fatal(error_msg: str) -> None:
     Args:
         error_msg (str): Error message.
     """
-    db.driver.disconnect_db()
+    try:
+        cfg.glob.setup.exists()
+
+        db.driver.disconnect_db()
+    except AttributeError:
+        pass
 
     terminate_fatal_setup(error_msg)
 

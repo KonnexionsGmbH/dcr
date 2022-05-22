@@ -44,7 +44,38 @@ class Document:
         sha256: str | sqlalchemy.String = "",
         status: str | sqlalchemy.String = "",
     ) -> None:
-        """Initialise the instance."""
+        """Initialise the instance.
+
+        Args:
+            action_code_last (str):
+                    Action code of the last action.
+            directory_name (str):
+                    The document location.
+            file_name (str):
+                    The file name.
+            id_language (int | sqlalchemy.Integer):
+                    The row id of the language
+            id_run_last (int | sqlalchemy.Integer):
+                    _description_
+            _row_id (int | sqlalchemy.Integer, optional):
+                    Row id of the last run that processed this document action. Defaults to 0.
+            action_text_last (str, optional):
+                    Action text (is derived from action_code_last if it is missing). Defaults to "".
+            error_code_last (str | sqlalchemy.String, optional):
+                    The code of the last error that occurred. Defaults to "".
+            error_msg_last (str | sqlalchemy.String, optional):
+                    The message of the last error that occurred. Defaults to "".
+            error_no (int, optional):
+                    The total number of errors in this document. Defaults to 0.
+            file_size_bytes (int, optional):
+                    The file size in bytes. Defaults to 0.
+            no_pdf_pages (int, optional):
+                    For a document of the type 'pdf' the number of pages. Defaults to 0.
+            sha256 (str | sqlalchemy.String, optional):
+                    The value of the SHA-256 hash function. Defaults to "".
+            status (str | sqlalchemy.String, optional):
+                    Status. Defaults to "".
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         self.document_action_code_last: str = action_code_last
@@ -65,6 +96,8 @@ class Document:
         if self.document_id == 0:
             self.persist_2_db()
 
+        self._exist = True
+
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
@@ -74,7 +107,8 @@ class Document:
         """Get the database columns.
 
         Returns:
-            db.dml.Columns: Database columns.
+            db.dml.Columns:
+                    Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -153,6 +187,17 @@ class Document:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
+    # Check the object existence.
+    # -----------------------------------------------------------------------------
+    def exists(self) -> bool:
+        """Check the object existence.
+
+        Returns:
+            bool:   Always true
+        """
+        return self._exist
+
+    # -----------------------------------------------------------------------------
     # Finalise the current row.
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
@@ -172,8 +217,10 @@ class Document:
         """Finalise the current row with error.
 
         Args:
-            error_code (str)                : Error code.
-            error_msg (str)                 : Error message.
+            error_code (str):
+                    Error code.
+            error_msg (str):
+                    Error message.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -191,7 +238,16 @@ class Document:
     # -----------------------------------------------------------------------------
     @classmethod
     def from_id(cls, id_document: int | sqlalchemy.Integer) -> Document:
-        """Initialise from id."""
+        """Initialise from id.
+
+        Args:
+            id_document (int | sqlalchemy.Integer):
+                    The required row id.
+
+        Returns:
+            Document:
+                    The object instance found.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
@@ -222,7 +278,16 @@ class Document:
     # -----------------------------------------------------------------------------
     @classmethod
     def from_row(cls, row: sqlalchemy.engine.Row) -> Document:
-        """Initialise from a database row."""
+        """Initialise from a database row.
+
+        Args:
+            row (sqlalchemy.engine.Row):
+                    A appropriate database row.
+
+        Returns:
+            Document:
+                    The object instance matching the specified database row.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -250,11 +315,12 @@ class Document:
         """Get the database columns in a tuple.
 
         Args:
-            is_file_size_bytes (bool, optional): Including column file_size_bytes?. Defaults to True.
+            is_file_size_bytes (bool, optional):
+                    Including column file_size_bytes?. Defaults to True.
 
         Returns:
                 Tuple[Union[str, int, Integer, String], ...]:
-                        Column values in a tuple.
+                    Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -289,7 +355,7 @@ class Document:
         """Get the file name from the first processed document.
 
         Returns:
-            str: File name.
+            str:    File name of the following action.
         """
         return (
             self.get_stem_name_next()
@@ -308,7 +374,7 @@ class Document:
         """Get the file type from the file name.
 
         Returns:
-            str: File type.
+            str:    File type.
         """
         if self.document_file_name == "":
             return self.document_file_name
@@ -323,7 +389,7 @@ class Document:
         path.
 
         Returns:
-            str: Full file name.
+            str:    Full file name.
         """
         return utils.get_full_name(
             directory_name=self.document_directory_name,
@@ -337,7 +403,7 @@ class Document:
         """Get the stem name from the file name.
 
         Returns:
-            str: Stem name.
+            str:    Stem name.
         """
         if self.document_file_name == "":
             return self.document_file_name
@@ -351,7 +417,7 @@ class Document:
         """Get the stem name from the first processed document.
 
         Returns:
-            str: Stem name.
+            str:    Stem name of the following action.
         """
         if self.document_file_name == "":
             return self.document_file_name
@@ -401,11 +467,14 @@ class Document:
         """Get the duplicate file name based on the hash key.
 
         Args:
-            id_document (sqlalchemy.Integer): Document id.
-            sha256 (str): Hash key.
+            id_document (sqlalchemy.Integer):
+                    Document id.
+            sha256 (str):
+                    Hash key.
 
         Returns:
-            str | None: The file name found.
+            str | None:
+                    The file name found.
         """
         dbt = sqlalchemy.Table(
             cfg.glob.DBT_DOCUMENT,

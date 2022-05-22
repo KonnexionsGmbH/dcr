@@ -37,7 +37,26 @@ class Language:
         active: bool | sqlalchemy.Boolean = False,
         directory_name_inbox: str = "",
     ) -> None:
-        """Initialise the instance."""
+        """Initialise the instance.
+
+        Args:
+            code_iso_639_3 (str | sqlalchemy.String):
+                    The ISO 639-3 code of the language.
+            code_pandoc (str | sqlalchemy.String):
+                    The Pandoc code of the language.
+            code_spacy (str | sqlalchemy.String):
+                    The SpaCy code of the model to be applied.
+            code_tesseract (str | sqlalchemy.String):
+                    The Tesseract OCR code of the language.
+            iso_language_name (str):
+                    The English name of the language.
+            _row_id (int | sqlalchemy.Integer, optional):
+                    Row id. Defaults to 0.
+            active (bool | sqlalchemy.Boolean, optional):
+                    Is the language active?. Defaults to False.
+            directory_name_inbox (str, optional):
+                    Name of the language-specific input file directory. Defaults to "".
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         self.language_active: bool | sqlalchemy.Boolean = active
@@ -64,6 +83,8 @@ class Language:
         self.total_processed_pdflib = 0
         self.total_processed_tesseract = 0
 
+        self._exist = True
+
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
@@ -73,7 +94,8 @@ class Language:
         """Get the database columns.
 
         Returns:
-            db.dml.Columns: Database columns.
+            db.dml.Columns:
+                    Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -128,11 +150,31 @@ class Language:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
+    # Check the object existence.
+    # -----------------------------------------------------------------------------
+    def exists(self) -> bool:
+        """Check the object existence.
+
+        Returns:
+            bool:   Always true
+        """
+        return self._exist
+
+    # -----------------------------------------------------------------------------
     # Initialise from id.
     # -----------------------------------------------------------------------------
     @classmethod
     def from_id(cls, id_language: int | sqlalchemy.Integer) -> Language:
-        """Initialise from id."""
+        """Initialise from row id.
+
+        Args:
+            id_language (int | sqlalchemy.Integer):
+                    The required row id.
+
+        Returns:
+            Language:
+                    The object instance found.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
@@ -163,7 +205,16 @@ class Language:
     # -----------------------------------------------------------------------------
     @classmethod
     def from_row(cls, row: sqlalchemy.engine.Row) -> Language:
-        """Initialise from a database row."""
+        """Initialise from a database row.
+
+        Args:
+            row (sqlalchemy.engine.Row):
+                    A appropriate database row.
+
+        Returns:
+            Language:
+                    The object instance matching the specified database row.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -205,7 +256,7 @@ class Language:
             str | String,
             str | String,
             str | String,
-        ]: Column values in a tuple.
+        ]:          Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -250,10 +301,12 @@ class Language:
         """Get the languages to be processed.
 
         Args:
-            conn (Connection): Database connection.
+            conn (Connection):
+                    Database connection.
 
         Returns:
-            engine.CursorResult: The languages found.
+            engine.CursorResult:
+                    The languages found.
         """
         dbt = sqlalchemy.Table(
             cfg.glob.DBT_LANGUAGE,

@@ -230,10 +230,11 @@ pytest-issue:       ## Run only the tests with pytest which are marked with 'iss
 pytest-module:      ## Run tests of specific module(s) with pytest - test_all & test_cfg_cls_setup & test_db_cls.
 	@echo "Info **********  Start: pytest **************************************"
 	pipenv run pytest --version
-	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -v tests/test_utils.py
+	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -v tests/test_db_cls_action.py
 #	pipenv run pytest --cov=src --cov-report term-missing:skip-covered -v tests/test_all.py \
 #																	      tests/test_cfg_cls.py \
 #																	      tests/test_db_cls.py \
+#																	      tests/test_db_cls_action.py \
 #																	      tests/test_db_ddl.py \
 #																	      tests/test_db_dml.py \
 #																	      tests/test_db_driver.py \

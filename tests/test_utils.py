@@ -2,6 +2,8 @@
 """Testing Module dcr.utils."""
 import pathlib
 
+import pytest
+
 import cfg.glob
 import utils
 
@@ -60,6 +62,7 @@ def test_get_stem_name():
 # -----------------------------------------------------------------------------
 # Test Function - progress_msg_disconnected().
 # -----------------------------------------------------------------------------
+@pytest.mark.issue
 def test_progress_msg_disconnected(fxtr_setup_logger_environment):
     """Test: get_file_type()."""
     cfg.glob.setup.is_verbose = True
@@ -67,3 +70,18 @@ def test_progress_msg_disconnected(fxtr_setup_logger_environment):
     cfg.glob.db_current_user = None
 
     utils.progress_msg_disconnected()
+
+    del cfg.glob.setup
+
+    utils.progress_msg_connected()
+
+    utils.progress_msg_disconnected()
+
+    utils.progress_msg_empty_before("Test")
+
+    with pytest.raises(SystemExit) as expt:
+        utils.terminate_fatal("Test")
+
+    assert expt.type == SystemExit, "End of programme without object 'cfg.glob.setup'"
+    assert expt.value.code == 1, "End of programme without object 'cfg.glob.setup'"
+

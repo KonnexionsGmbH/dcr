@@ -31,6 +31,7 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
+# pylint: disable=C0302
 # pylint: disable=W0212
 CONFIG_PARSER: configparser.ConfigParser = configparser.ConfigParser()
 
@@ -302,6 +303,169 @@ def copy_files_4_pytest_2_dir(
 
 
 # -----------------------------------------------------------------------------
+# Create one row in atabase table action.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def create_action():
+    """Create one row in atabase table action.
+
+    Returns:
+        List: Column values
+    """
+    values = get_values_action()
+
+    instance = db.cls_action.Action(
+        action_code=values[1],
+        action_text=values[2],
+        directory_name=values[3],
+        directory_type=values[4],
+        file_name=values[8],
+        file_size_bytes=values[9],
+        id_document=values[10],
+        id_parent=values[11],
+        id_run_last=values[12],
+        no_children=values[13],
+        no_pdf_pages=values[14],
+        status=values[15],
+    )
+
+    values[0] = instance.action_id
+
+    return values
+
+
+# -----------------------------------------------------------------------------
+# Create one row in atabase table document.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def create_document():
+    """Create one row in atabase table document.
+
+    Returns:
+        List: Column values
+    """
+    values = get_values_document()
+
+    instance = db.cls_document.Document(
+        action_code_last=values[1],
+        directory_name=values[3],
+        file_name=values[7],
+        file_size_bytes=values[8],
+        id_language=values[9],
+        id_run_last=values[10],
+        no_pdf_pages=values[11],
+        sha256=values[12],
+        status=values[13],
+    )
+
+    values[0] = instance.document_id
+
+    return values
+
+
+# -----------------------------------------------------------------------------
+# Create one row in atabase table language.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def create_language():
+    """Create one row in atabase table language.
+
+    Returns:
+        List: Column values
+    """
+    values = get_values_language()
+
+    instance = db.cls_language.Language(
+        active=values[1],
+        code_iso_639_3=values[2],
+        code_pandoc=values[3],
+        code_spacy=values[4],
+        code_tesseract=values[5],
+        directory_name_inbox=values[6],
+        iso_language_name=values[7],
+    )
+
+    instance.persist_2_db()
+
+    values[0] = instance.language_id
+
+    return values
+
+
+# -----------------------------------------------------------------------------
+# Create one row in atabase table run.
+# -----------------------------------------------------------------------------
+# noinspection PyArgumentList
+@pytest.helpers.register
+def create_run():
+    """Create one row in atabase table run.
+
+    Returns:
+        List: Column values
+    """
+    values = get_values_run()
+
+    instance = db.cls_run.Run(
+        _row_id=0,
+        action_code=values[1],
+        status=values[4],
+        total_erroneous=values[5],
+    )
+
+    instance.persist_2_db()
+
+    values[0] = instance.run_id
+
+    return values
+
+
+# -----------------------------------------------------------------------------
+# Create one row in atabase table token.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def create_token():
+    """Create one row in atabase table token.
+
+    Returns:
+        List: Column values
+    """
+    values = get_values_token()
+
+    instance = db.cls_token.Token(
+        id_document=values[1],
+        page_data=values[2],
+        page_no=values[3],
+    )
+
+    values[0] = instance.token_id
+
+    return values
+
+
+# -----------------------------------------------------------------------------
+# Create one row in atabase table version.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def create_version():
+    """Create one row in atabase table version.
+
+    Returns:
+        List: Column values
+    """
+    values = get_values_version()
+
+    instance = db.cls_version.Version(
+        version=values[1],
+    )
+
+    instance.persist_2_db()
+
+    values[0] = instance.version_id
+
+    return values
+
+
+# -----------------------------------------------------------------------------
 # Delete the original configuration parameter value.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
@@ -520,6 +684,148 @@ def fxtr_setup_logger_environment():
     yield
 
     restore_setup_cfg()
+
+
+# -----------------------------------------------------------------------------
+# Provide expected values - database table action.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def get_values_action():
+    """Provide expected values - database table action."""
+    return [
+        None,
+        "p_i",
+        "inbox         (preprocessor)",
+        cfg.glob.setup.directory_inbox,
+        "inbox",
+        "",
+        "",
+        0,
+        "pdf_text_ok.pdf",
+        53651,
+        1,
+        None,
+        1,
+        0,
+        3,
+        cfg.glob.DOCUMENT_STATUS_START,
+    ]
+
+
+# -----------------------------------------------------------------------------
+# Provide expected values - database table document.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def get_values_document():
+    """Provide expected values - database table document."""
+    return [
+        None,
+        "s_p_j_line",
+        "parser_line   (nlp)",
+        cfg.glob.setup.directory_inbox,
+        "",
+        "",
+        0,
+        "pdf_text_ok.pdf",
+        53651,
+        1,
+        1,
+        3,
+        "e2402cc28e178911ee5941b1f9ac0d596beb7730f101da715f996dc992acbe25",
+        cfg.glob.DOCUMENT_STATUS_START,
+    ]
+
+
+# -----------------------------------------------------------------------------
+# Provide expected values - database table language.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def get_values_language():
+    """Provide expected values - database table language."""
+    return [
+        None,
+        True,
+        "xxx_code_iso_639_3",
+        "xxx_code_pandoc",
+        "xxx_code_spacy",
+        "xxx_code_tesseract",
+        "xxx_directory_name_inbox",
+        "xxx_iso_language_name",
+    ]
+
+
+# -----------------------------------------------------------------------------
+# Provide expected values - database table run.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def get_values_run():
+    """Provide expected values - database table run."""
+    return [
+        None,
+        "p_i",
+        "inbox         (preprocessor)",
+        1,
+        cfg.glob.DOCUMENT_STATUS_START,
+        1,
+        0,
+        0,
+    ]
+
+
+# -----------------------------------------------------------------------------
+# Provide expected values - database table token.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def get_values_token():
+    """Provide expected values - database table token."""
+    return [
+        None,
+        cfg.glob.document.document_id,
+        {
+            "pageNo": 1,
+            "noTokensInPage": 221,
+            "tokens": [
+                {
+                    "tknEntIob_": "O",
+                    "tknI": 0,
+                    "tknIsOov": True,
+                    "tknIsSentStart": True,
+                    "tknIsTitle": True,
+                    "tknLemma_": "Start",
+                    "tknNorm_": "start",
+                    "tknPos_": "PROPN",
+                    "tknTag_": "NNP",
+                    "tknText": "Start",
+                    "tknWhitespace_": " ",
+                },
+                {
+                    "tknEntIob_": "O",
+                    "tknI": 220,
+                    "tknIsOov": True,
+                    "tknIsPunct": True,
+                    "tknIsSentEnd": True,
+                    "tknLemma_": ".",
+                    "tknNorm_": ".",
+                    "tknPos_": "PUNCT",
+                    "tknTag_": ".",
+                    "tknText": ".",
+                },
+            ],
+        },
+        1,
+    ]
+
+
+# -----------------------------------------------------------------------------
+# Provide expected values - database table version.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def get_values_version():
+    """Provide expected values - database table version."""
+    return [
+        None,
+        "xxx_version",
+    ]
 
 
 # -----------------------------------------------------------------------------

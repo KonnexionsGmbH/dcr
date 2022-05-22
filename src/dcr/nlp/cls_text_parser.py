@@ -197,20 +197,26 @@ class TextParser:
         self._parse_result_word_index_page: int = 0
         self._parse_result_word_index_para: int = 0
 
+        self._exist = True
+
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Debug an XML element detailed.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def debug_xml_element_all(event: str, parent_tag: str, attrib: Dict[str, str], text: Iterable[str | None]) -> None:
+    def _debug_xml_element_all(event: str, parent_tag: str, attrib: Dict[str, str], text: Iterable[str | None]) -> None:
         """Debug an XML element detailed.
 
         Args:
-            event (str): Event: 'start' or 'end'.
-            parent_tag (str): Parent tag.
-            attrib (Dict[str,str]): Attributes.
-            text (Iterable[str|None]): XML element.
+            event (str):
+                    Event: 'start' or 'end'.
+            parent_tag (str):
+                    Parent tag.
+            attrib (Dict[str,str]):
+                    Attributes.
+            text (Iterable[str|None]):
+                    XML element.
         """
         if cfg.glob.setup.verbose_parser == "all":
             print(f"{event} tag   ={parent_tag}")
@@ -224,7 +230,7 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Debug an XML element only 'text' - variant line.
     # -----------------------------------------------------------------------------
-    def debug_xml_element_text_line(self) -> None:
+    def _debug_xml_element_text_line(self) -> None:
         """Debug an XML element only 'text - variant line."""
         if cfg.glob.setup.verbose_parser == "text":
             print(
@@ -238,7 +244,7 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Debug an XML element only 'text' - variant page.
     # -----------------------------------------------------------------------------
-    def debug_xml_element_text_page(self) -> None:
+    def _debug_xml_element_text_page(self) -> None:
         """Debug an XML element only 'text - variant page."""
         if cfg.glob.setup.verbose_parser == "text":
             print(
@@ -252,7 +258,7 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Debug an XML element only 'text' - variant word.
     # -----------------------------------------------------------------------------
-    def debug_xml_element_text_word(self) -> None:
+    def _debug_xml_element_text_word(self) -> None:
         """Debug an XML element only 'text - variant word."""
         if cfg.glob.setup.verbose_parser == "text":
             print(
@@ -273,10 +279,12 @@ class TextParser:
         """Processing tag 'Box'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
             child_tag = child.tag[TextParser.PARSE_TAG_FROM :]
@@ -286,7 +294,7 @@ class TextParser:
                 case TextParser._PARSE_TAG_TEXT:
                     self._parse_tag_text(child_tag, child)
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag Cell.
@@ -295,10 +303,12 @@ class TextParser:
         """Processing tag 'Cell'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
             child_tag = child.tag[TextParser.PARSE_TAG_FROM :]
@@ -306,7 +316,7 @@ class TextParser:
                 case TextParser._PARSE_TAG_PARA:
                     self._parse_tag_para(child_tag, child)
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag 'Content'.
@@ -315,10 +325,12 @@ class TextParser:
         """Processing tag 'Content'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
             child_tag = child.tag[TextParser.PARSE_TAG_FROM :]
@@ -331,7 +343,7 @@ class TextParser:
                 case TextParser._PARSE_TAG_PLACED_IMAGE:
                     pass
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag 'DocInfo'.
@@ -340,10 +352,12 @@ class TextParser:
         """Processing tag 'DocInfo'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
             child_tag = child.tag[TextParser.PARSE_TAG_FROM :]
@@ -362,7 +376,7 @@ class TextParser:
                 case TextParser._PARSE_TAG_MOD_DATE:
                     self._parse_result_mod_date = datetime.datetime.strptime(child.text, "%Y-%m-%dT%H:%M:%S%z")
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag Line.
@@ -371,10 +385,12 @@ class TextParser:
         """Processing tag 'Line'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         # Initialize the parse result variables of a line.
         self._parse_result_no_words_in_line = 0
@@ -392,7 +408,7 @@ class TextParser:
                     self._parse_tag_word(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
-            self.debug_xml_element_text_line()
+            self._debug_xml_element_text_line()
             self.parse_result_line_1_lines.append(
                 {
                     TextParser._JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
@@ -406,7 +422,7 @@ class TextParser:
         self._parse_result_line_index_page += 1
         self._parse_result_line_index_para += 1
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag 'Page'.
@@ -416,10 +432,12 @@ class TextParser:
         """Processing tag 'Page'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         # Initialize the parse result variables of a page.
         if cfg.glob.setup.is_parsing_line:
@@ -481,7 +499,7 @@ class TextParser:
                 }
             )
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag 'Pages'.
@@ -491,10 +509,12 @@ class TextParser:
         """Processing tag 'Pages'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         # Initialize the parse result variables of a document.
         if cfg.glob.setup.is_parsing_line:
@@ -556,7 +576,7 @@ class TextParser:
             ) as file_handle:
                 json.dump(self._parse_result_word_4_document, file_handle)
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag Para.
@@ -565,10 +585,12 @@ class TextParser:
         """Processing tag 'Para'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         # Initialize the parse result variables of a paragraph.
         self._parse_result_line_index_para = 0
@@ -585,12 +607,12 @@ class TextParser:
                     self._parse_tag_box(child_tag, child)
 
         if cfg.glob.setup.is_parsing_page:
-            self.debug_xml_element_text_page()
+            self._debug_xml_element_text_page()
             self._parse_result_page_0_paras.append(self._parse_result_text)
 
         self._parse_result_para_index_page += 1
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag Row.
@@ -599,10 +621,12 @@ class TextParser:
         """Processing tag 'Row'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
             child_tag = child.tag[TextParser.PARSE_TAG_FROM :]
@@ -610,7 +634,7 @@ class TextParser:
                 case TextParser._PARSE_TAG_CELL:
                     self._parse_tag_cell(child_tag, child)
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag Table.
@@ -619,10 +643,12 @@ class TextParser:
         """Processing tag 'Table'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
             child_tag = child.tag[TextParser.PARSE_TAG_FROM :]
@@ -630,7 +656,7 @@ class TextParser:
                 case TextParser._PARSE_TAG_ROW:
                     self._parse_tag_row(child_tag, child)
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag Text.
@@ -639,14 +665,16 @@ class TextParser:
         """Processing tag 'Text'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         self._parse_result_text = parent.text
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag Word.
@@ -655,10 +683,12 @@ class TextParser:
         """Processing tag 'Word'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
             child_tag = child.tag[TextParser.PARSE_TAG_FROM :]
@@ -668,14 +698,14 @@ class TextParser:
                 case TextParser._PARSE_TAG_TEXT:
                     self._parse_tag_text(child_tag, child)
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
         self._parse_result_no_words_in_line += 1
         self._parse_result_no_words_in_page += 1
         self._parse_result_no_words_in_para += 1
 
         if cfg.glob.setup.is_parsing_word:
-            self.debug_xml_element_text_word()
+            self._debug_xml_element_text_word()
             self._parse_result_word_1_words.append(
                 {
                     TextParser._JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
@@ -689,16 +719,29 @@ class TextParser:
         self._parse_result_word_index_para += 1
 
     # -----------------------------------------------------------------------------
+    # Check the object existence.
+    # -----------------------------------------------------------------------------
+    def exists(self) -> bool:
+        """Check the object existence.
+
+        Returns:
+            bool:   Always true
+        """
+        return self._exist
+
+    # -----------------------------------------------------------------------------
     # Processing tag 'Document'.
     # -----------------------------------------------------------------------------
     def parse_tag_document(self, parent_tag: str, parent: Iterable[str]) -> None:
         """Processing tag 'Document'.
 
         Args:
-            parent_tag (str): Parent tag.
-            parent (Iterable[str): Parent data structure.
+            parent_tag (str):
+                    Parent tag.
+            parent (Iterable[str):
+                    Parent data structure.
         """
-        self.debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
             child_tag = child.tag[TextParser.PARSE_TAG_FROM :]
@@ -723,4 +766,4 @@ class TextParser:
                 case TextParser._PARSE_TAG_PAGES:
                     self._parse_tag_pages(child_tag, child)
 
-        self.debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)

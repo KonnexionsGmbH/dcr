@@ -74,7 +74,26 @@ class Run:
         total_processed_ok: int | sqlalchemy.Integer = 0,
         total_processed_to_be: int | sqlalchemy.Integer = 0,
     ) -> None:
-        """Initialise the instance."""
+        """Initialise the instance.
+
+        Args:
+            action_code (str):
+                    Action code.
+            _row_id (int | sqlalchemy.Integer, optional):
+                    Row id. Defaults to 0.
+            action_text (str, optional):
+                    Action text (is derived from action_code if it is missing). Defaults to "".
+            id_run (int | sqlalchemy.Integer, optional):
+                    Row id of the triggering run. Defaults to id_run_umbrella.
+            status (str | sqlalchemy.String, optional):
+                    Status. Defaults to "".
+            total_erroneous (int | sqlalchemy.Integer, optional):
+                    Total number of erroneous documents. Defaults to 0.
+            total_processed_ok (int | sqlalchemy.Integer, optional):
+                    Total number of correctly processed documents. Defaults to 0.
+            total_processed_to_be (int | sqlalchemy.Integer, optional):
+                    Total number of documents to be processed. Defaults to 0.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         if Run.id_run_umbrella == 0:
@@ -105,6 +124,8 @@ class Run:
         self.total_status_error: int = 0
         self.total_status_ready: int = 0
 
+        self._exist = True
+
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
@@ -114,7 +135,8 @@ class Run:
         """Get the database columns.
 
         Returns:
-            db.dml.Columns: Database columns.
+            db.dml.Columns:
+                    Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -183,6 +205,17 @@ class Run:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
+    # Check the object existence.
+    # -----------------------------------------------------------------------------
+    def exists(self) -> bool:
+        """Check the object existence.
+
+        Returns:
+            bool:   Always true
+        """
+        return self._exist
+
+    # -----------------------------------------------------------------------------
     # Finalise the current row.
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
@@ -200,7 +233,15 @@ class Run:
     # -----------------------------------------------------------------------------
     @classmethod
     def from_id(cls, id_run: int | sqlalchemy.Integer) -> Run:
-        """Initialise from id."""
+        """Initialise from row id.
+
+        Args:
+            id_run (int | sqlalchemy.Integer):
+                    The required row id.
+
+        Returns:
+            Run:    The object instance found.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
@@ -231,7 +272,15 @@ class Run:
     # -----------------------------------------------------------------------------
     @classmethod
     def from_row(cls, row: sqlalchemy.engine.Row) -> Run:
-        """Initialise from a database row."""
+        """Initialise from a database row.
+
+        Args:
+            row (sqlalchemy.engine.Row):
+                    A appropriate database row.
+
+        Returns:
+            Run:    The object instance matching the specified database row.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -254,10 +303,11 @@ class Run:
         """Get the action text from the action code.
 
         Args:
-            action_code (str): Action code.
+            action_code (str):
+                    Action code.
 
         Returns:
-            str: Action text.
+            str:    Action text.
         """
         action_text: str = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
 
@@ -344,7 +394,7 @@ class Run:
         """Get the latest id from database table.
 
         Returns:
-            int: Latest id.
+            int:    Latest id.
         """
         dbt = sqlalchemy.Table(cfg.glob.DBT_RUN, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
