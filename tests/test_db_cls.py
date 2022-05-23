@@ -3446,7 +3446,7 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
 # Test Function - missing dependencies - language.
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_language(fxtr_setup_logger):
-    """# Test Function - missing dependencies - action - case 1.
+    """# Test Function - missing dependencies - language.
     ."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
