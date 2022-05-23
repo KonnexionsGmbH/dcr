@@ -795,7 +795,7 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
                 1,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                "data\\inbox_test",
+                utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -815,7 +815,7 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
                 2,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                "data\\inbox_test",
+                utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -835,7 +835,7 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
                 3,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                "data\\inbox_test",
+                utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -855,7 +855,7 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
                 4,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                "data\\inbox_test",
+                utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -875,7 +875,7 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
                 5,
                 "p_i",
                 "inbox         (preprocessor)",
-                "data\\inbox_test",
+                utils.get_os_independent_name("data\\inbox_test"),
                 "No 'pdf' format",
                 "01.903 Issue (p_i): Runtime error with fitz.open() processing of "
                 + "file 'pdf_wrong_format.pdf' - error: 'cannot open broken document'.",
@@ -896,7 +896,7 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
                 6,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                "data\\inbox_test",
+                utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -1102,6 +1102,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_ALL_COMPLETE - status: error.
 # -----------------------------------------------------------------------------
+@pytest.mark.issue
 def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - dtstus: error."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -1122,32 +1123,43 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
 
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
+
+    cfg.glob.action_curr = db.cls_action.Action.from_id(6)
+    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.persist_2_db()
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
+
+    cfg.glob.action_curr = db.cls_action.Action.from_id(4)
+    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.persist_2_db()
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+
+    # -------------------------------------------------------------------------
     db.driver.connect_db()
 
     cfg.glob.action_curr = db.cls_action.Action.from_id(2)
     cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    cfg.glob.action_curr = db.cls_action.Action.from_id(4)
-    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
-    cfg.glob.action_curr.persist_2_db()
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
 
-    cfg.glob.action_curr = db.cls_action.Action.from_id(6)
-    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
-    cfg.glob.action_curr.persist_2_db()
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
 
     cfg.glob.action_curr = db.cls_action.Action.from_id(8)
     cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
-
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
-
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
-
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
+    # -------------------------------------------------------------------------
     db.driver.connect_db()
 
     cfg.glob.action_curr = db.cls_action.Action.from_id(13)
@@ -1156,6 +1168,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
 
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
+    # -------------------------------------------------------------------------
     db.driver.connect_db()
 
     cfg.glob.action_curr = db.cls_action.Action.from_id(17)

@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module db.dml."""
+"""Testing Module db.cls_version"""
 import cfg.glob
 import db.cls_version
 import db.dml

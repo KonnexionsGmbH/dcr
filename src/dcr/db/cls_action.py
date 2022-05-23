@@ -55,8 +55,52 @@ class Action:
         no_pdf_pages: int = 0,
         status: str | sqlalchemy.String = "",
     ) -> None:
-        """Initialise the instance."""
+        """Initialise the instance.
+
+        Args:
+            action_code (str):
+                    Action code.
+            id_run_last (int | sqlalchemy.Integer):
+                    Row id of the last run that processed this document action.
+            _row_id (int | sqlalchemy.Integer, optional):
+                    Row id. Defaults to 0.
+            action_text (str, optional):
+                    Action text (is derived from action_code if it is missing). Defaults to "".
+            directory_name (str, optional):
+                    The document location. Defaults to "".
+            directory_type (str, optional):
+                    The type of document location (accepted / rejected). Defaults to "".
+            duration_ns (int, optional):
+                    The processing time in nanoseconds. Defaults to 0.
+            error_code_last (str | sqlalchemy.String, optional):
+                    The code of the last error that occurred. Defaults to "".
+            error_msg_last (str | sqlalchemy.String, optional):
+                    The message of the last error that occurred. Defaults to "".
+            error_no (int, optional):
+                    The total number of errors in this document action. Defaults to 0.
+            file_name (str, optional):
+                    The file name. Defaults to "".
+            file_size_bytes (int, optional):
+                    The file size in bytes. Defaults to 0.
+            id_document (int | sqlalchemy.Integer, optional):
+                    The row id of the associated document. Defaults to 0.
+            id_parent (int | sqlalchemy.Integer, optional):
+                    The row id of the parent action. Defaults to 0.
+            no_children (int | sqlalchemy.Integer, optional):
+                    For a document of type scanned 'pdf', the number of image files created. Defaults to 0.
+            no_pdf_pages (int, optional):
+                    For a document of the type 'pdf' the number of pages. Defaults to 0.
+            status (str | sqlalchemy.String, optional):
+                    Status. Defaults to "".
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+        try:
+            cfg.glob.run.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Run' does not yet exist.",
+            )
 
         self.action_action_code: str = action_code
         self.action_action_text: str = action_text
@@ -82,6 +126,8 @@ class Action:
         if self.action_id == 0:
             self.persist_2_db()
 
+        self._exist = True
+
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
@@ -91,9 +137,11 @@ class Action:
         """Get the database columns.
 
         Returns:
-            db.dml.Columns: Database columns.
+            db.dml.Columns:
+                    Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return {
@@ -179,6 +227,17 @@ class Action:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
+    # Check the object existence.
+    # -----------------------------------------------------------------------------
+    def exists(self) -> bool:
+        """Check the object existence.
+
+        Returns:
+            bool:   Always true
+        """
+        return self._exist
+
+    # -----------------------------------------------------------------------------
     # Finalise the current action.
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
@@ -200,6 +259,13 @@ class Action:
         self.action_status = cfg.glob.DOCUMENT_STATUS_END
 
         self.persist_2_db()
+
+        try:
+            cfg.glob.document.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Document' does not yet exist.",
+            )
 
         cfg.glob.document.document_action_code_last = self.action_action_code
         cfg.glob.document.document_id_run_last = cfg.glob.run.run_id
@@ -229,8 +295,10 @@ class Action:
         """Finalise the current action with error.
 
         Args:
-            error_code (str)                : Error code.
-            error_msg (str)                 : Error message.
+            error_code (str):
+                    Error code.
+            error_msg (str):
+                    Error message.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -241,6 +309,13 @@ class Action:
         self.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
 
         self.persist_2_db()
+
+        try:
+            cfg.glob.document.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Document' does not yet exist.",
+            )
 
         cfg.glob.document.document_action_code_last = self.action_action_code
         cfg.glob.document.document_error_code_last = self.action_error_code_last
@@ -259,6 +334,13 @@ class Action:
                 f"Error: {error_msg}."
             )
         else:
+            try:
+                cfg.glob.action_curr.exists()  # type: ignore
+            except AttributeError:
+                utils.terminate_fatal(
+                    "The required instance of the class 'Action (action_curr)' does not yet exist.",
+                )
+
             utils.progress_msg(
                 f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
                 f"Document: {cfg.glob.action_curr.action_id:6d} "
@@ -273,7 +355,15 @@ class Action:
     # -----------------------------------------------------------------------------
     @classmethod
     def from_id(cls, id_action: int | sqlalchemy.Integer) -> Action:
-        """Initialise from id."""
+        """Initialise from row id.
+
+        Args:
+            id_action (int | sqlalchemy.Integer):
+                    The required row id.
+
+        Returns:
+            Action: The object instance found.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
@@ -304,7 +394,15 @@ class Action:
     # -----------------------------------------------------------------------------
     @classmethod
     def from_row(cls, row: sqlalchemy.engine.Row) -> Action:
-        """Initialise from a database row."""
+        """Initialise from a database row.
+
+        Args:
+            row (sqlalchemy.engine.Row):
+                    A appropriate database row.
+
+        Returns:
+            Run:    The object instance matching the specified database row.
+        """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -337,11 +435,13 @@ class Action:
         """Get the database columns in a tuple.
 
         Args:
-            is_duration_ns (bool, optional): Including column duration_ns? Defaults to True.
-            is_file_size_bytes (bool, optional): Including column file_size_bytes?. Defaults to True.
+            is_duration_ns (bool, optional):
+                    Including column duration_ns?. Defaults to True.
+            is_file_size_bytes (bool, optional):
+                    Including column file_size_bytes?. Defaults to True.
 
         Returns:
-                Tuple[Union[str, int, Integer, String], ...]:
+            Tuple[Union[str, int, Integer, String], ...]:
                         Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -386,7 +486,7 @@ class Action:
         """Get the file type from the file name.
 
         Returns:
-            str: File type.
+            str:    File type.
         """
         if self.action_file_name == "":
             return self.action_file_name
@@ -401,7 +501,7 @@ class Action:
         path.
 
         Returns:
-            str: Full file name.
+            str:    Full file name.
         """
         return utils.get_full_name(
             directory_name=self.action_directory_name,
@@ -415,7 +515,7 @@ class Action:
         """Get the stem name from the file name.
 
         Returns:
-            str: Stem name.
+            str:    Stem name.
         """
         if self.action_file_name == "":
             return self.action_file_name
@@ -467,11 +567,14 @@ class Action:
         """Select unprocessed actions based on action_code.
 
         Args:
-            conn (Connection): The database connection.
-            action_code (str): The requested action code.
+            conn (Connection):
+                    The database connection.
+            action_code (str):
+                    The requested action code.
 
         Returns:
-            sqlalchemy.engine.CursorResult: The rows found.
+            sqlalchemy.engine.CursorResult:
+                    The rows found.
         """
         dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
@@ -505,12 +608,16 @@ class Action:
         """Select unprocessed actions based on action_code und parent id.
 
         Args:
-            conn (Connection): The database connection.
-            action_code (str): The requested action code.
-            id_document (int): The requested parent id.
+            conn (Connection):
+                    The database connection.
+            action_code (str):
+                    The requested action code.
+            id_document (int):
+                    The requested parent id.
 
         Returns:
-            sqlalchemy.engine.CursorResult: The rows found.
+            sqlalchemy.engine.CursorResult:
+                    The rows found.
         """
         dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
@@ -546,11 +653,14 @@ class Action:
         code.
 
         Args:
-            conn (Connection): The database connection.
-            action_code (str): The requested action code.
+            conn (Connection):
+                    The database connection.
+            action_code (str):
+                    The requested action code.
 
         Returns:
-            sqlalchemy.engine.CursorResult: The rows found.
+            sqlalchemy.engine.CursorResult:
+                    The rows found.
         """
         dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 

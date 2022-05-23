@@ -59,6 +59,13 @@ class Language:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        try:
+            cfg.glob.setup.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Setup' does not yet exist.",
+            )
+
         self.language_active: bool | sqlalchemy.Boolean = active
         self.language_code_iso_639_3: str | sqlalchemy.String = code_iso_639_3
         self.language_code_pandoc: str | sqlalchemy.String = code_pandoc

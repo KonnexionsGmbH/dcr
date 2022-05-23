@@ -32,6 +32,27 @@ class LineType:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        try:
+            cfg.glob.action_curr.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Action (action_curr)' does not yet exist.",
+            )
+
+        try:
+            cfg.glob.setup.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Setup' does not yet exist.",
+            )
+
+        try:
+            cfg.glob.text_parser.exists()
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'TextParser' does not yet exist.",
+            )
+
         utils.progress_msg_line_type("LineType")
         utils.progress_msg_line_type(
             f"LineType: Start document                       ={cfg.glob.action_curr.action_file_name}"

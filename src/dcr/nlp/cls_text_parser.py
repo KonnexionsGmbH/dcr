@@ -9,6 +9,7 @@ from typing import List
 
 import cfg.glob
 import nlp.cls_line_type
+import utils
 
 
 # pylint: disable=R0902
@@ -91,6 +92,13 @@ class TextParser:
     def __init__(self) -> None:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+        try:
+            cfg.glob.setup.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Setup' does not yet exist.",
+            )
 
         #   {
         #     "lineIndexPage": 0,
@@ -505,7 +513,7 @@ class TextParser:
     # Processing tag 'Pages'.
     # -----------------------------------------------------------------------------
     # noinspection PyArgumentList
-    def _parse_tag_pages(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_pages(self, parent_tag: str, parent: Iterable[str]) -> None:  # noqa: C901
         """Processing tag 'Pages'.
 
         Args:
@@ -515,6 +523,20 @@ class TextParser:
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+
+        try:
+            cfg.glob.action_next.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Action (action next)' does not yet exist.",
+            )
+
+        try:
+            cfg.glob.document.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Document' does not yet exist.",
+            )
 
         # Initialize the parse result variables of a document.
         if cfg.glob.setup.is_parsing_line:

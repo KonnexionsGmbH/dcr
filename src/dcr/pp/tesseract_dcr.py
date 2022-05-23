@@ -144,6 +144,7 @@ def reunite_pdfs() -> None:
             cfg.glob.action_curr.action_no_pdf_pages = -1
 
             if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+                # not testable
                 cfg.glob.run.total_status_error += 1
             else:
                 cfg.glob.run.total_status_ready += 1
@@ -182,7 +183,7 @@ def reunite_pdfs_file() -> None:
         )
         return
 
-    pdf_writer = PyPDF2.PdfFileWriter()
+    pdf_writer = PyPDF2.PdfWriter()
 
     with cfg.glob.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code_id_document(
@@ -200,7 +201,7 @@ def reunite_pdfs_file() -> None:
 
             full_name_curr = action_part.get_full_name()
 
-            pdf_reader = PyPDF2.PdfFileReader(full_name_curr)
+            pdf_reader = PyPDF2.PdfReader(full_name_curr)
             for page in range(pdf_reader.getNumPages()):
                 # Add each page to the writer object
                 pdf_writer.addPage(pdf_reader.getPage(page))

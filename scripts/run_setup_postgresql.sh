@@ -32,10 +32,10 @@ fi
 
 if [ -z "${DCR_CONNECTION_PORT}" ]; then
     if [ "${DCR_ENVIRONMENT_TYPE}" = "dev" ]; then
-        export DCR_CONNECTION_PORT=5432
+        export DCR_CONNECTION_PORT=5433
     fi
     if [ "${DCR_ENVIRONMENT_TYPE}" = "prod" ]; then
-        export DCR_CONNECTION_PORT=5433
+        export DCR_CONNECTION_PORT=5432
     fi
     if [ "${DCR_ENVIRONMENT_TYPE}" = "test" ]; then
         export DCR_CONNECTION_PORT=5434

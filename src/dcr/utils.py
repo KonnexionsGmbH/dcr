@@ -11,7 +11,7 @@ import db.cls_run
 import db.dml
 import db.driver
 import PyPDF2
-import PyPDF2.utils
+import PyPDF2.errors
 import utils
 
 
@@ -164,8 +164,8 @@ def get_pdf_pages_no(
         return -1
 
     try:
-        return PyPDF2.PdfFileReader(file_name).numPages
-    except PyPDF2.utils.PdfReadError:
+        return PyPDF2.PdfReader(file_name).numPages
+    except PyPDF2.errors.PdfReadError:
         return -1
 
 

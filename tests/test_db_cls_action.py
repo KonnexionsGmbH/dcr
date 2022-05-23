@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module db.cls_..."""
+"""Testing Module db.cls_action"""
 import time
 
 import cfg.cls_setup
@@ -82,7 +82,7 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
 
         del cfg.glob.action_curr
 
-        cfg.glob.logger.debug("The existing object 'cfg.glob.action_curt' of the class Action was deleted.")
+        cfg.glob.logger.debug("The existing object 'cfg.glob.action_curr' of the class Action was deleted.")
     except AttributeError:
         pass
 
