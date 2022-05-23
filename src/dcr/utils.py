@@ -164,7 +164,9 @@ def get_pdf_pages_no(
         return -1
 
     try:
-        return PyPDF2.PdfReader(file_name).numPages
+        # wwe
+        # return PyPDF2.PdfReader(file_name).numPages
+        return len(PyPDF2.PdfReader(file_name).pages)
     except PyPDF2.errors.PdfReadError:
         return -1
 

@@ -1102,7 +1102,6 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_ALL_COMPLETE - status: error.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - dtstus: error."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

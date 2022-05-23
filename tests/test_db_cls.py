@@ -3286,6 +3286,199 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
+# Test Function - missing dependencies - action - case 1.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_action_1(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - action - case 1."""
+    try:
+        cfg.glob.run.exists()  # type: ignore
+
+        del cfg.glob.run
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.run' of the class Run was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    directory_name = cfg.glob.setup.directory_inbox
+    file_name = "pdf_text_ok.pdf"
+
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("pdf_text_ok", "pdf"),
+        ],
+        target_path=directory_name,
+    )
+
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
+
+    values_run = pytest.helpers.create_run()
+
+    values_document = pytest.helpers.create_document()
+
+    with pytest.raises(SystemExit) as expt:
+        db.cls_action.Action(
+            action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+            directory_name=directory_name,
+            file_name=file_name,
+            id_document=values_document[0],
+            id_run_last=values_run[0],
+        )
+
+    assert expt.type == SystemExit, "Class Action requires class Run"
+    assert expt.value.code == 1, "Class Action requires class Run"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - action - case 2.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - action - case 2."""
+    try:
+        cfg.glob.action_curr.exists()  # type: ignore
+
+        del cfg.glob.action_curr
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.action_curr' of the class Action was deleted.")
+    except AttributeError:
+        pass
+
+    try:
+        cfg.glob.document.exists()  # type: ignore
+
+        del cfg.glob.document
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.document' of the class Document was deleted.")
+    except AttributeError:
+        pass
+
+    try:
+        cfg.glob.run.exists()  # type: ignore
+
+        del cfg.glob.run
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.run' of the class Run was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.start_time_document = time.perf_counter_ns()
+
+    directory_name = cfg.glob.setup.directory_inbox
+    file_name = "pdf_text_ok.pdf"
+
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("pdf_text_ok", "pdf"),
+        ],
+        target_path=directory_name,
+    )
+
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
+
+    values_run = pytest.helpers.create_run()
+
+    cfg.glob.run = db.cls_run.Run.from_id(values_run[0])
+
+    # -----------------------------------------------------------------------------
+    cfg.glob.language = db.cls_language.Language.from_id(1)
+
+    cfg.glob.language.persist_2_db()
+
+    # -------------------------------------------------------------------------
+    # _expected_values_document = pytest.helpers.create_document()
+    values_document = pytest.helpers.create_document()
+
+    # -------------------------------------------------------------------------
+    local_action = db.cls_action.Action(
+        action_code="p_i",
+        directory_name=directory_name,
+        file_name=file_name,
+        id_document=values_document[0],
+        id_run_last=values_run[0],
+    )
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        local_action.finalise()
+
+    assert expt.type == SystemExit, "Class Action requires class Document (finalise)"
+    assert expt.value.code == 1, "Class Action requires class Document (finalise)"
+
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
+
+    with pytest.raises(SystemExit) as expt:
+        local_action.finalise_error("error_code", "error_msg")
+
+    assert expt.type == SystemExit, "Class Action requires class Document (finalise_error)"
+    assert expt.value.code == 1, "Class Action requires class Document (finalise_error)"
+
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
+
+    cfg.glob.document = db.cls_document.Document.from_id(1)
+
+    local_action.action_action_code = db.cls_run.Run.ACTION_CODE_PDF2IMAGE
+
+    with pytest.raises(SystemExit) as expt:
+        local_action.finalise_error("error_code", "error_msg")
+
+    assert expt.type == SystemExit, "Class Action requires class Action (finalise_error)"
+    assert expt.value.code == 1, "Class Action requires class Action (finalise_error)"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - language.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_language(fxtr_setup_logger):
+    """# Test Function - missing dependencies - action - case 1.
+    ."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.setup.exists()  # type: ignore
+
+        del cfg.glob.setup
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.setup' of the class Setup was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        db.cls_language.Language(
+            active=True,
+            code_iso_639_3="",
+            code_pandoc="",
+            code_spacy="",
+            code_tesseract="",
+            iso_language_name="",
+        )
+
+    assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
+    assert expt.value.code == 1, "Instance of class 'Setup' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test Function - missing objects.
 # -----------------------------------------------------------------------------
 def test_missing_objects(fxtr_setup_empty_db_and_inbox):
@@ -3330,6 +3523,88 @@ def test_new_objects(fxtr_setup_empty_db_and_inbox):
     check_new_action()
 
     check_new_token()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - select_version_version_unique().
+# -----------------------------------------------------------------------------
+def test_select_version_version_unique_driver(fxtr_setup_empty_db_and_inbox):
+    """Test: select_version_version_unique()."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
+
+    db.dml.insert_dbt_row(cfg.glob.DBT_VERSION, {cfg.glob.DBC_VERSION: "0.0.0"})
+
+    db.driver.disconnect_db()
+
+    db.driver.connect_db()
+
+    cfg.glob.db_driver_cur = cfg.glob.db_driver_conn.cursor()
+
+    with pytest.raises(SystemExit) as expt:
+        db.cls_version.Version.select_version_version_unique()
+
+    db.driver.disconnect_db()
+
+    assert expt.type == SystemExit, "Version not unique (driver)"
+    assert expt.value.code == 1, "Version not unique (driver)"
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.delete_version_version()
+
+    db.driver.connect_db()
+
+    cfg.glob.db_driver_cur = cfg.glob.db_driver_conn.cursor()
+
+    with pytest.raises(SystemExit) as expt:
+        db.cls_version.Version.select_version_version_unique()
+
+    db.driver.disconnect_db()
+
+    assert expt.type == SystemExit, "Version missing (driver)"
+    assert expt.value.code == 1, "Version missing (driver)"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - select_version_version_unique().
+# -----------------------------------------------------------------------------
+def test_select_version_version_unique_orm(fxtr_setup_empty_db_and_inbox):
+    """Test: select_version_version_unique()."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
+
+    db.dml.insert_dbt_row(cfg.glob.DBT_VERSION, {cfg.glob.DBC_VERSION: "0.0.0"})
+
+    with pytest.raises(SystemExit) as expt:
+        db.cls_version.Version.select_version_version_unique()
+
+    db.driver.disconnect_db()
+
+    assert expt.type == SystemExit, "Version not unique (orm)"
+    assert expt.value.code == 1, "Version not unique (orm)"
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.delete_version_version()
+
+    db.driver.connect_db()
+
+    with pytest.raises(SystemExit) as expt:
+        db.cls_version.Version.select_version_version_unique()
+
+    db.driver.disconnect_db()
+
+    assert expt.type == SystemExit, "Version missing (orm)"
+    assert expt.value.code == 1, "Version missing (orm)"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
