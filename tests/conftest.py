@@ -108,7 +108,7 @@ def check_dbt_action(param: Tuple[int, Tuple[int, str, str, int, str, int, int, 
 # Check the content of database table document.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_base(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_document(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table document.
 
     Args:

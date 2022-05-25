@@ -31,7 +31,7 @@ def check_db_content() -> None:  # pylint: disable=R0915
 
     check_db_content_action()
 
-    check_db_content_base()
+    check_db_content_document()
 
     check_db_content_language()
 
@@ -578,7 +578,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 8,
                 6,
                 0,
-                -1,
+                3,
                 "end",
             ),
         )
@@ -600,7 +600,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 15,
                 6,
                 0,
-                -1,
+                1,
                 "end",
             ),
         )
@@ -622,7 +622,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 16,
                 6,
                 0,
-                -1,
+                1,
                 "end",
             ),
         )
@@ -644,7 +644,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 19,
                 6,
                 0,
-                -1,
+                2,
                 "end",
             ),
         )
@@ -666,7 +666,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 21,
                 6,
                 0,
-                -1,
+                2,
                 "end",
             ),
         )
@@ -688,7 +688,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 22,
                 7,
                 0,
-                -1,
+                3,
                 "start",
             ),
         )
@@ -710,7 +710,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 23,
                 7,
                 0,
-                -1,
+                1,
                 "start",
             ),
         )
@@ -732,7 +732,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 24,
                 7,
                 0,
-                -1,
+                1,
                 "start",
             ),
         )
@@ -754,7 +754,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 25,
                 7,
                 0,
-                -1,
+                2,
                 "start",
             ),
         )
@@ -776,7 +776,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 26,
                 7,
                 0,
-                -1,
+                2,
                 "start",
             ),
         )
@@ -786,9 +786,9 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
 # -----------------------------------------------------------------------------
 # Check the database content - database table document.
 # -----------------------------------------------------------------------------
-def check_db_content_base() -> None:  # pylint: disable=R0915
+def check_db_content_document() -> None:  # pylint: disable=R0915
     """Check the database content - database table document."""
-    pytest.helpers.check_dbt_base(
+    pytest.helpers.check_dbt_document(
         (
             1,
             (
@@ -808,7 +808,7 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
             ),
         )
     )
-    pytest.helpers.check_dbt_base(
+    pytest.helpers.check_dbt_document(
         (
             2,
             (
@@ -828,7 +828,7 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
             ),
         )
     )
-    pytest.helpers.check_dbt_base(
+    pytest.helpers.check_dbt_document(
         (
             3,
             (
@@ -848,7 +848,7 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
             ),
         )
     )
-    pytest.helpers.check_dbt_base(
+    pytest.helpers.check_dbt_document(
         (
             4,
             (
@@ -868,7 +868,7 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
             ),
         )
     )
-    pytest.helpers.check_dbt_base(
+    pytest.helpers.check_dbt_document(
         (
             5,
             (
@@ -889,7 +889,7 @@ def check_db_content_base() -> None:  # pylint: disable=R0915
             ),
         )
     )
-    pytest.helpers.check_dbt_base(
+    pytest.helpers.check_dbt_document(
         (
             6,
             (

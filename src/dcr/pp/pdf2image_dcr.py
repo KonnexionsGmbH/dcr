@@ -9,6 +9,7 @@ import db.cls_run
 import db.dml
 import pdf2image
 import utils
+from pdf2image.exceptions import PDFPageCountError
 
 
 # -----------------------------------------------------------------------------
@@ -67,7 +68,14 @@ def convert_pdf_2_image_file() -> None:
         cfg.glob.action_curr.action_file_name,
     )
 
-    images = pdf2image.convert_from_path(full_name_curr)
+    images = []
+
+    try:
+        images = pdf2image.convert_from_path(full_name_curr)
+    except PDFPageCountError as err:
+        utils.terminate_fatal(
+            f"pdf2image conversion fails - file={cfg.glob.action_curr.action_file_name} error={str(err)}",
+        )
 
     cfg.glob.action_curr.action_no_children = 0
 

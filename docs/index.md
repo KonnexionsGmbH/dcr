@@ -278,7 +278,6 @@ This processing step is controlled by the following configuration parameters:
 
 - `line_footer_max_distance = 3`
 - `line_footer_max_lines = 3`
-- `line_footer_preference = true`
 - `line_header_max_distance = 3`
 - `line_header_max_lines = 3`
 

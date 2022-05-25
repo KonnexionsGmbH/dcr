@@ -1,5 +1,8 @@
 # pylint: disable=unused-argument
 """Testing Module nlp.cls_..."""
+import os.path
+from typing import List
+from typing import Tuple
 
 import cfg.cls_setup
 import cfg.glob
@@ -10,12 +13,15 @@ import defusedxml.ElementTree
 import nlp.cls_text_parser
 import pytest
 
+import dcr
+
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
+# pylint: disable=W0212
 # @pytest.mark.issue
 
-XML_DATEN: str = """<?xml version="1.0" encoding="UTF-8"?>
+XML_DATA: str = """<?xml version="1.0" encoding="UTF-8"?>
 <!-- Created by the PDFlib Text and Image Extraction Toolkit TET (www.pdflib.com) -->
 <TET xmlns="http://www.pdflib.com/XML/TET5/TET-5.0"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -118,6 +124,232 @@ XML_DATEN: str = """<?xml version="1.0" encoding="UTF-8"?>
 
 
 # -----------------------------------------------------------------------------
+# Test LineParser.
+# -----------------------------------------------------------------------------
+def check_cls_line_parser(
+    json_file: str, target_footer: List[Tuple[int, List[int]]], target_header: List[Tuple[int, List[int]]]
+) -> None:
+    """Test LineParser.
+
+    Args:
+        json_file (str): JSON file from trxt parser.
+        target_footer (List[Tuple[int, List[int]]]): Target footer lines.
+        target_header (List[Tuple[int, List[int]]]): Target header lines.
+    """
+    instance = nlp.cls_text_parser.TextParser.from_files(full_name_line=json_file)
+
+    actual_footer = []
+    actual_header = []
+
+    pages = instance.parse_result_line_4_document[nlp.cls_text_parser.TextParser.JSON_NAME_PAGES]
+
+    for page in pages:
+        page_no = page[nlp.cls_text_parser.TextParser.JSON_NAME_PAGE_NO]
+
+        actual_page_footer = []
+        actual_page_header = []
+
+        for line in page[nlp.cls_text_parser.TextParser.JSON_NAME_LINES]:
+            line_type = line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_TYPE]
+            if line_type == cfg.glob.DOCUMENT_LINE_TYPE_FOOTER:
+                actual_page_footer.append(line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_INDEX_PAGE])
+            elif line_type == cfg.glob.DOCUMENT_LINE_TYPE_HEADER:
+                actual_page_header.append(line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_INDEX_PAGE])
+
+        if actual_page_footer:
+            actual_footer.append((page_no, actual_page_footer))
+
+        if actual_page_header:
+            actual_header.append((page_no, actual_page_header))
+
+    assert (
+        actual_header == target_header
+    ), f"file={json_file} header difference: \ntarget={target_header} \nactual={actual_header}"
+    assert (
+        actual_footer == target_footer
+    ), f"file={json_file} footer difference: \ntarget={target_footer} \nactual={actual_footer}"
+
+
+# -----------------------------------------------------------------------------
+# Test LineParser.
+# -----------------------------------------------------------------------------
+def test_cls_line_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineParser."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("p_1_h_0_f_0", "pdf"),
+            ("p_2_h_0_f_0", "pdf"),
+            ("p_2_h_0_f_2", "pdf"),
+            ("p_2_h_1_f_0", "pdf"),
+            ("p_2_h_1_f_1", "pdf"),
+            ("p_2_h_2_f_0", "pdf"),
+            ("p_2_h_2_f_2", "pdf"),
+            ("p_3_h_0_f_4", "pdf"),
+            ("p_3_h_2_f_2", "pdf"),
+            ("p_3_h_3_f_3", "pdf"),
+            ("p_3_h_4_f_0", "pdf"),
+            ("p_3_h_4_f_4", "pdf"),
+            ("p_4_h_4_f_4_different_first", "pdf"),
+            ("p_4_h_4_f_4_different_last", "pdf"),
+            ("p_4_h_4_f_4_empty_first", "pdf"),
+            ("p_4_h_4_f_4_empty_last", "pdf"),
+            ("p_5_h_0_f_0", "pdf"),
+            ("p_5_h_0_f_2", "pdf"),
+            ("p_5_h_2_f_0", "pdf"),
+            ("p_5_h_2_f_2", "pdf"),
+            ("p_5_h_4_f_4_different_both", "pdf"),
+            ("p_5_h_4_f_4_empty_both", "pdf"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.glob.setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "3"),
+            (cfg.glob.setup._DCR_CFG_LINE_HEADER_MAX_LINES, "3"),
+            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "false"),
+            (cfg.glob.setup._DCR_CFG_TETML_WORD, "false"),
+            (cfg.glob.setup._DCR_CFG_VERBOSE_LINE_TYPE, "false"),
+            (cfg.glob.setup._DCR_CFG_VERBOSE_PARSER, "false"),
+        ],
+    )
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    pytest.helpers.restore_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_1_h_0_f_0_1.line.json")),
+        target_footer=[],
+        target_header=[],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_0_f_0_2.line.json")),
+        target_footer=[],
+        target_header=[],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_0_f_2_3.line.json")),
+        target_footer=[(1, [0, 1]), (2, [0, 1])],
+        target_header=[],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_1_f_0_4.line.json")),
+        target_footer=[],
+        target_header=[(1, [0]), (2, [0])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_1_f_1_5.line.json")),
+        target_footer=[(1, [4]), (2, [4])],
+        target_header=[(1, [0]), (2, [0])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_2_f_0_6.line.json")),
+        target_footer=[(1, [0, 1]), (2, [0, 1])],
+        target_header=[],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_2_f_2_7.line.json")),
+        target_footer=[(1, [1, 2, 3]), (2, [1, 2, 3])],
+        target_header=[(1, [0]), (2, [0])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_3_h_0_f_4_8.line.json")),
+        target_footer=[(1, [4, 5, 6]), (2, [4, 5, 6]), (3, [4, 5, 6])],
+        target_header=[],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_3_h_2_f_2_9.line.json")),
+        target_footer=[(1, [5, 6]), (2, [5, 6]), (3, [5, 6])],
+        target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_3_h_3_f_3_10.line.json")),
+        target_footer=[(1, [6, 7, 8]), (2, [6, 7, 8]), (3, [6, 7, 8])],
+        target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_3_h_4_f_0_11.line.json")),
+        target_footer=[],
+        target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_3_h_4_f_4_12.line.json")),
+        target_footer=[(1, [8, 9, 10]), (2, [8, 9, 10]), (3, [8, 9, 10])],
+        target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
+    )
+    check_cls_line_parser(
+        json_file=str(
+            os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_different_first_13.line.json")
+        ),
+        target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
+        target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_different_last_14.line.json")),
+        target_footer=[(1, [8, 9, 10]), (2, [8, 9, 10]), (3, [8, 9, 10])],
+        target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_empty_first_15.line.json")),
+        target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
+        target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_empty_last_16.line.json")),
+        target_footer=[(1, [8, 9, 10]), (2, [8, 9, 10]), (3, [8, 9, 10])],
+        target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_0_f_0_17.line.json")),
+        target_footer=[],
+        target_header=[],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_0_f_2_18.line.json")),
+        target_footer=[(1, [5, 6]), (2, [5, 6]), (3, [5, 6]), (4, [3, 4]), (5, [5, 6])],
+        target_header=[],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_2_f_0_19.line.json")),
+        target_footer=[],
+        target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_2_f_2_20.line.json")),
+        target_footer=[(1, [5, 6]), (2, [5, 6]), (3, [5, 6]), (4, [5, 6]), (5, [5, 6])],
+        target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_4_f_4_different_both_21.line.json")),
+        target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
+        target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
+    )
+    check_cls_line_parser(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_4_f_4_empty_both_22.line.json")),
+        target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
+        target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test Function - missing dependencies - text_parser - Action (action_next).
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_text_parser_action_next(fxtr_setup_logger_environment):
@@ -139,7 +371,7 @@ def test_missing_dependencies_text_parser_action_next(fxtr_setup_logger_environm
         pass
 
     # -------------------------------------------------------------------------
-    root = defusedxml.ElementTree.fromstring(XML_DATEN)
+    root = defusedxml.ElementTree.fromstring(XML_DATA)
 
     with pytest.raises(SystemExit) as expt:
         for child in root:
@@ -160,7 +392,6 @@ def test_missing_dependencies_text_parser_action_next(fxtr_setup_logger_environm
 # -----------------------------------------------------------------------------
 # Test Function - missing dependencies - text_parser - Document.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_missing_dependencies_text_parser_document(fxtr_setup_empty_db_and_inbox):
     """# Test Function - missing dependencies - text_parser - Document.
     ."""
@@ -196,7 +427,7 @@ def test_missing_dependencies_text_parser_document(fxtr_setup_empty_db_and_inbox
     )
 
     # -------------------------------------------------------------------------
-    root = defusedxml.ElementTree.fromstring(XML_DATEN)
+    root = defusedxml.ElementTree.fromstring(XML_DATA)
 
     with pytest.raises(SystemExit) as expt:
         for child in root:

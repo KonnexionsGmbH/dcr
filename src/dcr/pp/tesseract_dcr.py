@@ -204,8 +204,6 @@ def reunite_pdfs_file() -> None:
             pdf_reader = PyPDF2.PdfReader(full_name_curr)
             for page in range(pdf_reader.getNumPages()):
                 # Add each page to the writer object
-                # wwe
-                # pdf_writer.addPage(pdf_reader.getPage(page))
                 pdf_writer.add_page(pdf_reader.pages[page])
 
             utils.delete_auxiliary_file(str(full_name_curr))

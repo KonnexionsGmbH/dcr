@@ -24,7 +24,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO: int = 86
+    _CONFIG_PARAM_NO: int = 85
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -48,7 +48,6 @@ class Setup:
     _DCR_CFG_INITIAL_DATABASE_DATA: ClassVar[str] = "initial_database_data"
     _DCR_CFG_LINE_FOOTER_MAX_DISTANCE: ClassVar[str] = "line_footer_max_distance"
     _DCR_CFG_LINE_FOOTER_MAX_LINES: ClassVar[str] = "line_footer_max_lines"
-    _DCR_CFG_LINE_FOOTER_PREFERENCE: ClassVar[str] = "line_footer_preference"
     _DCR_CFG_LINE_HEADER_MAX_DISTANCE: ClassVar[str] = "line_header_max_distance"
     _DCR_CFG_LINE_HEADER_MAX_LINES: ClassVar[str] = "line_header_max_lines"
     _DCR_CFG_PDF2IMAGE_TYPE: ClassVar[str] = "pdf2image_type"
@@ -244,7 +243,6 @@ class Setup:
         self._check_config_directory_inbox_accepted()
         self._check_config_directory_inbox_rejected()
         self._check_config_ignore_duplicates()
-        self._check_config_line_footer_preference()
         self._check_config_pdf2image_type()
         self._check_config_spacy_tkn_attr_cluster()
         self._check_config_spacy_tkn_attr_dep_()
@@ -369,15 +367,6 @@ class Setup:
         if Setup._DCR_CFG_IGNORE_DUPLICATES in self._config:
             if str(self._config[Setup._DCR_CFG_IGNORE_DUPLICATES]).lower() == "true":
                 self.is_ignore_duplicates = True
-
-    # -----------------------------------------------------------------------------
-    # Check the configuration parameter - line_footer_preference.
-    # -----------------------------------------------------------------------------
-    def _check_config_line_footer_preference(self) -> None:
-        """Check the configuration parameter - line_footer_preference."""
-        if Setup._DCR_CFG_LINE_FOOTER_PREFERENCE in self._config:
-            if str(self._config[Setup._DCR_CFG_LINE_FOOTER_PREFERENCE]).lower() == "false":
-                self.is_line_footer_preferred = False
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - pdf2image_type.
@@ -1022,7 +1011,6 @@ class Setup:
                     | Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
                     | Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
                     | Setup._DCR_CFG_IGNORE_DUPLICATES
-                    | Setup._DCR_CFG_LINE_FOOTER_PREFERENCE
                     | Setup._DCR_CFG_PDF2IMAGE_TYPE
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_

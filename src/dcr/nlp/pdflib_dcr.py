@@ -159,7 +159,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
         file_size_bytes=os.path.getsize(full_name_next),
         id_document=cfg.glob.action_curr.action_id_document,
         id_parent=cfg.glob.action_curr.action_id,
-        no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
+        no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
         status=cfg.glob.DOCUMENT_STATUS_START,
     )
 

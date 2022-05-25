@@ -95,41 +95,6 @@ def check_param_ignore_duplicates():
 
 
 # -----------------------------------------------------------------------------
-# Check parameter LINE_FOOTER_PREFERENCE - True.
-# -----------------------------------------------------------------------------
-def check_param_line_footer_preference():
-    """Check parameter LINE_FOOTER_PREFERENCE - True."""
-    values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (
-                cfg.glob.setup._DCR_CFG_LINE_FOOTER_PREFERENCE,
-                cfg.glob.INFORMATION_NOT_YET_AVAILABLE,
-            ),
-        ],
-    )
-    cfg.glob.setup = cfg.cls_setup.Setup()
-    assert cfg.glob.setup.is_line_footer_preferred, "DCR_CFG_LINE_FOOTER_PREFERENCE: true (not false)"
-    pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (cfg.glob.setup._DCR_CFG_LINE_FOOTER_PREFERENCE, "fALSE"),
-        ],
-    )
-    cfg.glob.setup = cfg.cls_setup.Setup()
-    assert not cfg.glob.setup.is_line_footer_preferred, "DCR_CFG_LINE_FOOTER_PREFERENCE: false"
-    pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-
-
-# -----------------------------------------------------------------------------
 # Check parameter TETML_PAGE - False.
 # -----------------------------------------------------------------------------
 def check_param_tetml_page():
@@ -472,8 +437,6 @@ def test_get_config_logical_true(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     check_param_delete_auxiliary_files()
-
-    check_param_line_footer_preference()
 
     check_param_tokenize_2_database()
 

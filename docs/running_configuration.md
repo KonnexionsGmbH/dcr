@@ -140,7 +140,6 @@ The customisable entries are:
     initial_database_data = data/initial_database_data.json
     line_footer_max_distance = 3
     line_footer_max_lines = 3
-    line_footer_preference = true
     line_header_max_distance = 3
     line_header_max_lines = 3
     pdf2image_type = jpeg
@@ -175,7 +174,6 @@ The customisable entries are:
 | initial_database_data    | **`data/initial_database_data.json`** | File with initial database contents.                                                               |
 | line_footer_max_distance | **`3`**                               | Maximum Levenshtein distance for a footer line.                                                    |
 | line_footer_max_lines    | **`3`**                               | Maximum number of footers.                                                                         |
-| line_footer_preference   | **`true`**                            | Prefer the footer lines when determining the line type.                                            |
 | line_header_max_distance | **`3`**                               | Maximum Levenshtein distance for a header line.                                                    |
 | line_header_max_lines    | **`3`**                               | Maximum number of headers.                                                                         |
 | pdfimage_type            | **`jpeg`**                            | Format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**.            |

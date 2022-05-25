@@ -11,9 +11,10 @@ import cfg.glob
 import nlp.cls_line_type
 import utils
 
-
 # pylint: disable=R0902
 # pylint: disable=R0903
+
+
 class TextParser:
     """Extract text and metadata from PDFlib TET.
 
@@ -27,13 +28,13 @@ class TextParser:
     JSON_NAME_DOCUMENT_FILE_NAME: str = "documentFileName"
     JSON_NAME_DOCUMENT_ID: str = "documentId"
     JSON_NAME_LINES: str = "lines"
+    JSON_NAME_LINE_INDEX_PAGE: str = "lineIndexPage"
     JSON_NAME_LINE_TEXT: str = "lineText"
     JSON_NAME_LINE_TYPE: str = "lineType"
     JSON_NAME_NO_PAGES_IN_DOC: str = "noPagesInDoc"
     JSON_NAME_PAGES: str = "pages"
     JSON_NAME_PAGE_NO: str = "pageNo"
 
-    _JSON_NAME_LINE_INDEX_PAGE: str = "lineIndexPage"
     _JSON_NAME_LINE_INDEX_PARA: str = "lineIndexPara"
     _JSON_NAME_NO_LINES_IN_PAGE: str = "noLinesInPage"
     _JSON_NAME_NO_PARAS_IN_PAGE: str = "noParasInPage"
@@ -419,7 +420,7 @@ class TextParser:
             self._debug_xml_element_text_line()
             self.parse_result_line_1_lines.append(
                 {
-                    TextParser._JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
+                    TextParser.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
                     TextParser._JSON_NAME_PARA_INDEX_PAGE: self._parse_result_para_index_page,
                     TextParser._JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
                     TextParser.JSON_NAME_LINE_TEXT: self._parse_result_text,
@@ -482,8 +483,7 @@ class TextParser:
 
         # Process the page related variables.
         if cfg.glob.setup.is_parsing_line:
-            if cfg.glob.setup.is_parsing_line:
-                cfg.glob.line_type.process_page()
+            cfg.glob.line_type.process_page()
             self.parse_result_line_3_pages.append(
                 {
                     TextParser.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
@@ -552,7 +552,8 @@ class TextParser:
         self._parse_result_no_words_in_line = 0
         self._parse_result_word_index_line = 0
 
-        cfg.glob.line_type = nlp.cls_line_type.LineType()
+        if cfg.glob.setup.is_parsing_line:
+            cfg.glob.line_type = nlp.cls_line_type.LineType()
 
         # Process the tags of all document pages.
         for child in parent:
@@ -730,7 +731,7 @@ class TextParser:
             self._debug_xml_element_text_word()
             self._parse_result_word_1_words.append(
                 {
-                    TextParser._JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
+                    TextParser.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
                     TextParser._JSON_NAME_WORD_INDEX_LINE: self._parse_result_word_index_line,
                     TextParser._JSON_NAME_WORD_TEXT: self._parse_result_text,
                 }
@@ -750,6 +751,45 @@ class TextParser:
             bool:   Always true
         """
         return self._exist
+
+    # -----------------------------------------------------------------------------
+    # Initialise from the JSON files.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def from_files(cls, full_name_line="", full_name_page="", full_name_word="") -> TextParser:
+        """Initialise from JSON files.
+
+        Args:
+            full_name_line (str):
+                    Name of the file with the line-related JSON data.
+            full_name_page (str):
+                    Name of the file with the page-related JSON data.
+            full_name_word (str):
+                    Name of the file with the word-related JSON data.
+
+        Returns:
+            TextParser:
+                    The object instance matching the specified database row.
+        """
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+        instance = cls()
+
+        if full_name_line != "":
+            with open(full_name_line, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+                instance.parse_result_line_4_document = json.load(file_handle)
+
+        if full_name_page != "":
+            with open(full_name_page, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+                instance._parse_result_page_3_document = json.load(file_handle)
+
+        if full_name_word != "":
+            with open(full_name_word, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+                instance._parse_result_word_4_document = json.load(file_handle)
+
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+        return instance
 
     # -----------------------------------------------------------------------------
     # Processing tag 'Document'.

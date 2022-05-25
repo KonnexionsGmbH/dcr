@@ -23,7 +23,7 @@ def test_run_action_non_pdf_2_pdf_coverage(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
-            ("p_2_header_0_footer_2_text_0", "docx"),
+            ("p_2_h_0_f_2", "docx"),
         ],
         target_path=cfg.glob.setup.directory_inbox,
     )
