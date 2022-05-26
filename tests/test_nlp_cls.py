@@ -7,11 +7,10 @@ from typing import Tuple
 import cfg.cls_setup
 import cfg.glob
 import db.cls_action
-import nlp.cls_line_type
-import nlp.cls_text_parser
 import db.cls_run
 import db.driver
 import defusedxml.ElementTree
+import nlp.cls_line_type
 import nlp.cls_text_parser
 import pytest
 

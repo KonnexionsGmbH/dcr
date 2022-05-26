@@ -27,14 +27,9 @@ def compute_sha256(file: pathlib.Path) -> str:
     Returns:
         str: SHA256 hash string.
     """
-    sha256_hash = hashlib.sha256()
-
     with open(file, "rb") as file_handle:
-        # Read and update hash string value in blocks of 4K
-        for byte_block in iter(lambda: file_handle.read(4096), b""):
-            sha256_hash.update(byte_block)
-
-    return sha256_hash.hexdigest()
+        content = file_handle.read()
+        return hashlib.sha256(content).hexdigest()
 
 
 # -----------------------------------------------------------------------------
