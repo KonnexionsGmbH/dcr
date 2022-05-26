@@ -83,7 +83,7 @@ def test_load_db_data_from_json_content(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, initial_database_data_path_file_name_test),
+        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), initial_database_data_path_file_name_test),
         utils.get_full_name(initial_database_data_path_directory, initial_database_data_path_file_name),
     )
 
@@ -113,7 +113,7 @@ def test_load_db_data_from_json_unknown(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, initial_database_data_path_file_name_test),
+        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), initial_database_data_path_file_name_test),
         utils.get_full_name(initial_database_data_path_directory, initial_database_data_path_file_name),
     )
 
@@ -143,7 +143,7 @@ def test_load_db_data_from_json_version(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, initial_database_data_path_file_name_test),
+        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), initial_database_data_path_file_name_test),
         utils.get_full_name(initial_database_data_path_directory, initial_database_data_path_file_name),
     )
 

@@ -79,8 +79,6 @@ LOGGER_FATAL_TAIL: str
 LOGGER_PROGRESS_UPDATE: str
 LOGGER_START: str
 
-TESTS_INBOX_NAME: str
-
 # -----------------------------------------------------------------------------
 # Global Variables.
 # -----------------------------------------------------------------------------

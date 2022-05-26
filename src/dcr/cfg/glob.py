@@ -79,8 +79,6 @@ LOGGER_FATAL_TAIL: str = " <===== FATAL ERROR"
 LOGGER_PROGRESS_UPDATE: str = "Progress update "
 LOGGER_START: str = "Start"
 
-TESTS_INBOX_NAME: str = "tests/__PYTEST_FILES__/"
-
 # -----------------------------------------------------------------------------
 # Global Variables.
 # -----------------------------------------------------------------------------

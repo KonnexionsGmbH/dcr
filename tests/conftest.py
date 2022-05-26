@@ -239,13 +239,13 @@ def copy_directories_4_pytest_2_dir(
         source_directories: List[str]: Source directory names.
         target_dir: str: Target directory.
     """
-    assert os.path.isdir(utils.get_os_independent_name(cfg.glob.TESTS_INBOX_NAME)), (
-        "source base directory '" + cfg.glob.TESTS_INBOX_NAME + "' missing"
+    assert os.path.isdir(utils.get_os_independent_name(get_test_inbox_directory_name())), (
+        "source base directory '" + get_test_inbox_directory_name() + "' missing"
     )
 
     for source in source_directories:
-        source_dir = cfg.glob.TESTS_INBOX_NAME + "/" + source
-        source_path = utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, pathlib.Path(source))
+        source_dir = get_test_inbox_directory_name() + "/" + source
+        source_path = utils.get_full_name(get_test_inbox_directory_name(), pathlib.Path(source))
         assert os.path.isdir(utils.get_os_independent_name(source_path)), (
             "source language directory '" + str(source_path) + "' missing"
         )
@@ -268,13 +268,13 @@ def copy_files_4_pytest(file_list: List[Tuple[Tuple[str, str | None], Tuple[path
             ]
         ]): List of files to be copied.
     """
-    assert os.path.isdir(utils.get_os_independent_name(cfg.glob.TESTS_INBOX_NAME)), (
-        "source directory '" + cfg.glob.TESTS_INBOX_NAME + "' missing"
+    assert os.path.isdir(utils.get_os_independent_name(get_test_inbox_directory_name())), (
+        "source directory '" + get_test_inbox_directory_name() + "' missing"
     )
 
     for ((source_stem, source_ext), (target_dir, target_file_comp, target_ext)) in file_list:
         source_file_name = source_stem if source_ext is None else source_stem + "." + source_ext
-        source_file = utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, source_file_name)
+        source_file = utils.get_full_name(get_test_inbox_directory_name(), source_file_name)
         assert os.path.isfile(source_file), "source file '" + str(source_file) + "' missing"
 
         assert os.path.isdir(utils.get_os_independent_name(target_dir)), "target directory '" + target_dir + "' missing"
@@ -588,7 +588,9 @@ def fxtr_setup_empty_db_and_inbox(
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))),
+        utils.get_full_name(
+            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
+        ),
         os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
     )
 
@@ -632,7 +634,9 @@ def fxtr_setup_empty_inbox(
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))),
+        utils.get_full_name(
+            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
+        ),
         os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
     )
 
@@ -675,7 +679,9 @@ def fxtr_setup_logger_environment():
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))),
+        utils.get_full_name(
+            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
+        ),
         os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
     )
 
@@ -688,6 +694,15 @@ def fxtr_setup_logger_environment():
     yield
 
     restore_setup_cfg()
+
+
+# -----------------------------------------------------------------------------
+# Provide the directory name of the inbox with the test data.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def get_test_inbox_directory_name():
+    """Provide the directory name of the inbox with the test data."""
+    return "tests/__PYTEST_FILES__/"
 
 
 # -----------------------------------------------------------------------------

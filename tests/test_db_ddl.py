@@ -37,7 +37,7 @@ def test_load_db_data_from_json_missing(fxtr_setup_logger_environment):
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, initial_database_data_path_file_name),
+        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), initial_database_data_path_file_name),
         initial_database_data_path_directory,
     )
 
