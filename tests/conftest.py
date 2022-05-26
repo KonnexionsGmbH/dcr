@@ -603,11 +603,16 @@ def fxtr_setup_empty_db_and_inbox(
 
     yield
 
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
+    try:
+        cfg.glob.setup.exists()  # type: ignore
 
-    db.driver.drop_database()
+        fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
+        fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
+        fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
+
+        db.driver.drop_database()
+    except AttributeError:
+        pass
 
     restore_setup_cfg()
 

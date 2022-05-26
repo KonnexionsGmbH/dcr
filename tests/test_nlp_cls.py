@@ -13,13 +13,14 @@ import defusedxml.ElementTree
 import nlp.cls_text_parser
 import pytest
 
-import dcr
-
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
 # pylint: disable=W0212
 # @pytest.mark.issue
+import utils
+
+import dcr
 
 XML_DATA: str = """<?xml version="1.0" encoding="UTF-8"?>
 <!-- Created by the PDFlib Text and Image Extraction Toolkit TET (www.pdflib.com) -->
@@ -124,12 +125,12 @@ XML_DATA: str = """<?xml version="1.0" encoding="UTF-8"?>
 
 
 # -----------------------------------------------------------------------------
-# Test LineParser.
+# Test LineType.
 # -----------------------------------------------------------------------------
-def check_cls_line_parser(
+def check_cls_line_type(
     json_file: str, target_footer: List[Tuple[int, List[int]]], target_header: List[Tuple[int, List[int]]]
 ) -> None:
-    """Test LineParser.
+    """Test LineType.
 
     Args:
         json_file (str): JSON file from trxt parser.
@@ -171,10 +172,10 @@ def check_cls_line_parser(
 
 
 # -----------------------------------------------------------------------------
-# Test LineParser.
+# Test LineType.
 # -----------------------------------------------------------------------------
-def test_cls_line_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
-    """Test LineParser."""
+def test_cls_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -232,116 +233,237 @@ def test_cls_line_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_1_h_0_f_0_1.line.json")),
         target_footer=[],
         target_header=[],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_0_f_0_2.line.json")),
         target_footer=[],
         target_header=[],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_0_f_2_3.line.json")),
         target_footer=[(1, [0, 1]), (2, [0, 1])],
         target_header=[],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_1_f_0_4.line.json")),
         target_footer=[],
         target_header=[(1, [0]), (2, [0])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_1_f_1_5.line.json")),
         target_footer=[(1, [4]), (2, [4])],
         target_header=[(1, [0]), (2, [0])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_2_f_0_6.line.json")),
         target_footer=[(1, [0, 1]), (2, [0, 1])],
         target_header=[],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_2_h_2_f_2_7.line.json")),
         target_footer=[(1, [1, 2, 3]), (2, [1, 2, 3])],
         target_header=[(1, [0]), (2, [0])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_3_h_0_f_4_8.line.json")),
         target_footer=[(1, [4, 5, 6]), (2, [4, 5, 6]), (3, [4, 5, 6])],
         target_header=[],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_3_h_2_f_2_9.line.json")),
         target_footer=[(1, [5, 6]), (2, [5, 6]), (3, [5, 6])],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_3_h_3_f_3_10.line.json")),
         target_footer=[(1, [6, 7, 8]), (2, [6, 7, 8]), (3, [6, 7, 8])],
         target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_3_h_4_f_0_11.line.json")),
         target_footer=[],
         target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_3_h_4_f_4_12.line.json")),
         target_footer=[(1, [8, 9, 10]), (2, [8, 9, 10]), (3, [8, 9, 10])],
         target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_different_first_13.line.json")),
         target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
         target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_different_last_14.line.json")),
         target_footer=[(1, [8, 9, 10]), (2, [8, 9, 10]), (3, [8, 9, 10])],
         target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_empty_first_15.line.json")),
         target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
         target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_empty_last_16.line.json")),
         target_footer=[(1, [8, 9, 10]), (2, [8, 9, 10]), (3, [8, 9, 10])],
         target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_0_f_0_17.line.json")),
         target_footer=[],
         target_header=[],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_0_f_2_18.line.json")),
         target_footer=[(1, [5, 6]), (2, [5, 6]), (3, [5, 6]), (4, [3, 4]), (5, [5, 6])],
         target_header=[],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_2_f_0_19.line.json")),
         target_footer=[],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_2_f_2_20.line.json")),
         target_footer=[(1, [5, 6]), (2, [5, 6]), (3, [5, 6]), (4, [5, 6]), (5, [5, 6])],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_4_f_4_different_both_21.line.json")),
         target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
         target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
     )
-    check_cls_line_parser(
+    check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_4_f_4_empty_both_22.line.json")),
         target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
         target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
     )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test TextParser - .
+# -----------------------------------------------------------------------------
+def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test TextParser."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("pdf_mini", "pdf"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "true"),
+            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
+        ],
+    )
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    pytest.helpers.restore_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    nlp.cls_text_parser.TextParser.from_files(
+        full_name_line=utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.line.json"),
+        full_name_page=utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.page.json"),
+        full_name_word=utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.word.json"),
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - line_type - Action (action_curr).
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_line_type_action_curr(fxtr_setup_logger_environment):
+    """# Test Function - missing dependencies - line_type - Action (action_curr).
+    ."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.action_curr.exists()  # type: ignore
+
+        del cfg.glob.action_curr
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.action_curr' of the class Action was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        nlp.cls_line_type.LineType()
+
+    assert expt.type == SystemExit, "Instance of class 'Action (action_curr)' is missing"
+    assert expt.value.code == 1, "Instance of class 'Action (action_curr)' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - line_type - Setup.
+# -----------------------------------------------------------------------------
+@pytest.mark.issue
+def test_missing_dependencies_line_type_setup(fxtr_setup_empty_db_and_inbox):
+    """# Test Function - missing dependencies - line_type - Setup.
+    ."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.run = db.cls_run.Run(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.action_curr = db.cls_action.Action(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        id_run_last=1,
+    )
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.setup.exists()  # type: ignore
+
+        del cfg.glob.setup
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.setup' of the class Setup was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        nlp.cls_line_type.LineType()
+
+    assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
+    assert expt.value.code == 1, "Instance of class 'Setup' is missing"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
