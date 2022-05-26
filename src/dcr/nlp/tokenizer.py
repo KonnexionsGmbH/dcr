@@ -18,6 +18,10 @@ import utils
 # -----------------------------------------------------------------------------
 # Global constants.
 # -----------------------------------------------------------------------------
+ERROR_71_901: str = (
+    "71.901 Issue (tkn): Tokenizing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
+)
+
 JSON_NAME_NO_TOKENS_IN_PAGE: str = "noTokensInPage"
 
 JSON_NAME_TOKEN_CLUSTER: str = "tknCluster"
@@ -463,7 +467,7 @@ def tokenize_file(model_data: spacy.Language) -> None:
     except FileNotFoundError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_TOKENIZE,
-            error_msg=cfg.glob.ERROR_71_901.replace("{full_name_curr}", full_name_curr)
+            error_msg=ERROR_71_901.replace("{full_name_curr}", full_name_curr)
             .replace("{error_type}", str(type(err)))
             .replace("{error}", str(err)),
         )

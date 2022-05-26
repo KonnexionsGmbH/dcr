@@ -26,6 +26,11 @@ import sqlalchemy
 import utils
 import yaml
 
+# -----------------------------------------------------------------------------
+# Class variables.
+# -----------------------------------------------------------------------------
+LOCALE: str = "en_US.UTF-8"
+
 
 # -----------------------------------------------------------------------------
 # Check that the database version is up to date.
@@ -223,7 +228,7 @@ def main(argv: List[str]) -> None:
 
     print("Start dcr.py")
 
-    locale.setlocale(locale.LC_ALL, cfg.glob.LOCALE)
+    locale.setlocale(locale.LC_ALL, LOCALE)
 
     # Load the configuration parameters.
     cfg.glob.setup = cfg.cls_setup.Setup()

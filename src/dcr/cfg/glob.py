@@ -71,54 +71,9 @@ DBT_VERSION: str = "version"
 
 DCR_ARGV_0: str = "src/dcr/dcr.py"
 
-ERROR_01_901: str = "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
-ERROR_01_903: str = (
-    "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{file_name}' " + "- error: '{error_msg}'."
-)
-ERROR_01_905: str = (
-    "01.905 Issue (p_i): The same file has probably already been processed " + "once under the file name '{file_name}'."
-)
-ERROR_01_906: str = "01.906 Issue (p_i): The target file '{full_name}' already exists."
-
-ERROR_21_901: str = (
-    "21.901 Issue (p_2_i): Processing file '{full_name_curr}' with pdf2image failed - "
-    + "error type: '{error_type}' - error: '{error}'."
-)
-ERROR_21_903: str = "21.903 Issue (p_2_i): The target file '{full_name}' already exists."
-
-ERROR_31_902: str = (
-    "31.902 Issue (n_2_p): The file '{full_name}' cannot be converted to an "
-    + "'pdf' document - "
-    + "error type: '{error_type}' - error: '{error_msg}'."
-)
-ERROR_31_903: str = "31.903 Issue (n_2_p): The target file '{full_name}' already exists."
-
-ERROR_41_901: str = (
-    "41.901 Issue (ocr): Converting the file '{full_name_curr}' with Tesseract OCR failed - "
-    + "error type: '{error_type}' - error: '{error}'."
-)
-ERROR_41_903: str = "41.903 Issue (ocr): The target file '{full_name}' already exists."
-ERROR_41_904: str = "41.904 Issue (pypdf2): The target file '{full_name}' already exists."
-
-ERROR_51_901: str = (
-    "51.901 Issue (tet): Opening document '{full_name}' - "
-    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-)
-ERROR_51_904: str = "51.904 Issue (pdflib): The target file '{full_name}' already exists."
-
-ERROR_61_901: str = (
-    "61.901 Issue (s_p_j): Parsing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
-)
-
-ERROR_71_901: str = (
-    "71.901 Issue (tkn): Tokenizing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
-)
-
 FILE_ENCODING_DEFAULT: str = "utf-8"
 
 INFORMATION_NOT_YET_AVAILABLE: str = "n/a"
-
-LOCALE: str = "en_US.UTF-8"
 
 LOGGER_CFG_FILE: str = "logging_cfg.yaml"
 LOGGER_END: str = "End"

@@ -22,6 +22,18 @@ import sqlalchemy
 import sqlalchemy.orm
 import utils
 
+# -----------------------------------------------------------------------------
+# Class variables.
+# -----------------------------------------------------------------------------
+ERROR_01_901: str = "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
+ERROR_01_903: str = (
+    "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{file_name}' " + "- error: '{error_msg}'."
+)
+ERROR_01_905: str = (
+    "01.905 Issue (p_i): The same file has probably already been processed " + "once under the file name '{file_name}'."
+)
+ERROR_01_906: str = "01.906 Issue (p_i): The target file '{full_name}' already exists."
+
 
 # -----------------------------------------------------------------------------
 # Check the inbox file directories and create the missing ones.
@@ -158,9 +170,7 @@ def prepare_pdf(file_path: pathlib.Path) -> None:
     except RuntimeError as err:
         process_inbox_rejected(
             db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
-            cfg.glob.ERROR_01_903.replace("{file_name}", cfg.glob.document.document_file_name).replace(
-                "{error_msg}", str(err)
-            ),
+            ERROR_01_903.replace("{file_name}", cfg.glob.document.document_file_name).replace("{error_msg}", str(err)),
         )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -230,7 +240,7 @@ def process_inbox_accepted(action_code: str) -> None:
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error_msg=cfg.glob.ERROR_01_906.replace("{full_name}", full_name_next),
+            error_msg=ERROR_01_906.replace("{full_name}", full_name_next),
         )
     else:
         shutil.move(full_name_curr, full_name_next)
@@ -276,7 +286,7 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     if not (file_name is None or file_name == ""):
         process_inbox_rejected(
             db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            cfg.glob.ERROR_01_905.replace("{file_name}", file_name),
+            ERROR_01_905.replace("{file_name}", file_name),
         )
     elif cfg.glob.document.get_file_type() == db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF:
         prepare_pdf(file_path)
@@ -291,7 +301,7 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     else:
         process_inbox_rejected(
             db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
-            cfg.glob.ERROR_01_901.replace("{extension}", file_path.suffix[1:]),
+            ERROR_01_901.replace("{extension}", file_path.suffix[1:]),
         )
 
 
@@ -365,7 +375,7 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error_msg=cfg.glob.ERROR_01_906.replace("{full_name}", full_name_next),
+            error_msg=ERROR_01_906.replace("{full_name}", full_name_next),
         )
     else:
         shutil.move(full_name_curr, full_name_next)

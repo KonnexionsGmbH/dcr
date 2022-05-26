@@ -11,6 +11,15 @@ import pdf2image
 import utils
 from pdf2image.exceptions import PDFPageCountError
 
+# -----------------------------------------------------------------------------
+# Class variables.
+# -----------------------------------------------------------------------------
+ERROR_21_901: str = (
+    "21.901 Issue (p_2_i): Processing file '{full_name_curr}' with pdf2image failed - "
+    + "error type: '{error_type}' - error: '{error}'."
+)
+ERROR_21_903: str = "21.903 Issue (p_2_i): The target file '{full_name}' already exists."
+
 
 # -----------------------------------------------------------------------------
 # Convert scanned image pdf documents to image files (step: p_2_i).
@@ -91,7 +100,7 @@ def convert_pdf_2_image_file() -> None:
             if os.path.exists(full_name_next):
                 cfg.glob.action_curr.finalise_error(
                     error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-                    error_msg=cfg.glob.ERROR_21_903.replace("{full_name}", full_name_next),
+                    error_msg=ERROR_21_903.replace("{full_name}", full_name_next),
                 )
 
                 is_no_error = False
@@ -124,7 +133,7 @@ def convert_pdf_2_image_file() -> None:
     except PDFPageCountError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-            error_msg=cfg.glob.ERROR_21_901.replace("{full_name_curr}", full_name_curr)
+            error_msg=ERROR_21_901.replace("{full_name_curr}", full_name_curr)
             .replace("{error_type}", str(type(err)))
             .replace("{error}", str(err)),
         )

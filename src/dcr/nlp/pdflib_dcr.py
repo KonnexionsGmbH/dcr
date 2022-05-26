@@ -13,6 +13,12 @@ import utils
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
+ERROR_51_901: str = (
+    "51.901 Issue (tet): Opening document '{full_name}' - "
+    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
+)
+ERROR_51_904: str = "51.904 Issue (pdflib): The target file '{full_name}' already exists."
+
 LINE_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector}"
 LINE_TET_PAGE_OPT_LIST: str = "granularity=line"
 LINE_XML_VARIATION: str = "line."
@@ -110,7 +116,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error_msg=cfg.glob.ERROR_51_904.replace("{full_name}", full_name_next),
+            error_msg=ERROR_51_904.replace("{full_name}", full_name_next),
         )
 
         return False
@@ -123,7 +129,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
     if file_curr == -1:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
-            error_msg=cfg.glob.ERROR_51_901.replace("{full_name}", full_name_curr)
+            error_msg=ERROR_51_901.replace("{full_name}", full_name_curr)
             .replace("{error_no}", str(tet.get_errnum()))
             .replace("{api_name}", tet.get_apiname() + "()")
             .replace("{error}", tet.get_errmsg()),

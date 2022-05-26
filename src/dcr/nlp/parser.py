@@ -14,6 +14,10 @@ import utils
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
+ERROR_61_901: str = (
+    "61.901 Issue (s_p_j): Parsing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
+)
+
 TETML_TYPE_LINE: str = "line"
 TETML_TYPE_PAGE: str = "page"
 TETML_TYPE_WORD: str = "word"
@@ -152,7 +156,7 @@ def parse_tetml_file() -> None:
     except FileNotFoundError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PARSER,
-            error_msg=cfg.glob.ERROR_61_901.replace("{full_name_curr}", full_name_curr)
+            error_msg=ERROR_61_901.replace("{full_name_curr}", full_name_curr)
             .replace("{error_type}", str(type(err)))
             .replace("{error}", str(err)),
         )

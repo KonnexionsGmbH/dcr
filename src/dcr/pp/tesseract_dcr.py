@@ -11,6 +11,16 @@ import PyPDF2
 import pytesseract
 import utils
 
+# -----------------------------------------------------------------------------
+# Global variables.
+# -----------------------------------------------------------------------------
+ERROR_41_901: str = (
+    "41.901 Issue (ocr): Converting the file '{full_name_curr}' with Tesseract OCR failed - "
+    + "error type: '{error_type}' - error: '{error}'."
+)
+ERROR_41_903: str = "41.903 Issue (ocr): The target file '{full_name}' already exists."
+ERROR_41_904: str = "41.904 Issue (pypdf2): The target file '{full_name}' already exists."
+
 
 # -----------------------------------------------------------------------------
 # Convert image documents to pdf files (step: ocr).
@@ -67,7 +77,7 @@ def convert_image_2_pdf_file() -> None:
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error_msg=cfg.glob.ERROR_41_903.replace("{full_name}", full_name_next),
+            error_msg=ERROR_41_903.replace("{full_name}", full_name_next),
         )
         return
 
@@ -102,7 +112,7 @@ def convert_image_2_pdf_file() -> None:
     except RuntimeError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-            error_msg=cfg.glob.ERROR_41_901.replace("{full_name_curr}", full_name_curr)
+            error_msg=ERROR_41_901.replace("{full_name_curr}", full_name_curr)
             .replace("{error_type}", str(type(err)))
             .replace("{error}", str(err)),
         )
@@ -176,7 +186,7 @@ def reunite_pdfs_file() -> None:
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error_msg=cfg.glob.ERROR_41_904.replace("{full_name}", str(full_name_next)),
+            error_msg=ERROR_41_904.replace("{full_name}", str(full_name_next)),
         )
         return
 

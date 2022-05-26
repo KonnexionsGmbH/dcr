@@ -10,6 +10,13 @@ import utils
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
+ERROR_31_902: str = (
+    "31.902 Issue (n_2_p): The file '{full_name}' cannot be converted to an "
+    + "'pdf' document - "
+    + "error type: '{error_type}' - error: '{error_msg}'."
+)
+ERROR_31_903: str = "31.903 Issue (n_2_p): The target file '{full_name}' already exists."
+
 PANDOC_PDF_ENGINE_LULATEX: str = "lulatex"
 PANDOC_PDF_ENGINE_XELATEX: str = "xelatex"
 
@@ -68,7 +75,7 @@ def convert_non_pdf_2_pdf_file() -> None:
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-            error_msg=cfg.glob.ERROR_31_903.replace("{full_name}", full_name_next),
+            error_msg=ERROR_31_903.replace("{full_name}", full_name_next),
         )
 
         return
@@ -108,7 +115,7 @@ def convert_non_pdf_2_pdf_file() -> None:
     except RuntimeError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-            error_msg=cfg.glob.ERROR_31_902.replace("{full_name}", full_name_curr)
+            error_msg=ERROR_31_902.replace("{full_name}", full_name_curr)
             .replace("{error_type}", str(type(err)))
             .replace("{error_msg}", str(err)),
         )
