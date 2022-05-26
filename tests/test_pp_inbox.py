@@ -89,7 +89,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(pytest.get_test_inbox_directory_name(), initial_database_data_path_file_name_test),
+        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), initial_database_data_path_file_name_test),
         utils.get_full_name(initial_database_data_path_directory, initial_database_data_path_file_name),
     )
 

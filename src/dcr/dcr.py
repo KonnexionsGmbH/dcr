@@ -11,6 +11,7 @@ from typing import List
 
 import cfg.cls_setup
 import cfg.glob
+import db.cls_language
 import db.cls_run
 import db.cls_version
 import db.dml
@@ -176,44 +177,6 @@ def initialise_logger() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Load the data from the database table 'language'.
-# -----------------------------------------------------------------------------
-def load_data_from_dbt_language() -> None:
-    """Load the data from the database table 'language'."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    dbt = sqlalchemy.Table(
-        cfg.glob.DBT_LANGUAGE,
-        cfg.glob.db_orm_metadata,
-        autoload_with=cfg.glob.db_orm_engine,
-    )
-
-    cfg.glob.languages_pandoc = {}
-    cfg.glob.languages_spacy = {}
-    cfg.glob.languages_tesseract = {}
-
-    with cfg.glob.db_orm_engine.connect() as conn:
-        rows = conn.execute(
-            sqlalchemy.select(dbt.c.id, dbt.c.code_pandoc, dbt.c.code_spacy, dbt.c.code_tesseract).where(
-                dbt.c.active,
-            )
-        )
-
-        for row in rows:
-            cfg.glob.languages_pandoc[row.id] = row.code_pandoc
-            cfg.glob.languages_spacy[row.id] = row.code_spacy
-            cfg.glob.languages_tesseract[row.id] = row.code_tesseract
-
-        conn.close()
-
-    utils.progress_msg(f"Available languages for Pandoc        '{cfg.glob.languages_pandoc}'")
-    utils.progress_msg(f"Available languages for spaCy         '{cfg.glob.languages_spacy}'")
-    utils.progress_msg(f"Available languages for Tesseract OCR '{cfg.glob.languages_tesseract}'")
-
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
 # Initialising the logging functionality.
 # -----------------------------------------------------------------------------
 def main(argv: List[str]) -> None:
@@ -339,7 +302,7 @@ def process_documents(args: dict[str, bool]) -> None:
     check_db_up_to_date()
 
     # Load the data from the database table 'language'.
-    load_data_from_dbt_language()
+    db.cls_language.Language.load_data_from_dbt_language()
 
     # Process the documents in the inbox file directory.
     if args[db.cls_run.Run.ACTION_CODE_INBOX]:

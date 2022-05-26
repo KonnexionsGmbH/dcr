@@ -86,7 +86,7 @@ def convert_image_2_pdf_file() -> None:
         pdf = pytesseract.image_to_pdf_or_hocr(
             extension="pdf",
             image=full_name_curr,
-            lang=cfg.glob.languages_tesseract[cfg.glob.document.document_id_language],
+            lang=db.cls_language.Language.languages_tesseract[cfg.glob.document.document_id_language],
             timeout=cfg.glob.setup.tesseract_timeout,
         )
 

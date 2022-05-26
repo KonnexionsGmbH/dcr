@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import os.path
+from typing import ClassVar
+from typing import Dict
 
 import cfg.glob
 import db.dml
@@ -22,6 +24,13 @@ class Language:
     Returns:
         _type_: Language instance.
     """
+
+    # -----------------------------------------------------------------------------
+    # Class variables.
+    # -----------------------------------------------------------------------------
+    languages_pandoc: ClassVar[Dict[sqlalchemy.Integer, str]]
+    languages_spacy: ClassVar[Dict[sqlalchemy.Integer, str]]
+    languages_tesseract: ClassVar[Dict[sqlalchemy.Integer, str]]
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
@@ -278,6 +287,44 @@ class Language:
             self.language_directory_name_inbox,
             self.language_iso_language_name,
         )
+
+    # -----------------------------------------------------------------------------
+    # Load the data from the database table 'language'.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def load_data_from_dbt_language(cls) -> None:
+        """Load the data from the database table 'language'."""
+        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+        dbt = sqlalchemy.Table(
+            cfg.glob.DBT_LANGUAGE,
+            cfg.glob.db_orm_metadata,
+            autoload_with=cfg.glob.db_orm_engine,
+        )
+
+        Language.languages_pandoc = {}
+        Language.languages_spacy = {}
+        Language.languages_tesseract = {}
+
+        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+            rows = conn.execute(
+                sqlalchemy.select(dbt.c.id, dbt.c.code_pandoc, dbt.c.code_spacy, dbt.c.code_tesseract).where(
+                    dbt.c.active,
+                )
+            )
+
+            for row in rows:
+                Language.languages_pandoc[row.id] = row.code_pandoc
+                Language.languages_spacy[row.id] = row.code_spacy
+                Language.languages_tesseract[row.id] = row.code_tesseract
+
+            conn.close()
+
+        utils.progress_msg(f"Available languages for Pandoc        '{Language.languages_pandoc}'")
+        utils.progress_msg(f"Available languages for spaCy         '{Language.languages_spacy}'")
+        utils.progress_msg(f"Available languages for Tesseract OCR '{Language.languages_tesseract}'")
+
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Persist the object in the database.

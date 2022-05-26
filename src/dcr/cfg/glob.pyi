@@ -100,10 +100,6 @@ directory_inbox_rejected: os.PathLike[str] | str
 
 language: Type[db.cls_language.Language]
 
-languages_pandoc: Dict[sqlalchemy.Integer, str]
-languages_spacy: Dict[sqlalchemy.Integer, str]
-languages_tesseract: Dict[sqlalchemy.Integer, str]
-
 line_type: Type[nlp.cls_line_type.LineType]
 
 logger: logging.Logger

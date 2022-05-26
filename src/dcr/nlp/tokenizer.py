@@ -371,7 +371,7 @@ def tokenize() -> None:
 
             cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
 
-            spacy_model = cfg.glob.languages_spacy[cfg.glob.document.document_id_language]
+            spacy_model = db.cls_language.Language.languages_spacy[cfg.glob.document.document_id_language]
 
             if spacy_model != spacy_model_current:
                 model_data = spacy.load(spacy_model)

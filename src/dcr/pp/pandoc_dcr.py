@@ -84,7 +84,7 @@ def convert_non_pdf_2_pdf_file() -> None:
     extra_args = [
         f"--pdf-engine={PANDOC_PDF_ENGINE_XELATEX}",
         "-V",
-        f"lang:{cfg.glob.languages_pandoc[cfg.glob.document.document_id_language]}",
+        f"lang:{db.cls_language.Language.languages_pandoc[cfg.glob.document.document_id_language]}",
     ]
 
     try:
