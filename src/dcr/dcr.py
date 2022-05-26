@@ -29,7 +29,11 @@ import yaml
 # -----------------------------------------------------------------------------
 # Class variables.
 # -----------------------------------------------------------------------------
+DCR_ARGV_0: str = "src/dcr/dcr.py"
+
 LOCALE: str = "en_US.UTF-8"
+
+LOGGER_CFG_FILE: str = "logging_cfg.yaml"
 
 
 # -----------------------------------------------------------------------------
@@ -161,7 +165,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
 # -----------------------------------------------------------------------------
 def initialise_logger() -> None:
     """Initialise the root logging functionality."""
-    with open(cfg.glob.LOGGER_CFG_FILE, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+    with open(LOGGER_CFG_FILE, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
         log_config = yaml.safe_load(file_handle.read())
 
     logging.config.dictConfig(log_config)

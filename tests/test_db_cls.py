@@ -3266,7 +3266,7 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     db.cls_run.Run.id_run_umbrella = 0
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()

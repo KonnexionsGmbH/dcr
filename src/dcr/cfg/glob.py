@@ -69,13 +69,10 @@ DBT_RUN: str = "run"
 DBT_TOKEN: str = "token"
 DBT_VERSION: str = "version"
 
-DCR_ARGV_0: str = "src/dcr/dcr.py"
-
 FILE_ENCODING_DEFAULT: str = "utf-8"
 
 INFORMATION_NOT_YET_AVAILABLE: str = "n/a"
 
-LOGGER_CFG_FILE: str = "logging_cfg.yaml"
 LOGGER_END: str = "End"
 LOGGER_FATAL_HEAD: str = "FATAL ERROR: program abort =====> "
 LOGGER_FATAL_TAIL: str = " <===== FATAL ERROR"

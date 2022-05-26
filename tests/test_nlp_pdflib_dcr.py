@@ -69,9 +69,9 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
@@ -124,9 +124,9 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
@@ -175,11 +175,11 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
         utils.get_full_name(
@@ -188,7 +188,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
         )
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
@@ -235,11 +235,11 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
         utils.get_full_name(
@@ -248,7 +248,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
         )
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,

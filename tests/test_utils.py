@@ -45,7 +45,7 @@ def test_get_os_independent_name():
 # -----------------------------------------------------------------------------
 # Test Function - get_path_name().
 # -----------------------------------------------------------------------------
-def test_get_path_namee():
+def test_get_path_name():
     """Test: get_path_name()."""
     assert "" == utils.get_path_name(None)
 

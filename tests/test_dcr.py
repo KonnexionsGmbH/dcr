@@ -21,7 +21,7 @@ def test_get_args(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    args = dcr.get_args([cfg.glob.DCR_ARGV_0, "AlL"])
+    args = dcr.get_args([dcr.DCR_ARGV_0, "AlL"])
 
     assert len(args) == 9, "arg: all"
     assert args[db.cls_run.Run.ACTION_CODE_TESSERACT], "arg: all"
@@ -35,7 +35,7 @@ def test_get_args(fxtr_setup_logger_environment):
     assert not args[db.cls_run.Run.ACTION_CODE_UPGRADE_DB], "arg: all"
 
     # -------------------------------------------------------------------------
-    args = dcr.get_args([cfg.glob.DCR_ARGV_0, "Db_C"])
+    args = dcr.get_args([dcr.DCR_ARGV_0, "Db_C"])
 
     assert args[db.cls_run.Run.ACTION_CODE_CREATE_DB], "arg: db_c"
     assert not args[db.cls_run.Run.ACTION_CODE_TESSERACT], "arg: all"
@@ -48,7 +48,7 @@ def test_get_args(fxtr_setup_logger_environment):
     assert not args[db.cls_run.Run.ACTION_CODE_UPGRADE_DB], "arg: db_c"
 
     # -------------------------------------------------------------------------
-    args = dcr.get_args([cfg.glob.DCR_ARGV_0, "Db_U"])
+    args = dcr.get_args([dcr.DCR_ARGV_0, "Db_U"])
 
     assert args[db.cls_run.Run.ACTION_CODE_UPGRADE_DB], "arg: db_u"
     assert not args[db.cls_run.Run.ACTION_CODE_CREATE_DB], "arg: db_u"

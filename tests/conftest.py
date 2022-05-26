@@ -308,11 +308,11 @@ def copy_files_4_pytest_2_dir(
 
 
 # -----------------------------------------------------------------------------
-# Create one row in atabase table action.
+# Create one row in database table action.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def create_action():
-    """Create one row in atabase table action.
+    """Create one row in database table action.
 
     Returns:
         List: Column values
@@ -340,11 +340,11 @@ def create_action():
 
 
 # -----------------------------------------------------------------------------
-# Create one row in atabase table document.
+# Create one row in database table document.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def create_document():
-    """Create one row in atabase table document.
+    """Create one row in database table document.
 
     Returns:
         List: Column values
@@ -369,11 +369,11 @@ def create_document():
 
 
 # -----------------------------------------------------------------------------
-# Create one row in atabase table language.
+# Create one row in database table language.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def create_language():
-    """Create one row in atabase table language.
+    """Create one row in database table language.
 
     Returns:
         List: Column values
@@ -398,12 +398,12 @@ def create_language():
 
 
 # -----------------------------------------------------------------------------
-# Create one row in atabase table run.
+# Create one row in database table run.
 # -----------------------------------------------------------------------------
 # noinspection PyArgumentList
 @pytest.helpers.register
 def create_run():
-    """Create one row in atabase table run.
+    """Create one row in database table run.
 
     Returns:
         List: Column values
@@ -425,11 +425,11 @@ def create_run():
 
 
 # -----------------------------------------------------------------------------
-# Create one row in atabase table token.
+# Create one row in database table token.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def create_token():
-    """Create one row in atabase table token.
+    """Create one row in database table token.
 
     Returns:
         List: Column values
@@ -448,11 +448,11 @@ def create_token():
 
 
 # -----------------------------------------------------------------------------
-# Create one row in atabase table version.
+# Create one row in database table version.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def create_version():
-    """Create one row in atabase table version.
+    """Create one row in database table version.
 
     Returns:
         List: Column values
@@ -592,7 +592,7 @@ def fxtr_setup_empty_db_and_inbox(
         os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
     fxtr_mkdir(cfg.glob.setup.directory_inbox)
@@ -850,7 +850,7 @@ def help_run_action_all_complete_duplicate_file(
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     verify_content_of_directory(
@@ -886,7 +886,7 @@ def help_run_action_process_inbox_normal(
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
     # -------------------------------------------------------------------------
     document_id: int = 1
 

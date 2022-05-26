@@ -997,7 +997,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
     # -------------------------------------------------------------------------
     db.cls_run.Run.id_run_umbrella = 0
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_deleted <=========")
@@ -1046,7 +1046,7 @@ def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -1079,7 +1079,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     pytest.helpers.restore_config_params(
         cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
@@ -1146,7 +1146,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     # -------------------------------------------------------------------------
     db.cls_run.Run.id_run_umbrella = 0
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
@@ -1155,7 +1155,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
@@ -1164,7 +1164,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
@@ -1173,7 +1173,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
@@ -1182,7 +1182,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
@@ -1191,7 +1191,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
@@ -1200,7 +1200,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_status_error <=========")
