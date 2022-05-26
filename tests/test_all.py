@@ -1027,6 +1027,32 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
 
 
 # -----------------------------------------------------------------------------
+# Test RUN_ACTION_PROCESS_ALL_COMPLETE - empty.
+# -----------------------------------------------------------------------------
+@pytest.mark.issue
+def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PROCESS_ALL_COMPLETE - empty."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("empty_docx", "docx"),
+            ("empty_jpg", "jpg"),
+            ("empty_pdf_scanned", "pdf"),
+            ("empty_pdf_text", "pdf"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = false.
 # -----------------------------------------------------------------------------
 def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_inbox):
@@ -1103,7 +1129,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
 # Test RUN_ACTION_PROCESS_ALL_COMPLETE - status: error.
 # -----------------------------------------------------------------------------
 def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_PROCESS_ALL_COMPLETE - dtstus: error."""
+    """Test RUN_ACTION_PROCESS_ALL_COMPLETE - status: error."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------

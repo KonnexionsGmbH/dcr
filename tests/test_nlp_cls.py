@@ -7,6 +7,8 @@ from typing import Tuple
 import cfg.cls_setup
 import cfg.glob
 import db.cls_action
+import nlp.cls_line_type
+import nlp.cls_text_parser
 import db.cls_run
 import db.driver
 import defusedxml.ElementTree
@@ -203,6 +205,7 @@ def test_cls_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             ("p_5_h_2_f_2", "pdf"),
             ("p_5_h_4_f_4_different_both", "pdf"),
             ("p_5_h_4_f_4_empty_both", "pdf"),
+            ("p_5_h_4_f_4_empty_center", "pdf"),
         ],
         target_path=cfg.glob.setup.directory_inbox,
     )
@@ -343,6 +346,11 @@ def test_cls_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
         target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
     )
+    check_cls_line_type(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "p_5_h_4_f_4_empty_center_23.line.json")),
+        target_footer=[],
+        target_header=[],
+    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -424,9 +432,46 @@ def test_missing_dependencies_line_type_action_curr(fxtr_setup_logger_environmen
 
 
 # -----------------------------------------------------------------------------
+# Test Function - missing dependencies - line_type - coverage.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_line_type_coverage(fxtr_setup_empty_db_and_inbox):
+    """# Test Function - missing dependencies - line_type - coverage.
+    ."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.run = db.cls_run.Run(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.action_curr = db.cls_action.Action(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        id_run_last=1,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+
+    cfg.glob.text_parser.exists()
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_line_type.LineType()
+
+    instance.exists()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test Function - missing dependencies - line_type - Setup.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_missing_dependencies_line_type_setup(fxtr_setup_empty_db_and_inbox):
     """# Test Function - missing dependencies - line_type - Setup.
     ."""
@@ -464,6 +509,51 @@ def test_missing_dependencies_line_type_setup(fxtr_setup_empty_db_and_inbox):
 
     assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
     assert expt.value.code == 1, "Instance of class 'Setup' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - line_type - TextParser.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_line_type_text_parser(fxtr_setup_empty_db_and_inbox):
+    """# Test Function - missing dependencies - line_type - TextParser.
+    ."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    db.driver.connect_db()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.run = db.cls_run.Run(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.action_curr = db.cls_action.Action(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        id_run_last=1,
+    )
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.text_parser.exists()  # type: ignore
+
+        del cfg.glob.text_parser
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.text_parser' of the class TextParser was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        nlp.cls_line_type.LineType()
+
+    assert expt.type == SystemExit, "Instance of class 'TextParser' is missing"
+    assert expt.value.code == 1, "Instance of class 'TextParser' is missing"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
