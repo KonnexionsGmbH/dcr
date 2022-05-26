@@ -25,9 +25,7 @@ def convert_non_pdf_2_pdf() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     with cfg.glob.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_action_by_action_code(
-            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PANDOC
-        )
+        rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PANDOC)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
@@ -110,9 +108,9 @@ def convert_non_pdf_2_pdf_file() -> None:
     except RuntimeError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-            error_msg=cfg.glob.ERROR_31_902.replace("{full_name}", full_name_curr).replace(
-                "{error_msg}", str(str(err).encode("utf-8"))
-            ),
+            error_msg=cfg.glob.ERROR_31_902.replace("{full_name}", full_name_curr)
+            .replace("{error_type}", str(type(err)))
+            .replace("{error_msg}", str(err)),
         )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

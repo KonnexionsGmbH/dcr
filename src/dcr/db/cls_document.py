@@ -442,9 +442,7 @@ class Document:
             )
 
         if self.document_id == 0:
-            self.document_status = (
-                self.document_status if self.document_status != "" else cfg.glob.DOCUMENT_STATUS_START
-            )
+            self.document_status = self.document_status if self.document_status != "" else cfg.glob.DOCUMENT_STATUS_START
 
             self.document_id = db.dml.insert_dbt_row(
                 table_name=cfg.glob.DBT_DOCUMENT,

@@ -1,9 +1,15 @@
 # pylint: disable=unused-argument
 """Testing Module nlp.tokenize."""
+import os
 
 import cfg.glob
 import db.cls_run
 import pytest
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_TOKENIZE - attributes - true.
+# -----------------------------------------------------------------------------
+import utils
 
 import dcr
 
@@ -14,9 +20,6 @@ import dcr
 # @pytest.mark.issue
 
 
-# -----------------------------------------------------------------------------
-# Test RUN_ACTION_TOKENIZE - attributes - true.
-# -----------------------------------------------------------------------------
 def test_run_action_tokenize_attributes_true(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - attributes - true."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -195,6 +198,54 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
                 "tokenizer_coverage_1.word.json",
             ],
         ),
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_TOKENIZE - missing input file.
+# -----------------------------------------------------------------------------
+def test_run_action_tokenize_missing_input_file(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_TOKENIZE - missing input file."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+        ],
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_run_action_tokenize_missing_input_file <=========")
+
+    stem_name_1: str = "case_3_pdf_text_route_inbox_pdflib"
+    file_ext_1: str = "pdf"
+
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            (stem_name_1, file_ext_1),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    os.remove(utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.json"))
+
+    dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+
+    pytest.helpers.restore_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
     )
 
     # -------------------------------------------------------------------------

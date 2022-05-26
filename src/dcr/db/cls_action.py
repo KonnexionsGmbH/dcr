@@ -646,9 +646,7 @@ class Action:
     # Select parents with more than one unprocessed child based on action code.
     # -----------------------------------------------------------------------------
     @classmethod
-    def select_id_document_by_action_code_pypdf2(
-        cls, conn: Connection, action_code: str
-    ) -> sqlalchemy.engine.CursorResult:
+    def select_id_document_by_action_code_pypdf2(cls, conn: Connection, action_code: str) -> sqlalchemy.engine.CursorResult:
         """Select parents with more than one unprocessed child based on action
         code.
 

@@ -76,9 +76,7 @@ def parse_tetml() -> None:
                 else:
                     cfg.glob.run.total_status_ready += 1
 
-                cfg.glob.document = db.cls_document.Document.from_id(
-                    id_document=cfg.glob.action_curr.action_id_document
-                )
+                cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
 
                 parse_tetml_file()
 
@@ -109,46 +107,54 @@ def parse_tetml_file() -> None:
         file_name_next,
     )
 
-    # Create the Element tree object
-    tree = defusedxml.ElementTree.parse(full_name_curr)
+    try:
+        # Create the Element tree object
+        tree = defusedxml.ElementTree.parse(full_name_curr)
 
-    # Get the root Element
-    root = tree.getroot()
+        # Get the root Element
+        root = tree.getroot()
 
-    if cfg.glob.setup.is_parsing_line:
-        status = cfg.glob.DOCUMENT_STATUS_START
-    else:
-        status = cfg.glob.DOCUMENT_STATUS_END
+        if cfg.glob.setup.is_parsing_line:
+            status = cfg.glob.DOCUMENT_STATUS_START
+        else:
+            status = cfg.glob.DOCUMENT_STATUS_END
 
-    cfg.glob.action_next = db.cls_action.Action(
-        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
-        id_run_last=cfg.glob.run.run_id,
-        directory_name=cfg.glob.action_curr.action_directory_name,
-        directory_type=cfg.glob.action_curr.action_directory_type,
-        file_name=file_name_next,
-        file_size_bytes=-1,
-        id_document=cfg.glob.action_curr.action_id_document,
-        id_parent=cfg.glob.action_curr.action_id,
-        no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
-        status=status,
-    )
+        cfg.glob.action_next = db.cls_action.Action(
+            action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+            id_run_last=cfg.glob.run.run_id,
+            directory_name=cfg.glob.action_curr.action_directory_name,
+            directory_type=cfg.glob.action_curr.action_directory_type,
+            file_name=file_name_next,
+            file_size_bytes=-1,
+            id_document=cfg.glob.action_curr.action_id_document,
+            id_parent=cfg.glob.action_curr.action_id,
+            no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
+            status=status,
+        )
 
-    cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+        cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
 
-    for child in root:
-        child_tag = child.tag[nlp.cls_text_parser.TextParser.PARSE_TAG_FROM :]
-        match child_tag:
-            case nlp.cls_text_parser.TextParser.PARSE_TAG_DOCUMENT:
-                cfg.glob.text_parser.parse_tag_document(child_tag, child)
-            case nlp.cls_text_parser.TextParser.PARSE_TAG_CREATION:
-                pass
+        for child in root:
+            child_tag = child.tag[nlp.cls_text_parser.TextParser.PARSE_TAG_FROM :]
+            match child_tag:
+                case nlp.cls_text_parser.TextParser.PARSE_TAG_DOCUMENT:
+                    cfg.glob.text_parser.parse_tag_document(child_tag, child)
+                case nlp.cls_text_parser.TextParser.PARSE_TAG_CREATION:
+                    pass
 
-    cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(full_name_next),)
+        cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(full_name_next),)
 
-    cfg.glob.action_curr.finalise()
+        cfg.glob.action_curr.finalise()
 
-    utils.delete_auxiliary_file(full_name_curr)
+        utils.delete_auxiliary_file(full_name_curr)
 
-    cfg.glob.run.run_total_processed_ok += 1
+        cfg.glob.run.run_total_processed_ok += 1
+    except FileNotFoundError as err:
+        cfg.glob.action_curr.finalise_error(
+            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_PARSER,
+            error_msg=cfg.glob.ERROR_61_901.replace("{full_name_curr}", full_name_curr)
+            .replace("{error_type}", str(type(err)))
+            .replace("{error}", str(err)),
+        )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

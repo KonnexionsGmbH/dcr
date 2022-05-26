@@ -42,6 +42,7 @@ FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
 # -----------------------------------------------------------------------------
 # Backup and modify configuration parameter values.
 # -----------------------------------------------------------------------------
+# noinspection PyProtectedMember
 @pytest.helpers.register
 def backup_config_params(
     config_section: str,
@@ -238,12 +239,16 @@ def copy_directories_4_pytest_2_dir(
         source_directories: List[str]: Source directory names.
         target_dir: str: Target directory.
     """
-    assert os.path.isdir(cfg.glob.TESTS_INBOX_NAME), "source base directory '" + cfg.glob.TESTS_INBOX_NAME + "' missing"
+    assert os.path.isdir(utils.get_os_independent_name(cfg.glob.TESTS_INBOX_NAME)), (
+        "source base directory '" + cfg.glob.TESTS_INBOX_NAME + "' missing"
+    )
 
     for source in source_directories:
         source_dir = cfg.glob.TESTS_INBOX_NAME + "/" + source
         source_path = utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, pathlib.Path(source))
-        assert os.path.isdir(source_path), "source language directory '" + str(source_path) + "' missing"
+        assert os.path.isdir(utils.get_os_independent_name(source_path)), (
+            "source language directory '" + str(source_path) + "' missing"
+        )
         target_path = utils.get_full_name(target_dir, pathlib.Path(source))
         shutil.copytree(source_dir, target_path)
 
@@ -252,9 +257,7 @@ def copy_directories_4_pytest_2_dir(
 # Copy files from the sample test file directory.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def copy_files_4_pytest(
-    file_list: List[Tuple[Tuple[str, str | None], Tuple[pathlib.Path, List[str], str | None]]]
-) -> None:
+def copy_files_4_pytest(file_list: List[Tuple[Tuple[str, str | None], Tuple[pathlib.Path, List[str], str | None]]]) -> None:
     """Copy files from the sample test file directory.
 
     Args:
@@ -265,14 +268,16 @@ def copy_files_4_pytest(
             ]
         ]): List of files to be copied.
     """
-    assert os.path.isdir(cfg.glob.TESTS_INBOX_NAME), "source directory '" + cfg.glob.TESTS_INBOX_NAME + "' missing"
+    assert os.path.isdir(utils.get_os_independent_name(cfg.glob.TESTS_INBOX_NAME)), (
+        "source directory '" + cfg.glob.TESTS_INBOX_NAME + "' missing"
+    )
 
     for ((source_stem, source_ext), (target_dir, target_file_comp, target_ext)) in file_list:
         source_file_name = source_stem if source_ext is None else source_stem + "." + source_ext
         source_file = utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, source_file_name)
         assert os.path.isfile(source_file), "source file '" + str(source_file) + "' missing"
 
-        assert os.path.isdir(target_dir), "target directory '" + target_dir + "' missing"
+        assert os.path.isdir(utils.get_os_independent_name(target_dir)), "target directory '" + target_dir + "' missing"
         target_file_name = (
             "_".join(target_file_comp) if target_ext is None else "_".join(target_file_comp) + "." + target_ext
         )
@@ -583,9 +588,7 @@ def fxtr_setup_empty_db_and_inbox(
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(
-            cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
-        ),
+        utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))),
         os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
     )
 
@@ -624,9 +627,7 @@ def fxtr_setup_empty_inbox(
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(
-            cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
-        ),
+        utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))),
         os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
     )
 
@@ -669,9 +670,7 @@ def fxtr_setup_logger_environment():
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(
-            cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
-        ),
+        utils.get_full_name(cfg.glob.TESTS_INBOX_NAME, os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))),
         os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
     )
 
@@ -1115,7 +1114,7 @@ def verify_content_of_directory(
     for elem in expected_directories:
         assert elem in directory_content, f"expected directory {elem} is missing"
         elem_path = utils.get_full_name(directory_name, elem)
-        assert os.path.isdir(elem_path), f"expected directory {elem} is a file"
+        assert os.path.isdir(utils.get_os_independent_name(elem_path)), f"expected directory {elem} is a file"
 
     # check expected files against directory content
     for elem in expected_files:

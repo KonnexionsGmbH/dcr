@@ -23,9 +23,7 @@ def convert_image_2_pdf() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     with cfg.glob.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_action_by_action_code(
-            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TESSERACT
-        )
+        rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TESSERACT)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
@@ -105,8 +103,7 @@ def convert_image_2_pdf_file() -> None:
         cfg.glob.action_curr.finalise_error(
             error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
             error_msg=cfg.glob.ERROR_41_901.replace("{full_name_curr}", full_name_curr)
-            .replace("{full_name_next}", full_name_next)
-            .replace("{type_error}", str(type(err)))
+            .replace("{error_type}", str(type(err)))
             .replace("{error}", str(err)),
         )
 

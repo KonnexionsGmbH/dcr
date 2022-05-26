@@ -139,9 +139,11 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
     base_directory = str(cfg.glob.setup.directory_inbox)
     language_directory_name = str(utils.get_full_name(base_directory, pathlib.Path("french")))
 
-    assert os.path.isdir(base_directory), "base directory '" + base_directory + "' after processing missing"
+    assert os.path.isdir(utils.get_os_independent_name(base_directory)), (
+        "base directory '" + base_directory + "' after processing missing"
+    )
 
-    assert os.path.isdir(language_directory_name), (
+    assert os.path.isdir(utils.get_os_independent_name(language_directory_name)), (
         "language directory '" + language_directory_name + "' after processing missing"
     )
 

@@ -218,9 +218,7 @@ def process_inbox_accepted(action_code: str) -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     full_name_curr = cfg.glob.document.get_full_name()
-    full_name_next = utils.get_full_name(
-        cfg.glob.setup.directory_inbox_accepted, cfg.glob.document.get_file_name_next()
-    )
+    full_name_next = utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, cfg.glob.document.get_file_name_next())
 
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,

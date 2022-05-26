@@ -261,9 +261,7 @@ class LineType:
             for line in lines:
                 line_index_page = line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_INDEX_PAGE]
                 if (page_no, line_index_page) in self._result_data:
-                    line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_TYPE] = self._result_data[
-                        (page_no, line_index_page)
-                    ]
+                    line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_TYPE] = self._result_data[(page_no, line_index_page)]
 
     # -----------------------------------------------------------------------------
     # Swap the current and previous data.

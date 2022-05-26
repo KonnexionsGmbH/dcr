@@ -48,8 +48,7 @@ def check_db_up_to_date() -> None:
 
     if cfg.glob.setup.dcr_version != current_version:
         utils.terminate_fatal(
-            f"Current database version is '{current_version}' - but expected version is '"
-            f"{cfg.glob.setup.dcr_version}''"
+            f"Current database version is '{current_version}' - but expected version is '" f"{cfg.glob.setup.dcr_version}''"
         )
 
     utils.progress_msg(f"The current version of database is '{current_version}'")

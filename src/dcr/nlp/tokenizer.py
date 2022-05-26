@@ -348,9 +348,7 @@ def tokenize() -> None:
     cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
 
     with cfg.glob.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_action_by_action_code(
-            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE
-        )
+        rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE)
 
         for row in rows:
             # ------------------------------------------------------------------
@@ -406,60 +404,68 @@ def tokenize_file(model_data: spacy.Language) -> None:
     else:
         full_name_next = None
 
-    cfg.glob.text_parser = nlp.cls_text_parser.TextParser.from_files(full_name_line=full_name_curr)
+    try:
+        cfg.glob.text_parser = nlp.cls_text_parser.TextParser.from_files(full_name_line=full_name_curr)
 
-    cfg.glob.token_3_pages = []
+        cfg.glob.token_3_pages = []
 
-    for cfg.glob.text_parser.parse_result_line_2_page in cfg.glob.text_parser.parse_result_line_4_document[
-        cfg.glob.text_parser.JSON_NAME_PAGES
-    ]:
-        # ------------------------------------------------------------------
-        # Processing a single page
-        # ------------------------------------------------------------------
-        page_no = cfg.glob.text_parser.parse_result_line_2_page[cfg.glob.text_parser.JSON_NAME_PAGE_NO]
+        for cfg.glob.text_parser.parse_result_line_2_page in cfg.glob.text_parser.parse_result_line_4_document[
+            cfg.glob.text_parser.JSON_NAME_PAGES
+        ]:
+            # ------------------------------------------------------------------
+            # Processing a single page
+            # ------------------------------------------------------------------
+            page_no = cfg.glob.text_parser.parse_result_line_2_page[cfg.glob.text_parser.JSON_NAME_PAGE_NO]
 
-        text = get_text_from_line_2_page()
+            text = get_text_from_line_2_page()
 
-        cfg.glob.token_1_tokens = []
+            cfg.glob.token_1_tokens = []
 
-        for token in model_data(text):
-            cfg.glob.token_1_tokens.append(get_token_attributes(token))
+            for token in model_data(text):
+                cfg.glob.token_1_tokens.append(get_token_attributes(token))
 
-        cfg.glob.token_2_page = {
-            cfg.glob.text_parser.JSON_NAME_PAGE_NO: page_no,
-            JSON_NAME_NO_TOKENS_IN_PAGE: len(cfg.glob.token_1_tokens),
-            JSON_NAME_TOKENS: cfg.glob.token_1_tokens,
-        }
+            cfg.glob.token_2_page = {
+                cfg.glob.text_parser.JSON_NAME_PAGE_NO: page_no,
+                JSON_NAME_NO_TOKENS_IN_PAGE: len(cfg.glob.token_1_tokens),
+                JSON_NAME_TOKENS: cfg.glob.token_1_tokens,
+            }
 
-        if cfg.glob.setup.is_tokenize_2_database:
-            db.dml.insert_dbt_row(
-                cfg.glob.DBT_TOKEN,
-                {
-                    cfg.glob.DBC_ID_DOCUMENT: cfg.glob.document.document_id,
-                    cfg.glob.DBC_PAGE_DATA: cfg.glob.token_2_page,
-                    cfg.glob.DBC_PAGE_NO: page_no,
-                },
-            )
+            if cfg.glob.setup.is_tokenize_2_database:
+                db.dml.insert_dbt_row(
+                    cfg.glob.DBT_TOKEN,
+                    {
+                        cfg.glob.DBC_ID_DOCUMENT: cfg.glob.document.document_id,
+                        cfg.glob.DBC_PAGE_DATA: cfg.glob.token_2_page,
+                        cfg.glob.DBC_PAGE_NO: page_no,
+                    },
+                )
+
+            if cfg.glob.setup.is_tokenize_2_jsonfile:
+                cfg.glob.token_3_pages.append(cfg.glob.token_2_page)
 
         if cfg.glob.setup.is_tokenize_2_jsonfile:
-            cfg.glob.token_3_pages.append(cfg.glob.token_2_page)
+            with open(full_name_next, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+                json.dump(
+                    {
+                        cfg.glob.text_parser.JSON_NAME_DOCUMENT_ID: cfg.glob.document.document_id,
+                        cfg.glob.text_parser.JSON_NAME_DOCUMENT_FILE_NAME: cfg.glob.document.document_file_name,
+                        cfg.glob.text_parser.JSON_NAME_NO_PAGES_IN_DOC: cfg.glob.text_parser.parse_result_line_4_document[
+                            cfg.glob.text_parser.JSON_NAME_NO_PAGES_IN_DOC
+                        ],
+                        cfg.glob.text_parser.JSON_NAME_PAGES: cfg.glob.token_3_pages,
+                    },
+                    file_handle,
+                )
 
-    if cfg.glob.setup.is_tokenize_2_jsonfile:
-        with open(full_name_next, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
-            json.dump(
-                {
-                    cfg.glob.text_parser.JSON_NAME_DOCUMENT_ID: cfg.glob.document.document_id,
-                    cfg.glob.text_parser.JSON_NAME_DOCUMENT_FILE_NAME: cfg.glob.document.document_file_name,
-                    cfg.glob.text_parser.JSON_NAME_NO_PAGES_IN_DOC: cfg.glob.text_parser.parse_result_line_4_document[
-                        cfg.glob.text_parser.JSON_NAME_NO_PAGES_IN_DOC
-                    ],
-                    cfg.glob.text_parser.JSON_NAME_PAGES: cfg.glob.token_3_pages,
-                },
-                file_handle,
-            )
+        utils.delete_auxiliary_file(full_name_curr)
 
-    utils.delete_auxiliary_file(full_name_curr)
-
-    cfg.glob.run.run_total_processed_ok += 1
+        cfg.glob.run.run_total_processed_ok += 1
+    except FileNotFoundError as err:
+        cfg.glob.action_curr.finalise_error(
+            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_TOKENIZE,
+            error_msg=cfg.glob.ERROR_71_901.replace("{full_name_curr}", full_name_curr)
+            .replace("{error_type}", str(type(err)))
+            .replace("{error}", str(err)),
+        )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

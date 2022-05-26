@@ -128,9 +128,7 @@ class TextParser:
         #   "noPagesInDoc": 2,
         #   "pages": [
         #     {
-        self.parse_result_line_4_document: Dict[
-            str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]
-        ]
+        self.parse_result_line_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
 
         self.parse_result_no_pages_in_doc: int
 
@@ -572,9 +570,7 @@ class TextParser:
                 TextParser.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                 TextParser.JSON_NAME_PAGES: self.parse_result_line_3_pages,
             }
-            with open(
-                cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT
-            ) as file_handle:
+            with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
                 json.dump(self.parse_result_line_4_document, file_handle)
         elif cfg.glob.setup.is_parsing_page:
             self._parse_result_page_3_document = {
@@ -583,9 +579,7 @@ class TextParser:
                 TextParser.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                 TextParser.JSON_NAME_PAGES: self._parse_result_page_2_pages,
             }
-            with open(
-                cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT
-            ) as file_handle:
+            with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
                 json.dump(self._parse_result_page_3_document, file_handle)
         elif cfg.glob.setup.is_parsing_word:
             self._parse_result_word_4_document = {
@@ -594,9 +588,7 @@ class TextParser:
                 TextParser.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                 TextParser.JSON_NAME_PAGES: self._parse_result_word_3_pages,
             }
-            with open(
-                cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT
-            ) as file_handle:
+            with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
                 json.dump(self._parse_result_word_4_document, file_handle)
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)

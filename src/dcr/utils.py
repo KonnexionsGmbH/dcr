@@ -223,9 +223,7 @@ def progress_msg_connected() -> None:
             )
     except AttributeError:
         print("")
-        progress_msg(
-            f"User '{cfg.glob.db_current_user}' is now connected " f"to database '{cfg.glob.db_current_database}'"
-        )
+        progress_msg(f"User '{cfg.glob.db_current_user}' is now connected " f"to database '{cfg.glob.db_current_database}'")
 
 
 # -----------------------------------------------------------------------------
@@ -264,9 +262,7 @@ def progress_msg_disconnected() -> None:
                 else cfg.glob.db_current_database
             )
 
-            user = (
-                cfg.glob.INFORMATION_NOT_YET_AVAILABLE if cfg.glob.db_current_user is None else cfg.glob.db_current_user
-            )
+            user = cfg.glob.INFORMATION_NOT_YET_AVAILABLE if cfg.glob.db_current_user is None else cfg.glob.db_current_user
 
             print("")
             utils.progress_msg(f"User '{user}' is now disconnected from database '{database}'")
@@ -336,15 +332,11 @@ def show_statistics_language() -> None:
     utils.progress_msg(f"Number documents to be processed:          {cfg.glob.language.total_processed_to_be:6d}")
 
     if cfg.glob.language.total_processed_to_be > 0:
-        utils.progress_msg(
-            f"Number documents accepted - " f"Pandoc:        {cfg.glob.language.total_processed_pandoc:6d}"
-        )
+        utils.progress_msg(f"Number documents accepted - " f"Pandoc:        {cfg.glob.language.total_processed_pandoc:6d}")
         utils.progress_msg(
             f"Number documents accepted - " f"pdf2image:     {cfg.glob.language.total_processed_pdf2image:6d}"
         )
-        utils.progress_msg(
-            f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.language.total_processed_pdflib:6d}"
-        )
+        utils.progress_msg(f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.language.total_processed_pdflib:6d}")
         utils.progress_msg(
             f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.language.total_processed_tesseract:6d}"
         )
@@ -367,21 +359,11 @@ def show_statistics_total() -> None:
 
         # noinspection PyUnresolvedReferences
         if cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_INBOX:
-            utils.progress_msg(
-                f"Number documents accepted - " f"Pandoc:        {cfg.glob.run.total_processed_pandoc:6d}"
-            )
-            utils.progress_msg(
-                f"Number documents accepted - " f"pdf2image:     {cfg.glob.run.total_processed_pdf2image:6d}"
-            )
-            utils.progress_msg(
-                f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.run.total_processed_pdflib:6d}"
-            )
-            utils.progress_msg(
-                f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.run.total_processed_tesseract:6d}"
-            )
-            utils.progress_msg(
-                "Number documents accepted - " + f"Total:         {cfg.glob.run.run_total_processed_ok:6d}"
-            )
+            utils.progress_msg(f"Number documents accepted - " f"Pandoc:        {cfg.glob.run.total_processed_pandoc:6d}")
+            utils.progress_msg(f"Number documents accepted - " f"pdf2image:     {cfg.glob.run.total_processed_pdf2image:6d}")
+            utils.progress_msg(f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.run.total_processed_pdflib:6d}")
+            utils.progress_msg(f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.run.total_processed_tesseract:6d}")
+            utils.progress_msg("Number documents accepted - " + f"Total:         {cfg.glob.run.run_total_processed_ok:6d}")
         elif cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_PDFLIB:
             utils.progress_msg(f"Number documents extracted:                {cfg.glob.run.run_total_processed_ok:6d}")
         else:

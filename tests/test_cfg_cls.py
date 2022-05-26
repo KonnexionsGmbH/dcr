@@ -561,9 +561,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):  # pylint: disable=R
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        cfg.glob.setup._DCR_CFG_SECTION, cfg.glob.setup._DCR_CFG_VERBOSE
-    )
+    values_original = pytest.helpers.delete_config_param(cfg.glob.setup._DCR_CFG_SECTION, cfg.glob.setup._DCR_CFG_VERBOSE)
     values_original_test = pytest.helpers.delete_config_param(
         cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST, cfg.glob.setup._DCR_CFG_VERBOSE
     )
