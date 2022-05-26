@@ -104,7 +104,7 @@ def get_full_name(directory_name: pathlib.Path | str | None, file_name: pathlib.
     if isinstance(file_name, pathlib.Path):
         file_name = str(file_name)
 
-    return str(os.path.join(directory_name, file_name))
+    return get_os_independent_name(str(os.path.join(directory_name, file_name)))
 
 
 # -----------------------------------------------------------------------------
