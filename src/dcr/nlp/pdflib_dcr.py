@@ -46,7 +46,7 @@ def extract_text_from_pdf() -> None:
 
             cfg.glob.action_curr = db.cls_action.Action.from_row(row)
 
-            if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+            if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
                 cfg.glob.run.total_status_error += 1
             else:
                 cfg.glob.run.total_status_ready += 1
@@ -99,7 +99,9 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
 
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + xml_variation + cfg.glob.DOCUMENT_FILE_TYPE_XML
+    file_name_next = (
+        cfg.glob.action_curr.get_stem_name() + "." + xml_variation + db.cls_document.Document.DOCUMENT_FILE_TYPE_XML
+    )
     full_name_next = utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
@@ -107,7 +109,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
 
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=cfg.glob.ERROR_51_904.replace("{full_name}", full_name_next),
         )
 
@@ -120,7 +122,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
     file_curr = tet.open_document(full_name_curr, doc_opt_list)
     if file_curr == -1:
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
             error_msg=cfg.glob.ERROR_51_901.replace("{full_name}", full_name_curr)
             .replace("{error_no}", str(tet.get_errnum()))
             .replace("{api_name}", tet.get_apiname() + "()")
@@ -158,7 +160,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
         id_document=cfg.glob.action_curr.action_id_document,
         id_parent=cfg.glob.action_curr.action_id,
         no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
-        status=cfg.glob.DOCUMENT_STATUS_START,
+        status=db.cls_document.Document.DOCUMENT_STATUS_START,
     )
 
     tet.delete()

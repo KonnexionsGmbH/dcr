@@ -32,7 +32,7 @@ def convert_image_2_pdf() -> None:
 
             cfg.glob.action_curr = db.cls_action.Action.from_row(row)
 
-            if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+            if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
                 cfg.glob.run.total_status_error += 1
             else:
                 cfg.glob.run.total_status_ready += 1
@@ -58,7 +58,7 @@ def convert_image_2_pdf_file() -> None:
 
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
+    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF
     full_name_next = utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
@@ -66,7 +66,7 @@ def convert_image_2_pdf_file() -> None:
 
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=cfg.glob.ERROR_41_903.replace("{full_name}", full_name_next),
         )
         return
@@ -101,7 +101,7 @@ def convert_image_2_pdf_file() -> None:
         cfg.glob.action_curr.finalise()
     except RuntimeError as err:
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
             error_msg=cfg.glob.ERROR_41_901.replace("{full_name_curr}", full_name_curr)
             .replace("{error_type}", str(type(err)))
             .replace("{error}", str(err)),
@@ -134,13 +134,13 @@ def reunite_pdfs() -> None:
 
             cfg.glob.action_curr.action_action_code = db.cls_run.Run.ACTION_CODE_PYPDF2
             cfg.glob.action_curr.action_file_name = (
-                cfg.glob.action_curr.get_stem_name()[0:-2] + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
+                cfg.glob.action_curr.get_stem_name()[0:-2] + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF
             )
             cfg.glob.action_curr.action_file_size_bytes = -1
             cfg.glob.action_curr.action_id = 0
             cfg.glob.action_curr.action_no_pdf_pages = -1
 
-            if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+            if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
                 # not testable
                 cfg.glob.run.total_status_error += 1
             else:
@@ -166,7 +166,7 @@ def reunite_pdfs_file() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     stem_name_next = cfg.glob.action_curr.get_stem_name() + "_0"
-    file_name_next = stem_name_next + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
+    file_name_next = stem_name_next + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF
 
     full_name_next = utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
@@ -175,7 +175,7 @@ def reunite_pdfs_file() -> None:
 
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=cfg.glob.ERROR_41_904.replace("{full_name}", str(full_name_next)),
         )
         return
@@ -207,7 +207,7 @@ def reunite_pdfs_file() -> None:
 
             action_part.action_code = db.cls_run.Run.ACTION_CODE_PYPDF2
             action_part.action_duration_ns = time.perf_counter_ns() - start_time_document
-            action_part.action_status = cfg.glob.DOCUMENT_STATUS_END
+            action_part.action_status = db.cls_document.Document.DOCUMENT_STATUS_END
 
             action_part.persist_2_db()
 

@@ -8,6 +8,7 @@ from typing import Iterable
 from typing import List
 
 import cfg.glob
+import db.cls_document
 import nlp.cls_line_type
 import utils
 
@@ -422,7 +423,7 @@ class TextParser:
                     TextParser._JSON_NAME_PARA_INDEX_PAGE: self._parse_result_para_index_page,
                     TextParser._JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
                     TextParser.JSON_NAME_LINE_TEXT: self._parse_result_text,
-                    TextParser.JSON_NAME_LINE_TYPE: cfg.glob.DOCUMENT_LINE_TYPE_BODY,
+                    TextParser.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
                 }
             )
 

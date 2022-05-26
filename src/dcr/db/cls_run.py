@@ -222,7 +222,7 @@ class Run:
         """Finalise the current row."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self.run_status = cfg.glob.DOCUMENT_STATUS_END
+        self.run_status = db.cls_document.Document.DOCUMENT_STATUS_END
 
         self.persist_2_db()
 

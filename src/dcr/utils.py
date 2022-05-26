@@ -155,7 +155,7 @@ def get_pdf_pages_no(
     Returns:
         int: The number of pages found.
     """
-    if get_file_type(file_name) != cfg.glob.DOCUMENT_FILE_TYPE_PDF:
+    if get_file_type(file_name) != db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF:
         return -1
 
     try:

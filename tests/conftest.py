@@ -712,7 +712,7 @@ def get_values_action():
         1,
         0,
         3,
-        cfg.glob.DOCUMENT_STATUS_START,
+        db.cls_document.Document.DOCUMENT_STATUS_START,
     ]
 
 
@@ -736,7 +736,7 @@ def get_values_document():
         1,
         3,
         "e2402cc28e178911ee5941b1f9ac0d596beb7730f101da715f996dc992acbe25",
-        cfg.glob.DOCUMENT_STATUS_START,
+        db.cls_document.Document.DOCUMENT_STATUS_START,
     ]
 
 
@@ -769,7 +769,7 @@ def get_values_run():
         "p_i",
         "inbox         (preprocessor)",
         1,
-        cfg.glob.DOCUMENT_STATUS_START,
+        db.cls_document.Document.DOCUMENT_STATUS_START,
         1,
         0,
         0,

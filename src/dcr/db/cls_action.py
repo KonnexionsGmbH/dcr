@@ -8,6 +8,7 @@ from typing import Tuple
 from typing import Union
 
 import cfg.glob
+import db.cls_document
 import db.cls_run
 import db.dml
 import sqlalchemy
@@ -121,7 +122,7 @@ class Action:
         self.action_status: str | sqlalchemy.String = status
 
         if Action.pdf2image_file_type == "":
-            Action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_JPEG
+            Action.pdf2image_file_type = db.cls_document.Document.DOCUMENT_FILE_TYPE_JPEG
 
         if self.action_id == 0:
             self.persist_2_db()
@@ -256,7 +257,7 @@ class Action:
                 utils.get_full_name(self.action_directory_name, self.action_file_name)
             )
 
-        self.action_status = cfg.glob.DOCUMENT_STATUS_END
+        self.action_status = db.cls_document.Document.DOCUMENT_STATUS_END
 
         self.persist_2_db()
 
@@ -269,7 +270,7 @@ class Action:
 
         cfg.glob.document.document_action_code_last = self.action_action_code
         cfg.glob.document.document_id_run_last = cfg.glob.run.run_id
-        cfg.glob.document.document_status = cfg.glob.DOCUMENT_STATUS_END
+        cfg.glob.document.document_status = db.cls_document.Document.DOCUMENT_STATUS_END
 
         cfg.glob.document.persist_2_db()  # type: ignore
 
@@ -306,7 +307,7 @@ class Action:
         self.action_error_code_last = error_code
         self.action_error_msg_last = error_msg
         self.action_error_no += 1
-        self.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+        self.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
 
         self.persist_2_db()
 
@@ -322,7 +323,7 @@ class Action:
         cfg.glob.document.document_error_no += 1
         cfg.glob.document.document_error_msg_last = self.action_error_msg_last
         cfg.glob.document.document_id_run_last = cfg.glob.run.run_id
-        cfg.glob.document.document_status = cfg.glob.DOCUMENT_STATUS_ERROR
+        cfg.glob.document.document_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
 
         cfg.glob.document.persist_2_db()  # type: ignore
 
@@ -540,7 +541,9 @@ class Action:
                     utils.get_full_name(self.action_directory_name, self.action_file_name)
                 )
 
-            self.action_status = self.action_status if self.action_status != "" else cfg.glob.DOCUMENT_STATUS_START
+            self.action_status = (
+                self.action_status if self.action_status != "" else db.cls_document.Document.DOCUMENT_STATUS_START
+            )
 
             self.action_id = db.dml.insert_dbt_row(
                 table_name=cfg.glob.DBT_ACTION,
@@ -585,8 +588,8 @@ class Action:
                     dbt.c.action_code == action_code,
                     dbt.c.status.in_(
                         [
-                            cfg.glob.DOCUMENT_STATUS_ERROR,
-                            cfg.glob.DOCUMENT_STATUS_START,
+                            db.cls_document.Document.DOCUMENT_STATUS_ERROR,
+                            db.cls_document.Document.DOCUMENT_STATUS_START,
                         ]
                     ),
                 )
@@ -629,8 +632,8 @@ class Action:
                     dbt.c.id_document == id_document,
                     dbt.c.status.in_(
                         [
-                            cfg.glob.DOCUMENT_STATUS_ERROR,
-                            cfg.glob.DOCUMENT_STATUS_START,
+                            db.cls_document.Document.DOCUMENT_STATUS_ERROR,
+                            db.cls_document.Document.DOCUMENT_STATUS_START,
                         ]
                     ),
                 )
@@ -668,8 +671,8 @@ class Action:
             .where(
                 dbt.c.status.in_(
                     [
-                        cfg.glob.DOCUMENT_STATUS_ERROR,
-                        cfg.glob.DOCUMENT_STATUS_START,
+                        db.cls_document.Document.DOCUMENT_STATUS_ERROR,
+                        db.cls_document.Document.DOCUMENT_STATUS_START,
                     ]
                 )
             )
@@ -685,8 +688,8 @@ class Action:
             .where(
                 dbt.c.status.in_(
                     [
-                        cfg.glob.DOCUMENT_STATUS_ERROR,
-                        cfg.glob.DOCUMENT_STATUS_START,
+                        db.cls_document.Document.DOCUMENT_STATUS_ERROR,
+                        db.cls_document.Document.DOCUMENT_STATUS_START,
                     ]
                 )
             )

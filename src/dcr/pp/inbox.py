@@ -157,7 +157,7 @@ def prepare_pdf(file_path: pathlib.Path) -> None:
         process_inbox_accepted(action_code)
     except RuntimeError as err:
         process_inbox_rejected(
-            cfg.glob.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
+            db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
             cfg.glob.ERROR_01_903.replace("{file_name}", cfg.glob.document.document_file_name).replace(
                 "{error_msg}", str(err)
             ),
@@ -223,13 +223,13 @@ def process_inbox_accepted(action_code: str) -> None:
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,
         directory_name=cfg.glob.language.language_directory_name_inbox,
-        directory_type=cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX,
+        directory_type=db.cls_document.Document.DOCUMENT_DIRECTORY_TYPE_INBOX,
         file_name=cfg.glob.document.document_file_name,
     )
 
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=cfg.glob.ERROR_01_906.replace("{full_name}", full_name_next),
         )
     else:
@@ -238,7 +238,7 @@ def process_inbox_accepted(action_code: str) -> None:
         cfg.glob.action_next = initialise_action(
             action_code=action_code,
             directory_name=cfg.glob.setup.directory_inbox_accepted,
-            directory_type=cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED,
+            directory_type=db.cls_document.Document.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED,
             file_name=cfg.glob.document.get_file_name_next(),
             id_parent=cfg.glob.action_curr.action_id,
         )
@@ -275,22 +275,22 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
 
     if not (file_name is None or file_name == ""):
         process_inbox_rejected(
-            cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             cfg.glob.ERROR_01_905.replace("{file_name}", file_name),
         )
-    elif cfg.glob.document.get_file_type() == cfg.glob.DOCUMENT_FILE_TYPE_PDF:
+    elif cfg.glob.document.get_file_type() == db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF:
         prepare_pdf(file_path)
-    elif cfg.glob.document.get_file_type() in cfg.glob.DOCUMENT_FILE_TYPE_PANDOC:
+    elif cfg.glob.document.get_file_type() in db.cls_document.Document.DOCUMENT_FILE_TYPE_PANDOC:
         process_inbox_accepted(db.cls_run.Run.ACTION_CODE_PANDOC)
         cfg.glob.language.total_processed_pandoc += 1
         cfg.glob.run.total_processed_pandoc += 1
-    elif cfg.glob.document.get_file_type() in cfg.glob.DOCUMENT_FILE_TYPE_TESSERACT:
+    elif cfg.glob.document.get_file_type() in db.cls_document.Document.DOCUMENT_FILE_TYPE_TESSERACT:
         process_inbox_accepted(db.cls_run.Run.ACTION_CODE_TESSERACT)
         cfg.glob.language.total_processed_tesseract += 1
         cfg.glob.run.total_processed_tesseract += 1
     else:
         process_inbox_rejected(
-            cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
+            db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
             cfg.glob.ERROR_01_901.replace("{extension}", file_path.suffix[1:]),
         )
 
@@ -357,14 +357,14 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,
         directory_name=cfg.glob.language.language_directory_name_inbox,
-        directory_type=cfg.glob.DOCUMENT_DIRECTORY_TYPE_INBOX,
+        directory_type=db.cls_document.Document.DOCUMENT_DIRECTORY_TYPE_INBOX,
         file_name=cfg.glob.document.document_file_name,
     )
 
     # Move the document file from directory inbox to directory inbox_rejected - if not yet existing
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=cfg.glob.ERROR_01_906.replace("{full_name}", full_name_next),
         )
     else:

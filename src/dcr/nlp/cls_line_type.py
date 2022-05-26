@@ -6,6 +6,7 @@ from typing import List
 from typing import Tuple
 
 import cfg.glob
+import db.cls_document
 import jellyfish
 import nlp.cls_text_parser
 import utils
@@ -309,10 +310,10 @@ class LineType:
         for line_ind in range(self._line_data_max):
             if line_ind < cfg.glob.setup.line_header_max_lines:
                 distance_max = cfg.glob.setup.line_header_max_distance
-                line_type = cfg.glob.DOCUMENT_LINE_TYPE_HEADER
+                line_type = db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADER
             else:
                 distance_max = cfg.glob.setup.line_footer_max_distance
-                line_type = cfg.glob.DOCUMENT_LINE_TYPE_FOOTER
+                line_type = db.cls_document.Document.DOCUMENT_LINE_TYPE_FOOTER
 
             if self._determine_special_line_candidate(distance_max, line_ind):
                 for page_ind in range(self._page_max):

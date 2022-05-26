@@ -153,9 +153,9 @@ def check_cls_line_type(
 
         for line in page[nlp.cls_text_parser.TextParser.JSON_NAME_LINES]:
             line_type = line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_TYPE]
-            if line_type == cfg.glob.DOCUMENT_LINE_TYPE_FOOTER:
+            if line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_FOOTER:
                 actual_page_footer.append(line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_INDEX_PAGE])
-            elif line_type == cfg.glob.DOCUMENT_LINE_TYPE_HEADER:
+            elif line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADER:
                 actual_page_header.append(line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_INDEX_PAGE])
 
         if actual_page_footer:

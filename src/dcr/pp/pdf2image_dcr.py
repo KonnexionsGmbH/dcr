@@ -23,9 +23,9 @@ def convert_pdf_2_image() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     if cfg.glob.setup.pdf2image_type == cfg.glob.setup.PDF2IMAGE_TYPE_PNG:
-        db.cls_action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_PNG
+        db.cls_action.pdf2image_file_type = db.cls_document.Document.DOCUMENT_FILE_TYPE_PNG
     else:
-        db.cls_action.pdf2image_file_type = cfg.glob.DOCUMENT_FILE_TYPE_JPEG
+        db.cls_action.pdf2image_file_type = db.cls_document.Document.DOCUMENT_FILE_TYPE_JPEG
 
     with cfg.glob.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDF2IMAGE)
@@ -37,7 +37,7 @@ def convert_pdf_2_image() -> None:
 
             cfg.glob.action_curr = db.cls_action.Action.from_row(row)
 
-            if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+            if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
                 cfg.glob.run.total_status_error += 1
             else:
                 cfg.glob.run.total_status_ready += 1
@@ -90,7 +90,7 @@ def convert_pdf_2_image_file() -> None:
 
             if os.path.exists(full_name_next):
                 cfg.glob.action_curr.finalise_error(
-                    error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+                    error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
                     error_msg=cfg.glob.ERROR_21_903.replace("{full_name}", full_name_next),
                 )
 
@@ -123,7 +123,7 @@ def convert_pdf_2_image_file() -> None:
             cfg.glob.run.run_total_processed_ok += 1
     except PDFPageCountError as err:
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
             error_msg=cfg.glob.ERROR_21_901.replace("{full_name_curr}", full_name_curr)
             .replace("{error_type}", str(type(err)))
             .replace("{error}", str(err)),

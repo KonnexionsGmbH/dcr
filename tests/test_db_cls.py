@@ -46,7 +46,7 @@ def check_existing_action():
         1,
         0,
         3,
-        cfg.glob.DOCUMENT_STATUS_END,
+        db.cls_document.Document.DOCUMENT_STATUS_END,
     )
 
     cfg.glob.action_curr = db.cls_action.Action.from_id(expected_values[0])
@@ -109,7 +109,7 @@ def check_existing_document():
     expected_values[2] = "parser_line   (nlp)"
     expected_values[10] = 7
     expected_values[11] = 3
-    expected_values[13] = cfg.glob.DOCUMENT_STATUS_END
+    expected_values[13] = db.cls_document.Document.DOCUMENT_STATUS_END
 
     cfg.glob.document = db.cls_document.Document.from_id(expected_values[0])
 
@@ -203,7 +203,7 @@ def check_existing_run():
     expected_values = pytest.helpers.get_values_run()
 
     expected_values[0] = 1
-    expected_values[4] = cfg.glob.DOCUMENT_STATUS_END
+    expected_values[4] = db.cls_document.Document.DOCUMENT_STATUS_END
     expected_values[5] = 0
     expected_values[6] = 1
     expected_values[7] = 1
@@ -2994,7 +2994,7 @@ def check_new_action():
     # -----------------------------------------------------------------------------
     cfg.glob.action_curr = db.cls_action.Action.from_id(expected_values[0])
 
-    expected_values[15] = cfg.glob.DOCUMENT_STATUS_END
+    expected_values[15] = db.cls_document.Document.DOCUMENT_STATUS_END
 
     cfg.glob.action_curr.action_status = expected_values[15]
 
@@ -3063,7 +3063,7 @@ def check_new_document():
     # -----------------------------------------------------------------------------
     # Update object.
     # -----------------------------------------------------------------------------
-    expected_values[13] = cfg.glob.DOCUMENT_STATUS_END
+    expected_values[13] = db.cls_document.Document.DOCUMENT_STATUS_END
 
     cfg.glob.document.document_status = expected_values[13]
 
@@ -3141,7 +3141,7 @@ def check_new_run():
     # -----------------------------------------------------------------------------
     # Update object.
     # -----------------------------------------------------------------------------
-    expected_values[4] = cfg.glob.DOCUMENT_STATUS_END
+    expected_values[4] = db.cls_document.Document.DOCUMENT_STATUS_END
 
     cfg.glob.run.run_status = expected_values[4]
 

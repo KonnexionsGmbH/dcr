@@ -71,57 +71,6 @@ DBT_VERSION: str = "version"
 
 DCR_ARGV_0: str = "src/dcr/dcr.py"
 
-DOCUMENT_DIRECTORY_TYPE_INBOX: str = "inbox"
-DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED: str = "inbox_accepted"
-DOCUMENT_DIRECTORY_TYPE_INBOX_REJECTED: str = "inbox_rejected"
-
-DOCUMENT_ERROR_CODE_REJ_FILE_DUPL: str = "Duplicate file"
-DOCUMENT_ERROR_CODE_REJ_FILE_EXT: str = "Unknown file extension"
-DOCUMENT_ERROR_CODE_REJ_FILE_OPEN: str = "Issue with file open"
-DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT: str = "No 'pdf' format"
-DOCUMENT_ERROR_CODE_REJ_PARSER: str = "Issue with parser"
-DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE: str = "Issue with pdf2image"
-DOCUMENT_ERROR_CODE_REJ_TESSERACT: str = "Issue with Tesseract OCR"
-DOCUMENT_ERROR_CODE_REJ_TOKENIZE: str = "Issue with tokenizing"
-
-DOCUMENT_FILE_TYPE_JPEG: str = "jpeg"
-DOCUMENT_FILE_TYPE_JPG: str = "jpg"
-DOCUMENT_FILE_TYPE_JSON: str = "json"
-DOCUMENT_FILE_TYPE_PANDOC: List[str] = [
-    "csv",
-    "docx",
-    "epub",
-    "html",
-    "odt",
-    "rst",
-    "rtf",
-]
-DOCUMENT_FILE_TYPE_PDF: str = "pdf"
-DOCUMENT_FILE_TYPE_PNG: str = "png"
-DOCUMENT_FILE_TYPE_TESSERACT: List[str] = [
-    "bmp",
-    "gif",
-    "jp2",
-    "jpeg",
-    "jpg",
-    "png",
-    "pnm",
-    "tif",
-    "tiff",
-    "webp",
-]
-DOCUMENT_FILE_TYPE_TIF: str = "tif"
-DOCUMENT_FILE_TYPE_TIFF: str = "tiff"
-DOCUMENT_FILE_TYPE_XML: str = "xml"
-
-DOCUMENT_LINE_TYPE_BODY: str = "b"
-DOCUMENT_LINE_TYPE_FOOTER: str = "f"
-DOCUMENT_LINE_TYPE_HEADER: str = "h"
-
-DOCUMENT_STATUS_END: str = "end"
-DOCUMENT_STATUS_ERROR: str = "error"
-DOCUMENT_STATUS_START: str = "start"
-
 ERROR_01_901: str = "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
 ERROR_01_903: str = (
     "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{file_name}' " + "- error: '{error_msg}'."

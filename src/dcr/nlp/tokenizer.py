@@ -94,7 +94,7 @@ def get_text_from_line_2_page() -> str:
     ]:
         if (
             cfg.glob.text_parser.parse_result_line_0_line[cfg.glob.text_parser.JSON_NAME_LINE_TYPE]
-            == cfg.glob.DOCUMENT_LINE_TYPE_BODY
+            == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY
         ):
             line_0_lines.append(cfg.glob.text_parser.parse_result_line_0_line[cfg.glob.text_parser.JSON_NAME_LINE_TEXT])
 
@@ -360,7 +360,7 @@ def tokenize() -> None:
 
             cfg.glob.action_curr = db.cls_action.Action.from_row(row)
 
-            if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+            if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
                 cfg.glob.run.total_status_error += 1
             else:
                 cfg.glob.run.total_status_ready += 1
@@ -396,7 +396,7 @@ def tokenize_file(model_data: spacy.Language) -> None:
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
     if cfg.glob.setup.is_tokenize_2_jsonfile:
-        file_name_next = cfg.glob.action_curr.get_stem_name() + ".token." + cfg.glob.DOCUMENT_FILE_TYPE_JSON
+        file_name_next = cfg.glob.action_curr.get_stem_name() + ".token." + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON
         full_name_next = utils.get_full_name(
             cfg.glob.action_curr.action_directory_name,
             file_name_next,
@@ -462,7 +462,7 @@ def tokenize_file(model_data: spacy.Language) -> None:
         cfg.glob.run.run_total_processed_ok += 1
     except FileNotFoundError as err:
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_TOKENIZE,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_TOKENIZE,
             error_msg=cfg.glob.ERROR_71_901.replace("{full_name_curr}", full_name_curr)
             .replace("{error_type}", str(type(err)))
             .replace("{error}", str(err)),

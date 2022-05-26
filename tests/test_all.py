@@ -1152,7 +1152,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     db.driver.connect_db()
 
     cfg.glob.action_curr = db.cls_action.Action.from_id(6)
-    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
@@ -1161,7 +1161,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     db.driver.connect_db()
 
     cfg.glob.action_curr = db.cls_action.Action.from_id(4)
-    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
@@ -1170,7 +1170,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     db.driver.connect_db()
 
     cfg.glob.action_curr = db.cls_action.Action.from_id(2)
-    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
@@ -1179,7 +1179,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     db.driver.connect_db()
 
     cfg.glob.action_curr = db.cls_action.Action.from_id(8)
-    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
@@ -1188,7 +1188,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     db.driver.connect_db()
 
     cfg.glob.action_curr = db.cls_action.Action.from_id(13)
-    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
@@ -1197,7 +1197,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     db.driver.connect_db()
 
     cfg.glob.action_curr = db.cls_action.Action.from_id(17)
-    cfg.glob.action_curr.action_status = cfg.glob.DOCUMENT_STATUS_ERROR
+    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
     dcr.main([cfg.glob.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])

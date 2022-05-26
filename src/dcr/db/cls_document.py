@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import os
+from typing import ClassVar
+from typing import List
 from typing import Tuple
 from typing import Union
 
@@ -23,6 +25,60 @@ class Document:
     Returns:
         _type_: Document instance.
     """
+
+    # -----------------------------------------------------------------------------
+    # Class variables.
+    # -----------------------------------------------------------------------------
+    DOCUMENT_DIRECTORY_TYPE_INBOX: ClassVar[str] = "inbox"
+    DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED: ClassVar[str] = "inbox_accepted"
+    DOCUMENT_DIRECTORY_TYPE_INBOX_REJECTED: ClassVar[str] = "inbox_rejected"
+
+    DOCUMENT_ERROR_CODE_REJ_FILE_DUPL: ClassVar[str] = "Duplicate file"
+    DOCUMENT_ERROR_CODE_REJ_FILE_EXT: ClassVar[str] = "Unknown file extension"
+    DOCUMENT_ERROR_CODE_REJ_FILE_OPEN: ClassVar[str] = "Issue with file open"
+    DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT: ClassVar[str] = "No 'pdf' format"
+    DOCUMENT_ERROR_CODE_REJ_PARSER: ClassVar[str] = "Issue with parser"
+    DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE: ClassVar[str] = "Issue with pdf2image"
+    DOCUMENT_ERROR_CODE_REJ_TESSERACT: ClassVar[str] = "Issue with Tesseract OCR"
+    DOCUMENT_ERROR_CODE_REJ_TOKENIZE: ClassVar[str] = "Issue with tokenizing"
+
+    DOCUMENT_FILE_TYPE_JPEG: ClassVar[str] = "jpeg"
+    DOCUMENT_FILE_TYPE_JPG: ClassVar[str] = "jpg"
+    DOCUMENT_FILE_TYPE_JSON: ClassVar[str] = "json"
+    DOCUMENT_FILE_TYPE_PANDOC: ClassVar[List[str]] = [
+        "csv",
+        "docx",
+        "epub",
+        "html",
+        "odt",
+        "rst",
+        "rtf",
+    ]
+    DOCUMENT_FILE_TYPE_PDF: ClassVar[str] = "pdf"
+    DOCUMENT_FILE_TYPE_PNG: ClassVar[str] = "png"
+    DOCUMENT_FILE_TYPE_TESSERACT: ClassVar[List[str]] = [
+        "bmp",
+        "gif",
+        "jp2",
+        "jpeg",
+        "jpg",
+        "png",
+        "pnm",
+        "tif",
+        "tiff",
+        "webp",
+    ]
+    DOCUMENT_FILE_TYPE_TIF: ClassVar[str] = "tif"
+    DOCUMENT_FILE_TYPE_TIFF: ClassVar[str] = "tiff"
+    DOCUMENT_FILE_TYPE_XML: ClassVar[str] = "xml"
+
+    DOCUMENT_LINE_TYPE_BODY: ClassVar[str] = "b"
+    DOCUMENT_LINE_TYPE_FOOTER: ClassVar[str] = "f"
+    DOCUMENT_LINE_TYPE_HEADER: ClassVar[str] = "h"
+
+    DOCUMENT_STATUS_END: ClassVar[str] = "end"
+    DOCUMENT_STATUS_ERROR: ClassVar[str] = "error"
+    DOCUMENT_STATUS_START: ClassVar[str] = "start"
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
@@ -204,7 +260,7 @@ class Document:
         """Finalise the current row."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self.document_status = cfg.glob.DOCUMENT_STATUS_END
+        self.document_status = Document.DOCUMENT_STATUS_END
 
         self.persist_2_db()
 
@@ -227,7 +283,7 @@ class Document:
         self.document_error_code_last = error_code
         self.document_error_msg_last = error_msg
         self.document_error_no += 1
-        self.document_status = cfg.glob.DOCUMENT_STATUS_ERROR
+        self.document_status = Document.DOCUMENT_STATUS_ERROR
 
         self.persist_2_db()
 
@@ -362,8 +418,8 @@ class Document:
             + "."
             + (
                 self.get_file_type()
-                if self.get_file_type() != cfg.glob.DOCUMENT_FILE_TYPE_TIF
-                else cfg.glob.DOCUMENT_FILE_TYPE_TIFF
+                if self.get_file_type() != Document.DOCUMENT_FILE_TYPE_TIF
+                else Document.DOCUMENT_FILE_TYPE_TIFF
             )
         )
 
@@ -442,7 +498,7 @@ class Document:
             )
 
         if self.document_id == 0:
-            self.document_status = self.document_status if self.document_status != "" else cfg.glob.DOCUMENT_STATUS_START
+            self.document_status = self.document_status if self.document_status != "" else Document.DOCUMENT_STATUS_START
 
             self.document_id = db.dml.insert_dbt_row(
                 table_name=cfg.glob.DBT_DOCUMENT,

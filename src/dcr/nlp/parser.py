@@ -71,7 +71,7 @@ def parse_tetml() -> None:
 
                 cfg.glob.action_curr = db.cls_action.Action.from_row(row)
 
-                if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+                if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
                     cfg.glob.run.total_status_error += 1
                 else:
                     cfg.glob.run.total_status_ready += 1
@@ -101,7 +101,7 @@ def parse_tetml_file() -> None:
 
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + cfg.glob.DOCUMENT_FILE_TYPE_JSON
+    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON
     full_name_next = utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
@@ -115,9 +115,9 @@ def parse_tetml_file() -> None:
         root = tree.getroot()
 
         if cfg.glob.setup.is_parsing_line:
-            status = cfg.glob.DOCUMENT_STATUS_START
+            status = db.cls_document.Document.DOCUMENT_STATUS_START
         else:
-            status = cfg.glob.DOCUMENT_STATUS_END
+            status = db.cls_document.Document.DOCUMENT_STATUS_END
 
         cfg.glob.action_next = db.cls_action.Action(
             action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
@@ -151,7 +151,7 @@ def parse_tetml_file() -> None:
         cfg.glob.run.run_total_processed_ok += 1
     except FileNotFoundError as err:
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_PARSER,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PARSER,
             error_msg=cfg.glob.ERROR_61_901.replace("{full_name_curr}", full_name_curr)
             .replace("{error_type}", str(type(err)))
             .replace("{error}", str(err)),

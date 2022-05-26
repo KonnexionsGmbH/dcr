@@ -34,7 +34,7 @@ def convert_non_pdf_2_pdf() -> None:
 
             cfg.glob.action_curr = db.cls_action.Action.from_row(row)
 
-            if cfg.glob.action_curr.action_status == cfg.glob.DOCUMENT_STATUS_ERROR:
+            if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
                 cfg.glob.run.total_status_error += 1
             else:
                 cfg.glob.run.total_status_ready += 1
@@ -59,7 +59,7 @@ def convert_non_pdf_2_pdf_file() -> None:
 
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + cfg.glob.DOCUMENT_FILE_TYPE_PDF
+    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF
     full_name_next = utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
@@ -67,7 +67,7 @@ def convert_non_pdf_2_pdf_file() -> None:
 
     if os.path.exists(full_name_next):
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=cfg.glob.ERROR_31_903.replace("{full_name}", full_name_next),
         )
 
@@ -83,7 +83,7 @@ def convert_non_pdf_2_pdf_file() -> None:
     try:
         pypandoc.convert_file(
             full_name_curr,
-            cfg.glob.DOCUMENT_FILE_TYPE_PDF,
+            db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF,
             extra_args=extra_args,
             outputfile=full_name_next,
         )
@@ -107,7 +107,7 @@ def convert_non_pdf_2_pdf_file() -> None:
         cfg.glob.run.run_total_processed_ok += 1
     except RuntimeError as err:
         cfg.glob.action_curr.finalise_error(
-            error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
             error_msg=cfg.glob.ERROR_31_902.replace("{full_name}", full_name_curr)
             .replace("{error_type}", str(type(err)))
             .replace("{error_msg}", str(err)),
