@@ -23,20 +23,20 @@ class Version:
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913
         self,
-        _row_id: int | sqlalchemy.Integer = 0,
+        _row_id: int = 0,
         version: str = "",
     ) -> None:
         """Initialise the instance.
 
         Args:
-            _row_id (int | sqlalchemy.Integer, optional):
+            _row_id (int, optional):
                     Row id. Defaults to 0.
             version (str, optional):
                     Version number. Defaults to "".
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self.version_id: int | sqlalchemy.Integer = _row_id
+        self.version_id: int = _row_id
         self.version_version: str = version
 
         if self.version_id == 0:
@@ -122,11 +122,11 @@ class Version:
     # Initialise from id.
     # -----------------------------------------------------------------------------
     @classmethod
-    def from_id(cls, id_version: int | sqlalchemy.Integer) -> Version:
+    def from_id(cls, id_version: int) -> Version:
         """Initialise from row id.
 
         Args:
-            id_version (int | sqlalchemy.Integer):
+            id_version (int):
                     The required row id.
 
         Returns:

@@ -105,9 +105,9 @@ def check_existing_document():
     expected_values = pytest.helpers.get_values_document()
 
     expected_values[0] = 1
-    expected_values[1] = "s_p_j_line"
-    expected_values[2] = "parser_line   (nlp)"
-    expected_values[10] = 7
+    expected_values[1] = "tkn"
+    expected_values[2] = "tokenize      (nlp)"
+    expected_values[10] = 8
     expected_values[11] = 3
     expected_values[13] = db.cls_document.Document.DOCUMENT_STATUS_END
 
@@ -3158,7 +3158,7 @@ def check_new_run():
     # -----------------------------------------------------------------------------
     # Delete object.
     # -----------------------------------------------------------------------------
-    db.cls_run.Run.id_run_umbrella = 0
+    db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
     db.cls_run.Run(
         _row_id=0,
@@ -3264,7 +3264,7 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    db.cls_run.Run.id_run_umbrella = 0
+    db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
@@ -3512,7 +3512,7 @@ def test_new_objects(fxtr_setup_empty_db_and_inbox):
 
     cfg.glob.start_time_document = time.perf_counter_ns()
 
-    db.cls_run.Run.id_run_umbrella = 0
+    db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
     check_new_language()
     check_new_run()

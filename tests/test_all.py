@@ -500,6 +500,28 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
             19,
             (
                 19,
+                "pypdf2",
+                "pypdf2        (preprocessor)",
+                utils.get_os_independent_name("data/inbox_test_accepted"),
+                "inbox_accepted",
+                "",
+                "",
+                0,
+                "translating_sql_into_relational_algebra_p01_02_6_0.pdf",
+                6,
+                13,
+                3,
+                0,
+                2,
+                "end",
+            ),
+        )
+    )
+    pytest.helpers.check_dbt_action(
+        (
+            20,
+            (
+                20,
                 "tet",
                 "pdflib        (nlp)",
                 utils.get_os_independent_name("data/inbox_test_accepted"),
@@ -513,28 +535,6 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 4,
                 0,
                 2,
-                "end",
-            ),
-        )
-    )
-    pytest.helpers.check_dbt_action(
-        (
-            20,
-            (
-                20,
-                "pypdf2",
-                "pypdf2        (preprocessor)",
-                utils.get_os_independent_name("data/inbox_test_accepted"),
-                "inbox_accepted",
-                "",
-                "",
-                0,
-                "translating_sql_into_relational_algebra_p01_02_6.pdf",
-                6,
-                13,
-                3,
-                0,
-                -1,
                 "end",
             ),
         )
@@ -641,7 +641,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 0,
                 "translating_sql_into_relational_algebra_p01_02_6_0.line.xml",
                 6,
-                19,
+                20,
                 6,
                 0,
                 2,
@@ -689,7 +689,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 7,
                 0,
                 3,
-                "start",
+                "end",
             ),
         )
     )
@@ -711,7 +711,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 7,
                 0,
                 1,
-                "start",
+                "end",
             ),
         )
     )
@@ -733,7 +733,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 7,
                 0,
                 1,
-                "start",
+                "end",
             ),
         )
     )
@@ -755,7 +755,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 7,
                 0,
                 2,
-                "start",
+                "end",
             ),
         )
     )
@@ -777,7 +777,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
                 7,
                 0,
                 2,
-                "start",
+                "end",
             ),
         )
     )
@@ -793,15 +793,15 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
             1,
             (
                 1,
-                "s_p_j_line",
-                "parser_line   (nlp)",
+                "tkn",
+                "tokenize      (nlp)",
                 utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
                 "docx_ok.docx",
                 1,
-                7,
+                8,
                 -1,
                 "c3ddceb01213027e8a9a927752a7d9eb9d42248cc2daa13f70fd45244d3ca02e",
                 "end",
@@ -813,15 +813,15 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
             2,
             (
                 2,
-                "s_p_j_line",
-                "parser_line   (nlp)",
+                "tkn",
+                "tokenize      (nlp)",
                 utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
                 "jpeg_pdf_text_ok.jpeg",
                 1,
-                7,
+                8,
                 -1,
                 "60a36f3ababe541e02f238f76e6effc9f1f0eda6165992afd075e527332230de",
                 "end",
@@ -833,15 +833,15 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
             3,
             (
                 3,
-                "s_p_j_line",
-                "parser_line   (nlp)",
+                "tkn",
+                "tokenize      (nlp)",
                 utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
                 "pdf_scanned_ok.pdf",
                 1,
-                7,
+                8,
                 1,
                 "07e21aeef5600c03bc111204a44f708d592a63703a027ea4272a246304557625",
                 "end",
@@ -853,15 +853,15 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
             4,
             (
                 4,
-                "s_p_j_line",
-                "parser_line   (nlp)",
+                "tkn",
+                "tokenize      (nlp)",
                 utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
                 "pdf_text_ok.pdf",
                 1,
-                7,
+                8,
                 3,
                 "e2402cc28e178911ee5941b1f9ac0d596beb7730f101da715f996dc992acbe25",
                 "end",
@@ -894,15 +894,15 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
             6,
             (
                 6,
-                "s_p_j_line",
-                "parser_line   (nlp)",
+                "tkn",
+                "tokenize      (nlp)",
                 utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
                 "translating_sql_into_relational_algebra_p01_02.pdf",
                 1,
-                7,
+                8,
                 2,
                 "3b12b58a3eb9d28b97fc7480f5589a6c851bbf54abe46e7f944afbf482e5a799",
                 "end",
@@ -995,7 +995,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
-    db.cls_run.Run.id_run_umbrella = 0
+    db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
@@ -1029,7 +1029,6 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_ALL_COMPLETE - empty.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - empty."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -1144,7 +1143,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     )
 
     # -------------------------------------------------------------------------
-    db.cls_run.Run.id_run_umbrella = 0
+    db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 

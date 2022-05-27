@@ -29,13 +29,9 @@ JSON_NAME_TABLE_NAME: str = "tableName"
 # -----------------------------------------------------------------------------
 # Type declaration.
 # -----------------------------------------------------------------------------
-Columns: TypeAlias = Dict[
-    str, bool | sqlalchemy.Boolean | int | sqlalchemy.Integer | str | os.PathLike[str] | sqlalchemy.String | None
-]
+Columns: TypeAlias = Dict[str, bool | int | None | os.PathLike[str] | str]
 
-ColumnValues: TypeAlias = Tuple[
-    bool | sqlalchemy.Boolean | int | sqlalchemy.Integer | str | os.PathLike[str] | sqlalchemy.String | None
-]
+ColumnValues: TypeAlias = Tuple[bool | int | None | os.PathLike[str] | str]
 
 
 # -----------------------------------------------------------------------------
@@ -43,13 +39,13 @@ ColumnValues: TypeAlias = Tuple[
 # -----------------------------------------------------------------------------
 def delete_dbt_id(
     table_name: str,
-    id_where: int | sqlalchemy.Integer,
+    id_where: int,
 ) -> None:
     """Delete a database row based on its id column.
 
     Args:
         table_name (str): sqlalchemy.Table name.
-        id_where (int | sqlalchemy.Integer): Content of column id.
+        id_where (int): Content of column id.
     """
     dbt = sqlalchemy.Table(table_name, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
@@ -64,7 +60,7 @@ def delete_dbt_id(
 def insert_dbt_row(
     table_name: str,
     columns: Columns,
-) -> sqlalchemy.Integer:
+) -> int:
     """Insert a new row into a database table.
 
     Args:
@@ -72,7 +68,7 @@ def insert_dbt_row(
         columns (cfg.glob.TYPE_COLUMNS_INSERT): Pairs of column name and value.
 
     Returns:
-        sqlalchemy.Integer: The last id found.
+        int: The last id found.
     """
     dbt = sqlalchemy.Table(table_name, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
@@ -133,14 +129,14 @@ def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
 # -----------------------------------------------------------------------------
 def update_dbt_id(
     table_name: str,
-    id_where: int | sqlalchemy.Integer,
+    id_where: int,
     columns: Columns,
 ) -> None:
     """Update a database row based on its id column.
 
     Args:
         table_name (str): sqlalchemy.Table name.
-        id_where (int | sqlalchemy.Integer): Content of column id.
+        id_where (int): Content of column id.
         columns (Columns): Pairs of column name and value.
     """
     dbt = sqlalchemy.Table(table_name, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)

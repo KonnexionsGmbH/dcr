@@ -48,7 +48,7 @@ def delete_auxiliary_file(full_name: pathlib.Path | str) -> None:
     full_name = get_os_independent_name(full_name)
 
     # Don't remove the base document !!!
-    if full_name == get_full_name(cfg.glob.action_next.action_directory_name, cfg.glob.document.get_file_name_next()):
+    if full_name == get_full_name(cfg.glob.action_curr.action_directory_name, cfg.glob.document.get_file_name_next()):
         return
 
     if os.path.isfile(full_name):

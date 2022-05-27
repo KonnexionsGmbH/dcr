@@ -5,6 +5,7 @@ import time
 import cfg.glob
 import db.cls_action
 import db.cls_document
+import db.cls_language
 import db.cls_run
 import db.dml
 import PyPDF2
@@ -86,7 +87,7 @@ def convert_image_2_pdf_file() -> None:
         pdf = pytesseract.image_to_pdf_or_hocr(
             extension="pdf",
             image=full_name_curr,
-            lang=db.cls_language.Language.languages_tesseract[cfg.glob.document.document_id_language],
+            lang=db.cls_language.Language.LANGUAGES_TESSERACT[cfg.glob.document.document_id_language],
             timeout=cfg.glob.setup.tesseract_timeout,
         )
 
@@ -130,6 +131,31 @@ def reunite_pdfs() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+    error_documents = []
+
+    with cfg.glob.db_orm_engine.begin() as conn:
+        rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PYPDF2)
+
+        for row in rows:
+            cfg.glob.start_time_document = time.perf_counter_ns()
+
+            cfg.glob.run.run_total_processed_to_be += 1
+
+            cfg.glob.action_curr = db.cls_action.Action.from_id(row[0])
+
+            if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
+                cfg.glob.run.total_status_error += 1
+                error_documents.append(cfg.glob.action_curr.action_id_document)
+            else:
+                # not testable
+                cfg.glob.run.total_status_ready += 1
+
+            cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
+
+            reunite_pdfs_file()
+
+        conn.close()
+
     with cfg.glob.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_id_document_by_action_code_pypdf2(
             conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDFLIB
@@ -142,13 +168,18 @@ def reunite_pdfs() -> None:
 
             cfg.glob.action_curr = db.cls_action.Action.from_id(row[0])
 
+            if cfg.glob.action_curr.action_id_document in error_documents:
+                continue
+
             cfg.glob.action_curr.action_action_code = db.cls_run.Run.ACTION_CODE_PYPDF2
             cfg.glob.action_curr.action_file_name = (
-                cfg.glob.action_curr.get_stem_name()[0:-2] + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF
+                cfg.glob.action_curr.get_stem_name()[0:-2] + "_0." + db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF
             )
-            cfg.glob.action_curr.action_file_size_bytes = -1
+            cfg.glob.action_curr.action_file_size_bytes = 0
             cfg.glob.action_curr.action_id = 0
-            cfg.glob.action_curr.action_no_pdf_pages = -1
+            cfg.glob.action_curr.action_no_pdf_pages = 0
+
+            cfg.glob.action_curr.persist_2_db()
 
             if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
                 # not testable
@@ -175,7 +206,7 @@ def reunite_pdfs_file() -> None:
     """Reunite the related pdf documents of a specific base document."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    stem_name_next = cfg.glob.action_curr.get_stem_name() + "_0"
+    stem_name_next = cfg.glob.action_curr.get_stem_name()[0:-2] + "_0"
     file_name_next = stem_name_next + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF
 
     full_name_next = utils.get_full_name(
@@ -209,9 +240,10 @@ def reunite_pdfs_file() -> None:
             full_name_curr = action_part.get_full_name()
 
             pdf_reader = PyPDF2.PdfReader(full_name_curr)
-            for page in range(pdf_reader.getNumPages()):
+
+            for page in pdf_reader.pages:
                 # Add each page to the writer object
-                pdf_writer.add_page(pdf_reader.pages[page])
+                pdf_writer.add_page(page)
 
             utils.delete_auxiliary_file(str(full_name_curr))
 

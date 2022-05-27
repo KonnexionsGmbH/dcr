@@ -640,7 +640,7 @@ def test_missing_dependencies_text_parser_document(fxtr_setup_empty_db_and_inbox
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
-    db.cls_run.Run.id_run_umbrella = -1
+    db.cls_run.Run.ID_RUN_UMBRELLA = -1
 
     cfg.glob.run = db.cls_run.Run(
         action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,

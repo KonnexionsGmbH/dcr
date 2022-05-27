@@ -85,17 +85,17 @@ class Document:
         action_code_last: str,
         directory_name: str,
         file_name: str,
-        id_language: int | sqlalchemy.Integer,
-        id_run_last: int | sqlalchemy.Integer,
-        _row_id: int | sqlalchemy.Integer = 0,
+        id_language: int,
+        id_run_last: int,
+        _row_id: int = 0,
         action_text_last: str = "",
-        error_code_last: str | sqlalchemy.String = "",
-        error_msg_last: str | sqlalchemy.String = "",
+        error_code_last: str = "",
+        error_msg_last: str = "",
         error_no: int = 0,
         file_size_bytes: int = 0,
         no_pdf_pages: int = 0,
-        sha256: str | sqlalchemy.String = "",
-        status: str | sqlalchemy.String = "",
+        sha256: str = "",
+        status: str = "",
     ) -> None:
         """Initialise the instance.
 
@@ -106,17 +106,17 @@ class Document:
                     The document location.
             file_name (str):
                     The file name.
-            id_language (int | sqlalchemy.Integer):
+            id_language (int):
                     The row id of the language
-            id_run_last (int | sqlalchemy.Integer):
+            id_run_last (int):
                     _description_
-            _row_id (int | sqlalchemy.Integer, optional):
+            _row_id (int, optional):
                     Row id of the last run that processed this document action. Defaults to 0.
             action_text_last (str, optional):
                     Action text (is derived from action_code_last if it is missing). Defaults to "".
-            error_code_last (str | sqlalchemy.String, optional):
+            error_code_last (str, optional):
                     The code of the last error that occurred. Defaults to "".
-            error_msg_last (str | sqlalchemy.String, optional):
+            error_msg_last (str, optional):
                     The message of the last error that occurred. Defaults to "".
             error_no (int, optional):
                     The total number of errors in this document. Defaults to 0.
@@ -124,9 +124,9 @@ class Document:
                     The file size in bytes. Defaults to 0.
             no_pdf_pages (int, optional):
                     For a document of the type 'pdf' the number of pages. Defaults to 0.
-            sha256 (str | sqlalchemy.String, optional):
+            sha256 (str, optional):
                     The value of the SHA-256 hash function. Defaults to "".
-            status (str | sqlalchemy.String, optional):
+            status (str, optional):
                     Status. Defaults to "".
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -134,17 +134,17 @@ class Document:
         self.document_action_code_last: str = action_code_last
         self.document_action_text_last: str = action_text_last
         self.document_directory_name: str = directory_name
-        self.document_error_code_last: str | sqlalchemy.String = error_code_last
-        self.document_error_msg_last: str | sqlalchemy.String = error_msg_last
+        self.document_error_code_last: str = error_code_last
+        self.document_error_msg_last: str = error_msg_last
         self.document_error_no: int = error_no
         self.document_file_name: str = file_name
         self.document_file_size_bytes: int = file_size_bytes
-        self.document_id: int | sqlalchemy.Integer = _row_id
-        self.document_id_language: int | sqlalchemy.Integer = id_language
-        self.document_id_run_last: int | sqlalchemy.Integer = id_run_last
+        self.document_id: int = _row_id
+        self.document_id_language: int = id_language
+        self.document_id_run_last: int = id_run_last
         self.document_no_pdf_pages: int = no_pdf_pages
-        self.document_sha256: str | sqlalchemy.String = sha256
-        self.document_status: str | sqlalchemy.String = status
+        self.document_sha256: str = sha256
+        self.document_status: str = status
 
         if self.document_id == 0:
             self.persist_2_db()
@@ -290,11 +290,11 @@ class Document:
     # Initialise from id.
     # -----------------------------------------------------------------------------
     @classmethod
-    def from_id(cls, id_document: int | sqlalchemy.Integer) -> Document:
+    def from_id(cls, id_document: int) -> Document:
         """Initialise from id.
 
         Args:
-            id_document (int | sqlalchemy.Integer):
+            id_document (int):
                     The required row id.
 
         Returns:
@@ -364,9 +364,7 @@ class Document:
     # -----------------------------------------------------------------------------
     # Get the database columns in a tuple.
     # -----------------------------------------------------------------------------
-    def get_columns_in_tuple(
-        self, is_file_size_bytes: bool = True
-    ) -> Tuple[int | sqlalchemy.BigInteger | sqlalchemy.Integer | sqlalchemy.String | str, ...]:
+    def get_columns_in_tuple(self, is_file_size_bytes: bool = True) -> Tuple[int | str, ...]:
         """Get the database columns in a tuple.
 
         Args:
@@ -374,7 +372,7 @@ class Document:
                     Including column file_size_bytes?. Defaults to True.
 
         Returns:
-            Tuple[Union[int, sqlalchemy.BigInteger, sqlalchemy.Integer, sqlalchemy.String, str], ...]:
+            Tuple[int | str, ...]:
                         Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -525,11 +523,11 @@ class Document:
     # Get the duplicate file name based on the hash key.
     # -----------------------------------------------------------------------------
     @classmethod
-    def select_duplicate_file_name_by_sha256(cls, id_document: int | sqlalchemy.Integer, sha256: str) -> str:
+    def select_duplicate_file_name_by_sha256(cls, id_document: int, sha256: str) -> str:
         """Get the duplicate file name based on the hash key.
 
         Args:
-            id_document (sqlalchemy.Integer):
+            id_document (int):
                     Document id.
             sha256 (str):
                     Hash key.

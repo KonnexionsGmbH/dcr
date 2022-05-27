@@ -129,7 +129,6 @@ def parse_tetml_file() -> None:
             directory_name=cfg.glob.action_curr.action_directory_name,
             directory_type=cfg.glob.action_curr.action_directory_type,
             file_name=file_name_next,
-            file_size_bytes=-1,
             id_document=cfg.glob.action_curr.action_id_document,
             id_parent=cfg.glob.action_curr.action_id,
             no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,

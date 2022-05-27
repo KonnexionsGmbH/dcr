@@ -137,9 +137,5 @@ def convert_pdf_2_image_file() -> None:
             .replace("{error_type}", str(type(err)))
             .replace("{error}", str(err)),
         )
-        # wwe
-        # utils.terminate_fatal(
-        #     f"pdf2image conversion fails - file={cfg.glob.action_curr.action_file_name} error={str(err)}",
-        # )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

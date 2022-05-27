@@ -11,9 +11,6 @@ import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
 import utils
-from sqlalchemy import Boolean
-from sqlalchemy import Integer
-from sqlalchemy import String
 
 
 # pylint: disable=R0801
@@ -28,40 +25,40 @@ class Language:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    languages_pandoc: ClassVar[Dict[sqlalchemy.Integer, str]]
-    languages_spacy: ClassVar[Dict[sqlalchemy.Integer, str]]
-    languages_tesseract: ClassVar[Dict[sqlalchemy.Integer, str]]
+    LANGUAGES_PANDOC: ClassVar[Dict[int, str]]
+    LANGUAGES_SPACY: ClassVar[Dict[int, str]]
+    LANGUAGES_TESSERACT: ClassVar[Dict[int, str]]
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913
         self,
-        code_iso_639_3: str | sqlalchemy.String,
-        code_pandoc: str | sqlalchemy.String,
-        code_spacy: str | sqlalchemy.String,
-        code_tesseract: str | sqlalchemy.String,
+        code_iso_639_3: str,
+        code_pandoc: str,
+        code_spacy: str,
+        code_tesseract: str,
         iso_language_name: str,
-        _row_id: int | sqlalchemy.Integer = 0,
-        active: bool | sqlalchemy.Boolean = False,
+        _row_id: int = 0,
+        active: bool = False,
         directory_name_inbox: str = "",
     ) -> None:
         """Initialise the instance.
 
         Args:
-            code_iso_639_3 (str | sqlalchemy.String):
+            code_iso_639_3 (str):
                     The ISO 639-3 code of the language.
-            code_pandoc (str | sqlalchemy.String):
+            code_pandoc (str):
                     The Pandoc code of the language.
-            code_spacy (str | sqlalchemy.String):
+            code_spacy (str):
                     The SpaCy code of the model to be applied.
-            code_tesseract (str | sqlalchemy.String):
+            code_tesseract (str):
                     The Tesseract OCR code of the language.
             iso_language_name (str):
                     The English name of the language.
-            _row_id (int | sqlalchemy.Integer, optional):
+            _row_id (int, optional):
                     Row id. Defaults to 0.
-            active (bool | sqlalchemy.Boolean, optional):
+            active (bool, optional):
                     Is the language active?. Defaults to False.
             directory_name_inbox (str, optional):
                     Name of the language-specific input file directory. Defaults to "".
@@ -75,11 +72,11 @@ class Language:
                 "The required instance of the class 'Setup' does not yet exist.",
             )
 
-        self.language_active: bool | sqlalchemy.Boolean = active
-        self.language_code_iso_639_3: str | sqlalchemy.String = code_iso_639_3
-        self.language_code_pandoc: str | sqlalchemy.String = code_pandoc
-        self.language_code_spacy: str | sqlalchemy.String = code_spacy
-        self.language_code_tesseract: str | sqlalchemy.String = code_tesseract
+        self.language_active: bool = active
+        self.language_code_iso_639_3: str = code_iso_639_3
+        self.language_code_pandoc: str = code_pandoc
+        self.language_code_spacy: str = code_spacy
+        self.language_code_tesseract: str = code_tesseract
 
         if self.language_active and (directory_name_inbox is None or directory_name_inbox == ""):
             self.language_directory_name_inbox: str = str(
@@ -88,7 +85,7 @@ class Language:
         else:
             self.language_directory_name_inbox = utils.get_os_independent_name(directory_name_inbox)
 
-        self.language_id: int | sqlalchemy.Integer = _row_id
+        self.language_id: int = _row_id
         self.language_iso_language_name: str = iso_language_name
 
         self.total_erroneous: int = 0
@@ -180,11 +177,11 @@ class Language:
     # Initialise from id.
     # -----------------------------------------------------------------------------
     @classmethod
-    def from_id(cls, id_language: int | sqlalchemy.Integer) -> Language:
+    def from_id(cls, id_language: int) -> Language:
         """Initialise from row id.
 
         Args:
-            id_language (int | sqlalchemy.Integer):
+            id_language (int):
                     The required row id.
 
         Returns:
@@ -250,29 +247,12 @@ class Language:
     # -----------------------------------------------------------------------------
     def get_columns_in_tuple(
         self,
-    ) -> tuple[
-        int | Integer,
-        bool | Boolean,
-        str | String,
-        str | String,
-        str | String,
-        str | String,
-        str | String,
-        str | String,
-    ]:
+    ) -> tuple[int, bool, str, str, str, str, str, str]:
         """Get the database columns in a tuple.
 
-            Returns:
-                tuple[
-            int | Integer,
-            bool | Boolean,
-            str | String,
-            str | String,
-            str | String,
-            str | String,
-            str | String,
-            str | String,
-        ]:          Column values in a tuple.
+        Returns:
+            tuple[int, bool, str, str, str, str, str, str]:
+                    Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -302,9 +282,9 @@ class Language:
             autoload_with=cfg.glob.db_orm_engine,
         )
 
-        Language.languages_pandoc = {}
-        Language.languages_spacy = {}
-        Language.languages_tesseract = {}
+        Language.LANGUAGES_PANDOC = {}
+        Language.LANGUAGES_SPACY = {}
+        Language.LANGUAGES_TESSERACT = {}
 
         with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
             rows = conn.execute(
@@ -314,15 +294,15 @@ class Language:
             )
 
             for row in rows:
-                Language.languages_pandoc[row.id] = row.code_pandoc
-                Language.languages_spacy[row.id] = row.code_spacy
-                Language.languages_tesseract[row.id] = row.code_tesseract
+                Language.LANGUAGES_PANDOC[row.id] = row.code_pandoc
+                Language.LANGUAGES_SPACY[row.id] = row.code_spacy
+                Language.LANGUAGES_TESSERACT[row.id] = row.code_tesseract
 
             conn.close()
 
-        utils.progress_msg(f"Available languages for Pandoc        '{Language.languages_pandoc}'")
-        utils.progress_msg(f"Available languages for spaCy         '{Language.languages_spacy}'")
-        utils.progress_msg(f"Available languages for Tesseract OCR '{Language.languages_tesseract}'")
+        utils.progress_msg(f"Available languages for Pandoc        '{Language.LANGUAGES_PANDOC}'")
+        utils.progress_msg(f"Available languages for spaCy         '{Language.LANGUAGES_SPACY}'")
+        utils.progress_msg(f"Available languages for Tesseract OCR '{Language.LANGUAGES_TESSERACT}'")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 

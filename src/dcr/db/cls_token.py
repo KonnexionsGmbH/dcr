@@ -7,8 +7,6 @@ import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
 import utils
-from sqlalchemy import Integer
-from sqlalchemy import String
 
 
 class Token:
@@ -23,29 +21,29 @@ class Token:
     # -----------------------------------------------------------------------------
     def __init__(  # pylint: disable=R0913
         self,
-        id_document: int | sqlalchemy.Integer,
-        page_data: str | sqlalchemy.String,
-        page_no: int | sqlalchemy.Integer,
-        _row_id: int | sqlalchemy.Integer = 0,
+        id_document: int,
+        page_data: str,
+        page_no: int,
+        _row_id: int = 0,
     ) -> None:
         """Initialise the instance.
 
         Args:
-            id_document (int | sqlalchemy.Integer):
+            id_document (int):
                     Row id of the document
-            page_data (str | sqlalchemy.String):
+            page_data (str):
                     Page data
-            page_no (int | sqlalchemy.Integer):
+            page_no (int):
                     Page number.
-            _row_id (int | sqlalchemy.Integer, optional):
+            _row_id (int, optional):
                     Row id. Defaults to 0.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self.token_id: int | sqlalchemy.Integer = _row_id
-        self.token_id_document: int | sqlalchemy.Integer = id_document
-        self.token_page_data: str | sqlalchemy.String = page_data
-        self.token_page_no: int | sqlalchemy.Integer = page_no
+        self.token_id: int = _row_id
+        self.token_id_document: int = id_document
+        self.token_page_data: str = page_data
+        self.token_page_no: int = page_no
 
         if self.token_id == 0:
             self.persist_2_db()
@@ -147,11 +145,11 @@ class Token:
     # Initialise from id.
     # -----------------------------------------------------------------------------
     @classmethod
-    def from_id(cls, id_token: int | sqlalchemy.Integer) -> Token:
+    def from_id(cls, id_token: int) -> Token:
         """Initialise from row id.
 
         Args:
-            id_token (int | sqlalchemy.Integer):
+            id_token (int):
                     The required row id.
 
         Returns:
@@ -211,11 +209,11 @@ class Token:
     # -----------------------------------------------------------------------------
     def get_columns_in_tuple(
         self,
-    ) -> tuple[int | Integer, int | Integer, str | String, int | Integer]:
+    ) -> tuple[int, int, str, int]:
         """Get the database columns in a tuple.
 
         Returns:
-            tuple[int | Integer, int | Integer, str | String, int | Integer]:
+            tuple[int, int, str, int]:
                     Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)

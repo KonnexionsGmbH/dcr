@@ -28,7 +28,7 @@ class Action:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    pdf2image_file_type: ClassVar[str] = ""
+    PDF2IMAGE_FILE_TYPE: ClassVar[str] = ""
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
@@ -36,31 +36,31 @@ class Action:
     def __init__(  # pylint: disable=R0913, R0914
         self,
         action_code: str,
-        id_run_last: int | sqlalchemy.Integer,
-        _row_id: int | sqlalchemy.Integer = 0,
+        id_run_last: int,
+        _row_id: int = 0,
         action_text: str = "",
         directory_name: str = "",
         directory_type: str = "",
-        duration_ns: int | sqlalchemy.BigInteger = 0,
-        error_code_last: str | sqlalchemy.String = "",
-        error_msg_last: str | sqlalchemy.String = "",
+        duration_ns: int = 0,
+        error_code_last: str = "",
+        error_msg_last: str = "",
         error_no: int = 0,
         file_name: str = "",
         file_size_bytes: int = 0,
-        id_document: int | sqlalchemy.Integer = 0,
-        id_parent: int | sqlalchemy.Integer = 0,
-        no_children: int | sqlalchemy.Integer = 0,
+        id_document: int = 0,
+        id_parent: int = 0,
+        no_children: int = 0,
         no_pdf_pages: int = 0,
-        status: str | sqlalchemy.String = "",
+        status: str = "",
     ) -> None:
         """Initialise the instance.
 
         Args:
             action_code (str):
                     Action code.
-            id_run_last (int | sqlalchemy.Integer):
+            id_run_last (int):
                     Row id of the last run that processed this document action.
-            _row_id (int | sqlalchemy.Integer, optional):
+            _row_id (int, optional):
                     Row id. Defaults to 0.
             action_text (str, optional):
                     Action text (is derived from action_code if it is missing). Defaults to "".
@@ -68,11 +68,11 @@ class Action:
                     The document location. Defaults to "".
             directory_type (str, optional):
                     The type of document location (accepted / rejected). Defaults to "".
-            duration_ns (int | sqlalchemy.BigInteger, optional):
+            duration_ns (int, optional):
                     The processing time in nanoseconds. Defaults to 0.
-            error_code_last (str | sqlalchemy.String, optional):
+            error_code_last (str, optional):
                     The code of the last error that occurred. Defaults to "".
-            error_msg_last (str | sqlalchemy.String, optional):
+            error_msg_last (str, optional):
                     The message of the last error that occurred. Defaults to "".
             error_no (int, optional):
                     The total number of errors in this document action. Defaults to 0.
@@ -80,15 +80,15 @@ class Action:
                     The file name. Defaults to "".
             file_size_bytes (int, optional):
                     The file size in bytes. Defaults to 0.
-            id_document (int | sqlalchemy.Integer, optional):
+            id_document (int, optional):
                     The row id of the associated document. Defaults to 0.
-            id_parent (int | sqlalchemy.Integer, optional):
+            id_parent (int, optional):
                     The row id of the parent action. Defaults to 0.
-            no_children (int | sqlalchemy.Integer, optional):
+            no_children (int, optional):
                     For a document of type scanned 'pdf', the number of image files created. Defaults to 0.
             no_pdf_pages (int, optional):
                     For a document of the type 'pdf' the number of pages. Defaults to 0.
-            status (str | sqlalchemy.String, optional):
+            status (str, optional):
                     Status. Defaults to "".
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -103,23 +103,23 @@ class Action:
         self.action_action_code: str = action_code
         self.action_action_text: str = action_text
         self.action_directory_name: str = utils.get_os_independent_name(directory_name)
-        self.action_directory_type: str | sqlalchemy.String = directory_type
-        self.action_duration_ns: int | sqlalchemy.BigInteger = duration_ns
-        self.action_error_code_last: str | sqlalchemy.String = error_code_last
-        self.action_error_msg_last: str | sqlalchemy.String = error_msg_last
+        self.action_directory_type: str = directory_type
+        self.action_duration_ns: int = duration_ns
+        self.action_error_code_last: str = error_code_last
+        self.action_error_msg_last: str = error_msg_last
         self.action_error_no: int = error_no
         self.action_file_name: str = file_name
         self.action_file_size_bytes: int = file_size_bytes
-        self.action_id: int | sqlalchemy.Integer = _row_id
-        self.action_id_document: int | sqlalchemy.Integer = id_document
-        self.action_id_parent: int | sqlalchemy.Integer = id_parent if id_parent != 0 else 1
-        self.action_id_run_last: int | sqlalchemy.Integer = id_run_last
-        self.action_no_children: int | sqlalchemy.Integer = no_children
+        self.action_id: int = _row_id
+        self.action_id_document: int = id_document
+        self.action_id_parent: int = id_parent if id_parent != 0 else 1
+        self.action_id_run_last: int = id_run_last
+        self.action_no_children: int = no_children
         self.action_no_pdf_pages: int = no_pdf_pages
-        self.action_status: str | sqlalchemy.String = status
+        self.action_status: str = status
 
-        if Action.pdf2image_file_type == "":
-            Action.pdf2image_file_type = db.cls_document.Document.DOCUMENT_FILE_TYPE_JPEG
+        if Action.PDF2IMAGE_FILE_TYPE == "":
+            Action.PDF2IMAGE_FILE_TYPE = db.cls_document.Document.DOCUMENT_FILE_TYPE_JPEG
 
         if self.action_id == 0:
             self.persist_2_db()
@@ -244,16 +244,6 @@ class Action:
 
         self.action_duration_ns = time.perf_counter_ns() - cfg.glob.start_time_document
 
-        if self.action_file_size_bytes == 0:
-            self.action_file_size_bytes = os.path.getsize(
-                utils.get_full_name(self.action_directory_name, self.action_file_name)
-            )
-
-        if self.action_no_pdf_pages == 0:
-            self.action_no_pdf_pages = utils.get_pdf_pages_no(
-                utils.get_full_name(self.action_directory_name, self.action_file_name)
-            )
-
         self.action_status = db.cls_document.Document.DOCUMENT_STATUS_END
 
         self.persist_2_db()
@@ -339,6 +329,8 @@ class Action:
                     "The required instance of the class 'Action (action_curr)' does not yet exist.",
                 )
 
+            cfg.glob.run.run_total_erroneous += 1
+
             utils.progress_msg(
                 f"Duration: {round(self.action_duration_ns / 1000000000, 2):6.2f} s - "
                 f"Document: {cfg.glob.action_curr.action_id:6d} "
@@ -352,11 +344,11 @@ class Action:
     # Initialise from id.
     # -----------------------------------------------------------------------------
     @classmethod
-    def from_id(cls, id_action: int | sqlalchemy.Integer) -> Action:
+    def from_id(cls, id_action: int) -> Action:
         """Initialise from row id.
 
         Args:
-            id_action (int | sqlalchemy.Integer):
+            id_action (int):
                     The required row id.
 
         Returns:
@@ -427,9 +419,7 @@ class Action:
     # -----------------------------------------------------------------------------
     # Get the database columns in a tuple.
     # -----------------------------------------------------------------------------
-    def get_columns_in_tuple(
-        self, is_duration_ns: bool = True, is_file_size_bytes: bool = True
-    ) -> Tuple[int | sqlalchemy.BigInteger | sqlalchemy.Integer | sqlalchemy.String | str, ...]:
+    def get_columns_in_tuple(self, is_duration_ns: bool = True, is_file_size_bytes: bool = True) -> Tuple[int | str, ...]:
         """Get the database columns in a tuple.
 
         Args:
@@ -439,7 +429,7 @@ class Action:
                     Including column file_size_bytes?. Defaults to True.
 
         Returns:
-            Tuple[Union[int, sqlalchemy.BigInteger, sqlalchemy.Integer, sqlalchemy.String, str], ...]:
+            Tuple[int | str, ...]:
                         Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -541,17 +531,15 @@ class Action:
         """Persist the object in the database."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        if self.action_id == 0:
+        full_name = utils.get_full_name(self.action_directory_name, self.action_file_name)
+        if os.path.exists(full_name):
             if self.action_file_size_bytes == 0:
-                self.action_file_size_bytes = os.path.getsize(
-                    utils.get_full_name(self.action_directory_name, self.action_file_name)
-                )
+                self.action_file_size_bytes = os.path.getsize(full_name)
 
             if self.action_no_pdf_pages == 0:
-                self.action_no_pdf_pages = utils.get_pdf_pages_no(
-                    utils.get_full_name(self.action_directory_name, self.action_file_name)
-                )
+                self.action_no_pdf_pages = utils.get_pdf_pages_no(full_name)
 
+        if self.action_id == 0:
             self.action_status = (
                 self.action_status if self.action_status != "" else db.cls_document.Document.DOCUMENT_STATUS_START
             )

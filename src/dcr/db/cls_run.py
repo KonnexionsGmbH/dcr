@@ -59,7 +59,7 @@ class Run:
     ACTION_CODE_TOKENIZE_LINE: ClassVar[str] = "tkn_line"
     ACTION_CODE_UPGRADE_DB: ClassVar[str] = "db_u"
 
-    id_run_umbrella: ClassVar[int] = 0
+    ID_RUN_UMBRELLA: ClassVar[int] = 0
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
@@ -67,52 +67,52 @@ class Run:
     def __init__(  # pylint: disable=R0913
         self,
         action_code: str,
-        _row_id: int | sqlalchemy.Integer = 0,
+        _row_id: int = 0,
         action_text: str = "",
-        id_run: int | sqlalchemy.Integer = id_run_umbrella,
-        status: str | sqlalchemy.String = "",
-        total_erroneous: int | sqlalchemy.Integer = 0,
-        total_processed_ok: int | sqlalchemy.Integer = 0,
-        total_processed_to_be: int | sqlalchemy.Integer = 0,
+        id_run: int = ID_RUN_UMBRELLA,
+        status: str = "",
+        total_erroneous: int = 0,
+        total_processed_ok: int = 0,
+        total_processed_to_be: int = 0,
     ) -> None:
         """Initialise the instance.
 
         Args:
             action_code (str):
                     Action code.
-            _row_id (int | sqlalchemy.Integer, optional):
+            _row_id (int, optional):
                     Row id. Defaults to 0.
             action_text (str, optional):
                     Action text (is derived from action_code if it is missing). Defaults to "".
-            id_run (int | sqlalchemy.Integer, optional):
+            id_run (int, optional):
                     Row id of the triggering run. Defaults to id_run_umbrella.
-            status (str | sqlalchemy.String, optional):
+            status (str, optional):
                     Status. Defaults to "".
-            total_erroneous (int | sqlalchemy.Integer, optional):
+            total_erroneous (int, optional):
                     Total number of erroneous documents. Defaults to 0.
-            total_processed_ok (int | sqlalchemy.Integer, optional):
+            total_processed_ok (int, optional):
                     Total number of correctly processed documents. Defaults to 0.
-            total_processed_to_be (int | sqlalchemy.Integer, optional):
+            total_processed_to_be (int, optional):
                     Total number of documents to be processed. Defaults to 0.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        if Run.id_run_umbrella == 0:
-            Run.id_run_umbrella = Run.get_id_latest() + 1
+        if Run.ID_RUN_UMBRELLA == 0:
+            Run.ID_RUN_UMBRELLA = Run.get_id_latest() + 1
 
         self.run_action_code: str = action_code
         self.run_action_text: str = action_text
-        self.run_id: int | sqlalchemy.Integer = _row_id
+        self.run_id: int = _row_id
 
-        self.run_id_run: int | sqlalchemy.Integer = id_run
+        self.run_id_run: int = id_run
 
         if self.run_id_run == 0:
-            self.run_id_run = Run.id_run_umbrella
+            self.run_id_run = Run.ID_RUN_UMBRELLA
 
-        self.run_status: str | sqlalchemy.String = status
-        self.run_total_erroneous: int | sqlalchemy.Integer = total_erroneous
-        self.run_total_processed_ok: int | sqlalchemy.Integer = total_processed_ok
-        self.run_total_processed_to_be: int | sqlalchemy.Integer = total_processed_to_be
+        self.run_status: str = status
+        self.run_total_erroneous: int = total_erroneous
+        self.run_total_processed_ok: int = total_processed_ok
+        self.run_total_processed_to_be: int = total_processed_to_be
 
         if self.run_id == 0:
             self.persist_2_db()
@@ -233,11 +233,11 @@ class Run:
     # Initialise from id.
     # -----------------------------------------------------------------------------
     @classmethod
-    def from_id(cls, id_run: int | sqlalchemy.Integer) -> Run:
+    def from_id(cls, id_run: int) -> Run:
         """Initialise from row id.
 
         Args:
-            id_run (int | sqlalchemy.Integer):
+            id_run (int):
                     The required row id.
 
         Returns:
