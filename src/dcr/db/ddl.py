@@ -195,12 +195,12 @@ def create_schema() -> None:
     db.dml.insert_dbt_row(
         cfg.glob.DBT_LANGUAGE,
         {
-            cfg.glob.DBC_CODE_ISO_639_3: "eng",
-            cfg.glob.DBC_CODE_PANDOC: "en",
-            cfg.glob.DBC_CODE_SPACY: "en_core_web_trf",
-            cfg.glob.DBC_CODE_TESSERACT: "eng",
+            cfg.glob.DBC_CODE_ISO_639_3: cfg.glob.DBC_CODE_ISO_639_3_DEFAULT,
+            cfg.glob.DBC_CODE_PANDOC: cfg.glob.DBC_CODE_PANDOC_DEFAULT,
+            cfg.glob.DBC_CODE_SPACY: cfg.glob.DBC_CODE_SPACY_DEFAULT,
+            cfg.glob.DBC_CODE_TESSERACT: cfg.glob.DBC_CODE_TESSERACT_DEFAULT,
             cfg.glob.DBC_DIRECTORY_NAME_INBOX: cfg.glob.setup.directory_inbox,
-            cfg.glob.DBC_ISO_LANGUAGE_NAME: "English",
+            cfg.glob.DBC_ISO_LANGUAGE_NAME: cfg.glob.DBC_ISO_LANGUAGE_NAME_DEFAULT,
         },
     )
 

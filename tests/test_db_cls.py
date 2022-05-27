@@ -3522,6 +3522,9 @@ def test_new_objects(fxtr_setup_empty_db_and_inbox):
 
     check_new_action()
 
+    cfg.glob.action_curr.get_columns_in_tuple(is_duration_ns=True, is_file_size_bytes=True)
+    cfg.glob.action_curr.get_columns_in_tuple(is_duration_ns=False, is_file_size_bytes=False)
+
     check_new_token()
 
     # -------------------------------------------------------------------------

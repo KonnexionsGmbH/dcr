@@ -5,15 +5,12 @@ import os
 from typing import ClassVar
 from typing import List
 from typing import Tuple
-from typing import Union
 
 import cfg.glob
 import db.cls_run
 import db.dml
 import sqlalchemy
 import utils
-from sqlalchemy import Integer
-from sqlalchemy import String
 
 
 # pylint: disable=R0801
@@ -367,7 +364,9 @@ class Document:
     # -----------------------------------------------------------------------------
     # Get the database columns in a tuple.
     # -----------------------------------------------------------------------------
-    def get_columns_in_tuple(self, is_file_size_bytes: bool = True) -> Tuple[Union[str, int, Integer, String], ...]:
+    def get_columns_in_tuple(
+        self, is_file_size_bytes: bool = True
+    ) -> Tuple[int | sqlalchemy.BigInteger | sqlalchemy.Integer | sqlalchemy.String | str, ...]:
         """Get the database columns in a tuple.
 
         Args:
@@ -375,13 +374,12 @@ class Document:
                     Including column file_size_bytes?. Defaults to True.
 
         Returns:
-                Tuple[Union[str, int, Integer, String], ...]:
-                    Column values in a tuple.
+            Tuple[Union[int, sqlalchemy.BigInteger, sqlalchemy.Integer, sqlalchemy.String, str], ...]:
+                        Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
-        column_01_08 = (
+        column_1 = (
             self.document_id,
             self.document_action_code_last,
             self.document_action_text_last,
@@ -392,17 +390,27 @@ class Document:
             self.document_file_name,
         )
 
-        column_file_size_bytes = (self.document_file_size_bytes,)
+        if is_file_size_bytes:
+            column_2 = (
+                self.document_file_size_bytes,
+                self.document_id_language,
+                self.document_id_run_last,
+                self.document_no_pdf_pages,
+                self.document_sha256,
+                self.document_status,
+            )
+        else:
+            column_2 = (  # type: ignore
+                self.document_id_language,
+                self.document_id_run_last,
+                self.document_no_pdf_pages,
+                self.document_sha256,
+                self.document_status,
+            )
 
-        column_10_14 = (
-            self.document_id_language,
-            self.document_id_run_last,
-            self.document_no_pdf_pages,
-            self.document_sha256,
-            self.document_status,
-        )
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
-        return column_01_08 + ((column_file_size_bytes + column_10_14) if is_file_size_bytes else column_10_14)
+        return column_1 + column_2
 
     # -----------------------------------------------------------------------------
     # Get the file name from the first processed document.

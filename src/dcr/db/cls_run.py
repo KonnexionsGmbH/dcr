@@ -6,6 +6,7 @@ from typing import Tuple
 from typing import Union
 
 import cfg.glob
+import db.cls_document
 import db.dml
 import sqlalchemy
 import sqlalchemy.engine

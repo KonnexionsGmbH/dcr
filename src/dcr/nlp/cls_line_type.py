@@ -1,6 +1,7 @@
 """Module nlp.cls_line_type: Determine footer and header lines."""
 from __future__ import annotations
 
+from typing import ClassVar
 from typing import Dict
 from typing import List
 from typing import Tuple
@@ -43,8 +44,8 @@ class LineType:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _JSON_NAME_LINE_INDEX_PAGE: str = "lineIndexPage"
-    _JSON_NAME_LINE_TEXT: str = "lineText"
+    _JSON_NAME_LINE_INDEX_PAGE: ClassVar[str] = "lineIndexPage"
+    _JSON_NAME_LINE_TEXT: ClassVar[str] = "lineText"
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
@@ -96,18 +97,6 @@ class LineType:
         utils.progress_msg_line_type(
             f"LineType: End   create instance                ={cfg.glob.action_curr.action_file_name}"
         )
-        # old ............
-
-        # [ ( (line_ind_curr, line_text_curr), (line_ind_prev, line_text_prev) ) ]
-        self._line_text_footer: List[Tuple[Tuple[int, str], Tuple[int, str]]] = []
-        self._line_text_header: List[Tuple[Tuple[int, str], Tuple[int, str]]] = []
-
-        # [ [ (line_ind, line_ind, distance) ] ]_page_no
-        self._line_1_lines_distance_footer: List[List[Tuple[int, int, int]]] = []
-        self._line_1_lines_distance_header: List[List[Tuple[int, int, int]]] = []
-
-        # [ (page_no, line_ind, line_type) ]
-        self._page_line_type: List[Tuple[int, int, str]] = []
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 

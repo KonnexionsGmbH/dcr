@@ -13,6 +13,7 @@ import db.driver
 import defusedxml.ElementTree
 import nlp.cls_line_type
 import nlp.cls_text_parser
+import nlp.cls_tokenize_spacy
 import pytest
 
 # -----------------------------------------------------------------------------
@@ -357,7 +358,7 @@ def test_cls_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test TextParser - .
+# Test TextParser.
 # -----------------------------------------------------------------------------
 def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test TextParser."""
@@ -397,6 +398,22 @@ def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         full_name_page=utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.page.json"),
         full_name_word=utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.word.json"),
     )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test TokenizeSpacy.
+# -----------------------------------------------------------------------------
+def test_cls_tokenize_spacy(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test TokenizeSpacy."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_tokenize_spacy.TokenizeSpacy()
+
+    instance.exists()
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
