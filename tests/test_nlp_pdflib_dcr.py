@@ -64,8 +64,7 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
     values_original = pytest.helpers.backup_config_params(
         cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.glob.setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
 

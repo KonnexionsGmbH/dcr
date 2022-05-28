@@ -134,7 +134,7 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     stem_name_2: str = "translating_sql_into_relational_algebra_p01_02_1_0"
     file_ext_2: str = "pdf"
 
-    pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
+    pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2, is_ocr=True)
 
     # -------------------------------------------------------------------------
     os.remove(

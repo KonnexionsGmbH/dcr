@@ -1132,6 +1132,16 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "false"),
+            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
+        ],
+    )
+
+    # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
             ("docx_ok", "docx"),
@@ -1200,6 +1210,11 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     cfg.glob.action_curr.persist_2_db()
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+
+    pytest.helpers.restore_config_params(
+        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_status_error <=========")

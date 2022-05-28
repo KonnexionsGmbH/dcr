@@ -852,7 +852,11 @@ def get_values_version():
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def help_run_action_all_complete_duplicate_file(
-    file_ext_1: str, file_ext_2: str, stem_name_1: str, stem_name_2: str
+    file_ext_1: str,
+    file_ext_2: str,
+    stem_name_1: str,
+    stem_name_2: str,
+    is_ocr: bool = False,
 ) -> None:
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -865,26 +869,31 @@ def help_run_action_all_complete_duplicate_file(
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    if is_ocr:
+        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+    else:
+        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
-    # -------------------------------------------------------------------------
-    verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
+        verify_content_of_directory(
+            cfg.glob.setup.directory_inbox,
+            [],
+            [],
+        )
 
-    verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [stem_name_1 + "_1." + file_ext_1, stem_name_2 + "." + file_ext_2],
-    )
+        verify_content_of_directory(
+            cfg.glob.setup.directory_inbox_accepted,
+            [],
+            [stem_name_1 + "_1." + file_ext_1, stem_name_2 + "." + file_ext_2],
+        )
 
-    verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
-    )
+        verify_content_of_directory(
+            cfg.glob.setup.directory_inbox_rejected,
+            [],
+            [],
+        )
 
 
 # -----------------------------------------------------------------------------
