@@ -7,6 +7,7 @@ from typing import ClassVar
 from typing import Tuple
 
 import cfg.glob
+import db.cls_db_core
 import db.cls_document
 import db.cls_run
 import db.dml
@@ -143,22 +144,22 @@ class Action:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return {
-            cfg.glob.DBC_ACTION_CODE: self.action_action_code,
-            cfg.glob.DBC_ACTION_TEXT: cfg.glob.run.get_action_text(self.action_action_code),
-            cfg.glob.DBC_DIRECTORY_NAME: self.action_directory_name,
-            cfg.glob.DBC_DIRECTORY_TYPE: self.action_directory_type,
-            cfg.glob.DBC_DURATION_NS: self.action_duration_ns,
-            cfg.glob.DBC_ERROR_CODE_LAST: self.action_error_code_last,
-            cfg.glob.DBC_ERROR_MSG_LAST: self.action_error_msg_last,
-            cfg.glob.DBC_ERROR_NO: self.action_error_no,
-            cfg.glob.DBC_FILE_NAME: self.action_file_name,
-            cfg.glob.DBC_FILE_SIZE_BYTES: self.action_file_size_bytes,
-            cfg.glob.DBC_ID_DOCUMENT: self.action_id_document,
-            cfg.glob.DBC_ID_PARENT: self.action_id_parent,
-            cfg.glob.DBC_ID_RUN_LAST: self.action_id_run_last,
-            cfg.glob.DBC_NO_CHILDREN: self.action_no_children,
-            cfg.glob.DBC_NO_PDF_PAGES: self.action_no_pdf_pages,
-            cfg.glob.DBC_STATUS: self.action_status,
+            db.cls_db_core.DBCore.DBC_ACTION_CODE: self.action_action_code,
+            db.cls_db_core.DBCore.DBC_ACTION_TEXT: cfg.glob.run.get_action_text(self.action_action_code),
+            db.cls_db_core.DBCore.DBC_DIRECTORY_NAME: self.action_directory_name,
+            db.cls_db_core.DBCore.DBC_DIRECTORY_TYPE: self.action_directory_type,
+            db.cls_db_core.DBCore.DBC_DURATION_NS: self.action_duration_ns,
+            db.cls_db_core.DBCore.DBC_ERROR_CODE_LAST: self.action_error_code_last,
+            db.cls_db_core.DBCore.DBC_ERROR_MSG_LAST: self.action_error_msg_last,
+            db.cls_db_core.DBCore.DBC_ERROR_NO: self.action_error_no,
+            db.cls_db_core.DBCore.DBC_FILE_NAME: self.action_file_name,
+            db.cls_db_core.DBCore.DBC_FILE_SIZE_BYTES: self.action_file_size_bytes,
+            db.cls_db_core.DBCore.DBC_ID_DOCUMENT: self.action_id_document,
+            db.cls_db_core.DBCore.DBC_ID_PARENT: self.action_id_parent,
+            db.cls_db_core.DBCore.DBC_ID_RUN_LAST: self.action_id_run_last,
+            db.cls_db_core.DBCore.DBC_NO_CHILDREN: self.action_no_children,
+            db.cls_db_core.DBCore.DBC_NO_PDF_PAGES: self.action_no_pdf_pages,
+            db.cls_db_core.DBCore.DBC_STATUS: self.action_status,
         }
 
     # -----------------------------------------------------------------------------
@@ -170,57 +171,63 @@ class Action:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         sqlalchemy.Table(
-            cfg.glob.DBT_ACTION,
+            db.cls_db_core.DBCore.DBT_ACTION,
             cfg.glob.db_orm_metadata,
             sqlalchemy.Column(
-                cfg.glob.DBC_ID,
+                db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
                 autoincrement=True,
                 nullable=False,
                 primary_key=True,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_CREATED_AT,
+                db.cls_db_core.DBCore.DBC_CREATED_AT,
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_MODIFIED_AT,
+                db.cls_db_core.DBCore.DBC_MODIFIED_AT,
                 sqlalchemy.DateTime,
             ),
-            sqlalchemy.Column(cfg.glob.DBC_ACTION_CODE, sqlalchemy.String, nullable=False),
-            sqlalchemy.Column(cfg.glob.DBC_ACTION_TEXT, sqlalchemy.String, nullable=False),
-            sqlalchemy.Column(cfg.glob.DBC_DIRECTORY_NAME, sqlalchemy.String, nullable=True),
-            sqlalchemy.Column(cfg.glob.DBC_DIRECTORY_TYPE, sqlalchemy.String, nullable=True),
-            sqlalchemy.Column(cfg.glob.DBC_DURATION_NS, sqlalchemy.BigInteger, nullable=True),
-            sqlalchemy.Column(cfg.glob.DBC_ERROR_CODE_LAST, sqlalchemy.String, nullable=True),
-            sqlalchemy.Column(cfg.glob.DBC_ERROR_MSG_LAST, sqlalchemy.String, nullable=True),
-            sqlalchemy.Column(cfg.glob.DBC_ERROR_NO, sqlalchemy.Integer, nullable=False),
-            sqlalchemy.Column(cfg.glob.DBC_FILE_NAME, sqlalchemy.String, nullable=True),
-            sqlalchemy.Column(cfg.glob.DBC_FILE_SIZE_BYTES, sqlalchemy.Integer, nullable=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ACTION_CODE, sqlalchemy.String, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ACTION_TEXT, sqlalchemy.String, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_DIRECTORY_NAME, sqlalchemy.String, nullable=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_DIRECTORY_TYPE, sqlalchemy.String, nullable=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_DURATION_NS, sqlalchemy.BigInteger, nullable=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ERROR_CODE_LAST, sqlalchemy.String, nullable=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ERROR_MSG_LAST, sqlalchemy.String, nullable=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ERROR_NO, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_FILE_NAME, sqlalchemy.String, nullable=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_FILE_SIZE_BYTES, sqlalchemy.Integer, nullable=True),
             sqlalchemy.Column(
-                cfg.glob.DBC_ID_DOCUMENT,
+                db.cls_db_core.DBCore.DBC_ID_DOCUMENT,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(cfg.glob.DBT_DOCUMENT + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
+                sqlalchemy.ForeignKey(
+                    db.cls_db_core.DBCore.DBT_DOCUMENT + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"
+                ),
                 nullable=True,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_ID_PARENT,
+                db.cls_db_core.DBCore.DBC_ID_PARENT,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(cfg.glob.DBT_ACTION + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
+                sqlalchemy.ForeignKey(
+                    db.cls_db_core.DBCore.DBT_ACTION + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"
+                ),
                 nullable=True,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_ID_RUN_LAST,
+                db.cls_db_core.DBCore.DBC_ID_RUN_LAST,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(cfg.glob.DBT_RUN + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
+                sqlalchemy.ForeignKey(
+                    db.cls_db_core.DBCore.DBT_RUN + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"
+                ),
                 nullable=False,
             ),
-            sqlalchemy.Column(cfg.glob.DBC_NO_CHILDREN, sqlalchemy.Integer, nullable=True),
-            sqlalchemy.Column(cfg.glob.DBC_NO_PDF_PAGES, sqlalchemy.Integer, nullable=True),
-            sqlalchemy.Column(cfg.glob.DBC_STATUS, sqlalchemy.String, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_CHILDREN, sqlalchemy.Integer, nullable=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_PDF_PAGES, sqlalchemy.Integer, nullable=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_STATUS, sqlalchemy.String, nullable=False),
         )
 
-        utils.progress_msg(f"The database table '{cfg.glob.DBT_ACTION}' has now been created")
+        utils.progress_msg(f"The database table '{db.cls_db_core.DBCore.DBT_ACTION}' has now been created")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -357,7 +364,7 @@ class Action:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
-            cfg.glob.DBT_ACTION,
+            db.cls_db_core.DBCore.DBT_ACTION,
             cfg.glob.db_orm_metadata,
             autoload_with=cfg.glob.db_orm_engine,
         )
@@ -397,23 +404,23 @@ class Action:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return cls(
-            _row_id=row[cfg.glob.DBC_ID],
-            action_code=row[cfg.glob.DBC_ACTION_CODE],
-            action_text=row[cfg.glob.DBC_ACTION_TEXT],
-            directory_name=row[cfg.glob.DBC_DIRECTORY_NAME],
-            directory_type=row[cfg.glob.DBC_DIRECTORY_TYPE],
-            duration_ns=row[cfg.glob.DBC_DURATION_NS],
-            error_code_last=row[cfg.glob.DBC_ERROR_CODE_LAST],
-            error_msg_last=row[cfg.glob.DBC_ERROR_MSG_LAST],
-            error_no=row[cfg.glob.DBC_ERROR_NO],
-            file_name=row[cfg.glob.DBC_FILE_NAME],
-            file_size_bytes=row[cfg.glob.DBC_FILE_SIZE_BYTES],
-            id_document=row[cfg.glob.DBC_ID_DOCUMENT],
-            id_parent=row[cfg.glob.DBC_ID_PARENT],
-            id_run_last=row[cfg.glob.DBC_ID_RUN_LAST],
-            no_children=row[cfg.glob.DBC_NO_CHILDREN],
-            no_pdf_pages=row[cfg.glob.DBC_NO_PDF_PAGES],
-            status=row[cfg.glob.DBC_STATUS],
+            _row_id=row[db.cls_db_core.DBCore.DBC_ID],
+            action_code=row[db.cls_db_core.DBCore.DBC_ACTION_CODE],
+            action_text=row[db.cls_db_core.DBCore.DBC_ACTION_TEXT],
+            directory_name=row[db.cls_db_core.DBCore.DBC_DIRECTORY_NAME],
+            directory_type=row[db.cls_db_core.DBCore.DBC_DIRECTORY_TYPE],
+            duration_ns=row[db.cls_db_core.DBCore.DBC_DURATION_NS],
+            error_code_last=row[db.cls_db_core.DBCore.DBC_ERROR_CODE_LAST],
+            error_msg_last=row[db.cls_db_core.DBCore.DBC_ERROR_MSG_LAST],
+            error_no=row[db.cls_db_core.DBCore.DBC_ERROR_NO],
+            file_name=row[db.cls_db_core.DBCore.DBC_FILE_NAME],
+            file_size_bytes=row[db.cls_db_core.DBCore.DBC_FILE_SIZE_BYTES],
+            id_document=row[db.cls_db_core.DBCore.DBC_ID_DOCUMENT],
+            id_parent=row[db.cls_db_core.DBCore.DBC_ID_PARENT],
+            id_run_last=row[db.cls_db_core.DBCore.DBC_ID_RUN_LAST],
+            no_children=row[db.cls_db_core.DBCore.DBC_NO_CHILDREN],
+            no_pdf_pages=row[db.cls_db_core.DBCore.DBC_NO_PDF_PAGES],
+            status=row[db.cls_db_core.DBCore.DBC_STATUS],
         )
 
     # -----------------------------------------------------------------------------
@@ -545,7 +552,7 @@ class Action:
             )
 
             self.action_id = db.dml.insert_dbt_row(
-                table_name=cfg.glob.DBT_ACTION,
+                table_name=db.cls_db_core.DBCore.DBT_ACTION,
                 columns=self._get_columns(),
             )
         else:
@@ -554,7 +561,7 @@ class Action:
                     self.action_id_parent = self.action_id
 
             db.dml.update_dbt_id(
-                table_name=cfg.glob.DBT_ACTION,
+                table_name=db.cls_db_core.DBCore.DBT_ACTION,
                 id_where=self.action_id,
                 columns=self._get_columns(),
             )
@@ -578,7 +585,9 @@ class Action:
             sqlalchemy.engine.CursorResult:
                     The rows found.
         """
-        dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
+        dbt = sqlalchemy.Table(
+            db.cls_db_core.DBCore.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine
+        )
 
         stmnt = (
             sqlalchemy.select(dbt)
@@ -621,7 +630,9 @@ class Action:
             sqlalchemy.engine.CursorResult:
                     The rows found.
         """
-        dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
+        dbt = sqlalchemy.Table(
+            db.cls_db_core.DBCore.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine
+        )
 
         stmnt = (
             sqlalchemy.select(dbt)
@@ -662,7 +673,9 @@ class Action:
             sqlalchemy.engine.CursorResult:
                     The rows found.
         """
-        dbt = sqlalchemy.Table(cfg.glob.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
+        dbt = sqlalchemy.Table(
+            db.cls_db_core.DBCore.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine
+        )
 
         sub_query = (
             sqlalchemy.select(dbt.c.id_document)

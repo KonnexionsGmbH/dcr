@@ -16,6 +16,7 @@ from typing import Tuple
 import cfg.cls_setup
 import cfg.glob
 import db.cls_action
+import db.cls_db_core
 import db.cls_document
 import db.cls_language
 import db.cls_run
@@ -59,13 +60,13 @@ def backup_config_params(
     """
     config_params_backup: List[Tuple[str, str]] = []
 
-    CONFIG_PARSER.read(cfg.glob.setup._DCR_CFG_FILE)
+    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
     for (config_param, config_value) in config_params:
         config_params_backup.append((config_param, CONFIG_PARSER[config_section][config_param]))
         CONFIG_PARSER[config_section][config_param] = config_value
 
-    with open(cfg.glob.setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
+    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
     return config_params_backup
@@ -484,13 +485,13 @@ def delete_config_param(config_section: str, config_param: str) -> List[Tuple[st
     Returns:
         List[Tuple[str,str]]: Original configuration parameter.
     """
-    CONFIG_PARSER.read(cfg.glob.setup._DCR_CFG_FILE)
+    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
     config_value_orig = CONFIG_PARSER[config_section][config_param]
 
     del CONFIG_PARSER[config_section][config_param]
 
-    with open(cfg.glob.setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
+    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
     return [(config_param, config_value_orig)]
@@ -506,13 +507,60 @@ def delete_version_version():
 
     with cfg.glob.db_orm_engine.begin() as conn:
         version = sqlalchemy.Table(
-            cfg.glob.DBT_VERSION,
+            db.cls_db_core.DBCore.DBT_VERSION,
             cfg.glob.db_orm_metadata,
             autoload_with=cfg.glob.db_orm_engine,
         )
         conn.execute(sqlalchemy.delete(version))
 
     db.driver.disconnect_db()
+
+
+# -----------------------------------------------------------------------------
+# Fixture - Before any test.
+# -----------------------------------------------------------------------------
+@pytest.fixture(scope="session", autouse=True)
+def fxtr_before_any_test():
+    """Fixture Factory: Before any test."""
+    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
+
+    for (config_param, config_value) in [
+        (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PORT, "5434"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PREFIX, "postgresql+psycopg2://"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_CONTAINER_PORT, "5432"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_DATABASE, "dcr_db_test"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_DATABASE_ADMIN, "dcr_db_test_admin"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT, "postgresql"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_HOST, "localhost"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_PASSWORD, "postgresql"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_PASSWORD_ADMIN, "postgresql"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_SCHEMA, "dcr_schema"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_USER, "dcr_user"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_USER_ADMIN, "dcr_user_admin"),
+        (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX, "data/inbox_test"),
+        (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED, "data/inbox_test_accepted"),
+        (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED, "data/inbox_test_rejected"),
+        (cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_INITIAL_DATABASE_DATA, "data/initial_database_data_test.json"),
+        (cfg.cls_setup.Setup._DCR_CFG_LINE_FOOTER_MAX_DISTANCE, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_DISTANCE, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, "jpeg"),
+        (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+        (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
+    ]:
+        CONFIG_PARSER[cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
+
+    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
+        CONFIG_PARSER.write(configfile)
 
 
 # -----------------------------------------------------------------------------
@@ -957,11 +1005,11 @@ def insert_config_param(
         config_param (str): Configuration parameter.
         config_value_new (str): New configuration parameter value.
     """
-    CONFIG_PARSER.read(cfg.glob.setup._DCR_CFG_FILE)
+    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
     CONFIG_PARSER[config_section][config_param] = config_value_new
 
-    with open(cfg.glob.setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
+    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
 
@@ -982,7 +1030,7 @@ def restore_config_params(
     for (config_param, config_value) in config_params:
         CONFIG_PARSER[config_section][config_param] = config_value
 
-    with open(cfg.glob.setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
+    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
     cfg.glob.setup = cfg.cls_setup.Setup()
@@ -1006,61 +1054,61 @@ def restore_setup_cfg():
 def set_complete_cfg_spacy(false_or_true: str):
     """Set all SpaCy configuration parameters to the same logical value."""
     return pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_SPACY,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_DOC, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_HEAD, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_I, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IDX, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_ASCII, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_BRACKET, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_CURRENCY, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_DIGIT, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_LEFT_PUNCT, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_LOWER, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_OOV, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_QUOTE, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_RIGHT_PUNCT, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_END, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_START, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_SPACE, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_UPPER, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEMMA_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEX, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEX_ID, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_EMAIL, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LOWER_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_MORPH, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_NORM_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_ORTH_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_POS_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_PREFIX_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_PROB, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_RANK, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SENT, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SENTIMENT, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SUFFIX_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TAG_, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TENSOR, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TEXT, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB, false_or_true),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DOC, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_HEAD, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_I, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IDX, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ASCII, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_BRACKET, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_CURRENCY, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_DIGIT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LEFT_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LOWER, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_OOV, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_QUOTE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_RIGHT_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_END, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_START, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SPACE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_UPPER, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEMMA_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEX, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEX_ID, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_EMAIL, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LOWER_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_MORPH, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_NORM_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ORTH_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_POS_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_PREFIX_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_PROB, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RANK, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SENT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SENTIMENT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SUFFIX_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TAG_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TENSOR, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_, false_or_true),
         ],
     )
 
@@ -1093,13 +1141,13 @@ def store_config_param(
     Returns:
         str: Original configuration parameter value.
     """
-    CONFIG_PARSER.read(cfg.glob.setup._DCR_CFG_FILE)
+    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
     config_value_orig = CONFIG_PARSER[config_section][config_param]
 
     CONFIG_PARSER[config_section][config_param] = config_value_new
 
-    with open(cfg.glob.setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
+    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
     return config_value_orig

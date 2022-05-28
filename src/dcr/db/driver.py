@@ -1,6 +1,7 @@
 """Module db.driver: Database Administration."""
 import cfg.cls_setup
 import cfg.glob
+import db.cls_db_core
 import db.cls_version
 import db.ddl
 import db.dml
@@ -13,12 +14,11 @@ import sqlalchemy.orm
 import sqlalchemy.pool
 import utils
 
-# pylint: disable=no-name-in-module
-
 
 # -----------------------------------------------------------------------------
 # Connect to the database.
 # -----------------------------------------------------------------------------
+# pylint: disable=no-name-in-module
 def connect_db() -> None:
     """Connect to the database."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -111,7 +111,7 @@ def create_database() -> None:
     """Create the database."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    if cfg.glob.setup.db_dialect == cfg.glob.DB_DIALECT_POSTGRESQL:
+    if cfg.glob.setup.db_dialect == db.cls_db_core.DBCore.DB_DIALECT_POSTGRESQL:
         create_database_postgresql()
     else:
         utils.terminate_fatal(f"A database dialect '{cfg.glob.setup.db_dialect}' " f"is not supported in DCR")
@@ -149,7 +149,7 @@ def create_database_postgresql() -> None:
 
     db.ddl.create_schema()
 
-    utils.progress_msg(f"The database has been successfully created, " f"version number='{cfg.glob.setup.dcr_version}")
+    utils.progress_msg(f"The database has been successfully created, " f"version number='{cfg.cls_setup.Setup.DCR_VERSION}")
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -185,7 +185,7 @@ def drop_database() -> None:
     """Drop the database."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    if cfg.glob.setup.db_dialect == cfg.glob.DB_DIALECT_POSTGRESQL:
+    if cfg.glob.setup.db_dialect == db.cls_db_core.DBCore.DB_DIALECT_POSTGRESQL:
         drop_database_postgresql()
     else:
         utils.terminate_fatal(f"A database dialect '{cfg.glob.setup.db_dialect}' " f"is not supported in DCR")
@@ -262,10 +262,10 @@ def upgrade_database() -> None:
 
     current_version: str = db.cls_version.Version.select_version_version_unique()
 
-    if current_version == cfg.glob.setup.dcr_version:
+    if current_version == cfg.cls_setup.Setup.DCR_VERSION:
         utils.progress_msg(f"The database is already up to date, version number='{current_version}'")
     else:
-        while db.cls_version.Version.select_version_version_unique() != cfg.glob.setup.dcr_version:
+        while db.cls_version.Version.select_version_version_unique() != cfg.cls_setup.Setup.DCR_VERSION:
             upgrade_database_version()
 
     disconnect_db()

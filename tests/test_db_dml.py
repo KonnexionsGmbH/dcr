@@ -4,7 +4,9 @@ import os
 import pathlib
 import shutil
 
+import cfg.cls_setup
 import cfg.glob
+import db.cls_db_core
 import db.dml
 import db.driver
 import pytest
@@ -34,9 +36,9 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1
 
     # -------------------------------------------------------------------------
-    current_version = cfg.glob.setup.dcr_version
+    current_version = cfg.cls_setup.Setup.DCR_VERSION
 
-    cfg.glob.setup.dcr_version = "0.0.0"
+    cfg.cls_setup.Setup.DCR_VERSION = "0.0.0"
 
     with pytest.raises(SystemExit) as expt:
         db.driver.connect_db()
@@ -45,13 +47,13 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     assert expt.type == SystemExit
     assert expt.value.code == 1
 
-    cfg.glob.setup.dcr_version = current_version
+    cfg.cls_setup.Setup.DCR_VERSION = current_version
 
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
     dbt = sqlalchemy.Table(
-        cfg.glob.DBT_VERSION,
+        db.cls_db_core.DBCore.DBT_VERSION,
         cfg.glob.db_orm_metadata,
         autoload_with=cfg.glob.db_orm_engine,
     )

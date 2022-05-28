@@ -24,7 +24,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO: int = 85
+    _CONFIG_PARAM_NO: int = 84
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -38,7 +38,6 @@ class Setup:
     _DCR_CFG_DB_SCHEMA: ClassVar[str] = "db_schema"
     _DCR_CFG_DB_USER: ClassVar[str] = "db_user"
     _DCR_CFG_DB_USER_ADMIN: ClassVar[str] = "db_user_admin"
-    _DCR_CFG_DCR_VERSION: ClassVar[str] = "dcr_version"
     _DCR_CFG_DELETE_AUXILIARY_FILES: ClassVar[str] = "delete_auxiliary_files"
     _DCR_CFG_DIRECTORY_INBOX: ClassVar[str] = "directory_inbox"
     _DCR_CFG_DIRECTORY_INBOX_ACCEPTED: ClassVar[str] = "directory_inbox_accepted"
@@ -120,6 +119,8 @@ class Setup:
 
     _DCR_ENVIRONMENT_TYPE: ClassVar[str] = "DCR_ENVIRONMENT_TYPE"
 
+    DCR_VERSION: ClassVar[str] = "0.9.2"
+
     ENVIRONMENT_TYPE_DEV: ClassVar[str] = "dev"
     ENVIRONMENT_TYPE_PROD: ClassVar[str] = "prod"
     ENVIRONMENT_TYPE_TEST: ClassVar[str] = "test"
@@ -150,7 +151,6 @@ class Setup:
         self.db_schema: str = "dcr_schema"
         self.db_user: str = "postgresql"
         self.db_user_admin: str = "postgresql"
-        self.dcr_version: str = "0.9.2"
         self.directory_inbox: str = utils.get_os_independent_name("data/inbox")
         self.directory_inbox_accepted: str = utils.get_os_independent_name("data/inbox_accepted")
         self.directory_inbox_rejected: str = utils.get_os_independent_name("data/inbox_rejected")
@@ -1003,8 +1003,6 @@ class Setup:
                     self.db_user = str(item)
                 case Setup._DCR_CFG_DB_USER_ADMIN:
                     self.db_user_admin = str(item)
-                case Setup._DCR_CFG_DCR_VERSION:
-                    self.dcr_version = str(item)
                 case (
                     Setup._DCR_CFG_DELETE_AUXILIARY_FILES
                     | Setup._DCR_CFG_DIRECTORY_INBOX

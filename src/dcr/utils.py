@@ -7,6 +7,7 @@ import sys
 import traceback
 
 import cfg.glob
+import db.cls_document
 import db.cls_run
 import db.dml
 import db.driver

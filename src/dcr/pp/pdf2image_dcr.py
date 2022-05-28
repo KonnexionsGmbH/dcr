@@ -3,8 +3,10 @@ files."""
 import os
 import time
 
+import cfg.cls_setup
 import cfg.glob
 import db.cls_action
+import db.cls_document
 import db.cls_run
 import db.dml
 import pdf2image
@@ -30,11 +32,6 @@ def convert_pdf_2_image() -> None:
     TBD
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    if cfg.glob.setup.pdf2image_type == cfg.glob.setup.PDF2IMAGE_TYPE_PNG:
-        db.cls_action.pdf2image_file_type = db.cls_document.Document.DOCUMENT_FILE_TYPE_PNG
-    else:
-        db.cls_action.pdf2image_file_type = db.cls_document.Document.DOCUMENT_FILE_TYPE_JPEG
 
     with cfg.glob.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDF2IMAGE)
@@ -75,8 +72,6 @@ def convert_pdf_2_image_file() -> None:
         cfg.glob.action_curr.action_file_name,
     )
 
-    images = []
-
     try:
         images = pdf2image.convert_from_path(full_name_curr)
 
@@ -90,7 +85,15 @@ def convert_pdf_2_image_file() -> None:
 
             stem_name_next = cfg.glob.action_curr.get_stem_name() + "_" + str(cfg.glob.action_curr.action_no_children)
 
-            file_name_next = stem_name_next + "." + db.cls_action.pdf2image_file_type
+            file_name_next = (
+                stem_name_next
+                + "."
+                + (
+                    db.cls_document.Document.DOCUMENT_FILE_TYPE_PNG
+                    if cfg.glob.setup.pdf2image_type == cfg.cls_setup.Setup.PDF2IMAGE_TYPE_PNG
+                    else db.cls_document.Document.DOCUMENT_FILE_TYPE_JPEG
+                )
+            )
 
             full_name_next = utils.get_full_name(
                 cfg.glob.action_curr.action_directory_name,

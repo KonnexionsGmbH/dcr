@@ -1,9 +1,12 @@
 """Module db.ddl: Database Definition Management."""
 import os
+import pathlib
 from typing import List
 
+import cfg.cls_setup
 import cfg.glob
 import db.cls_action
+import db.cls_db_core
 import db.cls_document
 import db.cls_language
 import db.cls_run
@@ -132,7 +135,7 @@ def create_db_triggers(table_names: List[str]) -> None:
 
     utils.progress_msg("Create the database triggers ...")
 
-    for column_name in [cfg.glob.DBC_CREATED_AT, cfg.glob.DBC_MODIFIED_AT]:
+    for column_name in [db.cls_db_core.DBCore.DBC_CREATED_AT, db.cls_db_core.DBCore.DBC_MODIFIED_AT]:
         create_db_trigger_function(column_name)
 
     for table_name in table_names:
@@ -181,40 +184,40 @@ def create_schema() -> None:
     # Create the database triggers.
     create_db_triggers(
         [
-            cfg.glob.DBT_ACTION,
-            cfg.glob.DBT_DOCUMENT,
-            cfg.glob.DBT_LANGUAGE,
-            cfg.glob.DBT_RUN,
-            cfg.glob.DBT_TOKEN,
-            cfg.glob.DBT_VERSION,
+            db.cls_db_core.DBCore.DBT_ACTION,
+            db.cls_db_core.DBCore.DBT_DOCUMENT,
+            db.cls_db_core.DBCore.DBT_LANGUAGE,
+            db.cls_db_core.DBCore.DBT_RUN,
+            db.cls_db_core.DBCore.DBT_TOKEN,
+            db.cls_db_core.DBCore.DBT_VERSION,
         ],
     )
 
     cfg.glob.db_orm_metadata.create_all(cfg.glob.db_orm_engine)
 
     db.dml.insert_dbt_row(
-        cfg.glob.DBT_LANGUAGE,
+        db.cls_db_core.DBCore.DBT_LANGUAGE,
         {
-            cfg.glob.DBC_CODE_ISO_639_3: cfg.glob.DBC_CODE_ISO_639_3_DEFAULT,
-            cfg.glob.DBC_CODE_PANDOC: cfg.glob.DBC_CODE_PANDOC_DEFAULT,
-            cfg.glob.DBC_CODE_SPACY: cfg.glob.DBC_CODE_SPACY_DEFAULT,
-            cfg.glob.DBC_CODE_TESSERACT: cfg.glob.DBC_CODE_TESSERACT_DEFAULT,
-            cfg.glob.DBC_DIRECTORY_NAME_INBOX: cfg.glob.setup.directory_inbox,
-            cfg.glob.DBC_ISO_LANGUAGE_NAME: cfg.glob.DBC_ISO_LANGUAGE_NAME_DEFAULT,
+            db.cls_db_core.DBCore.DBC_CODE_ISO_639_3: db.cls_db_core.DBCore.DBC_CODE_ISO_639_3_DEFAULT,
+            db.cls_db_core.DBCore.DBC_CODE_PANDOC: db.cls_db_core.DBCore.DBC_CODE_PANDOC_DEFAULT,
+            db.cls_db_core.DBCore.DBC_CODE_SPACY: db.cls_db_core.DBCore.DBC_CODE_SPACY_DEFAULT,
+            db.cls_db_core.DBCore.DBC_CODE_TESSERACT: db.cls_db_core.DBCore.DBC_CODE_TESSERACT_DEFAULT,
+            db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX: cfg.glob.setup.directory_inbox,
+            db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME: db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME_DEFAULT,
         },
     )
 
     db.dml.insert_dbt_row(
-        cfg.glob.DBT_VERSION,
+        db.cls_db_core.DBCore.DBT_VERSION,
         {
-            cfg.glob.DBC_VERSION: cfg.glob.setup.dcr_version,
+            db.cls_db_core.DBCore.DBC_VERSION: cfg.cls_setup.Setup.DCR_VERSION,
         },
     )
 
     if cfg.glob.setup.initial_database_data:
         initial_database_data_path = utils.get_os_independent_name(cfg.glob.setup.initial_database_data)
         if os.path.isfile(initial_database_data_path):
-            db.dml.load_db_data_from_json(initial_database_data_path)
+            db.dml.load_db_data_from_json(pathlib.Path(initial_database_data_path))
         else:
             utils.terminate_fatal(
                 f"File with initial database data is missing - " f"file name '{cfg.glob.setup.initial_database_data}'"

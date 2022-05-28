@@ -6,6 +6,7 @@ from typing import Dict
 from typing import Tuple
 from typing import TypeAlias
 
+import cfg.cls_setup
 import cfg.glob
 import db.dml
 import sqlalchemy
@@ -93,8 +94,8 @@ def load_db_data_from_json(initial_database_data: pathlib.Path) -> None:
         json_data = json.load(file_handle)
 
         api_version = json_data[JSON_NAME_API_VERSION]
-        if api_version != cfg.glob.setup.dcr_version:
-            utils.terminate_fatal(f"Expected api version is' {cfg.glob.setup.dcr_version}' " f"- got '{api_version}'")
+        if api_version != cfg.cls_setup.Setup.DCR_VERSION:
+            utils.terminate_fatal(f"Expected api version is' {cfg.cls_setup.Setup.DCR_VERSION}' " f"- got '{api_version}'")
 
         data = json_data[JSON_NAME_DATA]
         for json_table in data[JSON_NAME_TABLES]:

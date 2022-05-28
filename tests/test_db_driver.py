@@ -2,6 +2,7 @@
 """Testing Module db.driver."""
 import cfg.cls_setup
 import cfg.glob
+import db.cls_db_core
 import db.cls_run
 import db.dml
 import db.driver
@@ -25,12 +26,12 @@ def test_connect_db(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    config_section = cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST
+    config_section = cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST
 
     values_original = pytest.helpers.backup_config_params(
         config_section,
         [
-            (cfg.glob.setup._DCR_CFG_DB_CONNECTION_PORT, "9999"),
+            (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PORT, "9999"),
         ],
     )
 
@@ -59,12 +60,12 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    config_section = cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST
+    config_section = cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST
 
     values_original = pytest.helpers.backup_config_params(
         config_section,
         [
-            (cfg.glob.setup._DCR_CFG_DB_CONNECTION_PORT, "9999"),
+            (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PORT, "9999"),
         ],
     )
 
@@ -97,21 +98,21 @@ def test_create_database(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.delete_config_param(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST, cfg.glob.setup._DCR_CFG_DB_DIALECT
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DB_DIALECT, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
@@ -122,15 +123,15 @@ def test_create_database(fxtr_setup_logger_environment):
     assert expt.value.code == 1, "DCR_CFG_DB_DIALECT: unknown DB dialect"
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_INITIAL_DATABASE_DATA, "unknown_file"),
+            (cfg.cls_setup.Setup._DCR_CFG_INITIAL_DATABASE_DATA, "unknown_file"),
         ],
     )
 
@@ -141,7 +142,7 @@ def test_create_database(fxtr_setup_logger_environment):
     assert expt.value.code == 1, "DCR_CFG_INITIAL_DATABASE_DATA: unknown file"
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -162,22 +163,22 @@ def test_drop_database(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.delete_config_param(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST, cfg.glob.setup._DCR_CFG_DB_DIALECT
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
     db.driver.drop_database()
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DB_DIALECT, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
@@ -190,7 +191,7 @@ def test_drop_database(fxtr_setup_logger_environment):
     assert expt.value.code == 1, "DCR_CFG_DB_DIALECT: unknown DB dialect"
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -252,7 +253,7 @@ def update_version_version(
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     dbt = sqlalchemy.Table(
-        cfg.glob.DBT_VERSION,
+        db.cls_db_core.DBCore.DBT_VERSION,
         cfg.glob.db_orm_metadata,
         autoload_with=cfg.glob.db_orm_engine,
     )
@@ -261,7 +262,7 @@ def update_version_version(
         conn.execute(
             sqlalchemy.update(dbt).values(
                 {
-                    cfg.glob.DBC_VERSION: version,
+                    db.cls_db_core.DBCore.DBC_VERSION: version,
                 }
             )
         )

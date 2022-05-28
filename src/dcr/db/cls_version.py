@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import cfg.glob
+import db.cls_db_core
 import db.dml
 import db.driver
 import sqlalchemy
@@ -60,7 +61,7 @@ class Version:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return {
-            cfg.glob.DBC_VERSION: self.version_version,
+            db.cls_db_core.DBCore.DBC_VERSION: self.version_version,
         }
 
     # -----------------------------------------------------------------------------
@@ -72,27 +73,27 @@ class Version:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         sqlalchemy.Table(
-            cfg.glob.DBT_VERSION,
+            db.cls_db_core.DBCore.DBT_VERSION,
             cfg.glob.db_orm_metadata,
             sqlalchemy.Column(
-                cfg.glob.DBC_ID,
+                db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
                 autoincrement=True,
                 nullable=False,
                 primary_key=True,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_CREATED_AT,
+                db.cls_db_core.DBCore.DBC_CREATED_AT,
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_MODIFIED_AT,
+                db.cls_db_core.DBCore.DBC_MODIFIED_AT,
                 sqlalchemy.DateTime,
             ),
-            sqlalchemy.Column(cfg.glob.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True),
         )
 
-        utils.progress_msg(f"The database table '{cfg.glob.DBT_VERSION}' has now been created")
+        utils.progress_msg(f"The database table '{db.cls_db_core.DBCore.DBT_VERSION}' has now been created")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -138,7 +139,7 @@ class Version:
         db.driver.connect_db()
 
         dbt = sqlalchemy.Table(
-            cfg.glob.DBT_VERSION,
+            db.cls_db_core.DBCore.DBT_VERSION,
             cfg.glob.db_orm_metadata,
             autoload_with=cfg.glob.db_orm_engine,
         )
@@ -179,8 +180,8 @@ class Version:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return cls(
-            _row_id=row[cfg.glob.DBC_ID],
-            version=row[cfg.glob.DBC_VERSION],
+            _row_id=row[db.cls_db_core.DBCore.DBC_ID],
+            version=row[db.cls_db_core.DBCore.DBC_VERSION],
         )
 
     # -----------------------------------------------------------------------------
@@ -210,12 +211,12 @@ class Version:
 
         if self.version_id == 0:
             self.version_id = db.dml.insert_dbt_row(
-                cfg.glob.DBT_VERSION,
+                db.cls_db_core.DBCore.DBT_VERSION,
                 self._get_columns(),
             )
         else:
             db.dml.update_dbt_id(
-                table_name=cfg.glob.DBT_VERSION,
+                table_name=db.cls_db_core.DBCore.DBT_VERSION,
                 id_where=self.version_id,
                 columns=self._get_columns(),
             )
@@ -235,7 +236,7 @@ class Version:
             str: The version number found.
         """
         dbt = sqlalchemy.Table(
-            cfg.glob.DBT_VERSION,
+            db.cls_db_core.DBCore.DBT_VERSION,
             cfg.glob.db_orm_metadata,
             autoload_with=cfg.glob.db_orm_engine,
         )

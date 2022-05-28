@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import cfg.glob
+import db.cls_db_core
 import db.dml
 import sqlalchemy
 import sqlalchemy.engine
@@ -66,9 +67,9 @@ class Token:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return {
-            cfg.glob.DBC_ID_DOCUMENT: self.token_id_document,
-            cfg.glob.DBC_PAGE_DATA: self.token_page_data,
-            cfg.glob.DBC_PAGE_NO: self.token_page_no,
+            db.cls_db_core.DBCore.DBC_ID_DOCUMENT: self.token_id_document,
+            db.cls_db_core.DBCore.DBC_PAGE_DATA: self.token_page_data,
+            db.cls_db_core.DBCore.DBC_PAGE_NO: self.token_page_no,
         }
 
     # -----------------------------------------------------------------------------
@@ -80,42 +81,44 @@ class Token:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         sqlalchemy.Table(
-            cfg.glob.DBT_TOKEN,
+            db.cls_db_core.DBCore.DBT_TOKEN,
             cfg.glob.db_orm_metadata,
             sqlalchemy.Column(
-                cfg.glob.DBC_ID,
+                db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
                 autoincrement=True,
                 nullable=False,
                 primary_key=True,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_CREATED_AT,
+                db.cls_db_core.DBCore.DBC_CREATED_AT,
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_MODIFIED_AT,
+                db.cls_db_core.DBCore.DBC_MODIFIED_AT,
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_ID_DOCUMENT,
+                db.cls_db_core.DBCore.DBC_ID_DOCUMENT,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(cfg.glob.DBT_DOCUMENT + "." + cfg.glob.DBC_ID, ondelete="CASCADE"),
+                sqlalchemy.ForeignKey(
+                    db.cls_db_core.DBCore.DBT_DOCUMENT + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"
+                ),
                 nullable=False,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_PAGE_DATA,
+                db.cls_db_core.DBCore.DBC_PAGE_DATA,
                 sqlalchemy.JSON,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_PAGE_NO,
+                db.cls_db_core.DBCore.DBC_PAGE_NO,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
         )
 
-        utils.progress_msg(f"The database table '{cfg.glob.DBT_TOKEN}' has now been created")
+        utils.progress_msg(f"The database table '{db.cls_db_core.DBCore.DBT_TOKEN}' has now been created")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -158,7 +161,7 @@ class Token:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
-            cfg.glob.DBT_TOKEN,
+            db.cls_db_core.DBCore.DBT_TOKEN,
             cfg.glob.db_orm_metadata,
             autoload_with=cfg.glob.db_orm_engine,
         )
@@ -198,10 +201,10 @@ class Token:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return cls(
-            _row_id=row[cfg.glob.DBC_ID],
-            id_document=row[cfg.glob.DBC_ID_DOCUMENT],
-            page_data=row[cfg.glob.DBC_PAGE_DATA],
-            page_no=row[cfg.glob.DBC_PAGE_NO],
+            _row_id=row[db.cls_db_core.DBCore.DBC_ID],
+            id_document=row[db.cls_db_core.DBCore.DBC_ID_DOCUMENT],
+            page_data=row[db.cls_db_core.DBCore.DBC_PAGE_DATA],
+            page_no=row[db.cls_db_core.DBCore.DBC_PAGE_NO],
         )
 
     # -----------------------------------------------------------------------------
@@ -235,12 +238,12 @@ class Token:
 
         if self.token_id == 0:
             self.token_id = db.dml.insert_dbt_row(
-                cfg.glob.DBT_TOKEN,
+                db.cls_db_core.DBCore.DBT_TOKEN,
                 self._get_columns(),
             )
         else:
             db.dml.update_dbt_id(
-                table_name=cfg.glob.DBT_TOKEN,
+                table_name=db.cls_db_core.DBCore.DBT_TOKEN,
                 id_where=self.token_id,
                 columns=self._get_columns(),
             )

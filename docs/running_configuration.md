@@ -131,7 +131,6 @@ The customisable entries are:
     db_schema = dcr_schema
     db_user = dcr_user
     db_user_admin = dcr_user_admin
-    dcr_version = 0.9.2
     delete_auxiliary_files = true
     directory_inbox = data/inbox
     directory_inbox_accepted = data/inbox_accepted
@@ -165,7 +164,6 @@ The customisable entries are:
 | db_schema                | **`dcr_schema`**                      | Database schema name.                                                                              |
 | db_user                  | **`postgresql`**                      | **DCR** database user name.                                                                        |
 | db_user_admin            | **`postgresql`**                      | Administrative database user name.                                                                 |
-| dcr_version              | **`0.9.2`**                           | Current version number of the **DCR** application.                                                 |
 | delete_auxiliary_files   | **`true`**                            | Delete the auxiliary files after a successful <br>processing step.                                 |
 | directory_inbox          | **`data/inbox`**                      | Directory for the new documents received.                                                          |
 | directory_inbox_accepted | **`data/inbox_accepted`**             | Directory for the accepted documents.                                                              |

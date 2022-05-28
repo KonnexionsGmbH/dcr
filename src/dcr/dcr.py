@@ -11,6 +11,7 @@ from typing import List
 
 import cfg.cls_setup
 import cfg.glob
+import db.cls_db_core
 import db.cls_language
 import db.cls_run
 import db.cls_version
@@ -49,16 +50,17 @@ def check_db_up_to_date() -> None:
             "The database does not yet exist.",
         )
 
-    if not sqlalchemy.inspect(cfg.glob.db_orm_engine).has_table(cfg.glob.DBT_VERSION):
+    if not sqlalchemy.inspect(cfg.glob.db_orm_engine).has_table(db.cls_db_core.DBCore.DBT_VERSION):
         utils.terminate_fatal(
             "The database table 'version' does not yet exist.",
         )
 
     current_version = db.cls_version.Version.select_version_version_unique()
 
-    if cfg.glob.setup.dcr_version != current_version:
+    if cfg.cls_setup.Setup.DCR_VERSION != current_version:
         utils.terminate_fatal(
-            f"Current database version is '{current_version}' - but expected version is '" f"{cfg.glob.setup.dcr_version}''"
+            f"Current database version is '{current_version}' - but expected version is '"
+            f"{cfg.cls_setup.Setup.DCR_VERSION}''"
         )
 
     utils.progress_msg(f"The current version of database is '{current_version}'")

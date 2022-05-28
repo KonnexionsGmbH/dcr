@@ -15,15 +15,15 @@ import nlp.cls_line_type
 import nlp.cls_text_parser
 import nlp.cls_tokenize_spacy
 import pytest
+import utils
+
+import dcr
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
 # pylint: disable=W0212
 # @pytest.mark.issue
-import utils
-
-import dcr
 
 XML_DATA: str = """<?xml version="1.0" encoding="UTF-8"?>
 <!-- Created by the PDFlib Text and Image Extraction Toolkit TET (www.pdflib.com) -->
@@ -213,15 +213,15 @@ def test_cls_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.glob.setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "3"),
-            (cfg.glob.setup._DCR_CFG_LINE_HEADER_MAX_LINES, "3"),
-            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_WORD, "false"),
-            (cfg.glob.setup._DCR_CFG_VERBOSE_LINE_TYPE, "false"),
-            (cfg.glob.setup._DCR_CFG_VERBOSE_PARSER, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "false"),
         ],
     )
 
@@ -232,7 +232,7 @@ def test_cls_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -374,10 +374,10 @@ def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "true"),
-            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
 
@@ -388,7 +388,7 @@ def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 

@@ -1,6 +1,7 @@
 # pylint: disable=unused-argument
 """Testing Module all."""
 
+import cfg.cls_setup
 import cfg.glob
 import db.cls_action
 import db.cls_document
@@ -90,7 +91,7 @@ def check_db_content() -> None:  # pylint: disable=R0915
     # -----------------------------------------------------------------------------
     # Database table version.
     # -----------------------------------------------------------------------------
-    pytest.helpers.check_dbt_version((1, (1, cfg.glob.setup.dcr_version)))
+    pytest.helpers.check_dbt_version((1, (1, cfg.cls_setup.Setup.DCR_VERSION)))
 
 
 # -----------------------------------------------------------------------------
@@ -970,7 +971,7 @@ def check_db_content_run() -> None:  # pylint: disable=R0915
 # -----------------------------------------------------------------------------
 def check_db_content_version() -> None:  # pylint: disable=R0915
     """Check the database content - database table version."""
-    pytest.helpers.check_dbt_version((1, (1, cfg.glob.setup.dcr_version)))
+    pytest.helpers.check_dbt_version((1, (1, cfg.cls_setup.Setup.DCR_VERSION)))
 
 
 # -----------------------------------------------------------------------------
@@ -1072,16 +1073,16 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -1133,11 +1134,11 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
         ],
     )
 
@@ -1212,7 +1213,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION_ENV_TEST,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 

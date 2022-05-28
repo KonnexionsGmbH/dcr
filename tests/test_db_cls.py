@@ -5,6 +5,7 @@ import time
 import cfg.cls_setup
 import cfg.glob
 import db.cls_action
+import db.cls_db_core
 import db.cls_document
 import db.cls_language
 import db.cls_run
@@ -2775,7 +2776,7 @@ def check_existing_token():
 # -----------------------------------------------------------------------------
 def check_existing_version():
     """Check existing version object."""
-    expected_values = [1, cfg.glob.setup.dcr_version]
+    expected_values = [1, cfg.cls_setup.Setup.DCR_VERSION]
 
     cfg.glob.version = db.cls_version.Version.from_id(expected_values[0])
 
@@ -2911,7 +2912,7 @@ def check_missing_version():
     db.driver.connect_db()
 
     db.dml.delete_dbt_id(
-        table_name=cfg.glob.DBT_VERSION,
+        table_name=db.cls_db_core.DBCore.DBT_VERSION,
         id_where=1,
     )
 
@@ -3541,7 +3542,7 @@ def test_select_version_version_unique_driver(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
-    db.dml.insert_dbt_row(cfg.glob.DBT_VERSION, {cfg.glob.DBC_VERSION: "0.0.0"})
+    db.dml.insert_dbt_row(db.cls_db_core.DBCore.DBT_VERSION, {db.cls_db_core.DBCore.DBC_VERSION: "0.0.0"})
 
     db.driver.disconnect_db()
 
@@ -3586,7 +3587,7 @@ def test_select_version_version_unique_orm(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     db.driver.connect_db()
 
-    db.dml.insert_dbt_row(cfg.glob.DBT_VERSION, {cfg.glob.DBC_VERSION: "0.0.0"})
+    db.dml.insert_dbt_row(db.cls_db_core.DBCore.DBT_VERSION, {db.cls_db_core.DBCore.DBC_VERSION: "0.0.0"})
 
     with pytest.raises(SystemExit) as expt:
         db.cls_version.Version.select_version_version_unique()

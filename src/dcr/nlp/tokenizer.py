@@ -6,6 +6,7 @@ import time
 
 import cfg.glob
 import db.cls_action
+import db.cls_db_core
 import db.cls_document
 import db.cls_language
 import db.cls_run
@@ -154,11 +155,11 @@ def tokenize_file(model_data: spacy.Language) -> None:
 
             if cfg.glob.setup.is_tokenize_2_database:
                 db.dml.insert_dbt_row(
-                    cfg.glob.DBT_TOKEN,
+                    db.cls_db_core.DBCore.DBT_TOKEN,
                     {
-                        cfg.glob.DBC_ID_DOCUMENT: cfg.glob.document.document_id,
-                        cfg.glob.DBC_PAGE_DATA: cfg.glob.tokenize_spacy.token_2_page,
-                        cfg.glob.DBC_PAGE_NO: page_no,
+                        db.cls_db_core.DBCore.DBC_ID_DOCUMENT: cfg.glob.document.document_id,
+                        db.cls_db_core.DBCore.DBC_PAGE_DATA: cfg.glob.tokenize_spacy.token_2_page,
+                        db.cls_db_core.DBCore.DBC_PAGE_NO: page_no,
                     },
                 )
 

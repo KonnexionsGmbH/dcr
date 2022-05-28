@@ -1,4 +1,4 @@
-mname: Ubuntu - All - Development
+name: Ubuntu - All - Development
 
 on:
   push:

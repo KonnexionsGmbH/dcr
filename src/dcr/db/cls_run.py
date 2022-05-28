@@ -6,6 +6,7 @@ from typing import Tuple
 from typing import Union
 
 import cfg.glob
+import db.cls_db_core
 import db.cls_document
 import db.dml
 import sqlalchemy
@@ -145,13 +146,13 @@ class Run:
         self.run_action_text = Run.get_action_text(self.run_action_code)
 
         return {
-            cfg.glob.DBC_ACTION_CODE: self.run_action_code,
-            cfg.glob.DBC_ACTION_TEXT: self.run_action_text,
-            cfg.glob.DBC_ID_RUN: self.run_id_run,
-            cfg.glob.DBC_STATUS: self.run_status,
-            cfg.glob.DBC_TOTAL_ERRONEOUS: self.run_total_erroneous,
-            cfg.glob.DBC_TOTAL_PROCESSED_OK: self.run_total_processed_ok,
-            cfg.glob.DBC_TOTAL_PROCESSED_TO_BE: self.run_total_processed_to_be,
+            db.cls_db_core.DBCore.DBC_ACTION_CODE: self.run_action_code,
+            db.cls_db_core.DBCore.DBC_ACTION_TEXT: self.run_action_text,
+            db.cls_db_core.DBCore.DBC_ID_RUN: self.run_id_run,
+            db.cls_db_core.DBCore.DBC_STATUS: self.run_status,
+            db.cls_db_core.DBCore.DBC_TOTAL_ERRONEOUS: self.run_total_erroneous,
+            db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_OK: self.run_total_processed_ok,
+            db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_TO_BE: self.run_total_processed_to_be,
         }
 
     # -----------------------------------------------------------------------------
@@ -163,45 +164,45 @@ class Run:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         sqlalchemy.Table(
-            cfg.glob.DBT_RUN,
+            db.cls_db_core.DBCore.DBT_RUN,
             cfg.glob.db_orm_metadata,
             sqlalchemy.Column(
-                cfg.glob.DBC_ID,
+                db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
                 autoincrement=True,
                 nullable=False,
                 primary_key=True,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_CREATED_AT,
+                db.cls_db_core.DBCore.DBC_CREATED_AT,
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_MODIFIED_AT,
+                db.cls_db_core.DBCore.DBC_MODIFIED_AT,
                 sqlalchemy.DateTime,
             ),
-            sqlalchemy.Column(cfg.glob.DBC_ACTION_CODE, sqlalchemy.String, nullable=False),
-            sqlalchemy.Column(cfg.glob.DBC_ACTION_TEXT, sqlalchemy.String, nullable=False),
-            sqlalchemy.Column(cfg.glob.DBC_ID_RUN, sqlalchemy.Integer, nullable=False),
-            sqlalchemy.Column(cfg.glob.DBC_STATUS, sqlalchemy.String, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ACTION_CODE, sqlalchemy.String, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ACTION_TEXT, sqlalchemy.String, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ID_RUN, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_STATUS, sqlalchemy.String, nullable=False),
             sqlalchemy.Column(
-                cfg.glob.DBC_TOTAL_ERRONEOUS,
+                db.cls_db_core.DBCore.DBC_TOTAL_ERRONEOUS,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_TOTAL_PROCESSED_OK,
+                db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_OK,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_TOTAL_PROCESSED_TO_BE,
+                db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_TO_BE,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
         )
 
-        utils.progress_msg(f"The database table '{cfg.glob.DBT_RUN}' has now been created")
+        utils.progress_msg(f"The database table '{db.cls_db_core.DBCore.DBT_RUN}' has now been created")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -246,7 +247,7 @@ class Run:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
-            cfg.glob.DBT_RUN,
+            db.cls_db_core.DBCore.DBT_RUN,
             cfg.glob.db_orm_metadata,
             autoload_with=cfg.glob.db_orm_engine,
         )
@@ -286,14 +287,14 @@ class Run:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return cls(
-            _row_id=row[cfg.glob.DBC_ID],
-            action_code=row[cfg.glob.DBC_ACTION_CODE],
-            action_text=row[cfg.glob.DBC_ACTION_TEXT],
-            id_run=row[cfg.glob.DBC_ID_RUN],
-            status=row[cfg.glob.DBC_STATUS],
-            total_erroneous=row[cfg.glob.DBC_TOTAL_ERRONEOUS],
-            total_processed_ok=row[cfg.glob.DBC_TOTAL_PROCESSED_OK],
-            total_processed_to_be=row[cfg.glob.DBC_TOTAL_PROCESSED_TO_BE],
+            _row_id=row[db.cls_db_core.DBCore.DBC_ID],
+            action_code=row[db.cls_db_core.DBCore.DBC_ACTION_CODE],
+            action_text=row[db.cls_db_core.DBCore.DBC_ACTION_TEXT],
+            id_run=row[db.cls_db_core.DBCore.DBC_ID_RUN],
+            status=row[db.cls_db_core.DBCore.DBC_STATUS],
+            total_erroneous=row[db.cls_db_core.DBCore.DBC_TOTAL_ERRONEOUS],
+            total_processed_ok=row[db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_OK],
+            total_processed_to_be=row[db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_TO_BE],
         )
 
     # -----------------------------------------------------------------------------
@@ -397,7 +398,7 @@ class Run:
         Returns:
             int:    Latest id.
         """
-        dbt = sqlalchemy.Table(cfg.glob.DBT_RUN, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
+        dbt = sqlalchemy.Table(db.cls_db_core.DBCore.DBT_RUN, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
 
         with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
             row = conn.execute(sqlalchemy.select(sqlalchemy.func.max(dbt.c.id_run))).fetchone()
@@ -417,19 +418,19 @@ class Run:
 
         if self.run_id == 0:
             self.run_id = db.dml.insert_dbt_row(
-                cfg.glob.DBT_RUN,
+                db.cls_db_core.DBCore.DBT_RUN,
                 self._get_columns(),
             )
             return
 
         if self.run_total_erroneous == 0 and self.run_total_processed_ok == 0 and self.run_total_processed_to_be == 0:
             db.dml.delete_dbt_id(
-                table_name=cfg.glob.DBT_RUN,
+                table_name=db.cls_db_core.DBCore.DBT_RUN,
                 id_where=self.run_id,
             )
         else:
             db.dml.update_dbt_id(
-                table_name=cfg.glob.DBT_RUN,
+                table_name=db.cls_db_core.DBCore.DBT_RUN,
                 id_where=self.run_id,
                 columns=self._get_columns(),
             )

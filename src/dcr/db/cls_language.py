@@ -6,6 +6,7 @@ from typing import ClassVar
 from typing import Dict
 
 import cfg.glob
+import db.cls_db_core
 import db.dml
 import sqlalchemy
 import sqlalchemy.engine
@@ -114,13 +115,13 @@ class Language:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return {
-            cfg.glob.DBC_ACTIVE: self.language_active,
-            cfg.glob.DBC_CODE_ISO_639_3: self.language_code_iso_639_3,
-            cfg.glob.DBC_CODE_PANDOC: self.language_code_pandoc,
-            cfg.glob.DBC_CODE_SPACY: self.language_code_spacy,
-            cfg.glob.DBC_CODE_TESSERACT: self.language_code_tesseract,
-            cfg.glob.DBC_DIRECTORY_NAME_INBOX: self.language_directory_name_inbox,
-            cfg.glob.DBC_ISO_LANGUAGE_NAME: self.language_iso_language_name,
+            db.cls_db_core.DBCore.DBC_ACTIVE: self.language_active,
+            db.cls_db_core.DBCore.DBC_CODE_ISO_639_3: self.language_code_iso_639_3,
+            db.cls_db_core.DBCore.DBC_CODE_PANDOC: self.language_code_pandoc,
+            db.cls_db_core.DBCore.DBC_CODE_SPACY: self.language_code_spacy,
+            db.cls_db_core.DBCore.DBC_CODE_TESSERACT: self.language_code_tesseract,
+            db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX: self.language_directory_name_inbox,
+            db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME: self.language_iso_language_name,
         }
 
     # -----------------------------------------------------------------------------
@@ -132,33 +133,33 @@ class Language:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         sqlalchemy.Table(
-            cfg.glob.DBT_LANGUAGE,
+            db.cls_db_core.DBCore.DBT_LANGUAGE,
             cfg.glob.db_orm_metadata,
             sqlalchemy.Column(
-                cfg.glob.DBC_ID,
+                db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
                 autoincrement=True,
                 nullable=False,
                 primary_key=True,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_CREATED_AT,
+                db.cls_db_core.DBCore.DBC_CREATED_AT,
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                cfg.glob.DBC_MODIFIED_AT,
+                db.cls_db_core.DBCore.DBC_MODIFIED_AT,
                 sqlalchemy.DateTime,
             ),
-            sqlalchemy.Column(cfg.glob.DBC_ACTIVE, sqlalchemy.Boolean, default=True, nullable=False),
-            sqlalchemy.Column(cfg.glob.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False, unique=True),
-            sqlalchemy.Column(cfg.glob.DBC_CODE_PANDOC, sqlalchemy.String, nullable=False, unique=True),
-            sqlalchemy.Column(cfg.glob.DBC_CODE_SPACY, sqlalchemy.String, nullable=False, unique=True),
-            sqlalchemy.Column(cfg.glob.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True),
-            sqlalchemy.Column(cfg.glob.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True),
-            sqlalchemy.Column(cfg.glob.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ACTIVE, sqlalchemy.Boolean, default=True, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_CODE_PANDOC, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_CODE_SPACY, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True),
         )
 
-        utils.progress_msg(f"The database table '{cfg.glob.DBT_LANGUAGE}' has now been created")
+        utils.progress_msg(f"The database table '{db.cls_db_core.DBCore.DBT_LANGUAGE}' has now been created")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -191,7 +192,7 @@ class Language:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
-            cfg.glob.DBT_LANGUAGE,
+            db.cls_db_core.DBCore.DBT_LANGUAGE,
             cfg.glob.db_orm_metadata,
             autoload_with=cfg.glob.db_orm_engine,
         )
@@ -232,14 +233,14 @@ class Language:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
         return cls(
-            _row_id=row[cfg.glob.DBC_ID],
-            active=row[cfg.glob.DBC_ACTIVE],
-            code_iso_639_3=row[cfg.glob.DBC_CODE_ISO_639_3],
-            code_pandoc=row[cfg.glob.DBC_CODE_PANDOC],
-            code_spacy=row[cfg.glob.DBC_CODE_SPACY],
-            code_tesseract=row[cfg.glob.DBC_CODE_TESSERACT],
-            directory_name_inbox=row[cfg.glob.DBC_DIRECTORY_NAME_INBOX],
-            iso_language_name=row[cfg.glob.DBC_ISO_LANGUAGE_NAME],
+            _row_id=row[db.cls_db_core.DBCore.DBC_ID],
+            active=row[db.cls_db_core.DBCore.DBC_ACTIVE],
+            code_iso_639_3=row[db.cls_db_core.DBCore.DBC_CODE_ISO_639_3],
+            code_pandoc=row[db.cls_db_core.DBCore.DBC_CODE_PANDOC],
+            code_spacy=row[db.cls_db_core.DBCore.DBC_CODE_SPACY],
+            code_tesseract=row[db.cls_db_core.DBCore.DBC_CODE_TESSERACT],
+            directory_name_inbox=row[db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX],
+            iso_language_name=row[db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME],
         )
 
     # -----------------------------------------------------------------------------
@@ -277,7 +278,7 @@ class Language:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
-            cfg.glob.DBT_LANGUAGE,
+            db.cls_db_core.DBCore.DBT_LANGUAGE,
             cfg.glob.db_orm_metadata,
             autoload_with=cfg.glob.db_orm_engine,
         )
@@ -315,12 +316,12 @@ class Language:
 
         if self.language_id == 0:
             self.language_id = db.dml.insert_dbt_row(
-                cfg.glob.DBT_LANGUAGE,
+                db.cls_db_core.DBCore.DBT_LANGUAGE,
                 self._get_columns(),
             )
         else:
             db.dml.update_dbt_id(
-                table_name=cfg.glob.DBT_LANGUAGE,
+                table_name=db.cls_db_core.DBCore.DBT_LANGUAGE,
                 id_where=self.language_id,
                 columns=self._get_columns(),
             )
@@ -343,7 +344,7 @@ class Language:
                     The languages found.
         """
         dbt = sqlalchemy.Table(
-            cfg.glob.DBT_LANGUAGE,
+            db.cls_db_core.DBCore.DBT_LANGUAGE,
             cfg.glob.db_orm_metadata,
             autoload_with=cfg.glob.db_orm_engine,
         )

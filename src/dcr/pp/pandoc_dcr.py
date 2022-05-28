@@ -3,6 +3,10 @@ import os
 import time
 
 import cfg.glob
+import db.cls_action
+import db.cls_document
+import db.cls_language
+import db.cls_run
 import db.dml
 import pypandoc
 import utils
