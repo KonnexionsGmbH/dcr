@@ -19,8 +19,8 @@ dev: format lint pydocstyle tests
 docs: pydocstyle mkdocs
 ## format:             Format the code with isort, Black and docformatter.
 format: isort black docformatter
-## lint:               Lint the code with Bandit, Flake8, Mypy and Pylint.
-lint: bandit flake8 mypy pylint
+## lint:               Lint the code with Bandit, Flake8, Pylint and Mypy.
+lint: bandit flake8 pylint mypy
 ## tests:              Run all tests with pytest.
 tests: pytest
 ## ----------------------------------------------------------------------------

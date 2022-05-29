@@ -16,7 +16,6 @@ import db.cls_action
 import db.cls_document
 import db.cls_language
 import db.cls_run
-import db.dml
 import fitz
 import sqlalchemy
 import sqlalchemy.orm
@@ -202,7 +201,7 @@ def process_inbox() -> None:
 
     utils.reset_statistics_total()
 
-    with cfg.glob.db_orm_engine.connect() as conn:
+    with cfg.glob.db_core.db_orm_engine.connect() as conn:
         for row in db.cls_language.Language.select_active_languages(conn):
             cfg.glob.language = db.cls_language.Language.from_row(row)
             if os.path.isdir(cfg.glob.language.language_directory_name_inbox):
@@ -272,7 +271,7 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
         file_path (pathlib.Path):
                 Inbox file.
     """
-    cfg.glob.session = sqlalchemy.orm.Session(cfg.glob.db_orm_engine)
+    cfg.glob.session = sqlalchemy.orm.Session(cfg.glob.db_core.db_orm_engine)
 
     initialise_base(file_path)
 

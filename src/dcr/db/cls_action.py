@@ -10,7 +10,6 @@ import cfg.glob
 import db.cls_db_core
 import db.cls_document
 import db.cls_run
-import db.dml
 import sqlalchemy
 import utils
 from sqlalchemy.engine import Connection
@@ -95,6 +94,13 @@ class Action:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         try:
+            cfg.glob.db_core.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'DBCore' does not yet exist.",
+            )
+
+        try:
             cfg.glob.run.exists()  # type: ignore
         except AttributeError:
             utils.terminate_fatal(
@@ -132,11 +138,11 @@ class Action:
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.dml.Columns:
+    def _get_columns(self) -> db.cls_db_core.Columns:
         """Get the database columns.
 
         Returns:
-            db.dml.Columns:
+            db.cls_db_core.Columns:
                     Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -172,7 +178,7 @@ class Action:
 
         sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_ACTION,
-            cfg.glob.db_orm_metadata,
+            cfg.glob.db_core.db_orm_metadata,
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
@@ -365,11 +371,11 @@ class Action:
 
         dbt = sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_ACTION,
-            cfg.glob.db_orm_metadata,
-            autoload_with=cfg.glob.db_orm_engine,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
         )
 
-        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+        with cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(
                 sqlalchemy.select(dbt).where(
                     dbt.c.id == id_action,
@@ -551,7 +557,7 @@ class Action:
                 self.action_status if self.action_status != "" else db.cls_document.Document.DOCUMENT_STATUS_START
             )
 
-            self.action_id = db.dml.insert_dbt_row(
+            self.action_id = cfg.glob.db_core.insert_dbt_row(  # type: ignore
                 table_name=db.cls_db_core.DBCore.DBT_ACTION,
                 columns=self._get_columns(),
             )
@@ -560,7 +566,7 @@ class Action:
                 if self.action_id_parent != self.action_id:
                     self.action_id_parent = self.action_id
 
-            db.dml.update_dbt_id(
+            cfg.glob.db_core.update_dbt_id(  # type: ignore
                 table_name=db.cls_db_core.DBCore.DBT_ACTION,
                 id_where=self.action_id,
                 columns=self._get_columns(),
@@ -586,7 +592,9 @@ class Action:
                     The rows found.
         """
         dbt = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine
+            db.cls_db_core.DBCore.DBT_ACTION,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
         )
 
         stmnt = (
@@ -631,7 +639,9 @@ class Action:
                     The rows found.
         """
         dbt = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine
+            db.cls_db_core.DBCore.DBT_ACTION,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
         )
 
         stmnt = (
@@ -674,7 +684,9 @@ class Action:
                     The rows found.
         """
         dbt = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_ACTION, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine
+            db.cls_db_core.DBCore.DBT_ACTION,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
         )
 
         sub_query = (

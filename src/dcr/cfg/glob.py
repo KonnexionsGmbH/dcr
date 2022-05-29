@@ -7,14 +7,13 @@ from typing import Type
 
 import cfg.cls_setup
 import db.cls_action
+import db.cls_db_core
 import db.cls_document
 import db.cls_language
 import db.cls_run
 import nlp.cls_line_type
 import nlp.cls_text_parser
-import nlp.cls_tokenize_spacy
-import psycopg2.extensions
-import sqlalchemy
+import nlp.cls_tokenizer_spacy
 
 # -----------------------------------------------------------------------------
 # Global Constants.
@@ -35,12 +34,7 @@ LOGGER_START: str = "Start"
 action_curr: Type[db.cls_action.Action]
 action_next: Type[db.cls_action.Action]
 
-db_current_database: str
-db_current_user: str
-db_driver_conn: psycopg2.extensions.connection | None = None
-db_driver_cur: psycopg2.extensions.cursor | None = None
-db_orm_engine: sqlalchemy.engine.Engine | None = None
-db_orm_metadata: sqlalchemy.MetaData | None = None
+db_core: Type[db.cls_db_core.DBCore]
 
 directory_inbox: os.PathLike[str] | str
 directory_inbox_accepted: os.PathLike[str] | str
@@ -62,4 +56,4 @@ start_time_document: int
 
 text_parser: Type[nlp.cls_text_parser.TextParser]
 
-tokenize_spacy: Type[nlp.cls_tokenize_spacy.TokenizeSpacy]
+tokenizer_spacy: Type[nlp.cls_tokenizer_spacy.TokenizerSpacy]

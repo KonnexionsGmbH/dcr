@@ -8,7 +8,6 @@ import cfg.glob
 import db.cls_action
 import db.cls_document
 import db.cls_run
-import db.dml
 import pdf2image
 import utils
 from pdf2image.exceptions import PDFPageCountError
@@ -33,7 +32,7 @@ def convert_pdf_2_image() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    with cfg.glob.db_orm_engine.begin() as conn:
+    with cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDF2IMAGE)
 
         for row in rows:

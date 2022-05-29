@@ -111,7 +111,6 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PDF_2_IMAGE - normal - png.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PDF_2_IMAGE - normal - png - duplicate."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

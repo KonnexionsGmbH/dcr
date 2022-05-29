@@ -6,7 +6,6 @@ import cfg.glob
 import db.cls_action
 import db.cls_document
 import db.cls_run
-import db.dml
 import defusedxml.ElementTree
 import nlp.cls_text_parser
 import utils
@@ -62,7 +61,7 @@ def parse_tetml() -> None:
         cfg.glob.setup.is_parsing_page = is_parsing_page
         cfg.glob.setup.is_parsing_word = is_parsing_word
 
-        with cfg.glob.db_orm_engine.begin() as conn:
+        with cfg.glob.db_core.db_orm_engine.begin() as conn:
             rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=action_code)
 
             for row in rows:

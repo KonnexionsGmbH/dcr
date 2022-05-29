@@ -6,8 +6,8 @@ import shutil
 
 import cfg.cls_setup
 import cfg.glob
+import db.cls_db_core
 import db.cls_run
-import db.driver
 import pytest
 import utils
 
@@ -94,7 +94,9 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
         utils.get_full_name(initial_database_data_path_directory, initial_database_data_path_file_name),
     )
 
-    db.driver.create_database()
+    cfg.glob.db_core = db.cls_db_core.DBCore(is_admin=True)
+
+    cfg.glob.db_core.create_database()
 
     # -------------------------------------------------------------------------
     # Copy language subdirectory

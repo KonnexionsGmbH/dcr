@@ -4,12 +4,12 @@
 import cfg.cls_setup
 import cfg.glob
 import db.cls_action
+import db.cls_db_core
 import db.cls_document
 import db.cls_language
 import db.cls_run
 import db.cls_token
 import db.cls_version
-import db.driver
 import pytest
 import utils
 
@@ -28,7 +28,7 @@ import dcr
 # -----------------------------------------------------------------------------
 def check_db_content() -> None:  # pylint: disable=R0915
     """Check the database content."""
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
     check_db_content_action()
 
@@ -1159,8 +1159,9 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
+    # -------------------------------------------------------------------------
     cfg.glob.action_curr = db.cls_action.Action.from_id(6)
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
@@ -1168,8 +1169,6 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
-
     cfg.glob.action_curr = db.cls_action.Action.from_id(4)
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
@@ -1177,8 +1176,6 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
-
     cfg.glob.action_curr = db.cls_action.Action.from_id(2)
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
@@ -1186,8 +1183,6 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
-
     cfg.glob.action_curr = db.cls_action.Action.from_id(8)
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
@@ -1195,8 +1190,6 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
-
     cfg.glob.action_curr = db.cls_action.Action.from_id(13)
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
@@ -1204,8 +1197,6 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
-
     cfg.glob.action_curr = db.cls_action.Action.from_id(17)
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()

@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import cfg.glob
 import db.cls_db_core
-import db.dml
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
@@ -41,6 +40,13 @@ class Token:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        try:
+            cfg.glob.db_core.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'DBCore' does not yet exist.",
+            )
+
         self.token_id: int = _row_id
         self.token_id_document: int = id_document
         self.token_page_data: str = page_data
@@ -56,11 +62,11 @@ class Token:
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.dml.Columns:
+    def _get_columns(self) -> db.cls_db_core.Columns:
         """Get the database columns.
 
         Returns:
-            db.dml.Columns:
+            db.cls_db_core.Columns:
                     Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -82,7 +88,7 @@ class Token:
 
         sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_TOKEN,
-            cfg.glob.db_orm_metadata,
+            cfg.glob.db_core.db_orm_metadata,
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
@@ -162,11 +168,11 @@ class Token:
 
         dbt = sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_TOKEN,
-            cfg.glob.db_orm_metadata,
-            autoload_with=cfg.glob.db_orm_engine,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
         )
 
-        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+        with cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(
                 sqlalchemy.select(dbt).where(
                     dbt.c.id == id_token,
@@ -237,12 +243,12 @@ class Token:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         if self.token_id == 0:
-            self.token_id = db.dml.insert_dbt_row(
-                db.cls_db_core.DBCore.DBT_TOKEN,
-                self._get_columns(),
+            self.token_id = cfg.glob.db_core.insert_dbt_row(  # type: ignore
+                db.cls_db_core.DBCore.DBT_TOKEN,  # type: ignore
+                self._get_columns(),  # type: ignore
             )
         else:
-            db.dml.update_dbt_id(
+            cfg.glob.db_core.update_dbt_id(  # type: ignore
                 table_name=db.cls_db_core.DBCore.DBT_TOKEN,
                 id_where=self.token_id,
                 columns=self._get_columns(),

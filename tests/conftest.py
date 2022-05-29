@@ -22,7 +22,6 @@ import db.cls_language
 import db.cls_run
 import db.cls_token
 import db.cls_version
-import db.driver
 import pytest
 import sqlalchemy
 import utils
@@ -503,17 +502,17 @@ def delete_config_param(config_section: str, config_param: str) -> List[Tuple[st
 @pytest.helpers.register
 def delete_version_version():
     """Delete all entries in the database table 'version'."""
-    db.driver.connect_db()
+    db_core = db.cls_db_core.DBCore()
 
-    with cfg.glob.db_orm_engine.begin() as conn:
+    with cfg.glob.db_core.db_orm_engine.begin() as conn:
         version = sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_VERSION,
-            cfg.glob.db_orm_metadata,
-            autoload_with=cfg.glob.db_orm_engine,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
         )
         conn.execute(sqlalchemy.delete(version))
 
-    db.driver.disconnect_db()
+    db_core.disconnect_db()
 
 
 # -----------------------------------------------------------------------------
@@ -660,7 +659,7 @@ def fxtr_setup_empty_db_and_inbox(
         fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
         fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
 
-        db.driver.drop_database()
+        cfg.glob.db_core._drop_database()
     except AttributeError:
         pass
 
@@ -701,7 +700,7 @@ def fxtr_setup_empty_inbox(
     fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
     fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
 
-    db.driver.drop_database()
+    cfg.glob.db_core._drop_database()
 
     restore_setup_cfg()
 

@@ -10,9 +10,8 @@ import db.cls_db_core
 import db.cls_document
 import db.cls_language
 import db.cls_run
-import db.dml
 import nlp.cls_text_parser
-import nlp.cls_tokenize_spacy
+import nlp.cls_tokenizer_spacy
 import spacy
 import spacy.tokens
 import utils
@@ -64,9 +63,9 @@ def tokenize() -> None:
     spacy_model_current: str | None = None
 
     cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
-    cfg.glob.tokenize_spacy = nlp.cls_tokenize_spacy.TokenizeSpacy()
+    cfg.glob.tokenizer_spacy = nlp.cls_tokenizer_spacy.TokenizerSpacy()
 
-    with cfg.glob.db_orm_engine.begin() as conn:
+    with cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE)
 
         for row in rows:
@@ -126,7 +125,7 @@ def tokenize_file(model_data: spacy.Language) -> None:
     try:
         cfg.glob.text_parser = nlp.cls_text_parser.TextParser.from_files(full_name_line=full_name_curr)
 
-        cfg.glob.tokenize_spacy.token_3_pages = []
+        cfg.glob.tokenizer_spacy.token_3_pages = []
 
         for cfg.glob.text_parser.parse_result_line_2_page in cfg.glob.text_parser.parse_result_line_4_document[
             cfg.glob.text_parser.JSON_NAME_PAGES
@@ -138,33 +137,33 @@ def tokenize_file(model_data: spacy.Language) -> None:
 
             text = get_text_from_line_2_page()
 
-            cfg.glob.tokenize_spacy.token_1_tokens = []
+            cfg.glob.tokenizer_spacy.token_1_tokens = []
 
             for token in model_data(text):
-                cfg.glob.tokenize_spacy.token_1_tokens.append(
-                    nlp.cls_tokenize_spacy.TokenizeSpacy.get_token_attributes(token)
+                cfg.glob.tokenizer_spacy.token_1_tokens.append(
+                    nlp.cls_tokenizer_spacy.TokenizerSpacy.get_token_attributes(token)
                 )
 
-            cfg.glob.tokenize_spacy.token_2_page = {
+            cfg.glob.tokenizer_spacy.token_2_page = {
                 cfg.glob.text_parser.JSON_NAME_PAGE_NO: page_no,
-                nlp.cls_tokenize_spacy.TokenizeSpacy.JSON_NAME_NO_TOKENS_IN_PAGE: len(
-                    cfg.glob.tokenize_spacy.token_1_tokens
+                nlp.cls_tokenizer_spacy.TokenizerSpacy.JSON_NAME_NO_TOKENS_IN_PAGE: len(
+                    cfg.glob.tokenizer_spacy.token_1_tokens
                 ),
-                nlp.cls_tokenize_spacy.TokenizeSpacy.JSON_NAME_TOKENS: cfg.glob.tokenize_spacy.token_1_tokens,
+                nlp.cls_tokenizer_spacy.TokenizerSpacy.JSON_NAME_TOKENS: cfg.glob.tokenizer_spacy.token_1_tokens,
             }
 
             if cfg.glob.setup.is_tokenize_2_database:
-                db.dml.insert_dbt_row(
+                cfg.glob.db_core.insert_dbt_row(
                     db.cls_db_core.DBCore.DBT_TOKEN,
                     {
                         db.cls_db_core.DBCore.DBC_ID_DOCUMENT: cfg.glob.document.document_id,
-                        db.cls_db_core.DBCore.DBC_PAGE_DATA: cfg.glob.tokenize_spacy.token_2_page,
+                        db.cls_db_core.DBCore.DBC_PAGE_DATA: cfg.glob.tokenizer_spacy.token_2_page,
                         db.cls_db_core.DBCore.DBC_PAGE_NO: page_no,
                     },
                 )
 
             if cfg.glob.setup.is_tokenize_2_jsonfile:
-                cfg.glob.tokenize_spacy.token_3_pages.append(cfg.glob.tokenize_spacy.token_2_page)
+                cfg.glob.tokenizer_spacy.token_3_pages.append(cfg.glob.tokenizer_spacy.token_2_page)
 
         if cfg.glob.setup.is_tokenize_2_jsonfile:
             with open(full_name_next, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
@@ -175,7 +174,7 @@ def tokenize_file(model_data: spacy.Language) -> None:
                         cfg.glob.text_parser.JSON_NAME_NO_PAGES_IN_DOC: cfg.glob.text_parser.parse_result_line_4_document[
                             cfg.glob.text_parser.JSON_NAME_NO_PAGES_IN_DOC
                         ],
-                        cfg.glob.text_parser.JSON_NAME_PAGES: cfg.glob.tokenize_spacy.token_3_pages,
+                        cfg.glob.text_parser.JSON_NAME_PAGES: cfg.glob.tokenizer_spacy.token_3_pages,
                     },
                     file_handle,
                 )

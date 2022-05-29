@@ -7,7 +7,6 @@ import db.cls_action
 import db.cls_document
 import db.cls_language
 import db.cls_run
-import db.dml
 import PyPDF2
 import pytesseract
 import utils
@@ -33,7 +32,7 @@ def convert_image_2_pdf() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    with cfg.glob.db_orm_engine.begin() as conn:
+    with cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TESSERACT)
 
         for row in rows:
@@ -133,7 +132,7 @@ def reunite_pdfs() -> None:
 
     error_documents = []
 
-    with cfg.glob.db_orm_engine.begin() as conn:
+    with cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PYPDF2)
 
         for row in rows:
@@ -156,7 +155,7 @@ def reunite_pdfs() -> None:
 
         conn.close()
 
-    with cfg.glob.db_orm_engine.begin() as conn:
+    with cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_id_document_by_action_code_pypdf2(
             conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDFLIB
         )
@@ -223,7 +222,7 @@ def reunite_pdfs_file() -> None:
 
     pdf_writer = PyPDF2.PdfWriter()
 
-    with cfg.glob.db_orm_engine.begin() as conn:
+    with cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code_id_document(
             conn=conn,
             action_code=db.cls_run.Run.ACTION_CODE_PDFLIB,

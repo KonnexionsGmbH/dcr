@@ -15,8 +15,6 @@ import db.cls_db_core
 import db.cls_language
 import db.cls_run
 import db.cls_version
-import db.dml
-import db.driver
 import nlp.parser
 import nlp.pdflib_dcr
 import nlp.tokenizer
@@ -45,17 +43,17 @@ def check_db_up_to_date() -> None:
     """Check that the database version is up-to-date."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    if cfg.glob.db_orm_engine is None:
+    if cfg.glob.db_core.db_orm_engine is None:
         utils.terminate_fatal(
             "The database does not yet exist.",
         )
 
-    if not sqlalchemy.inspect(cfg.glob.db_orm_engine).has_table(db.cls_db_core.DBCore.DBT_VERSION):
+    if not sqlalchemy.inspect(cfg.glob.db_core.db_orm_engine).has_table(db.cls_db_core.DBCore.DBT_VERSION):
         utils.terminate_fatal(
             "The database table 'version' does not yet exist.",
         )
 
-    current_version = db.cls_version.Version.select_version_version_unique()
+    current_version: str = db.cls_version.Version.select_version_version_unique()
 
     if cfg.cls_setup.Setup.DCR_VERSION != current_version:
         utils.terminate_fatal(
@@ -208,12 +206,14 @@ def main(argv: List[str]) -> None:
     if args[db.cls_run.Run.ACTION_CODE_CREATE_DB]:
         # Create the database.
         utils.progress_msg_empty_before("Start: Create the database ...")
-        db.driver.create_database()
+        cfg.glob.db_core = db.cls_db_core.DBCore(is_admin=True)
+        cfg.glob.db_core.create_database()
         utils.progress_msg("End  : Create the database ...")
     elif args[db.cls_run.Run.ACTION_CODE_UPGRADE_DB]:
         # Upgrade the database.
         utils.progress_msg_empty_before("Start: Upgrade the database ...")
-        db.driver.upgrade_database()
+        cfg.glob.db_core = db.cls_db_core.DBCore()
+        cfg.glob.db_core.upgrade_database()
         utils.progress_msg("End  : Upgrade the database ...")
     else:
         # Process the documents.
@@ -298,7 +298,7 @@ def process_documents(args: dict[str, bool]) -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # Connect to the database.
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # Check the version of the database.
     check_db_up_to_date()
@@ -349,7 +349,7 @@ def process_documents(args: dict[str, bool]) -> None:
         utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
     # Disconnect from the database.
-    db.driver.disconnect_db()
+    cfg.glob.db_core.disconnect_db()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 

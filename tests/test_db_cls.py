@@ -11,8 +11,6 @@ import db.cls_language
 import db.cls_run
 import db.cls_token
 import db.cls_version
-import db.dml
-import db.driver
 import pytest
 import utils
 
@@ -22,6 +20,7 @@ import dcr
 # Constants & Globals.
 # -----------------------------------------------------------------------------
 # pylint: disable=C0302
+# pylint: disable=W0212
 # @pytest.mark.issue
 MISSING_ID: int = 4711
 
@@ -92,7 +91,7 @@ def check_existing_action():
     # -----------------------------------------------------------------------------
     # Select unprocessed actions based on action_code und document id.
     # -----------------------------------------------------------------------------
-    with cfg.glob.db_orm_engine.begin() as conn:
+    with cfg.glob.db_core.db_orm_engine.begin() as conn:
         cfg.glob.action_curr.select_action_by_action_code_id_document(
             conn=conn, action_code=db.cls_run.Run.ACTION_CODE_INBOX, id_document=1
         )
@@ -227,7 +226,7 @@ def check_existing_run():
 # -----------------------------------------------------------------------------
 def check_existing_token():
     """Check existing token object."""
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
     expected_values = [
         1,
@@ -2796,8 +2795,6 @@ def check_existing_version():
 # -----------------------------------------------------------------------------
 def check_missing_action():
     """Check missing action object."""
-    db.driver.connect_db()
-
     with pytest.raises(SystemExit) as expt:
         db.cls_action.Action.from_id(MISSING_ID)
 
@@ -2810,8 +2807,6 @@ def check_missing_action():
 # -----------------------------------------------------------------------------
 def check_missing_document():
     """Check missing document object."""
-    db.driver.connect_db()
-
     with pytest.raises(SystemExit) as expt:
         db.cls_document.Document.from_id(MISSING_ID)
 
@@ -2824,8 +2819,6 @@ def check_missing_document():
 # -----------------------------------------------------------------------------
 def check_missing_language():
     """Check missing language object."""
-    db.driver.connect_db()
-
     with pytest.raises(SystemExit) as expt:
         db.cls_language.Language.from_id(MISSING_ID)
 
@@ -2838,8 +2831,6 @@ def check_missing_language():
 # -----------------------------------------------------------------------------
 def check_missing_run():
     """Check missing run object."""
-    db.driver.connect_db()
-
     with pytest.raises(SystemExit) as expt:
         db.cls_run.Run.from_id(MISSING_ID)
 
@@ -2849,8 +2840,6 @@ def check_missing_run():
     # -----------------------------------------------------------------------------
     # Invalid action code.
     # -----------------------------------------------------------------------------
-    db.driver.connect_db()
-
     with pytest.raises(SystemExit) as expt:
         db.cls_run.Run(
             _row_id=0,
@@ -2864,8 +2853,6 @@ def check_missing_run():
     # -----------------------------------------------------------------------------
     # Untested action codes.
     # -----------------------------------------------------------------------------
-    db.driver.connect_db()
-
     db.cls_run.Run(
         action_code=db.cls_run.Run.ACTION_CODE_PARSER_PAGE,
     )
@@ -2884,8 +2871,6 @@ def check_missing_run():
 # -----------------------------------------------------------------------------
 def check_missing_token():
     """Check missing token object."""
-    db.driver.connect_db()
-
     with pytest.raises(SystemExit) as expt:
         db.cls_token.Token.from_id(MISSING_ID)
 
@@ -2898,8 +2883,6 @@ def check_missing_token():
 # -----------------------------------------------------------------------------
 def check_missing_version():
     """Check missing version object."""
-    db.driver.connect_db()
-
     with pytest.raises(SystemExit) as expt:
         db.cls_version.Version.from_id(MISSING_ID)
 
@@ -2909,9 +2892,7 @@ def check_missing_version():
     # -----------------------------------------------------------------------------
     # Column version in database table version not found.
     # -----------------------------------------------------------------------------
-    db.driver.connect_db()
-
-    db.dml.delete_dbt_id(
+    cfg.glob.db_core.delete_dbt_id(
         table_name=db.cls_db_core.DBCore.DBT_VERSION,
         id_where=1,
     )
@@ -2925,8 +2906,6 @@ def check_missing_version():
     # -----------------------------------------------------------------------------
     # Column version in database table version not unique.
     # -----------------------------------------------------------------------------
-    db.driver.connect_db()
-
     cfg.glob.version = db.cls_version.Version(
         version="1",
     )
@@ -3270,7 +3249,7 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
     check_existing_language()
     check_existing_run()
@@ -3281,6 +3260,40 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     check_existing_action()
 
     check_existing_token()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - action - case 0.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_action_0(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - action - case0."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.db_core.exists()  # type: ignore
+
+        del cfg.glob.db_core
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        db.cls_action.Action(
+            action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+            directory_name="",
+            file_name="",
+            id_document=0,
+            id_run_last=0,
+        )
+
+    assert expt.type == SystemExit, "Instance of class 'DBCore' is missing"
+    assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -3315,8 +3328,9 @@ def test_missing_dependencies_action_1(fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
+    # -------------------------------------------------------------------------
     values_run = pytest.helpers.create_run()
 
     values_document = pytest.helpers.create_document()
@@ -3342,6 +3356,9 @@ def test_missing_dependencies_action_1(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing dependencies - action - case 2."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
     try:
         cfg.glob.action_curr.exists()  # type: ignore
 
@@ -3370,9 +3387,6 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
         pass
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
     cfg.glob.start_time_document = time.perf_counter_ns()
 
     directory_name = cfg.glob.setup.directory_inbox
@@ -3386,8 +3400,9 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
+    # -------------------------------------------------------------------------
     values_run = pytest.helpers.create_run()
 
     cfg.glob.run = db.cls_run.Run.from_id(values_run[0])
@@ -3418,8 +3433,6 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Class Action requires class Document (finalise)"
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
-
     with pytest.raises(SystemExit) as expt:
         local_action.finalise_error("error_code", "error_msg")
 
@@ -3427,8 +3440,6 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Class Action requires class Document (finalise_error)"
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
-
     cfg.glob.document = db.cls_document.Document.from_id(1)
 
     local_action.action_action_code = db.cls_run.Run.ACTION_CODE_PDF2IMAGE
@@ -3444,10 +3455,81 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - language.
+# Test Function - missing dependencies - document - case 0.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_language(fxtr_setup_logger):
-    """# Test Function - missing dependencies - language.
+def test_missing_dependencies_document_0(fxtr_setup_logger):
+    """# Test Function - missing dependencies - document - case 0.
+    ."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.db_core.exists()  # type: ignore
+
+        del cfg.glob.db_core
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        db.cls_document.Document(
+            action_code_last=db.cls_run.Run.ACTION_CODE_INBOX,
+            directory_name="",
+            file_name="",
+            id_language=0,
+            id_run_last=0,
+        )
+
+    assert expt.type == SystemExit, "Instance of class 'DBCore' is missing"
+    assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - language - case 0.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_language_0(fxtr_setup_logger):
+    """# Test Function - missing dependencies - language - case 0.
+    ."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.db_core.exists()  # type: ignore
+
+        del cfg.glob.db_core
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        db.cls_language.Language(
+            active=True,
+            code_iso_639_3="",
+            code_pandoc="",
+            code_spacy="",
+            code_tesseract="",
+            iso_language_name="",
+        )
+
+    assert expt.type == SystemExit, "Instance of class 'DBCore' is missing"
+    assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - language - case 1.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_language_1(fxtr_setup_logger):
+    """# Test Function - missing dependencies - language - case 1.
     ."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -3480,11 +3562,107 @@ def test_missing_dependencies_language(fxtr_setup_logger):
 
 
 # -----------------------------------------------------------------------------
+# Test Function - missing dependencies - run - case 0.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_run_0(fxtr_setup_logger):
+    """# Test Function - missing dependencies - run - case 0.
+    ."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.db_core.exists()  # type: ignore
+
+        del cfg.glob.db_core
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        db.cls_run.Run(
+            action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        )
+
+    assert expt.type == SystemExit, "Instance of class 'DBCore' is missing"
+    assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - token - case 0.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_token_0(fxtr_setup_logger):
+    """# Test Function - missing dependencies - token - case 0.
+    ."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.db_core.exists()  # type: ignore
+
+        del cfg.glob.db_core
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        db.cls_token.Token(
+            id_document=0,
+            page_data="",
+            page_no=0,
+        )
+
+    assert expt.type == SystemExit, "Instance of class 'DBCore' is missing"
+    assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - version - case 0.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_version_0(fxtr_setup_logger):
+    """# Test Function - missing dependencies - version - case 0.
+    ."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.db_core.exists()  # type: ignore
+
+        del cfg.glob.db_core
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        db.cls_version.Version()
+
+    assert expt.type == SystemExit, "Instance of class 'DBCore' is missing"
+    assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test Function - missing objects.
 # -----------------------------------------------------------------------------
 def test_missing_objects(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing objects."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
     check_missing_language()
@@ -3509,8 +3687,9 @@ def test_new_objects(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
+    # -------------------------------------------------------------------------
     cfg.glob.start_time_document = time.perf_counter_ns()
 
     db.cls_run.Run.ID_RUN_UMBRELLA = 0
@@ -3540,20 +3719,21 @@ def test_select_version_version_unique_driver(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
-    db.dml.insert_dbt_row(db.cls_db_core.DBCore.DBT_VERSION, {db.cls_db_core.DBCore.DBC_VERSION: "0.0.0"})
+    cfg.glob.db_core.insert_dbt_row(db.cls_db_core.DBCore.DBT_VERSION, {db.cls_db_core.DBCore.DBC_VERSION: "0.0.0"})
 
-    db.driver.disconnect_db()
+    cfg.glob.db_core.disconnect_db()
 
-    db.driver.connect_db()
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
-    cfg.glob.db_driver_cur = cfg.glob.db_driver_conn.cursor()
+    # wwe cfg.glob.db_core.db_driver_cur = cfg.glob.db_core._db_driver_conn.cursor()
 
     with pytest.raises(SystemExit) as expt:
         db.cls_version.Version.select_version_version_unique()
 
-    db.driver.disconnect_db()
+    cfg.glob.db_core.disconnect_db()
 
     assert expt.type == SystemExit, "Version not unique (driver)"
     assert expt.value.code == 1, "Version not unique (driver)"
@@ -3561,14 +3741,14 @@ def test_select_version_version_unique_driver(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     pytest.helpers.delete_version_version()
 
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
-    cfg.glob.db_driver_cur = cfg.glob.db_driver_conn.cursor()
+    # wwe cfg.glob.db_core.db_driver_cur = cfg.glob.db_core._db_driver_conn.cursor()
 
     with pytest.raises(SystemExit) as expt:
         db.cls_version.Version.select_version_version_unique()
 
-    db.driver.disconnect_db()
+    cfg.glob.db_core.disconnect_db()
 
     assert expt.type == SystemExit, "Version missing (driver)"
     assert expt.value.code == 1, "Version missing (driver)"
@@ -3585,14 +3765,14 @@ def test_select_version_version_unique_orm(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
-    db.dml.insert_dbt_row(db.cls_db_core.DBCore.DBT_VERSION, {db.cls_db_core.DBCore.DBC_VERSION: "0.0.0"})
+    cfg.glob.db_core.insert_dbt_row(db.cls_db_core.DBCore.DBT_VERSION, {db.cls_db_core.DBCore.DBC_VERSION: "0.0.0"})
 
     with pytest.raises(SystemExit) as expt:
         db.cls_version.Version.select_version_version_unique()
 
-    db.driver.disconnect_db()
+    cfg.glob.db_core.disconnect_db()
 
     assert expt.type == SystemExit, "Version not unique (orm)"
     assert expt.value.code == 1, "Version not unique (orm)"
@@ -3600,12 +3780,12 @@ def test_select_version_version_unique_orm(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     pytest.helpers.delete_version_version()
 
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
     with pytest.raises(SystemExit) as expt:
         db.cls_version.Version.select_version_version_unique()
 
-    db.driver.disconnect_db()
+    cfg.glob.db_core.disconnect_db()
 
     assert expt.type == SystemExit, "Version missing (orm)"
     assert expt.value.code == 1, "Version missing (orm)"

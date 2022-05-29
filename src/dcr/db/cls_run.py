@@ -8,7 +8,6 @@ from typing import Union
 import cfg.glob
 import db.cls_db_core
 import db.cls_document
-import db.dml
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
@@ -98,6 +97,13 @@ class Run:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        try:
+            cfg.glob.db_core.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'DBCore' does not yet exist.",
+            )
+
         if Run.ID_RUN_UMBRELLA == 0:
             Run.ID_RUN_UMBRELLA = Run.get_id_latest() + 1
 
@@ -133,11 +139,11 @@ class Run:
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.dml.Columns:
+    def _get_columns(self) -> db.cls_db_core.Columns:
         """Get the database columns.
 
         Returns:
-            db.dml.Columns:
+            db.cls_db_core.Columns:
                     Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -165,7 +171,7 @@ class Run:
 
         sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_RUN,
-            cfg.glob.db_orm_metadata,
+            cfg.glob.db_core.db_orm_metadata,
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
@@ -248,11 +254,11 @@ class Run:
 
         dbt = sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_RUN,
-            cfg.glob.db_orm_metadata,
-            autoload_with=cfg.glob.db_orm_engine,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
         )
 
-        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+        with cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(
                 sqlalchemy.select(dbt).where(
                     dbt.c.id == id_run,
@@ -398,9 +404,11 @@ class Run:
         Returns:
             int:    Latest id.
         """
-        dbt = sqlalchemy.Table(db.cls_db_core.DBCore.DBT_RUN, cfg.glob.db_orm_metadata, autoload_with=cfg.glob.db_orm_engine)
+        dbt = sqlalchemy.Table(
+            db.cls_db_core.DBCore.DBT_RUN, cfg.glob.db_core.db_orm_metadata, autoload_with=cfg.glob.db_core.db_orm_engine
+        )
 
-        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+        with cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(sqlalchemy.select(sqlalchemy.func.max(dbt.c.id_run))).fetchone()
             conn.close()
 
@@ -417,19 +425,19 @@ class Run:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         if self.run_id == 0:
-            self.run_id = db.dml.insert_dbt_row(
-                db.cls_db_core.DBCore.DBT_RUN,
-                self._get_columns(),
+            self.run_id = cfg.glob.db_core.insert_dbt_row(  # type: ignore
+                db.cls_db_core.DBCore.DBT_RUN,  # type: ignore
+                self._get_columns(),  # type: ignore
             )
             return
 
         if self.run_total_erroneous == 0 and self.run_total_processed_ok == 0 and self.run_total_processed_to_be == 0:
-            db.dml.delete_dbt_id(
+            cfg.glob.db_core.delete_dbt_id(  # type: ignore
                 table_name=db.cls_db_core.DBCore.DBT_RUN,
                 id_where=self.run_id,
             )
         else:
-            db.dml.update_dbt_id(
+            cfg.glob.db_core.update_dbt_id(  # type: ignore
                 table_name=db.cls_db_core.DBCore.DBT_RUN,
                 id_where=self.run_id,
                 columns=self._get_columns(),

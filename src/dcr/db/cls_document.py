@@ -9,7 +9,6 @@ from typing import Tuple
 import cfg.glob
 import db.cls_db_core
 import db.cls_run
-import db.dml
 import sqlalchemy
 import utils
 
@@ -132,6 +131,13 @@ class Document:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        try:
+            cfg.glob.db_core.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'DBCore' does not yet exist.",
+            )
+
         self.document_action_code_last: str = action_code_last
         self.document_action_text_last: str = action_text_last
         self.document_directory_name: str = directory_name
@@ -157,11 +163,11 @@ class Document:
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.dml.Columns:
+    def _get_columns(self) -> db.cls_db_core.Columns:
         """Get the database columns.
 
         Returns:
-            db.dml.Columns:
+            db.cls_db_core.Columns:
                     Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -195,7 +201,7 @@ class Document:
 
         sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_DOCUMENT,
-            cfg.glob.db_orm_metadata,
+            cfg.glob.db_core.db_orm_metadata,
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
@@ -310,11 +316,11 @@ class Document:
 
         dbt = sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_DOCUMENT,
-            cfg.glob.db_orm_metadata,
-            autoload_with=cfg.glob.db_orm_engine,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
         )
 
-        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+        with cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(
                 sqlalchemy.select(dbt).where(
                     dbt.c.id == id_document,
@@ -511,12 +517,12 @@ class Document:
         if self.document_id == 0:
             self.document_status = self.document_status if self.document_status != "" else Document.DOCUMENT_STATUS_START
 
-            self.document_id = db.dml.insert_dbt_row(
+            self.document_id = cfg.glob.db_core.insert_dbt_row(  # type: ignore
                 table_name=db.cls_db_core.DBCore.DBT_DOCUMENT,
                 columns=self._get_columns(),
             )
         else:
-            db.dml.update_dbt_id(
+            cfg.glob.db_core.update_dbt_id(  # type: ignore
                 table_name=db.cls_db_core.DBCore.DBT_DOCUMENT,
                 id_where=self.document_id,
                 columns=self._get_columns(),
@@ -543,11 +549,11 @@ class Document:
         """
         dbt = sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_DOCUMENT,
-            cfg.glob.db_orm_metadata,
-            autoload_with=cfg.glob.db_orm_engine,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
         )
 
-        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+        with cfg.glob.db_core.db_orm_engine.connect() as conn:
             stmnt = sqlalchemy.select(dbt.c.file_name).where(
                 sqlalchemy.and_(
                     dbt.c.id != id_document,

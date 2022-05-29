@@ -146,8 +146,8 @@ class Setup:
         self.db_database_admin: str = ""
         self.db_dialect: str = "postgresql"
         self.db_host: str = "localhost"
-        self.db_password: str | None = None
-        self.db_password_admin: str | None = None
+        self.db_password: str = ""
+        self.db_password_admin: str = ""
         self.db_schema: str = "dcr_schema"
         self.db_user: str = "postgresql"
         self.db_user_admin: str = "postgresql"

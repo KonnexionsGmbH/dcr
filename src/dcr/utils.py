@@ -9,8 +9,6 @@ import traceback
 import cfg.glob
 import db.cls_document
 import db.cls_run
-import db.dml
-import db.driver
 import PyPDF2
 import PyPDF2.errors
 import utils
@@ -207,19 +205,17 @@ def progress_msg(msg: str) -> None:
 # -----------------------------------------------------------------------------
 # Create a progress message: connected to database.
 # -----------------------------------------------------------------------------
-def progress_msg_connected() -> None:
+def progress_msg_connected(database: str | None, user: str | None) -> None:
     """Create a progress message: connected to database."""
     try:
         cfg.glob.setup.exists()
 
         if cfg.glob.setup.is_verbose:
             print("")
-            progress_msg(
-                f"User '{cfg.glob.db_current_user}' is now connected " f"to database '{cfg.glob.db_current_database}'"
-            )
+            progress_msg(f"User '{user}' is now connected " f"to database '{database}'")
     except AttributeError:
         print("")
-        progress_msg(f"User '{cfg.glob.db_current_user}' is now connected " f"to database '{cfg.glob.db_current_database}'")
+        progress_msg(f"User '{user}' is now connected " f"to database '{database}'")
 
 
 # -----------------------------------------------------------------------------
@@ -247,24 +243,28 @@ def progress_msg_disconnected() -> None:
         cfg.glob.setup.exists()
 
         if cfg.glob.setup.is_verbose:
-            if cfg.glob.db_current_database is None and cfg.glob.db_current_user is None:
+            if cfg.glob.db_core.db_current_database == "" and cfg.glob.db_core.db_current_user == "":
                 print("")
                 utils.progress_msg("Database is now disconnected")
                 return
 
             database = (
                 cfg.glob.INFORMATION_NOT_YET_AVAILABLE
-                if cfg.glob.db_current_database is None
-                else cfg.glob.db_current_database
+                if cfg.glob.db_core.db_current_database == ""
+                else cfg.glob.db_core.db_current_database
             )
 
-            user = cfg.glob.INFORMATION_NOT_YET_AVAILABLE if cfg.glob.db_current_user is None else cfg.glob.db_current_user
+            user = (
+                cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+                if cfg.glob.db_core.db_current_user == ""
+                else cfg.glob.db_core.db_current_user
+            )
 
             print("")
             utils.progress_msg(f"User '{user}' is now disconnected from database '{database}'")
 
-            cfg.glob.db_current_database = None
-            cfg.glob.db_current_user = None
+            cfg.glob.db_core.db_current_database = ""
+            cfg.glob.db_core.db_current_user = ""
     except AttributeError:
         pass
 
@@ -390,7 +390,7 @@ def terminate_fatal(error_msg: str) -> None:
     try:
         cfg.glob.setup.exists()
 
-        db.driver.disconnect_db()
+        cfg.glob.db_core.disconnect_db()
     except AttributeError:
         pass
 

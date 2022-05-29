@@ -7,13 +7,13 @@ from typing import Tuple
 import cfg.cls_setup
 import cfg.glob
 import db.cls_action
+import db.cls_db_core
 import db.cls_document
 import db.cls_run
-import db.driver
 import defusedxml.ElementTree
 import nlp.cls_line_type
 import nlp.cls_text_parser
-import nlp.cls_tokenize_spacy
+import nlp.cls_tokenizer_spacy
 import pytest
 import utils
 
@@ -406,13 +406,15 @@ def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 # Test TokenizeSpacy.
 # -----------------------------------------------------------------------------
-def test_cls_tokenize_spacy(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+def test_cls_tokenizer_spacy(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test TokenizeSpacy."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_tokenize_spacy.TokenizeSpacy()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
     instance.exists()
 
     # -------------------------------------------------------------------------
@@ -457,7 +459,7 @@ def test_missing_dependencies_line_type_coverage(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
     cfg.glob.run = db.cls_run.Run(
@@ -495,7 +497,7 @@ def test_missing_dependencies_line_type_setup(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
     cfg.glob.run = db.cls_run.Run(
@@ -540,7 +542,7 @@ def test_missing_dependencies_line_type_text_parser(fxtr_setup_empty_db_and_inbo
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
     cfg.glob.run = db.cls_run.Run(
@@ -638,7 +640,7 @@ def test_missing_dependencies_text_parser_document(fxtr_setup_empty_db_and_inbox
         pass
 
     # -------------------------------------------------------------------------
-    db.driver.connect_db()
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
     db.cls_run.Run.ID_RUN_UMBRELLA = -1
 

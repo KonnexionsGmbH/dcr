@@ -6,7 +6,6 @@ import cfg.glob
 import db.cls_action
 import db.cls_document
 import db.cls_run
-import db.dml
 import PDFlib.TET
 import utils
 
@@ -42,7 +41,7 @@ def extract_text_from_pdf() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    with cfg.glob.db_orm_engine.begin() as conn:
+    with cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDFLIB)
 
         for row in rows:

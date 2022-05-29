@@ -3,8 +3,6 @@ from __future__ import annotations
 
 import cfg.glob
 import db.cls_db_core
-import db.dml
-import db.driver
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
@@ -37,6 +35,13 @@ class Version:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        try:
+            cfg.glob.db_core.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'DBCore' does not yet exist.",
+            )
+
         self.version_id: int = _row_id
         self.version_version: str = version
 
@@ -50,11 +55,11 @@ class Version:
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.dml.Columns:
+    def _get_columns(self) -> db.cls_db_core.Columns:
         """Get the database columns.
 
         Returns:
-            db.dml.Columns:
+            db.cls_db_core.Columns:
                     Database columns.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -74,7 +79,7 @@ class Version:
 
         sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_VERSION,
-            cfg.glob.db_orm_metadata,
+            cfg.glob.db_core.db_orm_metadata,
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
@@ -136,15 +141,13 @@ class Version:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        db.driver.connect_db()
-
         dbt = sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_VERSION,
-            cfg.glob.db_orm_metadata,
-            autoload_with=cfg.glob.db_orm_engine,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
         )
 
-        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+        with cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(
                 sqlalchemy.select(dbt).where(
                     dbt.c.id == id_version,
@@ -210,12 +213,12 @@ class Version:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         if self.version_id == 0:
-            self.version_id = db.dml.insert_dbt_row(
-                db.cls_db_core.DBCore.DBT_VERSION,
-                self._get_columns(),
+            self.version_id = cfg.glob.db_core.insert_dbt_row(  # type: ignore
+                db.cls_db_core.DBCore.DBT_VERSION,  # type: ignore
+                self._get_columns(),  # type: ignore
             )
         else:
-            db.dml.update_dbt_id(
+            cfg.glob.db_core.update_dbt_id(  # type: ignore
                 table_name=db.cls_db_core.DBCore.DBT_VERSION,
                 id_where=self.version_id,
                 columns=self._get_columns(),
@@ -237,13 +240,13 @@ class Version:
         """
         dbt = sqlalchemy.Table(
             db.cls_db_core.DBCore.DBT_VERSION,
-            cfg.glob.db_orm_metadata,
-            autoload_with=cfg.glob.db_orm_engine,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
         )
 
         current_version: str = ""
 
-        with cfg.glob.db_orm_engine.connect() as conn:  # type: ignore
+        with cfg.glob.db_core.db_orm_engine.connect() as conn:
             for row in conn.execute(sqlalchemy.select(dbt.c.version)):
                 if current_version == "":
                     current_version = row.version
