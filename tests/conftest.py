@@ -120,7 +120,7 @@ def check_dbt_document(param: Tuple[int, Tuple[int, str, str, int, str, int, int
 
     dbt = db.cls_document.Document.from_id(id_row)
 
-    actual_values = dbt.get_columns_in_tuple(is_file_size_bytes=False)
+    actual_values = dbt.get_columns_in_tuple(is_file_size_bytes=False, is_sha256=False)
 
     if expected_values != actual_values:
         print(f"issue with dbt document and id={id_row}:")

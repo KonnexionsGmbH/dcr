@@ -447,52 +447,44 @@ class Action:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        columns = [
+            self.action_id,
+            self.action_action_code,
+            self.action_action_text,
+            self.action_directory_name,
+            self.action_directory_type,
+            self.action_duration_ns,
+        ]
+
         if is_duration_ns:
-            columns_1 = (
-                self.action_id,
-                self.action_action_code,
-                self.action_action_text,
-                self.action_directory_name,
-                self.action_directory_type,
-                self.action_duration_ns,
-            )
-        else:
-            columns_1 = (  # type: ignore
-                self.action_id,
-                self.action_action_code,
-                self.action_action_text,
-                self.action_directory_name,
-                self.action_directory_type,
-            )
+            columns.append(self.action_duration_ns)
+
+        columns.append(
+            [
+                self.action_error_code_last,
+                self.action_error_msg_last,
+                self.action_error_no,
+                self.action_file_name,
+            ]
+        )
 
         if is_file_size_bytes:
-            columns_2 = (
-                self.action_error_code_last,
-                self.action_error_msg_last,
-                self.action_error_no,
-                self.action_file_name,
-                self.action_file_size_bytes,
-            )
-        else:
-            columns_2 = (  # type: ignore
-                self.action_error_code_last,
-                self.action_error_msg_last,
-                self.action_error_no,
-                self.action_file_name,
-            )
+            columns.append(self.action_file_size_bytes)
 
-        columns_3 = (
-            self.action_id_document,
-            self.action_id_parent,
-            self.action_id_run_last,
-            self.action_no_children,
-            self.action_no_pdf_pages,
-            self.action_status,
+        columns.append(
+            [
+                self.action_id_document,
+                self.action_id_parent,
+                self.action_id_run_last,
+                self.action_no_children,
+                self.action_no_pdf_pages,
+                self.action_status,
+            ]
         )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
-        return columns_1 + columns_2 + columns_3
+        return tuple(columns)  # type: ignore
 
     # -----------------------------------------------------------------------------
     # Get the file type from the file name.

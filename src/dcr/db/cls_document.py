@@ -375,12 +375,14 @@ class Document:
     # -----------------------------------------------------------------------------
     # Get the database columns in a tuple.
     # -----------------------------------------------------------------------------
-    def get_columns_in_tuple(self, is_file_size_bytes: bool = True) -> Tuple[int | str, ...]:
+    def get_columns_in_tuple(self, is_file_size_bytes: bool = True, is_sha256: bool = True) -> Tuple[int | str, ...]:
         """Get the database columns in a tuple.
 
         Args:
             is_file_size_bytes (bool, optional):
                     Including column file_size_bytes?. Defaults to True.
+            is_sha256 (bool, optional):
+                    Including column sha256?. Defaults to True.
 
         Returns:
             Tuple[int | str, ...]:
@@ -388,7 +390,7 @@ class Document:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        column_1 = (
+        columns = [
             self.document_id,
             self.document_action_code_last,
             self.document_action_text_last,
@@ -397,29 +399,27 @@ class Document:
             self.document_error_msg_last,
             self.document_error_no,
             self.document_file_name,
-        )
+        ]
 
         if is_file_size_bytes:
-            column_2 = (
-                self.document_file_size_bytes,
+            columns.append(self.document_file_size_bytes)
+
+        columns.append(
+            [
                 self.document_id_language,
                 self.document_id_run_last,
                 self.document_no_pdf_pages,
-                self.document_sha256,
-                self.document_status,
-            )
-        else:
-            column_2 = (  # type: ignore
-                self.document_id_language,
-                self.document_id_run_last,
-                self.document_no_pdf_pages,
-                self.document_sha256,
-                self.document_status,
-            )
+            ]
+        )
+
+        if is_sha256:
+            columns.append(self.document_sha256)
+
+        columns.append(self.document_status)
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
-        return column_1 + column_2
+        return tuple(columns)  # type: ignore
 
     # -----------------------------------------------------------------------------
     # Get the file name from the first processed document.
