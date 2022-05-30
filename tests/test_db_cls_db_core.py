@@ -390,7 +390,6 @@ def test_load_db_data_from_json_version(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 # Test Function - upgrade_database().
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     """Test: upgrade_database()."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

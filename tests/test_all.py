@@ -804,7 +804,6 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
                 1,
                 8,
                 -1,
-                "c3ddceb01213027e8a9a927752a7d9eb9d42248cc2daa13f70fd45244d3ca02e",
                 "end",
             ),
         )
@@ -824,7 +823,6 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
                 1,
                 8,
                 -1,
-                "60a36f3ababe541e02f238f76e6effc9f1f0eda6165992afd075e527332230de",
                 "end",
             ),
         )
@@ -844,7 +842,6 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
                 1,
                 8,
                 1,
-                "07e21aeef5600c03bc111204a44f708d592a63703a027ea4272a246304557625",
                 "end",
             ),
         )
@@ -864,7 +861,6 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
                 1,
                 8,
                 3,
-                "e2402cc28e178911ee5941b1f9ac0d596beb7730f101da715f996dc992acbe25",
                 "end",
             ),
         )
@@ -885,7 +881,6 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
                 1,
                 1,
                 -1,
-                "8205860678cd22312b5fd5d0ba1e8d4924311d1090f20cdc7e1755245e5a0cbe",
                 "error",
             ),
         )
@@ -905,7 +900,6 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
                 1,
                 8,
                 2,
-                "3b12b58a3eb9d28b97fc7480f5589a6c851bbf54abe46e7f944afbf482e5a799",
                 "end",
             ),
         )

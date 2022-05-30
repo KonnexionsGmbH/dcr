@@ -359,8 +359,7 @@ def create_document():
         id_language=values[9],
         id_run_last=values[10],
         no_pdf_pages=values[11],
-        sha256=values[12],
-        status=values[13],
+        status=values[12],
     )
 
     values[0] = instance.document_id
@@ -797,7 +796,6 @@ def get_values_document():
         1,
         1,
         3,
-        "e2402cc28e178911ee5941b1f9ac0d596beb7730f101da715f996dc992acbe25",
         db.cls_document.Document.DOCUMENT_STATUS_START,
     ]
 

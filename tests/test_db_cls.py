@@ -109,11 +109,11 @@ def check_existing_document():
     expected_values[2] = "tokenize      (nlp)"
     expected_values[10] = 8
     expected_values[11] = 3
-    expected_values[13] = db.cls_document.Document.DOCUMENT_STATUS_END
+    expected_values[12] = db.cls_document.Document.DOCUMENT_STATUS_END
 
     cfg.glob.document = db.cls_document.Document.from_id(expected_values[0])
 
-    actual_values = cfg.glob.document.get_columns_in_tuple()
+    actual_values = cfg.glob.document.get_columns_in_tuple(is_sha256=False)
 
     if actual_values != tuple(expected_values):
         print(f"issue with dbt document cfg.glob.document id={expected_values[0]}:")
@@ -3032,7 +3032,7 @@ def check_new_document():
 
     cfg.glob.document = db.cls_document.Document.from_id(expected_values[0])
 
-    actual_values = cfg.glob.document.get_columns_in_tuple()
+    actual_values = cfg.glob.document.get_columns_in_tuple(is_sha256=False)
 
     if actual_values != tuple(expected_values):
         print("issue with new dbt document cfg.glob.document:")
@@ -3043,13 +3043,13 @@ def check_new_document():
     # -----------------------------------------------------------------------------
     # Update object.
     # -----------------------------------------------------------------------------
-    expected_values[13] = db.cls_document.Document.DOCUMENT_STATUS_END
+    expected_values[12] = db.cls_document.Document.DOCUMENT_STATUS_END
 
-    cfg.glob.document.document_status = expected_values[13]
+    cfg.glob.document.document_status = expected_values[12]
 
     cfg.glob.document.finalise()
 
-    actual_values = cfg.glob.document.get_columns_in_tuple()
+    actual_values = cfg.glob.document.get_columns_in_tuple(is_sha256=False)
 
     if actual_values != tuple(expected_values):
         print("issue with updated dbt document cfg.glob.document:")

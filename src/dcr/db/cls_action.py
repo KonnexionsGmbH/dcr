@@ -453,34 +453,29 @@ class Action:
             self.action_action_text,
             self.action_directory_name,
             self.action_directory_type,
-            self.action_duration_ns,
         ]
 
         if is_duration_ns:
             columns.append(self.action_duration_ns)
 
-        columns.append(
-            [
-                self.action_error_code_last,
-                self.action_error_msg_last,
-                self.action_error_no,
-                self.action_file_name,
-            ]
-        )
+        columns = columns + [
+            self.action_error_code_last,
+            self.action_error_msg_last,
+            self.action_error_no,
+            self.action_file_name,
+        ]
 
         if is_file_size_bytes:
             columns.append(self.action_file_size_bytes)
 
-        columns.append(
-            [
-                self.action_id_document,
-                self.action_id_parent,
-                self.action_id_run_last,
-                self.action_no_children,
-                self.action_no_pdf_pages,
-                self.action_status,
-            ]
-        )
+        columns = columns + [
+            self.action_id_document,
+            self.action_id_parent,
+            self.action_id_run_last,
+            self.action_no_children,
+            self.action_no_pdf_pages,
+            self.action_status,
+        ]
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 

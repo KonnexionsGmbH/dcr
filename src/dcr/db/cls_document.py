@@ -404,13 +404,11 @@ class Document:
         if is_file_size_bytes:
             columns.append(self.document_file_size_bytes)
 
-        columns.append(
-            [
-                self.document_id_language,
-                self.document_id_run_last,
-                self.document_no_pdf_pages,
-            ]
-        )
+        columns = columns + [
+            self.document_id_language,
+            self.document_id_run_last,
+            self.document_no_pdf_pages,
+        ]
 
         if is_sha256:
             columns.append(self.document_sha256)
