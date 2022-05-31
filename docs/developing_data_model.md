@@ -79,7 +79,7 @@ This database table documents the executed processing runs in detail.
 
 ![](img/developing_data_model_dbt_run_erd.png)
 
-#### 2.6 Database Table **`token`**
+### 2.6 Database Table **`token`**
 
 This database table contains the tokens determined by [spaCy](https://spacy.io){:target="_blank"} together with selected attributes.
 
