@@ -4,7 +4,7 @@ set -e
 
 # ----------------------------------------------------------------------------------
 #
-# run_install_4_vm_wsl2_1.sh: Install a dcr_dev environment for Ubuntu 22.04 - Step 1.
+# run_install_4_vm_wsl2_1.sh: Install a dcr_dev environment for Ubuntu 20.04 - Step 1.
 #
 # ----------------------------------------------------------------------------------
 
@@ -14,9 +14,9 @@ export HOST_ENVIRONMENT_DEFAULT=vm
 
 export CURRENT_PATH=$(pwd)
 
-export VERSION_DCR_DEV=0.9.1
+export VERSION_DCR_DEV=0.9.2
 
-export VERSION_DBEAVER=22.0.3
+export VERSION_DBEAVER=22.0.5
 export VERSION_HTOP=3.2.0
 export VERSION_PANDOC=2.18
 export VERSION_PYTHON3=3.10.4
@@ -61,7 +61,7 @@ export TIMEZONE=Europe/Zurich
 
 echo '' >> ${HOME}/.bashrc
 echo '# ----------------------------------------------------------------------------' >> ${HOME}/.bashrc
-echo '# Environment dcr_dev for Ubuntu 22.04 - Start' >> ${HOME}/.bashrc
+echo '# Environment dcr_dev for Ubuntu 20.04 - Start' >> ${HOME}/.bashrc
 echo '# ----------------------------------------------------------------------------' >> ${HOME}/.bashrc
 echo " "
 echo "Script $0 is now running"
@@ -78,7 +78,7 @@ sleep .1
 echo "=============================================================================="
 echo "Start $0"
 echo "------------------------------------------------------------------------------"
-echo "Install a dcr_dev environment for Ubuntu 22.04 - Step 1."
+echo "Install a dcr_dev environment for Ubuntu 20.04 - Step 1."
 echo "------------------------------------------------------------------------------"
 echo "HOST_ENVIRONMENT                  : ${HOST_ENVIRONMENT}"
 echo "USER                              : ${USER}"
@@ -212,7 +212,7 @@ fi
 
 echo '' >> ${HOME}/.bashrc
 echo '# ----------------------------------------------------------------------------' >> ${HOME}/.bashrc
-echo '# Environment dcr_dev for Ubuntu 22.04 - End' >> ${HOME}/.bashrc
+echo '# Environment dcr_dev for Ubuntu 20.04 - End' >> ${HOME}/.bashrc
 echo '# ----------------------------------------------------------------------------' >> ${HOME}/.bashrc
 
 # Initializing the interactive shell session ---------------------------------------

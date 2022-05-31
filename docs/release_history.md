@@ -172,7 +172,7 @@ Release Date: 15.03.2022
 
 ### 1. New Features
 
-- processing step **`ocr`**: Convert appropriate image documents to **`pdf`** files.
+- processing step **`ocr`**: Convert appropriate image files to **`pdf`** files.
 
 ### 2. Applied Software
 

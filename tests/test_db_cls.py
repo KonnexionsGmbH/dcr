@@ -123,6 +123,8 @@ def check_existing_document():
 
     cfg.glob.document.exists()
 
+    cfg.glob.document.get_columns_in_tuple()
+
     # -----------------------------------------------------------------------------
     # Get the duplicate file name based on the hash key.
     # -----------------------------------------------------------------------------
@@ -3728,8 +3730,6 @@ def test_select_version_version_unique_driver(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
-    # wwe cfg.glob.db_core.db_driver_cur = cfg.glob.db_core._db_driver_conn.cursor()
-
     with pytest.raises(SystemExit) as expt:
         db.cls_version.Version.select_version_version_unique()
 
@@ -3742,8 +3742,6 @@ def test_select_version_version_unique_driver(fxtr_setup_empty_db_and_inbox):
     pytest.helpers.delete_version_version()
 
     cfg.glob.db_core = db.cls_db_core.DBCore()
-
-    # wwe cfg.glob.db_core.db_driver_cur = cfg.glob.db_core._db_driver_conn.cursor()
 
     with pytest.raises(SystemExit) as expt:
         db.cls_version.Version.select_version_version_unique()

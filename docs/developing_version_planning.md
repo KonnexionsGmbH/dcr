@@ -7,10 +7,10 @@
 
 ### 1.1 Open
 
-| Version | Feature(s)                        | 
-|---------|-----------------------------------|
-| 0.9.3   | User interface based on tkinter   |
-| 0.9.2   | Admin interface based on tkinter  |
+| Version | Feature(s)                    | 
+|---------|-------------------------------|
+| 0.9.3   | Extending NLP capabilities    |
+| 0.9.2   | Refactoring database and code |
 
 ### 1.2 Already implemented
 
@@ -30,7 +30,7 @@
 
 #### 2.1.1 High Priority
 
-- pandocdcr: convert **`doc`** documents to **`docx`**
+- pandoc_dcr: convert **`doc`** documents to **`docx`**
 - user: reconstruct original document
 
 #### 2.1.2 Normal Priority

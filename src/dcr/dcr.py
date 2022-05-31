@@ -82,8 +82,8 @@ def get_args(argv: List[str]) -> dict[str, bool]:
                 for development and run the development ecosystem.
         m_p   - Run the installation of the necessary 3rd party packages
                 for production and compile all packages and modules.
-        n_2_p - Convert non-pdf documents to pdf files:             Pandoc
-        ocr   - Convert image documents to pdf files:               Tesseract OCR / Tex Live.
+        n_2_p - Convert non-pdf documents to pdf documents:             Pandoc
+        ocr   - Convert image files to pdf documents:               Tesseract OCR / Tex Live.
         p_2_i - Convert pdf documents to image files:               pdf2image / Poppler.
         p_i   - Process the inbox directory.
         s_p_j - Store the parser result in a JSON file.
@@ -226,12 +226,12 @@ def main(argv: List[str]) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Convert image documents to pdf files.
+# Convert image files to pdf documents.
 # -----------------------------------------------------------------------------
 # noinspection PyArgumentList
 def process_convert_image_2_pdf() -> None:
-    """Convert image documents to pdf files."""
-    utils.progress_msg_empty_before("Start: Convert image documents to pdf files ... Tesseract OCR")
+    """Convert image files to pdf documents."""
+    utils.progress_msg_empty_before("Start: Convert image files to pdf documents ... Tesseract OCR")
 
     cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_TESSERACT)
 
@@ -239,9 +239,9 @@ def process_convert_image_2_pdf() -> None:
 
     cfg.glob.run.finalise()
 
-    utils.progress_msg("End  : Convert image documents to pdf files ...")
+    utils.progress_msg("End  : Convert image files to pdf documents ...")
 
-    utils.progress_msg_empty_before("Start: Reunite the related pdf files ... PyPDF2")
+    utils.progress_msg_empty_before("Start: Reunite the related pdf documents ... PyPDF2")
 
     cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PYPDF2)
 
@@ -249,16 +249,16 @@ def process_convert_image_2_pdf() -> None:
 
     cfg.glob.run.finalise()
 
-    utils.progress_msg("End  : Reunite the related pdf files ...")
+    utils.progress_msg("End  : Reunite the related pdf documents ...")
 
 
 # -----------------------------------------------------------------------------
-# Convert non-pdf documents to pdf files.
+# Convert non-pdf documents to pdf documents.
 # -----------------------------------------------------------------------------
 # noinspection PyArgumentList
 def process_convert_non_pdf_2_pdf() -> None:
-    """Convert non-pdf documents to pdf files."""
-    utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf files ... Pandoc [TeX Live]")
+    """Convert non-pdf documents to pdf documents."""
+    utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf documents ... Pandoc [TeX Live]")
 
     cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PANDOC)
 
@@ -266,7 +266,7 @@ def process_convert_non_pdf_2_pdf() -> None:
 
     cfg.glob.run.finalise()
 
-    utils.progress_msg("End  : Convert non-pdf documents to pdf files ...")
+    utils.progress_msg("End  : Convert non-pdf documents to pdf documents ...")
 
 
 # -----------------------------------------------------------------------------
@@ -318,13 +318,13 @@ def process_documents(args: dict[str, bool]) -> None:
         process_convert_pdf_2_image()
         utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
-    # Convert the image documents to pdf files.
+    # Convert the image files to pdf documents.
     if args[db.cls_run.Run.ACTION_CODE_TESSERACT]:
         start_time_process = time.perf_counter_ns()
         process_convert_image_2_pdf()
         utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
 
-    # Convert the non-pdf documents to pdf files.
+    # Convert the non-pdf documents to pdf documents.
     if args[db.cls_run.Run.ACTION_CODE_PANDOC]:
         start_time_process = time.perf_counter_ns()
         process_convert_non_pdf_2_pdf()

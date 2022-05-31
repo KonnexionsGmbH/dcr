@@ -7,38 +7,39 @@
 
 ## 1. Version 0.9.2
 
-Release Date: dd.mm.2022
+Release Date: 01.06.2022
 
 ### 1.1 New Features
 
+- object-oriented design.
 - selectable spaCy token attributes completed.
 
 ### 1.2 Modified Features
 
-- TBD
+- database schema refactored
 
 ### 1.3 Applied Software
 
-| Software                                                                      | Version                | Remark                              | Status |
-|:------------------------------------------------------------------------------|:-----------------------|:------------------------------------|--------|
-| DBeaver                                                                       | 22.0.4                 | for virtual machine only [optional] |        |
-| Docker Desktop                                                                | 20.10.14               | base version [Docker Image & VM]    |        | 
-| Git                                                                           | 2.25.1                 | base version                        |        |
-| [Pandoc](https://pandoc.org){:target="_blank"}                                | 2.18                   |                                     |        |
-| [PFlib TET](https://www.pdflib.com/products/tet){:target="_blank"}            | 5.3                    |                                     |        |
-| [Poppler](https://poppler.freedesktop.org){:target="_blank"}                  | 0.86.1                 | base version                        |        |
-| Python3                                                                       | 3.10.4                 |                                     |        |
-| Python3 - pip                                                                 | 22.0.4                 |                                     |        |
-| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} | 5.10.0                 | base version                        |        |
-| [TeX Live](https://www.tug.org/texlive){:target="_blank"}                     | 2019                   | base version                        |        |
-| [TeX Live](https://www.tug.org/texlive){:target="_blank"} - pdfTeX            | 3.14159265-2.6-1.40.20 | base version                        |        |
+| Software                                                                      | Version                | Remark                              | Status  |
+|:------------------------------------------------------------------------------|:-----------------------|:------------------------------------|---------|
+| DBeaver                                                                       | 22.0.5                 | for virtual machine only [optional] | upgrade |
+| Docker Desktop                                                                | 20.10.16               | base version [Docker Image & VM]    | upgrade | 
+| Git                                                                           | 2.25.1                 | base version                        |         |
+| [Pandoc](https://pandoc.org){:target="_blank"}                                | 2.18                   |                                     |         |
+| [PFlib TET](https://www.pdflib.com/products/tet){:target="_blank"}            | 5.3                    |                                     |         |
+| [Poppler](https://poppler.freedesktop.org){:target="_blank"}                  | 0.86.1                 | base version                        |         |
+| Python3                                                                       | 3.10.4                 |                                     |         |
+| Python3 - pip                                                                 | 22.0.4                 |                                     |         |
+| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} | 5.1.0                  | base version                        |         |
+| [TeX Live](https://www.tug.org/texlive){:target="_blank"}                     | 2019                   | base version                        |         |
+| [TeX Live](https://www.tug.org/texlive){:target="_blank"} - pdfTeX            | 3.14159265-2.6-1.40.20 | base version                        |         |
 
 #### 1.3.1 Unix-specific Software
 
 | Software                                                        | Version         | Remark                    | Status  |
 |:----------------------------------------------------------------|:----------------|:--------------------------|---------|
-| asdf                                                            | v0.10.0-a9caa5b | base version (optional)   |         |
-| cURL                                                            | 7.6.80          | base version              |         |
+| asdf                                                            | v0.10.1-711ad99 | base version (optional)   | upgrade |
+| cURL                                                            | 7.68.0          | base version              |         |
 | dos2unix                                                        | 7.4.0           | base version              |         |
 | GCC & G++                                                       | 9.4.0           | base version              |         |
 | GNU Autoconf                                                    | 2.69            | base version              |         |
@@ -48,7 +49,7 @@ Release Date: dd.mm.2022
 | [OpenSSL](https://www.openssl.org){:target="_blank"}            | 1.1.1f          | base version              |         |
 | [procps](https://github.com/warmchang/procps){:target="_blank"} | 3.3.16          | base version (optional)   |         |
 | [tmux](https://github.com/tmux/tmux/wiki){:target="_blank"}     | 3.2a            | optional                  |         |
-| Ubuntu                                                          | 22.04.4 LTS     | base version              | upgrade |
+| Ubuntu                                                          | 20.04.4 LTS     | base version              | upgrade |
 | Vim                                                             | 8.1.3741        | base version (optional)   |         |
 | Wget                                                            | 1.20.3          |                           |         |
 
@@ -65,7 +66,7 @@ Release Date: dd.mm.2022
 
 1. Microsoft Windows Server 2019: (see [here](#issues_windows_2019){:target="_blank"}) 
 
-2. Pydoc-Markdown: (see [here](#issues_pydoc_markdown){:target="_blank"})
+2. MkApi: (see [here](#issues_mkapi){:target="_blank"})
 
 3. Tesseract OCR: (see [here](#issues_tesseract_ocr){:target="_blank"})
 
@@ -116,78 +117,11 @@ Release Date: dd.mm.2022
     Aborted!
 ```
 
-### <a name="issues_pydoc_markdown"></a> 2.2 Pydoc-Markdown
+### <a name="issues_mkapi"></a> 2.2 MkApi
 
-- Issue: Please help me with combined Pydoc-Markdown and MKDocs (see [here](https://github.com/NiklasRosenstein/pydoc-markdown/discussions/243){:target="_blank"}).
+Python version 3.10 is not yet supported.
 
-```
-    Traceback (most recent call last):
-      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1129, in create_spinner
-        yield sp
-      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1320, in venv_resolve_deps
-        c = resolve(cmd, sp, project=project)
-      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1139, in resolve
-        for line in iter(c.stderr.readline, ""):
-      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\codecs.py", line 319, in decode
-        def decode(self, input, final=False):
-    KeyboardInterrupt
-```
-
-new:
-
-```
-    "Info **********  Start: Pydoc-Markdown ******************************"
-    pipenv run pydoc-markdown --version
-    python -m pydoc-markdown, version 4.6.3
-    pipenv run pydoc-markdown -I src/dcr --render-toc > docs/developing_api_documentation.md
-    Traceback (most recent call last):
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\parser.py", line 88, in parse_to_ast
-        return RefactoringTool([], options).refactor_string(code + '\n', filename)
-      File "C:\Software\Python\Python310\lib\lib2to3\refactor.py", line 364, in refactor_string
-        self.log_error("Can't parse %s: %s: %s",
-      File "C:\Software\Python\Python310\lib\lib2to3\refactor.py", line 362, in refactor_string
-        tree = self.driver.parse_string(data)
-      File "C:\Software\Python\Python310\lib\lib2to3\pgen2\driver.py", line 103, in parse_string
-        return self.parse_tokens(tokens, debug)
-      File "C:\Software\Python\Python310\lib\lib2to3\pgen2\driver.py", line 71, in parse_tokens
-        if p.addtoken(type, value, (prefix, start)):
-      File "C:\Software\Python\Python310\lib\lib2to3\pgen2\parse.py", line 162, in addtoken
-        raise ParseError("bad input", type, value, context)
-    lib2to3.pgen2.parse.ParseError: bad input: type=1, value='child_tag', context=(' ', (66, 14))
-    
-    During handling of the above exception, another exception occurred:
-    
-    Traceback (most recent call last):
-      File "C:\Software\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
-        return _run_code(code, main_globals, None,
-      File "C:\Software\Python\Python310\lib\runpy.py", line 86, in _run_code
-        exec(code, run_globals)
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\Scripts\pydoc-markdown.EXE\__main__.py", line 7, in <module>
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\click\core.py", line 1128, in __call__
-        return self.main(*args, **kwargs)
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\click\core.py", line 1053, in main
-        rv = self.invoke(ctx)
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\click\core.py", line 1395, in invoke
-        return ctx.invoke(self.callback, **ctx.params)
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\click\core.py", line 754, in invoke
-        return __callback(*args, **kwargs)
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\pydoc_markdown\main.py", line 344, in cli
-        session.render(pydocmd)
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\pydoc_markdown\main.py", line 136, in render
-        modules = config.load_modules()
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\pydoc_markdown\__init__.py", line 154, in load_modules
-        modules.extend(loader.load())
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\__init__.py", line 87, in load_python_modules
-        yield parse_python_module(filename, module_name=module_name, options=options, encoding=encoding)
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\__init__.py", line 128, in parse_python_module
-        return parse_python_module(fpobj, fp, module_name, options, encoding)
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\__init__.py", line 132, in parse_python_module
-        ast = parser.parse_to_ast(fp.read(), filename)
-      File "C:\Users\walte\.virtualenvs\dcr-v5dCJOH6\lib\site-packages\docspec_python\parser.py", line 90, in parse_to_ast
-        raise ParseError(exc.msg, exc.type, exc.value, tuple(exc.context) + (filename,))
-    lib2to3.pgen2.parse.ParseError: bad input: type=1, value='child_tag', context=(' ', (66, 14), 'src\\dcr\\libs\\parser.py')
-    make: *** [pydoc-markdown] Fehler 1
-```
+- Issue: Python 3.10 (see [here](https://github.com/daizutabi/mkapi/issues/56){:target="_blank"}).
 
 ### <a name="issues_tesseract_ocr"></a> 2.3 [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}
 

@@ -20,8 +20,8 @@ if ["%1"] EQU [""] (
     echo ---------------------------------------------------------
     echo p_i          - 1. Process the inbox directory.
     echo p_2_i[_only] - 2. Convert pdf documents to image files:          pdf2image / Poppler.
-    echo ocr[_only]   - 3. Convert image documents to pdf files:          Tesseract OCR / Tex Live.
-    echo n_2_p[_only] - 2. Convert non-pdf documents to pdf files:        Pandoc
+    echo ocr[_only]   - 3. Convert image files to pdf documents:          Tesseract OCR / Tex Live.
+    echo n_2_p[_only] - 2. Convert non-pdf documents to pdf documents:    Pandoc
     echo ---------------------------------------------------------
     echo tet[_only]   - 4. Extract text and metdata from pdf documents:   PDFlib TET.
     echo s_p_j[_only] - 5. Store the parser result in a JSON file.

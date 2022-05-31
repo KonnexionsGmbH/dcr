@@ -1,4 +1,4 @@
-"""Module pp.pandoc_dcr: Convert non-pdf documents to pdf files."""
+"""Module pp.pandoc_dcr: Convert non-pdf documents to pdf documents."""
 import os
 import time
 
@@ -25,10 +25,10 @@ PANDOC_PDF_ENGINE_XELATEX: str = "xelatex"
 
 
 # -----------------------------------------------------------------------------
-# Convert non-pdf documents to pdf files (step: n_2_p).
+# Convert non-pdf documents to pdf documents (step: n_2_p).
 # -----------------------------------------------------------------------------
 def convert_non_pdf_2_pdf() -> None:
-    """Convert non-pdf documents to pdf files.
+    """Convert non-pdf documents to pdf documents.
 
     TBD
     """
@@ -61,10 +61,10 @@ def convert_non_pdf_2_pdf() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Convert a non-pdf document to a pdf file (step: n_2_p).
+# Convert a non-pdf document to a pdf document (step: n_2_p).
 # -----------------------------------------------------------------------------
 def convert_non_pdf_2_pdf_file() -> None:
-    """Convert a non-pdf document to a pdf file."""
+    """Convert a non-pdf document to a pdf document."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     full_name_curr = cfg.glob.action_curr.get_full_name()

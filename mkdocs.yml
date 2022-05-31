@@ -17,6 +17,9 @@ extra_javascript:
 markdown_extensions:
   - attr_list
   - pymdownx.tilde
+  - toc : {
+    toc_depth: "1-3"
+  }
 
 nav:
   - Home: index.md
@@ -45,9 +48,12 @@ nav:
   - Code of Conduct: code_of_conduct.md
   - Contributing Guide: contributing.md
   - License: license.md
+#  - API: mkapi/api/mkapi|upper|strict
 
 plugins:
   - search
+  - mkapi:
+      src_dirs: [src]
 
 repo_url: https://github.com/KonnexionsGmbH/dcr/
 

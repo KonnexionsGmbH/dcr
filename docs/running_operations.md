@@ -14,7 +14,7 @@ The following actions are available:
 | **`m_d`**   | Run the installation of the necessary 3rd party packages <br/>for development and run the development ecosystem.   |
 | **`m_p`**   | Run the installation of the necessary 3rd party packages <br/>for production and compile all packages and modules. |
 | **`n_2_p`** | Convert non **`pdf`** documents to **`pdf`** files.                                                                |
-| **`ocr`**   | Convert image documents to **`pdf`** files.                                                                        |
+| **`ocr`**   | Convert image files to **`pdf`** files.                                                                        |
 | **`p_2_i`** | Convert **`pdf`** documents to image files.                                                                        |
 | **`p_i`**   | Process the inbox directory.                                                                                       |
 | **`s_p_j`** | Store the parser result in a JSON file.                                                                           |
@@ -27,7 +27,7 @@ The action **`all - run the complete processing of all new documents`** includes
 |-------------|-----------------------------------------------------|
 | **`p_i`**   | Process the inbox directory.                        |
 | **`p_2_i`** | Convert **`pdf`** documents to image files.         |
-| **`ocr`**   | Convert image documents to **`pdf`** files.         |
+| **`ocr`**   | Convert image files to **`pdf`** files.         |
 | **`n_2_p`** | Convert non **`pdf`** documents to **`pdf`** files. |
 | **`tet`**   | Extract text from **`pdf`** documents.              |
 | **`s_p_j`** | Store the parser result in a JSON file.            |

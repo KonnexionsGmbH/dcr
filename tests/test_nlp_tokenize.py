@@ -152,6 +152,7 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
         ],
     )
 
@@ -193,6 +194,7 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
         inbox_accepted=(
             [],
             [
+                "tokenizer_coverage_1.line_token.json",
                 "tokenizer_coverage_1.page.json",
                 "tokenizer_coverage_1.pdf",
                 "tokenizer_coverage_1.word.json",

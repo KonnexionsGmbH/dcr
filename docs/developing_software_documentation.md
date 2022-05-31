@@ -41,8 +41,8 @@ In this format, the API documentation can then be integrated into the user docum
         all   - Run the complete processing of all new documents.
         db_c  - Create the database.
         db_u  - Upgrade the database.
-        n_2_p - Convert non-pdf docuents to pdf files.
-        ocr   - Convert image docuents to pdf files.
+        n_2_p - Convert non-pdf docuents to pdf documents.
+        ocr   - Convert image docuents to pdf documents.
         p_i   - Process the inbox directory.
         p_2_i - Convert pdf documents to image files.
         tet   - Extract text from pdf documents.

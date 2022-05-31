@@ -410,20 +410,6 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     assert expt.type == SystemExit, "Version < '1.0.0' not supported"
     assert expt.value.code == 1, "Version < '1.0.0' not supported"
 
-    # wwe
-    # # -------------------------------------------------------------------------
-    # cfg.glob.db_core = db.cls_db_core.DBCore()
-    #
-    # update_version_version("0.0.0")
-    #
-    # cfg.glob.db_core.disconnect_db()
-    #
-    # with pytest.raises(SystemExit) as expt:
-    #     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_UPGRADE_DB])
-    #
-    # assert expt.type == SystemExit, "Version unknown"
-    # assert expt.value.code == 1, "Version unknown"
-
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 

@@ -122,8 +122,11 @@ This file controls the behaviour of the **DCR** application.
 The customisable entries are:
 
     [dcr]
+    db_connection_port = 5432
     db_connection_prefix = postgresql+psycopg2://
     db_container_port = 5432
+    db_database = dcr_db_prod
+    db_database_admin = dcr_db_prod_admin
     db_dialect = postgresql
     db_host = localhost
     db_password = postgresql
@@ -132,9 +135,9 @@ The customisable entries are:
     db_user = dcr_user
     db_user_admin = dcr_user_admin
     delete_auxiliary_files = true
-    directory_inbox = data/inbox
-    directory_inbox_accepted = data/inbox_accepted
-    directory_inbox_rejected = data/inbox_rejected
+    directory_inbox = data/inbox_prod
+    directory_inbox_accepted = data/inbox_prod_accepted
+    directory_inbox_rejected = data/inbox_prod_rejected
     ignore_duplicates = false
     initial_database_data = data/initial_database_data.json
     line_footer_max_distance = 3
@@ -145,9 +148,9 @@ The customisable entries are:
     tesseract_timeout = 30
     tetml_page = false
     tetml_word = false
-    tokenize_2_database = true
-    tokenize_2_jsonfile = false
-    verbose = false
+    tokenize_2_database = false
+    tokenize_2_jsonfile = true
+    verbose = true
     verbose_line_type = false
     verbose_parser = none
     
@@ -165,9 +168,9 @@ The customisable entries are:
 | db_user                  | **`postgresql`**                      | **DCR** database user name.                                                                        |
 | db_user_admin            | **`postgresql`**                      | Administrative database user name.                                                                 |
 | delete_auxiliary_files   | **`true`**                            | Delete the auxiliary files after a successful <br>processing step.                                 |
-| directory_inbox          | **`data/inbox`**                      | Directory for the new documents received.                                                          |
-| directory_inbox_accepted | **`data/inbox_accepted`**             | Directory for the accepted documents.                                                              |
-| directory_inbox_rejected | **`data/inbox_rejected`**             | Complete file name for the JSON file with the <br>database initialisation data.                    |
+| directory_inbox          | **`data/inbox_prod`**                 | Directory for the new documents received.                                                          |
+| directory_inbox_accepted | **`data/inbox_prod_accepted`**        | Directory for the accepted documents.                                                              |
+| directory_inbox_rejected | **`data/inbox_prod_rejected`**        | Complete file name for the JSON file with the <br>database initialisation data.                    |
 | ignore_duplicates        | **`false`**                           | Accept presumably duplicated documents <br/>based on a SHA256 hash key.                            |
 | initial_database_data    | **`data/initial_database_data.json`** | File with initial database contents.                                                               |
 | line_footer_max_distance | **`3`**                               | Maximum Levenshtein distance for a footer line.                                                    |
@@ -178,8 +181,8 @@ The customisable entries are:
 | tesseract_timeout        | **`30`**                              | Terminate the tesseract job after a <br>period of time (seconds).                                  |
 | tetml_page               | **`false`**                           | PDFlib TET granularity 'page'.                                                                     |
 | tetml_word               | **`false`**                           | PDFlib TET granularity 'word'.                                                                     |
-| tokenize_2_database      | **`true`**                            | Store the tokens in the database table **`token`**.                                                |
-| tokenize_2_jsonfile      | **`false`**                           | Store the tokens in a JSON flat file.                                                              |
+| tokenize_2_database      | **`false`**                           | Store the tokens in the database table **`token`**.                                                |
+| tokenize_2_jsonfile      | **`true`**                            | Store the tokens in a JSON flat file.                                                              |
 | verbose                  | **`true`**                            | Display progress messages for processing.                                                          |
 | verbose_line_type        | **`false`**                           | Display progress messages for line type determination.                                             |
 | verbose_parser           | **`none`**                            | Display progress messages for parsing **`xml`** (TETML) : <br>**`all`**, **`none`** or **`text`**. |
@@ -189,32 +192,68 @@ The configuration parameters can be set differently for the individual environme
 **Examples**:
       
     [dcr.env.dev]
-    db_connection_port = 5432
+    db_connection_port = 5433
     db_database = dcr_db_dev
     db_database_admin = dcr_db_dev_admin
+    db_host = localhost
+    db_password = postgresql
+    db_password_admin = postgresql
+    db_user = dcr_user
+    db_user_admin = dcr_user_admin
+    delete_auxiliary_files = false
     directory_inbox = data/inbox_dev
     directory_inbox_accepted = data/inbox_dev_accepted
     directory_inbox_rejected = data/inbox_dev_rejected
+    ignore_duplicates = false
+    initial_database_data = data/initial_database_data_dev.json
+    line_footer_max_distance = 3
+    line_footer_max_lines = 3
+    line_header_max_distance = 3
+    line_header_max_lines = 3
+    pdf2image_type = jpeg
+    tesseract_timeout = 30
     tetml_page = true
     tetml_word = true
+    tokenize_2_database = true
     tokenize_2_jsonfile = true
     verbose = true
-    verbose_line_type = true
+    verbose_line_type = false
     verbose_parser = none
-    
-    [dcr.env.prod]
-    db_connection_port = 5433
-    db_database = dcr_db_prod
-    db_database_admin = dcr_db_prod_admin
-    delete_auxiliary_files = true
-    verbose = false
     
     [dcr.env.test]
     db_connection_port = 5434
+    db_connection_prefix = postgresql+psycopg2://
+    db_container_port = 5432
     db_database = dcr_db_test
     db_database_admin = dcr_db_test_admin
+    db_dialect = postgresql
+    db_host = localhost
+    db_password = postgresql
+    db_password_admin = postgresql
+    db_schema = dcr_schema
+    db_user = dcr_user
+    db_user_admin = dcr_user_admin
+    delete_auxiliary_files = true
+    directory_inbox = data/inbox_test
+    directory_inbox_accepted = data/inbox_test_accepted
+    directory_inbox_rejected = data/inbox_test_rejected
+    ignore_duplicates = false
+    initial_database_data = data/initial_database_data_test.json
+    line_footer_max_distance = 3
+    line_footer_max_lines = 3
+    line_header_max_distance = 3
+    line_header_max_lines = 3
+    pdf2image_type = jpeg
+    tesseract_timeout = 30
+    tetml_page = false
+    tetml_word = false
+    tokenize_2_database = true
+    tokenize_2_jsonfile = false
+    verbose = true
+    verbose_line_type = false
+    verbose_parser = none
 
-### 3.1 [spaCy](https://spacy.io){:target="_blank"} Token Attributes
+## 4. **`setup.cfg`** - [spaCy](https://spacy.io){:target="_blank"} Token Attributes
 
 The tokens derived from the documents can be qualified via various attributes. 
 The available options are described below.

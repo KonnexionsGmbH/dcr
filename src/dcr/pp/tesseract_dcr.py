@@ -1,4 +1,4 @@
-"""Module pp.tesseract_dcr: Convert image documents to pdf files."""
+"""Module pp.tesseract_dcr: Convert image files to pdf documents."""
 import os
 import time
 
@@ -23,10 +23,10 @@ ERROR_41_904: str = "41.904 Issue (pypdf2): The target file '{full_name}' alread
 
 
 # -----------------------------------------------------------------------------
-# Convert image documents to pdf files (step: ocr).
+# Convert image files to pdf documents (step: ocr).
 # -----------------------------------------------------------------------------
 def convert_image_2_pdf() -> None:
-    """Convert image documents to pdf files.
+    """Convert image files to pdf documents.
 
     TBD
     """
@@ -59,7 +59,7 @@ def convert_image_2_pdf() -> None:
 
 
 # -----------------------------------------------------------------------------
-# Convert image documents to pdf files (step: ocr).
+# Convert image files to pdf documents (step: ocr).
 # -----------------------------------------------------------------------------
 # noinspection PyArgumentList
 def convert_image_2_pdf_file() -> None:
