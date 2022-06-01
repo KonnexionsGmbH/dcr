@@ -3530,10 +3530,13 @@ def test_missing_dependencies_language_0(fxtr_setup_logger):
 # -----------------------------------------------------------------------------
 # Test Function - missing dependencies - language - case 1.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_language_1(fxtr_setup_logger):
+def test_missing_dependencies_language_1(fxtr_setup_logger_environment):
     """# Test Function - missing dependencies - language - case 1.
     ."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
     try:

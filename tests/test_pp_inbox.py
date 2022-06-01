@@ -231,8 +231,6 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
             ("pdf_text_ok", "pdf"),
             ("pdf_text_ok_protected", "pdf"),
             ("pdf_wrong_format", "pdf"),
-            ("unknown_file_extension", "xxx"),
-            ("unknown_file_extension_protected", "xxx"),
         ],
         target_path=cfg.glob.setup.directory_inbox,
     )
@@ -271,11 +269,12 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
             [
                 "pdf_text_ok_protected_2.pdf",
                 "pdf_wrong_format_3.pdf",
-                "unknown_file_extension_4.xxx",
-                "unknown_file_extension_protected_5.xxx",
             ],
         ),
     )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -330,3 +329,60 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_PROCESS_INBOX - rejected - 901.
+# -----------------------------------------------------------------------------
+def test_run_action_process_inbox_rejected_901(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_PROCESS_INBOX - rejected - 901."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
+
+    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
+
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("unknown_file_extension", "xxx"),
+            ("unknown_file_extension_protected", "xxx"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "false"),
+        ],
+    )
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected <=========")
+
+    pytest.helpers.verify_content_of_inboxes(
+        inbox=(
+            [],
+            [],
+        ),
+        inbox_accepted=(
+            [],
+            [],
+        ),
+        inbox_rejected=(
+            [],
+            [
+                "unknown_file_extension_1.xxx",
+                "unknown_file_extension_protected_2.xxx",
+            ],
+        ),
+    )
