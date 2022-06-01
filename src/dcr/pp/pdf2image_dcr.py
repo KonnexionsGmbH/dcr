@@ -3,10 +3,23 @@ files."""
 import os
 import time
 
+import cfg.cls_setup
 import cfg.glob
-import db.dml
+import db.cls_action
+import db.cls_document
+import db.cls_run
 import pdf2image
 import utils
+from pdf2image.exceptions import PDFPageCountError
+
+# -----------------------------------------------------------------------------
+# Class variables.
+# -----------------------------------------------------------------------------
+ERROR_21_901: str = (
+    "21.901 Issue (p_2_i): Processing file '{full_name_curr}' with pdf2image failed - "
+    + "error type: '{error_type}' - error: '{error}'."
+)
+ERROR_21_903: str = "21.903 Issue (p_2_i): The target file '{full_name}' already exists."
 
 
 # -----------------------------------------------------------------------------
@@ -19,24 +32,22 @@ def convert_pdf_2_image() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    if cfg.glob.setup.pdf2image_type == cfg.glob.setup.PDF2IMAGE_TYPE_PNG:
-        cfg.glob.document_child_file_type = cfg.glob.DOCUMENT_FILE_TYPE_PNG
-    else:
-        cfg.glob.document_child_file_type = cfg.glob.DOCUMENT_FILE_TYPE_JPG
-
-    utils.reset_statistics_total()
-
-    dbt = db.dml.dml_prepare(cfg.glob.DBT_DOCUMENT)
-
-    with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt, cfg.glob.DOCUMENT_STEP_PDF2IMAGE)
+    with cfg.glob.db_core.db_orm_engine.begin() as conn:
+        rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDF2IMAGE)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
 
-            utils.start_document_processing(
-                document=row,
-            )
+            cfg.glob.run.run_total_processed_to_be += 1
+
+            cfg.glob.action_curr = db.cls_action.Action.from_row(row)
+
+            if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
+                cfg.glob.run.total_status_error += 1
+            else:
+                cfg.glob.run.total_status_ready += 1
+
+            cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
 
             convert_pdf_2_image_file()
 
@@ -50,67 +61,83 @@ def convert_pdf_2_image() -> None:
 # -----------------------------------------------------------------------------
 # Convert a scanned image pdf document to an image file (step: p_2_i).
 # -----------------------------------------------------------------------------
+# noinspection PyArgumentList
 def convert_pdf_2_image_file() -> None:
     """Convert a scanned image pdf document to an image file."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    file_name_parent = os.path.join(
-        cfg.glob.document_directory_name,
-        cfg.glob.document_file_name,
+    full_name_curr = utils.get_full_name(
+        cfg.glob.action_curr.action_directory_name,
+        cfg.glob.action_curr.action_file_name,
     )
 
-    images = pdf2image.convert_from_path(file_name_parent)
+    try:
+        images = pdf2image.convert_from_path(full_name_curr)
 
-    utils.prepare_document_4_next_step(
-        next_file_type=cfg.glob.setup.pdf2image_type,
-        next_step=cfg.glob.DOCUMENT_STEP_TESSERACT,
-    )
+        cfg.glob.action_curr.action_no_children = 0
 
-    cfg.glob.document_child_child_no = 0
+        is_no_error: bool = True
 
-    # Store the image pages
-    for img in images:
-        cfg.glob.document_child_child_no += 1
+        # Store the image pages
+        for img in images:
+            cfg.glob.action_curr.action_no_children += 1
 
-        cfg.glob.document_child_stem_name = cfg.glob.document_stem_name + "_" + str(cfg.glob.document_child_child_no)
+            stem_name_next = cfg.glob.action_curr.get_stem_name() + "_" + str(cfg.glob.action_curr.action_no_children)
 
-        cfg.glob.document_child_file_name = cfg.glob.document_child_stem_name + "." + cfg.glob.document_child_file_type
-
-        file_name_child = os.path.join(
-            cfg.glob.document_child_directory_name,
-            cfg.glob.document_child_file_name,
-        )
-
-        if os.path.exists(file_name_child):
-            db.dml.update_document_error(
-                document_id=cfg.glob.document_id,
-                error_code=cfg.glob.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-                error_msg=cfg.glob.ERROR_21_903.replace("{file_name}", file_name_child),
-            )
-        else:
-            img.save(
-                file_name_child,
-                cfg.glob.setup.pdf2image_type,
+            file_name_next = (
+                stem_name_next
+                + "."
+                + (
+                    db.cls_document.Document.DOCUMENT_FILE_TYPE_PNG
+                    if cfg.glob.setup.pdf2image_type == cfg.cls_setup.Setup.PDF2IMAGE_TYPE_PNG
+                    else db.cls_document.Document.DOCUMENT_FILE_TYPE_JPEG
+                )
             )
 
-            db.dml.insert_document_child()
+            full_name_next = utils.get_full_name(
+                cfg.glob.action_curr.action_directory_name,
+                file_name_next,
+            )
 
-            cfg.glob.total_generated += 1
+            if os.path.exists(full_name_next):
+                cfg.glob.action_curr.finalise_error(
+                    error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+                    error_msg=ERROR_21_903.replace("{full_name}", full_name_next),
+                )
 
-    utils.delete_auxiliary_file(file_name_parent)
+                is_no_error = False
+            else:
+                img.save(
+                    full_name_next,
+                    cfg.glob.setup.pdf2image_type,
+                )
 
-    cfg.glob.total_ok_processed += 1
+                cfg.glob.action_next = db.cls_action.Action(
+                    action_code=db.cls_run.Run.ACTION_CODE_TESSERACT,
+                    id_run_last=cfg.glob.run.run_id,
+                    directory_name=cfg.glob.action_curr.action_directory_name,
+                    directory_type=cfg.glob.action_curr.action_directory_type,
+                    file_name=file_name_next,
+                    file_size_bytes=os.path.getsize(full_name_next),
+                    id_document=cfg.glob.action_curr.action_id_document,
+                    id_parent=cfg.glob.action_curr.action_id,
+                    no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
+                )
 
-    # Document successfully converted to image format
-    duration_ns = db.dml.update_document_statistics(
-        document_id=cfg.glob.document_id, status=cfg.glob.DOCUMENT_STATUS_END
-    )
+                cfg.glob.run.total_generated += 1
 
-    if cfg.glob.setup.is_verbose:
-        utils.progress_msg(
-            f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-            f"Document: {cfg.glob.document_id:6d} "
-            f"[{db.dml.select_document_file_name_id(cfg.glob.document_id)}]"
+        if is_no_error:
+            utils.delete_auxiliary_file(full_name_curr)
+
+            cfg.glob.action_curr.finalise()
+
+            cfg.glob.run.run_total_processed_ok += 1
+    except PDFPageCountError as err:
+        cfg.glob.action_curr.finalise_error(
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
+            error_msg=ERROR_21_901.replace("{full_name_curr}", full_name_curr)
+            .replace("{error_type}", str(type(err)))
+            .replace("{error}", str(err)),
         )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

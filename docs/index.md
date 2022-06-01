@@ -14,10 +14,8 @@ The processing logic is as follows:
 - Documents not in **`pdf`** format are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}. 
 - Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to **`pdf`** format using the [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} software. This process applies to all image format files e.g. **`jpeg`**, **`tiff`** etc., as well as scanned images in **`pdf`** format.  
 - From all **`pdf`** documents, the text and associated metadata is extracted into a document-specific **`xml`** file using [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"}.
-- The document-specific **`xml`** files are then parsed and the **DCR**-relevant contents are written to the database tables **`content_tetml_line`**,  **`content_tetml_page`**, or **`content_tetml_word`**. 
-- From one of the database tables **`content_tetml_line`** or **`content_tetml_page`** [spaCy](https://spacy.io){:target="_blank"} extracts qualified tokens and stores them in the database table **`content_token`**.
-
-<div style="page-break-after: always;"></div>
+- The document-specific **`xml`** files are then parsed and the **DCR**-relevant contents are written to the **`JSON`** files. 
+- From the **`JSON`** file(s) [spaCy](https://spacy.io){:target="_blank"} extracts qualified tokens and stores them either in a **`JSON`** file or in the database table **`token`**.
 
 ### 1.1 Rahman & Finin Paper
 
@@ -44,9 +42,13 @@ The processing logic is as follows:
 - **`tiff`** [Tag Image File Format](https://en.wikipedia.org/wiki/TIFF){:target="_blank"}
 - **`webp`** [Image file format with lossless and lossy compression](https://developers.google.com/speed/webp){:target="_blank"}
 
-<div style="page-break-after: always;"></div>
+## 2. Detailed processing actions
 
-## 2. Detailed processing steps
+The documents to be processed are divided into individual steps, so-called actions. 
+Each action has the task of changing the state of a document by transforming an input file format into a different output file format.
+The database tables **`run`**, **`document`**, and **`action`** document the current state of a document, as well as the actions performed so far.
+If an error occurs during the processing of the document, this is recorded in the database tables **`document`** and **`action`**.
+During the next run with the same action, the faulty documents are also processed again.
 
 ### 2.1 Preprocessor
 
@@ -54,9 +56,9 @@ The processing logic is as follows:
 
 ![](img/architecture_preprocessor.png)
 
-### 2.1.2 Process the inbox directory (step: **`p_i`**)
+### 2.1.2 Process the inbox directory (action: **`p_i`**)
 
-In the first step, the file directory **`inbox`** is checked for new document files. 
+In the first action, the file directory **`inbox`** is checked for new document files. 
 An entry is created in the **`document`** database table for each new document, showing the current processing status of the document. 
 
 The association of document and language is managed via subdirectories of the file folder **`inbox`**. 
@@ -105,9 +107,9 @@ Document files with the following file extensions are moved to the file director
 
 Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejected`**.
 
-### 2.1.3 Convert **`pdf`** documents to image files (step: **`p_2_i`**)
+### 2.1.3 Convert **`pdf`** documents to image files (action: **`p_2_i`**)
 
-This processing step only has to be carried out if there are new **`pdf`** documents in the document input that only consist of scanned images.
+This processing action only has to be carried out if there are new **`pdf`** documents in the document input that only consist of scanned images.
 **`pdf`** documents consisting of scanned images must first be processed with OCR software in order to extract text they contain. 
 Since [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} does not support the **`pdf`** file format, such a **`pdf`** document must first be converted into one or more image files. 
 This is done with the software [pdf2image](https://pypi.org/project/pdf2image){:target="_blank"}, which in turn is based on the [Poppler](https://poppler.freedesktop.org){:target="_blank"} software.
@@ -117,23 +119,17 @@ The processing of the original document (parent document) is then completed and 
 Since an image file created here always contains only one page of a **`pdf`** document, a multi-page **`pdf`** document is distributed over several image files. 
 After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, these separated files are then combined into one **`pdf`** document.
 
-### 2.1.4 Convert appropriate image documents to **`pdf`** files (step: **`ocr`**)
+### 2.1.4 Convert appropriate image files to **`pdf`** files (action: **`ocr`**)
 
-This processing step only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.3.
-In this processing step, the documents of this document types are converted to the **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
+This processing action only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.3.
+In this processing action, the documents of this document types are converted to the **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
 
-In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
-In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
+After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, the files split in the previous processing action are combined into a single **`pdf`** document.
 
-After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, the files split in the previous processing step are combined into a single **`pdf`** document.
+### 2.1.5 Convert appropriate non-**`pdf`** documents to **`pdf`** files (action: **`n_2_p`**)
 
-### 2.1.5 Convert appropriate non-**`pdf`** documents to **`pdf`** files (step: **`n_2_p`**)
-
-This processing step only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.2.
-In this processing step, the documents of this document types are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
-
-In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`pdf`** file (child document).
-In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
+This processing action only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.2.
+In this processing action, the documents of this document types are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
 
 ### 2.2 Natural Language Processing (NLP)
 
@@ -141,27 +137,20 @@ In the event of an error, the original document is marked as erroneous and an ex
 
 ![](img/architecture_nlp.png)
 
-### 2.2.2 Extract text from **`pdf`** documents (step: **`tet`**)
+### 2.2.2 Extract text from **`pdf`** documents (action: **`tet`**)
 
-In this processing step, the text of the **`pdf`** documents from sections 2.1.2.1, 2.1.4 and 2.1.5 are extracted and written to **`xml`** files in **`tetml`** format for each document.
+In this processing action, the text of the **`pdf`** documents from sections 2.1.2.1, 2.1.4 and 2.1.5 are extracted and written to **`xml`** files in **`tetml`** format for each document.
 The [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} library is used for this purpose.
 
-In case of success the processing of the original document (parent document) is then completed and the further processing is carried out with the newly created **`xml`** files (child documents).
-In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
+Depending on the configuration parameters **`tetml_page`** and **`tetml_word`**, up to three different **`xml`** files with different granularity can be created per document:
 
-Depending on the configuration parameters **`tetml_line`**, **`tetml_page`** and **`tetml_word`**, up to three different **`xml`** files with different granularity can be created per document:
-
-- **`tetml_line`**: granularity document `line`,
+- **`tetml_line`**: granularity document `line` (generated by default),
 - **`tetml_page`**: granularity document `page`,
 - **`tetml_word`**: granularity document `word`.
 
-The `word` variant is optional, but at least one of the variants `line` and `page` must be selected.
-
-<div style="page-break-after: always;"></div>
+The `page` variant and the `word` variant are both optional.
 
 **Example extract from granularity `line`**:
-
-The output is written to a **`xml`** file named `<file_name>_<doc_id>.line.xml`:
 
     <Pages>
     <Page number="1" width="612.00" height="792.00">
@@ -203,11 +192,7 @@ The output is written to a **`xml`** file named `<file_name>_<doc_id>.line.xml`:
        <Text>philologists whose collection “Kinder- und Hausmarchen,” known</Text>
       </Line>
 
-<div style="page-break-after: always;"></div>
-
 **Example extract from granularity `page`**:
-
-The output is written to the database table **`content_tetml_page`**:
 
     1
     1812
@@ -219,11 +204,7 @@ The output is written to the database table **`content_tetml_page`**:
     “Is the stupid creature to sit in the same room with us?” said they; “those who eat food must earn it. She is nothing but a kitchenmaid!” They took away her pretty dresses, and put on her an old gray kirtle, and gave her wooden shoes to wear.
     “Just look now at the proud princess, how she is decked out!” cried they laughing, and then they sent her into the kitchen. There she was obliged to do heavy work from morning to night, get up early in the morning, draw water, make the fires, cook, and wash. Besides that, the sisters did their utmost to torment her- mocking
 
-<div style="page-break-after: always;"></div>
-
 **Example extract from granularity `word`**:
-
-The output is written to a **`xml`** file named `<file_name>_<doc_id>.word.xml`:
 
     <Page number="1" width="612.00" height="792.00">
     <Options>granularity=word tetml={elements={line}}</Options>
@@ -264,25 +245,19 @@ The output is written to a **`xml`** file named `<file_name>_<doc_id>.word.xml`:
         <Box llx="184.69" lly="671.52" urx="193.20" ury="685.44"/>
        </Word>
 
-<div style="page-break-after: always;"></div>
+### 2.2.3 Store the parser result in a JSON file (action: **`s_p_j`**)
 
-### 2.2.3 Store the parser result in the database (step: **`s_f_p`**)
-
-From the **xml** files of the granularity document `line` (`<file_name>_<doc_id>.line.xml`) or document `word` (`<file_name>_<doc_id>.word.xml`) created in the previous step, the text contained is now extracted with the existing metadata using **xml** parsing and stored in a JSON format in the database tables `content_tetml_line` and `content_tetml_word`.
-
-If successful, processing of the original document (parent document) is then completed and further processing takes place with the new entries in the database tables `content_tetml_line` and `content_tetml_page` (child document).
-In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
+From the **xml** files of the granularity document `line` (`<file_name>_<doc_id>.line.xml`) or document `word` (`<file_name>_<doc_id>.word.xml`) created in the previous action, the text contained is now extracted with the existing metadata using **xml** parsing and stored in a **`JSON`** format in the database tables `content_tetml_line` and `content_tetml_word`.
 
 The document `line` granularity attempts to determine the headers and footers of the document by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}.
-This processing step is controlled by the following configuration parameters:
+This processing action is controlled by the following configuration parameters:
 
 - `line_footer_max_distance = 3`
 - `line_footer_max_lines = 3`
-- `line_footer_preference = true`
 - `line_header_max_distance = 3`
 - `line_header_max_lines = 3`
 
-**Example extract from database table `content_tetml_line`**:
+**Example extract from granularity `line`**:
 
 Possible line types are `h` for header lines, `f` for footers and `b` for the remaining lines.
 
@@ -364,14 +339,14 @@ Possible line types are `h` for header lines, `f` for footers and `b` for the re
           "paraIndexPage": 3,
           "lineIndexPage": 10,
           "lineIndexPara": 5,
-          "lineText": "(1812) - The famous tale of a girl who is mistreated by her evil stepmother",
+          "lineText": "(1812) - The famous tale of a girl who is mistreated by her evil actionmother",
           "lineType": "b"
         },
         {
           "paraIndexPage": 3,
           "lineIndexPage": 11,
           "lineIndexPara": 6,
-          "lineText": "and step-sisters but goes on to marry the prince. This, the",
+          "lineText": "and action-sisters but goes on to marry the prince. This, the",
           "lineType": "b"
         },
         {
@@ -403,7 +378,7 @@ Possible line types are `h` for header lines, `f` for footers and `b` for the re
           "lineType": "b"
         },
 
-**Example extract from database table `content_tetml_word`**:
+**Example extract from granularity `word`**:
 
     {
       "noLinesInPage": 37,
@@ -501,7 +476,7 @@ Possible line types are `h` for header lines, `f` for footers and `b` for the re
           "wordText": "Jacob"
         },
 
-### 2.2.4 Create qualified document tokens (step: **`tkn`**)
+### 2.2.4 Create qualified document tokens (action: **`tkn`**)
 
 For tokenisation, [spaCy](https://spacy.io/usage/models){:target="_blank"} is used. 
 
@@ -537,213 +512,176 @@ By default, the following attributes are stored:
 
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
 
-**Example extract from database table `content_token`**:
+**Example extract from granularity `line`**:
 
-    [
-      {
-        "tknEntIob_": "B",
-        "tknEntType_": "DATE",
-        "tknI": 0,
-        "tknIsDigit": true,
-        "tknIsOov": true,
-        "tknIsSentStart": true,
-        "tknLemma_": "1812",
-        "tknLikeNum": true,
-        "tknNorm_": "1812",
-        "tknPos_": "NUM",
-        "tknTag_": "CD",
-        "tknText": "1812"
-      },
-      {
-        "tknEntIob_": "O",
-        "tknI": 1,
-        "tknIsOov": true,
-        "tknLemma_": "\n",
-        "tknNorm_": "\n",
-        "tknPos_": "SPACE",
-        "tknTag_": "_SP",
-        "tknText": "\n"
-      },
-      {
-        "tknEntIob_": "B",
-        "tknEntType_": "WORK_OF_ART",
-        "tknI": 2,
-        "tknIsOov": true,
-        "tknLemma_": "GRIMM",
-        "tknNorm_": "grimm",
-        "tknPos_": "PROPN",
-        "tknTag_": "NNP",
-        "tknText": "GRIMM"
-      },
-      {
-        "tknEntIob_": "I",
-        "tknEntType_": "WORK_OF_ART",
-        "tknI": 3,
-        "tknIsOov": true,
-        "tknIsStop": true,
-        "tknIsTitle": true,
-        "tknLemma_": "’s",
-        "tknNorm_": "'s",
-        "tknPos_": "PART",
-        "tknTag_": "POS",
-        "tknText": "’S",
-        "tknWhitespace_": " "
-      },
-      {
-        "tknEntIob_": "I",
-        "tknEntType_": "WORK_OF_ART",
-        "tknI": 4,
-        "tknIsOov": true,
-        "tknLemma_": "FAIRY",
-        "tknNorm_": "fairy",
-        "tknPos_": "PROPN",
-        "tknTag_": "NNP",
-        "tknText": "FAIRY",
-        "tknWhitespace_": " "
-      },
-      {
-        "tknEntIob_": "I",
-        "tknEntType_": "WORK_OF_ART",
-        "tknI": 5,
-        "tknIsOov": true,
-        "tknLemma_": "TALES",
-        "tknNorm_": "tales",
-        "tknPos_": "PROPN",
-        "tknTag_": "NNPS",
-        "tknText": "TALES"
-      },
-      {
-        "tknEntIob_": "I",
-        "tknEntType_": "WORK_OF_ART",
-        "tknI": 6,
-        "tknIsOov": true,
-        "tknLemma_": "\n",
-        "tknNorm_": "\n",
-        "tknPos_": "SPACE",
-        "tknTag_": "_SP",
-        "tknText": "\n"
-      },
-      {
-        "tknEntIob_": "I",
-        "tknEntType_": "WORK_OF_ART",
-        "tknI": 7,
-        "tknIsOov": true,
-        "tknLemma_": "CINDERELLA",
-        "tknNorm_": "cinderella",
-        "tknPos_": "PROPN",
-        "tknTag_": "NNP",
-        "tknText": "CINDERELLA"
-      },
-      {
-        "tknEntIob_": "I",
-        "tknEntType_": "WORK_OF_ART",
-        "tknI": 8,
-        "tknIsOov": true,
-        "tknIsSentEnd": true,
-        "tknLemma_": "\n",
-        "tknNorm_": "\n",
-        "tknPos_": "SPACE",
-        "tknTag_": "_SP",
-        "tknText": "\n"
-      },
-      {
-        "tknEntIob_": "B",
-        "tknEntType_": "PERSON",
-        "tknI": 9,
-        "tknIsOov": true,
-        "tknIsSentStart": true,
-        "tknIsTitle": true,
-        "tknLemma_": "Jacob",
-        "tknNorm_": "jacob",
-        "tknPos_": "PROPN",
-        "tknTag_": "NNP",
-        "tknText": "Jacob",
-        "tknWhitespace_": " "
-      },
-      {
-        "tknEntIob_": "I",
-        "tknEntType_": "PERSON",
-        "tknI": 10,
-        "tknIsOov": true,
-        "tknIsTitle": true,
-        "tknLemma_": "Ludwig",
-        "tknNorm_": "ludwig",
-        "tknPos_": "PROPN",
-        "tknTag_": "NNP",
-        "tknText": "Ludwig",
-        "tknWhitespace_": " "
-      },
-      {
-        "tknEntIob_": "I",
-        "tknEntType_": "PERSON",
-        "tknI": 11,
-        "tknIsOov": true,
-        "tknIsTitle": true,
-        "tknLemma_": "Grimm",
-        "tknNorm_": "grimm",
-        "tknPos_": "PROPN",
-        "tknTag_": "NNP",
-        "tknText": "Grimm",
-        "tknWhitespace_": " "
-      },
-      {
-        "tknEntIob_": "O",
-        "tknI": 12,
-        "tknIsOov": true,
-        "tknIsStop": true,
-        "tknLemma_": "and",
-        "tknNorm_": "and",
-        "tknPos_": "CCONJ",
-        "tknTag_": "CC",
-        "tknText": "and",
-        "tknWhitespace_": " "
-      },
-      {
-        "tknEntIob_": "B",
-        "tknEntType_": "PERSON",
-        "tknI": 13,
-        "tknIsOov": true,
-        "tknIsTitle": true,
-        "tknLemma_": "Wilhelm",
-        "tknNorm_": "wilhelm",
-        "tknPos_": "PROPN",
-        "tknTag_": "NNP",
-        "tknText": "Wilhelm",
-        "tknWhitespace_": " "
-      },
-      {
-        "tknEntIob_": "I",
-        "tknEntType_": "PERSON",
-        "tknI": 14,
-        "tknIsOov": true,
-        "tknIsTitle": true,
-        "tknLemma_": "Carl",
-        "tknNorm_": "carl",
-        "tknPos_": "PROPN",
-        "tknTag_": "NNP",
-        "tknText": "Carl",
-        "tknWhitespace_": " "
-      },
-      {
-        "tknEntIob_": "I",
-        "tknEntType_": "PERSON",
-        "tknI": 15,
-        "tknIsOov": true,
-        "tknIsTitle": true,
-        "tknLemma_": "Grimm",
-        "tknNorm_": "grimm",
-        "tknPos_": "PROPN",
-        "tknTag_": "NNP",
-        "tknText": "Grimm"
-      },
-      {
-        "tknEntIob_": "I",
-        "tknEntType_": "PERSON",
-        "tknI": 16,
-        "tknIsOov": true,
-        "tknLemma_": "\n",
-        "tknNorm_": "\n",
-        "tknPos_": "SPACE",
-        "tknTag_": "_SP",
-        "tknText": "\n"
-      },
+    {
+      "documentId": 1,
+      "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
+      "noPagesInDoc": 6,
+      "pages": [
+        {
+          "pageNo": 1,
+          "noTokensInPage": 463,
+          "tokens": [
+            {
+              "tknEntIob_": "B",
+              "tknEntType_": "DATE",
+              "tknI": 0,
+              "tknIsDigit": true,
+              "tknIsOov": true,
+              "tknIsSentStart": true,
+              "tknLemma_": "1812",
+              "tknLikeNum": true,
+              "tknNorm_": "1812",
+              "tknPos_": "NUM",
+              "tknTag_": "CD",
+              "tknText": "1812"
+            },
+            {
+              "tknEntIob_": "O",
+              "tknI": 1,
+              "tknIsOov": true,
+              "tknLemma_": "\n",
+              "tknNorm_": "\n",
+              "tknPos_": "SPACE",
+              "tknTag_": "_SP",
+              "tknText": "\n"
+            },
+            {
+              "tknEntIob_": "B",
+              "tknEntType_": "WORK_OF_ART",
+              "tknI": 2,
+              "tknIsOov": true,
+              "tknLemma_": "GRIMM",
+              "tknNorm_": "grimm",
+              "tknPos_": "PROPN",
+              "tknTag_": "NNP",
+              "tknText": "GRIMM"
+            },
+
+## 3. Naming system of the auxiliary files
+
+The processing actions are based on different flat files, each of which is generated from the original document on an action-related basis.
+Apart from the **`JSON`** files optionally created during the 'tokenizer' action, these can be automatically deleted after error-free processing.
+
+## 3.1 Action-related naming system
+
+| Code    | Action                                        | File names                                            | 
+|---------|-----------------------------------------------|-------------------------------------------------------|
+| `p_i`   | process the inbox directory                   | `in :` `<ost>.<oft>`                                  |                                      
+|         |                                               | `out:` `<ost>_<di>.<oft> `                            |                                       
+| `p_2_i` | convert pdf documents to image files          | `in :` `<ost>_<di>.pdf`                               |                                       
+|         |                                               | `out:` `<ost>_<di>.<jpeg / png>`                      |                                       
+| `ocr`   | convert image files to pdf documents          | `in :` `<ost>_<di>.<oft>`                             | `                                     
+|         |                                               | `or :` `<ost>_<di>.<jpeg / png>`                      |                                       
+|         |                                               | `out:` `<ost>_<di>_<pn>.pdf`                          |                                       
+|         |                                               | `and:` `<ost>_<di>_0.pdf`                             |                                       
+| `n_2_p` | convert non-pdf documents to pdf documents    | `in :` `<ost>_<di>.<oft>`                             |                                       
+|         |                                               | `out:` `<ost>_<di>.pdf`                               |                                      
+| `tet`   | extract text and metdata from pdf documents   | `in :` `<ost>_<di>[_<pn> / _0].pdf`                   |                                       
+|         |                                               | `out:` `<ost>_<di>[_<pn> / _0]_line.xml`              |                                       
+|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_page.xml`              |                                       
+|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_word.xml`              |                                       
+| `s_p_j` | store the parser result in a **`JSON`** file  | `in :` `<ost>_<di>[_<pn> / _0]_line.xml`              |                                       
+|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_page.xml`              |                                     
+|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_word.xml`              |                                     
+|         |                                               | `out:` `<ost>_<di>[_<pn> / _0]_line.json`             |                                      
+|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_page.json`             |                                     
+|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_word.json`             |                                     
+| `tkn`   | create qualified document tokens              | `in :` `<ost>_<di>[_<pn> / _0]_line.json`             |                                      
+|         |                                               | `out:` `<ost>_<di>[_<pn> / _0]_line_token.json`       |                                      
+
+| Abbr.  | Meaning             |
+|--------|---------------------|
+| `oft`  | original file type  |
+| `osn`  | original stem name  |
+| `di`   | document identifier |
+| `pn`   | page number         |
+
+
+## 3.2 Examples
+
+### 3.2.1 Possible intermediate files from a **`docx`** document:
+
+    case_2_docx_route_inbox_pandoc_pdflib_2.docx
+
+    case_2_docx_route_inbox_pandoc_pdflib_2.pdf
+
+    case_2_docx_route_inbox_pandoc_pdflib_2.line.xml
+    case_2_docx_route_inbox_pandoc_pdflib_2.page.xml
+    case_2_docx_route_inbox_pandoc_pdflib_2.word.xml
+
+    case_2_docx_route_inbox_pandoc_pdflib_2.line.json
+    case_2_docx_route_inbox_pandoc_pdflib_2.page.json
+    case_2_docx_route_inbox_pandoc_pdflib_2.word.json
+
+    case_2_docx_route_inbox_pandoc_pdflib_2.line.token.json
+
+### 3.2.2 Possible intermediate files from a **`jpg`** document:
+
+    case_6_jpg_route_inbox_tesseract_pdflib_6.jpg
+
+    case_6_jpg_route_inbox_tesseract_pdflib_6.pdf
+
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.page.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.word.json
+
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line.xml
+    case_6_jpg_route_inbox_tesseract_pdflib_6.page.xml
+    case_6_jpg_route_inbox_tesseract_pdflib_6.word.xml
+
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line.token.json
+
+### 3.2.3 Possible intermediate files from a proper **`pdf`** document:
+
+    case_3_pdf_text_route_inbox_pdflib_3.pdf
+
+    case_3_pdf_text_route_inbox_pdflib_3.line.xml
+    case_3_pdf_text_route_inbox_pdflib_3.page.xml
+    case_3_pdf_text_route_inbox_pdflib_3.word.xml
+
+    case_3_pdf_text_route_inbox_pdflib_3.line.json
+    case_3_pdf_text_route_inbox_pdflib_3.page.json
+    case_3_pdf_text_route_inbox_pdflib_3.word.json
+
+    case_3_pdf_text_route_inbox_pdflib_3.line.token.json
+
+### 3.2.4 Possible intermediate files from a single page scanned image **`pdf`** document:
+
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4.pdf
+
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.jpeg
+
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.pdf
+
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.page.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.json
+
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.xml
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.page.xml
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.xml
+
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.token.json
+
+### 3.2.5 Possible intermediate files from a multi page scanned image **`pdf`** document:
+
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5.pdf
+
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_1.jpeg
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_2.jpeg
+
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_1.pdf
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_2.pdf
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.pdf
+
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.page.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.json
+
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.xml
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.page.xml
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.xml
+
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.token.json

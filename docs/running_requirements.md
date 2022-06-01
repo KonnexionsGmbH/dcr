@@ -5,7 +5,7 @@
 
 ## 1. Operating System
 
-Continuous delivery / integration (CD/CI) runs on **`Ubunto 20.04`**, **`Ubuntu 22.04`**~~, **`Windows Server 2019`** and **`Windows Server 2022`**~~.
+Continuous delivery / integration (CD/CI) runs on **`Ubunto 20.04`**~~, **`Ubuntu 22.04`**, **`Windows Server 2019`** and **`Windows Server 2022`**~~.
 This means that **DCR** also runs under **`Windows 10`** and **`Windows 11`**. 
 For the Windowes operating systems, only additional the functionality of the **`grep`**, **`make`**  and **`sed`** tools must be made available, e.g. via [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm){:target="_blank"}, [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} or [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}.
 
@@ -18,7 +18,7 @@ The installation of the [TeX Live](https://www.tug.org/texlive){:target="_blank"
 
 ## 3. [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"}
 
-The software library [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} is used to tokenise the 'pdf' documents. 
+The software library [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} is used to tokenise the **`pdf`** documents. 
 **DCR** contains the free version of [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"}. 
 This free version is limited to files with a maximum size of 1 MB and a maximum number of pages of 10. 
 If larger files are to be processed, a licence must be purchased from [PDFlib GmbH](https://www.pdflib.com){:target="_blank"}. 
@@ -34,5 +34,5 @@ Because of the use of the new typing features, [Python version 3.10](https://doc
 
 ## 6. [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}
 
-To convert image documents into 'pdf' files, [Tesseract OCR version 5.10](https://github.com/tesseract-ocr/tesseract){:target="_blank"} or higher is required.
+To convert image files into **`pdf`** files, [Tesseract OCR version 5.10](https://github.com/tesseract-ocr/tesseract){:target="_blank"} or higher is required.
 

@@ -2,8 +2,11 @@
 """Testing Module nlp.pdflib_dcr."""
 import os
 
+import cfg.cls_setup
 import cfg.glob
+import db.cls_run
 import pytest
+import utils
 
 import dcr
 
@@ -15,6 +18,35 @@ import dcr
 
 
 # -----------------------------------------------------------------------------
+# Test RUN_ACTION_TEXT_FROM_PDF - normal - duplicate.
+# -----------------------------------------------------------------------------
+def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_TEXT_FROM_PDF - normal - duplicate."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_duplicate <=========")
+
+    stem_name_1: str = "pdf_text_ok_protected"
+    file_ext_1: str = "pdf"
+
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            (stem_name_1, file_ext_1),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    stem_name_2: str = "pdf_text_ok_protected_1.line"
+    file_ext_2: str = "xml"
+
+    pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test RUN_ACTION_TEXT_FROM_PDF - normal - keep.
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
@@ -23,54 +55,46 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("pdf_text_ok_protected", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
-            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "pdf_text_ok_protected_1.pdf",
-            "pdf_text_ok_protected_1.line.xml",
-            "pdf_text_ok_protected_1.word.xml",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "pdf_text_ok_protected_1.pdf",
+                "pdf_text_ok_protected_1.line.xml",
+                "pdf_text_ok_protected_1.word.xml",
+            ],
+        ),
+        inbox_rejected=(
+            [],
+            [],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -86,52 +110,42 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("pdf_text_ok_protected", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_LINE, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep_only_page <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "pdf_text_ok_protected_1.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "pdf_text_ok_protected_1.line.xml",
+                "pdf_text_ok_protected_1.page.xml",
+                "pdf_text_ok_protected_1.pdf",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -147,66 +161,53 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
-            ("case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
+        source_files=[
+            ("case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
-            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_IMAGE_2_PDF])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
-        os.path.join(
+        utils.get_full_name(
             cfg.glob.setup.directory_inbox_accepted,
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
+            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
         )
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_line <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
+                "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpeg",
+            ],
+        ),
     )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpeg",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
-    )
-
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -220,64 +221,52 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
-            ("case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
+        source_files=[
+            ("case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_LINE, "false"),
-            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PDF_2_IMAGE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_IMAGE_2_PDF])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
-        os.path.join(
+        utils.get_full_name(
             cfg.glob.setup.directory_inbox_accepted,
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
+            "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
         )
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_page <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
-            "case_03_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpeg",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1.pdf",
+                "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.jpeg",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------

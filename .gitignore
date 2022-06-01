@@ -12,10 +12,15 @@
 /data/inbox_dev/
 /data/inbox_dev_accepted/
 /data/inbox_dev_rejected/
+/data/inbox_prod/
+/data/inbox_prod_accepted/
+/data/inbox_prod_rejected/
 /data/inbox_rejected/
 /data/inbox_test/
 /data/inbox_test_accepted/
 /data/inbox_test_rejected/
+/data/initial_database_data_test.json
+/data/prev_version/
 /docs/*.pdf
 /setup.cfg_backup
 /site/

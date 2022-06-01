@@ -35,10 +35,10 @@ if ["%1"] EQU [""] (
 
 if ["%DCR_CONNECTION_PORT%"] EQU [""] (
     if ["%DCR_ENVIRONMENT_TYPE%"] EQU ["dev"] (
-        set DCR_CONNECTION_PORT=5432
+        set DCR_CONNECTION_PORT=5433
     )
     if ["%DCR_ENVIRONMENT_TYPE%"] EQU ["prod"] (
-        set DCR_CONNECTION_PORT=5433
+        set DCR_CONNECTION_PORT=5432
     )
     if ["%DCR_ENVIRONMENT_TYPE%"] EQU ["test"] (
         set DCR_CONNECTION_PORT=5434

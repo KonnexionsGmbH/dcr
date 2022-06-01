@@ -1,15 +1,27 @@
-"""Module nlp.tokenizer: Store the document tokens page by page in the
+"""Module nlp.cls_tokenizer: Store the document tokens page by page in the
 database."""
 
+import json
 import time
-import typing
 
 import cfg.glob
-import db.dml
+import db.cls_action
+import db.cls_db_core
+import db.cls_document
+import db.cls_language
+import db.cls_run
+import nlp.cls_text_parser
+import nlp.cls_tokenizer_spacy
 import spacy
 import spacy.tokens
-import sqlalchemy
 import utils
+
+# -----------------------------------------------------------------------------
+# Global constants.
+# -----------------------------------------------------------------------------
+ERROR_71_901: str = (
+    "71.901 Issue (tkn): Tokenizing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
+)
 
 
 # pylint: disable=R0912
@@ -17,146 +29,24 @@ import utils
 # -----------------------------------------------------------------------------
 # Extract the text from the page lines.
 # -----------------------------------------------------------------------------
-def get_text_from_page_lines(page_data: typing.Dict[str, str | typing.List[typing.Dict[str, int | str]]]) -> str:
+def get_text_from_line_2_page() -> str:
     """Extract the text from the page data.
-
-    Args:
-        page_data (Dict[str, str | List[Dict[str, int | str]]]): Page data.
 
     Returns:
         str: Reconstructed text.
     """
-    text_lines = []
+    line_0_lines = []
 
-    for page_line in page_data[cfg.glob.JSON_NAME_PAGE_LINES]:
-        if page_line[cfg.glob.JSON_NAME_LINE_TYPE] == cfg.glob.DOCUMENT_LINE_TYPE_BODY:
-            text_lines.append(page_line[cfg.glob.JSON_NAME_LINE_TEXT])
+    for cfg.glob.text_parser.parse_result_line_0_line in cfg.glob.text_parser.parse_result_line_2_page[
+        cfg.glob.text_parser.JSON_NAME_LINES
+    ]:
+        if (
+            cfg.glob.text_parser.parse_result_line_0_line[cfg.glob.text_parser.JSON_NAME_LINE_TYPE]
+            == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY
+        ):
+            line_0_lines.append(cfg.glob.text_parser.parse_result_line_0_line[cfg.glob.text_parser.JSON_NAME_LINE_TEXT])
 
-    return "\n".join(text_lines)
-
-
-# -----------------------------------------------------------------------------
-# Determine the requested token attributes.
-# -----------------------------------------------------------------------------
-def get_token_attributes(token: spacy.tokens.Token) -> typing.Dict[str, bool | int | str]:  # noqa: C901
-    """Determine the requested token attributes.
-
-    Args:
-        token (spacy.tokens.Token): spaCy token.
-
-    Returns:
-        typing.Dict[str, bool | int | str]: Requested token attributes.
-    """
-    token_attr = {}
-
-    if cfg.glob.setup.is_spacy_tkn_attr_dep_:
-        if token.dep_ != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_DEP_] = token.dep_
-
-    if cfg.glob.setup.is_spacy_tkn_attr_ent_iob_:
-        if token.ent_iob_ != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_ENT_IOB_] = token.ent_iob_
-
-    if cfg.glob.setup.is_spacy_tkn_attr_ent_type_:
-        if token.ent_type_ != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_ENT_TYPE_] = token.ent_type_
-
-    if cfg.glob.setup.is_spacy_tkn_attr_i:
-        token_attr[cfg.glob.JSON_NAME_TOKEN_I] = token.i
-
-    if cfg.glob.setup.is_spacy_tkn_attr_is_alpha:
-        if token.is_alpha:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_ALPHA] = token.is_alpha
-
-    if cfg.glob.setup.is_spacy_tkn_attr_is_currency:
-        if token.is_currency:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_CURRENCY] = token.is_currency
-
-    if cfg.glob.setup.is_spacy_tkn_attr_is_digit:
-        if token.is_digit:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_DIGIT] = token.is_digit
-
-    if cfg.glob.setup.is_spacy_tkn_attr_is_oov:
-        if token.is_oov:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_OOV] = token.is_oov
-
-    if cfg.glob.setup.is_spacy_tkn_attr_is_punct:
-        if token.is_punct:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_PUNCT] = token.is_punct
-
-    if cfg.glob.setup.is_spacy_tkn_attr_is_sent_end:
-        if token.is_sent_end:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_SENT_END] = token.is_sent_end
-
-    if cfg.glob.setup.is_spacy_tkn_attr_is_sent_start:
-        if token.is_sent_start:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_SENT_START] = token.is_sent_start
-
-    if cfg.glob.setup.is_spacy_tkn_attr_is_stop:
-        if token.is_stop:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_STOP] = token.is_stop
-
-    if cfg.glob.setup.is_spacy_tkn_attr_is_title:
-        if token.is_title:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_IS_TITLE] = token.is_title
-
-    if cfg.glob.setup.is_spacy_tkn_attr_lang_:
-        if token.lang_ != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_LANG_] = token.lang_
-
-    if cfg.glob.setup.is_spacy_tkn_attr_left_edge:
-        if token.left_edge.text is not None:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_LEFT_EDGE] = token.left_edge.text
-
-    if cfg.glob.setup.is_spacy_tkn_attr_lemma_:
-        if token.lemma_ != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_LEMMA_] = token.lemma_
-
-    if cfg.glob.setup.is_spacy_tkn_attr_like_email:
-        if token.like_email:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_LIKE_EMAIL] = token.like_email
-
-    if cfg.glob.setup.is_spacy_tkn_attr_like_num:
-        if token.like_num:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_LIKE_NUM] = token.like_num
-
-    if cfg.glob.setup.is_spacy_tkn_attr_like_url:
-        if token.like_url:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_LIKE_URL] = token.like_url
-
-    if cfg.glob.setup.is_spacy_tkn_attr_norm_:
-        if token.norm_ != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_NORM_] = token.norm_
-
-    if cfg.glob.setup.is_spacy_tkn_attr_pos_:
-        if token.pos_ != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_POS_] = token.pos_
-
-    if cfg.glob.setup.is_spacy_tkn_attr_right_edge:
-        if token.right_edge is not None:
-            token_attr[cfg.glob.JSON_NAME_TOKEN_RIGHT_EDGE] = token.right_edge.text
-
-    if cfg.glob.setup.is_spacy_tkn_attr_shape_:
-        if token.shape_ != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_SHAPE_] = token.shape_
-
-    if cfg.glob.setup.is_spacy_tkn_attr_tag_:
-        if token.tag_ != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_TAG_] = token.tag_
-
-    if cfg.glob.setup.is_spacy_tkn_attr_text:
-        if token.text != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_TEXT] = token.text
-
-    if cfg.glob.setup.is_spacy_tkn_attr_text_with_ws:
-        if token.text_with_ws != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_TEXT_WITH_WS] = token.text_with_ws
-
-    if cfg.glob.setup.is_spacy_tkn_attr_whitespace_:
-        if token.whitespace_ != "":
-            token_attr[cfg.glob.JSON_NAME_TOKEN_WHITESPACE_] = token.whitespace_
-
-    return token_attr
+    return "\n".join(line_0_lines)
 
 
 # -----------------------------------------------------------------------------
@@ -169,45 +59,39 @@ def tokenize() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    if cfg.glob.setup.is_tetml_line:
-        dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(cfg.glob.DBT_CONTENT_TETML_LINE)
-    else:
-        dbt_content_tetml: sqlalchemy.Table = db.dml.dml_prepare(cfg.glob.DBT_CONTENT_TETML_PAGE)
-
-    dbt_document = db.dml.dml_prepare(cfg.glob.DBT_DOCUMENT)
-
-    nlp: spacy.Language
+    model_data: spacy.Language
     spacy_model_current: str | None = None
 
-    utils.reset_statistics_total()
+    cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+    cfg.glob.tokenizer_spacy = nlp.cls_tokenizer_spacy.TokenizerSpacy()
 
-    with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_document(conn, dbt_document, cfg.glob.DOCUMENT_STEP_TOKENIZE)
+    with cfg.glob.db_core.db_orm_engine.begin() as conn:
+        rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE)
 
         for row in rows:
+            # ------------------------------------------------------------------
+            # Processing a single document
+            # ------------------------------------------------------------------
             cfg.glob.start_time_document = time.perf_counter_ns()
 
-            utils.start_document_processing(
-                document=row,
-            )
+            cfg.glob.run.run_total_processed_to_be += 1
 
-            spacy_model = cfg.glob.languages_spacy[cfg.glob.document_language_id]
+            cfg.glob.action_curr = db.cls_action.Action.from_row(row)
+
+            if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
+                cfg.glob.run.total_status_error += 1
+            else:
+                cfg.glob.run.total_status_ready += 1
+
+            cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
+
+            spacy_model = db.cls_language.Language.LANGUAGES_SPACY[cfg.glob.document.document_id_language]
 
             if spacy_model != spacy_model_current:
-                nlp = spacy.load(spacy_model)
+                model_data: spacy.Language = spacy.load(spacy_model)
                 spacy_model_current = spacy_model
 
-            tokenize_document(nlp, dbt_content_tetml)
-
-            # Document successfully converted to pdf format
-            duration_ns = utils.finalize_file_processing()
-
-            if cfg.glob.setup.is_verbose:
-                utils.progress_msg(
-                    f"Duration: {round(duration_ns / 1000000000, 2):6.2f} s - "
-                    f"Document: {cfg.glob.document_id:6d} "
-                    f"[base: {db.dml.select_document_file_name_id(cfg.glob.document_id_base)}]"
-                )
+            tokenize_file(model_data)
 
         conn.close()
 
@@ -219,36 +103,93 @@ def tokenize() -> None:
 # -----------------------------------------------------------------------------
 # Create the tokens of a document page by page (step: tkn).
 # -----------------------------------------------------------------------------
-def tokenize_document(nlp: spacy.Language, dbt_content: sqlalchemy.Table) -> None:
+# noinspection PyArgumentList
+def tokenize_file(model_data: spacy.Language) -> None:
     """Create the tokens of a document page by page.
 
     TBD
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    with cfg.glob.db_orm_engine.connect() as conn:
-        rows = db.dml.select_content_tetml(conn, dbt_content, cfg.glob.document_id_base)
-        for row in rows:
+    full_name_curr = cfg.glob.action_curr.get_full_name()
+
+    if cfg.glob.setup.is_tokenize_2_jsonfile:
+        file_name_next = cfg.glob.action_curr.get_stem_name() + "_token." + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON
+        full_name_next = utils.get_full_name(
+            cfg.glob.action_curr.action_directory_name,
+            file_name_next,
+        )
+    else:
+        full_name_next = None
+
+    try:
+        cfg.glob.text_parser = nlp.cls_text_parser.TextParser.from_files(full_name_line=full_name_curr)
+
+        cfg.glob.tokenizer_spacy.token_3_pages = []
+
+        for cfg.glob.text_parser.parse_result_line_2_page in cfg.glob.text_parser.parse_result_line_4_document[
+            cfg.glob.text_parser.JSON_NAME_PAGES
+        ]:
             # ------------------------------------------------------------------
             # Processing a single page
             # ------------------------------------------------------------------
-            page_tokens: typing.List[typing.Dict[str, bool | str]] = []
+            page_no = cfg.glob.text_parser.parse_result_line_2_page[cfg.glob.text_parser.JSON_NAME_PAGE_NO]
 
-            page_no = row[1]
-            text = get_text_from_page_lines(row[2]) if cfg.glob.setup.is_tetml_line else row[2]
+            text = get_text_from_line_2_page()
 
-            for token in nlp(text):
-                page_tokens.append(get_token_attributes(token))
+            cfg.glob.tokenizer_spacy.token_1_tokens = []
 
-            db.dml.insert_dbt_row(
-                cfg.glob.DBT_CONTENT_TOKEN,
-                {
-                    cfg.glob.DBC_DOCUMENT_ID: cfg.glob.document_id_base,
-                    cfg.glob.DBC_PAGE_NO: page_no,
-                    cfg.glob.DBC_PAGE_DATA: page_tokens,
-                },
-            )
+            for token in model_data(text):
+                cfg.glob.tokenizer_spacy.token_1_tokens.append(
+                    nlp.cls_tokenizer_spacy.TokenizerSpacy.get_token_attributes(token)
+                )
 
-        conn.close()
+            cfg.glob.tokenizer_spacy.token_2_page = {
+                cfg.glob.text_parser.JSON_NAME_PAGE_NO: page_no,
+                nlp.cls_tokenizer_spacy.TokenizerSpacy.JSON_NAME_NO_TOKENS_IN_PAGE: len(
+                    cfg.glob.tokenizer_spacy.token_1_tokens
+                ),
+                nlp.cls_tokenizer_spacy.TokenizerSpacy.JSON_NAME_TOKENS: cfg.glob.tokenizer_spacy.token_1_tokens,
+            }
+
+            if cfg.glob.setup.is_tokenize_2_database:
+                cfg.glob.db_core.insert_dbt_row(
+                    db.cls_db_core.DBCore.DBT_TOKEN,
+                    {
+                        db.cls_db_core.DBCore.DBC_ID_DOCUMENT: cfg.glob.document.document_id,
+                        db.cls_db_core.DBCore.DBC_PAGE_DATA: cfg.glob.tokenizer_spacy.token_2_page,
+                        db.cls_db_core.DBCore.DBC_PAGE_NO: page_no,
+                    },
+                )
+
+            if cfg.glob.setup.is_tokenize_2_jsonfile:
+                cfg.glob.tokenizer_spacy.token_3_pages.append(cfg.glob.tokenizer_spacy.token_2_page)
+
+        if cfg.glob.setup.is_tokenize_2_jsonfile:
+            with open(full_name_next, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+                json.dump(
+                    {
+                        cfg.glob.text_parser.JSON_NAME_DOCUMENT_ID: cfg.glob.document.document_id,
+                        cfg.glob.text_parser.JSON_NAME_DOCUMENT_FILE_NAME: cfg.glob.document.document_file_name,
+                        cfg.glob.text_parser.JSON_NAME_NO_PAGES_IN_DOC: cfg.glob.text_parser.parse_result_line_4_document[
+                            cfg.glob.text_parser.JSON_NAME_NO_PAGES_IN_DOC
+                        ],
+                        cfg.glob.text_parser.JSON_NAME_PAGES: cfg.glob.tokenizer_spacy.token_3_pages,
+                    },
+                    file_handle,
+                )
+
+        utils.delete_auxiliary_file(full_name_curr)
+
+        cfg.glob.action_curr.finalise()
+
+        cfg.glob.run.run_total_processed_ok += 1
+    except FileNotFoundError as err:
+        cfg.glob.action_curr.finalise_error(
+            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_TOKENIZE,
+            error_msg=ERROR_71_901.replace("{full_name_curr}", full_name_curr)
+            .replace("{error_type}", str(type(err)))
+            .replace("{error}", str(err)),
+        )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

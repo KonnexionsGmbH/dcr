@@ -3,7 +3,7 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.1)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.2)
 
 Based on the paper "Unfolding the Structure of a Document using Deep Learning" (**[Rahman and Finin, 2019](https://arxiv.org/abs/1910.03678)**), this software project attempts to use various software techniques to automatically recognise the structure in any **`pdf`** documents and thus make them more searchable.
 
@@ -40,14 +40,14 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for mor
 
 ### 2.1 Directories
 
-| Directory         | Content                                                                       |
-|-------------------|-------------------------------------------------------------------------------|
-| .github/workflows | [GitHub Action](https://github.com/actions) workflows                         |
-| data              | Inbox directories and database setup data                                     |
-| docs              | **DCR** documentation files                                                   |
-| resources         | DBeaver configuration, Gammadyne utility and various external documentation   |
-| src               | Python scripts and [PDFlib TET](https://www.pdflib.com/products/tet/) files   |
-| tests             | Scripts and data for pytest                                                   |
+| Directory         | Content                                                                     |
+|-------------------|-----------------------------------------------------------------------------|
+| .github/workflows | [GitHub Action](https://github.com/actions) workflows                       |
+| data              | Inbox directories and database setup data                                   |
+| docs              | **DCR** documentation files                                                 |
+| resources         | DBeaver configuration, Gammadyne utility and various external documentation |
+| src               | Python scripts and [PDFlib TET](https://www.pdflib.com/products/tet/) files |
+| tests             | Scripts and data for pytest                                                 |
 
 ### 2.2 Files
 

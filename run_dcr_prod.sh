@@ -20,11 +20,11 @@ if [ -z "$1" ]; then
     echo "------------------------------------------------------------------------------"
     echo "p_i   - 1. Process the inbox directory."
     echo "p_2_i - 2. Convert pdf documents to image files:         pdf2image / Poppler."
-    echo "ocr   - 3. Convert image documents to pdf files:         Tesseract OCR / Tex Live."
-    echo "n_2_p - 2. Convert non-pdf documents to pdf files:       Pandoc."
+    echo "ocr   - 3. Convert image files to pdf documents:         Tesseract OCR / Tex Live."
+    echo "n_2_p - 2. Convert non-pdf documents to pdf documents:   Pandoc."
     echo "------------------------------------------------------------------------------"
     echo "tet   - 4. Extract text and metadata from pdf documents: PDFlib TET."
-    echo "s_f_p - 5. Store the parser result in the database."
+    echo "s_p_j - 5. Store the parser result in a JSON file."
     echo "tkn   - 6. Create qualified document tokens.             SpaCy."
     echo "------------------------------------------------------------------------------"
     echo "db_c  - Create the database."
@@ -42,7 +42,7 @@ fi
 echo ""
 echo "Script $0 is now running"
 
-rm -f run_dcr_prod_debug.log
+rm -f run_dcr_debug.log
 export LOG_FILE=run_dcr_prod_${DCR_CHOICE_ACTION}.log
 rm -f run_dcr_prod_${DCR_CHOICE_ACTION}.log
 
@@ -87,7 +87,7 @@ case "${DCR_CHOICE_ACTION}" in
         exit 255
     fi
     ;;
-  all|db_c|db_u|n_2_p|ocr|p_i|p_2_i|s_f_p|tet|tkn)
+  all|db_c|db_u|n_2_p|ocr|p_i|p_2_i|s_p_j|tet|tkn)
     case "${DCR_CHOICE_ACTION}" in
       p_2_i)
         export DCR_CHOICE_ACTION=p_i ${DCR_CHOICE_ACTION?}
@@ -101,11 +101,11 @@ case "${DCR_CHOICE_ACTION}" in
       tet)
         export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p ${DCR_CHOICE_ACTION}
         ;;
-      s_f_p)
+      s_p_j)
         export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet ${DCR_CHOICE_ACTION}
         ;;
       tkn|all)
-        export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_f_p ${DCR_CHOICE_ACTION}
+        export DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_p_j ${DCR_CHOICE_ACTION}
         ;;
       *)
         ;;
@@ -115,7 +115,7 @@ case "${DCR_CHOICE_ACTION}" in
     fi
     ;;
   *)
-    echo "Usage: ./run_dcr_prod.sh all | db_c | db_u | m_d | m_p | n_i_p | ocr | p_i | p_2_i | s_f_p | tet | tkn"
+    echo "Usage: ./run_dcr_prod.sh all | db_c | db_u | m_d | m_p | n_i_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
     ;;
 esac
 

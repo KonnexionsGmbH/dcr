@@ -1,8 +1,12 @@
 # pylint: disable=unused-argument
 """Testing Module nlp.tokenize."""
+import os
 
+import cfg.cls_setup
 import cfg.glob
+import db.cls_run
 import pytest
+import utils
 
 import dcr
 
@@ -22,64 +26,104 @@ def test_run_action_tokenize_attributes_true(fxtr_rmdir_opt, fxtr_setup_empty_db
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
-            ("pdf_mini", "pdf"),
+        source_files=[
+            ("tokenizer_coverage", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, "true"),
-            (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
-            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "true"),
-            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    values_original_spacy = pytest.helpers.set_complete_cfg_spacy("true")
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_STORE_FROM_PARSER])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TOKENIZE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        values_original_spacy,
+    )
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_tokenize_normal <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "tokenizer_coverage_1.page.json",
+                "tokenizer_coverage_1.pdf",
+                "tokenizer_coverage_1.word.json",
+            ],
+        ),
     )
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_TOKENIZE - attributes - true - coverage.
+# -----------------------------------------------------------------------------
+def test_run_action_tokenize_attributes_true_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_TOKENIZE - attributes - true - coverage."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("tokenizer_coverage", "pdf"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            "pdf_mini_1.pdf",
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
         ],
     )
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    values_original_spacy = pytest.helpers.set_complete_cfg_spacy("true")
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        values_original_spacy,
+    )
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
     )
 
     # -------------------------------------------------------------------------
@@ -95,64 +139,67 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
-        [
+        source_files=[
             ("tokenizer_coverage", "pdf"),
         ],
-        cfg.glob.setup.directory_inbox,
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, "true"),
-            (cfg.glob.setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, "true"),
-            (cfg.glob.setup._DCR_CFG_TETML_LINE, "true"),
-            (cfg.glob.setup._DCR_CFG_TETML_PAGE, "true"),
-            (cfg.glob.setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
         ],
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    values_original_spacy = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, "true"),
+        ],
+    )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_STORE_FROM_PARSER])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TOKENIZE])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        values_original_spacy,
+    )
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_tokenize_normal <=========")
 
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "tokenizer_coverage_1.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "tokenizer_coverage_1.line_token.json",
+                "tokenizer_coverage_1.page.json",
+                "tokenizer_coverage_1.pdf",
+                "tokenizer_coverage_1.word.json",
+            ],
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -160,65 +207,47 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
 
 
 # -----------------------------------------------------------------------------
-# Test RUN_ACTION_TOKENIZE - normal.
+# Test RUN_ACTION_TOKENIZE - missing input file.
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize("tetml_line, tetml_page", [("false", "true"), ("true", "false"), ("true", "true")])
-def test_run_action_tokenize_normal(tetml_line: str, tetml_page: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_TOKENIZE - normal."""
+def test_run_action_tokenize_missing_input_file(fxtr_setup_empty_db_and_inbox):
+    """Test RUN_ACTION_TOKENIZE - missing input file."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.copy_files_4_pytest_2_dir(
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            ("pdf_mini", "pdf"),
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
-        cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
-        [
-            (cfg.glob.setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.glob.setup._DCR_CFG_TETML_LINE, tetml_line),
-            (cfg.glob.setup._DCR_CFG_TETML_PAGE, tetml_page),
+    cfg.glob.logger.info("=========> test_run_action_tokenize_missing_input_file <=========")
+
+    stem_name_1: str = "case_3_pdf_text_route_inbox_pdflib"
+    file_ext_1: str = "pdf"
+
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            (stem_name_1, file_ext_1),
         ],
+        target_path=cfg.glob.setup.directory_inbox,
     )
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_PROCESS_INBOX])
+    # -------------------------------------------------------------------------
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TEXT_FROM_PDF])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_STORE_FROM_PARSER])
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
-    dcr.main([cfg.glob.DCR_ARGV_0, cfg.glob.RUN_ACTION_TOKENIZE])
+    os.remove(utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.json"))
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.restore_config_params(
-        cfg.glob.setup._DCR_CFG_SECTION,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
-    )
-
-    # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_tokenize_normal <=========")
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
-        [],
-        [],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
-        [],
-        [
-            "pdf_mini_1.pdf",
-        ],
-    )
-
-    pytest.helpers.verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
-        [],
-        [],
     )
 
     # -------------------------------------------------------------------------

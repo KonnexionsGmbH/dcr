@@ -1,9 +1,9 @@
 {
-  "apiVersion": "0.9.1",
+  "apiVersion": "0.9.2",
   "data": {
     "tables": [
       {
-        "tableName": "document",
+        "tableName": "action",
         "rows": [
           {
             "row": [
