@@ -32,7 +32,7 @@ def parse_tetml() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    for (tetml_type, action_code, is_parsing_line, is_parsing_page, is_parsing_word,) in [
+    for (tetml_type, action_code, is_parsing_line, is_parsing_page, is_parsing_word,) in (
         (
             TETML_TYPE_LINE,
             db.cls_run.Run.ACTION_CODE_PARSER_LINE,
@@ -54,7 +54,7 @@ def parse_tetml() -> None:
             False,
             True,
         ),
-    ]:
+    ):
         utils.progress_msg(f"Start of processing for tetml type '{tetml_type}'")
 
         cfg.glob.setup.is_parsing_line = is_parsing_line

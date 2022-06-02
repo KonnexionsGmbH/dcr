@@ -124,8 +124,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
 
     doc_opt_list = f"tetml={{filename={{{full_name_next}}}}} {document_opt_list}"
 
-    file_curr = tet.open_document(full_name_curr, doc_opt_list)
-    if file_curr == -1:
+    if (file_curr := tet.open_document(full_name_curr, doc_opt_list)) == -1:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
             error_msg=ERROR_51_901.replace("{full_name}", full_name_curr)

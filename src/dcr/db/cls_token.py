@@ -19,7 +19,7 @@ class Token:
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         id_document: int,
         page_data: str,

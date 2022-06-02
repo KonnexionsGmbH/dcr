@@ -19,8 +19,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=C0302
-# pylint: disable=W0212
 # @pytest.mark.issue
 MISSING_ID: int = 4711
 
@@ -186,9 +184,7 @@ def check_existing_language():
 
     cfg.glob.language = db.cls_language.Language.from_id(expected_values[0])
 
-    actual_values = cfg.glob.language.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.language.get_columns_in_tuple()) != tuple(expected_values):
         print(f"issue with dbt language cfg.glob.language id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -212,9 +208,7 @@ def check_existing_run():
 
     cfg.glob.run = db.cls_run.Run.from_id(expected_values[0])
 
-    actual_values = cfg.glob.run.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.run.get_columns_in_tuple()) != tuple(expected_values):
         print(f"issue with dbt run cfg.glob.run id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -2761,9 +2755,7 @@ def check_existing_token():
 
     cfg.glob.token = db.cls_token.Token.from_id(expected_values[0])
 
-    actual_values = cfg.glob.token.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.token.get_columns_in_tuple()) != tuple(expected_values):
         print(f"issue with dbt token cfg.glob.token id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -2781,9 +2773,7 @@ def check_existing_version():
 
     cfg.glob.version = db.cls_version.Version.from_id(expected_values[0])
 
-    actual_values = cfg.glob.version.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.version.get_columns_in_tuple()) != tuple(expected_values):
         print(f"issue with dbt version cfg.glob.version id={expected_values[0]}:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3073,9 +3063,7 @@ def check_new_language():
 
     cfg.glob.language = db.cls_language.Language.from_id(expected_values[0])
 
-    actual_values = cfg.glob.language.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.language.get_columns_in_tuple()) != tuple(expected_values):
         print("issue with new dbt language instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3090,9 +3078,7 @@ def check_new_language():
 
     cfg.glob.language.persist_2_db()
 
-    actual_values = cfg.glob.language.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.language.get_columns_in_tuple()) != tuple(expected_values):
         print("issue with updated dbt language instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3112,9 +3098,7 @@ def check_new_run():
 
     cfg.glob.run = db.cls_run.Run.from_id(expected_values[0])
 
-    actual_values = cfg.glob.run.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.run.get_columns_in_tuple()) != tuple(expected_values):
         print("issue with new dbt run instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3129,9 +3113,7 @@ def check_new_run():
 
     cfg.glob.run.persist_2_db()
 
-    actual_values = cfg.glob.run.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.run.get_columns_in_tuple()) != tuple(expected_values):
         print("issue with updated dbt run instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3164,9 +3146,7 @@ def check_new_token():
 
     cfg.glob.token = db.cls_token.Token.from_id(expected_values[0])
 
-    actual_values = cfg.glob.token.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.token.get_columns_in_tuple()) != tuple(expected_values):
         print("issue with new dbt token instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3181,9 +3161,7 @@ def check_new_token():
 
     cfg.glob.token.persist_2_db()
 
-    actual_values = cfg.glob.token.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.token.get_columns_in_tuple()) != tuple(expected_values):
         print("issue with updated dbt token instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3204,9 +3182,7 @@ def check_new_version():
 
     cfg.glob.version = db.cls_version.Version.from_id(expected_values[0])
 
-    actual_values = cfg.glob.version.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.version.get_columns_in_tuple()) != tuple(expected_values):
         print("issue with new dbt version instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
@@ -3221,9 +3197,7 @@ def check_new_version():
 
     cfg.glob.version.finalise()
 
-    actual_values = cfg.glob.version.get_columns_in_tuple()
-
-    if actual_values != tuple(expected_values):
+    if (actual_values := cfg.glob.version.get_columns_in_tuple()) != tuple(expected_values):
         print("issue with updated dbt version instance:")
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")

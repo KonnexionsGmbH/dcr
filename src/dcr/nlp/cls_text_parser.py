@@ -1,22 +1,18 @@
 """Module nlp.cls_text_parser: Extract text and metadata from PDFlib TET."""
 from __future__ import annotations
 
+import collections.abc
 import datetime
 import json
 from typing import ClassVar
-from typing import Dict
-from typing import Iterable
-from typing import List
 
 import cfg.glob
 import db.cls_document
 import nlp.cls_line_type
 import utils
 
-# pylint: disable=R0902
-# pylint: disable=R0903
 
-
+# pylint: disable=too-many-instance-attributes
 class TextParser:
     """Extract text and metadata from PDFlib TET.
 
@@ -110,9 +106,9 @@ class TextParser:
         #     "lineText": "Header 1",
         #     "lineType": "b"
         #   },
-        self.parse_result_line_0_line: Dict[str, int | str]
+        self.parse_result_line_0_line: dict[str, int | str]
 
-        self.parse_result_line_1_lines: List[Dict[str, int | str]]
+        self.parse_result_line_1_lines: list[dict[str, int | str]]
 
         #   {
         #     "pageNo": 1,
@@ -120,9 +116,9 @@ class TextParser:
         #     "noParasInPage": 3,
         #     "lines": [
         #         {
-        self.parse_result_line_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
+        self.parse_result_line_2_page: dict[str, int | str | list[dict[str, int | str]]]
 
-        self.parse_result_line_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]]
+        self.parse_result_line_3_pages: list[dict[str, int | str | list[dict[str, int | str]]]]
 
         # {
         #   "documentId": 1,
@@ -130,7 +126,7 @@ class TextParser:
         #   "noPagesInDoc": 2,
         #   "pages": [
         #     {
-        self.parse_result_line_4_document: Dict[str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]]
+        self.parse_result_line_4_document: dict[str, int | str | list[dict[str, int | str | list[dict[str, int | str]]]]]
 
         self.parse_result_no_pages_in_doc: int
 
@@ -153,7 +149,7 @@ class TextParser:
         self._parse_result_no_words_in_page: int = 0
         self._parse_result_no_words_in_para: int = 0
 
-        self._parse_result_page_0_paras: List[str] = []
+        self._parse_result_page_0_paras: list[str] = []
 
         # {
         #     "pageNo": 1,
@@ -163,9 +159,9 @@ class TextParser:
         #         "Footer 1 pg. 1"
         #     ]
         # }
-        # self._parse_result_page_1_page: Dict[str, int | str | List[str]]
+        # self._parse_result_page_1_page: dict[str, int | str | list[str]]
 
-        self._parse_result_page_2_pages: List[Dict[str, int | str | List[str]]] = []
+        self._parse_result_page_2_pages: list[dict[str, int | str | list[str]]] = []
 
         # {
         #   "documentId": 1,
@@ -173,7 +169,7 @@ class TextParser:
         #   "noPagesInDoc": 2,
         #   "pages": [
         #     {
-        self._parse_result_page_3_document: Dict[str, int | str | List[Dict[str, int | str | List[str]]]] = {}
+        self._parse_result_page_3_document: dict[str, int | str | list[dict[str, int | str | list[str]]]] = {}
 
         self._parse_result_page_index_doc: int = 0
         self._parse_result_para_index_page: int = 0
@@ -181,16 +177,16 @@ class TextParser:
         self._parse_result_text: str = ""
 
         # {"lineIndexPage": 0, "wordIndexLine": 0, "wordText": "Header"}
-        # self._parse_result_word_0_word: Dict[str, int | str]
+        # self._parse_result_word_0_word: dict[str, int | str]
 
-        self._parse_result_word_1_words: List[Dict[str, int | str]] = []
+        self._parse_result_word_1_words: list[dict[str, int | str]] = []
 
         # {
         #     "pageNo": 1,
         #     "words": [
-        # self._parse_result_word_2_page: Dict[str, int | str | List[Dict[str, int | str]]]
+        # self._parse_result_word_2_page: dict[str, int | str | list[dict[str, int | str]]]
 
-        self._parse_result_word_3_pages: List[Dict[str, int | str | List[Dict[str, int | str]]]] = []
+        self._parse_result_word_3_pages: list[dict[str, int | str | list[dict[str, int | str]]]] = []
 
         # {
         #   "documentId": 1,
@@ -198,8 +194,8 @@ class TextParser:
         #   "noPagesInDoc": 2,
         #   "pages": [
         #     {
-        self._parse_result_word_4_document: Dict[
-            str, int | str | List[Dict[str, int | str | List[Dict[str, int | str]]]]
+        self._parse_result_word_4_document: dict[
+            str, int | str | list[dict[str, int | str | list[dict[str, int | str]]]]
         ] = {}
 
         self._parse_result_word_index_line: int = 0
@@ -214,7 +210,9 @@ class TextParser:
     # Debug an XML element detailed.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def _debug_xml_element_all(event: str, parent_tag: str, attrib: Dict[str, str], text: Iterable[str | None]) -> None:
+    def _debug_xml_element_all(
+        event: str, parent_tag: str, attrib: dict[str, str], text: collections.abc.Iterable[str | None]
+    ) -> None:
         """Debug an XML element detailed.
 
         Args:
@@ -222,9 +220,9 @@ class TextParser:
                     Event: 'start' or 'end'.
             parent_tag (str):
                     Parent tag.
-            attrib (Dict[str,str]):
+            attrib (dict[str,str]):
                     Attributes.
-            text (Iterable[str|None]):
+            text (collections.abc.Iterable[str|None]):
                     XML element.
         """
         if cfg.glob.setup.verbose_parser == "all":
@@ -284,13 +282,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag Box.
     # -----------------------------------------------------------------------------
-    def _parse_tag_box(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_box(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'Box'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -308,13 +306,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag Cell.
     # -----------------------------------------------------------------------------
-    def _parse_tag_cell(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_cell(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'Cell'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -330,13 +328,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag 'Content'.
     # -----------------------------------------------------------------------------
-    def _parse_tag_content(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_content(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'Content'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -357,13 +355,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag 'DocInfo'.
     # -----------------------------------------------------------------------------
-    def _parse_tag_doc_info(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_doc_info(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'DocInfo'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -390,13 +388,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag Line.
     # -----------------------------------------------------------------------------
-    def _parse_tag_line(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_line(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'Line'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -437,13 +435,13 @@ class TextParser:
     # Processing tag 'Page'.
     # -----------------------------------------------------------------------------
     # noinspection PyArgumentList
-    def _parse_tag_page(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_page(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'Page'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -513,13 +511,13 @@ class TextParser:
     # Processing tag 'Pages'.
     # -----------------------------------------------------------------------------
     # noinspection PyArgumentList
-    def _parse_tag_pages(self, parent_tag: str, parent: Iterable[str]) -> None:  # noqa: C901
+    def _parse_tag_pages(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:  # noqa: C901
         """Processing tag 'Pages'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -598,13 +596,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag Para.
     # -----------------------------------------------------------------------------
-    def _parse_tag_para(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_para(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'Para'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -634,13 +632,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag Row.
     # -----------------------------------------------------------------------------
-    def _parse_tag_row(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_row(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'Row'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -656,13 +654,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag Table.
     # -----------------------------------------------------------------------------
-    def _parse_tag_table(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_table(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'Table'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -678,13 +676,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag Text.
     # -----------------------------------------------------------------------------
-    def _parse_tag_text(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_text(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'Text'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -696,13 +694,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag Word.
     # -----------------------------------------------------------------------------
-    def _parse_tag_word(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def _parse_tag_word(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'Word'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
@@ -788,13 +786,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag 'Document'.
     # -----------------------------------------------------------------------------
-    def parse_tag_document(self, parent_tag: str, parent: Iterable[str]) -> None:
+    def parse_tag_document(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
         """Processing tag 'Document'.
 
         Args:
             parent_tag (str):
                     Parent tag.
-            parent (Iterable[str):
+            parent (collections.abc.Iterable[str]):
                     Parent data structure.
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)

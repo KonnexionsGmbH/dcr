@@ -3,8 +3,6 @@ from __future__ import annotations
 
 import os
 from typing import ClassVar
-from typing import List
-from typing import Tuple
 
 import cfg.glob
 import db.cls_db_core
@@ -13,9 +11,9 @@ import sqlalchemy
 import utils
 
 
-# pylint: disable=R0801
-# pylint: disable=R0902
-# pylint: disable=R0903
+# pylint: disable=duplicate-code
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-instance-attributes
 class Document:
     """Managing the database table document.
 
@@ -42,7 +40,7 @@ class Document:
     DOCUMENT_FILE_TYPE_JPEG: ClassVar[str] = "jpeg"
     DOCUMENT_FILE_TYPE_JPG: ClassVar[str] = "jpg"
     DOCUMENT_FILE_TYPE_JSON: ClassVar[str] = "json"
-    DOCUMENT_FILE_TYPE_PANDOC: ClassVar[List[str]] = [
+    DOCUMENT_FILE_TYPE_PANDOC: ClassVar[list[str]] = [
         "csv",
         "docx",
         "epub",
@@ -53,7 +51,7 @@ class Document:
     ]
     DOCUMENT_FILE_TYPE_PDF: ClassVar[str] = "pdf"
     DOCUMENT_FILE_TYPE_PNG: ClassVar[str] = "png"
-    DOCUMENT_FILE_TYPE_TESSERACT: ClassVar[List[str]] = [
+    DOCUMENT_FILE_TYPE_TESSERACT: ClassVar[list[str]] = [
         "bmp",
         "gif",
         "jp2",
@@ -80,7 +78,7 @@ class Document:
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         action_code_last: str,
         directory_name: str,
@@ -375,7 +373,7 @@ class Document:
     # -----------------------------------------------------------------------------
     # Get the database columns in a tuple.
     # -----------------------------------------------------------------------------
-    def get_columns_in_tuple(self, is_file_size_bytes: bool = True, is_sha256: bool = True) -> Tuple[int | str, ...]:
+    def get_columns_in_tuple(self, is_file_size_bytes: bool = True, is_sha256: bool = True) -> tuple[int | str, ...]:
         """Get the database columns in a tuple.
 
         Args:
@@ -385,7 +383,7 @@ class Document:
                     Including column sha256?. Defaults to True.
 
         Returns:
-            Tuple[int | str, ...]:
+            tuple[int | str, ...]:
                         Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)

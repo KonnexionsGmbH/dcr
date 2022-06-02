@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import os.path
 from typing import ClassVar
-from typing import Dict
 
 import cfg.glob
 import db.cls_db_core
@@ -13,8 +12,8 @@ import sqlalchemy.orm
 import utils
 
 
-# pylint: disable=R0801
-# pylint: disable=R0902
+# pylint: disable=duplicate-code
+# pylint: disable=too-many-instance-attributes
 class Language:
     """Managing the database table language.
 
@@ -25,14 +24,14 @@ class Language:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    LANGUAGES_PANDOC: ClassVar[Dict[int, str]]
-    LANGUAGES_SPACY: ClassVar[Dict[int, str]]
-    LANGUAGES_TESSERACT: ClassVar[Dict[int, str]]
+    LANGUAGES_PANDOC: ClassVar[dict[int, str]]
+    LANGUAGES_SPACY: ClassVar[dict[int, str]]
+    LANGUAGES_TESSERACT: ClassVar[dict[int, str]]
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         code_iso_639_3: str,
         code_pandoc: str,

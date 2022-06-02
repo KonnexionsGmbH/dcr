@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Type
 
 import cfg.cls_setup
 import db.cls_action
@@ -31,29 +30,29 @@ LOGGER_START: str
 # -----------------------------------------------------------------------------
 # Global Variables.
 # -----------------------------------------------------------------------------
-action_curr: Type[db.cls_action.Action]
-action_next: Type[db.cls_action.Action]
+action_curr: type[db.cls_action.Action]
+action_next: type[db.cls_action.Action]
 
-db_core: Type[db.cls_db_core.DBCore]
+db_core: type[db.cls_db_core.DBCore]
 
 directory_inbox: os.PathLike[str] | str
 directory_inbox_accepted: os.PathLike[str] | str
 directory_inbox_rejected: os.PathLike[str] | str
 
-document: Type[db.cls_document.Document]
+document: type[db.cls_document.Document]
 
-language: Type[db.cls_language.Language]
+language: type[db.cls_language.Language]
 
-line_type: Type[nlp.cls_line_type.LineType]
+line_type: type[nlp.cls_line_type.LineType]
 
 logger: logging.Logger
 
-run: Type[db.cls_run.Run]
+run: type[db.cls_run.Run]
 
-setup: Type[cfg.cls_setup.Setup]
+setup: type[cfg.cls_setup.Setup]
 
 start_time_document: int
 
-text_parser: Type[nlp.cls_text_parser.TextParser]
+text_parser: type[nlp.cls_text_parser.TextParser]
 
-tokenizer_spacy: Type[nlp.cls_tokenizer_spacy.TokenizerSpacy]
+tokenizer_spacy: type[nlp.cls_tokenizer_spacy.TokenizerSpacy]

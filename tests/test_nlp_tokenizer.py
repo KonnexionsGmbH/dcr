@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module nlp.tokenize."""
+"""Testing Module nlp.tokenizer."""
 import os
 
 import cfg.cls_setup
@@ -13,7 +13,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=W0212
 # @pytest.mark.issue
 
 

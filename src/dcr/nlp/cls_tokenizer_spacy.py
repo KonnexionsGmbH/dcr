@@ -2,16 +2,14 @@
 from __future__ import annotations
 
 from typing import ClassVar
-from typing import Dict
-from typing import List
 
 import cfg.glob
 import spacy
 import spacy.tokens
 
 
-# pylint: disable=R0912
-# pylint: disable=R0915
+# pylint: disable=too-many-branches
+# pylint: disable=too-many-statements
 class TokenizerSpacy:
     """Determine footer and header lines.
 
@@ -86,12 +84,12 @@ class TokenizerSpacy:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self._token_0_token: Dict[str, bool | str] = {}
-        self._token_1_tokens: List[Dict[str, bool | float | int | str]] = []
-        self._token_2_page: Dict[str, int | str | List[Dict[str, bool | float | int | str]]] = {}
-        self._token_3_pages: List[Dict[str, int | str | List[Dict[str, bool | float | int | str]]]] = []
-        self._token_4_document: Dict[
-            str, int | str | List[Dict[str, int | str | List[Dict[str, bool | float | int | str]]]]
+        self._token_0_token: dict[str, bool | str] = {}
+        self._token_1_tokens: list[dict[str, bool | float | int | str]] = []
+        self._token_2_page: dict[str, int | str | list[dict[str, bool | float | int | str]]] = {}
+        self._token_3_pages: list[dict[str, int | str | list[dict[str, bool | float | int | str]]]] = []
+        self._token_4_document: dict[
+            str, int | str | list[dict[str, int | str | list[dict[str, bool | float | int | str]]]]
         ] = {}
 
         self._exist = True
@@ -115,7 +113,7 @@ class TokenizerSpacy:
     @classmethod
     def get_token_attributes(  # type: ignore # noqa: C901
         cls, token: spacy.tokens.Token
-    ) -> Dict[str, bool | float | int | str]:
+    ) -> dict[str, bool | float | int | str]:
         """Determine the requested token attributes.
 
         Args:
@@ -123,7 +121,7 @@ class TokenizerSpacy:
                 SpaCy tokens.
 
         Returns:
-            Dict[str, bool | float | int | str]:
+            dict[str, bool | float | int | str]:
                     Requested token attributes.
         """
         token_attr = {}
@@ -270,7 +268,7 @@ class TokenizerSpacy:
 
         if cfg.glob.setup.is_spacy_tkn_attr_morph:
             if token.morph is not None:
-                token_attr[TokenizerSpacy.JSON_NAME_TOKEN_MORPH] = token.morph.__str__()
+                token_attr[TokenizerSpacy.JSON_NAME_TOKEN_MORPH] = str(token.morph)
 
         if cfg.glob.setup.is_spacy_tkn_attr_norm_:
             if token.norm_ != "":
@@ -322,7 +320,7 @@ class TokenizerSpacy:
 
         if cfg.glob.setup.is_spacy_tkn_attr_tensor:
             try:
-                token_attr[TokenizerSpacy.JSON_NAME_TOKEN_TENSOR] = token.tensor.__str__()
+                token_attr[TokenizerSpacy.JSON_NAME_TOKEN_TENSOR] = str(token.tensor)
             except IndexError:
                 pass
 
@@ -336,7 +334,7 @@ class TokenizerSpacy:
 
         if cfg.glob.setup.is_spacy_tkn_attr_vocab:
             if token.vocab is not None:
-                token_attr[TokenizerSpacy.JSON_NAME_TOKEN_RANK] = token.vocab.__str__()
+                token_attr[TokenizerSpacy.JSON_NAME_TOKEN_RANK] = str(token.vocab)
 
         if cfg.glob.setup.is_spacy_tkn_attr_whitespace_:
             if token.whitespace_ != "":

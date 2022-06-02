@@ -12,7 +12,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -58,7 +57,7 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     stem_name: str = "pdf_scanned_ok"
     file_ext: str = "pdf"
 
-    document_id, _file_tesseract_1 = pytest.helpers.help_run_action_process_inbox_normal(
+    document_id, _ = pytest.helpers.help_run_action_process_inbox_normal(
         stem_name,
         file_ext,
     )

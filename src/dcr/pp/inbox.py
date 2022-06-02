@@ -89,12 +89,12 @@ def initialise_action(
     Args:
         action_code (str, optional): Action code. Defaults to "".
         directory_name (str, optional): Directory name. Defaults to "".
-        directory_type (str, optional): Directory Type. Defaults to "".
+        directory_type (str, optional): Directory type. Defaults to "".
         file_name (str, optional): File name. Defaults to "".
         id_parent (int, optional): File name. Defaults to "".
 
     Returns:
-        Type[db.cls_action.Action]: A new Action instance.
+        type[db.cls_action.Action]: A new Action instance.
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 

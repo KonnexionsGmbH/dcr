@@ -4,16 +4,12 @@ from __future__ import annotations
 import configparser
 import os
 from typing import ClassVar
-from typing import Dict
 
 import cfg.glob
 import utils
 
 
-# pylint: disable=C0302
-# pylint: disable=R0902
-# pylint: disable=R0903
-# pylint: disable=R0915
+# pylint: disable=too-many-instance-attributes
 class Setup:
     """Managing the application configuration parameters.
 
@@ -119,7 +115,7 @@ class Setup:
 
     _DCR_ENVIRONMENT_TYPE: ClassVar[str] = "DCR_ENVIRONMENT_TYPE"
 
-    DCR_VERSION: ClassVar[str] = "0.9.2"
+    DCR_VERSION: ClassVar[str] = "0.9.3"
 
     ENVIRONMENT_TYPE_DEV: ClassVar[str] = "dev"
     ENVIRONMENT_TYPE_PROD: ClassVar[str] = "prod"
@@ -131,13 +127,13 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(self) -> None:  # pylint: disable=too-many-statements
+    def __init__(self) -> None:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         self._get_environment_variant()
 
-        self._config: Dict[str, str] = {}
+        self._config: dict[str, str] = {}
 
         self.db_connection_port: str = ""
         self.db_connection_prefix: str = "postgresql+psycopg2://"
@@ -225,7 +221,7 @@ class Setup:
         self.tesseract_timeout: int = 10
         self.verbose_parser: str = "none"
 
-        self._load_config()  # pylint: disable=E1121
+        self._load_config()
 
         utils.progress_msg_core("The configuration parameters are checked and loaded")
 
@@ -935,7 +931,7 @@ class Setup:
     def _check_config_verbose_parser(self) -> None:
         """Check the configuration parameter - verbose_parser."""
         if Setup._DCR_CFG_VERBOSE_PARSER in self._config:
-            if str(self._config[Setup._DCR_CFG_VERBOSE_PARSER]).lower() in ["all", "text"]:
+            if str(self._config[Setup._DCR_CFG_VERBOSE_PARSER]).lower() in {"all", "text"}:
                 self.verbose_parser = str(self._config[Setup._DCR_CFG_VERBOSE_PARSER]).lower()
 
     # -----------------------------------------------------------------------------

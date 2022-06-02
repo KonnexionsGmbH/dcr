@@ -1,4 +1,3 @@
-# pylint: disable=unused-argument
 """Testing Module all."""
 
 import cfg.cls_setup
@@ -18,15 +17,14 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=C0302
-# pylint: disable=W0212
+# pylint: disable=unused-argument
 # @pytest.mark.issue
 
 
 # -----------------------------------------------------------------------------
 # Check the database content.
 # -----------------------------------------------------------------------------
-def check_db_content() -> None:  # pylint: disable=R0915
+def check_db_content() -> None:
     """Check the database content."""
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
@@ -97,7 +95,7 @@ def check_db_content() -> None:  # pylint: disable=R0915
 # -----------------------------------------------------------------------------
 # Check the database content - database table action.
 # -----------------------------------------------------------------------------
-def check_db_content_action() -> None:  # pylint: disable=R0915
+def check_db_content_action() -> None:
     """Check the database content - database table action."""
     pytest.helpers.check_dbt_action(
         (
@@ -787,7 +785,7 @@ def check_db_content_action() -> None:  # pylint: disable=R0915
 # -----------------------------------------------------------------------------
 # Check the database content - database table document.
 # -----------------------------------------------------------------------------
-def check_db_content_document() -> None:  # pylint: disable=R0915
+def check_db_content_document() -> None:
     """Check the database content - database table document."""
     pytest.helpers.check_dbt_document(
         (
@@ -909,7 +907,7 @@ def check_db_content_document() -> None:  # pylint: disable=R0915
 # -----------------------------------------------------------------------------
 # Check the database content - database table language.
 # -----------------------------------------------------------------------------
-def check_db_content_language() -> None:  # pylint: disable=R0915
+def check_db_content_language() -> None:
     """Check the database content - database table language."""
     pytest.helpers.check_dbt_language(
         (
@@ -948,7 +946,7 @@ def check_db_content_language() -> None:  # pylint: disable=R0915
 # -----------------------------------------------------------------------------
 # Check the database content- database table run.
 # -----------------------------------------------------------------------------
-def check_db_content_run() -> None:  # pylint: disable=R0915
+def check_db_content_run() -> None:  #
     """Check the database content- database table run."""
     pytest.helpers.check_dbt_run((1, (1, "p_i", "inbox         (preprocessor)", 1, "end", 1, 5, 6)))
     pytest.helpers.check_dbt_run((2, (2, "p_2_i", "pdf2image     (preprocessor)", 1, "end", 0, 2, 2)))
@@ -963,7 +961,7 @@ def check_db_content_run() -> None:  # pylint: disable=R0915
 # -----------------------------------------------------------------------------
 # Check the database content - database table version.
 # -----------------------------------------------------------------------------
-def check_db_content_version() -> None:  # pylint: disable=R0915
+def check_db_content_version() -> None:
     """Check the database content - database table version."""
     pytest.helpers.check_dbt_version((1, (1, cfg.cls_setup.Setup.DCR_VERSION)))
 

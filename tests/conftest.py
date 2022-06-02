@@ -10,8 +10,6 @@ import configparser
 import os
 import pathlib
 import shutil
-from typing import List
-from typing import Tuple
 
 import cfg.cls_setup
 import cfg.glob
@@ -31,8 +29,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=C0302
-# pylint: disable=W0212
 CONFIG_PARSER: configparser.ConfigParser = configparser.ConfigParser()
 
 FILE_NAME_SETUP_CFG: str = "setup.cfg"
@@ -46,18 +42,18 @@ FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
 @pytest.helpers.register
 def backup_config_params(
     config_section: str,
-    config_params: List[Tuple[str, str]],
-) -> List[Tuple[str, str]]:
+    config_params: list[tuple[str, str]],
+) -> list[tuple[str, str]]:
     """Backup and modify configuration parameter values.
 
     Args:
         config_section (str): Configuration section.
-        config_params (List[Tuple[str, str]]): Configuration parameter modifications.
+        config_params (list[tuple[str, str]]): Configuration parameter modifications.
 
     Returns:
-        List[Tuple[str, str]]: Original configuration parameter.
+        list[tuple[str, str]]: Original configuration parameter.
     """
-    config_params_backup: List[Tuple[str, str]] = []
+    config_params_backup: list[tuple[str, str]] = []
 
     CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
@@ -85,12 +81,12 @@ def backup_setup_cfg() -> None:
 # Check the content of database table action.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_action(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_action(param: tuple[int, tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table action.
 
     Args:
-        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, str, str, int, str, int, int, int]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -109,12 +105,12 @@ def check_dbt_action(param: Tuple[int, Tuple[int, str, str, int, str, int, int, 
 # Check the content of database table document.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_document(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_document(param: tuple[int, tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table document.
 
     Args:
-        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, str, str, int, str, int, int, int]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -133,12 +129,12 @@ def check_dbt_document(param: Tuple[int, Tuple[int, str, str, int, str, int, int
 # Check the content of database table language.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_language(param: Tuple[int, Tuple[int, bool, str, str, str, str, str, str, str]]) -> None:
+def check_dbt_language(param: tuple[int, tuple[int, bool, str, str, str, str, str, str, str]]) -> None:
     """Check the content of database table language.
 
     Args:
-        param (Tuple[int, Tuple[int, bool, str, str, str, str, str, str, str]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, bool, str, str, str, str, str, str, str]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -157,12 +153,12 @@ def check_dbt_language(param: Tuple[int, Tuple[int, bool, str, str, str, str, st
 # Check the content of database table run.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_run(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_run(param: tuple[int, tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table run.
 
     Args:
-        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, str, str, int, str, int, int, int]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -181,12 +177,12 @@ def check_dbt_run(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int
 # Check the content of database table token.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_token(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_token(param: tuple[int, tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table token.
 
     Args:
-        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, str, str, int, str, int, int, int]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -205,12 +201,12 @@ def check_dbt_token(param: Tuple[int, Tuple[int, str, str, int, str, int, int, i
 # Check the content of database table version.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_version(param: Tuple[int, Tuple[int, str]]) -> None:
+def check_dbt_version(param: tuple[int, tuple[int, str]]) -> None:
     """Check the content of database table version.
 
     Args:
-        param (Tuple[int, Tuple[int, str]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, str]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -230,13 +226,13 @@ def check_dbt_version(param: Tuple[int, Tuple[int, str]]) -> None:
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def copy_directories_4_pytest_2_dir(
-    source_directories: List[str],
+    source_directories: list[str],
     target_dir: str,
 ) -> None:
     """Copy directories from the sample test file directory.
 
     Args:
-        source_directories: List[str]: Source directory names.
+        source_directories: list[str]: Source directory names.
         target_dir: str: Target directory.
     """
     assert os.path.isdir(utils.get_os_independent_name(get_test_inbox_directory_name())), (
@@ -257,16 +253,16 @@ def copy_directories_4_pytest_2_dir(
 # Copy files from the sample test file directory.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def copy_files_4_pytest(file_list: List[Tuple[Tuple[str, str | None], Tuple[pathlib.Path, List[str], str | None]]]) -> None:
+def copy_files_4_pytest(file_list: list[tuple[tuple[str, str | None], tuple[pathlib.Path, list[str], str | None]]]) -> None:
     """Copy files from the sample test file directory.
 
     Args:
-        file_list (List[
-            Tuple[
-                Tuple[str, str | None],
-                Tuple[pathlib.Path, List[str], str | None]
+        file_list (list[
+            tuple[
+                tuple[str, str | None],
+                tuple[pathlib.Path, list[str], str | None]
             ]
-        ]): List of files to be copied.
+        ]): list of files to be copied.
     """
     assert os.path.isdir(utils.get_os_independent_name(get_test_inbox_directory_name())), (
         "source directory '" + get_test_inbox_directory_name() + "' missing"
@@ -293,13 +289,13 @@ def copy_files_4_pytest(file_list: List[Tuple[Tuple[str, str | None], Tuple[path
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def copy_files_4_pytest_2_dir(
-    source_files: List[Tuple[str, str | None]],
+    source_files: list[tuple[str, str | None]],
     target_path: pathlib.Path,
 ) -> None:
     """Copy files from the sample test file directory.
 
     Args:
-        source_files: List[Tuple[str, str | None]]: Source file names.
+        source_files: list[tuple[str, str | None]]: Source file names.
         target_path: Path: Target directory.
     """
     for source_file in source_files:
@@ -315,7 +311,7 @@ def create_action():
     """Create one row in database table action.
 
     Returns:
-        List: Column values
+        list: Column values
     """
     values = get_values_action()
 
@@ -347,7 +343,7 @@ def create_document():
     """Create one row in database table document.
 
     Returns:
-        List: Column values
+        list: Column values
     """
     values = get_values_document()
 
@@ -375,7 +371,7 @@ def create_language():
     """Create one row in database table language.
 
     Returns:
-        List: Column values
+        list: Column values
     """
     values = get_values_language()
 
@@ -399,13 +395,13 @@ def create_language():
 # -----------------------------------------------------------------------------
 # Create one row in database table run.
 # -----------------------------------------------------------------------------
-# noinspection PyArgumentList
+# noinspection PyArgumentlist
 @pytest.helpers.register
 def create_run():
     """Create one row in database table run.
 
     Returns:
-        List: Column values
+        list: Column values
     """
     values = get_values_run()
 
@@ -431,7 +427,7 @@ def create_token():
     """Create one row in database table token.
 
     Returns:
-        List: Column values
+        list: Column values
     """
     values = get_values_token()
 
@@ -454,7 +450,7 @@ def create_version():
     """Create one row in database table version.
 
     Returns:
-        List: Column values
+        list: Column values
     """
     values = get_values_version()
 
@@ -473,7 +469,7 @@ def create_version():
 # Delete the original configuration parameter value.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def delete_config_param(config_section: str, config_param: str) -> List[Tuple[str, str]]:
+def delete_config_param(config_section: str, config_param: str) -> list[tuple[str, str]]:
     """Delete the original configuration parameter value.
 
     Args:
@@ -481,7 +477,7 @@ def delete_config_param(config_section: str, config_param: str) -> List[Tuple[st
         config_param (str): Configuration parameter.
 
     Returns:
-        List[Tuple[str,str]]: Original configuration parameter.
+        list[tuple[str,str]]: Original configuration parameter.
     """
     CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
@@ -522,7 +518,7 @@ def fxtr_before_any_test():
     """Fixture Factory: Before any test."""
     CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
-    for (config_param, config_value) in [
+    for (config_param, config_value) in (
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PORT, "5434"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PREFIX, "postgresql+psycopg2://"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONTAINER_PORT, "5432"),
@@ -554,7 +550,7 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
-    ]:
+    ):
         CONFIG_PARSER[cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
 
     with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
@@ -1016,13 +1012,13 @@ def insert_config_param(
 @pytest.helpers.register
 def restore_config_params(
     config_section: str,
-    config_params: List[Tuple[str, str]],
+    config_params: list[tuple[str, str]],
 ) -> None:
     """Restore the original configuration parameter.
 
     Args:
         config_section (str): Configuration section.
-        config_params (List[Tuple[str, str]]): Configuration parameter modifications.
+        config_params (list[tuple[str, str]]): Configuration parameter modifications.
     """
     for (config_param, config_value) in config_params:
         CONFIG_PARSER[config_section][config_param] = config_value
@@ -1156,18 +1152,18 @@ def store_config_param(
 @pytest.helpers.register
 def verify_content_of_directory(
     directory_name: str,
-    expected_directories: List[str],
-    expected_files: List[str],
+    expected_directories: list[str],
+    expected_files: list[str],
 ) -> None:
     """Verify the content of a file directory.
 
     Args:
         directory_name: str:
                    Name of the file directory to be checked.
-        expected_directories: List[str]:
-                   List of the expected directory names.
-        expected_files: List[str]:
-                   List of the expected file names.
+        expected_directories: list[str]:
+                   list of the expected directory names.
+        expected_files: list[str]:
+                   list of the expected file names.
     """
     cfg.glob.logger.info("directory name   =%s", directory_name)
 
@@ -1202,20 +1198,20 @@ def verify_content_of_directory(
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def verify_content_of_inboxes(
-    inbox: Tuple[List[str], List[str]] = ([], []),
-    inbox_accepted: Tuple[List[str], List[str]] = ([], []),
-    inbox_rejected: Tuple[List[str], List[str]] = ([], []),
+    inbox: tuple[list[str], list[str]] = ([], []),
+    inbox_accepted: tuple[list[str], list[str]] = ([], []),
+    inbox_rejected: tuple[list[str], list[str]] = ([], []),
 ) -> None:
     """Verify the content of an inbox directories..
 
     Args:
-        inbox: Tuple[List[str],List[str]]:
+        inbox: tuple[list[str],list[str]]:
                    An optional list of expected directories and
                    an optional list of expected files in the inbox directory.
-        inbox_accepted: Tuple[List[str],List[str]]:
+        inbox_accepted: tuple[list[str],list[str]]:
                    An optional list of expected directories and
                    an optional list of expected files in the inbox_accepted directory.
-        inbox_rejected: Tuple[List[str],List[str]]:
+        inbox_rejected: tuple[list[str],list[str]]:
                    An optional list of expected directories and
                    an optional list of expected files in the inbox_rejected directory.
     """

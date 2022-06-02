@@ -1,4 +1,3 @@
-# pylint: disable=unused-argument
 """Testing Module cfg.cls_..."""
 import os
 
@@ -9,7 +8,7 @@ import pytest
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=W0212
+# pylint: disable=unused-argument
 # @pytest.mark.issue
 
 
@@ -448,7 +447,7 @@ def test_get_config_logical_true(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 # Test Function - get_config() - missing.
 # -----------------------------------------------------------------------------
-def test_get_config_missing(fxtr_setup_logger_environment):  # pylint: disable=R0915
+def test_get_config_missing(fxtr_setup_logger_environment):
     """Test: get_config() - missing."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 

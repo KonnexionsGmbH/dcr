@@ -16,7 +16,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -150,7 +149,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
         "language directory '" + language_directory_name + "' after processing missing"
     )
 
-    assert 0 == len(os.listdir(language_directory_name)), (
+    assert len(os.listdir(language_directory_name)) == 0, (
         str(len(os.listdir(language_directory_name))) + " files still found after processing"
     )
 

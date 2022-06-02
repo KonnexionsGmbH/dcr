@@ -2,8 +2,6 @@
 from __future__ import annotations
 
 from typing import ClassVar
-from typing import Tuple
-from typing import Union
 
 import cfg.glob
 import db.cls_db_core
@@ -16,8 +14,8 @@ from sqlalchemy import Integer
 from sqlalchemy import String
 
 
-# pylint: disable=R0801
-# pylint: disable=R0902
+# pylint: disable=duplicate-code
+# pylint: disable=too-many-instance-attributes
 class Run:
     """Managing the database table run.
 
@@ -64,7 +62,7 @@ class Run:
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         action_code: str,
         _row_id: int = 0,
@@ -356,28 +354,19 @@ class Run:
     # -----------------------------------------------------------------------------
     def get_columns_in_tuple(
         self,
-    ) -> Tuple[
-        Union[int, Integer],
-        str,
-        str,
-        Union[int, Integer],
-        Union[str, String],
-        Union[int, Integer],
-        Union[int, Integer],
-        Union[int, Integer],
-    ]:
+    ) -> tuple[int | Integer, str, str, int | Integer, str | String, int | Integer, int | Integer, int | Integer]:
         """Get the database columns in a tuple.
 
             Returns:
-                Tuple[
-            Union[int, Integer],
+                tuple[
+            int | Integer,
             str,
             str,
-            Union[int, Integer],
-            Union[str, String],
-            Union[int, Integer],
-            Union[int, Integer],
-            Union[int, Integer],
+            int | Integer,
+            str | String,
+            int | Integer,
+            int | Integer,
+            int | Integer,
         ]:          Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)

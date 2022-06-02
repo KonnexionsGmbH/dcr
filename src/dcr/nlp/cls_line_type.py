@@ -2,9 +2,6 @@
 from __future__ import annotations
 
 from typing import ClassVar
-from typing import Dict
-from typing import List
-from typing import Tuple
 
 import cfg.glob
 import db.cls_document
@@ -16,22 +13,18 @@ import utils
 # Global type aliases.
 # -----------------------------------------------------------------------------
 # line index, line text
-LineDataCell = Tuple[int, str]
-LineDataRow = Tuple[LineDataCell, LineDataCell]
-LineData = List[LineDataRow]
+LineDataCell = tuple[int, str]
+LineDataRow = tuple[LineDataCell, LineDataCell]
+LineData = list[LineDataRow]
 
 # line index current page, line index previous page, Levenshtein distance
-LSDDataCell = Tuple[int, int, int]
-LSDDataRow = List[LSDDataCell]
-LSDData = List[LSDDataRow]
+LSDDataCell = tuple[int, int, int]
+LSDDataRow = list[LSDDataCell]
+LSDData = list[LSDDataRow]
 
 # page_index, line index
-ResultKey = Tuple[int, int]
-ResultData = Dict[ResultKey, str]
-
-
-# pylint: disable=R0902
-# pylint: disable=R0903
+ResultKey = tuple[int, int]
+ResultData = dict[ResultKey, str]
 
 
 class LineType:
@@ -188,7 +181,7 @@ class LineType:
         for ind in range(self._line_data_max - 1, cfg.glob.setup.line_header_max_lines - 1, -1):
             (_, prev) = self._line_data[ind]
 
-            page_line: Dict[str, int | str] = cfg.glob.text_parser.parse_result_line_1_lines[line_1_lines_ind]
+            page_line: dict[str, int | str] = cfg.glob.text_parser.parse_result_line_1_lines[line_1_lines_ind]
 
             self._line_data[ind] = (  # type: ignore
                 (
@@ -226,7 +219,7 @@ class LineType:
 
             (_, prev) = self._line_data[ind]
 
-            page_line: Dict[str, int | str] = cfg.glob.text_parser.parse_result_line_1_lines[ind]
+            page_line: dict[str, int | str] = cfg.glob.text_parser.parse_result_line_1_lines[ind]
 
             self._line_data[ind] = (  # type: ignore
                 (

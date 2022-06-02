@@ -4,7 +4,6 @@ from __future__ import annotations
 import os
 import time
 from typing import ClassVar
-from typing import Tuple
 
 import cfg.glob
 import db.cls_db_core
@@ -15,9 +14,8 @@ import utils
 from sqlalchemy.engine import Connection
 
 
-# pylint: disable=R0801
-# pylint: disable=R0902
-# pylint: disable=R0903
+# pylint: disable=duplicate-code
+# pylint: disable=too-many-instance-attributes
 class Action:
     """Managing the database table action.
 
@@ -33,7 +31,7 @@ class Action:
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(  # pylint: disable=R0913, R0914
+    def __init__(  # pylint: disable=too-many-arguments
         self,
         action_code: str,
         id_run_last: int,
@@ -432,7 +430,7 @@ class Action:
     # -----------------------------------------------------------------------------
     # Get the database columns in a tuple.
     # -----------------------------------------------------------------------------
-    def get_columns_in_tuple(self, is_duration_ns: bool = True, is_file_size_bytes: bool = True) -> Tuple[int | str, ...]:
+    def get_columns_in_tuple(self, is_duration_ns: bool = True, is_file_size_bytes: bool = True) -> tuple[int | str, ...]:
         """Get the database columns in a tuple.
 
         Args:
@@ -442,7 +440,7 @@ class Action:
                     Including column file_size_bytes?. Defaults to True.
 
         Returns:
-            Tuple[int | str, ...]:
+            tuple[int | str, ...]:
                         Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)

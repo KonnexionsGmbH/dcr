@@ -5,9 +5,6 @@ import json
 import os
 import pathlib
 from typing import ClassVar
-from typing import Dict
-from typing import List
-from typing import Tuple
 from typing import TypeAlias
 
 import cfg.cls_setup
@@ -33,13 +30,11 @@ from sqlalchemy.engine import Engine
 # -----------------------------------------------------------------------------
 # Type declaration.
 # -----------------------------------------------------------------------------
-Columns: TypeAlias = Dict[str, bool | int | None | os.PathLike[str] | str]
+Columns: TypeAlias = dict[str, bool | int | None | os.PathLike[str] | str]
 
-ColumnValues: TypeAlias = Tuple[bool | int | None | os.PathLike[str] | str]
+ColumnValues: TypeAlias = tuple[bool | int | None | os.PathLike[str] | str]
 
 
-# pylint: disable=R0902
-# pylint: disable=R0903
 class DBCore:
     """Managing the database.
 
@@ -182,11 +177,11 @@ class DBCore:
     # -----------------------------------------------------------------------------
     # Create a database connection for a database user.
     # -----------------------------------------------------------------------------
-    def _connect_db_user(self) -> Tuple[Engine, MetaData]:
+    def _connect_db_user(self) -> tuple[Engine, MetaData]:
         """Create a database connection for a database user.
 
         Returns:
-            Tuple[Engine,MetaData]: Database engine and metadata
+            tuple[Engine,MetaData]: Database engine and metadata
         """
         cfg.glob.logger.debug("Attempting to connect to a user database")
 
@@ -262,7 +257,7 @@ class DBCore:
     # -----------------------------------------------------------------------------
     # Create the trigger function.
     # -----------------------------------------------------------------------------
-    # pylint: disable=R0801
+    # pylint: disable=duplicate-code
     def _create_db_trigger_function(self, column_name: str) -> None:
         """Create the trigger function.
 
@@ -361,17 +356,17 @@ class DBCore:
     # -----------------------------------------------------------------------------
     # Create the triggers for the database tables.
     # -----------------------------------------------------------------------------
-    def _create_db_triggers(self, table_names: List[str]) -> None:
+    def _create_db_triggers(self, table_names: list[str]) -> None:
         """Create the triggers for the database tables.
 
         Args:
-            table_names (List[str]): Table names.
+            table_names (list[str]): Table names.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         utils.progress_msg("Create the database triggers ...")
 
-        for column_name in [DBCore.DBC_CREATED_AT, DBCore.DBC_MODIFIED_AT]:
+        for column_name in (DBCore.DBC_CREATED_AT, DBCore.DBC_MODIFIED_AT):
             self._create_db_trigger_function(column_name)
 
         for table_name in table_names:
@@ -529,9 +524,7 @@ class DBCore:
         """Upgrade the current database schema - from one version to the next."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        current_version: str = db.cls_version.Version.select_version_version_unique()
-
-        if current_version < "1.0.0":
+        if (current_version := db.cls_version.Version.select_version_version_unique()) < "1.0.0":
             utils.terminate_fatal("An automatic upgrade of the database version is only " + "supported from version 1.0.0.")
 
         # not testable
@@ -668,13 +661,13 @@ class DBCore:
                 table_name = json_table[DBCore.JSON_NAME_TABLE_NAME].lower()
 
                 if table_name not in ["language"]:
-                    if table_name in [
+                    if table_name in {
                         "action",
                         "document",
                         "run",
                         "token",
                         "version",
-                    ]:
+                    }:
                         utils.terminate_fatal(f"The database table '{table_name}' must not be changed via the JSON file.")
                     else:
                         utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")

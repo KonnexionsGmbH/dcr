@@ -1,8 +1,6 @@
 # pylint: disable=unused-argument
 """Testing Module nlp.cls_..."""
 import os.path
-from typing import List
-from typing import Tuple
 
 import cfg.cls_setup
 import cfg.glob
@@ -22,7 +20,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=W0212
 # @pytest.mark.issue
 
 XML_DATA: str = """<?xml version="1.0" encoding="UTF-8"?>
@@ -131,14 +128,14 @@ XML_DATA: str = """<?xml version="1.0" encoding="UTF-8"?>
 # Test LineType.
 # -----------------------------------------------------------------------------
 def check_cls_line_type(
-    json_file: str, target_footer: List[Tuple[int, List[int]]], target_header: List[Tuple[int, List[int]]]
+    json_file: str, target_footer: list[tuple[int, list[int]]], target_header: list[tuple[int, list[int]]]
 ) -> None:
     """Test LineType.
 
     Args:
         json_file (str): JSON file from trxt parser.
-        target_footer (List[Tuple[int, List[int]]]): Target footer lines.
-        target_header (List[Tuple[int, List[int]]]): Target header lines.
+        target_footer (list[tuple[int, list[int]]]): Target footer lines.
+        target_header (list[tuple[int, list[int]]]): Target header lines.
     """
     instance = nlp.cls_text_parser.TextParser.from_files(full_name_line=json_file)
 
