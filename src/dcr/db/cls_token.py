@@ -22,8 +22,10 @@ class Token:
     def __init__(
         self,
         id_document: int,
-        page_data: str,
         page_no: int,
+        para_no: int,
+        text: str,
+        tokens: str,
         _row_id: int = 0,
     ) -> None:
         """Initialise the instance.
@@ -31,10 +33,14 @@ class Token:
         Args:
             id_document (int):
                     Row id of the document
-            page_data (str):
-                    Page data
             page_no (int):
                     Page number.
+            para_no (int):
+                    Paragraph number.
+            text (str):
+                    Text.
+            tokens (str):
+                    Tokens.
             _row_id (int, optional):
                     Row id. Defaults to 0.
         """
@@ -49,8 +55,10 @@ class Token:
 
         self.token_id: int = _row_id
         self.token_id_document: int = id_document
-        self.token_page_data: str = page_data
         self.token_page_no: int = page_no
+        self.token_para_no: int = para_no
+        self.token_text: str = text
+        self.token_tokens: str = tokens
 
         if self.token_id == 0:
             self.persist_2_db()
@@ -74,8 +82,10 @@ class Token:
 
         return {
             db.cls_db_core.DBCore.DBC_ID_DOCUMENT: self.token_id_document,
-            db.cls_db_core.DBCore.DBC_PAGE_DATA: self.token_page_data,
             db.cls_db_core.DBCore.DBC_PAGE_NO: self.token_page_no,
+            db.cls_db_core.DBCore.DBC_PARA_NO: self.token_para_no,
+            db.cls_db_core.DBCore.DBC_TEXT: self.token_text,
+            db.cls_db_core.DBCore.DBC_TOKENS: self.token_tokens,
         }
 
     # -----------------------------------------------------------------------------
@@ -113,13 +123,23 @@ class Token:
                 nullable=False,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_PAGE_DATA,
-                sqlalchemy.JSON,
+                db.cls_db_core.DBCore.DBC_PAGE_NO,
+                sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_PAGE_NO,
+                db.cls_db_core.DBCore.DBC_PARA_NO,
                 sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_TEXT,
+                sqlalchemy.String,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_TOKENS,
+                sqlalchemy.JSON,
                 nullable=False,
             ),
         )
@@ -209,8 +229,10 @@ class Token:
         return cls(
             _row_id=row[db.cls_db_core.DBCore.DBC_ID],
             id_document=row[db.cls_db_core.DBCore.DBC_ID_DOCUMENT],
-            page_data=row[db.cls_db_core.DBCore.DBC_PAGE_DATA],
             page_no=row[db.cls_db_core.DBCore.DBC_PAGE_NO],
+            para_no=row[db.cls_db_core.DBCore.DBC_PARA_NO],
+            text=row[db.cls_db_core.DBCore.DBC_TEXT],
+            tokens=row[db.cls_db_core.DBCore.DBC_TOKENS],
         )
 
     # -----------------------------------------------------------------------------
@@ -218,7 +240,7 @@ class Token:
     # -----------------------------------------------------------------------------
     def get_columns_in_tuple(
         self,
-    ) -> tuple[int, int, str, int]:
+    ) -> tuple[int, int, int, int, str, str]:
         """Get the database columns in a tuple.
 
         Returns:
@@ -231,8 +253,10 @@ class Token:
         return (
             self.token_id,
             self.token_id_document,
-            self.token_page_data,
             self.token_page_no,
+            self.token_para_no,
+            self.token_text,
+            self.token_tokens,
         )
 
     # -----------------------------------------------------------------------------

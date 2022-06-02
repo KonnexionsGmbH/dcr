@@ -10,6 +10,54 @@ import spacy.tokens
 
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
+# -----------------------------------------------------------------------------
+# Global type aliases.
+# -----------------------------------------------------------------------------
+# {
+#     "tknEntIob_": "O",
+#     "tknI": 0,
+#     "tknIsOov": true,
+#     "tknIsSentStart": true,
+#     "tknIsStop": true,
+#     "tknIsTitle": true,
+#     "tknLemma_": "this",
+#     "tknNorm_": "this",
+#     "tknPos_": "PRON",
+#     "tknTag_": "DT",
+#     "tknText": "This",
+#     "tknWhitespace_": " "
+# }
+Token = dict[str, bool | float | int | str]
+Tokens = list[Token]
+
+# {
+# 	"paraNo": 99,
+# 	"noLinesInPara": 99,
+# 	"noTokensInPara": 99,
+# 	"tokens": [
+TokensPara = dict[str, int | Tokens]
+TokensParas = list[TokensPara]
+
+# {
+# 	"pageNo": 99,
+# 	"noTLinesInPage": 99,
+# 	"noParasInPage": 99,
+# 	"noTokensInPage": 99,
+# 	"paras": [
+TokensPage = dict[str, int | TokensPara]
+TokensPages = list[TokensPage]
+
+# {
+#     "documentId": 99,
+#     "documentFileName": "case_2_docx_route_inbox_pandoc_pdflib.docx",
+#     "noLinesInDoc": 99,
+#     "noPagesInDoc": 99,
+#     "noParasInDoc": 99,
+#     "noTokensInDoc": 99,
+#     "pages": [
+TokensDocument = dict[str, int | TokensPages | str]
+
+
 class TokenizerSpacy:
     """Determine footer and header lines.
 
@@ -84,13 +132,16 @@ class TokenizerSpacy:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self._token_0_token: dict[str, bool | str] = {}
-        self._token_1_tokens: list[dict[str, bool | float | int | str]] = []
-        self._token_2_page: dict[str, int | str | list[dict[str, bool | float | int | str]]] = {}
-        self._token_3_pages: list[dict[str, int | str | list[dict[str, bool | float | int | str]]]] = []
-        self._token_4_document: dict[
-            str, int | str | list[dict[str, int | str | list[dict[str, bool | float | int | str]]]]
-        ] = {}
+        self._token_0_token: Token = {}
+        self._token_1_tokens: Tokens = []
+
+        self._token_2_para: TokensPara = {}
+        self._token_3_paras: TokensParas = []
+
+        self._token_4_page: TokensPage = {}
+        self._token_5_pages: TokensPages = []
+
+        self._token_6_document: TokensDocument = {}
 
         self._exist = True
 
@@ -113,7 +164,7 @@ class TokenizerSpacy:
     @classmethod
     def get_token_attributes(  # type: ignore # noqa: C901
         cls, token: spacy.tokens.Token
-    ) -> dict[str, bool | float | int | str]:
+    ) -> Token:
         """Determine the requested token attributes.
 
         Args:
@@ -121,8 +172,8 @@ class TokenizerSpacy:
                 SpaCy tokens.
 
         Returns:
-            dict[str, bool | float | int | str]:
-                    Requested token attributes.
+            Token:
+                Requested token attributes.
         """
         token_attr = {}
 

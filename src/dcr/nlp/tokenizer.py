@@ -61,7 +61,6 @@ def tokenize() -> None:
     spacy_model_current: str | None = None
 
     cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
-    cfg.glob.tokenizer_spacy = nlp.cls_tokenizer_spacy.TokenizerSpacy()
 
     with cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE)
@@ -123,7 +122,17 @@ def tokenize_file(model_data: spacy.Language) -> None:
     try:
         cfg.glob.text_parser = nlp.cls_text_parser.TextParser.from_files(full_name_line=full_name_curr)
 
-        cfg.glob.tokenizer_spacy.token_3_pages = []
+        cfg.glob.tokenizer_spacy = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+
+        no_lines_in_doc: int = 0
+        no_lines_in_page: int = 0
+        no_lines_in_para: int = 0
+        no_pages_in_doc: int = 0
+        no_paras_in_doc: int = 0
+        no_paras_in_page: int = 0
+        no_tokens_in_doc: int = 0
+        no_tokens_in_page: int = 0
+        no_tokens_in_para: int = 0
 
         for cfg.glob.text_parser.parse_result_line_2_page in cfg.glob.text_parser.parse_result_line_4_document[
             cfg.glob.text_parser.JSON_NAME_PAGES
