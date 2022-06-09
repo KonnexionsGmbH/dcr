@@ -7,19 +7,20 @@ import db.cls_action
 import db.cls_document
 import db.cls_run
 import defusedxml.ElementTree
+import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import utils
 
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_61_901: str = (
+ERROR_61_901 = (
     "61.901 Issue (s_p_j): Parsing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
 )
 
-TETML_TYPE_LINE: str = "line"
-TETML_TYPE_PAGE: str = "page"
-TETML_TYPE_WORD: str = "word"
+TETML_TYPE_LINE = "line"
+TETML_TYPE_PAGE = "page"
+TETML_TYPE_WORD = "word"
 
 
 # -----------------------------------------------------------------------------
@@ -137,11 +138,11 @@ def parse_tetml_file() -> None:
         cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
 
         for child in root:
-            child_tag = child.tag[nlp.cls_text_parser.TextParser.PARSE_TAG_FROM :]
+            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_TAG_FROM :]
             match child_tag:
-                case nlp.cls_text_parser.TextParser.PARSE_TAG_DOCUMENT:
+                case nlp.cls_nlp_core.NLPCore.PARSE_TAG_DOCUMENT:
                     cfg.glob.text_parser.parse_tag_document(child_tag, child)
-                case nlp.cls_text_parser.TextParser.PARSE_TAG_CREATION:
+                case nlp.cls_nlp_core.NLPCore.PARSE_TAG_CREATION:
                     pass
 
         cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(full_name_next),)

@@ -136,20 +136,20 @@ class Document:
                 "The required instance of the class 'DBCore' does not yet exist.",
             )
 
-        self.document_action_code_last: str = action_code_last
-        self.document_action_text_last: str = action_text_last
-        self.document_directory_name: str = directory_name
-        self.document_error_code_last: str = error_code_last
-        self.document_error_msg_last: str = error_msg_last
-        self.document_error_no: int = error_no
-        self.document_file_name: str = file_name
-        self.document_file_size_bytes: int = file_size_bytes
-        self.document_id: int = _row_id
-        self.document_id_language: int = id_language
-        self.document_id_run_last: int = id_run_last
-        self.document_no_pdf_pages: int = no_pdf_pages
-        self.document_sha256: str = sha256
-        self.document_status: str = status
+        self.document_action_code_last = action_code_last
+        self.document_action_text_last = action_text_last
+        self.document_directory_name = directory_name
+        self.document_error_code_last = error_code_last
+        self.document_error_msg_last = error_msg_last
+        self.document_error_no = error_no
+        self.document_file_name = file_name
+        self.document_file_size_bytes = file_size_bytes
+        self.document_id = _row_id
+        self.document_id_language = id_language
+        self.document_id_run_last = id_run_last
+        self.document_no_pdf_pages = no_pdf_pages
+        self.document_sha256 = sha256
+        self.document_status = status
 
         if self.document_id == 0:
             self.persist_2_db()

@@ -17,15 +17,15 @@ import nlp.cls_tokenizer_spacy
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
-FILE_ENCODING_DEFAULT: str = "utf-8"
+FILE_ENCODING_DEFAULT = "utf-8"
 
-INFORMATION_NOT_YET_AVAILABLE: str = "n/a"
+INFORMATION_NOT_YET_AVAILABLE = "n/a"
 
-LOGGER_END: str = "End"
-LOGGER_FATAL_HEAD: str = "FATAL ERROR: program abort =====> "
-LOGGER_FATAL_TAIL: str = " <===== FATAL ERROR"
-LOGGER_PROGRESS_UPDATE: str = "Progress update "
-LOGGER_START: str = "Start"
+LOGGER_END = "End"
+LOGGER_FATAL_HEAD = "FATAL ERROR: program abort =====> "
+LOGGER_FATAL_TAIL = " <===== FATAL ERROR"
+LOGGER_PROGRESS_UPDATE = "Progress update "
+LOGGER_START = "Start"
 
 # -----------------------------------------------------------------------------
 # Global Variables.

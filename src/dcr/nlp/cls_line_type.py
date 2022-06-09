@@ -1,11 +1,10 @@
 """Module nlp.cls_line_type: Determine footer and header lines."""
 from __future__ import annotations
 
-from typing import ClassVar
-
 import cfg.glob
 import db.cls_document
 import jellyfish
+import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import utils
 
@@ -33,12 +32,6 @@ class LineType:
     Returns:
         _type_: LineType instance.
     """
-
-    # -----------------------------------------------------------------------------
-    # Class variables.
-    # -----------------------------------------------------------------------------
-    _JSON_NAME_LINE_INDEX_PAGE: ClassVar[str] = "lineIndexPage"
-    _JSON_NAME_LINE_TEXT: ClassVar[str] = "lineText"
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
@@ -73,9 +66,9 @@ class LineType:
             f"LineType: Start create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
-        self._line_data_max: int = cfg.glob.setup.line_header_max_lines + cfg.glob.setup.line_footer_max_lines
-        self._page_ind: int = -1
-        self._page_max: int = cfg.glob.action_curr.action_no_pdf_pages
+        self._line_data_max = cfg.glob.setup.line_header_max_lines + cfg.glob.setup.line_footer_max_lines
+        self._page_ind = -1
+        self._page_max = cfg.glob.action_curr.action_no_pdf_pages
 
         self._line_data: LineData = [((-1, ""), (-1, "")) for _ in range(self._line_data_max)]
         utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
@@ -173,28 +166,28 @@ class LineType:
         utils.progress_msg_line_type("LineType: Start store footers")
         utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
 
-        if len(cfg.glob.text_parser.parse_result_line_1_lines) == 0:
+        if len(cfg.glob.text_parser.parse_result_line_lines) == 0:
             return
 
-        line_1_lines_ind = len(cfg.glob.text_parser.parse_result_line_1_lines) - 1
+        line_lines_ind = len(cfg.glob.text_parser.parse_result_line_lines) - 1
 
         for ind in range(self._line_data_max - 1, cfg.glob.setup.line_header_max_lines - 1, -1):
             (_, prev) = self._line_data[ind]
 
-            page_line: dict[str, int | str] = cfg.glob.text_parser.parse_result_line_1_lines[line_1_lines_ind]
+            page_line: dict[str, int | str] = cfg.glob.text_parser.parse_result_line_lines[line_lines_ind]
 
             self._line_data[ind] = (  # type: ignore
                 (
-                    page_line[LineType._JSON_NAME_LINE_INDEX_PAGE],
-                    page_line[LineType._JSON_NAME_LINE_TEXT],
+                    page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE],
+                    page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT],
                 ),
                 prev,
             )
 
-            if line_1_lines_ind == 0:
+            if line_lines_ind == 0:
                 break
 
-            line_1_lines_ind -= 1
+            line_lines_ind -= 1
 
         utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
         utils.progress_msg_line_type("LineType: End   store footers")
@@ -208,23 +201,23 @@ class LineType:
         utils.progress_msg_line_type("LineType: Start store headers")
         utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
 
-        if len(cfg.glob.text_parser.parse_result_line_1_lines) == 0:
+        if len(cfg.glob.text_parser.parse_result_line_lines) == 0:
             return
 
-        line_1_lines_max = len(cfg.glob.text_parser.parse_result_line_1_lines)
+        line_lines_max = len(cfg.glob.text_parser.parse_result_line_lines)
 
         for ind in range(cfg.glob.setup.line_header_max_lines):
-            if ind >= line_1_lines_max:
+            if ind >= line_lines_max:
                 break
 
             (_, prev) = self._line_data[ind]
 
-            page_line: dict[str, int | str] = cfg.glob.text_parser.parse_result_line_1_lines[ind]
+            page_line: dict[str, int | str] = cfg.glob.text_parser.parse_result_line_lines[ind]
 
             self._line_data[ind] = (  # type: ignore
                 (
-                    page_line[LineType._JSON_NAME_LINE_INDEX_PAGE],
-                    page_line[LineType._JSON_NAME_LINE_TEXT],
+                    page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE],
+                    page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT],
                 ),
                 prev,
             )
@@ -237,14 +230,14 @@ class LineType:
     # -----------------------------------------------------------------------------
     def _store_results(self) -> None:
         """Store the found line types in parser result."""
-        for page in cfg.glob.text_parser.parse_result_line_3_pages:
-            page_no = page[nlp.cls_text_parser.TextParser.JSON_NAME_PAGE_NO]
-            lines = page[nlp.cls_text_parser.TextParser.JSON_NAME_LINES]
+        for page in cfg.glob.text_parser.parse_result_line_pages:
+            page_no = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
+            lines = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
 
             for line in lines:
-                line_index_page = line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_INDEX_PAGE]
+                line_index_page = line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE]
                 if (page_no, line_index_page) in self._result_data:
-                    line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_TYPE] = self._result_data[(page_no, line_index_page)]
+                    line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = self._result_data[(page_no, line_index_page)]
 
     # -----------------------------------------------------------------------------
     # Swap the current and previous data.

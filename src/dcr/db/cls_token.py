@@ -22,8 +22,10 @@ class Token:
     def __init__(
         self,
         id_document: int,
+        no_tokens_in_sent: int,
         page_no: int,
         para_no: int,
+        sent_no: int,
         text: str,
         tokens: str,
         _row_id: int = 0,
@@ -33,10 +35,14 @@ class Token:
         Args:
             id_document (int):
                     Row id of the document
+            no_tokens_in_sent (int):
+                    Number tokens in sentence.
             page_no (int):
                     Page number.
             para_no (int):
                     Paragraph number.
+            sent_no (int):
+                    Sentence number.
             text (str):
                     Text.
             tokens (str):
@@ -53,12 +59,14 @@ class Token:
                 "The required instance of the class 'DBCore' does not yet exist.",
             )
 
-        self.token_id: int = _row_id
-        self.token_id_document: int = id_document
-        self.token_page_no: int = page_no
-        self.token_para_no: int = para_no
-        self.token_text: str = text
-        self.token_tokens: str = tokens
+        self.token_id = _row_id
+        self.token_id_document = id_document
+        self.token_no_tokens_in_sent = no_tokens_in_sent
+        self.token_page_no = page_no
+        self.token_para_no = para_no
+        self.token_sent_no = sent_no
+        self.token_text = text
+        self.token_tokens = tokens
 
         if self.token_id == 0:
             self.persist_2_db()
@@ -82,8 +90,10 @@ class Token:
 
         return {
             db.cls_db_core.DBCore.DBC_ID_DOCUMENT: self.token_id_document,
+            db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT: self.token_no_tokens_in_sent,
             db.cls_db_core.DBCore.DBC_PAGE_NO: self.token_page_no,
             db.cls_db_core.DBCore.DBC_PARA_NO: self.token_para_no,
+            db.cls_db_core.DBCore.DBC_SENT_NO: self.token_sent_no,
             db.cls_db_core.DBCore.DBC_TEXT: self.token_text,
             db.cls_db_core.DBCore.DBC_TOKENS: self.token_tokens,
         }
@@ -123,12 +133,22 @@ class Token:
                 nullable=False,
             ),
             sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_PAGE_NO,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_PARA_NO,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_SENT_NO,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
@@ -229,8 +249,10 @@ class Token:
         return cls(
             _row_id=row[db.cls_db_core.DBCore.DBC_ID],
             id_document=row[db.cls_db_core.DBCore.DBC_ID_DOCUMENT],
+            no_tokens_in_sent=row[db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT],
             page_no=row[db.cls_db_core.DBCore.DBC_PAGE_NO],
             para_no=row[db.cls_db_core.DBCore.DBC_PARA_NO],
+            sent_no=row[db.cls_db_core.DBCore.DBC_SENT_NO],
             text=row[db.cls_db_core.DBCore.DBC_TEXT],
             tokens=row[db.cls_db_core.DBCore.DBC_TOKENS],
         )
@@ -240,7 +262,7 @@ class Token:
     # -----------------------------------------------------------------------------
     def get_columns_in_tuple(
         self,
-    ) -> tuple[int, int, int, int, str, str]:
+    ) -> tuple[int, int, int, int, int, int, str, str]:
         """Get the database columns in a tuple.
 
         Returns:
@@ -253,8 +275,10 @@ class Token:
         return (
             self.token_id,
             self.token_id_document,
+            self.token_no_tokens_in_sent,
             self.token_page_no,
             self.token_para_no,
+            self.token_sent_no,
             self.token_text,
             self.token_tokens,
         )

@@ -31,7 +31,6 @@ if [ -z "$1" ]; then
     echo "db_u         - Upgrade the database."
     echo "------------------------------------------------------------------------------"
     echo "m_d          - Run the installation of the necessary 3rd party packages for development and run the development ecosystem."
-    echo "m_p          - Run the installation of the necessary 3rd party packages for production and compile all packages and modules."
     echo "------------------------------------------------------------------------------"
     read -rp "Enter the desired action [default: ${DCR_CHOICE_ACTION_DEFAULT}] " DCR_CHOICE_ACTION
     export DCR_CHOICE_ACTION=${DCR_CHOICE_ACTION:-$DCR_CHOICE_ACTION_DEFAULT}
@@ -72,12 +71,6 @@ case "${DCR_CHOICE_ACTION}" in
   m_d)
     # Development install packages
     make pipenv-dev
-    ;;
-  m_p)
-    # Production install packages
-    make pipenv-prod
-    # Production compile all
-    make compileall
     ;;
   db_c)
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
@@ -133,7 +126,7 @@ case "${DCR_CHOICE_ACTION}" in
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
-    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | m_p | n_i_p[_only] | ocr[_only] | p_i | p_2_i[_only] | s_p_j[_only] | tet[_only] | tkn[_only]"
+    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | n_i_p[_only] | ocr[_only] | p_i | p_2_i[_only] | s_p_j[_only] | tet[_only] | tkn[_only]"
     ;;
 esac
 

@@ -31,8 +31,8 @@ import dcr
 # -----------------------------------------------------------------------------
 CONFIG_PARSER: configparser.ConfigParser = configparser.ConfigParser()
 
-FILE_NAME_SETUP_CFG: str = "setup.cfg"
-FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
+FILE_NAME_SETUP_CFG = "setup.cfg"
+FILE_NAME_SETUP_CFG_BACKUP = "setup.cfg_backup"
 
 
 # -----------------------------------------------------------------------------
@@ -429,12 +429,17 @@ def create_token():
     Returns:
         list: Column values
     """
+
     values = get_values_token()
 
     instance = db.cls_token.Token(
         id_document=values[1],
-        page_data=values[2],
+        no_tokens_in_sent=values[2],
         page_no=values[3],
+        para_no=values[4],
+        sent_no=values[5],
+        text=values[6],
+        tokens=values[7],
     )
 
     values[0] = instance.token_id
@@ -800,7 +805,7 @@ def get_values_document():
 # Provide expected values - database table language.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def get_values_language():
+def get_values_language() -> list[bool | int | str | None]:
     """Provide expected values - database table language."""
     return [
         None,
@@ -818,7 +823,7 @@ def get_values_language():
 # Provide expected values - database table run.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def get_values_run():
+def get_values_run() -> list[bool | int | str | None]:
     """Provide expected values - database table run."""
     return [
         None,
@@ -835,44 +840,57 @@ def get_values_run():
 # -----------------------------------------------------------------------------
 # Provide expected values - database table token.
 # -----------------------------------------------------------------------------
+# pylint: disable=duplicate-code
 @pytest.helpers.register
-def get_values_token():
+def get_values_token() -> list[int | list[dict] | str | None]:
     """Provide expected values - database table token."""
     return [
         None,
         cfg.glob.document.document_id,
-        {
-            "pageNo": 1,
-            "noTokensInPage": 221,
-            "tokens": [
-                {
-                    "tknEntIob_": "O",
-                    "tknI": 0,
-                    "tknIsOov": True,
-                    "tknIsSentStart": True,
-                    "tknIsTitle": True,
-                    "tknLemma_": "Start",
-                    "tknNorm_": "start",
-                    "tknPos_": "PROPN",
-                    "tknTag_": "NNP",
-                    "tknText": "Start",
-                    "tknWhitespace_": " ",
-                },
-                {
-                    "tknEntIob_": "O",
-                    "tknI": 220,
-                    "tknIsOov": True,
-                    "tknIsPunct": True,
-                    "tknIsSentEnd": True,
-                    "tknLemma_": ".",
-                    "tknNorm_": ".",
-                    "tknPos_": "PUNCT",
-                    "tknTag_": ".",
-                    "tknText": ".",
-                },
-            ],
-        },
+        3,
         1,
+        1,
+        1,
+        "Start Document ...",
+        [
+            {
+                "tknEntIob_": "O",
+                "tknI": 0,
+                "tknIsOov": True,
+                "tknIsSentStart": True,
+                "tknIsTitle": True,
+                "tknLemma_": "start",
+                "tknNorm_": "start",
+                "tknPos_": "VERB",
+                "tknTag_": "VB",
+                "tknText": "Start",
+                "tknWhitespace_": " ",
+            },
+            {
+                "tknEntIob_": "O",
+                "tknI": 1,
+                "tknIsOov": True,
+                "tknIsTitle": True,
+                "tknLemma_": "document",
+                "tknNorm_": "document",
+                "tknPos_": "NOUN",
+                "tknTag_": "NN",
+                "tknText": "Document",
+                "tknWhitespace_": " ",
+            },
+            {
+                "tknEntIob_": "O",
+                "tknI": 2,
+                "tknIsOov": True,
+                "tknIsPunct": True,
+                "tknIsSentEnd": True,
+                "tknLemma_": "...",
+                "tknNorm_": "...",
+                "tknPos_": "PUNCT",
+                "tknTag_": ".",
+                "tknText": "...",
+            },
+        ],
     ]
 
 
@@ -880,7 +898,7 @@ def get_values_token():
 # Provide expected values - database table version.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def get_values_version():
+def get_values_version() -> list[int | str | None]:
     """Provide expected values - database table version."""
     return [
         None,
@@ -953,7 +971,7 @@ def help_run_action_process_inbox_normal(
     # -------------------------------------------------------------------------
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
     # -------------------------------------------------------------------------
-    document_id: int = 1
+    document_id = 1
 
     file_p_i = (
         cfg.glob.setup.directory_inbox_accepted,
@@ -1049,6 +1067,7 @@ def set_complete_cfg_spacy(false_or_true: str):
     return pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_STOP, false_or_true),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER, false_or_true),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, false_or_true),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DOC, false_or_true),

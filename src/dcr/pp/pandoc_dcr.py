@@ -13,15 +13,15 @@ import utils
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_31_902: str = (
+ERROR_31_902 = (
     "31.902 Issue (n_2_p): The file '{full_name}' cannot be converted to an "
     + "'pdf' document - "
     + "error type: '{error_type}' - error: '{error_msg}'."
 )
-ERROR_31_903: str = "31.903 Issue (n_2_p): The target file '{full_name}' already exists."
+ERROR_31_903 = "31.903 Issue (n_2_p): The target file '{full_name}' already exists."
 
-PANDOC_PDF_ENGINE_LULATEX: str = "lulatex"
-PANDOC_PDF_ENGINE_XELATEX: str = "xelatex"
+PANDOC_PDF_ENGINE_LULATEX = "lulatex"
+PANDOC_PDF_ENGINE_XELATEX = "xelatex"
 
 
 # -----------------------------------------------------------------------------

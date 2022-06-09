@@ -83,9 +83,11 @@ class DBCore:
     DBC_MODIFIED_AT: ClassVar[str] = "modified_at"
     DBC_NO_CHILDREN: ClassVar[str] = "no_children"
     DBC_NO_PDF_PAGES: ClassVar[str] = "no_pdf_pages"
+    DBC_NO_TOKENS_IN_SENT: ClassVar[str] = "no_tokens_in_sent"
     DBC_PAGE_DATA: ClassVar[str] = "page_data"
     DBC_PAGE_NO: ClassVar[str] = "page_no"
-    DBC_PARA_NO: ClassVar[str] = "pare_no"
+    DBC_PARA_NO: ClassVar[str] = "para_no"
+    DBC_SENT_NO: ClassVar[str] = "sent_no"
     DBC_SHA256: ClassVar[str] = "sha256"
     DBC_STATUS: ClassVar[str] = "status"
     DBC_TEXT: ClassVar[str] = "text"
@@ -102,14 +104,14 @@ class DBCore:
     DBT_TOKEN: ClassVar[str] = "token"
     DBT_VERSION: ClassVar[str] = "version"
 
-    JSON_NAME_API_VERSION: str = "apiVersion"
-    JSON_NAME_COLUMN_NAME: str = "columnName"
-    JSON_NAME_COLUMN_VALUE: str = "columnValue"
-    JSON_NAME_DATA: str = "data"
-    JSON_NAME_ROW: str = "row"
-    JSON_NAME_ROWS: str = "rows"
-    JSON_NAME_TABLES: str = "tables"
-    JSON_NAME_TABLE_NAME: str = "tableName"
+    JSON_NAME_API_VERSION = "apiVersion"
+    JSON_NAME_COLUMN_NAME = "columnName"
+    JSON_NAME_COLUMN_VALUE = "columnValue"
+    JSON_NAME_DATA = "data"
+    JSON_NAME_ROW = "row"
+    JSON_NAME_ROWS = "rows"
+    JSON_NAME_TABLES = "tables"
+    JSON_NAME_TABLE_NAME = "tableName"
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
@@ -126,9 +128,9 @@ class DBCore:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self._db_current_database: str = ""
-        self._db_current_password: str = ""
-        self._db_current_user: str = ""
+        self._db_current_database = ""
+        self._db_current_password = ""  # nosec
+        self._db_current_user = ""
 
         if is_admin:
             self._db_driver_conn = self._connect_db_admin()
@@ -171,7 +173,7 @@ class DBCore:
                 f"There is no database connection for the administrator possible - error={str(err)}",
             )
 
-        self._db_driver_conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)  # type: ignore
+        self._db_driver_conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
         cfg.glob.logger.debug("The database engine is ready for the administrator")
 
@@ -247,7 +249,7 @@ class DBCore:
         self._db_driver_conn.cursor().execute("GRANT ALL PRIVILEGES ON DATABASE " + database + " TO " + user)
         utils.progress_msg(f"The user '{user}' has now all privileges on database '{database}'")
 
-        self._db_driver_conn.close()  # type: ignore
+        self._db_driver_conn.close()
 
         self._create_schema()
 
@@ -722,7 +724,7 @@ class DBCore:
 
         utils.progress_msg("Upgrade the database tables ...")
 
-        current_version: str = db.cls_version.Version.select_version_version_unique()
+        current_version = db.cls_version.Version.select_version_version_unique()
 
         self._db_driver_conn = self._connect_db_admin()
 

@@ -12,23 +12,23 @@ import utils
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_51_901: str = (
+ERROR_51_901 = (
     "51.901 Issue (tet): Opening document '{full_name}' - "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
-ERROR_51_904: str = "51.904 Issue (pdflib): The target file '{full_name}' already exists."
+ERROR_51_904 = "51.904 Issue (pdflib): The target file '{full_name}' already exists."
 
-LINE_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector}"
-LINE_TET_PAGE_OPT_LIST: str = "granularity=line"
-LINE_XML_VARIATION: str = "line."
+LINE_TET_DOCUMENT_OPT_LIST = "engines={noannotation noimage text notextcolor novector}"
+LINE_TET_PAGE_OPT_LIST = "granularity=line"
+LINE_XML_VARIATION = "line."
 
-PAGE_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector} " + "lineseparator=U+0020"
-PAGE_TET_PAGE_OPT_LIST: str = "granularity=page"
-PAGE_XML_VARIATION: str = "page."
+PAGE_TET_DOCUMENT_OPT_LIST = "engines={noannotation noimage text notextcolor novector} " + "lineseparator=U+0020"
+PAGE_TET_PAGE_OPT_LIST = "granularity=page"
+PAGE_XML_VARIATION = "page."
 
-WORD_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector}"
-WORD_TET_PAGE_OPT_LIST: str = "granularity=word tetml={elements={line}}"
-WORD_XML_VARIATION: str = "word."
+WORD_TET_DOCUMENT_OPT_LIST = "engines={noannotation noimage text notextcolor novector}"
+WORD_TET_PAGE_OPT_LIST = "granularity=word tetml={elements={line}}"
+WORD_XML_VARIATION = "word."
 
 
 # -----------------------------------------------------------------------------

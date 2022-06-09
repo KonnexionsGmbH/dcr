@@ -27,8 +27,8 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    stem_name_1: str = "pdf_text_ok"
-    file_ext: str = "pdf"
+    stem_name_1 = "pdf_text_ok"
+    file_ext = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
@@ -37,7 +37,7 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
         target_path=cfg.glob.setup.directory_inbox,
     )
 
-    stem_name_2: str = "pdf_text_ok_1"
+    stem_name_2 = "pdf_text_ok_1"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox_accepted
@@ -287,14 +287,14 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    stem_name_1: str = "pdf_wrong_format"
-    file_ext: str = "pdf"
+    stem_name_1 = "pdf_wrong_format"
+    file_ext = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox
     )
 
-    stem_name_2: str = "pdf_wrong_format_1"
+    stem_name_2 = "pdf_wrong_format_1"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox_rejected

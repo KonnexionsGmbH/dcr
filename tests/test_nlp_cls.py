@@ -10,6 +10,7 @@ import db.cls_document
 import db.cls_run
 import defusedxml.ElementTree
 import nlp.cls_line_type
+import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 import pytest
@@ -22,7 +23,8 @@ import dcr
 # -----------------------------------------------------------------------------
 # @pytest.mark.issue
 
-XML_DATA: str = """<?xml version="1.0" encoding="UTF-8"?>
+
+XML_DATA = """<?xml version="1.0" encoding="UTF-8"?>
 <!-- Created by the PDFlib Text and Image Extraction Toolkit TET (www.pdflib.com) -->
 <TET xmlns="http://www.pdflib.com/XML/TET5/TET-5.0"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -142,20 +144,20 @@ def check_cls_line_type(
     actual_footer = []
     actual_header = []
 
-    pages = instance.parse_result_line_4_document[nlp.cls_text_parser.TextParser.JSON_NAME_PAGES]
+    pages = instance.parse_result_line_document[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES]
 
     for page in pages:
-        page_no = page[nlp.cls_text_parser.TextParser.JSON_NAME_PAGE_NO]
+        page_no = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
 
         actual_page_footer = []
         actual_page_header = []
 
-        for line in page[nlp.cls_text_parser.TextParser.JSON_NAME_LINES]:
-            line_type = line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_TYPE]
+        for line in page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]:
+            line_type = line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
             if line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_FOOTER:
-                actual_page_footer.append(line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_INDEX_PAGE])
+                actual_page_footer.append(line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE])
             elif line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADER:
-                actual_page_header.append(line[nlp.cls_text_parser.TextParser.JSON_NAME_LINE_INDEX_PAGE])
+                actual_page_header.append(line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE])
 
         if actual_page_footer:
             actual_footer.append((page_no, actual_page_footer))
@@ -349,6 +351,21 @@ def test_cls_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         target_footer=[],
         target_header=[],
     )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test NLPCore.
+# -----------------------------------------------------------------------------
+def test_cls_nlp_core(fxtr_rmdir_opt, fxtr_setup_logger_environment):
+    """Test NLPCore."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_nlp_core.NLPCore()
+    instance.exists()
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -601,11 +618,11 @@ def test_missing_dependencies_text_parser_action_next(fxtr_setup_logger_environm
 
     with pytest.raises(SystemExit) as expt:
         for child in root:
-            child_tag = child.tag[nlp.cls_text_parser.TextParser.PARSE_TAG_FROM :]
+            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_TAG_FROM :]
             match child_tag:
-                case nlp.cls_text_parser.TextParser.PARSE_TAG_DOCUMENT:
+                case nlp.cls_nlp_core.NLPCore.PARSE_TAG_DOCUMENT:
                     instance.parse_tag_document(child_tag, child)
-                case nlp.cls_text_parser.TextParser.PARSE_TAG_CREATION:
+                case nlp.cls_nlp_core.NLPCore.PARSE_TAG_CREATION:
                     pass
 
     assert expt.type == SystemExit, "Instance of class 'Action (action_next)' is missing"
@@ -657,11 +674,11 @@ def test_missing_dependencies_text_parser_document(fxtr_setup_empty_db_and_inbox
 
     with pytest.raises(SystemExit) as expt:
         for child in root:
-            child_tag = child.tag[nlp.cls_text_parser.TextParser.PARSE_TAG_FROM :]
+            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_TAG_FROM :]
             match child_tag:
-                case nlp.cls_text_parser.TextParser.PARSE_TAG_DOCUMENT:
+                case nlp.cls_nlp_core.NLPCore.PARSE_TAG_DOCUMENT:
                     instance.parse_tag_document(child_tag, child)
-                case nlp.cls_text_parser.TextParser.PARSE_TAG_CREATION:
+                case nlp.cls_nlp_core.NLPCore.PARSE_TAG_CREATION:
                     pass
 
     assert expt.type == SystemExit, "Instance of class 'Document' is missing"

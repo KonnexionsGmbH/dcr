@@ -78,26 +78,24 @@ class Language:
                 "The required instance of the class 'Setup' does not yet exist.",
             )
 
-        self.language_active: bool = active
-        self.language_code_iso_639_3: str = code_iso_639_3
-        self.language_code_pandoc: str = code_pandoc
-        self.language_code_spacy: str = code_spacy
-        self.language_code_tesseract: str = code_tesseract
+        self.language_active = active
+        self.language_code_iso_639_3 = code_iso_639_3
+        self.language_code_pandoc = code_pandoc
+        self.language_code_spacy = code_spacy
+        self.language_code_tesseract = code_tesseract
 
         if self.language_active and (directory_name_inbox is None or directory_name_inbox == ""):
-            self.language_directory_name_inbox: str = str(
-                os.path.join(cfg.glob.setup.directory_inbox, iso_language_name.lower())
-            )
+            self.language_directory_name_inbox = str(os.path.join(cfg.glob.setup.directory_inbox, iso_language_name.lower()))
         else:
             self.language_directory_name_inbox = utils.get_os_independent_name(directory_name_inbox)
 
-        self.language_id: int = _row_id
-        self.language_iso_language_name: str = iso_language_name
+        self.language_id = _row_id
+        self.language_iso_language_name = iso_language_name
 
-        self.total_erroneous: int = 0
-        self.total_processed: int = 0
-        self.total_processed_to_be: int = 0
-        self.total_processed_pandoc: int = 0
+        self.total_erroneous = 0
+        self.total_processed = 0
+        self.total_processed_to_be = 0
+        self.total_processed_pandoc = 0
         self.total_processed_pdf2image = 0
         self.total_processed_pdflib = 0
         self.total_processed_tesseract = 0

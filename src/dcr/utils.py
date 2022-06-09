@@ -227,7 +227,7 @@ def progress_msg_core(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    final_msg: str = cfg.glob.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
+    final_msg = cfg.glob.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
 
     print(final_msg)
 

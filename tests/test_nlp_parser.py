@@ -26,13 +26,13 @@ def test_levenshtein_arabic():
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    upper_limit: int = 1200
+    upper_limit = 1200
 
     for prev in range(upper_limit):
         text_curr = f"Page {prev+1} of {str(upper_limit)}"
         text_prev = f"Page {prev} of {str(upper_limit)}"
 
-        distance: int = jellyfish.levenshtein_distance(
+        distance = jellyfish.levenshtein_distance(
             text_prev,
             text_curr,
         )
@@ -61,14 +61,14 @@ def test_levenshtein_roman():
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    upper_limit: int = 1200
-    upper_limit_roman: str = roman.toRoman(upper_limit)
+    upper_limit = 1200
+    upper_limit_roman = roman.toRoman(upper_limit)
 
     for prev in range(upper_limit):
         text_curr = f"Page {roman.toRoman(prev + 1)} of {upper_limit_roman}"
         text_prev = f"Page {roman.toRoman(prev)} of {upper_limit_roman}"
 
-        distance: int = jellyfish.levenshtein_distance(
+        distance = jellyfish.levenshtein_distance(
             text_prev,
             text_curr,
         )
@@ -270,8 +270,8 @@ def test_run_action_store_parse_result_in_json_missing_input_file(fxtr_setup_emp
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_missing_input_file <=========")
 
-    stem_name_1: str = "case_3_pdf_text_route_inbox_pdflib"
-    file_ext_1: str = "pdf"
+    stem_name_1 = "case_3_pdf_text_route_inbox_pdflib"
+    file_ext_1 = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[

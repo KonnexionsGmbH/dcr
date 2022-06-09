@@ -223,8 +223,8 @@ def test_run_action_tokenize_missing_input_file(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_tokenize_missing_input_file <=========")
 
-    stem_name_1: str = "case_3_pdf_text_route_inbox_pdflib"
-    file_ext_1: str = "pdf"
+    stem_name_1 = "case_3_pdf_text_route_inbox_pdflib"
+    file_ext_1 = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[

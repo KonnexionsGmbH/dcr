@@ -28,11 +28,11 @@ import yaml
 # -----------------------------------------------------------------------------
 # Class variables.
 # -----------------------------------------------------------------------------
-DCR_ARGV_0: str = "src/dcr/dcr.py"
+DCR_ARGV_0 = "src/dcr/dcr.py"
 
-LOCALE: str = "en_US.UTF-8"
+LOCALE = "en_US.UTF-8"
 
-LOGGER_CFG_FILE: str = "logging_cfg.yaml"
+LOGGER_CFG_FILE = "logging_cfg.yaml"
 
 
 # -----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ def check_db_up_to_date() -> None:
             "The database table 'version' does not yet exist.",
         )
 
-    current_version: str = db.cls_version.Version.select_version_version_unique()
+    current_version = db.cls_version.Version.select_version_version_unique()
 
     if cfg.cls_setup.Setup.DCR_VERSION != current_version:
         utils.terminate_fatal(
