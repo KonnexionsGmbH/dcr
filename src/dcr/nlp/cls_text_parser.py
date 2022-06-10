@@ -191,6 +191,8 @@ class TextParser:
     # Create the data structure line: lines.
     # -----------------------------------------------------------------------------
     def _create_line_lines(self):
+        self._debug_xml_element_text_line()
+
         self.parse_result_line_lines.append(
             {
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
@@ -249,6 +251,8 @@ class TextParser:
     # Create the data structure page: paras.
     # -----------------------------------------------------------------------------
     def _create_page_paras(self):
+        self._debug_xml_element_text_page()
+
         self._parse_result_page_paras.append(
             {
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
@@ -319,6 +323,8 @@ class TextParser:
     # Create the data structure word: words.
     # -----------------------------------------------------------------------------
     def _create_word_words(self):
+        self._debug_xml_element_text_word()
+
         self._parse_result_word_words.append(
             {
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_WORD_NO: self._parse_result_no_words_in_line,

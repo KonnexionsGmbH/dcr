@@ -19,7 +19,8 @@ import dcr
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TOKENIZE - attributes - true.
 # -----------------------------------------------------------------------------
-def test_run_action_tokenize_attributes_true(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+@pytest.mark.parametrize("spacy_ignore", ["false", "true"])
+def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - attributes - true."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -41,7 +42,7 @@ def test_run_action_tokenize_attributes_true(fxtr_rmdir_opt, fxtr_setup_empty_db
         ],
     )
 
-    values_original_spacy = pytest.helpers.set_complete_cfg_spacy("true")
+    values_original_spacy = pytest.helpers.set_complete_cfg_spacy(spacy_ignore)
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
@@ -52,13 +53,13 @@ def test_run_action_tokenize_attributes_true(fxtr_rmdir_opt, fxtr_setup_empty_db
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
-        values_original_spacy,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
     )
 
     pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        values_original_spacy,
     )
 
     # -------------------------------------------------------------------------
@@ -82,7 +83,8 @@ def test_run_action_tokenize_attributes_true(fxtr_rmdir_opt, fxtr_setup_empty_db
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TOKENIZE - attributes - true - coverage.
 # -----------------------------------------------------------------------------
-def test_run_action_tokenize_attributes_true_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+@pytest.mark.parametrize("spacy_ignore", ["false", "true"])
+def test_run_action_tokenize_attributes_true_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - attributes - true - coverage."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -105,7 +107,7 @@ def test_run_action_tokenize_attributes_true_coverage(fxtr_rmdir_opt, fxtr_setup
         ],
     )
 
-    values_original_spacy = pytest.helpers.set_complete_cfg_spacy("true")
+    values_original_spacy = pytest.helpers.set_complete_cfg_spacy(spacy_ignore)
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
@@ -116,13 +118,13 @@ def test_run_action_tokenize_attributes_true_coverage(fxtr_rmdir_opt, fxtr_setup
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
-        values_original_spacy,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
     )
 
     pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        values_original_spacy,
     )
 
     # -------------------------------------------------------------------------
@@ -132,7 +134,8 @@ def test_run_action_tokenize_attributes_true_coverage(fxtr_rmdir_opt, fxtr_setup
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TOKENIZE - coverage.
 # -----------------------------------------------------------------------------
-def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+@pytest.mark.parametrize("spacy_ignore", ["false", "true"])
+def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - coverage."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -158,6 +161,13 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
     values_original_spacy = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_STOP, spacy_ignore),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, "true"),
@@ -177,13 +187,13 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
-        values_original_spacy,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
     )
 
     pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        values_original_spacy,
     )
 
     # -------------------------------------------------------------------------
@@ -208,17 +218,10 @@ def test_run_action_tokenize_coverage(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TOKENIZE - missing input file.
 # -----------------------------------------------------------------------------
-def test_run_action_tokenize_missing_input_file(fxtr_setup_empty_db_and_inbox):
+@pytest.mark.parametrize("spacy_ignore", ["false", "true"])
+def test_run_action_tokenize_missing_input_file(spacy_ignore: str, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - missing input file."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-        ],
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_tokenize_missing_input_file <=========")
@@ -234,6 +237,26 @@ def test_run_action_tokenize_missing_input_file(fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+        ],
+    )
+
+    values_original_spacy = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_STOP, spacy_ignore),
+        ],
+    )
+
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
@@ -247,6 +270,11 @@ def test_run_action_tokenize_missing_input_file(fxtr_setup_empty_db_and_inbox):
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
+    )
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        values_original_spacy,
     )
 
     # -------------------------------------------------------------------------
