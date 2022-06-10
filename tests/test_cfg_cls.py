@@ -13,10 +13,21 @@ import pytest
 
 
 # -----------------------------------------------------------------------------
+# Check parameter complete.
+# -----------------------------------------------------------------------------
+def check_param_complete():
+    """Check parameter complete."""
+    cfg.glob.setup = cfg.cls_setup.Setup()
+
+    assert len(cfg.glob.setup._config) == cfg.glob.setup._CONFIG_PARAM_NO, "cfg:: complete"
+
+
+# -----------------------------------------------------------------------------
 # Check parameter DELETE_AUXILIARY_FILES - True.
 # -----------------------------------------------------------------------------
 def check_param_delete_auxiliary_files():
     """Check parameter DELETE_AUXILIARY_FILES - True."""
+    # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
@@ -54,12 +65,6 @@ def check_param_delete_auxiliary_files():
 # -----------------------------------------------------------------------------
 def check_param_ignore_duplicates():
     """Check parameter IGNORE_DUPLICATES - False."""
-    cfg.glob.setup.is_ignore_duplicates = False
-
-    cfg.glob.setup = cfg.cls_setup.Setup()
-
-    assert len(cfg.glob.setup._config) == cfg.glob.setup._CONFIG_PARAM_NO, "cfg:: complete"
-
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -94,10 +99,33 @@ def check_param_ignore_duplicates():
 
 
 # -----------------------------------------------------------------------------
+# Check parameter JSON_SORT_KEYS - False.
+# -----------------------------------------------------------------------------
+def check_param_json_sort_keys():
+    """Check parameter JSON_SORT_KEYS - False."""
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_JSON_SORT_KEYS, "TruE"),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert cfg.glob.setup.is_json_sort_keys, "DCR_CFG_JSON_SORT_KEYS: true"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+
+# -----------------------------------------------------------------------------
 # Check parameter TETML_PAGE - False.
 # -----------------------------------------------------------------------------
 def check_param_tetml_page():
     """Check parameter TETML_PAGE - False."""
+    # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
@@ -135,6 +163,7 @@ def check_param_tetml_page():
 # -----------------------------------------------------------------------------
 def check_param_tetml_word():
     """Check parameter TETML_WORD - False."""
+    # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
@@ -172,6 +201,7 @@ def check_param_tetml_word():
 # -----------------------------------------------------------------------------
 def check_param_tokenize_2_database():
     """Check parameter TOKENIZE_2_DATABASE - True."""
+    # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
@@ -210,6 +240,7 @@ def check_param_tokenize_2_database():
 # -----------------------------------------------------------------------------
 def check_param_tokenize_2_jsonfile():
     """Check parameter TOKENIZE_2_JSONFILE - False."""
+    # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
@@ -267,6 +298,7 @@ def check_param_tokenize_2_jsonfile():
 # -----------------------------------------------------------------------------
 def check_param_verbose():
     """Check parameter VERBOSE - True."""
+    # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
@@ -304,6 +336,7 @@ def check_param_verbose():
 # -----------------------------------------------------------------------------
 def check_param_verbose_line_type():
     """Check parameter VERBOSE_LINE_TYPE - False."""
+    # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
@@ -415,7 +448,11 @@ def test_get_config_logical_false(fxtr_setup_logger_environment):
     """Test: test_get_config_tetml()."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+    check_param_complete()
+
     check_param_ignore_duplicates()
+
+    check_param_json_sort_keys()
 
     check_param_tetml_page()
 
@@ -450,11 +487,6 @@ def test_get_config_logical_true(fxtr_setup_logger_environment):
 def test_get_config_missing(fxtr_setup_logger_environment):
     """Test: get_config() - missing."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    cfg.glob.setup = cfg.cls_setup.Setup()
-
-    assert len(cfg.glob.setup._config) == cfg.glob.setup._CONFIG_PARAM_NO, "cfg:: complete"
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.delete_config_param(
@@ -613,11 +645,6 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 def test_get_config_unknown(fxtr_setup_logger_environment):
     """Test: get_config() - unknown."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    cfg.glob.setup = cfg.cls_setup.Setup()
-
-    assert len(cfg.glob.setup._config) == cfg.glob.setup._CONFIG_PARAM_NO, "cfg:: complete"
 
     # -------------------------------------------------------------------------
     pytest.helpers.insert_config_param(
