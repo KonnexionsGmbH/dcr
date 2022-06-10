@@ -22,7 +22,7 @@ jobs:
       matrix:
 # wwe   os: [""ubuntu-20.04", "ubuntu-22.04", "windows-2019", "windows-2022"]
         os: ["ubuntu-20.04"]
-        python-version: ["3.10"]
+        python-version: ["3.10.5"]
     steps:
       - uses: actions/checkout@v3
         with:
