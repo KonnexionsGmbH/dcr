@@ -35,7 +35,11 @@ TokenTokens = list[TokenToken]
 
 # {
 # 	"sentenceNo": 99,
+# 	"columnNo": 99,
+# 	"columnSpan": 99,
+# 	"lowerLeftX": 99.99,
 # 	"noTokensInSentence": 99,
+# 	"rowNo": 99,
 #   "text" = "...",
 # 	"tokens": [...]
 # }
@@ -90,7 +94,12 @@ class TokenizerSpacy:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        self._column_no = 0
+        self._column_span = 0
+
         self._full_name = ""
+
+        self._lower_left_x = 0.0
 
         self._no_lines_in_doc = 0
         self._no_lines_in_page = 0
@@ -111,6 +120,8 @@ class TokenizerSpacy:
         self._para_no_prev = 0
         self._para_text = ""
         self._processing_ok = False
+
+        self._row_no = 0
 
         self._sent_no = 0
         self._sentence = ""
@@ -228,14 +239,42 @@ class TokenizerSpacy:
             )
 
         if cfg.glob.setup.is_tokenize_2_jsonfile:
-            self._token_sents.append(
-                {
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_SENT_NO: self._sent_no,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_SENT: self._no_tokens_in_sent,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._sentence,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_TOKENS: self._token_tokens,
-                }
-            )
+            if self._column_no:
+                if self._column_span:
+                    self._token_sents.append(
+                        {
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_SENT_NO: self._sent_no,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._column_no,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN: self._column_span,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._lower_left_x,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_SENT: self._no_tokens_in_sent,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._row_no,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._sentence,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_TOKENS: self._token_tokens,
+                        }
+                    )
+                else:
+                    self._token_sents.append(
+                        {
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_SENT_NO: self._sent_no,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._column_no,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._lower_left_x,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_SENT: self._no_tokens_in_sent,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._row_no,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._sentence,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_TOKENS: self._token_tokens,
+                        }
+                    )
+            else:
+                self._token_sents.append(
+                    {
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_SENT_NO: self._sent_no,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._lower_left_x,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_SENT: self._no_tokens_in_sent,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._sentence,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TOKENS: self._token_tokens,
+                    }
+                )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -534,6 +573,22 @@ class TokenizerSpacy:
         """Initialize a new paragraph."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        if nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO in cfg.glob.text_parser.parse_result_line_line:
+            self._column_no = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO]
+            self._row_no = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO]
+            if nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN in cfg.glob.text_parser.parse_result_line_line:
+                self._column_span = cfg.glob.text_parser.parse_result_line_line[
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN]
+            else:
+                self._column_span = None
+        else:
+            self._column_no = None
+            self._column_span = None
+            self._row_no = None
+
+        self._lower_left_x = cfg.glob.text_parser.parse_result_line_line[
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X]
+
         self._no_lines_in_para = 0
         self._no_tokens_in_para = 0
 
@@ -568,12 +623,16 @@ class TokenizerSpacy:
         self._para_no_prev = 0
 
         # {
+        #    "columnNo": 99,
+        #    "columnSpan": 99,
         #    "lineNo": 99,
-        #    "lineIndexInPage": 99,
-        #    "lineIndexInParagraph": 99,
+        #    "lineIndexPage": 99,
+        #    "lineIndexParagraph": 99,
         #    "lineType": "b",
-        #    "paraNo": 99,
-        #    "text": "...",
+        #    "lowerLeftX": 99.99,
+        #    "paragraphNo": 99,
+        #    "rowNo": 99,
+        #    "text": "..."
         # },
         for cfg.glob.text_parser.parse_result_line_line in cfg.glob.text_parser.parse_result_line_page[
             nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES

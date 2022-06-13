@@ -138,11 +138,11 @@ def parse_tetml_file() -> None:
         cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
 
         for child in root:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_TAG_FROM :]
+            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_TAG_DOCUMENT:
+                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
                     cfg.glob.text_parser.parse_tag_document(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_TAG_CREATION:
+                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
                     pass
 
         cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(full_name_next),)
