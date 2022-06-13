@@ -6,6 +6,7 @@ import shutil
 
 import cfg.cls_setup
 import cfg.glob
+import db.cls_db_core
 import db.cls_run
 import pytest
 import utils
@@ -137,8 +138,7 @@ def test_run_action_tokenize_attributes_true_coverage(spacy_ignore: str, fxtr_rm
 # Test RUN_ACTION_TOKENIZE - coverage.
 # -----------------------------------------------------------------------------
 @pytest.mark.issue
-@pytest.mark.parametrize("spacy_ignore", ["false"])
-#@pytest.mark.parametrize("spacy_ignore", ["false", "true"])
+@pytest.mark.parametrize("spacy_ignore", ["false", "true"])
 def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - coverage."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

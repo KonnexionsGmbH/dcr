@@ -488,10 +488,13 @@ class Document:
         Returns:
             str:    Stem name of the following action.
         """
-        if self.document_file_name == "":
+        if cfg.glob.setup.doc_id_in_file_name == "none" or self.document_file_name == "":
             return self.document_file_name
 
-        return utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
+        if cfg.glob.setup.doc_id_in_file_name == "after":
+            return utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
+
+        return str(self.document_id) + "_" + utils.get_stem_name(str(self.document_file_name))
 
     # -----------------------------------------------------------------------------
     # Persist the object in the database.
