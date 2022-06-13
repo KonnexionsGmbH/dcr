@@ -87,8 +87,10 @@ def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, 
 # Test RUN_ACTION_TOKENIZE - attributes - true - coverage.
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("spacy_ignore", ["false", "true"])
-def test_run_action_tokenize_attributes_true_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_TOKENIZE - attributes - true - coverage."""
+def test_run_action_tokenize_attributes_false_true_coverage(
+    spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
+):
+    """Test RUN_ACTION_TOKENIZE - attributes - false & true - coverage."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -137,7 +139,6 @@ def test_run_action_tokenize_attributes_true_coverage(spacy_ignore: str, fxtr_rm
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TOKENIZE - coverage.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 @pytest.mark.parametrize("spacy_ignore", ["false", "true"])
 def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - coverage."""
@@ -160,6 +161,7 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "none"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
         ],
     )
@@ -176,6 +178,12 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_STOP, spacy_ignore),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_BRACKET, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LEFT_PUNCT, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_QUOTE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_RIGHT_PUNCT, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SPACE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, "true"),
@@ -185,6 +193,10 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
@@ -209,9 +221,9 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
         inbox_accepted=(
             [],
             [
+                "pdf_table.pdf",
                 "pdf_table.line_token.json",
                 "pdf_table.page.json",
-                "pdf_table.pdf",
                 "pdf_table.word.json",
                 "tokenizer_coverage.line_token.json",
                 "tokenizer_coverage.page.json",

@@ -434,12 +434,16 @@ def create_token():
 
     instance = db.cls_token.Token(
         id_document=values[1],
-        no_tokens_in_sent=values[2],
-        page_no=values[3],
-        para_no=values[4],
-        sent_no=values[5],
-        text=values[6],
-        tokens=values[7],
+        column_no=values[2],
+        column_span=values[3],
+        lower_left_x=values[4],
+        no_tokens_in_sent=values[5],
+        page_no=values[6],
+        para_no=values[7],
+        row_no=values[8],
+        sent_no=values[9],
+        text=values[10],
+        tokens=values[11],
     )
 
     values[0] = instance.token_id
@@ -847,9 +851,13 @@ def get_values_token() -> list[int | list[dict] | str | None]:
     return [
         None,
         cfg.glob.document.document_id,
-        3,
+        0,
+        2,
+        71,
+        2,
+        2,
         1,
-        1,
+        0,
         1,
         "Start Document ...",
         [
@@ -877,18 +885,6 @@ def get_values_token() -> list[int | list[dict] | str | None]:
                 "tknTag_": "NN",
                 "tknText": "Document",
                 "tknWhitespace_": " ",
-            },
-            {
-                "tknEntIob_": "O",
-                "tknI": 2,
-                "tknIsOov": True,
-                "tknIsPunct": True,
-                "tknIsSentEnd": True,
-                "tknLemma_": "...",
-                "tknNorm_": "...",
-                "tknPos_": "PUNCT",
-                "tknTag_": ".",
-                "tknText": "...",
             },
         ],
     ]

@@ -488,8 +488,11 @@ class Document:
         Returns:
             str:    Stem name of the following action.
         """
-        if cfg.glob.setup.doc_id_in_file_name == "none" or self.document_file_name == "":
+        if self.document_file_name == "":
             return self.document_file_name
+
+        if cfg.glob.setup.doc_id_in_file_name == "none":
+            return utils.get_stem_name(str(self.document_file_name))
 
         if cfg.glob.setup.doc_id_in_file_name == "after":
             return utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)

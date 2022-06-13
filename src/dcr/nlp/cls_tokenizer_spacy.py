@@ -94,8 +94,8 @@ class TokenizerSpacy:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self._column_no: int | None = 0
-        self._column_span: int | None = 0
+        self._column_no: int = 0
+        self._column_span: int = 0
 
         self._full_name = ""
 
@@ -121,7 +121,7 @@ class TokenizerSpacy:
         self._para_text = ""
         self._processing_ok = False
 
-        self._row_no: int | None = 0
+        self._row_no: int = 0
 
         self._sent_no = 0
         self._sentence = ""
@@ -230,17 +230,21 @@ class TokenizerSpacy:
         if cfg.glob.setup.is_tokenize_2_database:
             db.cls_token.Token(
                 id_document=cfg.glob.document.document_id,
+                column_no=self._column_no,
+                column_span=self._column_span,
+                lower_left_x=self._lower_left_x,
                 no_tokens_in_sent=self._no_tokens_in_sent,
                 page_no=self._page_no,
                 para_no=self._para_no_prev,
+                row_no=self._row_no,
                 sent_no=self._sent_no,
                 text=self._sentence,
                 tokens=self._token_tokens,  # type: ignore
             )
 
         if cfg.glob.setup.is_tokenize_2_jsonfile:
-            if self._column_no:
-                if self._column_span:
+            if self._column_no > 0:
+                if self._column_span > 0:
                     self._token_sents.append(
                         {
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_SENT_NO: self._sent_no,
@@ -581,11 +585,11 @@ class TokenizerSpacy:
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN
                 ]
             else:
-                self._column_span = None
+                self._column_span = 0
         else:
-            self._column_no = None
-            self._column_span = None
-            self._row_no = None
+            self._column_no = 0
+            self._column_span = 0
+            self._row_no = 0
 
         self._lower_left_x = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X]
 

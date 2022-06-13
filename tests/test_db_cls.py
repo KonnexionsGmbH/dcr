@@ -228,9 +228,13 @@ def check_existing_token():
     expected_values = [
         1,
         cfg.glob.document.document_id,
-        3,
+        0,
+        0,
+        71,
+        2,
         1,
         1,
+        0,
         1,
         "Start Document ...",
         [
@@ -258,18 +262,6 @@ def check_existing_token():
                 "tknTag_": "NN",
                 "tknText": "Document",
                 "tknWhitespace_": " ",
-            },
-            {
-                "tknEntIob_": "O",
-                "tknI": 2,
-                "tknIsOov": True,
-                "tknIsPunct": True,
-                "tknIsSentEnd": True,
-                "tknLemma_": "...",
-                "tknNorm_": "...",
-                "tknPos_": "PUNCT",
-                "tknTag_": ".",
-                "tknText": "...",
             },
         ],
     ]
@@ -746,13 +738,13 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
         ],
     )
 
@@ -1132,9 +1124,13 @@ def test_missing_dependencies_token_0(fxtr_setup_logger):
     with pytest.raises(SystemExit) as expt:
         db.cls_token.Token(
             id_document=0,
+            column_no=0,
+            column_span=0,
+            lower_left_x=0,
             no_tokens_in_sent=0,
             page_no=0,
             para_no=0,
+            row_no=0,
             sent_no=0,
             text="",
             tokens=[],

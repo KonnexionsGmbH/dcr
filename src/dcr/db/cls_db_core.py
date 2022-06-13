@@ -30,9 +30,9 @@ from sqlalchemy.engine import Engine
 # -----------------------------------------------------------------------------
 # Type declaration.
 # -----------------------------------------------------------------------------
-Columns: TypeAlias = dict[str, bool | int | None | os.PathLike[str] | str]
+Columns: TypeAlias = dict[str, bool | float | int | None | os.PathLike[str] | str]
 
-ColumnValues: TypeAlias = tuple[bool | int | None | os.PathLike[str] | str]
+ColumnValues: TypeAlias = tuple[bool | float | int | None | os.PathLike[str] | str]
 
 
 class DBCore:
@@ -60,6 +60,8 @@ class DBCore:
     DBC_CODE_SPACY_DEFAULT: ClassVar[str] = "en_core_web_trf"
     DBC_CODE_TESSERACT: ClassVar[str] = "code_tesseract"
     DBC_CODE_TESSERACT_DEFAULT: ClassVar[str] = "eng"
+    DBC_COLUMN_NO: ClassVar[str] = "column_no"
+    DBC_COLUMN_SPAN: ClassVar[str] = "column_span"
     DBC_CREATED_AT: ClassVar[str] = "created_at"
     DBC_DIRECTORY_NAME: ClassVar[str] = "directory_name"
     DBC_DIRECTORY_NAME_INBOX: ClassVar[str] = "directory_name_inbox"
@@ -80,6 +82,7 @@ class DBCore:
     DBC_ID_RUN_LAST: ClassVar[str] = "id_run_last"
     DBC_ISO_LANGUAGE_NAME: ClassVar[str] = "iso_language_name"
     DBC_ISO_LANGUAGE_NAME_DEFAULT: ClassVar[str] = "English"
+    DBC_LOWER_LEFT_X: ClassVar[str] = "lower_left_x"
     DBC_MODIFIED_AT: ClassVar[str] = "modified_at"
     DBC_NO_CHILDREN: ClassVar[str] = "no_children"
     DBC_NO_PDF_PAGES: ClassVar[str] = "no_pdf_pages"
@@ -87,6 +90,7 @@ class DBCore:
     DBC_PAGE_DATA: ClassVar[str] = "page_data"
     DBC_PAGE_NO: ClassVar[str] = "page_no"
     DBC_PARA_NO: ClassVar[str] = "para_no"
+    DBC_ROW_NO: ClassVar[str] = "row_no"
     DBC_SENT_NO: ClassVar[str] = "sent_no"
     DBC_SHA256: ClassVar[str] = "sha256"
     DBC_STATUS: ClassVar[str] = "status"
