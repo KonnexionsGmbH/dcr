@@ -107,6 +107,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "before"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "false"),
         ],
     )
@@ -129,10 +130,10 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
         inbox_accepted=(
             [],
             [
-                "docx_french_ok_1.docx",
-                "pdf_french_ok_2.jpg",
-                "pdf_french_ok_3.pdf",
-                "pdf_french_scanned_4.pdf",
+                "1_docx_french_ok.docx",
+                "2_pdf_french_ok.jpg",
+                "3_pdf_french_ok.pdf",
+                "4_pdf_french_scanned.pdf",
             ],
         ),
     )
@@ -185,6 +186,7 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "none"),
             (cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "true"),
         ],
     )
@@ -203,8 +205,8 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
         inbox_accepted=(
             [],
             [
-                "pdf_text_ok_1.pdf",
-                "pdf_text_ok_protected_2.pdf",
+                "pdf_text_ok.pdf",
+                "pdf_text_ok_protected.pdf",
             ],
         ),
     )

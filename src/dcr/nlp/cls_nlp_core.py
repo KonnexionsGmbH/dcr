@@ -159,7 +159,6 @@ class NLPCore:
     PARSE_ELEM_WORD: ClassVar[str] = "Word"
     PARSE_ELEM_XFA: ClassVar[str] = "XFA"
 
-
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------

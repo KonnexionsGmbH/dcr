@@ -1,6 +1,8 @@
 # pylint: disable=unused-argument
 """Testing Module nlp.tokenizer."""
 import os
+import pathlib
+import shutil
 
 import cfg.cls_setup
 import cfg.glob
@@ -134,7 +136,9 @@ def test_run_action_tokenize_attributes_true_coverage(spacy_ignore: str, fxtr_rm
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_TOKENIZE - coverage.
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize("spacy_ignore", ["false", "true"])
+@pytest.mark.issue
+@pytest.mark.parametrize("spacy_ignore", ["false"])
+#@pytest.mark.parametrize("spacy_ignore", ["false", "true"])
 def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - coverage."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -142,6 +146,7 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
+            ("pdf_table", "pdf"),
             ("tokenizer_coverage", "pdf"),
         ],
         target_path=cfg.glob.setup.directory_inbox,
@@ -152,6 +157,7 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "none"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
@@ -203,13 +209,56 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
         inbox_accepted=(
             [],
             [
-                "tokenizer_coverage_1.line_token.json",
-                "tokenizer_coverage_1.page.json",
-                "tokenizer_coverage_1.pdf",
-                "tokenizer_coverage_1.word.json",
+                "pdf_table.line_token.json",
+                "pdf_table.page.json",
+                "pdf_table.pdf",
+                "pdf_table.word.json",
+                "tokenizer_coverage.line_token.json",
+                "tokenizer_coverage.page.json",
+                "tokenizer_coverage.pdf",
+                "tokenizer_coverage.word.json",
             ],
         ),
     )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test RUN_ACTION_PROCESS_INBOX - french.
+# -----------------------------------------------------------------------------
+def test_run_action_tokenize_french(fxtr_setup_empty_inbox):
+    """Test RUN_ACTION_PROCESS_INBOX - French."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    initial_database_data_path = pathlib.Path(cfg.glob.setup.initial_database_data)
+
+    # copy test file
+    shutil.copy(
+        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), "initial_database_data_french.json"),
+        utils.get_full_name(os.path.dirname(initial_database_data_path), os.path.basename(initial_database_data_path)),
+    )
+
+    cfg.glob.db_core = db.cls_db_core.DBCore(is_admin=True)
+
+    cfg.glob.db_core.create_database()
+
+    # -------------------------------------------------------------------------
+    # Copy language subdirectory
+    pytest.helpers.copy_directories_4_pytest_2_dir(
+        source_directories=["french"], target_dir=str(cfg.glob.setup.directory_inbox)
+    )
+
+    # -------------------------------------------------------------------------
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

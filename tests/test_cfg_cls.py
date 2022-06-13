@@ -107,6 +107,22 @@ def check_param_json_sort_keys():
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_JSON_SORT_KEYS, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert not cfg.glob.setup.is_json_sort_keys, "DCR_CFG_JSON_SORT_KEYS: false (any not true)"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
             (cfg.cls_setup.Setup._DCR_CFG_JSON_SORT_KEYS, "TruE"),
         ],
     )
@@ -434,6 +450,68 @@ def test_get_config_coverage_true(fxtr_setup_logger_environment):
 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - get_config().
+# -----------------------------------------------------------------------------
+def test_get_config_doc_id_in_file_name(fxtr_setup_logger_environment):
+    """Test: get_config_doc_id_in_file_name()."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "aFTER"),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+
+    assert cfg.glob.setup.doc_id_in_file_name == "after", "DCR_CFG_DOC_ID_IN_FILE_NAME: after"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "bEFORE"),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+
+    assert cfg.glob.setup.doc_id_in_file_name == "before", "DCR_CFG_DOC_ID_IN_FILE_NAME: before"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+
+    assert cfg.glob.setup.doc_id_in_file_name == "none", "DCR_CFG_DOC_ID_IN_FILE_NAME: none (not after or before)"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 

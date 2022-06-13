@@ -43,7 +43,7 @@ TokenTokens = list[TokenToken]
 #   "text" = "...",
 # 	"tokens": [...]
 # }
-TokenSent = dict[str, int | str | TokenTokens]
+TokenSent = dict[str, float | int | None | str | TokenTokens]
 TokenSents = list[TokenSent]
 
 # {
@@ -94,8 +94,8 @@ class TokenizerSpacy:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self._column_no = 0
-        self._column_span = 0
+        self._column_no: int | None = 0
+        self._column_span: int | None = 0
 
         self._full_name = ""
 
@@ -121,7 +121,7 @@ class TokenizerSpacy:
         self._para_text = ""
         self._processing_ok = False
 
-        self._row_no = 0
+        self._row_no: int | None = 0
 
         self._sent_no = 0
         self._sentence = ""
@@ -578,7 +578,8 @@ class TokenizerSpacy:
             self._row_no = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO]
             if nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN in cfg.glob.text_parser.parse_result_line_line:
                 self._column_span = cfg.glob.text_parser.parse_result_line_line[
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN]
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN
+                ]
             else:
                 self._column_span = None
         else:
@@ -586,8 +587,7 @@ class TokenizerSpacy:
             self._column_span = None
             self._row_no = None
 
-        self._lower_left_x = cfg.glob.text_parser.parse_result_line_line[
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X]
+        self._lower_left_x = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X]
 
         self._no_lines_in_para = 0
         self._no_tokens_in_para = 0

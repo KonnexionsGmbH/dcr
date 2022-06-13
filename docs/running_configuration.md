@@ -138,6 +138,7 @@ The customisable entries are:
     directory_inbox = data/inbox_prod
     directory_inbox_accepted = data/inbox_prod_accepted
     directory_inbox_rejected = data/inbox_prod_rejected
+    doc_id_in_file_name = none
     ignore_duplicates = false
     initial_database_data = data/initial_database_data.json
     json_indent = 4
@@ -172,7 +173,8 @@ The customisable entries are:
 | delete_auxiliary_files   | **`true`**                            | Delete the auxiliary files after a successful <br>processing step.                                              |
 | directory_inbox          | **`data/inbox_prod`**                 | Directory for the new documents received.                                                                       |
 | directory_inbox_accepted | **`data/inbox_prod_accepted`**        | Directory for the accepted documents.                                                                           |
-| directory_inbox_rejected | **`data/inbox_prod_rejected`**        | Complete file name for the **`JSON`** file with the <br>database initialisation data.                                 |
+| directory_inbox_rejected | **`data/inbox_prod_rejected`**        | Complete file name for the **`JSON`** file with the <br>database initialisation data.                           |
+| doc_id_in_file_name      | **`none`**                            | Position of the document id in the file name : <br>**`after`**, **`before`** or **`none`**.                     |
 | ignore_duplicates        | **`false`**                           | Accept presumably duplicated documents <br/>based on a SHA256 hash key.                                         |
 | initial_database_data    | **`data/initial_database_data.json`** | File with initial database contents.                                                                            |
 | json_indent              | **`4`**                               | Improves the readability of the **`JSON`** file.                                                                |
@@ -186,7 +188,7 @@ The customisable entries are:
 | tetml_page               | **`false`**                           | PDFlib TET granularity 'page'.                                                                                  |
 | tetml_word               | **`false`**                           | PDFlib TET granularity 'word'.                                                                                  |
 | tokenize_2_database      | **`true`**                            | Store the tokens in the database table **`token`**.                                                             |
-| tokenize_2_jsonfile      | **`true`**                            | Store the tokens in a **`JSON`** flat file.                                                                           |
+| tokenize_2_jsonfile      | **`true`**                            | Store the tokens in a **`JSON`** flat file.                                                                     |
 | verbose                  | **`true`**                            | Display progress messages for processing.                                                                       |
 | verbose_line_type        | **`false`**                           | Display progress messages for line type determination.                                                          |
 | verbose_parser           | **`none`**                            | Display progress messages for parsing **`xml`** (TETML) : <br>**`all`**, **`none`** or **`text`**.              |
@@ -208,6 +210,7 @@ The configuration parameters can be set differently for the individual environme
     directory_inbox = data/inbox_dev
     directory_inbox_accepted = data/inbox_dev_accepted
     directory_inbox_rejected = data/inbox_dev_rejected
+    doc_id_in_file_name = none
     ignore_duplicates = false
     initial_database_data = data/initial_database_data_dev.json
     line_footer_max_distance = 3
@@ -241,6 +244,7 @@ The configuration parameters can be set differently for the individual environme
     directory_inbox = data/inbox_test
     directory_inbox_accepted = data/inbox_test_accepted
     directory_inbox_rejected = data/inbox_test_rejected
+    doc_id_in_file_name = after
     ignore_duplicates = false
     initial_database_data = data/initial_database_data_test.json
     line_footer_max_distance = 3

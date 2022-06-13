@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 93
+    _CONFIG_PARAM_NO = 94
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -38,6 +38,7 @@ class Setup:
     _DCR_CFG_DIRECTORY_INBOX: ClassVar[str] = "directory_inbox"
     _DCR_CFG_DIRECTORY_INBOX_ACCEPTED: ClassVar[str] = "directory_inbox_accepted"
     _DCR_CFG_DIRECTORY_INBOX_REJECTED: ClassVar[str] = "directory_inbox_rejected"
+    _DCR_CFG_DOC_ID_IN_FILE_NAME: ClassVar[str] = "doc_id_in_file_name"
     _DCR_CFG_FILE: ClassVar[str] = "setup.cfg"
     _DCR_CFG_IGNORE_DUPLICATES: ClassVar[str] = "ignore_duplicates"
     _DCR_CFG_INITIAL_DATABASE_DATA: ClassVar[str] = "initial_database_data"
@@ -161,6 +162,7 @@ class Setup:
         self.directory_inbox = utils.get_os_independent_name("data/inbox")
         self.directory_inbox_accepted = utils.get_os_independent_name("data/inbox_accepted")
         self.directory_inbox_rejected = utils.get_os_independent_name("data/inbox_rejected")
+        self.doc_id_in_file_name = "none"
         self.initial_database_data = utils.get_os_independent_name("data/initial_database_data.json")
         self.is_delete_auxiliary_files = True
         self.is_ignore_duplicates = False
@@ -258,6 +260,7 @@ class Setup:
         self._check_config_directory_inbox()
         self._check_config_directory_inbox_accepted()
         self._check_config_directory_inbox_rejected()
+        self._check_config_doc_id_in_file_name()
         self._check_config_ignore_duplicates()
         self._check_config_json_sort_keys()
         self._check_config_pdf2image_type()
@@ -382,6 +385,15 @@ class Setup:
             )
         else:
             utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'")
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - doc_id_in_file_name.
+    # -----------------------------------------------------------------------------
+    def _check_config_doc_id_in_file_name(self) -> None:
+        """Check the configuration parameter - doc_id_in_file_name."""
+        if Setup._DCR_CFG_DOC_ID_IN_FILE_NAME in self._config:
+            if str(self._config[Setup._DCR_CFG_DOC_ID_IN_FILE_NAME]).lower() in {"after", "before"}:
+                self.doc_id_in_file_name = str(self._config[Setup._DCR_CFG_DOC_ID_IN_FILE_NAME]).lower()
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - ignore_duplicates.
@@ -1104,6 +1116,7 @@ class Setup:
                     | Setup._DCR_CFG_DIRECTORY_INBOX
                     | Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
                     | Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
+                    | Setup._DCR_CFG_DOC_ID_IN_FILE_NAME
                     | Setup._DCR_CFG_IGNORE_DUPLICATES
                     | Setup._DCR_CFG_JSON_SORT_KEYS
                     | Setup._DCR_CFG_PDF2IMAGE_TYPE
