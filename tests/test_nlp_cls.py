@@ -439,8 +439,7 @@ def test_cls_tokenizer_spacy(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 # Test Function - missing dependencies - line_type - Action (action_curr).
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_line_type_action_curr(fxtr_setup_logger_environment):
-    """# Test Function - missing dependencies - line_type - Action (action_curr).
-    ."""
+    """Test Function - missing dependencies - line_type - Action (action_curr)."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -468,8 +467,7 @@ def test_missing_dependencies_line_type_action_curr(fxtr_setup_logger_environmen
 # Test Function - missing dependencies - line_type - coverage.
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_line_type_coverage(fxtr_setup_empty_db_and_inbox):
-    """# Test Function - missing dependencies - line_type - coverage.
-    ."""
+    """Test Function - missing dependencies - line_type - coverage."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -506,8 +504,7 @@ def test_missing_dependencies_line_type_coverage(fxtr_setup_empty_db_and_inbox):
 # Test Function - missing dependencies - line_type - Setup.
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_line_type_setup(fxtr_setup_empty_db_and_inbox):
-    """# Test Function - missing dependencies - line_type - Setup.
-    ."""
+    """Test Function - missing dependencies - line_type - Setup."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -551,8 +548,7 @@ def test_missing_dependencies_line_type_setup(fxtr_setup_empty_db_and_inbox):
 # Test Function - missing dependencies - line_type - TextParser.
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_line_type_text_parser(fxtr_setup_empty_db_and_inbox):
-    """# Test Function - missing dependencies - line_type - TextParser.
-    ."""
+    """Test Function - missing dependencies - line_type - TextParser."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -596,8 +592,7 @@ def test_missing_dependencies_line_type_text_parser(fxtr_setup_empty_db_and_inbo
 # Test Function - missing dependencies - text_parser - Action (action_next).
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_text_parser_action_next(fxtr_setup_logger_environment):
-    """# Test Function - missing dependencies - text_parser - Action (action_next).
-    ."""
+    """Test Function - missing dependencies - text_parser - Action (action_next)."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -636,8 +631,7 @@ def test_missing_dependencies_text_parser_action_next(fxtr_setup_logger_environm
 # Test Function - missing dependencies - text_parser - Document.
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_text_parser_document(fxtr_setup_empty_db_and_inbox):
-    """# Test Function - missing dependencies - text_parser - Document.
-    ."""
+    """Test Function - missing dependencies - text_parser - Document."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -692,8 +686,7 @@ def test_missing_dependencies_text_parser_document(fxtr_setup_empty_db_and_inbox
 # Test Function - missing dependencies - text_parser - Setup.
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_text_parser_setup(fxtr_setup_logger):
-    """# Test Function - missing dependencies - text_parser - Setup.
-    ."""
+    """Test Function - missing dependencies - text_parser - Setup."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -712,6 +705,72 @@ def test_missing_dependencies_text_parser_setup(fxtr_setup_logger):
 
     assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
     assert expt.value.code == 1, "Instance of class 'Setup' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - tokenizer_spacy - Setup.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_tokenizer_spacy_setup(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - tokenizer_spacy - Setup."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.setup.exists()  # type: ignore
+
+        del cfg.glob.setup
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.setup' of the class Setup was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+        instance.process_document(full_name="", pipeline_name="")
+
+    assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
+    assert expt.value.code == 1, "Instance of class 'Setup' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - tokenizer_spacy - TextParser.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_tokenizer_spacy_text_parser(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - tokenizer_spacy - TextParser."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_document = db.cls_document.Document(
+        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
+    )
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.text_parser.exists()  # type: ignore
+
+        del cfg.glob.text_parser
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.text_parser' of the class TextParser was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+        instance.process_document(full_name="", pipeline_name="")
+
+    assert expt.type == SystemExit, "Instance of class 'TextParser' is missing"
+    assert expt.value.code == 1, "Instance of class 'TextParser' is missing"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

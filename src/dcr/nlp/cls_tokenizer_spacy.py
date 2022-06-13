@@ -30,6 +30,8 @@ import spacy.tokens
 #     "tknText": "This",
 #     "tknWhitespace_": " "
 # }
+import utils
+
 TokenToken = dict[str, bool | float | int | str]
 TokenTokens = list[TokenToken]
 
@@ -409,6 +411,7 @@ class TokenizerSpacy:
 
         if cfg.glob.setup.is_spacy_tkn_attr_is_space:
             if token.is_space:
+                # not testable
                 token_attr[nlp.cls_nlp_core.NLPCore.JSON_NAME_TOKEN_IS_SPACE] = token.is_space
 
         if cfg.glob.setup.is_spacy_tkn_attr_is_stop:
@@ -738,6 +741,20 @@ class TokenizerSpacy:
             pipeline_name (str): Spacy pipeline name.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+        try:
+            cfg.glob.setup.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Setup' does not yet exist.",
+            )
+
+        try:
+            cfg.glob.text_parser.exists()
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'TextParser' does not yet exist.",
+            )
 
         self._processing_ok = False
 
