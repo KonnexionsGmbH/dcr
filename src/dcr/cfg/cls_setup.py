@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 94
+    _CONFIG_PARAM_NO = 95
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -118,6 +118,7 @@ class Setup:
     _DCR_CFG_TESSERACT_TIMEOUT: ClassVar[str] = "tesseract_timeout"
     _DCR_CFG_TETML_PAGE: ClassVar[str] = "tetml_page"
     _DCR_CFG_TETML_WORD: ClassVar[str] = "tetml_word"
+    _DCR_CFG_TOC_LAST_PAGE: ClassVar[str] = "toc_last_page"
     _DCR_CFG_TOKENIZE_2_DATABASE: ClassVar[str] = "tokenize_2_database"
     _DCR_CFG_TOKENIZE_2_JSONFILE: ClassVar[str] = "tokenize_2_jsonfile"
     _DCR_CFG_VERBOSE: ClassVar[str] = "verbose"
@@ -157,8 +158,8 @@ class Setup:
         self.db_password = ""  # nosec
         self.db_password_admin = ""  # nosec
         self.db_schema = "dcr_schema"
-        self.db_user = "postgresql"
-        self.db_user_admin = "postgresql"
+        self.db_user = "dcr_user"
+        self.db_user_admin = "dcr_user_admin"
         self.directory_inbox = utils.get_os_independent_name("data/inbox")
         self.directory_inbox_accepted = utils.get_os_independent_name("data/inbox_accepted")
         self.directory_inbox_rejected = utils.get_os_independent_name("data/inbox_rejected")
@@ -241,6 +242,7 @@ class Setup:
         self.line_header_max_lines = 3
         self.pdf2image_type = Setup.PDF2IMAGE_TYPE_JPEG
         self.tesseract_timeout = 10
+        self.toc_last_page = 5
         self.verbose_parser = "none"
 
         self._load_config()
@@ -327,6 +329,7 @@ class Setup:
         self._check_config_tesseract_timeout()
         self._check_config_tetml_page()
         self._check_config_tetml_word()
+        self._check_config_toc_last_page()
         self._check_config_tokenize_2_database()
         self._check_config_tokenize_2_jsonfile()
         self._check_config_verbose()
@@ -995,6 +998,14 @@ class Setup:
                 self.is_tetml_word = True
 
     # -----------------------------------------------------------------------------
+    # Check the configuration parameter - toc_last_page.
+    # -----------------------------------------------------------------------------
+    def _check_config_toc_last_page(self) -> None:
+        """Check the configuration parameter - toc_last_page."""
+        if Setup._DCR_CFG_TOC_LAST_PAGE in self._config:
+            self.toc_last_page = int(str(self._config[Setup._DCR_CFG_TOC_LAST_PAGE]))
+
+    # -----------------------------------------------------------------------------
     # Check the configuration parameter - tokenize_2_database.
     # -----------------------------------------------------------------------------
     def _check_config_tokenize_2_database(self) -> None:
@@ -1183,6 +1194,7 @@ class Setup:
                     | Setup._DCR_CFG_TESSERACT_TIMEOUT
                     | Setup._DCR_CFG_TETML_PAGE
                     | Setup._DCR_CFG_TETML_WORD
+                    | Setup._DCR_CFG_TOC_LAST_PAGE
                     | Setup._DCR_CFG_TOKENIZE_2_DATABASE
                     | Setup._DCR_CFG_TOKENIZE_2_JSONFILE
                     | Setup._DCR_CFG_VERBOSE

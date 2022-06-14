@@ -45,7 +45,24 @@ def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, 
         ],
     )
 
-    values_original_spacy = pytest.helpers.set_complete_cfg_spacy(spacy_ignore)
+
+    values_original_spacy = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_STOP, spacy_ignore),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_, "true"),
+        ],
+    )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
