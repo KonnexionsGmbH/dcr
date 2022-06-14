@@ -106,8 +106,11 @@ def check_existing_document():
     expected_values[1] = "tkn"
     expected_values[2] = "tokenize      (nlp)"
     expected_values[10] = 8
-    expected_values[11] = 3
-    expected_values[12] = db.cls_document.Document.DOCUMENT_STATUS_END
+    expected_values[11] = 0
+    expected_values[12] = 0
+    expected_values[13] = 0
+    expected_values[14] = 3
+    expected_values[15] = db.cls_document.Document.DOCUMENT_STATUS_END
 
     cfg.glob.document = db.cls_document.Document.from_id(expected_values[0])
 
@@ -126,7 +129,7 @@ def check_existing_document():
     # -----------------------------------------------------------------------------
     # Get the duplicate file name based on the hash key.
     # -----------------------------------------------------------------------------
-    db.cls_document.Document.select_duplicate_file_name_by_sha256(MISSING_ID, expected_values[12])
+    db.cls_document.Document.select_duplicate_file_name_by_sha256(MISSING_ID, expected_values[15])
 
     # -----------------------------------------------------------------------------
     # Finalise the current row with error.
@@ -548,9 +551,9 @@ def check_new_document():
     # -----------------------------------------------------------------------------
     # Update object.
     # -----------------------------------------------------------------------------
-    expected_values[12] = db.cls_document.Document.DOCUMENT_STATUS_END
+    expected_values[15] = db.cls_document.Document.DOCUMENT_STATUS_END
 
-    cfg.glob.document.document_status = expected_values[12]
+    cfg.glob.document.document_status = expected_values[15]
 
     cfg.glob.document.finalise()
 

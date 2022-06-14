@@ -354,8 +354,11 @@ def create_document():
         file_size_bytes=values[8],
         id_language=values[9],
         id_run_last=values[10],
-        no_pdf_pages=values[11],
-        status=values[12],
+        no_lines_footer=values[11],
+        no_lines_header=values[12],
+        no_lines_toc=values[13],
+        no_pdf_pages=values[14],
+        status=values[15],
     )
 
     values[0] = instance.document_id
@@ -800,6 +803,9 @@ def get_values_document():
         53651,
         1,
         1,
+        0,
+        0,
+        0,
         3,
         db.cls_document.Document.DOCUMENT_STATUS_START,
     ]
