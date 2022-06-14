@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 95
+    _CONFIG_PARAM_NO = 96
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -122,7 +122,8 @@ class Setup:
     _DCR_CFG_TOKENIZE_2_DATABASE: ClassVar[str] = "tokenize_2_database"
     _DCR_CFG_TOKENIZE_2_JSONFILE: ClassVar[str] = "tokenize_2_jsonfile"
     _DCR_CFG_VERBOSE: ClassVar[str] = "verbose"
-    _DCR_CFG_VERBOSE_LINE_TYPE: ClassVar[str] = "verbose_line_type"
+    _DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS: ClassVar[str] = "verbose_line_type_header_footers"
+    _DCR_CFG_VERBOSE_LINE_TYPE_TOC: ClassVar[str] = "verbose_line_type_toc"
     _DCR_CFG_VERBOSE_PARSER: ClassVar[str] = "verbose_parser"
 
     _DCR_ENVIRONMENT_TYPE: ClassVar[str] = "DCR_ENVIRONMENT_TYPE"
@@ -234,7 +235,8 @@ class Setup:
         self.is_tokenize_2_database = True
         self.is_tokenize_2_jsonfile = False
         self.is_verbose = True
-        self.is_verbose_line_type = False
+        self.is_verbose_line_type_header_footers = False
+        self.is_verbose_line_type_toc = False
         self.json_indent = 4
         self.line_footer_max_distance = 3
         self.line_footer_max_lines = 3
@@ -333,7 +335,8 @@ class Setup:
         self._check_config_tokenize_2_database()
         self._check_config_tokenize_2_jsonfile()
         self._check_config_verbose()
-        self._check_config_verbose_line_type()
+        self._check_config_verbose_line_type_header_footers()
+        self._check_config_verbose_line_type_toc()
         self._check_config_verbose_parser()
 
     # -----------------------------------------------------------------------------
@@ -1040,13 +1043,22 @@ class Setup:
                 self.is_verbose = False
 
     # -----------------------------------------------------------------------------
-    # Check the configuration parameter - verbose_line_type.
+    # Check the configuration parameter - verbose_line_type_header_footers.
     # -----------------------------------------------------------------------------
-    def _check_config_verbose_line_type(self) -> None:
-        """Check the configuration parameter - verbose_line_type."""
-        if Setup._DCR_CFG_VERBOSE_LINE_TYPE in self._config:
-            if str(self._config[Setup._DCR_CFG_VERBOSE_LINE_TYPE]).lower() == "true":
-                self.is_verbose_line_type = True
+    def _check_config_verbose_line_type_header_footers(self) -> None:
+        """Check the configuration parameter - verbose_line_type_header_footers."""
+        if Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS in self._config:
+            if str(self._config[Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS]).lower() == "true":
+                self.is_verbose_line_type_header_footers = True
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - verbose_line_type_toc.
+    # -----------------------------------------------------------------------------
+    def _check_config_verbose_line_type_toc(self) -> None:
+        """Check the configuration parameter - verbose_line_type_toc."""
+        if Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC in self._config:
+            if str(self._config[Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC]).lower() == "true":
+                self.is_verbose_line_type_toc = True
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - verbose_parser.
@@ -1198,7 +1210,8 @@ class Setup:
                     | Setup._DCR_CFG_TOKENIZE_2_DATABASE
                     | Setup._DCR_CFG_TOKENIZE_2_JSONFILE
                     | Setup._DCR_CFG_VERBOSE
-                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE
+                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS
+                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC
                     | Setup._DCR_CFG_VERBOSE_PARSER
                 ):
                     continue

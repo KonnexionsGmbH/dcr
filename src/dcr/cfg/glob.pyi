@@ -10,7 +10,7 @@ import db.cls_db_core
 import db.cls_document
 import db.cls_language
 import db.cls_run
-import nlp.cls_line_type
+import nlp.cls_line_type_header_footers
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 
@@ -43,7 +43,7 @@ document: type[db.cls_document.Document]
 
 language: type[db.cls_language.Language]
 
-line_type: type[nlp.cls_line_type.LineType]
+line_type: type[nlp.cls_line_type_header_footers.LineTypeHeaderFooters]
 
 logger: logging.Logger
 

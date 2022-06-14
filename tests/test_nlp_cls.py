@@ -9,7 +9,7 @@ import db.cls_db_core
 import db.cls_document
 import db.cls_run
 import defusedxml.ElementTree
-import nlp.cls_line_type
+import nlp.cls_line_type_header_footers
 import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
@@ -219,7 +219,8 @@ def test_cls_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "3"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "false"),
         ],
     )
@@ -454,7 +455,7 @@ def test_missing_dependencies_line_type_action_curr(fxtr_setup_logger_environmen
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type.LineType()
+        nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
 
     assert expt.type == SystemExit, "Instance of class 'Action (action_curr)' is missing"
     assert expt.value.code == 1, "Instance of class 'Action (action_curr)' is missing"
@@ -492,7 +493,7 @@ def test_missing_dependencies_line_type_coverage(fxtr_setup_empty_db_and_inbox):
     cfg.glob.text_parser.exists()
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_line_type.LineType()
+    instance = nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
 
     instance.exists()
 
@@ -535,7 +536,7 @@ def test_missing_dependencies_line_type_setup(fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type.LineType()
+        nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
 
     assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
     assert expt.value.code == 1, "Instance of class 'Setup' is missing"
@@ -579,7 +580,7 @@ def test_missing_dependencies_line_type_text_parser(fxtr_setup_empty_db_and_inbo
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type.LineType()
+        nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
 
     assert expt.type == SystemExit, "Instance of class 'TextParser' is missing"
     assert expt.value.code == 1, "Instance of class 'TextParser' is missing"

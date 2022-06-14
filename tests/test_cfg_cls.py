@@ -348,20 +348,20 @@ def check_param_verbose():
 
 
 # -----------------------------------------------------------------------------
-# Check parameter VERBOSE_LINE_TYPE - False.
+# Check parameter VERBOSE_LINE_TYPE_HEADER_FOOTERS - False.
 # -----------------------------------------------------------------------------
-def check_param_verbose_line_type():
-    """Check parameter VERBOSE_LINE_TYPE - False."""
+def check_param_verbose_line_type_header_footers():
+    """Check parameter VERBOSE_LINE_TYPE_HEADER_FOOTERS - False."""
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
     cfg.glob.setup = cfg.cls_setup.Setup()
-    assert not cfg.glob.setup.is_verbose_line_type, "DCR_CFG_VERBOSE_LINE_TYPE: false (not true)"
+    assert not cfg.glob.setup.is_verbose_line_type_header_footers, "VERBOSE_LINE_TYPE_HEADER_FOOTERS: false (not true)"
 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -372,12 +372,50 @@ def check_param_verbose_line_type():
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE, "tRUE"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS, "tRUE"),
         ],
     )
 
     cfg.glob.setup = cfg.cls_setup.Setup()
-    assert cfg.glob.setup.is_verbose_line_type, "DCR_CFG_VERBOSE_LINE_TYPE: true"
+    assert cfg.glob.setup.is_verbose_line_type_header_footers, "VERBOSE_LINE_TYPE_HEADER_FOOTERS: true"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+
+# -----------------------------------------------------------------------------
+# Check parameter VERBOSE_LINE_TYPE_TOC - False.
+# -----------------------------------------------------------------------------
+def check_param_verbose_line_type_toc():
+    """Check parameter VERBOSE_LINE_TYPE_TOC - False."""
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert not cfg.glob.setup.is_verbose_line_type_toc, "DCR_CFG_VERBOSE_LINE_TYPE_TOC: false (not true)"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "tRUE"),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert cfg.glob.setup.is_verbose_line_type_toc, "DCR_CFG_VERBOSE_LINE_TYPE_TOC: true"
 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -538,7 +576,9 @@ def test_get_config_logical_false(fxtr_setup_logger_environment):
 
     check_param_tokenize_2_jsonfile()
 
-    check_param_verbose_line_type()
+    check_param_verbose_line_type_header_footers()
+
+    check_param_verbose_line_type_toc()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 

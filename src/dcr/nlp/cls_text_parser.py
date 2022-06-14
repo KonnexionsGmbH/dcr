@@ -7,7 +7,7 @@ import json
 
 import cfg.glob
 import db.cls_document
-import nlp.cls_line_type
+import nlp.cls_line_type_header_footers
 import nlp.cls_nlp_core
 import utils
 
@@ -638,7 +638,7 @@ class TextParser:
                     self._parse_tag_content(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
-            cfg.glob.line_type.footers_header_process_page()
+            cfg.glob.line_type.process_page()
             self._create_line_pages()
         elif cfg.glob.setup.is_parsing_page:
             self._create_page_pages()
@@ -686,7 +686,7 @@ class TextParser:
         if cfg.glob.setup.is_parsing_line:
             self._parse_result_no_lines_in_doc = 0
             self.parse_result_line_pages = []
-            cfg.glob.line_type = nlp.cls_line_type.LineType()
+            cfg.glob.line_type = nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
         elif cfg.glob.setup.is_parsing_page:
             self._parse_result_page_pages = []
         elif cfg.glob.setup.is_parsing_word:
@@ -704,11 +704,7 @@ class TextParser:
                     self._parse_tag_page(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
-            cfg.glob.line_type.footers_header_process_document()
-            if cfg.glob.line_type.no_lines_footer != 0 or cfg.glob.line_type.no_lines_header != 0:
-                cfg.glob.document.document_no_lines_footer = cfg.glob.line_type.no_lines_footer
-                cfg.glob.document.document_no_lines_header = cfg.glob.line_type.no_lines_header
-                cfg.glob.document.persist_2_db()
+            self._process_header_footers_document()
             self._create_line_document()
         elif cfg.glob.setup.is_parsing_page:
             self._create_page_document()
@@ -854,6 +850,18 @@ class TextParser:
         self._create_word_words()
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+
+    # -----------------------------------------------------------------------------
+    # Process header & footers: document level.
+    # -----------------------------------------------------------------------------
+    def _process_header_footers_document(self):
+        """Process header & footers: document level."""
+        cfg.glob.line_type.process_document()
+
+        if cfg.glob.line_type.no_lines_footer != 0 or cfg.glob.line_type.no_lines_header != 0:
+            cfg.glob.document.document_no_lines_footer = cfg.glob.line_type.no_lines_footer
+            cfg.glob.document.document_no_lines_header = cfg.glob.line_type.no_lines_header
+            cfg.glob.document.persist_2_db()
 
     # -----------------------------------------------------------------------------
     # Check the object existence.

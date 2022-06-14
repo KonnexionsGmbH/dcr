@@ -560,7 +560,8 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
     ):
         CONFIG_PARSER[cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value

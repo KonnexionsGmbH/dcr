@@ -297,7 +297,7 @@ def progress_msg_line_type(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    if cfg.glob.setup.is_verbose_line_type:
+    if cfg.glob.setup.is_verbose_line_type_header_footers or cfg.glob.setup.is_verbose_line_type_toc:
         progress_msg_core(msg)
 
 

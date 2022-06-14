@@ -154,44 +154,46 @@ The customisable entries are:
     tokenize_2_database = true
     tokenize_2_jsonfile = true
     verbose = true
-    verbose_line_type = false
+    verbose_line_type_header_footers = false
+    verbose_line_type_toc = false
     verbose_parser = none
 
-| Parameter                | Default value                         | Description                                                                                                     |
-|--------------------------|---------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| db_connection_port       | environment specific                  | Port number the DBMS server is listening on.                                                                    |
-| db_connection_prefix     | **`postgresql+psycopg2://`**          | Front part of the database URL.                                                                                 |
-| db_database              | environment specific                  | **DCR** database name.                                                                                          |
-| db_database_admin        | environment specific                  | Administrative database name.                                                                                   |
-| db_dialect               | **`postgresql`**                      | DBMS used, currently: only PostgreSQL allowed.                                                                  |
-| db_host                  | **`localhost`**                       | Host name of the DBMS server.                                                                                   |
-| db_password              | **`postgresql`**                      | **DCR** database user password.                                                                                 |
-| db_password_admin        | **`postgresql`**                      | Administrative database password.                                                                               |
-| db_schema                | **`dcr_schema`**                      | Database schema name.                                                                                           |
-| db_user                  | **`postgresql`**                      | **DCR** database user name.                                                                                     |
-| db_user_admin            | **`postgresql`**                      | Administrative database user name.                                                                              |
-| delete_auxiliary_files   | **`true`**                            | Delete the auxiliary files after a successful <br>processing step.                                              |
-| directory_inbox          | **`data/inbox_prod`**                 | Directory for the new documents received.                                                                       |
-| directory_inbox_accepted | **`data/inbox_prod_accepted`**        | Directory for the accepted documents.                                                                           |
-| directory_inbox_rejected | **`data/inbox_prod_rejected`**        | Complete file name for the **`JSON`** file with the <br>database initialisation data.                           |
-| doc_id_in_file_name      | **`none`**                            | Position of the document id in the file name : <br>**`after`**, **`before`** or **`none`**.                     |
-| ignore_duplicates        | **`false`**                           | Accept presumably duplicated documents <br/>based on a SHA256 hash key.                                         |
-| initial_database_data    | **`data/initial_database_data.json`** | File with initial database contents.                                                                            |
-| json_indent              | **`4`**                               | Improves the readability of the **`JSON`** file.                                                                |
-| json_sort_keys           | **`false`**                           | If it is set to **`true`**, the keys are set in ascending order else, <br/>they appear as in the Python object. |
-| line_footer_max_distance | **`3`**                               | Maximum Levenshtein distance for a footer line.                                                                 |
-| line_footer_max_lines    | **`3`**                               | Maximum number of footers.                                                                                      |
-| line_header_max_distance | **`3`**                               | Maximum Levenshtein distance for a header line.                                                                 |
-| line_header_max_lines    | **`3`**                               | Maximum number of headers.                                                                                      |
-| pdfimage_type            | **`jpeg`**                            | Format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**.                         |
-| tesseract_timeout        | **`30`**                              | Terminate the tesseract job after a <br>period of time (seconds).                                               |
-| tetml_page               | **`false`**                           | PDFlib TET granularity 'page'.                                                                                  |
-| tetml_word               | **`false`**                           | PDFlib TET granularity 'word'.                                                                                  |
-| tokenize_2_database      | **`true`**                            | Store the tokens in the database table **`token`**.                                                             |
-| tokenize_2_jsonfile      | **`true`**                            | Store the tokens in a **`JSON`** flat file.                                                                     |
-| verbose                  | **`true`**                            | Display progress messages for processing.                                                                       |
-| verbose_line_type        | **`false`**                           | Display progress messages for line type determination.                                                          |
-| verbose_parser           | **`none`**                            | Display progress messages for parsing **`xml`** (TETML) : <br>**`all`**, **`none`** or **`text`**.              |
+| Parameter                        | Default value                         | Description                                                                                                     |
+|----------------------------------|---------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| db_connection_port               | environment specific                  | Port number the DBMS server is listening on.                                                                    |
+| db_connection_prefix             | **`postgresql+psycopg2://`**          | Front part of the database URL.                                                                                 |
+| db_database                      | environment specific                  | **DCR** database name.                                                                                          |
+| db_database_admin                | environment specific                  | Administrative database name.                                                                                   |
+| db_dialect                       | **`postgresql`**                      | DBMS used, currently: only PostgreSQL allowed.                                                                  |
+| db_host                          | **`localhost`**                       | Host name of the DBMS server.                                                                                   |
+| db_password                      | **`postgresql`**                      | **DCR** database user password.                                                                                 |
+| db_password_admin                | **`postgresql`**                      | Administrative database password.                                                                               |
+| db_schema                        | **`dcr_schema`**                      | Database schema name.                                                                                           |
+| db_user                          | **`postgresql`**                      | **DCR** database user name.                                                                                     |
+| db_user_admin                    | **`postgresql`**                      | Administrative database user name.                                                                              |
+| delete_auxiliary_files           | **`true`**                            | Delete the auxiliary files after a successful <br>processing step.                                              |
+| directory_inbox                  | **`data/inbox_prod`**                 | Directory for the new documents received.                                                                       |
+| directory_inbox_accepted         | **`data/inbox_prod_accepted`**        | Directory for the accepted documents.                                                                           |
+| directory_inbox_rejected         | **`data/inbox_prod_rejected`**        | Complete file name for the **`JSON`** file with the <br>database initialisation data.                           |
+| doc_id_in_file_name              | **`none`**                            | Position of the document id in the file name : <br>**`after`**, **`before`** or **`none`**.                     |
+| ignore_duplicates                | **`false`**                           | Accept presumably duplicated documents <br/>based on a SHA256 hash key.                                         |
+| initial_database_data            | **`data/initial_database_data.json`** | File with initial database contents.                                                                            |
+| json_indent                      | **`4`**                               | Improves the readability of the **`JSON`** file.                                                                |
+| json_sort_keys                   | **`false`**                           | If it is set to **`true`**, the keys are set in ascending order else, <br/>they appear as in the Python object. |
+| line_footer_max_distance         | **`3`**                               | Maximum Levenshtein distance for a footer line.                                                                 |
+| line_footer_max_lines            | **`3`**                               | Maximum number of footers.                                                                                      |
+| line_header_max_distance         | **`3`**                               | Maximum Levenshtein distance for a header line.                                                                 |
+| line_header_max_lines            | **`3`**                               | Maximum number of headers.                                                                                      |
+| pdfimage_type                    | **`jpeg`**                            | Format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**.                         |
+| tesseract_timeout                | **`30`**                              | Terminate the tesseract job after a <br>period of time (seconds).                                               |
+| tetml_page                       | **`false`**                           | PDFlib TET granularity 'page'.                                                                                  |
+| tetml_word                       | **`false`**                           | PDFlib TET granularity 'word'.                                                                                  |
+| tokenize_2_database              | **`true`**                            | Store the tokens in the database table **`token`**.                                                             |
+| tokenize_2_jsonfile              | **`true`**                            | Store the tokens in a **`JSON`** flat file.                                                                     |
+| verbose                          | **`true`**                            | Display progress messages for processing.                                                                       |
+| verbose_line_type_header_footers | **`false`**                           | Display progress messages for header & footers line type determination.                                         |
+| verbose_line_type_toc            | **`false`**                           | Display progress messages for table of content line type determination.                                         |
+| verbose_parser                   | **`none`**                            | Display progress messages for parsing **`xml`** (TETML) : <br>**`all`**, **`none`** or **`text`**.              |
 
 The configuration parameters can be set differently for the individual environments (`dev`, `prod` and `test`).
 
@@ -224,7 +226,8 @@ The configuration parameters can be set differently for the individual environme
     tokenize_2_database = true
     tokenize_2_jsonfile = true
     verbose = true
-    verbose_line_type = false
+    verbose_line_type_header_footers = false
+    verbose_line_type_toc = false
     verbose_parser = none
     
     [dcr.env.test]
@@ -258,7 +261,8 @@ The configuration parameters can be set differently for the individual environme
     tokenize_2_database = true
     tokenize_2_jsonfile = false
     verbose = true
-    verbose_line_type = false
+    verbose_line_type_header_footers = false
+    verbose_line_type_toc = false
     verbose_parser = none
 
 ## 4. **`setup.cfg`** - [spaCy](https://spacy.io){:target="_blank"} Token Attributes

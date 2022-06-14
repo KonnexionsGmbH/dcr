@@ -1,4 +1,5 @@
-"""Module nlp.cls_line_type: Determine footer and header lines."""
+"""Module nlp.cls_line_type_header_footers: Determine footer and header
+lines."""
 from __future__ import annotations
 
 import cfg.glob
@@ -26,11 +27,11 @@ ResultKey = tuple[int, int]
 ResultData = dict[ResultKey, str]
 
 
-class LineType:
+class LineTypeHeaderFooters:
     """Determine footer and header lines.
 
     Returns:
-        _type_: LineType instance.
+        _type_: LineTypeHeaderFooters instance.
     """
 
     # -----------------------------------------------------------------------------
@@ -61,9 +62,9 @@ class LineType:
                 "The required instance of the class 'TextParser' does not yet exist.",
             )
 
-        utils.progress_msg_line_type("LineType")
+        utils.progress_msg_line_type("LineTypeHeaderFooters")
         utils.progress_msg_line_type(
-            f"LineType: Start create instance                ={cfg.glob.action_curr.action_file_name}"
+            f"LineTypeHeaderFooters: Start create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
         self._line_data_max = cfg.glob.setup.line_header_max_lines + cfg.glob.setup.line_footer_max_lines
@@ -71,10 +72,10 @@ class LineType:
         self._page_max = cfg.glob.action_curr.action_no_pdf_pages
 
         self._line_data: LineData = [((-1, ""), (-1, "")) for _ in range(self._line_data_max)]
-        utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}")
 
         self._lsd_data: LSDData = [[(-1, -1, -1) for _ in range(self._page_max)] for _ in range(self._line_data_max)]
-        utils.progress_msg_line_type(f"LineType: Value of lsd_data                    ={self._lsd_data}")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of lsd_data                    ={self._lsd_data}")
 
         self._result_data: ResultData = {}
 
@@ -85,7 +86,7 @@ class LineType:
         self.no_lines_toc = 0
 
         utils.progress_msg_line_type(
-            f"LineType: End   create instance                ={cfg.glob.action_curr.action_file_name}"
+            f"LineTypeHeaderFooters: End   create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -96,9 +97,9 @@ class LineType:
     def _calc_levenshtein(self) -> None:
         """Calculate the Levenshtein distances."""
 
-        utils.progress_msg_line_type("LineType")
-        utils.progress_msg_line_type("LineType: Start Levenshtein distance")
-        utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
+        utils.progress_msg_line_type("LineTypeHeaderFooters")
+        utils.progress_msg_line_type("LineTypeHeaderFooters: Start Levenshtein distance")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}")
 
         for ind in range(self._line_data_max):
             ((curr_line_ind, curr_line), (prev_line_ind, prev_line)) = self._line_data[ind]
@@ -113,14 +114,14 @@ class LineType:
                     lsd_row[self._page_ind] = (curr_line_ind, prev_line_ind, distance)
                     self._lsd_data[ind] = lsd_row
 
-        utils.progress_msg_line_type(f"LineType: Value of lsd_data                    ={self._lsd_data}")
-        utils.progress_msg_line_type("LineType: End   Levenshtein distance")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of lsd_data                    ={self._lsd_data}")
+        utils.progress_msg_line_type("LineTypeHeaderFooters: End   Levenshtein distance")
 
     # -----------------------------------------------------------------------------
-    # Footers & Header: Determine the candidates.
+    # Determine the candidates.
     # -----------------------------------------------------------------------------
-    def _determine_footers_header_candidate(self, distance_max: int, line_ind: int) -> bool:
-        """Footers & Header: Determine the candidates.
+    def _determine_candidate(self, distance_max: int, line_ind: int) -> bool:
+        """Determine the candidates.
 
         Args:
             distance_max (int): Distance maximum..
@@ -162,13 +163,13 @@ class LineType:
         return is_special_line
 
     # -----------------------------------------------------------------------------
-    # Footers & Header: Store the footers of the current page.
+    # Store the footers of the current page.
     # -----------------------------------------------------------------------------
     def _store_line_data_footer(self) -> None:
-        """Footers & Header: Store the footers of the current page."""
-        utils.progress_msg_line_type("LineType")
-        utils.progress_msg_line_type("LineType: Start store footers")
-        utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
+        """Store the footers of the current page."""
+        utils.progress_msg_line_type("LineTypeHeaderFooters")
+        utils.progress_msg_line_type("LineTypeHeaderFooters: Start store footers")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}")
 
         if len(cfg.glob.text_parser.parse_result_line_lines) == 0:
             return
@@ -193,17 +194,17 @@ class LineType:
 
             line_lines_ind -= 1
 
-        utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
-        utils.progress_msg_line_type("LineType: End   store footers")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}")
+        utils.progress_msg_line_type("LineTypeHeaderFooters: End   store footers")
 
     # -----------------------------------------------------------------------------
-    # Footers & Header: Store the headers of the current page.
+    # Store the headers of the current page.
     # -----------------------------------------------------------------------------
     def _store_line_data_header(self) -> None:
-        """Footers & Header: Store the headers of the current page."""
-        utils.progress_msg_line_type("LineType")
-        utils.progress_msg_line_type("LineType: Start store headers")
-        utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
+        """Store the headers of the current page."""
+        utils.progress_msg_line_type("LineTypeHeaderFooters")
+        utils.progress_msg_line_type("LineTypeHeaderFooters: Start store headers")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}")
 
         if len(cfg.glob.text_parser.parse_result_line_lines) == 0:
             return
@@ -226,14 +227,14 @@ class LineType:
                 prev,
             )
 
-        utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
-        utils.progress_msg_line_type("LineType: End   store headers")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}")
+        utils.progress_msg_line_type("LineTypeHeaderFooters: End   store headers")
 
     # -----------------------------------------------------------------------------
-    # Footers & Header: Store the found line types in parser result.
+    # Store the found line types in parser result.
     # -----------------------------------------------------------------------------
-    def _store_results_footers_header(self) -> None:
-        """Footers & Header: Store the found line types in parser result."""
+    def _store_results(self) -> None:
+        """Store the found line types in parser result."""
         self.no_lines_footer = 0
         self.no_lines_header = 0
 
@@ -258,20 +259,20 @@ class LineType:
                             self.no_lines_header += 1
 
     # -----------------------------------------------------------------------------
-    # Footers & Header: Swap the current and previous data.
+    # Swap the current and previous data.
     # -----------------------------------------------------------------------------
     def _swap_current_previous(self) -> None:
         """Swap the current and previous data."""
-        utils.progress_msg_line_type("LineType")
-        utils.progress_msg_line_type("LineType: Start swap current & previous")
-        utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
+        utils.progress_msg_line_type("LineTypeHeaderFooters")
+        utils.progress_msg_line_type("LineTypeHeaderFooters: Start swap current & previous")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}")
 
         for ind in range(self._line_data_max):
             (curr, _) = self._line_data[ind]
             self._line_data[ind] = ((-1, ""), curr)
 
-        utils.progress_msg_line_type(f"LineType: Value of line_data                   ={self._line_data}")
-        utils.progress_msg_line_type("LineType: End   swap current & previous")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}")
+        utils.progress_msg_line_type("LineTypeHeaderFooters: End   swap current & previous")
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -285,20 +286,20 @@ class LineType:
         return self._exist
 
     # -----------------------------------------------------------------------------
-    # Footers & Header: Process the document related data.
+    # Process the document related data.
     # -----------------------------------------------------------------------------
-    def footers_header_process_document(self) -> None:
+    def process_document(self) -> None:
         """Process the document related data."""
         if cfg.glob.setup.line_footer_max_lines == 0 and cfg.glob.setup.line_header_max_lines == 0:
             return
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        utils.progress_msg_line_type("LineType")
+        utils.progress_msg_line_type("LineTypeHeaderFooters")
         utils.progress_msg_line_type(
-            f"LineType: Start document                       ={cfg.glob.action_curr.action_file_name}"
+            f"LineTypeHeaderFooters: Start document                       ={cfg.glob.action_curr.action_file_name}"
         )
-        utils.progress_msg_line_type(f"LineType: Value of lsd_data                    ={self._lsd_data}")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of lsd_data                    ={self._lsd_data}")
 
         for line_ind in range(self._line_data_max):
             if line_ind < cfg.glob.setup.line_header_max_lines:
@@ -308,7 +309,7 @@ class LineType:
                 distance_max = cfg.glob.setup.line_footer_max_distance
                 line_type = db.cls_document.Document.DOCUMENT_LINE_TYPE_FOOTER
 
-            if self._determine_footers_header_candidate(distance_max, line_ind):
+            if self._determine_candidate(distance_max, line_ind):
                 for page_ind in range(self._page_max):
                     (line_no_curr, line_no_prev, distance) = self._lsd_data[line_ind][page_ind]
                     if 0 <= distance <= distance_max:
@@ -316,19 +317,19 @@ class LineType:
                         self._result_data[(page_ind + 1, line_no_curr)] = line_type
 
         if len(self._result_data) > 0:
-            utils.progress_msg_line_type(f"LineType: Value of result_data                 ={self._result_data}")
-            self._store_results_footers_header()
+            utils.progress_msg_line_type(f"LineTypeHeaderFooters: Value of result_data                 ={self._result_data}")
+            self._store_results()
 
         utils.progress_msg_line_type(
-            f"LineType: End document                         ={cfg.glob.action_curr.action_file_name}"
+            f"LineTypeHeaderFooters: End document                         ={cfg.glob.action_curr.action_file_name}"
         )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
-    # Footers & Header: Process the page-related data.
+    # Process the page-related data.
     # -----------------------------------------------------------------------------
-    def footers_header_process_page(self) -> None:
+    def process_page(self) -> None:
         """Process the page-related data."""
         if cfg.glob.setup.line_footer_max_lines == 0 and cfg.glob.setup.line_header_max_lines == 0:
             return
@@ -337,8 +338,8 @@ class LineType:
 
         self._page_ind += 1
 
-        utils.progress_msg_line_type("LineType")
-        utils.progress_msg_line_type(f"LineType: Start page                           ={self._page_ind + 1}")
+        utils.progress_msg_line_type("LineTypeHeaderFooters")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: Start page                           ={self._page_ind + 1}")
 
         if cfg.glob.setup.line_header_max_lines > 0:
             self._store_line_data_header()
@@ -351,6 +352,6 @@ class LineType:
 
         self._swap_current_previous()
 
-        utils.progress_msg_line_type(f"LineType: End   page                           ={self._page_ind + 1}")
+        utils.progress_msg_line_type(f"LineTypeHeaderFooters: End   page                           ={self._page_ind + 1}")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
