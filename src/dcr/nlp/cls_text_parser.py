@@ -638,7 +638,7 @@ class TextParser:
                     self._parse_tag_content(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
-            cfg.glob.line_type.process_page()
+            cfg.glob.line_type.footers_header_process_page()
             self._create_line_pages()
         elif cfg.glob.setup.is_parsing_page:
             self._create_page_pages()
@@ -704,7 +704,11 @@ class TextParser:
                     self._parse_tag_page(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
-            cfg.glob.line_type.process_document()
+            cfg.glob.line_type.footers_header_process_document()
+            if cfg.glob.line_type.no_lines_footer != 0 or cfg.glob.line_type.no_lines_header != 0:
+                cfg.glob.document.document_no_lines_footer = cfg.glob.line_type.no_lines_footer
+                cfg.glob.document.document_no_lines_header = cfg.glob.line_type.no_lines_header
+                cfg.glob.document.persist_2_db()
             self._create_line_document()
         elif cfg.glob.setup.is_parsing_page:
             self._create_page_document()

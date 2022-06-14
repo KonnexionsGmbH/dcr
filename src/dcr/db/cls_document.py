@@ -91,6 +91,9 @@ class Document:
         error_msg_last: str = "",
         error_no: int = 0,
         file_size_bytes: int = 0,
+        no_lines_footer: int = 0,
+        no_lines_header: int = 0,
+        no_lines_toc: int = 0,
         no_pdf_pages: int = 0,
         sha256: str = "",
         status: str = "",
@@ -120,6 +123,12 @@ class Document:
                     The total number of errors in this document. Defaults to 0.
             file_size_bytes (int, optional):
                     The file size in bytes. Defaults to 0.
+            no_lines_footer (int, optional):
+                    The number of footer lines. Defaults to 0.
+            no_lines_header (int, optional):
+                    The number of header lines. Defaults to 0.
+            no_lines_toc (int, optional):
+                    The number of toc lines. Defaults to 0.
             no_pdf_pages (int, optional):
                     For a document of the type 'pdf' the number of pages. Defaults to 0.
             sha256 (str, optional):
@@ -147,6 +156,9 @@ class Document:
         self.document_id = _row_id
         self.document_id_language = id_language
         self.document_id_run_last = id_run_last
+        self.document_no_lines_footer = no_lines_footer
+        self.document_no_lines_header = no_lines_header
+        self.document_no_lines_toc = no_lines_toc
         self.document_no_pdf_pages = no_pdf_pages
         self.document_sha256 = sha256
         self.document_status = status
@@ -184,6 +196,9 @@ class Document:
             db.cls_db_core.DBCore.DBC_FILE_SIZE_BYTES: self.document_file_size_bytes,
             db.cls_db_core.DBCore.DBC_ID_LANGUAGE: self.document_id_language,
             db.cls_db_core.DBCore.DBC_ID_RUN_LAST: self.document_id_run_last,
+            db.cls_db_core.DBCore.DBC_NO_LINES_FOOTER: self.document_no_lines_footer,
+            db.cls_db_core.DBCore.DBC_NO_LINES_HEADER: self.document_no_lines_header,
+            db.cls_db_core.DBCore.DBC_NO_LINES_TOC: self.document_no_lines_toc,
             db.cls_db_core.DBCore.DBC_NO_PDF_PAGES: self.document_no_pdf_pages,
             db.cls_db_core.DBCore.DBC_SHA256: self.document_sha256,
             db.cls_db_core.DBCore.DBC_STATUS: self.document_status,
@@ -239,7 +254,10 @@ class Document:
                 ),
                 nullable=False,
             ),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_PDF_PAGES, sqlalchemy.Integer, nullable=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LINES_FOOTER, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LINES_HEADER, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LINES_TOC, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_PDF_PAGES, sqlalchemy.Integer, nullable=False),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_SHA256, sqlalchemy.String, nullable=True),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_STATUS, sqlalchemy.String, nullable=False),
         )
@@ -365,6 +383,9 @@ class Document:
             file_size_bytes=row[db.cls_db_core.DBCore.DBC_FILE_SIZE_BYTES],
             id_language=row[db.cls_db_core.DBCore.DBC_ID_LANGUAGE],
             id_run_last=row[db.cls_db_core.DBCore.DBC_ID_RUN_LAST],
+            no_lines_footer=row[db.cls_db_core.DBCore.DBC_NO_LINES_FOOTER],
+            no_lines_header=row[db.cls_db_core.DBCore.DBC_NO_LINES_HEADER],
+            no_lines_toc=row[db.cls_db_core.DBCore.DBC_NO_LINES_TOC],
             no_pdf_pages=row[db.cls_db_core.DBCore.DBC_NO_PDF_PAGES],
             sha256=row[db.cls_db_core.DBCore.DBC_SHA256],
             status=row[db.cls_db_core.DBCore.DBC_STATUS],
@@ -405,6 +426,9 @@ class Document:
         columns = columns + [
             self.document_id_language,
             self.document_id_run_last,
+            self.document_no_lines_footer,
+            self.document_no_lines_header,
+            self.document_no_lines_toc,
             self.document_no_pdf_pages,
         ]
 
