@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 96
+    _CONFIG_PARAM_NO = 97
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -119,6 +119,7 @@ class Setup:
     _DCR_CFG_TETML_PAGE: ClassVar[str] = "tetml_page"
     _DCR_CFG_TETML_WORD: ClassVar[str] = "tetml_word"
     _DCR_CFG_TOC_LAST_PAGE: ClassVar[str] = "toc_last_page"
+    _DCR_CFG_TOC_MIN_ENTRIES: ClassVar[str] = "toc_min_entries"
     _DCR_CFG_TOKENIZE_2_DATABASE: ClassVar[str] = "tokenize_2_database"
     _DCR_CFG_TOKENIZE_2_JSONFILE: ClassVar[str] = "tokenize_2_jsonfile"
     _DCR_CFG_VERBOSE: ClassVar[str] = "verbose"
@@ -245,6 +246,7 @@ class Setup:
         self.pdf2image_type = Setup.PDF2IMAGE_TYPE_JPEG
         self.tesseract_timeout = 10
         self.toc_last_page = 5
+        self.toc_min_entries = 5
         self.verbose_parser = "none"
 
         self._load_config()
@@ -332,6 +334,7 @@ class Setup:
         self._check_config_tetml_page()
         self._check_config_tetml_word()
         self._check_config_toc_last_page()
+        self._check_config_toc_min_entries()
         self._check_config_tokenize_2_database()
         self._check_config_tokenize_2_jsonfile()
         self._check_config_verbose()
@@ -1009,6 +1012,14 @@ class Setup:
             self.toc_last_page = int(str(self._config[Setup._DCR_CFG_TOC_LAST_PAGE]))
 
     # -----------------------------------------------------------------------------
+    # Check the configuration parameter - toc_min_entries.
+    # -----------------------------------------------------------------------------
+    def _check_config_toc_min_entries(self) -> None:
+        """Check the configuration parameter - toc_min_entries."""
+        if Setup._DCR_CFG_TOC_MIN_ENTRIES in self._config:
+            self.toc_min_entries = int(str(self._config[Setup._DCR_CFG_TOC_MIN_ENTRIES]))
+
+    # -----------------------------------------------------------------------------
     # Check the configuration parameter - tokenize_2_database.
     # -----------------------------------------------------------------------------
     def _check_config_tokenize_2_database(self) -> None:
@@ -1207,6 +1218,7 @@ class Setup:
                     | Setup._DCR_CFG_TETML_PAGE
                     | Setup._DCR_CFG_TETML_WORD
                     | Setup._DCR_CFG_TOC_LAST_PAGE
+                    | Setup._DCR_CFG_TOC_MIN_ENTRIES
                     | Setup._DCR_CFG_TOKENIZE_2_DATABASE
                     | Setup._DCR_CFG_TOKENIZE_2_JSONFILE
                     | Setup._DCR_CFG_VERBOSE

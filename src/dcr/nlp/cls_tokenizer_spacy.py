@@ -9,6 +9,7 @@ import db.cls_token
 import nlp.cls_nlp_core
 import spacy
 import spacy.tokens
+import utils
 
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-instance-attributes
@@ -30,7 +31,6 @@ import spacy.tokens
 #     "tknText": "This",
 #     "tknWhitespace_": " "
 # }
-import utils
 
 TokenToken = dict[str, bool | float | int | str]
 TokenTokens = list[TokenToken]
@@ -96,6 +96,13 @@ class TokenizerSpacy:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        try:
+            cfg.glob.setup.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Setup' does not yet exist.",
+            )
+
         self._column_no: int = 0
         self._column_span: int = 0
 
@@ -146,6 +153,13 @@ class TokenizerSpacy:
     def _finish_document(self) -> None:
         """Finish current ent."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+        try:
+            cfg.glob.document.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Document' does not yet exist.",
+            )
 
         if cfg.glob.setup.is_tokenize_2_jsonfile:
             with open(self._full_name, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
@@ -223,6 +237,13 @@ class TokenizerSpacy:
     def _finish_sent(self) -> None:
         """Finish current sentence."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+        try:
+            cfg.glob.document.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Document' does not yet exist.",
+            )
 
         self._no_sents_in_doc += 1
         self._no_sents_in_page += 1
@@ -580,6 +601,13 @@ class TokenizerSpacy:
         """Initialize a new paragraph."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        try:
+            cfg.glob.text_parser.exists()
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'TextParser' does not yet exist.",
+            )
+
         if nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO in cfg.glob.text_parser.parse_result_line_line:
             self._column_no = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO]
             self._row_no = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO]
@@ -627,6 +655,13 @@ class TokenizerSpacy:
         """Process a whole new page."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        try:
+            cfg.glob.text_parser.exists()
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'TextParser' does not yet exist.",
+            )
+
         self._para_no_prev = 0
 
         # {
@@ -644,9 +679,10 @@ class TokenizerSpacy:
         for cfg.glob.text_parser.parse_result_line_line in cfg.glob.text_parser.parse_result_line_page[
             nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
         ]:
-            if (
-                cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
-                != cfg.glob.document.DOCUMENT_LINE_TYPE_BODY
+            if cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] in (
+                cfg.glob.document.DOCUMENT_LINE_TYPE_FOOTER,
+                cfg.glob.document.DOCUMENT_LINE_TYPE_HEADER,
+                cfg.glob.document.DOCUMENT_LINE_TYPE_TOC,
             ):
                 continue
 
@@ -671,6 +707,13 @@ class TokenizerSpacy:
     def _process_para(self) -> None:
         """Process a whole new paragraph."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+        try:
+            cfg.glob.text_parser.exists()
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'TextParser' does not yet exist.",
+            )
 
         self._no_lines_in_doc += 1
         self._no_lines_in_page += 1
@@ -737,8 +780,10 @@ class TokenizerSpacy:
         """Process a whole new document.
 
         Args:
-            full_name (str): Output file name.
-            pipeline_name (str): Spacy pipeline name.
+            full_name (str):
+                    Output file name.
+            pipeline_name (str):
+                    Spacy pipeline name.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 

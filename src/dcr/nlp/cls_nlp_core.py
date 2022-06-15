@@ -31,6 +31,9 @@ class NLPCore:
     JSON_NAME_LINE_NO: ClassVar[str] = "lineNo"
     JSON_NAME_LINE_TYPE: ClassVar[str] = "lineType"
     JSON_NAME_LOWER_LEFT_X: ClassVar[str] = "lowerLeftX"
+    JSON_NAME_NO_LINES_FOOTER: ClassVar[str] = "noLinesFooter"
+    JSON_NAME_NO_LINES_HEADER: ClassVar[str] = "noLinesHeader"
+    JSON_NAME_NO_LINES_TOC: ClassVar[str] = "noLinesToc"
     JSON_NAME_NO_LINES_IN_DOC: ClassVar[str] = "noLinesInDocument"
     JSON_NAME_NO_LINES_IN_PAGE: ClassVar[str] = "noLinesInPage"
     JSON_NAME_NO_LINES_IN_PARA: ClassVar[str] = "noLinesInParagraph"
@@ -158,6 +161,9 @@ class NLPCore:
     PARSE_ELEM_TITLE: ClassVar[str] = "Title"
     PARSE_ELEM_WORD: ClassVar[str] = "Word"
     PARSE_ELEM_XFA: ClassVar[str] = "XFA"
+
+    SEARCH_STRATEGY_LINES: ClassVar[str] = "lines"
+    SEARCH_STRATEGY_TABLE: ClassVar[str] = "table"
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.

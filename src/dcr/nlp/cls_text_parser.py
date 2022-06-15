@@ -8,6 +8,7 @@ import json
 import cfg.glob
 import db.cls_document
 import nlp.cls_line_type_header_footers
+import nlp.cls_line_type_toc
 import nlp.cls_nlp_core
 import utils
 
@@ -16,15 +17,20 @@ import utils
 # Global type aliases.
 # -----------------------------------------------------------------------------
 # {
+#    "columnNo": 99,
+#    "columnSpan": 99,
 #    "lineNo": 99,
-#    "lineIndexInPage": 99,
-#    "lineIndexInParagraph": 99,
-#    "lineType": "b",
-#    "paraNo": 99,
-#    "text": "...",
+#    "lineIndexPage": 99,
+#    "lineIndexParagraph": 99,
+#    "lineType": "...",
+#    "lowerLeftX": 99.99,
+#    "paragraphNo": 99,
+#    "rowNo": 99,
+#    "text": "..."
 # },
 LineLine = dict[str, int | str]
 LineLines = list[LineLine]
+
 # {
 #   "pageNo": 99,
 #   "noParagraphsInPage": 99,
@@ -33,6 +39,7 @@ LineLines = list[LineLine]
 # }
 LinePage = dict[str, int | LineLines]
 LinePages = list[LinePage]
+
 # {
 #    "documentId": 99,
 #    "documentFileName": "...",
@@ -49,6 +56,7 @@ LineDocument = dict[str, int | str | LinePages]
 # }
 PagePara = dict[str, int | str]
 PageParas = list[PagePara]
+
 # {
 #   "pageNo": 99,
 #   "noParagraphsInPage": 99,
@@ -56,6 +64,7 @@ PageParas = list[PagePara]
 # }
 PagePage = dict[str, int | PageParas]
 PagePages = list[PagePage]
+
 # {
 #   "documentId": 99,
 #   "documentFileName": "...",
@@ -71,6 +80,7 @@ PageDocument = dict[str, int | PagePages | str]
 # }
 WordWord = dict[str, int | str]
 WordWords = list[WordWord]
+
 # {
 #   "lineNo": 99,
 #   "noWordsInLine": 99,
@@ -78,6 +88,7 @@ WordWords = list[WordWord]
 # }
 WordLine = dict[str, int | WordWords]
 WordLines = list[WordLine]
+
 # {
 #   "paragraphNo": 99,
 #   "noLinesInParagraph": 99,
@@ -86,6 +97,7 @@ WordLines = list[WordLine]
 # }
 WordPara = dict[str, int | WordLines]
 WordParas = list[WordPara]
+
 # {
 #   "pageNo": 99,
 #   "noParagraphsInPage": 99,
@@ -95,6 +107,7 @@ WordParas = list[WordPara]
 # }
 WordPage = dict[str, int | str | WordParas]
 WordPages = list[WordPage]
+
 # {
 #   "documentId": 99,
 #   "documentFileName": "...",
@@ -141,7 +154,6 @@ class TextParser:
         self._parse_result_no_lines_in_doc = 0
         self._parse_result_no_lines_in_page = 0
         self._parse_result_no_lines_in_para = 0
-        self._parse_result_no_pages_in_doc = 0
         self._parse_result_no_paras_in_doc = 0
         self._parse_result_no_paras_in_page = 0
         self._parse_result_no_words_in_doc = 0
@@ -169,6 +181,8 @@ class TextParser:
         self.parse_result_line_lines: LineLines = []
         self.parse_result_line_pages: LinePages = []
 
+        self.parse_result_no_pages_in_doc = 0
+
         self._exist = True
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -177,14 +191,45 @@ class TextParser:
     # Create the data structure line: document.
     # -----------------------------------------------------------------------------
     def _create_line_document(self):
+        try:
+            cfg.glob.action_next.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Action (action next)' does not yet exist.",
+            )
+
+        try:
+            cfg.glob.document.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Document' does not yet exist.",
+            )
+
+        try:
+            cfg.glob.line_type_header_footers.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'LineTypeHeaderFooters' does not yet exist.",
+            )
+
+        try:
+            cfg.glob.line_type_toc.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'LineTypeToc' does not yet exist.",
+            )
+
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self._parse_result_no_pages_in_doc,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER: cfg.glob.line_type_header_footers.no_lines_footer,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER: cfg.glob.line_type_header_footers.no_lines_header,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: cfg.glob.line_type_toc.no_lines_toc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self.parse_result_line_pages,
                 },
                 file_handle,
@@ -247,7 +292,7 @@ class TextParser:
     def _create_line_pages(self):
         self.parse_result_line_pages.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self._parse_result_no_pages_in_doc,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_PAGE: self._parse_result_no_paras_in_page,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_PAGE: self._parse_result_no_lines_in_page,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES: self.parse_result_line_lines,
@@ -258,12 +303,26 @@ class TextParser:
     # Create the data structure page: document.
     # -----------------------------------------------------------------------------
     def _create_page_document(self):
+        try:
+            cfg.glob.action_next.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Action (action next)' does not yet exist.",
+            )
+
+        try:
+            cfg.glob.document.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Document' does not yet exist.",
+            )
+
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self._parse_result_no_pages_in_doc,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self._parse_result_page_pages,
                 },
@@ -278,7 +337,7 @@ class TextParser:
     def _create_page_pages(self):
         self._parse_result_page_pages.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self._parse_result_no_pages_in_doc,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_PAGE: self._parse_result_no_paras_in_page,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PARAS: self._parse_result_page_paras,
             }
@@ -301,12 +360,26 @@ class TextParser:
     # Create the data structure word: document.
     # -----------------------------------------------------------------------------
     def _create_word_document(self):
+        try:
+            cfg.glob.action_next.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Action (action next)' does not yet exist.",
+            )
+
+        try:
+            cfg.glob.document.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Document' does not yet exist.",
+            )
+
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self._parse_result_no_pages_in_doc,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_WORDS_IN_DOC: self._parse_result_no_words_in_doc,
@@ -335,7 +408,7 @@ class TextParser:
     def _create_word_pages(self):
         self._parse_result_word_pages.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self._parse_result_no_pages_in_doc,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_PAGE: self._parse_result_no_paras_in_page,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_PAGE: self._parse_result_no_lines_in_page,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_WORDS_IN_PAGE: self._parse_result_no_words_in_page,
@@ -404,7 +477,7 @@ class TextParser:
         """Debug an XML element only 'text - variant line."""
         if cfg.glob.setup.verbose_parser == "text":
             print(
-                f"pages_i_doc={self._parse_result_no_pages_in_doc:2d} "
+                f"pages_i_doc={self.parse_result_no_pages_in_doc:2d} "
                 f"paras_i_page={self._parse_result_no_paras_in_page:2d} "
                 f"lines_i_page={self._parse_result_no_lines_in_page:2d} "
                 f"lines_i_para={self._parse_result_no_lines_in_para:2d} "
@@ -418,7 +491,7 @@ class TextParser:
         """Debug an XML element only 'text - variant page."""
         if cfg.glob.setup.verbose_parser == "text":
             print(
-                f"pages_i_doc={self._parse_result_no_pages_in_doc:2d} "
+                f"pages_i_doc={self.parse_result_no_pages_in_doc:2d} "
                 f"paras_i_page={self._parse_result_no_paras_in_page:2d} "
                 f"lines_i_page={self._parse_result_no_lines_in_page:2d} "
                 f"lines_i_para={self._parse_result_no_lines_in_para:2d} "
@@ -432,7 +505,7 @@ class TextParser:
         """Debug an XML element only 'text - variant word."""
         if cfg.glob.setup.verbose_parser == "text":
             print(
-                f"pages_i_doc={self._parse_result_no_pages_in_doc:2d} "
+                f"pages_i_doc={self.parse_result_no_pages_in_doc:2d} "
                 f"paras_i_page={self._parse_result_no_paras_in_page:2d} "
                 f"lines_i_page={self._parse_result_no_lines_in_page:2d} "
                 f"lines_i_para={self._parse_result_no_lines_in_para:2d} "
@@ -607,7 +680,7 @@ class TextParser:
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
-        self._parse_result_no_pages_in_doc += 1
+        self.parse_result_no_pages_in_doc += 1
 
         self._parse_result_no_paras_in_page = 0
         self._parse_result_no_lines_in_page = 0
@@ -638,7 +711,6 @@ class TextParser:
                     self._parse_tag_content(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
-            cfg.glob.line_type.process_page()
             self._create_line_pages()
         elif cfg.glob.setup.is_parsing_page:
             self._create_page_pages()
@@ -681,12 +753,13 @@ class TextParser:
             )
 
         self._parse_result_no_paras_in_doc = 0
-        self._parse_result_no_pages_in_doc = 0
+        self.parse_result_no_pages_in_doc = 0
 
         if cfg.glob.setup.is_parsing_line:
             self._parse_result_no_lines_in_doc = 0
             self.parse_result_line_pages = []
-            cfg.glob.line_type = nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
+            cfg.glob.line_type_header_footers = nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
+            cfg.glob.line_type_toc = nlp.cls_line_type_toc.LineTypeToc()
         elif cfg.glob.setup.is_parsing_page:
             self._parse_result_page_pages = []
         elif cfg.glob.setup.is_parsing_word:
@@ -704,7 +777,8 @@ class TextParser:
                     self._parse_tag_page(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
-            self._process_header_footers_document()
+            cfg.glob.line_type_header_footers.process_document()
+            cfg.glob.line_type_toc.process_document()
             self._create_line_document()
         elif cfg.glob.setup.is_parsing_page:
             self._create_page_document()
@@ -850,18 +924,6 @@ class TextParser:
         self._create_word_words()
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
-
-    # -----------------------------------------------------------------------------
-    # Process header & footers: document level.
-    # -----------------------------------------------------------------------------
-    def _process_header_footers_document(self):
-        """Process header & footers: document level."""
-        cfg.glob.line_type.process_document()
-
-        if cfg.glob.line_type.no_lines_footer != 0 or cfg.glob.line_type.no_lines_header != 0:
-            cfg.glob.document.document_no_lines_footer = cfg.glob.line_type.no_lines_footer
-            cfg.glob.document.document_no_lines_header = cfg.glob.line_type.no_lines_header
-            cfg.glob.document.persist_2_db()
 
     # -----------------------------------------------------------------------------
     # Check the object existence.

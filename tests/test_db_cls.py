@@ -965,6 +965,38 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
+# Test Function - missing dependencies - db_core - case 0.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_db_core_0(fxtr_setup_logger_environment):
+    """# Test Function - missing dependencies - db_core - case 0.
+    ."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.setup.exists()  # type: ignore
+
+        del cfg.glob.setup
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.setup' of the class Setup was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        db.cls_db_core.DBCore()
+
+    assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
+    assert expt.value.code == 1, "Instance of class 'Setup' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test Function - missing dependencies - document - case 0.
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_document_0(fxtr_setup_logger):
@@ -994,6 +1026,39 @@ def test_missing_dependencies_document_0(fxtr_setup_logger):
 
     assert expt.type == SystemExit, "Instance of class 'DBCore' is missing"
     assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - document - case 1.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_document_1(fxtr_setup_empty_db_and_inbox):
+    """# Test Function - missing dependencies - document - case 1."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_document = db.cls_document.Document(
+        action_code_last="", directory_name="", file_name="dummy", id_language=0, id_run_last=0, _row_id=4711
+    )
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.setup.exists()  # type: ignore
+
+        del cfg.glob.setup
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.setup' of the class Setup was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        cfg.glob.db_document.get_stem_name_next()
+
+    assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
+    assert expt.value.code == 1, "Instance of class 'Setup' is missing"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

@@ -151,6 +151,8 @@ The customisable entries are:
     tesseract_timeout = 30
     tetml_page = false
     tetml_word = false
+    toc_last_page = 5
+    toc_min_entries = 5
     tokenize_2_database = true
     tokenize_2_jsonfile = true
     verbose = true
@@ -188,6 +190,8 @@ The customisable entries are:
 | tesseract_timeout                | **`30`**                              | Terminate the tesseract job after a <br>period of time (seconds).                                               |
 | tetml_page                       | **`false`**                           | PDFlib TET granularity 'page'.                                                                                  |
 | tetml_word                       | **`false`**                           | PDFlib TET granularity 'word'.                                                                                  |
+| toc_last_page                    | **`5`**                               | Maximum number of pages for the search of the TOC (from the beginning).                                         |
+| toc_min_entries                  | **`5`**                               | Minimum number of TOC entries.                                                                                  |
 | tokenize_2_database              | **`true`**                            | Store the tokens in the database table **`token`**.                                                             |
 | tokenize_2_jsonfile              | **`true`**                            | Store the tokens in a **`JSON`** flat file.                                                                     |
 | verbose                          | **`true`**                            | Display progress messages for processing.                                                                       |

@@ -11,6 +11,7 @@ import db.cls_document
 import db.cls_language
 import db.cls_run
 import nlp.cls_line_type_header_footers
+import nlp.cls_line_type_toc
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 
@@ -43,7 +44,8 @@ document: type[db.cls_document.Document]
 
 language: type[db.cls_language.Language]
 
-line_type: type[nlp.cls_line_type_header_footers.LineTypeHeaderFooters]
+line_type_header_footers: type[nlp.cls_line_type_header_footers.LineTypeHeaderFooters]
+line_type_toc: type[nlp.cls_line_type_toc.LineTypeToc]
 
 logger: logging.Logger
 

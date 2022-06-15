@@ -517,6 +517,13 @@ class Document:
         if self.document_file_name == "":
             return self.document_file_name
 
+        try:
+            cfg.glob.setup.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Setup' does not yet exist.",
+            )
+
         if cfg.glob.setup.doc_id_in_file_name == "none":
             return utils.get_stem_name(str(self.document_file_name))
 

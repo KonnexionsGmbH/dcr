@@ -10,6 +10,7 @@ import db.cls_document
 import db.cls_run
 import defusedxml.ElementTree
 import nlp.cls_line_type_header_footers
+import nlp.cls_line_type_toc
 import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
@@ -130,14 +131,21 @@ XML_DATA = """<?xml version="1.0" encoding="UTF-8"?>
 # Test LineType.
 # -----------------------------------------------------------------------------
 def check_cls_line_type(
-    json_file: str, target_footer: list[tuple[int, list[int]]], target_header: list[tuple[int, list[int]]]
+    json_file: str,
+    target_footer: list[tuple[int, list[int]]],
+    target_header: list[tuple[int, list[int]]],
+    target_toc: int = 0,
 ) -> None:
     """Test LineType.
 
     Args:
         json_file (str): JSON file from trxt parser.
-        target_footer (list[tuple[int, list[int]]]): Target footer lines.
-        target_header (list[tuple[int, list[int]]]): Target header lines.
+        target_footer (list[tuple[int, list[int]]]):
+                Target footer lines.
+        target_header (list[tuple[int, list[int]]]):
+                Target header lines.
+        target_toc (int):
+                Target toc lines.
     """
     instance = nlp.cls_text_parser.TextParser.from_files(full_name_line=json_file)
 
@@ -145,6 +153,8 @@ def check_cls_line_type(
     actual_header = []
 
     pages = instance.parse_result_line_document[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES]
+
+    actual_toc = 0
 
     for page in pages:
         page_no = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
@@ -158,6 +168,8 @@ def check_cls_line_type(
                 actual_page_footer.append(line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE])
             elif line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADER:
                 actual_page_header.append(line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE])
+            elif line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_TOC:
+                actual_toc += 1
 
         if actual_page_footer:
             actual_footer.append((page_no, actual_page_footer))
@@ -171,13 +183,14 @@ def check_cls_line_type(
     assert (
         actual_footer == target_footer
     ), f"file={json_file} footer difference: \ntarget={target_footer} \nactual={actual_footer}"
+    assert actual_toc == target_toc, f"file={json_file} toc difference: \ntarget={target_toc} \nactual={actual_toc}"
 
 
 # -----------------------------------------------------------------------------
-# Test LineType.
+# Test LineType Header & Footers.
 # -----------------------------------------------------------------------------
-def test_cls_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
-    """Test LineType."""
+def test_cls_line_type_header_footers(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType Header & Footers."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -358,6 +371,75 @@ def test_cls_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
+# Test LineType TOC.
+# -----------------------------------------------------------------------------
+@pytest.mark.parametrize("toc_last_page", ["0", "5"])
+def test_cls_line_type_toc(toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType TOC."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("pdf_toc_line_bullet_list", "pdf"),
+            ("pdf_toc_table_bullet_list", "pdf"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOC_LAST_PAGE, toc_last_page),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "false"),
+        ],
+    )
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    if toc_last_page == "0":
+        target_toc_exp_line = 0
+        target_toc_exp_table = 0
+    else:
+        target_toc_exp_line = 7
+        target_toc_exp_table = 14
+
+    check_cls_line_type(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "pdf_toc_line_bullet_list_1.line.json")),
+        target_footer=[(1, [2, 3]), (2, [10, 11]), (3, [10, 11]), (4, [10, 11]), (5, [6, 7]), (6, [6, 7]), (7, [6, 7])],
+        target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1]), (6, [0, 1]), (7, [0, 1])],
+        target_toc=target_toc_exp_line,
+    )
+    check_cls_line_type(
+        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "pdf_toc_table_bullet_list_2.line.json")),
+        target_footer=[(1, [17, 18]), (2, [10, 11]), (3, [10, 11]), (4, [6, 7]), (5, [6, 7]), (6, [6, 7])],
+        target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1]), (6, [0, 1])],
+        target_toc=target_toc_exp_table,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test NLPCore.
 # -----------------------------------------------------------------------------
 def test_cls_nlp_core(fxtr_rmdir_opt, fxtr_setup_logger_environment):
@@ -437,10 +519,10 @@ def test_cls_tokenizer_spacy(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type - Action (action_curr).
+# Test Function - missing dependencies - line_type_header_footers - Action (action_curr).
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_action_curr(fxtr_setup_logger_environment):
-    """Test Function - missing dependencies - line_type - Action (action_curr)."""
+def test_missing_dependencies_line_type_header_footers_action_curr(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - line_type_header_footers - Action (action_curr)."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -465,10 +547,10 @@ def test_missing_dependencies_line_type_action_curr(fxtr_setup_logger_environmen
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type - coverage.
+# Test Function - missing dependencies - line_type_header_footers - coverage - exists.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_coverage(fxtr_setup_empty_db_and_inbox):
-    """Test Function - missing dependencies - line_type - coverage."""
+def test_missing_dependencies_line_type_header_footers_coverage_exists(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_header_footers - coverage - exists."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -502,10 +584,62 @@ def test_missing_dependencies_line_type_coverage(fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type - Setup.
+# Test Function - missing dependencies - line_type_header_footers - document.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_setup(fxtr_setup_empty_db_and_inbox):
-    """Test Function - missing dependencies - line_type - Setup."""
+def test_missing_dependencies_line_type_header_footers_document(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_header_footers - document."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.run = db.cls_run.Run(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.action_curr = db.cls_action.Action(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        id_run_last=1,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+
+    cfg.glob.text_parser.exists()
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.document.exists()  # type: ignore
+
+        del cfg.glob.document
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.document' of the class Document was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._store_results()
+
+    assert expt.type == SystemExit, "Instance of class 'Document' is missing"
+    assert expt.value.code == 1, "Instance of class 'Document' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - line_type_header_footers - Setup.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_line_type_header_footers_setup(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_header_footers - Setup."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -546,10 +680,10 @@ def test_missing_dependencies_line_type_setup(fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type - TextParser.
+# Test Function - missing dependencies - line_type_header_footers - TextParser.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_text_parser(fxtr_setup_empty_db_and_inbox):
-    """Test Function - missing dependencies - line_type - TextParser."""
+def test_missing_dependencies_line_type_header_footers_text_parser(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_header_footers - TextParser."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -581,6 +715,211 @@ def test_missing_dependencies_line_type_text_parser(fxtr_setup_empty_db_and_inbo
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
         nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
+
+    assert expt.type == SystemExit, "Instance of class 'TextParser' is missing"
+    assert expt.value.code == 1, "Instance of class 'TextParser' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - line_type_toc - Action (action_curr).
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_line_type_toc_action_curr(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - line_type_toc - Action (action_curr)."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.action_curr.exists()  # type: ignore
+
+        del cfg.glob.action_curr
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.action_curr' of the class Action was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        nlp.cls_line_type_toc.LineTypeToc()
+
+    assert expt.type == SystemExit, "Instance of class 'Action (action_curr)' is missing"
+    assert expt.value.code == 1, "Instance of class 'Action (action_curr)' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - line_type_toc - coverage - exists.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_line_type_toc_coverage_exists(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_toc - coverage - exists."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.run = db.cls_run.Run(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.action_curr = db.cls_action.Action(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        id_run_last=1,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+
+    cfg.glob.text_parser.exists()
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_line_type_toc.LineTypeToc()
+
+    instance.exists()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - line_type_toc - document.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_line_type_toc_document(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_toc - document."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.run = db.cls_run.Run(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.action_curr = db.cls_action.Action(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        id_run_last=1,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+
+    cfg.glob.text_parser.exists()
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_line_type_toc.LineTypeToc()
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.document.exists()  # type: ignore
+
+        del cfg.glob.document
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.document' of the class Document was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._store_results()
+
+    assert expt.type == SystemExit, "Instance of class 'Document' is missing"
+    assert expt.value.code == 1, "Instance of class 'Document' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - line_type_toc - Setup.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_line_type_toc_setup(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_toc - Setup."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.run = db.cls_run.Run(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.action_curr = db.cls_action.Action(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        id_run_last=1,
+    )
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.setup.exists()  # type: ignore
+
+        del cfg.glob.setup
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.setup' of the class Setup was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        nlp.cls_line_type_toc.LineTypeToc()
+
+    assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
+    assert expt.value.code == 1, "Instance of class 'Setup' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - line_type_toc - TextParser.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_line_type_toc_text_parser(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_toc - TextParser."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.run = db.cls_run.Run(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.action_curr = db.cls_action.Action(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        id_run_last=1,
+    )
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.text_parser.exists()  # type: ignore
+
+        del cfg.glob.text_parser
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.text_parser' of the class TextParser was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        nlp.cls_line_type_toc.LineTypeToc()
 
     assert expt.type == SystemExit, "Instance of class 'TextParser' is missing"
     assert expt.value.code == 1, "Instance of class 'TextParser' is missing"
@@ -684,6 +1023,278 @@ def test_missing_dependencies_text_parser_document(fxtr_setup_empty_db_and_inbox
 
 
 # -----------------------------------------------------------------------------
+# Test Function - missing dependencies - text_parser - line_document - case 1.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_text_parser_line_document_case_1(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - text_parser - line_document - case 1."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_text_parser.TextParser()
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.action_next.exists()  # type: ignore
+
+        del cfg.glob.action_next
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.action_next' of the class Action was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._create_line_document()
+
+    assert expt.type == SystemExit, "Instance of class 'Action (action_next)' is missing"
+    assert expt.value.code == 1, "Instance of class 'Action (action_next)' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - text_parser - line_document - case 2.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_text_parser_line_document_case_2(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - text_parser - line_document - case 2."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_text_parser.TextParser()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    db.cls_run.Run.ID_RUN_UMBRELLA = -1
+
+    cfg.glob.run = db.cls_run.Run(
+        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run=-1,
+    )
+
+    cfg.glob.action_next = db.cls_action.Action(
+        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run_last=-1,
+        _row_id=-1,
+    )
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.document.exists()  # type: ignore
+
+        del cfg.glob.document
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.document' of the class Document was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._create_line_document()
+
+    assert expt.type == SystemExit, "Instance of class 'Document' is missing"
+    assert expt.value.code == 1, "Instance of class 'Document' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - text_parser - line_document - case 3.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_text_parser_line_document_case_3(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - text_parser - line_document - case 3."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_text_parser.TextParser()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    db.cls_run.Run.ID_RUN_UMBRELLA = -1
+
+    cfg.glob.run = db.cls_run.Run(
+        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run=-1,
+    )
+
+    cfg.glob.action_next = db.cls_action.Action(
+        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run_last=-1,
+        _row_id=-1,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.document = db.cls_document.Document(
+        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
+    )
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.line_type_header_footers.exists()  # type: ignore
+
+        del cfg.glob.line_type_header_footers
+
+        cfg.glob.logger.debug(
+            "The existing object 'cfg.glob.line_type_header_footers' of the class LineTypeHeaderFooters was deleted."
+        )
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._create_line_document()
+
+    assert expt.type == SystemExit, "Instance of class 'LineTypeHeaderFooters' is missing"
+    assert expt.value.code == 1, "Instance of class 'LineTypeHeaderFooters' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - text_parser - line_document - case 4.
+# -----------------------------------------------------------------------------
+@pytest.mark.issue
+def test_missing_dependencies_text_parser_line_document_case_4(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - text_parser - line_document - case 4."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    db.cls_run.Run.ID_RUN_UMBRELLA = -1
+
+    cfg.glob.run = db.cls_run.Run(
+        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run=-1,
+    )
+
+    cfg.glob.action_curr = db.cls_action.Action(
+        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run_last=-1,
+        _row_id=-1,
+    )
+
+    cfg.glob.action_next = db.cls_action.Action(
+        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run_last=-1,
+        _row_id=-1,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.document = db.cls_document.Document(
+        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.line_type_header_footers = nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.line_type_toc.exists()  # type: ignore
+
+        del cfg.glob.line_type_toc
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.line_type_toc' of the class LineTypeToc was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        cfg.glob.text_parser._create_line_document()
+
+    assert expt.type == SystemExit, "Instance of class 'LineTypeToc' is missing"
+    assert expt.value.code == 1, "Instance of class 'LineTypeToc' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - text_parser - page_document - case 1.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_text_parser_page_document_case_1(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - text_parser - page_document - case 1."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_text_parser.TextParser()
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.action_next.exists()  # type: ignore
+
+        del cfg.glob.action_next
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.action_next' of the class Action was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._create_page_document()
+
+    assert expt.type == SystemExit, "Instance of class 'Action (action_next)' is missing"
+    assert expt.value.code == 1, "Instance of class 'Action (action_next)' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - text_parser - page_document - case 2.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_text_parser_page_document_case_2(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - text_parser - page_document - case 2."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_text_parser.TextParser()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    db.cls_run.Run.ID_RUN_UMBRELLA = -1
+
+    cfg.glob.run = db.cls_run.Run(
+        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run=-1,
+    )
+
+    cfg.glob.action_next = db.cls_action.Action(
+        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run_last=-1,
+        _row_id=-1,
+    )
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.document.exists()  # type: ignore
+
+        del cfg.glob.document
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.document' of the class Document was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._create_page_document()
+
+    assert expt.type == SystemExit, "Instance of class 'Document' is missing"
+    assert expt.value.code == 1, "Instance of class 'Document' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test Function - missing dependencies - text_parser - Setup.
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_text_parser_setup(fxtr_setup_logger):
@@ -706,6 +1317,84 @@ def test_missing_dependencies_text_parser_setup(fxtr_setup_logger):
 
     assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
     assert expt.value.code == 1, "Instance of class 'Setup' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - text_parser - word_document - case 1.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_text_parser_word_document_case_1(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - text_parser - word_document - case 1."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_text_parser.TextParser()
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.action_next.exists()  # type: ignore
+
+        del cfg.glob.action_next
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.action_next' of the class Action was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._create_word_document()
+
+    assert expt.type == SystemExit, "Instance of class 'Action (action_next)' is missing"
+    assert expt.value.code == 1, "Instance of class 'Action (action_next)' is missing"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test Function - missing dependencies - text_parser - word_document - case 2.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_text_parser_word_document_case_2(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - text_parser - word_document - case 2."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_text_parser.TextParser()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    db.cls_run.Run.ID_RUN_UMBRELLA = -1
+
+    cfg.glob.run = db.cls_run.Run(
+        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run=-1,
+    )
+
+    cfg.glob.action_next = db.cls_action.Action(
+        action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run_last=-1,
+        _row_id=-1,
+    )
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.document.exists()  # type: ignore
+
+        del cfg.glob.document
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.document' of the class Document was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._create_word_document()
+
+    assert expt.type == SystemExit, "Instance of class 'Document' is missing"
+    assert expt.value.code == 1, "Instance of class 'Document' is missing"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
