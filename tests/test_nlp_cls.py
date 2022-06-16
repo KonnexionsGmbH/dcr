@@ -1157,7 +1157,6 @@ def test_missing_dependencies_text_parser_line_document_case_3(fxtr_setup_logger
 # -----------------------------------------------------------------------------
 # Test Function - missing dependencies - text_parser - line_document - case 4.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_missing_dependencies_text_parser_line_document_case_4(fxtr_setup_logger_environment):
     """Test Function - missing dependencies - text_parser - line_document - case 4."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -1401,11 +1400,61 @@ def test_missing_dependencies_text_parser_word_document_case_2(fxtr_setup_logger
 
 
 # -----------------------------------------------------------------------------
+# Test Function - missing dependencies - tokenizer_spacy - Document.
+# -----------------------------------------------------------------------------
+def test_missing_dependencies_tokenizer_spacy_document(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - tokenizer_spacy - Document."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_document = db.cls_document.Document(
+        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
+    )
+
+    # -------------------------------------------------------------------------
+    try:
+        cfg.glob.document.exists()  # type: ignore
+
+        del cfg.glob.document
+
+        cfg.glob.logger.debug("The existing object 'cfg.glob.document' of the class Document was deleted.")
+    except AttributeError:
+        pass
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._finish_document()
+
+    assert expt.type == SystemExit, "Instance of class 'Document' is missing: _finish_document()"
+    assert expt.value.code == 1, "Instance of class 'Document' is missing: _finish_document()"
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._finish_sent()
+
+    assert expt.type == SystemExit, "Instance of class 'Document' is missing: _finish_sent()"
+    assert expt.value.code == 1, "Instance of class 'Document' is missing: _finish_sent()"
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test Function - missing dependencies - tokenizer_spacy - Setup.
 # -----------------------------------------------------------------------------
+@pytest.mark.issue
 def test_missing_dependencies_tokenizer_spacy_setup(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing dependencies - tokenizer_spacy - Setup."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
 
     # -------------------------------------------------------------------------
     try:
@@ -1419,11 +1468,17 @@ def test_missing_dependencies_tokenizer_spacy_setup(fxtr_setup_empty_db_and_inbo
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+        nlp.cls_tokenizer_spacy.TokenizerSpacy()
+
+    assert expt.type == SystemExit, "Instance of class 'Setup' is missing: __init__()"
+    assert expt.value.code == 1, "Instance of class 'Setup' is missing: __init__()"
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
         instance.process_document(full_name="", pipeline_name="")
 
-    assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
-    assert expt.value.code == 1, "Instance of class 'Setup' is missing"
+    assert expt.type == SystemExit, "Instance of class 'Setup' is missing: process_document()"
+    assert expt.value.code == 1, "Instance of class 'Setup' is missing: process_document()"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -1455,12 +1510,35 @@ def test_missing_dependencies_tokenizer_spacy_text_parser(fxtr_setup_empty_db_an
         pass
 
     # -------------------------------------------------------------------------
+    instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+
+    # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+        instance._init_para()
+
+    assert expt.type == SystemExit, "Instance of class 'TextParser' is missing: _init_para()"
+    assert expt.value.code == 1, "Instance of class 'TextParser' is missing: _init_para()"
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._process_page()
+
+    assert expt.type == SystemExit, "Instance of class 'TextParser' is missing: _process_page()"
+    assert expt.value.code == 1, "Instance of class 'TextParser' is missing: _process_page()"
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
+        instance._process_para()
+
+    assert expt.type == SystemExit, "Instance of class 'TextParser' is missing: _process_para()"
+    assert expt.value.code == 1, "Instance of class 'TextParser' is missing: _process_para()"
+
+    # -------------------------------------------------------------------------
+    with pytest.raises(SystemExit) as expt:
         instance.process_document(full_name="", pipeline_name="")
 
-    assert expt.type == SystemExit, "Instance of class 'TextParser' is missing"
-    assert expt.value.code == 1, "Instance of class 'TextParser' is missing"
+    assert expt.type == SystemExit, "Instance of class 'TextParser' is missing: process_document()"
+    assert expt.value.code == 1, "Instance of class 'TextParser' is missing: process_document()"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
