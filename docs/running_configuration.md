@@ -155,6 +155,9 @@ The customisable entries are:
     toc_min_entries = 5
     tokenize_2_database = true
     tokenize_2_jsonfile = true
+    tokenize_footers = false
+    tokenize_header = false
+    tokenize_toc = false
     verbose = true
     verbose_line_type_header_footers = false
     verbose_line_type_toc = false
@@ -194,6 +197,9 @@ The customisable entries are:
 | toc_min_entries                  | **`5`**                               | Minimum number of TOC entries.                                                                                  |
 | tokenize_2_database              | **`true`**                            | Store the tokens in the database table **`token`**.                                                             |
 | tokenize_2_jsonfile              | **`true`**                            | Store the tokens in a **`JSON`** flat file.                                                                     |
+| tokenize_footers                 | **`false`**                           | Tokenize the footer lines.                                                                                      |
+| tokenize_header                  | **`false`**                           | Tokenize the header lines.                                                                                      |
+| tokenize_toc                     | **`false`**                           | Tokenize the table of content lines.                                                                            |
 | verbose                          | **`true`**                            | Display progress messages for processing.                                                                       |
 | verbose_line_type_header_footers | **`false`**                           | Display progress messages for header & footers line type determination.                                         |
 | verbose_line_type_toc            | **`false`**                           | Display progress messages for table of content line type determination.                                         |
@@ -229,6 +235,9 @@ The configuration parameters can be set differently for the individual environme
     tetml_word = true
     tokenize_2_database = true
     tokenize_2_jsonfile = true
+    tokenize_footers = false
+    tokenize_header = false
+    tokenize_toc = false
     verbose = true
     verbose_line_type_header_footers = false
     verbose_line_type_toc = false
@@ -264,6 +273,9 @@ The configuration parameters can be set differently for the individual environme
     tetml_word = false
     tokenize_2_database = true
     tokenize_2_jsonfile = false
+    tokenize_footers = false
+    tokenize_header = false
+    tokenize_toc = false
     verbose = true
     verbose_line_type_header_footers = false
     verbose_line_type_toc = false

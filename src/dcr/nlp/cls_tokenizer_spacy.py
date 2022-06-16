@@ -679,10 +679,15 @@ class TokenizerSpacy:
         for cfg.glob.text_parser.parse_result_line_line in cfg.glob.text_parser.parse_result_line_page[
             nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
         ]:
-            if cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] in (
-                cfg.glob.document.DOCUMENT_LINE_TYPE_FOOTER,
-                cfg.glob.document.DOCUMENT_LINE_TYPE_HEADER,
-                cfg.glob.document.DOCUMENT_LINE_TYPE_TOC,
+            line_type = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+
+            if (
+                line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_FOOTER  # pylint: disable=too-many-boolean-expressions
+                and not cfg.glob.setup.is_tokenize_footers
+                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_HEADER
+                and not cfg.glob.setup.is_tokenize_header
+                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_TOC
+                and not cfg.glob.setup.is_tokenize_toc
             ):
                 continue
 

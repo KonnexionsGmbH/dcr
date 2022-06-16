@@ -310,6 +310,120 @@ def check_param_tokenize_2_jsonfile():
 
 
 # -----------------------------------------------------------------------------
+# Check parameter TOKENIZE_FOOTERS - False.
+# -----------------------------------------------------------------------------
+def check_param_tokenize_footers():
+    """Check parameter TOKENIZE_FOOTERS - False."""
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_FOOTERS, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert not cfg.glob.setup.is_tokenize_footers, "DCR_CFG_TOKENIZE_FOOTERS: false (not true)"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_FOOTERS, "tRUE"),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert cfg.glob.setup.is_tokenize_footers, "DCR_CFG_TOKENIZE_FOOTERS: true"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+
+# -----------------------------------------------------------------------------
+# Check parameter TOKENIZE_HEADER - False.
+# -----------------------------------------------------------------------------
+def check_param_tokenize_header():
+    """Check parameter TOKENIZE_HEADER - False."""
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_HEADER, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert not cfg.glob.setup.is_tokenize_header, "DCR_CFG_TOKENIZE_HEADER: false (not true)"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_HEADER, "tRUE"),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert cfg.glob.setup.is_tokenize_header, "DCR_CFG_TOKENIZE_HEADER: true"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+
+# -----------------------------------------------------------------------------
+# Check parameter TOKENIZE_TOC - False.
+# -----------------------------------------------------------------------------
+def check_param_tokenize_toc():
+    """Check parameter TOKENIZE_TOC - False."""
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_TOC, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert not cfg.glob.setup.is_tokenize_toc, "DCR_CFG_TOKENIZE_TOC: false (not true)"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_TOC, "tRUE"),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert cfg.glob.setup.is_tokenize_toc, "DCR_CFG_TOKENIZE_TOC: true"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+
+# -----------------------------------------------------------------------------
 # Check parameter VERBOSE - True.
 # -----------------------------------------------------------------------------
 def check_param_verbose():
@@ -571,10 +685,13 @@ def test_get_config_logical_false(fxtr_setup_logger_environment):
     check_param_json_sort_keys()
 
     check_param_tetml_page()
-
     check_param_tetml_word()
 
     check_param_tokenize_2_jsonfile()
+
+    check_param_tokenize_footers()
+    check_param_tokenize_header()
+    check_param_tokenize_toc()
 
     check_param_verbose_line_type_header_footers()
 

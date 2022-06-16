@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 97
+    _CONFIG_PARAM_NO = 100
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -122,6 +122,9 @@ class Setup:
     _DCR_CFG_TOC_MIN_ENTRIES: ClassVar[str] = "toc_min_entries"
     _DCR_CFG_TOKENIZE_2_DATABASE: ClassVar[str] = "tokenize_2_database"
     _DCR_CFG_TOKENIZE_2_JSONFILE: ClassVar[str] = "tokenize_2_jsonfile"
+    _DCR_CFG_TOKENIZE_FOOTERS: ClassVar[str] = "tokenize_footers"
+    _DCR_CFG_TOKENIZE_HEADER: ClassVar[str] = "tokenize_header"
+    _DCR_CFG_TOKENIZE_TOC: ClassVar[str] = "tokenize_toc"
     _DCR_CFG_VERBOSE: ClassVar[str] = "verbose"
     _DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS: ClassVar[str] = "verbose_line_type_header_footers"
     _DCR_CFG_VERBOSE_LINE_TYPE_TOC: ClassVar[str] = "verbose_line_type_toc"
@@ -235,6 +238,9 @@ class Setup:
         self.is_tetml_word = False
         self.is_tokenize_2_database = True
         self.is_tokenize_2_jsonfile = False
+        self.is_tokenize_footers = False
+        self.is_tokenize_header = False
+        self.is_tokenize_toc = False
         self.is_verbose = True
         self.is_verbose_line_type_header_footers = False
         self.is_verbose_line_type_toc = False
@@ -337,6 +343,9 @@ class Setup:
         self._check_config_toc_min_entries()
         self._check_config_tokenize_2_database()
         self._check_config_tokenize_2_jsonfile()
+        self._check_config_tokenize_footers()
+        self._check_config_tokenize_header()
+        self._check_config_tokenize_toc()
         self._check_config_verbose()
         self._check_config_verbose_line_type_header_footers()
         self._check_config_verbose_line_type_toc()
@@ -1045,6 +1054,33 @@ class Setup:
                 )
 
     # -----------------------------------------------------------------------------
+    # Check the configuration parameter - tokenize_footers.
+    # -----------------------------------------------------------------------------
+    def _check_config_tokenize_footers(self) -> None:
+        """Check the configuration parameter - tokenize_footers."""
+        if Setup._DCR_CFG_TOKENIZE_FOOTERS in self._config:
+            if str(self._config[Setup._DCR_CFG_TOKENIZE_FOOTERS]).lower() == "true":
+                self.is_tokenize_footers = True
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - tokenize_header.
+    # -----------------------------------------------------------------------------
+    def _check_config_tokenize_header(self) -> None:
+        """Check the configuration parameter - tokenize_header."""
+        if Setup._DCR_CFG_TOKENIZE_HEADER in self._config:
+            if str(self._config[Setup._DCR_CFG_TOKENIZE_HEADER]).lower() == "true":
+                self.is_tokenize_header = True
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - tokenize_toc.
+    # -----------------------------------------------------------------------------
+    def _check_config_tokenize_toc(self) -> None:
+        """Check the configuration parameter - tokenize_toc."""
+        if Setup._DCR_CFG_TOKENIZE_TOC in self._config:
+            if str(self._config[Setup._DCR_CFG_TOKENIZE_TOC]).lower() == "true":
+                self.is_tokenize_toc = True
+
+    # -----------------------------------------------------------------------------
     # Check the configuration parameter - verbose.
     # -----------------------------------------------------------------------------
     def _check_config_verbose(self) -> None:
@@ -1221,6 +1257,9 @@ class Setup:
                     | Setup._DCR_CFG_TOC_MIN_ENTRIES
                     | Setup._DCR_CFG_TOKENIZE_2_DATABASE
                     | Setup._DCR_CFG_TOKENIZE_2_JSONFILE
+                    | Setup._DCR_CFG_TOKENIZE_FOOTERS
+                    | Setup._DCR_CFG_TOKENIZE_HEADER
+                    | Setup._DCR_CFG_TOKENIZE_TOC
                     | Setup._DCR_CFG_VERBOSE
                     | Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS
                     | Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC
