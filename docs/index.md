@@ -259,222 +259,182 @@ This processing action is controlled by the following configuration parameters:
 
 **Example extract from granularity `line`**:
 
-Possible line types are `h` for header lines, `f` for footers and `b` for the remaining lines.
+Possible line types are 
+
+- `h` header lines, 
+- `f` footer lines,
+- `t` toc (table of content) lines, and 
+- `b` for the remaining body lines.
 
     {
-      "noLinesInPage": 37,
-      "noParasInPage": 9,
-      "pageLines": [
-        {
-          "paraIndexPage": 0,
-          "lineIndexPage": 0,
-          "lineIndexPara": 0,
-          "lineText": "1",
-          "lineType": "h"
-        },
-        {
-          "paraIndexPage": 1,
-          "lineIndexPage": 1,
-          "lineIndexPara": 0,
-          "lineText": "1812",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 2,
-          "lineIndexPage": 2,
-          "lineIndexPara": 0,
-          "lineText": "GRIMM’S FAIRY TALES",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 2,
-          "lineIndexPage": 3,
-          "lineIndexPara": 1,
-          "lineText": "CINDERELLA",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 2,
-          "lineIndexPage": 4,
-          "lineIndexPara": 2,
-          "lineText": "Jacob Ludwig Grimm and Wilhelm Carl Grimm",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 5,
-          "lineIndexPara": 0,
-          "lineText": "Grimm, Jacob (1785-1863) and Wilhelm (1786-1859) - German",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 6,
-          "lineIndexPara": 1,
-          "lineText": "philologists whose collection “Kinder- und Hausmarchen,” known",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 7,
-          "lineIndexPara": 2,
-          "lineText": "in English as “Grimm’s Fairy Tales,” is a timeless literary",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 8,
-          "lineIndexPara": 3,
-          "lineText": "masterpiece. The brothers transcribed these tales directly from folk",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 9,
-          "lineIndexPara": 4,
-          "lineText": "and fairy stories told to them by common villagers. Cinderella",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 10,
-          "lineIndexPara": 5,
-          "lineText": "(1812) - The famous tale of a girl who is mistreated by her evil actionmother",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 11,
-          "lineIndexPara": 6,
-          "lineText": "and action-sisters but goes on to marry the prince. This, the",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 12,
-          "lineIndexPara": 7,
-          "lineText": "original “Cindrella,” differs greatly from many of its modern",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 13,
-          "lineIndexPara": 8,
-          "lineText": "variations.",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 4,
-          "lineIndexPage": 14,
-          "lineIndexPara": 0,
-          "lineText": "CINDERELLA",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 5,
-          "lineIndexPage": 15,
-          "lineIndexPara": 0,
-          "lineText": "THERE WAS once a rich man whose wife lay sick, and when she",
-          "lineType": "b"
-        },
+        "documentId": 1,
+        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
+        "noPagesInDocument": 6,
+        "noParagraphsInDocument": 39,
+        "noLinesInDocument": 248,
+        "noLinesFooter": 0,
+        "noLinesHeader": 1,
+        "noLinesToc": 0,
+        "pages": [
+            {
+                "pageNo": 1,
+                "noParagraphsInPage": 9,
+                "noLinesInPage": 37,
+                "lines": [
+                    {
+                        "lineNo": 1,
+                        "lineIndexPage": 0,
+                        "lineIndexParagraph": 0,
+                        "lineType": "h",
+                        "lowerLeftX": 303.36,
+                        "paragraphNo": 1,
+                        "text": "1"
+                    },
+                    {
+                        "lineNo": 1,
+                        "lineIndexPage": 1,
+                        "lineIndexParagraph": 0,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 2,
+                        "text": "1812"
+                    },
+                    {
+                        "lineNo": 1,
+                        "lineIndexPage": 2,
+                        "lineIndexParagraph": 0,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 3,
+                        "text": "GRIMM\u2019S FAIRY TALES"
+                    },
+                    {
+                        "lineNo": 2,
+                        "lineIndexPage": 3,
+                        "lineIndexParagraph": 1,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 3,
+                        "text": "CINDERELLA"
+                    },
+                    {
+                        "lineNo": 3,
+                        "lineIndexPage": 4,
+                        "lineIndexParagraph": 2,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 3,
+                        "text": "Jacob Ludwig Grimm and Wilhelm Carl Grimm"
+                    },
+                    {
+                        "lineNo": 1,
+                        "lineIndexPage": 5,
+                        "lineIndexParagraph": 0,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 4,
+                        "text": "Grimm, Jacob (1785-1863) and Wilhelm (1786-1859) - German"
+                    },
+                    {
+                        "lineNo": 2,
+                        "lineIndexPage": 6,
+                        "lineIndexParagraph": 1,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 4,
+                        "text": "philologists whose collection \u201cKinder- und Hausmarchen,\u201d known"
+                    },
+                    {
+                        "lineNo": 3,
+                        "lineIndexPage": 7,
+                        "lineIndexParagraph": 2,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 4,
+                        "text": "in English as \u201cGrimm\u2019s Fairy Tales,\u201d is a timeless literary"
+                    },
 
 **Example extract from granularity `word`**:
 
     {
-      "noLinesInPage": 37,
-      "noParasInPage": 9,
-      "noWordsInPage": 417,
-      "pageWords": [
-        {
-          "lineIndexPage": 0,
-          "wordIndexLine": 0,
-          "wordText": "1"
-        },
-        {
-          "lineIndexPage": 1,
-          "wordIndexLine": 0,
-          "wordText": "1812"
-        },
-        {
-          "lineIndexPage": 2,
-          "wordIndexLine": 0,
-          "wordText": "GRIMM"
-        },
-        {
-          "lineIndexPage": 2,
-          "wordIndexLine": 1,
-          "wordText": "’"
-        },
-        {
-          "lineIndexPage": 2,
-          "wordIndexLine": 2,
-          "wordText": "S"
-        },
-        {
-          "lineIndexPage": 2,
-          "wordIndexLine": 3,
-          "wordText": "FAIRY"
-        },
-        {
-          "lineIndexPage": 2,
-          "wordIndexLine": 4,
-          "wordText": "TALES"
-        },
-        {
-          "lineIndexPage": 3,
-          "wordIndexLine": 0,
-          "wordText": "CINDERELLA"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 0,
-          "wordText": "Jacob"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 1,
-          "wordText": "Ludwig"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 2,
-          "wordText": "Grimm"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 3,
-          "wordText": "and"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 4,
-          "wordText": "Wilhelm"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 5,
-          "wordText": "Carl"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 6,
-          "wordText": "Grimm"
-        },
-        {
-          "lineIndexPage": 5,
-          "wordIndexLine": 0,
-          "wordText": "Grimm"
-        },
-        {
-          "lineIndexPage": 5,
-          "wordIndexLine": 1,
-          "wordText": ","
-        },
-        {
-          "lineIndexPage": 5,
-          "wordIndexLine": 2,
-          "wordText": "Jacob"
-        },
+        "documentId": 1,
+        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
+        "noPagesInDocument": 6,
+        "noParagraphsInDocument": 39,
+        "noLinesInDocument": 248,
+        "noWordsInDocument": 3267,
+        "pages": [
+            {
+                "pageNo": 1,
+                "noParagraphsInPage": 9,
+                "noLinesInPage": 37,
+                "noWordsInPage": 417,
+                "paragraphs": [
+                    {
+                        "paragraphNo": 1,
+                        "noLinesInParagraph": 1,
+                        "noWordsInParagraph": 1,
+                        "lines": [
+                            {
+                                "lineNo": 1,
+                                "noWordsInLine": 1,
+                                "words": [
+                                    {
+                                        "wordNo": 1,
+                                        "text": "1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "paragraphNo": 2,
+                        "noLinesInParagraph": 1,
+                        "noWordsInParagraph": 1,
+                        "lines": [
+                            {
+                                "lineNo": 1,
+                                "noWordsInLine": 1,
+                                "words": [
+                                    {
+                                        "wordNo": 1,
+                                        "text": "1812"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "paragraphNo": 3,
+                        "noLinesInParagraph": 3,
+                        "noWordsInParagraph": 13,
+                        "lines": [
+                            {
+                                "lineNo": 1,
+                                "noWordsInLine": 5,
+                                "words": [
+                                    {
+                                        "wordNo": 1,
+                                        "text": "GRIMM"
+                                    },
+                                    {
+                                        "wordNo": 2,
+                                        "text": "\u2019"
+                                    },
+                                    {
+                                        "wordNo": 3,
+                                        "text": "S"
+                                    },
+                                    {
+                                        "wordNo": 4,
+                                        "text": "FAIRY"
+                                    },
+                                    {
+                                        "wordNo": 5,
+                                        "text": "TALES"
+                                    }
+                                ]
+                            },
 
 ### 2.2.4 Create qualified document tokens (action: **`tkn`**)
 
