@@ -761,6 +761,7 @@ This parameter defines the minimum number of entries that a table of contents mu
 #### 4.3.3 Algorithm Table-based
 
 A table with the following properties is searched for**:
+
    - except for the first row, the last column of the table must contain an integer greater than zero,
    - the number found there must be ascending,
    - the number must not be greater than the last page number of the document, and
@@ -769,6 +770,7 @@ A table with the following properties is searched for**:
 #### 4.3.4 Algorithm Line-based
 
 A block of lines with the following properties is searched here**:
+
    - the last token from each line must contain an integer greater than zero,
    - the number found there must be ascending, and
    - the number must not be greater than the last page number of the document.
