@@ -1,4 +1,4 @@
-"""Module nlp.cls_line_type_header_footers: Determine footer and header
+"""Module nlp.cls_line_type_headers_footers: Determine footer and header
 lines."""
 from __future__ import annotations
 
@@ -62,8 +62,8 @@ class LineTypeHeaderFooters:
                 "The required instance of the class 'TextParser' does not yet exist.",
             )
 
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters")
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters")
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Start create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
@@ -72,12 +72,12 @@ class LineTypeHeaderFooters:
         self._page_max = cfg.glob.action_curr.action_no_pdf_pages
 
         self._line_data: LineData = [((-1, ""), (-1, "")) for _ in range(self._line_data_max)]
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}"
         )
 
         self._lsd_data: LSDData = [[(-1, -1, -1) for _ in range(self._page_max)] for _ in range(self._line_data_max)]
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Value of lsd_data                    ={self._lsd_data}"
         )
 
@@ -88,7 +88,7 @@ class LineTypeHeaderFooters:
 
         self._exist = True
 
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: End   create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
@@ -100,9 +100,9 @@ class LineTypeHeaderFooters:
     def _calc_levenshtein(self) -> None:
         """Calculate the Levenshtein distances."""
 
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters")
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters: Start Levenshtein distance")
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters")
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters: Start Levenshtein distance")
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}"
         )
 
@@ -119,10 +119,10 @@ class LineTypeHeaderFooters:
                     lsd_row[self._page_ind] = (curr_line_ind, prev_line_ind, distance)
                     self._lsd_data[ind] = lsd_row
 
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Value of lsd_data                    ={self._lsd_data}"
         )
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters: End   Levenshtein distance")
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters: End   Levenshtein distance")
 
     # -----------------------------------------------------------------------------
     # Determine the candidates.
@@ -180,8 +180,8 @@ class LineTypeHeaderFooters:
 
         self._page_ind += 1
 
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters")
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters")
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Start page                           ={self._page_ind + 1}"
         )
 
@@ -196,7 +196,7 @@ class LineTypeHeaderFooters:
 
         self._swap_current_previous()
 
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: End   page                           ={self._page_ind + 1}"
         )
 
@@ -207,9 +207,9 @@ class LineTypeHeaderFooters:
     # -----------------------------------------------------------------------------
     def _store_line_data_footer(self) -> None:
         """Store the footers of the current page."""
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters")
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters: Start store footers")
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters")
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters: Start store footers")
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}"
         )
 
@@ -236,19 +236,19 @@ class LineTypeHeaderFooters:
 
             line_lines_ind -= 1
 
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}"
         )
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters: End   store footers")
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters: End   store footers")
 
     # -----------------------------------------------------------------------------
     # Store the headers of the current page.
     # -----------------------------------------------------------------------------
     def _store_line_data_header(self) -> None:
         """Store the headers of the current page."""
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters")
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters: Start store headers")
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters")
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters: Start store headers")
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}"
         )
 
@@ -273,10 +273,10 @@ class LineTypeHeaderFooters:
                 prev,
             )
 
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}"
         )
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters: End   store headers")
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters: End   store headers")
 
     # -----------------------------------------------------------------------------
     # Store the found line types in parser result.
@@ -322,9 +322,9 @@ class LineTypeHeaderFooters:
     # -----------------------------------------------------------------------------
     def _swap_current_previous(self) -> None:
         """Swap the current and previous data."""
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters")
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters: Start swap current & previous")
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters")
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters: Start swap current & previous")
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}"
         )
 
@@ -332,10 +332,10 @@ class LineTypeHeaderFooters:
             (curr, _) = self._line_data[ind]
             self._line_data[ind] = ((-1, ""), curr)
 
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}"
         )
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters: End   swap current & previous")
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters: End   swap current & previous")
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -358,11 +358,11 @@ class LineTypeHeaderFooters:
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        utils.progress_msg_line_type_header_footers("LineTypeHeaderFooters")
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters")
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Start document                       ={cfg.glob.action_curr.action_file_name}"
         )
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: Value of lsd_data                    ={self._lsd_data}"
         )
 
@@ -386,12 +386,12 @@ class LineTypeHeaderFooters:
                         self._result_data[(page_ind + 1, line_no_curr)] = line_type
 
         if len(self._result_data) > 0:
-            utils.progress_msg_line_type_header_footers(
+            utils.progress_msg_line_type_headers_footers(
                 f"LineTypeHeaderFooters: Value of result_data                 ={self._result_data}"
             )
             self._store_results()
 
-        utils.progress_msg_line_type_header_footers(
+        utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: End document                         ={cfg.glob.action_curr.action_file_name}"
         )
 

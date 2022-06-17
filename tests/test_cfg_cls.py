@@ -348,20 +348,20 @@ def check_param_tokenize_footers():
 
 
 # -----------------------------------------------------------------------------
-# Check parameter TOKENIZE_HEADER - False.
+# Check parameter TOKENIZE_HEADERS - False.
 # -----------------------------------------------------------------------------
-def check_param_tokenize_header():
-    """Check parameter TOKENIZE_HEADER - False."""
+def check_param_tokenize_headers():
+    """Check parameter TOKENIZE_HEADERS - False."""
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_HEADER, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_HEADERS, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
     cfg.glob.setup = cfg.cls_setup.Setup()
-    assert not cfg.glob.setup.is_tokenize_header, "DCR_CFG_TOKENIZE_HEADER: false (not true)"
+    assert not cfg.glob.setup.is_tokenize_headers, "DCR_CFG_TOKENIZE_HEADERS: false (not true)"
 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -372,12 +372,12 @@ def check_param_tokenize_header():
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_HEADER, "tRUE"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_HEADERS, "tRUE"),
         ],
     )
 
     cfg.glob.setup = cfg.cls_setup.Setup()
-    assert cfg.glob.setup.is_tokenize_header, "DCR_CFG_TOKENIZE_HEADER: true"
+    assert cfg.glob.setup.is_tokenize_headers, "DCR_CFG_TOKENIZE_HEADERS: true"
 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -462,20 +462,20 @@ def check_param_verbose():
 
 
 # -----------------------------------------------------------------------------
-# Check parameter VERBOSE_LINE_TYPE_HEADER_FOOTERS - False.
+# Check parameter VERBOSE_LINE_TYPE_HEADERS_FOOTERS - False.
 # -----------------------------------------------------------------------------
-def check_param_verbose_line_type_header_footers():
-    """Check parameter VERBOSE_LINE_TYPE_HEADER_FOOTERS - False."""
+def check_param_verbose_line_type_headers_footers():
+    """Check parameter VERBOSE_LINE_TYPE_HEADERS_FOOTERS - False."""
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
     cfg.glob.setup = cfg.cls_setup.Setup()
-    assert not cfg.glob.setup.is_verbose_line_type_header_footers, "VERBOSE_LINE_TYPE_HEADER_FOOTERS: false (not true)"
+    assert not cfg.glob.setup.is_verbose_line_type_headers_footers, "VERBOSE_LINE_TYPE_HEADERS_FOOTERS: false (not true)"
 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -486,12 +486,12 @@ def check_param_verbose_line_type_header_footers():
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS, "tRUE"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "tRUE"),
         ],
     )
 
     cfg.glob.setup = cfg.cls_setup.Setup()
-    assert cfg.glob.setup.is_verbose_line_type_header_footers, "VERBOSE_LINE_TYPE_HEADER_FOOTERS: true"
+    assert cfg.glob.setup.is_verbose_line_type_headers_footers, "VERBOSE_LINE_TYPE_HEADERS_FOOTERS: true"
 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -690,10 +690,10 @@ def test_get_config_logical_false(fxtr_setup_logger_environment):
     check_param_tokenize_2_jsonfile()
 
     check_param_tokenize_footers()
-    check_param_tokenize_header()
+    check_param_tokenize_headers()
     check_param_tokenize_toc()
 
-    check_param_verbose_line_type_header_footers()
+    check_param_verbose_line_type_headers_footers()
 
     check_param_verbose_line_type_toc()
 

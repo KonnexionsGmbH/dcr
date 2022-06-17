@@ -688,7 +688,7 @@ class TokenizerSpacy:
                 line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_FOOTER  # pylint: disable=too-many-boolean-expressions
                 and not cfg.glob.setup.is_tokenize_footers
                 or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_HEADER
-                and not cfg.glob.setup.is_tokenize_header
+                and not cfg.glob.setup.is_tokenize_headers
                 or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_TOC
                 and not cfg.glob.setup.is_tokenize_toc
             ):

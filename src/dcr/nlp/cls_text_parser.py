@@ -7,7 +7,7 @@ import json
 
 import cfg.glob
 import db.cls_document
-import nlp.cls_line_type_header_footers
+import nlp.cls_line_type_headers_footers
 import nlp.cls_line_type_toc
 import nlp.cls_nlp_core
 import utils
@@ -744,7 +744,7 @@ class TextParser:
         if cfg.glob.setup.is_parsing_line:
             self._parse_result_no_lines_in_doc = 0
             self.parse_result_line_pages = []
-            cfg.glob.line_type_header_footers = nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
+            cfg.glob.line_type_headers_footers = nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
             cfg.glob.line_type_toc = nlp.cls_line_type_toc.LineTypeToc()
         elif cfg.glob.setup.is_parsing_page:
             self._parse_result_page_pages = []
@@ -763,7 +763,7 @@ class TextParser:
                     self._parse_tag_page(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
-            cfg.glob.line_type_header_footers.process_document()
+            cfg.glob.line_type_headers_footers.process_document()
             cfg.glob.line_type_toc.process_document()
             self._create_line_document()
         elif cfg.glob.setup.is_parsing_page:

@@ -289,15 +289,15 @@ def progress_msg_empty_before(msg: str) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Create a header & footers line_type progress message.
+# Create a headers & footers line_type progress message.
 # -----------------------------------------------------------------------------
-def progress_msg_line_type_header_footers(msg: str) -> None:
-    """Create a header & footers line_type progress message.
+def progress_msg_line_type_headers_footers(msg: str) -> None:
+    """Create a headers & footers line_type progress message.
 
     Args:
         msg (str): Progress message.
     """
-    if cfg.glob.setup.is_verbose_line_type_header_footers:
+    if cfg.glob.setup.is_verbose_line_type_headers_footers:
         progress_msg_core(msg)
 
 

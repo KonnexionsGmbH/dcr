@@ -9,7 +9,7 @@ import db.cls_db_core
 import db.cls_document
 import db.cls_run
 import defusedxml.ElementTree
-import nlp.cls_line_type_header_footers
+import nlp.cls_line_type_headers_footers
 import nlp.cls_line_type_toc
 import nlp.cls_nlp_core
 import nlp.cls_text_parser
@@ -189,7 +189,7 @@ def check_cls_line_type(
 # -----------------------------------------------------------------------------
 # Test LineType Header & Footers.
 # -----------------------------------------------------------------------------
-def test_cls_line_type_header_footers(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+def test_cls_line_type_headers_footers(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType Header & Footers."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -232,7 +232,7 @@ def test_cls_line_type_header_footers(fxtr_rmdir_opt, fxtr_setup_empty_db_and_in
             (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "3"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "false"),
         ],
@@ -397,7 +397,7 @@ def test_cls_line_type_toc(toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_empty_
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TOC_LAST_PAGE, toc_last_page),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "false"),
         ],
@@ -519,10 +519,10 @@ def test_cls_tokenizer_spacy(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_header_footers - Action (action_curr).
+# Test Function - missing dependencies - line_type_headers_footers - Action (action_curr).
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_header_footers_action_curr(fxtr_setup_logger_environment):
-    """Test Function - missing dependencies - line_type_header_footers - Action (action_curr)."""
+def test_missing_dependencies_line_type_headers_footers_action_curr(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - line_type_headers_footers - Action (action_curr)."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -537,7 +537,7 @@ def test_missing_dependencies_line_type_header_footers_action_curr(fxtr_setup_lo
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
+        nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
 
     assert expt.type == SystemExit, "Instance of class 'Action (action_curr)' is missing"
     assert expt.value.code == 1, "Instance of class 'Action (action_curr)' is missing"
@@ -547,10 +547,10 @@ def test_missing_dependencies_line_type_header_footers_action_curr(fxtr_setup_lo
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_header_footers - coverage - exists.
+# Test Function - missing dependencies - line_type_headers_footers - coverage - exists.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_header_footers_coverage_exists(fxtr_setup_empty_db_and_inbox):
-    """Test Function - missing dependencies - line_type_header_footers - coverage - exists."""
+def test_missing_dependencies_line_type_headers_footers_coverage_exists(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_headers_footers - coverage - exists."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -575,7 +575,7 @@ def test_missing_dependencies_line_type_header_footers_coverage_exists(fxtr_setu
     cfg.glob.text_parser.exists()
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
+    instance = nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
 
     instance.exists()
 
@@ -584,10 +584,10 @@ def test_missing_dependencies_line_type_header_footers_coverage_exists(fxtr_setu
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_header_footers - document.
+# Test Function - missing dependencies - line_type_headers_footers - document.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_header_footers_document(fxtr_setup_empty_db_and_inbox):
-    """Test Function - missing dependencies - line_type_header_footers - document."""
+def test_missing_dependencies_line_type_headers_footers_document(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_headers_footers - document."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -612,7 +612,7 @@ def test_missing_dependencies_line_type_header_footers_document(fxtr_setup_empty
     cfg.glob.text_parser.exists()
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
+    instance = nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
 
     # -------------------------------------------------------------------------
     try:
@@ -636,10 +636,10 @@ def test_missing_dependencies_line_type_header_footers_document(fxtr_setup_empty
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_header_footers - Setup.
+# Test Function - missing dependencies - line_type_headers_footers - Setup.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_header_footers_setup(fxtr_setup_empty_db_and_inbox):
-    """Test Function - missing dependencies - line_type_header_footers - Setup."""
+def test_missing_dependencies_line_type_headers_footers_setup(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_headers_footers - Setup."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -670,7 +670,7 @@ def test_missing_dependencies_line_type_header_footers_setup(fxtr_setup_empty_db
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
+        nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
 
     assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
     assert expt.value.code == 1, "Instance of class 'Setup' is missing"
@@ -680,10 +680,10 @@ def test_missing_dependencies_line_type_header_footers_setup(fxtr_setup_empty_db
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_header_footers - TextParser.
+# Test Function - missing dependencies - line_type_headers_footers - TextParser.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_header_footers_text_parser(fxtr_setup_empty_db_and_inbox):
-    """Test Function - missing dependencies - line_type_header_footers - TextParser."""
+def test_missing_dependencies_line_type_headers_footers_text_parser(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_headers_footers - TextParser."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -714,7 +714,7 @@ def test_missing_dependencies_line_type_header_footers_text_parser(fxtr_setup_em
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type_header_footers.LineTypeHeaderFooters()
+        nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
 
     assert expt.type == SystemExit, "Instance of class 'TextParser' is missing"
     assert expt.value.code == 1, "Instance of class 'TextParser' is missing"

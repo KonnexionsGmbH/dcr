@@ -758,17 +758,17 @@ A value of zero prevents the search for a table of contents.
 
 This parameter defines the minimum number of entries that a table of contents must contain.
 
-#### 4.3.3 Algorithm
+#### 4.3.3 Algorithm Table-based
 
-1. **Table-based: a table with the following properties is searched for**:
-
+A table with the following properties is searched for**:
    - except for the first row, the last column of the table must contain an integer greater than zero,
    - the number found there must be ascending,
    - the number must not be greater than the last page number of the document, and
-   - if such a table was found, then the algorithm ends here
+   - if such a table was found, then the algorithm ends here.
 
-2. **Line-based: a block of lines with the following properties is searched here**:
+#### 4.3.4 Algorithm Line-based
 
+A block of lines with the following properties is searched here**:
    - the last token from each line must contain an integer greater than zero,
    - the number found there must be ascending, and
    - the number must not be greater than the last page number of the document.

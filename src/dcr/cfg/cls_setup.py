@@ -123,10 +123,10 @@ class Setup:
     _DCR_CFG_TOKENIZE_2_DATABASE: ClassVar[str] = "tokenize_2_database"
     _DCR_CFG_TOKENIZE_2_JSONFILE: ClassVar[str] = "tokenize_2_jsonfile"
     _DCR_CFG_TOKENIZE_FOOTERS: ClassVar[str] = "tokenize_footers"
-    _DCR_CFG_TOKENIZE_HEADER: ClassVar[str] = "tokenize_header"
+    _DCR_CFG_TOKENIZE_HEADERS: ClassVar[str] = "tokenize_headers"
     _DCR_CFG_TOKENIZE_TOC: ClassVar[str] = "tokenize_toc"
     _DCR_CFG_VERBOSE: ClassVar[str] = "verbose"
-    _DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS: ClassVar[str] = "verbose_line_type_header_footers"
+    _DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS: ClassVar[str] = "verbose_line_type_headers_footers"
     _DCR_CFG_VERBOSE_LINE_TYPE_TOC: ClassVar[str] = "verbose_line_type_toc"
     _DCR_CFG_VERBOSE_PARSER: ClassVar[str] = "verbose_parser"
 
@@ -239,10 +239,10 @@ class Setup:
         self.is_tokenize_2_database = True
         self.is_tokenize_2_jsonfile = False
         self.is_tokenize_footers = False
-        self.is_tokenize_header = False
+        self.is_tokenize_headers = False
         self.is_tokenize_toc = False
         self.is_verbose = True
-        self.is_verbose_line_type_header_footers = False
+        self.is_verbose_line_type_headers_footers = False
         self.is_verbose_line_type_toc = False
         self.json_indent = 4
         self.line_footer_max_distance = 3
@@ -344,10 +344,10 @@ class Setup:
         self._check_config_tokenize_2_database()
         self._check_config_tokenize_2_jsonfile()
         self._check_config_tokenize_footers()
-        self._check_config_tokenize_header()
+        self._check_config_tokenize_headers()
         self._check_config_tokenize_toc()
         self._check_config_verbose()
-        self._check_config_verbose_line_type_header_footers()
+        self._check_config_verbose_line_type_headers_footers()
         self._check_config_verbose_line_type_toc()
         self._check_config_verbose_parser()
 
@@ -1063,13 +1063,13 @@ class Setup:
                 self.is_tokenize_footers = True
 
     # -----------------------------------------------------------------------------
-    # Check the configuration parameter - tokenize_header.
+    # Check the configuration parameter - tokenize_headers.
     # -----------------------------------------------------------------------------
-    def _check_config_tokenize_header(self) -> None:
-        """Check the configuration parameter - tokenize_header."""
-        if Setup._DCR_CFG_TOKENIZE_HEADER in self._config:
-            if str(self._config[Setup._DCR_CFG_TOKENIZE_HEADER]).lower() == "true":
-                self.is_tokenize_header = True
+    def _check_config_tokenize_headers(self) -> None:
+        """Check the configuration parameter - tokenize_headers."""
+        if Setup._DCR_CFG_TOKENIZE_HEADERS in self._config:
+            if str(self._config[Setup._DCR_CFG_TOKENIZE_HEADERS]).lower() == "true":
+                self.is_tokenize_headers = True
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - tokenize_toc.
@@ -1090,13 +1090,13 @@ class Setup:
                 self.is_verbose = False
 
     # -----------------------------------------------------------------------------
-    # Check the configuration parameter - verbose_line_type_header_footers.
+    # Check the configuration parameter - verbose_line_type_headers_footers.
     # -----------------------------------------------------------------------------
-    def _check_config_verbose_line_type_header_footers(self) -> None:
-        """Check the configuration parameter - verbose_line_type_header_footers."""
-        if Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS in self._config:
-            if str(self._config[Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS]).lower() == "true":
-                self.is_verbose_line_type_header_footers = True
+    def _check_config_verbose_line_type_headers_footers(self) -> None:
+        """Check the configuration parameter - verbose_line_type_headers_footers."""
+        if Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS in self._config:
+            if str(self._config[Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS]).lower() == "true":
+                self.is_verbose_line_type_headers_footers = True
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - verbose_line_type_toc.
@@ -1258,10 +1258,10 @@ class Setup:
                     | Setup._DCR_CFG_TOKENIZE_2_DATABASE
                     | Setup._DCR_CFG_TOKENIZE_2_JSONFILE
                     | Setup._DCR_CFG_TOKENIZE_FOOTERS
-                    | Setup._DCR_CFG_TOKENIZE_HEADER
+                    | Setup._DCR_CFG_TOKENIZE_HEADERS
                     | Setup._DCR_CFG_TOKENIZE_TOC
                     | Setup._DCR_CFG_VERBOSE
-                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADER_FOOTERS
+                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS
                     | Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC
                     | Setup._DCR_CFG_VERBOSE_PARSER
                 ):
