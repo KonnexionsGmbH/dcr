@@ -4,16 +4,12 @@ from __future__ import annotations
 import configparser
 import os
 from typing import ClassVar
-from typing import Dict
 
 import cfg.glob
 import utils
 
 
-# pylint: disable=C0302
-# pylint: disable=R0902
-# pylint: disable=R0903
-# pylint: disable=R0915
+# pylint: disable=too-many-instance-attributes
 class Setup:
     """Managing the application configuration parameters.
 
@@ -24,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO: int = 84
+    _CONFIG_PARAM_NO = 100
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -42,9 +38,12 @@ class Setup:
     _DCR_CFG_DIRECTORY_INBOX: ClassVar[str] = "directory_inbox"
     _DCR_CFG_DIRECTORY_INBOX_ACCEPTED: ClassVar[str] = "directory_inbox_accepted"
     _DCR_CFG_DIRECTORY_INBOX_REJECTED: ClassVar[str] = "directory_inbox_rejected"
+    _DCR_CFG_DOC_ID_IN_FILE_NAME: ClassVar[str] = "doc_id_in_file_name"
     _DCR_CFG_FILE: ClassVar[str] = "setup.cfg"
     _DCR_CFG_IGNORE_DUPLICATES: ClassVar[str] = "ignore_duplicates"
     _DCR_CFG_INITIAL_DATABASE_DATA: ClassVar[str] = "initial_database_data"
+    _DCR_CFG_JSON_INDENT: ClassVar[str] = "json_indent"
+    _DCR_CFG_JSON_SORT_KEYS: ClassVar[str] = "json_sort_keys"
     _DCR_CFG_LINE_FOOTER_MAX_DISTANCE: ClassVar[str] = "line_footer_max_distance"
     _DCR_CFG_LINE_FOOTER_MAX_LINES: ClassVar[str] = "line_footer_max_lines"
     _DCR_CFG_LINE_HEADER_MAX_DISTANCE: ClassVar[str] = "line_header_max_distance"
@@ -53,6 +52,14 @@ class Setup:
     _DCR_CFG_SECTION: ClassVar[str] = "dcr"
     _DCR_CFG_SECTION_ENV_TEST: ClassVar[str] = "dcr.env.test"
     _DCR_CFG_SECTION_SPACY: ClassVar[str] = "dcr.spacy"
+
+    _DCR_CFG_SPACY_IGNORE_BRACKET: ClassVar[str] = "spacy_ignore_bracket"
+    _DCR_CFG_SPACY_IGNORE_LEFT_PUNCT: ClassVar[str] = "spacy_ignore_left_punct"
+    _DCR_CFG_SPACY_IGNORE_PUNCT: ClassVar[str] = "spacy_ignore_punct"
+    _DCR_CFG_SPACY_IGNORE_QUOTE: ClassVar[str] = "spacy_ignore_quote"
+    _DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT: ClassVar[str] = "spacy_ignore_right_punct"
+    _DCR_CFG_SPACY_IGNORE_SPACE: ClassVar[str] = "spacy_ignore_space"
+    _DCR_CFG_SPACY_IGNORE_STOP: ClassVar[str] = "spacy_ignore_stop"
 
     _DCR_CFG_SPACY_TKN_ATTR_CLUSTER: ClassVar[str] = "spacy_tkn_attr_cluster"
     _DCR_CFG_SPACY_TKN_ATTR_DEP_: ClassVar[str] = "spacy_tkn_attr_dep_"
@@ -111,15 +118,21 @@ class Setup:
     _DCR_CFG_TESSERACT_TIMEOUT: ClassVar[str] = "tesseract_timeout"
     _DCR_CFG_TETML_PAGE: ClassVar[str] = "tetml_page"
     _DCR_CFG_TETML_WORD: ClassVar[str] = "tetml_word"
+    _DCR_CFG_TOC_LAST_PAGE: ClassVar[str] = "toc_last_page"
+    _DCR_CFG_TOC_MIN_ENTRIES: ClassVar[str] = "toc_min_entries"
     _DCR_CFG_TOKENIZE_2_DATABASE: ClassVar[str] = "tokenize_2_database"
     _DCR_CFG_TOKENIZE_2_JSONFILE: ClassVar[str] = "tokenize_2_jsonfile"
+    _DCR_CFG_TOKENIZE_FOOTERS: ClassVar[str] = "tokenize_footers"
+    _DCR_CFG_TOKENIZE_HEADERS: ClassVar[str] = "tokenize_headers"
+    _DCR_CFG_TOKENIZE_TOC: ClassVar[str] = "tokenize_toc"
     _DCR_CFG_VERBOSE: ClassVar[str] = "verbose"
-    _DCR_CFG_VERBOSE_LINE_TYPE: ClassVar[str] = "verbose_line_type"
+    _DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS: ClassVar[str] = "verbose_line_type_headers_footers"
+    _DCR_CFG_VERBOSE_LINE_TYPE_TOC: ClassVar[str] = "verbose_line_type_toc"
     _DCR_CFG_VERBOSE_PARSER: ClassVar[str] = "verbose_parser"
 
     _DCR_ENVIRONMENT_TYPE: ClassVar[str] = "DCR_ENVIRONMENT_TYPE"
 
-    DCR_VERSION: ClassVar[str] = "0.9.2"
+    DCR_VERSION: ClassVar[str] = "0.9.3"
 
     ENVIRONMENT_TYPE_DEV: ClassVar[str] = "dev"
     ENVIRONMENT_TYPE_PROD: ClassVar[str] = "prod"
@@ -131,101 +144,118 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(self) -> None:  # pylint: disable=too-many-statements
+    # pylint: disable=too-many-statements
+    def __init__(self) -> None:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         self._get_environment_variant()
 
-        self._config: Dict[str, str] = {}
+        self._config: dict[str, str] = {}
 
-        self.db_connection_port: str = ""
-        self.db_connection_prefix: str = "postgresql+psycopg2://"
-        self.db_container_port: str = ""
-        self.db_database: str = ""
-        self.db_database_admin: str = ""
-        self.db_dialect: str = "postgresql"
-        self.db_host: str = "localhost"
-        self.db_password: str = ""
-        self.db_password_admin: str = ""
-        self.db_schema: str = "dcr_schema"
-        self.db_user: str = "postgresql"
-        self.db_user_admin: str = "postgresql"
-        self.directory_inbox: str = utils.get_os_independent_name("data/inbox")
-        self.directory_inbox_accepted: str = utils.get_os_independent_name("data/inbox_accepted")
-        self.directory_inbox_rejected: str = utils.get_os_independent_name("data/inbox_rejected")
-        self.initial_database_data: str = utils.get_os_independent_name("data/initial_database_data.json")
-        self.is_delete_auxiliary_files: bool = True
-        self.is_ignore_duplicates: bool = False
-        self.is_line_footer_preferred: bool = True
-        self.is_spacy_tkn_attr_cluster: bool = False
-        self.is_spacy_tkn_attr_dep_: bool = False
-        self.is_spacy_tkn_attr_doc: bool = False
-        self.is_spacy_tkn_attr_ent_iob_: bool = False
-        self.is_spacy_tkn_attr_ent_kb_id_: bool = False
-        self.is_spacy_tkn_attr_ent_type_: bool = True
-        self.is_spacy_tkn_attr_head: bool = False
-        self.is_spacy_tkn_attr_i: bool = True
-        self.is_spacy_tkn_attr_idx: bool = False
-        self.is_spacy_tkn_attr_is_alpha: bool = False
-        self.is_spacy_tkn_attr_is_ascii: bool = False
-        self.is_spacy_tkn_attr_is_bracket: bool = False
-        self.is_spacy_tkn_attr_is_currency: bool = True
-        self.is_spacy_tkn_attr_is_digit: bool = True
-        self.is_spacy_tkn_attr_is_left_punct: bool = False
-        self.is_spacy_tkn_attr_is_lower: bool = False
-        self.is_spacy_tkn_attr_is_oov: bool = True
-        self.is_spacy_tkn_attr_is_punct: bool = True
-        self.is_spacy_tkn_attr_is_quote: bool = False
-        self.is_spacy_tkn_attr_is_right_punct: bool = False
-        self.is_spacy_tkn_attr_is_sent_end: bool = False
-        self.is_spacy_tkn_attr_is_sent_start: bool = False
-        self.is_spacy_tkn_attr_is_space: bool = False
-        self.is_spacy_tkn_attr_is_stop: bool = True
-        self.is_spacy_tkn_attr_is_title: bool = True
-        self.is_spacy_tkn_attr_is_upper: bool = False
-        self.is_spacy_tkn_attr_lang_: bool = False
-        self.is_spacy_tkn_attr_left_edge: bool = False
-        self.is_spacy_tkn_attr_lemma_: bool = True
-        self.is_spacy_tkn_attr_lex: bool = False
-        self.is_spacy_tkn_attr_lex_id: bool = False
-        self.is_spacy_tkn_attr_like_email: bool = True
-        self.is_spacy_tkn_attr_like_num: bool = True
-        self.is_spacy_tkn_attr_like_url: bool = True
-        self.is_spacy_tkn_attr_lower_: bool = False
-        self.is_spacy_tkn_attr_morph: bool = False
-        self.is_spacy_tkn_attr_norm_: bool = True
-        self.is_spacy_tkn_attr_orth_: bool = False
-        self.is_spacy_tkn_attr_pos_: bool = True
-        self.is_spacy_tkn_attr_prefix_: bool = False
-        self.is_spacy_tkn_attr_prob: bool = False
-        self.is_spacy_tkn_attr_rank: bool = False
-        self.is_spacy_tkn_attr_right_edge: bool = False
-        self.is_spacy_tkn_attr_sent: bool = False
-        self.is_spacy_tkn_attr_sentiment: bool = False
-        self.is_spacy_tkn_attr_shape_: bool = False
-        self.is_spacy_tkn_attr_suffix_: bool = False
-        self.is_spacy_tkn_attr_tag_: bool = True
-        self.is_spacy_tkn_attr_tensor: bool = False
-        self.is_spacy_tkn_attr_text: bool = True
-        self.is_spacy_tkn_attr_text_with_ws: bool = False
-        self.is_spacy_tkn_attr_vocab: bool = False
-        self.is_spacy_tkn_attr_whitespace_: bool = True
-        self.is_tetml_page: bool = False
-        self.is_tetml_word: bool = False
-        self.is_tokenize_2_database: bool = True
-        self.is_tokenize_2_jsonfile: bool = False
-        self.is_verbose: bool = True
-        self.is_verbose_line_type: bool = False
-        self.line_footer_max_distance: int = 3
-        self.line_footer_max_lines: int = 3
-        self.line_header_max_distance: int = 3
-        self.line_header_max_lines: int = 3
-        self.pdf2image_type: str = Setup.PDF2IMAGE_TYPE_JPEG
-        self.tesseract_timeout: int = 10
-        self.verbose_parser: str = "none"
+        self.db_connection_port = ""
+        self.db_connection_prefix = "postgresql+psycopg2://"
+        self.db_container_port = ""
+        self.db_database = ""
+        self.db_database_admin = ""
+        self.db_dialect = "postgresql"
+        self.db_host = "localhost"
+        self.db_password = ""  # nosec
+        self.db_password_admin = ""  # nosec
+        self.db_schema = "dcr_schema"
+        self.db_user = "dcr_user"
+        self.db_user_admin = "dcr_user_admin"
+        self.directory_inbox = utils.get_os_independent_name("data/inbox")
+        self.directory_inbox_accepted = utils.get_os_independent_name("data/inbox_accepted")
+        self.directory_inbox_rejected = utils.get_os_independent_name("data/inbox_rejected")
+        self.doc_id_in_file_name = "none"
+        self.initial_database_data = utils.get_os_independent_name("data/initial_database_data.json")
+        self.is_delete_auxiliary_files = True
+        self.is_ignore_duplicates = False
+        self.is_json_sort_keys = False
+        self.is_line_footer_preferred = True
+        self.is_spacy_ignore_bracket = True
+        self.is_spacy_ignore_left_punct = True
+        self.is_spacy_ignore_punct = True
+        self.is_spacy_ignore_quote = True
+        self.is_spacy_ignore_right_punct = True
+        self.is_spacy_ignore_space = True
+        self.is_spacy_ignore_stop = True
+        self.is_spacy_tkn_attr_cluster = False
+        self.is_spacy_tkn_attr_dep_ = False
+        self.is_spacy_tkn_attr_doc = False
+        self.is_spacy_tkn_attr_ent_iob_ = False
+        self.is_spacy_tkn_attr_ent_kb_id_ = False
+        self.is_spacy_tkn_attr_ent_type_ = True
+        self.is_spacy_tkn_attr_head = False
+        self.is_spacy_tkn_attr_i = True
+        self.is_spacy_tkn_attr_idx = False
+        self.is_spacy_tkn_attr_is_alpha = False
+        self.is_spacy_tkn_attr_is_ascii = False
+        self.is_spacy_tkn_attr_is_bracket = False
+        self.is_spacy_tkn_attr_is_currency = True
+        self.is_spacy_tkn_attr_is_digit = True
+        self.is_spacy_tkn_attr_is_left_punct = False
+        self.is_spacy_tkn_attr_is_lower = False
+        self.is_spacy_tkn_attr_is_oov = True
+        self.is_spacy_tkn_attr_is_punct = True
+        self.is_spacy_tkn_attr_is_quote = False
+        self.is_spacy_tkn_attr_is_right_punct = False
+        self.is_spacy_tkn_attr_is_sent_end = False
+        self.is_spacy_tkn_attr_is_sent_start = False
+        self.is_spacy_tkn_attr_is_space = False
+        self.is_spacy_tkn_attr_is_stop = True
+        self.is_spacy_tkn_attr_is_title = True
+        self.is_spacy_tkn_attr_is_upper = False
+        self.is_spacy_tkn_attr_lang_ = False
+        self.is_spacy_tkn_attr_left_edge = False
+        self.is_spacy_tkn_attr_lemma_ = True
+        self.is_spacy_tkn_attr_lex = False
+        self.is_spacy_tkn_attr_lex_id = False
+        self.is_spacy_tkn_attr_like_email = True
+        self.is_spacy_tkn_attr_like_num = True
+        self.is_spacy_tkn_attr_like_url = True
+        self.is_spacy_tkn_attr_lower_ = False
+        self.is_spacy_tkn_attr_morph = False
+        self.is_spacy_tkn_attr_norm_ = True
+        self.is_spacy_tkn_attr_orth_ = False
+        self.is_spacy_tkn_attr_pos_ = True
+        self.is_spacy_tkn_attr_prefix_ = False
+        self.is_spacy_tkn_attr_prob = False
+        self.is_spacy_tkn_attr_rank = False
+        self.is_spacy_tkn_attr_right_edge = False
+        self.is_spacy_tkn_attr_sent = False
+        self.is_spacy_tkn_attr_sentiment = False
+        self.is_spacy_tkn_attr_shape_ = False
+        self.is_spacy_tkn_attr_suffix_ = False
+        self.is_spacy_tkn_attr_tag_ = True
+        self.is_spacy_tkn_attr_tensor = False
+        self.is_spacy_tkn_attr_text = True
+        self.is_spacy_tkn_attr_text_with_ws = False
+        self.is_spacy_tkn_attr_vocab = False
+        self.is_spacy_tkn_attr_whitespace_ = True
+        self.is_tetml_page = False
+        self.is_tetml_word = False
+        self.is_tokenize_2_database = True
+        self.is_tokenize_2_jsonfile = False
+        self.is_tokenize_footers = False
+        self.is_tokenize_headers = False
+        self.is_tokenize_toc = False
+        self.is_verbose = True
+        self.is_verbose_line_type_headers_footers = False
+        self.is_verbose_line_type_toc = False
+        self.json_indent = 4
+        self.line_footer_max_distance = 3
+        self.line_footer_max_lines = 3
+        self.line_header_max_distance = 3
+        self.line_header_max_lines = 3
+        self.pdf2image_type = Setup.PDF2IMAGE_TYPE_JPEG
+        self.tesseract_timeout = 10
+        self.toc_last_page = 5
+        self.toc_min_entries = 5
+        self.verbose_parser = "none"
 
-        self._load_config()  # pylint: disable=E1121
+        self._load_config()
 
         utils.progress_msg_core("The configuration parameters are checked and loaded")
 
@@ -242,8 +272,17 @@ class Setup:
         self._check_config_directory_inbox()
         self._check_config_directory_inbox_accepted()
         self._check_config_directory_inbox_rejected()
+        self._check_config_doc_id_in_file_name()
         self._check_config_ignore_duplicates()
+        self._check_config_json_sort_keys()
         self._check_config_pdf2image_type()
+        self._check_config_spacy_ignore_bracket()
+        self._check_config_spacy_ignore_left_punct()
+        self._check_config_spacy_ignore_punct()
+        self._check_config_spacy_ignore_quote()
+        self._check_config_spacy_ignore_right_punct()
+        self._check_config_spacy_ignore_space()
+        self._check_config_spacy_ignore_stop()
         self._check_config_spacy_tkn_attr_cluster()
         self._check_config_spacy_tkn_attr_dep_()
         self._check_config_spacy_tkn_attr_doc()
@@ -300,10 +339,16 @@ class Setup:
         self._check_config_tesseract_timeout()
         self._check_config_tetml_page()
         self._check_config_tetml_word()
+        self._check_config_toc_last_page()
+        self._check_config_toc_min_entries()
         self._check_config_tokenize_2_database()
         self._check_config_tokenize_2_jsonfile()
+        self._check_config_tokenize_footers()
+        self._check_config_tokenize_headers()
+        self._check_config_tokenize_toc()
         self._check_config_verbose()
-        self._check_config_verbose_line_type()
+        self._check_config_verbose_line_type_headers_footers()
+        self._check_config_verbose_line_type_toc()
         self._check_config_verbose_parser()
 
     # -----------------------------------------------------------------------------
@@ -360,6 +405,15 @@ class Setup:
             utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'")
 
     # -----------------------------------------------------------------------------
+    # Check the configuration parameter - doc_id_in_file_name.
+    # -----------------------------------------------------------------------------
+    def _check_config_doc_id_in_file_name(self) -> None:
+        """Check the configuration parameter - doc_id_in_file_name."""
+        if Setup._DCR_CFG_DOC_ID_IN_FILE_NAME in self._config:
+            if str(self._config[Setup._DCR_CFG_DOC_ID_IN_FILE_NAME]).lower() in {"after", "before"}:
+                self.doc_id_in_file_name = str(self._config[Setup._DCR_CFG_DOC_ID_IN_FILE_NAME]).lower()
+
+    # -----------------------------------------------------------------------------
     # Check the configuration parameter - ignore_duplicates.
     # -----------------------------------------------------------------------------
     def _check_config_ignore_duplicates(self) -> None:
@@ -367,6 +421,15 @@ class Setup:
         if Setup._DCR_CFG_IGNORE_DUPLICATES in self._config:
             if str(self._config[Setup._DCR_CFG_IGNORE_DUPLICATES]).lower() == "true":
                 self.is_ignore_duplicates = True
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - json_sort_keys.
+    # -----------------------------------------------------------------------------
+    def _check_config_json_sort_keys(self) -> None:
+        """Check the configuration parameter - json_sort_keys."""
+        if Setup._DCR_CFG_JSON_SORT_KEYS in self._config:
+            if str(self._config[Setup._DCR_CFG_JSON_SORT_KEYS]).lower() == "true":
+                self.is_json_sort_keys = True
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - pdf2image_type.
@@ -382,6 +445,69 @@ class Setup:
                 utils.terminate_fatal_setup(
                     f"Invalid configuration parameter value for parameter " f"'pdf2image_type': '{self.pdf2image_type}'"
                 )
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - ignore_bracket.
+    # -----------------------------------------------------------------------------
+    def _check_config_spacy_ignore_bracket(self) -> None:
+        """Check the configuration parameter - ignore_bracket."""
+        if Setup._DCR_CFG_SPACY_IGNORE_BRACKET in self._config:
+            if str(self._config[Setup._DCR_CFG_SPACY_IGNORE_BRACKET]).lower() == "false":
+                self.is_spacy_ignore_bracket = False
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - ignore_left_punct.
+    # -----------------------------------------------------------------------------
+    def _check_config_spacy_ignore_left_punct(self) -> None:
+        """Check the configuration parameter - ignore_left_punct."""
+        if Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT in self._config:
+            if str(self._config[Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT]).lower() == "false":
+                self.is_spacy_ignore_left_punct = False
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - ignore_punct.
+    # -----------------------------------------------------------------------------
+    def _check_config_spacy_ignore_punct(self) -> None:
+        """Check the configuration parameter - ignore_punct."""
+        if Setup._DCR_CFG_SPACY_IGNORE_PUNCT in self._config:
+            if str(self._config[Setup._DCR_CFG_SPACY_IGNORE_PUNCT]).lower() == "false":
+                self.is_spacy_ignore_punct = False
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - ignore_quote.
+    # -----------------------------------------------------------------------------
+    def _check_config_spacy_ignore_quote(self) -> None:
+        """Check the configuration parameter - ignore_quote."""
+        if Setup._DCR_CFG_SPACY_IGNORE_QUOTE in self._config:
+            if str(self._config[Setup._DCR_CFG_SPACY_IGNORE_QUOTE]).lower() == "false":
+                self.is_spacy_ignore_quote = False
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - ignore_right_punct.
+    # -----------------------------------------------------------------------------
+    def _check_config_spacy_ignore_right_punct(self) -> None:
+        """Check the configuration parameter - ignore_right_punct."""
+        if Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT in self._config:
+            if str(self._config[Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT]).lower() == "false":
+                self.is_spacy_ignore_right_punct = False
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - ignore_space.
+    # -----------------------------------------------------------------------------
+    def _check_config_spacy_ignore_space(self) -> None:
+        """Check the configuration parameter - ignore_space."""
+        if Setup._DCR_CFG_SPACY_IGNORE_SPACE in self._config:
+            if str(self._config[Setup._DCR_CFG_SPACY_IGNORE_SPACE]).lower() == "false":
+                self.is_spacy_ignore_space = False
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - ignore_stop.
+    # -----------------------------------------------------------------------------
+    def _check_config_spacy_ignore_stop(self) -> None:
+        """Check the configuration parameter - ignore_stop."""
+        if Setup._DCR_CFG_SPACY_IGNORE_STOP in self._config:
+            if str(self._config[Setup._DCR_CFG_SPACY_IGNORE_STOP]).lower() == "false":
+                self.is_spacy_ignore_stop = False
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - spacy_tkn_attr_cluster.
@@ -887,6 +1013,22 @@ class Setup:
                 self.is_tetml_word = True
 
     # -----------------------------------------------------------------------------
+    # Check the configuration parameter - toc_last_page.
+    # -----------------------------------------------------------------------------
+    def _check_config_toc_last_page(self) -> None:
+        """Check the configuration parameter - toc_last_page."""
+        if Setup._DCR_CFG_TOC_LAST_PAGE in self._config:
+            self.toc_last_page = int(str(self._config[Setup._DCR_CFG_TOC_LAST_PAGE]))
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - toc_min_entries.
+    # -----------------------------------------------------------------------------
+    def _check_config_toc_min_entries(self) -> None:
+        """Check the configuration parameter - toc_min_entries."""
+        if Setup._DCR_CFG_TOC_MIN_ENTRIES in self._config:
+            self.toc_min_entries = int(str(self._config[Setup._DCR_CFG_TOC_MIN_ENTRIES]))
+
+    # -----------------------------------------------------------------------------
     # Check the configuration parameter - tokenize_2_database.
     # -----------------------------------------------------------------------------
     def _check_config_tokenize_2_database(self) -> None:
@@ -912,6 +1054,33 @@ class Setup:
                 )
 
     # -----------------------------------------------------------------------------
+    # Check the configuration parameter - tokenize_footers.
+    # -----------------------------------------------------------------------------
+    def _check_config_tokenize_footers(self) -> None:
+        """Check the configuration parameter - tokenize_footers."""
+        if Setup._DCR_CFG_TOKENIZE_FOOTERS in self._config:
+            if str(self._config[Setup._DCR_CFG_TOKENIZE_FOOTERS]).lower() == "true":
+                self.is_tokenize_footers = True
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - tokenize_headers.
+    # -----------------------------------------------------------------------------
+    def _check_config_tokenize_headers(self) -> None:
+        """Check the configuration parameter - tokenize_headers."""
+        if Setup._DCR_CFG_TOKENIZE_HEADERS in self._config:
+            if str(self._config[Setup._DCR_CFG_TOKENIZE_HEADERS]).lower() == "true":
+                self.is_tokenize_headers = True
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - tokenize_toc.
+    # -----------------------------------------------------------------------------
+    def _check_config_tokenize_toc(self) -> None:
+        """Check the configuration parameter - tokenize_toc."""
+        if Setup._DCR_CFG_TOKENIZE_TOC in self._config:
+            if str(self._config[Setup._DCR_CFG_TOKENIZE_TOC]).lower() == "true":
+                self.is_tokenize_toc = True
+
+    # -----------------------------------------------------------------------------
     # Check the configuration parameter - verbose.
     # -----------------------------------------------------------------------------
     def _check_config_verbose(self) -> None:
@@ -921,13 +1090,22 @@ class Setup:
                 self.is_verbose = False
 
     # -----------------------------------------------------------------------------
-    # Check the configuration parameter - verbose_line_type.
+    # Check the configuration parameter - verbose_line_type_headers_footers.
     # -----------------------------------------------------------------------------
-    def _check_config_verbose_line_type(self) -> None:
-        """Check the configuration parameter - verbose_line_type."""
-        if Setup._DCR_CFG_VERBOSE_LINE_TYPE in self._config:
-            if str(self._config[Setup._DCR_CFG_VERBOSE_LINE_TYPE]).lower() == "true":
-                self.is_verbose_line_type = True
+    def _check_config_verbose_line_type_headers_footers(self) -> None:
+        """Check the configuration parameter - verbose_line_type_headers_footers."""
+        if Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS in self._config:
+            if str(self._config[Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS]).lower() == "true":
+                self.is_verbose_line_type_headers_footers = True
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - verbose_line_type_toc.
+    # -----------------------------------------------------------------------------
+    def _check_config_verbose_line_type_toc(self) -> None:
+        """Check the configuration parameter - verbose_line_type_toc."""
+        if Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC in self._config:
+            if str(self._config[Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC]).lower() == "true":
+                self.is_verbose_line_type_toc = True
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - verbose_parser.
@@ -935,7 +1113,7 @@ class Setup:
     def _check_config_verbose_parser(self) -> None:
         """Check the configuration parameter - verbose_parser."""
         if Setup._DCR_CFG_VERBOSE_PARSER in self._config:
-            if str(self._config[Setup._DCR_CFG_VERBOSE_PARSER]).lower() in ["all", "text"]:
+            if str(self._config[Setup._DCR_CFG_VERBOSE_PARSER]).lower() in {"all", "text"}:
                 self.verbose_parser = str(self._config[Setup._DCR_CFG_VERBOSE_PARSER]).lower()
 
     # -----------------------------------------------------------------------------
@@ -1008,8 +1186,17 @@ class Setup:
                     | Setup._DCR_CFG_DIRECTORY_INBOX
                     | Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
                     | Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
+                    | Setup._DCR_CFG_DOC_ID_IN_FILE_NAME
                     | Setup._DCR_CFG_IGNORE_DUPLICATES
+                    | Setup._DCR_CFG_JSON_SORT_KEYS
                     | Setup._DCR_CFG_PDF2IMAGE_TYPE
+                    | Setup._DCR_CFG_SPACY_IGNORE_BRACKET
+                    | Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT
+                    | Setup._DCR_CFG_SPACY_IGNORE_PUNCT
+                    | Setup._DCR_CFG_SPACY_IGNORE_QUOTE
+                    | Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT
+                    | Setup._DCR_CFG_SPACY_IGNORE_SPACE
+                    | Setup._DCR_CFG_SPACY_IGNORE_STOP
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_
                     | Setup._DCR_CFG_SPACY_TKN_ATTR_DOC
@@ -1066,15 +1253,23 @@ class Setup:
                     | Setup._DCR_CFG_TESSERACT_TIMEOUT
                     | Setup._DCR_CFG_TETML_PAGE
                     | Setup._DCR_CFG_TETML_WORD
+                    | Setup._DCR_CFG_TOC_LAST_PAGE
+                    | Setup._DCR_CFG_TOC_MIN_ENTRIES
                     | Setup._DCR_CFG_TOKENIZE_2_DATABASE
                     | Setup._DCR_CFG_TOKENIZE_2_JSONFILE
+                    | Setup._DCR_CFG_TOKENIZE_FOOTERS
+                    | Setup._DCR_CFG_TOKENIZE_HEADERS
+                    | Setup._DCR_CFG_TOKENIZE_TOC
                     | Setup._DCR_CFG_VERBOSE
-                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE
+                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS
+                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC
                     | Setup._DCR_CFG_VERBOSE_PARSER
                 ):
                     continue
                 case Setup._DCR_CFG_INITIAL_DATABASE_DATA:
                     self.initial_database_data = utils.get_os_independent_name(item)
+                case Setup._DCR_CFG_JSON_INDENT:
+                    self.json_indent = int(item)
                 case Setup._DCR_CFG_LINE_FOOTER_MAX_DISTANCE:
                     self.line_footer_max_distance = int(item)
                 case Setup._DCR_CFG_LINE_FOOTER_MAX_LINES:

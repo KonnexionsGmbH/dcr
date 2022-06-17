@@ -7,7 +7,6 @@ import logging
 import logging.config
 import sys
 import time
-from typing import List
 
 import cfg.cls_setup
 import cfg.glob
@@ -29,11 +28,11 @@ import yaml
 # -----------------------------------------------------------------------------
 # Class variables.
 # -----------------------------------------------------------------------------
-DCR_ARGV_0: str = "src/dcr/dcr.py"
+DCR_ARGV_0 = "src/dcr/dcr.py"
 
-LOCALE: str = "en_US.UTF-8"
+LOCALE = "en_US.UTF-8"
 
-LOGGER_CFG_FILE: str = "logging_cfg.yaml"
+LOGGER_CFG_FILE = "logging_cfg.yaml"
 
 
 # -----------------------------------------------------------------------------
@@ -53,7 +52,7 @@ def check_db_up_to_date() -> None:
             "The database table 'version' does not yet exist.",
         )
 
-    current_version: str = db.cls_version.Version.select_version_version_unique()
+    current_version = db.cls_version.Version.select_version_version_unique()
 
     if cfg.cls_setup.Setup.DCR_VERSION != current_version:
         utils.terminate_fatal(
@@ -69,7 +68,7 @@ def check_db_up_to_date() -> None:
 # -----------------------------------------------------------------------------
 # Load the command line arguments into memory.
 # -----------------------------------------------------------------------------
-def get_args(argv: List[str]) -> dict[str, bool]:
+def get_args(argv: list[str]) -> dict[str, bool]:
     """Load the command line arguments.
 
     The command line arguments define the process steps to be executed.
@@ -102,7 +101,7 @@ def get_args(argv: List[str]) -> dict[str, bool]:
         7. tkn
 
     Args:
-        argv (List[str]): Command line arguments.
+        argv (list[str]): Command line arguments.
 
     Returns:
         dict[str, bool]: The processing steps based on CLI arguments.
@@ -179,13 +178,13 @@ def initialise_logger() -> None:
 # -----------------------------------------------------------------------------
 # Initialising the logging functionality.
 # -----------------------------------------------------------------------------
-def main(argv: List[str]) -> None:
+def main(argv: list[str]) -> None:
     """Entry point.
 
     The processes to be carried out are selected via command line arguments.
 
     Args:
-        argv (List[str]): Command line arguments.
+        argv (list[str]): Command line arguments.
     """
     # Initialise the logging functionality.
     initialise_logger()

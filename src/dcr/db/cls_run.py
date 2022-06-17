@@ -2,8 +2,6 @@
 from __future__ import annotations
 
 from typing import ClassVar
-from typing import Tuple
-from typing import Union
 
 import cfg.glob
 import db.cls_db_core
@@ -16,8 +14,8 @@ from sqlalchemy import Integer
 from sqlalchemy import String
 
 
-# pylint: disable=R0801
-# pylint: disable=R0902
+# pylint: disable=duplicate-code
+# pylint: disable=too-many-instance-attributes
 class Run:
     """Managing the database table run.
 
@@ -64,7 +62,7 @@ class Run:
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         action_code: str,
         _row_id: int = 0,
@@ -107,30 +105,30 @@ class Run:
         if Run.ID_RUN_UMBRELLA == 0:
             Run.ID_RUN_UMBRELLA = Run.get_id_latest() + 1
 
-        self.run_action_code: str = action_code
-        self.run_action_text: str = action_text
-        self.run_id: int = _row_id
+        self.run_action_code = action_code
+        self.run_action_text = action_text
+        self.run_id = _row_id
 
-        self.run_id_run: int = id_run
+        self.run_id_run = id_run
 
         if self.run_id_run == 0:
             self.run_id_run = Run.ID_RUN_UMBRELLA
 
-        self.run_status: str = status
-        self.run_total_erroneous: int = total_erroneous
-        self.run_total_processed_ok: int = total_processed_ok
-        self.run_total_processed_to_be: int = total_processed_to_be
+        self.run_status = status
+        self.run_total_erroneous = total_erroneous
+        self.run_total_processed_ok = total_processed_ok
+        self.run_total_processed_to_be = total_processed_to_be
 
         if self.run_id == 0:
             self.persist_2_db()
 
-        self.total_generated: int = 0
-        self.total_processed_pandoc: int = 0
-        self.total_processed_pdf2image: int = 0
-        self.total_processed_pdflib: int = 0
-        self.total_processed_tesseract: int = 0
-        self.total_status_error: int = 0
-        self.total_status_ready: int = 0
+        self.total_generated = 0
+        self.total_processed_pandoc = 0
+        self.total_processed_pdf2image = 0
+        self.total_processed_pdflib = 0
+        self.total_processed_tesseract = 0
+        self.total_status_error = 0
+        self.total_status_ready = 0
 
         self._exist = True
 
@@ -317,7 +315,7 @@ class Run:
         Returns:
             str:    Action text.
         """
-        action_text: str = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+        action_text = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
 
         match action_code:
             case Run.ACTION_CODE_INBOX:
@@ -356,28 +354,19 @@ class Run:
     # -----------------------------------------------------------------------------
     def get_columns_in_tuple(
         self,
-    ) -> Tuple[
-        Union[int, Integer],
-        str,
-        str,
-        Union[int, Integer],
-        Union[str, String],
-        Union[int, Integer],
-        Union[int, Integer],
-        Union[int, Integer],
-    ]:
+    ) -> tuple[int | Integer, str, str, int | Integer, str | String, int | Integer, int | Integer, int | Integer]:
         """Get the database columns in a tuple.
 
             Returns:
-                Tuple[
-            Union[int, Integer],
+                tuple[
+            int | Integer,
             str,
             str,
-            Union[int, Integer],
-            Union[str, String],
-            Union[int, Integer],
-            Union[int, Integer],
-            Union[int, Integer],
+            int | Integer,
+            str | String,
+            int | Integer,
+            int | Integer,
+            int | Integer,
         ]:          Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)

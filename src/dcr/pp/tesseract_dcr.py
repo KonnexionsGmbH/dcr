@@ -14,12 +14,12 @@ import utils
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_41_901: str = (
+ERROR_41_901 = (
     "41.901 Issue (ocr): Converting the file '{full_name_curr}' with Tesseract OCR failed - "
     + "error type: '{error_type}' - error: '{error}'."
 )
-ERROR_41_903: str = "41.903 Issue (ocr): The target file '{full_name}' already exists."
-ERROR_41_904: str = "41.904 Issue (pypdf2): The target file '{full_name}' already exists."
+ERROR_41_903 = "41.903 Issue (ocr): The target file '{full_name}' already exists."
+ERROR_41_904 = "41.904 Issue (pypdf2): The target file '{full_name}' already exists."
 
 
 # -----------------------------------------------------------------------------

@@ -30,7 +30,6 @@ if [ -z "$1" ]; then
     echo "db_c  - Create the database."
     echo "db_u  - Upgrade the database."
     echo "------------------------------------------------------------------------------"
-    echo "m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem."
     echo "m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules."
     echo "------------------------------------------------------------------------------"
     read -rp "Enter the desired action [default: ${DCR_CHOICE_ACTION_DEFAULT}] " DCR_CHOICE_ACTION
@@ -68,12 +67,6 @@ echo "==========================================================================
 case "${DCR_CHOICE_ACTION}" in
   aui)
     if ! ( pipenv run python src/dcr/admin.py ); then
-        exit 255
-    fi
-    ;;
-  m_d)
-    # Development install packages
-    if ! ( make pipenv-dev ); then
         exit 255
     fi
     ;;
@@ -115,7 +108,7 @@ case "${DCR_CHOICE_ACTION}" in
     fi
     ;;
   *)
-    echo "Usage: ./run_dcr_prod.sh all | db_c | db_u | m_d | m_p | n_i_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
+    echo "Usage: ./run_dcr_prod.sh all | db_c | db_u | m_p | n_i_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
     ;;
 esac
 

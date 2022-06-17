@@ -15,11 +15,11 @@ from pdf2image.exceptions import PDFPageCountError
 # -----------------------------------------------------------------------------
 # Class variables.
 # -----------------------------------------------------------------------------
-ERROR_21_901: str = (
+ERROR_21_901 = (
     "21.901 Issue (p_2_i): Processing file '{full_name_curr}' with pdf2image failed - "
     + "error type: '{error_type}' - error: '{error}'."
 )
-ERROR_21_903: str = "21.903 Issue (p_2_i): The target file '{full_name}' already exists."
+ERROR_21_903 = "21.903 Issue (p_2_i): The target file '{full_name}' already exists."
 
 
 # -----------------------------------------------------------------------------
@@ -76,7 +76,7 @@ def convert_pdf_2_image_file() -> None:
 
         cfg.glob.action_curr.action_no_children = 0
 
-        is_no_error: bool = True
+        is_no_error = True
 
         # Store the image pages
         for img in images:

@@ -13,7 +13,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -35,8 +34,8 @@ def test_run_action_pdf_2_image_missing_input_file(fxtr_setup_empty_db_and_inbox
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_pdf_2_image_missing_input_file <=========")
 
-    stem_name_1: str = "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib"
-    file_ext_1: str = "pdf"
+    stem_name_1 = "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib"
+    file_ext_1 = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
@@ -79,8 +78,8 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_pdf_2_image_normal_jpeg_duplicate <=========")
 
-    stem_name_1: str = "pdf_scanned_ok"
-    file_ext_1: str = "pdf"
+    stem_name_1 = "pdf_scanned_ok"
+    file_ext_1 = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
@@ -89,8 +88,8 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
         target_path=cfg.glob.setup.directory_inbox,
     )
 
-    stem_name_2: str = "pdf_scanned_ok_1_1"
-    file_ext_2: str = "jpeg"
+    stem_name_2 = "pdf_scanned_ok_1_1"
+    file_ext_2 = "jpeg"
 
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 
@@ -127,8 +126,8 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
-    stem_name: str = "pdf_scanned_ok"
-    file_ext: str = "pdf"
+    stem_name = "pdf_scanned_ok"
+    file_ext = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[

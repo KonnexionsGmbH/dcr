@@ -10,8 +10,6 @@ import configparser
 import os
 import pathlib
 import shutil
-from typing import List
-from typing import Tuple
 
 import cfg.cls_setup
 import cfg.glob
@@ -31,12 +29,10 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=C0302
-# pylint: disable=W0212
 CONFIG_PARSER: configparser.ConfigParser = configparser.ConfigParser()
 
-FILE_NAME_SETUP_CFG: str = "setup.cfg"
-FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
+FILE_NAME_SETUP_CFG = "setup.cfg"
+FILE_NAME_SETUP_CFG_BACKUP = "setup.cfg_backup"
 
 
 # -----------------------------------------------------------------------------
@@ -46,18 +42,18 @@ FILE_NAME_SETUP_CFG_BACKUP: str = "setup.cfg_backup"
 @pytest.helpers.register
 def backup_config_params(
     config_section: str,
-    config_params: List[Tuple[str, str]],
-) -> List[Tuple[str, str]]:
+    config_params: list[tuple[str, str]],
+) -> list[tuple[str, str]]:
     """Backup and modify configuration parameter values.
 
     Args:
         config_section (str): Configuration section.
-        config_params (List[Tuple[str, str]]): Configuration parameter modifications.
+        config_params (list[tuple[str, str]]): Configuration parameter modifications.
 
     Returns:
-        List[Tuple[str, str]]: Original configuration parameter.
+        list[tuple[str, str]]: Original configuration parameter.
     """
-    config_params_backup: List[Tuple[str, str]] = []
+    config_params_backup: list[tuple[str, str]] = []
 
     CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
@@ -85,12 +81,12 @@ def backup_setup_cfg() -> None:
 # Check the content of database table action.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_action(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_action(param: tuple[int, tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table action.
 
     Args:
-        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, str, str, int, str, int, int, int]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -109,12 +105,12 @@ def check_dbt_action(param: Tuple[int, Tuple[int, str, str, int, str, int, int, 
 # Check the content of database table document.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_document(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_document(param: tuple[int, tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table document.
 
     Args:
-        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, str, str, int, str, int, int, int]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -133,12 +129,12 @@ def check_dbt_document(param: Tuple[int, Tuple[int, str, str, int, str, int, int
 # Check the content of database table language.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_language(param: Tuple[int, Tuple[int, bool, str, str, str, str, str, str, str]]) -> None:
+def check_dbt_language(param: tuple[int, tuple[int, bool, str, str, str, str, str, str, str]]) -> None:
     """Check the content of database table language.
 
     Args:
-        param (Tuple[int, Tuple[int, bool, str, str, str, str, str, str, str]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, bool, str, str, str, str, str, str, str]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -157,12 +153,12 @@ def check_dbt_language(param: Tuple[int, Tuple[int, bool, str, str, str, str, st
 # Check the content of database table run.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_run(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_run(param: tuple[int, tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table run.
 
     Args:
-        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, str, str, int, str, int, int, int]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -181,12 +177,12 @@ def check_dbt_run(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int
 # Check the content of database table token.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_token(param: Tuple[int, Tuple[int, str, str, int, str, int, int, int]]) -> None:
+def check_dbt_token(param: tuple[int, tuple[int, str, str, int, str, int, int, int]]) -> None:
     """Check the content of database table token.
 
     Args:
-        param (Tuple[int, Tuple[int, str, str, int, str, int, int, int]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, str, str, int, str, int, int, int]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -205,12 +201,12 @@ def check_dbt_token(param: Tuple[int, Tuple[int, str, str, int, str, int, int, i
 # Check the content of database table version.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_dbt_version(param: Tuple[int, Tuple[int, str]]) -> None:
+def check_dbt_version(param: tuple[int, tuple[int, str]]) -> None:
     """Check the content of database table version.
 
     Args:
-        param (Tuple[int, Tuple[int, str]]):
-                Tuples with the contents of the table columns.
+        param (tuple[int, tuple[int, str]]):
+                tuples with the contents of the table columns.
     """
     (id_row, expected_values) = param
 
@@ -230,13 +226,13 @@ def check_dbt_version(param: Tuple[int, Tuple[int, str]]) -> None:
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def copy_directories_4_pytest_2_dir(
-    source_directories: List[str],
+    source_directories: list[str],
     target_dir: str,
 ) -> None:
     """Copy directories from the sample test file directory.
 
     Args:
-        source_directories: List[str]: Source directory names.
+        source_directories: list[str]: Source directory names.
         target_dir: str: Target directory.
     """
     assert os.path.isdir(utils.get_os_independent_name(get_test_inbox_directory_name())), (
@@ -257,16 +253,16 @@ def copy_directories_4_pytest_2_dir(
 # Copy files from the sample test file directory.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def copy_files_4_pytest(file_list: List[Tuple[Tuple[str, str | None], Tuple[pathlib.Path, List[str], str | None]]]) -> None:
+def copy_files_4_pytest(file_list: list[tuple[tuple[str, str | None], tuple[pathlib.Path, list[str], str | None]]]) -> None:
     """Copy files from the sample test file directory.
 
     Args:
-        file_list (List[
-            Tuple[
-                Tuple[str, str | None],
-                Tuple[pathlib.Path, List[str], str | None]
+        file_list (list[
+            tuple[
+                tuple[str, str | None],
+                tuple[pathlib.Path, list[str], str | None]
             ]
-        ]): List of files to be copied.
+        ]): list of files to be copied.
     """
     assert os.path.isdir(utils.get_os_independent_name(get_test_inbox_directory_name())), (
         "source directory '" + get_test_inbox_directory_name() + "' missing"
@@ -293,13 +289,13 @@ def copy_files_4_pytest(file_list: List[Tuple[Tuple[str, str | None], Tuple[path
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def copy_files_4_pytest_2_dir(
-    source_files: List[Tuple[str, str | None]],
+    source_files: list[tuple[str, str | None]],
     target_path: pathlib.Path,
 ) -> None:
     """Copy files from the sample test file directory.
 
     Args:
-        source_files: List[Tuple[str, str | None]]: Source file names.
+        source_files: list[tuple[str, str | None]]: Source file names.
         target_path: Path: Target directory.
     """
     for source_file in source_files:
@@ -315,7 +311,7 @@ def create_action():
     """Create one row in database table action.
 
     Returns:
-        List: Column values
+        list: Column values
     """
     values = get_values_action()
 
@@ -347,7 +343,7 @@ def create_document():
     """Create one row in database table document.
 
     Returns:
-        List: Column values
+        list: Column values
     """
     values = get_values_document()
 
@@ -358,8 +354,11 @@ def create_document():
         file_size_bytes=values[8],
         id_language=values[9],
         id_run_last=values[10],
-        no_pdf_pages=values[11],
-        status=values[12],
+        no_lines_footer=values[11],
+        no_lines_header=values[12],
+        no_lines_toc=values[13],
+        no_pdf_pages=values[14],
+        status=values[15],
     )
 
     values[0] = instance.document_id
@@ -375,7 +374,7 @@ def create_language():
     """Create one row in database table language.
 
     Returns:
-        List: Column values
+        list: Column values
     """
     values = get_values_language()
 
@@ -399,13 +398,13 @@ def create_language():
 # -----------------------------------------------------------------------------
 # Create one row in database table run.
 # -----------------------------------------------------------------------------
-# noinspection PyArgumentList
+# noinspection PyArgumentlist
 @pytest.helpers.register
 def create_run():
     """Create one row in database table run.
 
     Returns:
-        List: Column values
+        list: Column values
     """
     values = get_values_run()
 
@@ -431,14 +430,23 @@ def create_token():
     """Create one row in database table token.
 
     Returns:
-        List: Column values
+        list: Column values
     """
+
     values = get_values_token()
 
     instance = db.cls_token.Token(
         id_document=values[1],
-        page_data=values[2],
-        page_no=values[3],
+        column_no=values[2],
+        column_span=values[3],
+        lower_left_x=values[4],
+        no_tokens_in_sent=values[5],
+        page_no=values[6],
+        para_no=values[7],
+        row_no=values[8],
+        sent_no=values[9],
+        text=values[10],
+        tokens=values[11],
     )
 
     values[0] = instance.token_id
@@ -454,7 +462,7 @@ def create_version():
     """Create one row in database table version.
 
     Returns:
-        List: Column values
+        list: Column values
     """
     values = get_values_version()
 
@@ -473,7 +481,7 @@ def create_version():
 # Delete the original configuration parameter value.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def delete_config_param(config_section: str, config_param: str) -> List[Tuple[str, str]]:
+def delete_config_param(config_section: str, config_param: str) -> list[tuple[str, str]]:
     """Delete the original configuration parameter value.
 
     Args:
@@ -481,7 +489,7 @@ def delete_config_param(config_section: str, config_param: str) -> List[Tuple[st
         config_param (str): Configuration parameter.
 
     Returns:
-        List[Tuple[str,str]]: Original configuration parameter.
+        list[tuple[str,str]]: Original configuration parameter.
     """
     CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
@@ -522,7 +530,7 @@ def fxtr_before_any_test():
     """Fixture Factory: Before any test."""
     CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
-    for (config_param, config_value) in [
+    for (config_param, config_value) in (
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PORT, "5434"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PREFIX, "postgresql+psycopg2://"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONTAINER_PORT, "5432"),
@@ -551,10 +559,14 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_FOOTERS, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_HEADERS, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_TOC, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
-    ]:
+    ):
         CONFIG_PARSER[cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
 
     with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
@@ -795,6 +807,9 @@ def get_values_document():
         53651,
         1,
         1,
+        0,
+        0,
+        0,
         3,
         db.cls_document.Document.DOCUMENT_STATUS_START,
     ]
@@ -804,7 +819,7 @@ def get_values_document():
 # Provide expected values - database table language.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def get_values_language():
+def get_values_language() -> list[bool | int | str | None]:
     """Provide expected values - database table language."""
     return [
         None,
@@ -822,7 +837,7 @@ def get_values_language():
 # Provide expected values - database table run.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def get_values_run():
+def get_values_run() -> list[bool | int | str | None]:
     """Provide expected values - database table run."""
     return [
         None,
@@ -839,44 +854,49 @@ def get_values_run():
 # -----------------------------------------------------------------------------
 # Provide expected values - database table token.
 # -----------------------------------------------------------------------------
+# pylint: disable=duplicate-code
 @pytest.helpers.register
-def get_values_token():
+def get_values_token() -> list[int | list[dict] | str | None]:
     """Provide expected values - database table token."""
     return [
         None,
         cfg.glob.document.document_id,
-        {
-            "pageNo": 1,
-            "noTokensInPage": 221,
-            "tokens": [
-                {
-                    "tknEntIob_": "O",
-                    "tknI": 0,
-                    "tknIsOov": True,
-                    "tknIsSentStart": True,
-                    "tknIsTitle": True,
-                    "tknLemma_": "Start",
-                    "tknNorm_": "start",
-                    "tknPos_": "PROPN",
-                    "tknTag_": "NNP",
-                    "tknText": "Start",
-                    "tknWhitespace_": " ",
-                },
-                {
-                    "tknEntIob_": "O",
-                    "tknI": 220,
-                    "tknIsOov": True,
-                    "tknIsPunct": True,
-                    "tknIsSentEnd": True,
-                    "tknLemma_": ".",
-                    "tknNorm_": ".",
-                    "tknPos_": "PUNCT",
-                    "tknTag_": ".",
-                    "tknText": ".",
-                },
-            ],
-        },
+        0,
+        2,
+        71,
+        2,
+        2,
         1,
+        0,
+        1,
+        "Start Document ...",
+        [
+            {
+                "tknEntIob_": "O",
+                "tknI": 0,
+                "tknIsOov": True,
+                "tknIsSentStart": True,
+                "tknIsTitle": True,
+                "tknLemma_": "start",
+                "tknNorm_": "start",
+                "tknPos_": "VERB",
+                "tknTag_": "VB",
+                "tknText": "Start",
+                "tknWhitespace_": " ",
+            },
+            {
+                "tknEntIob_": "O",
+                "tknI": 1,
+                "tknIsOov": True,
+                "tknIsTitle": True,
+                "tknLemma_": "document",
+                "tknNorm_": "document",
+                "tknPos_": "NOUN",
+                "tknTag_": "NN",
+                "tknText": "Document",
+                "tknWhitespace_": " ",
+            },
+        ],
     ]
 
 
@@ -884,7 +904,7 @@ def get_values_token():
 # Provide expected values - database table version.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def get_values_version():
+def get_values_version() -> list[int | str | None]:
     """Provide expected values - database table version."""
     return [
         None,
@@ -957,7 +977,7 @@ def help_run_action_process_inbox_normal(
     # -------------------------------------------------------------------------
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
     # -------------------------------------------------------------------------
-    document_id: int = 1
+    document_id = 1
 
     file_p_i = (
         cfg.glob.setup.directory_inbox_accepted,
@@ -1016,13 +1036,13 @@ def insert_config_param(
 @pytest.helpers.register
 def restore_config_params(
     config_section: str,
-    config_params: List[Tuple[str, str]],
+    config_params: list[tuple[str, str]],
 ) -> None:
     """Restore the original configuration parameter.
 
     Args:
         config_section (str): Configuration section.
-        config_params (List[Tuple[str, str]]): Configuration parameter modifications.
+        config_params (list[tuple[str, str]]): Configuration parameter modifications.
     """
     for (config_param, config_value) in config_params:
         CONFIG_PARSER[config_section][config_param] = config_value
@@ -1053,6 +1073,13 @@ def set_complete_cfg_spacy(false_or_true: str):
     return pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_STOP, false_or_true),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER, false_or_true),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, false_or_true),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DOC, false_or_true),
@@ -1156,18 +1183,18 @@ def store_config_param(
 @pytest.helpers.register
 def verify_content_of_directory(
     directory_name: str,
-    expected_directories: List[str],
-    expected_files: List[str],
+    expected_directories: list[str],
+    expected_files: list[str],
 ) -> None:
     """Verify the content of a file directory.
 
     Args:
         directory_name: str:
                    Name of the file directory to be checked.
-        expected_directories: List[str]:
-                   List of the expected directory names.
-        expected_files: List[str]:
-                   List of the expected file names.
+        expected_directories: list[str]:
+                   list of the expected directory names.
+        expected_files: list[str]:
+                   list of the expected file names.
     """
     cfg.glob.logger.info("directory name   =%s", directory_name)
 
@@ -1202,20 +1229,20 @@ def verify_content_of_directory(
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def verify_content_of_inboxes(
-    inbox: Tuple[List[str], List[str]] = ([], []),
-    inbox_accepted: Tuple[List[str], List[str]] = ([], []),
-    inbox_rejected: Tuple[List[str], List[str]] = ([], []),
+    inbox: tuple[list[str], list[str]] = ([], []),
+    inbox_accepted: tuple[list[str], list[str]] = ([], []),
+    inbox_rejected: tuple[list[str], list[str]] = ([], []),
 ) -> None:
     """Verify the content of an inbox directories..
 
     Args:
-        inbox: Tuple[List[str],List[str]]:
+        inbox: tuple[list[str],list[str]]:
                    An optional list of expected directories and
                    an optional list of expected files in the inbox directory.
-        inbox_accepted: Tuple[List[str],List[str]]:
+        inbox_accepted: tuple[list[str],list[str]]:
                    An optional list of expected directories and
                    an optional list of expected files in the inbox_accepted directory.
-        inbox_rejected: Tuple[List[str],List[str]]:
+        inbox_rejected: tuple[list[str],list[str]]:
                    An optional list of expected directories and
                    an optional list of expected files in the inbox_rejected directory.
     """

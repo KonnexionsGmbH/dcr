@@ -227,7 +227,7 @@ def progress_msg_core(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    final_msg: str = cfg.glob.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
+    final_msg = cfg.glob.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
 
     print(final_msg)
 
@@ -289,15 +289,28 @@ def progress_msg_empty_before(msg: str) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Create a line_type progress message.
+# Create a headers & footers line_type progress message.
 # -----------------------------------------------------------------------------
-def progress_msg_line_type(msg: str) -> None:
-    """Create a line_type progress message.
+def progress_msg_line_type_headers_footers(msg: str) -> None:
+    """Create a headers & footers line_type progress message.
 
     Args:
         msg (str): Progress message.
     """
-    if cfg.glob.setup.is_verbose_line_type:
+    if cfg.glob.setup.is_verbose_line_type_headers_footers:
+        progress_msg_core(msg)
+
+
+# -----------------------------------------------------------------------------
+# Create a TOC line_type progress message.
+# -----------------------------------------------------------------------------
+def progress_msg_line_type_toc(msg: str) -> None:
+    """Create a TOC line_type progress message.
+
+    Args:
+        msg (str): Progress message.
+    """
+    if cfg.glob.setup.is_verbose_line_type_toc:
         progress_msg_core(msg)
 
 

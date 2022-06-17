@@ -52,11 +52,11 @@ During the next run with the same action, the faulty documents are also processe
 
 ### 2.1 Preprocessor
 
-### 2.1.1 Preprocessor Architecture
+#### 2.1.1 Preprocessor Architecture
 
 ![](img/architecture_preprocessor.png)
 
-### 2.1.2 Process the inbox directory (action: **`p_i`**)
+#### 2.1.2 Process the inbox directory (action: **`p_i`**)
 
 In the first action, the file directory **`inbox`** is checked for new document files. 
 An entry is created in the **`document`** database table for each new document, showing the current processing status of the document. 
@@ -67,14 +67,14 @@ Detailed information on this can be found in the chapter **Running DCR** in the 
 
 The new document files are processed based on their file extension as follows:
 
-#### 2.1.2.1 File extension **`pdf`**
+##### 2.1.2.1 File extension **`pdf`**
 
 The module **`fitz`** from package [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/module.html){:target="_blank"} is used to check whether the **`pdf`** document is a scanned image or not. 
 A **`pdf`** document consisting of a scanned image is marked for conversion from **`pdf`** format to an image format and moved to the file directory **`ìnbox_accepted`**.
 Other **`pdf`** documents are marked for further processing with the **`pdf`** parser and then also moved to the file directory **`ìnbox_accepted`**.
 If, however, when checking the **`pdf`** document with **`fitz`**, it turns out that the document with the file extension **`pdf`** is not really a **`pdf`** document, then the document is moved to the file directory **`inbox_rejected`**.
 
-#### 2.1.2.2 File extensions of documents for processing with [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}
+##### 2.1.2.2 File extensions of documents for processing with [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}
 
 Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and 
 marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}:
@@ -89,7 +89,7 @@ marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:ta
 
 An exception are files with the file name **`README.md`**, which are ignored and not processed.
 
-#### 2.1.2.3 File extensions of documents for processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}
+##### 2.1.2.3 File extensions of documents for processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}
 
 Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}:
 
@@ -103,11 +103,11 @@ Document files with the following file extensions are moved to the file director
 - **`tiff`**
 - **`webp`**
 
-#### 2.1.2.4 Other file extensions of documents
+##### 2.1.2.4 Other file extensions of documents
 
 Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejected`**.
 
-### 2.1.3 Convert **`pdf`** documents to image files (action: **`p_2_i`**)
+#### 2.1.3 Convert **`pdf`** documents to image files (action: **`p_2_i`**)
 
 This processing action only has to be carried out if there are new **`pdf`** documents in the document input that only consist of scanned images.
 **`pdf`** documents consisting of scanned images must first be processed with OCR software in order to extract text they contain. 
@@ -119,25 +119,25 @@ The processing of the original document (parent document) is then completed and 
 Since an image file created here always contains only one page of a **`pdf`** document, a multi-page **`pdf`** document is distributed over several image files. 
 After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, these separated files are then combined into one **`pdf`** document.
 
-### 2.1.4 Convert appropriate image files to **`pdf`** files (action: **`ocr`**)
+#### 2.1.4 Convert appropriate image files to **`pdf`** files (action: **`ocr`**)
 
 This processing action only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.3.
 In this processing action, the documents of this document types are converted to the **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
 
 After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, the files split in the previous processing action are combined into a single **`pdf`** document.
 
-### 2.1.5 Convert appropriate non-**`pdf`** documents to **`pdf`** files (action: **`n_2_p`**)
+#### 2.1.5 Convert appropriate non-**`pdf`** documents to **`pdf`** files (action: **`n_2_p`**)
 
 This processing action only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.2.
 In this processing action, the documents of this document types are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
 
 ### 2.2 Natural Language Processing (NLP)
 
-### 2.2.1 NLP Architecture
+#### 2.2.1 NLP Architecture
 
 ![](img/architecture_nlp.png)
 
-### 2.2.2 Extract text from **`pdf`** documents (action: **`tet`**)
+#### 2.2.2 Extract text from **`pdf`** documents (action: **`tet`**)
 
 In this processing action, the text of the **`pdf`** documents from sections 2.1.2.1, 2.1.4 and 2.1.5 are extracted and written to **`xml`** files in **`tetml`** format for each document.
 The [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} library is used for this purpose.
@@ -245,238 +245,185 @@ The `page` variant and the `word` variant are both optional.
         <Box llx="184.69" lly="671.52" urx="193.20" ury="685.44"/>
        </Word>
 
-### 2.2.3 Store the parser result in a JSON file (action: **`s_p_j`**)
+#### 2.2.3 Store the parser result in a JSON file (action: **`s_p_j`**)
 
 From the **xml** files of the granularity document `line` (`<file_name>_<doc_id>.line.xml`) or document `word` (`<file_name>_<doc_id>.word.xml`) created in the previous action, the text contained is now extracted with the existing metadata using **xml** parsing and stored in a **`JSON`** format in the database tables `content_tetml_line` and `content_tetml_word`.
 
-The document `line` granularity attempts to determine the headers and footers of the document by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}.
-This processing action is controlled by the following configuration parameters:
-
-- `line_footer_max_distance = 3`
-- `line_footer_max_lines = 3`
-- `line_header_max_distance = 3`
-- `line_header_max_lines = 3`
-
+The document `line` granularity attempts to type the lines. Details on this process can be found in section 4.
+  
 **Example extract from granularity `line`**:
 
-Possible line types are `h` for header lines, `f` for footers and `b` for the remaining lines.
-
     {
-      "noLinesInPage": 37,
-      "noParasInPage": 9,
-      "pageLines": [
-        {
-          "paraIndexPage": 0,
-          "lineIndexPage": 0,
-          "lineIndexPara": 0,
-          "lineText": "1",
-          "lineType": "h"
-        },
-        {
-          "paraIndexPage": 1,
-          "lineIndexPage": 1,
-          "lineIndexPara": 0,
-          "lineText": "1812",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 2,
-          "lineIndexPage": 2,
-          "lineIndexPara": 0,
-          "lineText": "GRIMM’S FAIRY TALES",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 2,
-          "lineIndexPage": 3,
-          "lineIndexPara": 1,
-          "lineText": "CINDERELLA",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 2,
-          "lineIndexPage": 4,
-          "lineIndexPara": 2,
-          "lineText": "Jacob Ludwig Grimm and Wilhelm Carl Grimm",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 5,
-          "lineIndexPara": 0,
-          "lineText": "Grimm, Jacob (1785-1863) and Wilhelm (1786-1859) - German",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 6,
-          "lineIndexPara": 1,
-          "lineText": "philologists whose collection “Kinder- und Hausmarchen,” known",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 7,
-          "lineIndexPara": 2,
-          "lineText": "in English as “Grimm’s Fairy Tales,” is a timeless literary",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 8,
-          "lineIndexPara": 3,
-          "lineText": "masterpiece. The brothers transcribed these tales directly from folk",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 9,
-          "lineIndexPara": 4,
-          "lineText": "and fairy stories told to them by common villagers. Cinderella",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 10,
-          "lineIndexPara": 5,
-          "lineText": "(1812) - The famous tale of a girl who is mistreated by her evil actionmother",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 11,
-          "lineIndexPara": 6,
-          "lineText": "and action-sisters but goes on to marry the prince. This, the",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 12,
-          "lineIndexPara": 7,
-          "lineText": "original “Cindrella,” differs greatly from many of its modern",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 3,
-          "lineIndexPage": 13,
-          "lineIndexPara": 8,
-          "lineText": "variations.",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 4,
-          "lineIndexPage": 14,
-          "lineIndexPara": 0,
-          "lineText": "CINDERELLA",
-          "lineType": "b"
-        },
-        {
-          "paraIndexPage": 5,
-          "lineIndexPage": 15,
-          "lineIndexPara": 0,
-          "lineText": "THERE WAS once a rich man whose wife lay sick, and when she",
-          "lineType": "b"
-        },
+        "documentId": 1,
+        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
+        "noPagesInDocument": 6,
+        "noParagraphsInDocument": 39,
+        "noLinesInDocument": 248,
+        "noLinesFooter": 0,
+        "noLinesHeader": 1,
+        "noLinesToc": 0,
+        "pages": [
+            {
+                "pageNo": 1,
+                "noParagraphsInPage": 9,
+                "noLinesInPage": 37,
+                "lines": [
+                    {
+                        "lineNo": 1,
+                        "lineIndexPage": 0,
+                        "lineIndexParagraph": 0,
+                        "lineType": "h",
+                        "lowerLeftX": 303.36,
+                        "paragraphNo": 1,
+                        "text": "1"
+                    },
+                    {
+                        "lineNo": 1,
+                        "lineIndexPage": 1,
+                        "lineIndexParagraph": 0,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 2,
+                        "text": "1812"
+                    },
+                    {
+                        "lineNo": 1,
+                        "lineIndexPage": 2,
+                        "lineIndexParagraph": 0,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 3,
+                        "text": "GRIMM\u2019S FAIRY TALES"
+                    },
+                    {
+                        "lineNo": 2,
+                        "lineIndexPage": 3,
+                        "lineIndexParagraph": 1,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 3,
+                        "text": "CINDERELLA"
+                    },
+                    {
+                        "lineNo": 3,
+                        "lineIndexPage": 4,
+                        "lineIndexParagraph": 2,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 3,
+                        "text": "Jacob Ludwig Grimm and Wilhelm Carl Grimm"
+                    },
+                    {
+                        "lineNo": 1,
+                        "lineIndexPage": 5,
+                        "lineIndexParagraph": 0,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 4,
+                        "text": "Grimm, Jacob (1785-1863) and Wilhelm (1786-1859) - German"
+                    },
+                    {
+                        "lineNo": 2,
+                        "lineIndexPage": 6,
+                        "lineIndexParagraph": 1,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 4,
+                        "text": "philologists whose collection \u201cKinder- und Hausmarchen,\u201d known"
+                    },
+                    {
+                        "lineNo": 3,
+                        "lineIndexPage": 7,
+                        "lineIndexParagraph": 2,
+                        "lineType": "b",
+                        "lowerLeftX": 126.0,
+                        "paragraphNo": 4,
+                        "text": "in English as \u201cGrimm\u2019s Fairy Tales,\u201d is a timeless literary"
+                    },
 
 **Example extract from granularity `word`**:
 
     {
-      "noLinesInPage": 37,
-      "noParasInPage": 9,
-      "noWordsInPage": 417,
-      "pageWords": [
-        {
-          "lineIndexPage": 0,
-          "wordIndexLine": 0,
-          "wordText": "1"
-        },
-        {
-          "lineIndexPage": 1,
-          "wordIndexLine": 0,
-          "wordText": "1812"
-        },
-        {
-          "lineIndexPage": 2,
-          "wordIndexLine": 0,
-          "wordText": "GRIMM"
-        },
-        {
-          "lineIndexPage": 2,
-          "wordIndexLine": 1,
-          "wordText": "’"
-        },
-        {
-          "lineIndexPage": 2,
-          "wordIndexLine": 2,
-          "wordText": "S"
-        },
-        {
-          "lineIndexPage": 2,
-          "wordIndexLine": 3,
-          "wordText": "FAIRY"
-        },
-        {
-          "lineIndexPage": 2,
-          "wordIndexLine": 4,
-          "wordText": "TALES"
-        },
-        {
-          "lineIndexPage": 3,
-          "wordIndexLine": 0,
-          "wordText": "CINDERELLA"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 0,
-          "wordText": "Jacob"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 1,
-          "wordText": "Ludwig"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 2,
-          "wordText": "Grimm"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 3,
-          "wordText": "and"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 4,
-          "wordText": "Wilhelm"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 5,
-          "wordText": "Carl"
-        },
-        {
-          "lineIndexPage": 4,
-          "wordIndexLine": 6,
-          "wordText": "Grimm"
-        },
-        {
-          "lineIndexPage": 5,
-          "wordIndexLine": 0,
-          "wordText": "Grimm"
-        },
-        {
-          "lineIndexPage": 5,
-          "wordIndexLine": 1,
-          "wordText": ","
-        },
-        {
-          "lineIndexPage": 5,
-          "wordIndexLine": 2,
-          "wordText": "Jacob"
-        },
+        "documentId": 1,
+        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
+        "noPagesInDocument": 6,
+        "noParagraphsInDocument": 39,
+        "noLinesInDocument": 248,
+        "noWordsInDocument": 3267,
+        "pages": [
+            {
+                "pageNo": 1,
+                "noParagraphsInPage": 9,
+                "noLinesInPage": 37,
+                "noWordsInPage": 417,
+                "paragraphs": [
+                    {
+                        "paragraphNo": 1,
+                        "noLinesInParagraph": 1,
+                        "noWordsInParagraph": 1,
+                        "lines": [
+                            {
+                                "lineNo": 1,
+                                "noWordsInLine": 1,
+                                "words": [
+                                    {
+                                        "wordNo": 1,
+                                        "text": "1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "paragraphNo": 2,
+                        "noLinesInParagraph": 1,
+                        "noWordsInParagraph": 1,
+                        "lines": [
+                            {
+                                "lineNo": 1,
+                                "noWordsInLine": 1,
+                                "words": [
+                                    {
+                                        "wordNo": 1,
+                                        "text": "1812"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "paragraphNo": 3,
+                        "noLinesInParagraph": 3,
+                        "noWordsInParagraph": 13,
+                        "lines": [
+                            {
+                                "lineNo": 1,
+                                "noWordsInLine": 5,
+                                "words": [
+                                    {
+                                        "wordNo": 1,
+                                        "text": "GRIMM"
+                                    },
+                                    {
+                                        "wordNo": 2,
+                                        "text": "\u2019"
+                                    },
+                                    {
+                                        "wordNo": 3,
+                                        "text": "S"
+                                    },
+                                    {
+                                        "wordNo": 4,
+                                        "text": "FAIRY"
+                                    },
+                                    {
+                                        "wordNo": 5,
+                                        "text": "TALES"
+                                    }
+                                ]
+                            },
 
-### 2.2.4 Create qualified document tokens (action: **`tkn`**)
+#### 2.2.4 Create qualified document tokens (action: **`tkn`**)
 
 For tokenisation, [spaCy](https://spacy.io/usage/models){:target="_blank"} is used. 
 
@@ -515,56 +462,94 @@ In the event of an error, the original document is marked as erroneous and an ex
 **Example extract from granularity `line`**:
 
     {
-      "documentId": 1,
-      "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
-      "noPagesInDoc": 6,
-      "pages": [
-        {
-          "pageNo": 1,
-          "noTokensInPage": 463,
-          "tokens": [
+        "documentId": 1,
+        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
+        "noPagesInDocument": 6,
+        "noParagraphsInDocument": 33,
+        "noSentencesInDocument": 121,
+        "noLinesInDocument": 242,
+        "noTokensInDocument": 1085,
+        "pages": [
             {
-              "tknEntIob_": "B",
-              "tknEntType_": "DATE",
-              "tknI": 0,
-              "tknIsDigit": true,
-              "tknIsOov": true,
-              "tknIsSentStart": true,
-              "tknLemma_": "1812",
-              "tknLikeNum": true,
-              "tknNorm_": "1812",
-              "tknPos_": "NUM",
-              "tknTag_": "CD",
-              "tknText": "1812"
-            },
-            {
-              "tknEntIob_": "O",
-              "tknI": 1,
-              "tknIsOov": true,
-              "tknLemma_": "\n",
-              "tknNorm_": "\n",
-              "tknPos_": "SPACE",
-              "tknTag_": "_SP",
-              "tknText": "\n"
-            },
-            {
-              "tknEntIob_": "B",
-              "tknEntType_": "WORK_OF_ART",
-              "tknI": 2,
-              "tknIsOov": true,
-              "tknLemma_": "GRIMM",
-              "tknNorm_": "grimm",
-              "tknPos_": "PROPN",
-              "tknTag_": "NNP",
-              "tknText": "GRIMM"
-            },
+                "pageNo": 1,
+                "noParagraphsInPage": 8,
+                "noSentencesInPage": 19,
+                "noLinesInPage": 36,
+                "noTokensInPage": 174,
+                "paragraphs": [
+                    {
+                        "paragraphNo": 2,
+                        "noSentencesInParagraph": 1,
+                        "noLinesInParagraph": 1,
+                        "noTokensInParagraph": 1,
+                        "sentences": [
+                            {
+                                "sentenceNo": 1,
+                                "lowerLeftX": 126.0,
+                                "noTokensInSentence": 1,
+                                "text": "1812",
+                                "tokens": [
+                                    {
+                                        "tknEntIob_": "B",
+                                        "tknEntType_": "DATE",
+                                        "tknI": 0,
+                                        "tknIsDigit": true,
+                                        "tknIsOov": true,
+                                        "tknIsSentEnd": true,
+                                        "tknIsSentStart": true,
+                                        "tknLemma_": "1812",
+                                        "tknLikeNum": true,
+                                        "tknNorm_": "1812",
+                                        "tknPos_": "NUM",
+                                        "tknTag_": "CD",
+                                        "tknText": "1812"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "paragraphNo": 3,
+                        "noSentencesInParagraph": 1,
+                        "noLinesInParagraph": 3,
+                        "noTokensInParagraph": 10,
+                        "sentences": [
+                            {
+                                "sentenceNo": 1,
+                                "lowerLeftX": 126.0,
+                                "noTokensInSentence": 10,
+                                "text": "GRIMM\u2019S FAIRY TALES CINDERELLA Jacob Ludwig Grimm and Wilhelm Carl Grimm",
+                                "tokens": [
+                                    {
+                                        "tknEntIob_": "B",
+                                        "tknEntType_": "PERSON",
+                                        "tknI": 0,
+                                        "tknIsOov": true,
+                                        "tknIsSentStart": true,
+                                        "tknLemma_": "GRIMM",
+                                        "tknNorm_": "grimm",
+                                        "tknPos_": "PROPN",
+                                        "tknTag_": "NNP",
+                                        "tknText": "GRIMM"
+                                    },
+                                    {
+                                        "tknEntIob_": "O",
+                                        "tknI": 2,
+                                        "tknIsOov": true,
+                                        "tknLemma_": "fairy",
+                                        "tknNorm_": "fairy",
+                                        "tknPos_": "ADJ",
+                                        "tknTag_": "JJ",
+                                        "tknText": "FAIRY",
+                                        "tknWhitespace_": " "
+                                    },
 
 ## 3. Naming system of the auxiliary files
 
 The processing actions are based on different flat files, each of which is generated from the original document on an action-related basis.
 Apart from the **`JSON`** files optionally created during the 'tokenizer' action, these can be automatically deleted after error-free processing.
 
-## 3.1 Action-related naming system
+### 3.1 Action-related naming system
 
 | Code    | Action                                        | File names                                            | 
 |---------|-----------------------------------------------|-------------------------------------------------------|
@@ -599,9 +584,9 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 | `pn`   | page number         |
 
 
-## 3.2 Examples
+### 3.2 Examples
 
-### 3.2.1 Possible intermediate files from a **`docx`** document:
+#### 3.2.1 Possible intermediate files from a **`docx`** document:
 
     case_2_docx_route_inbox_pandoc_pdflib_2.docx
 
@@ -617,7 +602,7 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_2_docx_route_inbox_pandoc_pdflib_2.line.token.json
 
-### 3.2.2 Possible intermediate files from a **`jpg`** document:
+#### 3.2.2 Possible intermediate files from a **`jpg`** document:
 
     case_6_jpg_route_inbox_tesseract_pdflib_6.jpg
 
@@ -633,7 +618,7 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_6_jpg_route_inbox_tesseract_pdflib_6.line.token.json
 
-### 3.2.3 Possible intermediate files from a proper **`pdf`** document:
+#### 3.2.3 Possible intermediate files from a proper **`pdf`** document:
 
     case_3_pdf_text_route_inbox_pdflib_3.pdf
 
@@ -647,7 +632,7 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_3_pdf_text_route_inbox_pdflib_3.line.token.json
 
-### 3.2.4 Possible intermediate files from a single page scanned image **`pdf`** document:
+#### 3.2.4 Possible intermediate files from a single page scanned image **`pdf`** document:
 
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4.pdf
 
@@ -665,7 +650,7 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.token.json
 
-### 3.2.5 Possible intermediate files from a multi page scanned image **`pdf`** document:
+#### 3.2.5 Possible intermediate files from a multi page scanned image **`pdf`** document:
 
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5.pdf
 
@@ -685,3 +670,107 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.xml
 
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.token.json
+
+## 4 Line Typing Algorithms
+
+The granularity of the document `line` tries to classify the individual lines or sentences.
+The possible line types are :
+
+| line type | Meaning                                           |
+|-----------|---------------------------------------------------|
+| b         | non-classifiable line, i.e. normal text body line |
+| f         | footer line                                       |
+| h         | header line                                       |
+| lb        | line of a bulleted list                           |
+| ln        | line of a numbered list                           |
+| tab       | non-classifiable line of a table                  |
+| toc       | line of a table of content                        |
+
+### 4.1 Footers
+
+The parameters that control the classification in footer lines are:
+
+- `line_footer_max_distance = 3`
+- `line_footer_max_lines = 3`
+
+#### 4.1.1 `line_footer_max_lines`
+
+This parameter controls the number of lines from the bottom of the page to be analyzed as possible candidates for footers.
+With the value zero the classification of footers is prevented.
+
+#### 4.1.2 `line_footer_max_distance`
+
+The degree of similarity of rows is determined by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
+The value zero stands for identical lines. 
+The larger the Levenshtein distance, the more different the rows are. 
+If the header lines do not contain a page numbers, then the parameter should be set to `0`.
+
+#### 4.1.3 Algorithm
+
+1. On all pages, the last line `n`, the line `n-1`, etc. are compared up to the maximum specified line. 
+2. The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.
+3. The line is considered a footer if, except for pages `1` and `2` and pages `n-1` and `n`, the Levenshtein distance is not greater than the specified maximum value.
+
+### 4.2 Header
+
+The parameters that control the classification in header lines are:
+
+- `line_header_max_distance = 3`
+- `line_header_max_lines = 3`
+
+#### 4.2.1 `line_header_max_lines`
+
+This parameter controls the number of lines from the top of the page to be analyzed as possible candidates for headers.
+A value of zero prevents the classification of headers.
+
+#### 4.2.2 `line_header_max_distance`
+
+The degree of similarity of rows is determined by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
+The value zero stands for identical lines. 
+The larger the Levenshtein distance, the more different the rows are. 
+If the footer lines contain a page number, then depending on the number of pages in the document, the following values are useful:
+
+| document pages | Levenshtein distance |
+|----------------|----------------------|
+ | < 10           | 1                    |
+ | < 100          | 2                    |
+ | < 1000         | 3                    |
+
+#### 4.2.3 Algorithm
+
+1. On all pages, the first line, the second line, etc. are compared up to the maximum specified line. 
+2. The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.
+3. The line is considered a header if, except for pages `1` and `2` and pages `n-1` and `n`, the Levenshtein distance is not greater than the specified maximum value.
+
+### 4.3 TOC (Table of Content)
+
+The parameters that control the classification in table of content are:
+
+- `toc_last_page = 3`
+- `toc_min_entries = 3`
+
+#### 4.3.1 `toc_last_page`
+
+This parameter sets the number of pages that will be searched for a table of contents from the beginning of the document.
+A value of zero prevents the search for a table of contents.
+
+#### 4.3.2 `toc_min_entries`
+
+This parameter defines the minimum number of entries that a table of contents must contain.
+
+#### 4.3.3 Algorithm Table-based
+
+A table with the following properties is searched for:
+
+   - except for the first row, the last column of the table must contain an integer greater than zero,
+   - the number found there must be ascending,
+   - the number must not be greater than the last page number of the document, and
+   - if such a table was found, then the algorithm ends here.
+
+#### 4.3.4 Algorithm Line-based
+
+A block of lines with the following properties is searched here:
+
+   - the last token from each line must contain an integer greater than zero,
+   - the number found there must be ascending, and
+   - the number must not be greater than the last page number of the document.

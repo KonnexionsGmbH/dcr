@@ -3,7 +3,7 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.2)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.3)
 
 Based on the paper "Unfolding the Structure of a Document using Deep Learning" (**[Rahman and Finin, 2019](https://arxiv.org/abs/1910.03678)**), this software project attempts to use various software techniques to automatically recognise the structure in any **`pdf`** documents and thus make them more searchable.
 
@@ -32,9 +32,9 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for mor
 ### 1.3 Natural Language Processing (NLP) 
 
 - Extracting text and metadata from **`pdf`** documents using [PDFlib TET](https://www.pdflib.com/products/tet/).
-- Categorisation of the lines in the document into body, footer and header lines.
-- Determination of the token structure page by page with the help of [spaCy](https://spacy.io).
-- Storage of the analysis result in a [PostgreSQL](https://www.postgresql.org) database.
+- Categorisation of the lines in the document, e.g. body, footer, header lines etc.
+- Determination of the token structure sentence by sentence with the help of [spaCy](https://spacy.io).
+- Storage of the analysis result optional in a [PostgreSQL](https://www.postgresql.org) database or in a JSON flat file.
 
 ## 2. Directory and File Structure of this Repository
 
@@ -46,6 +46,7 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for mor
 | data              | Inbox directories and database setup data                                   |
 | docs              | **DCR** documentation files                                                 |
 | resources         | DBeaver configuration, Gammadyne utility and various external documentation |
+| scripts           | Ubuntu and Windows Script for running the application  |
 | src               | Python scripts and [PDFlib TET](https://www.pdflib.com/products/tet/) files |
 | tests             | Scripts and data for pytest                                                 |
 

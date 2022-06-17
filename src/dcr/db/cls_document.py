@@ -3,8 +3,6 @@ from __future__ import annotations
 
 import os
 from typing import ClassVar
-from typing import List
-from typing import Tuple
 
 import cfg.glob
 import db.cls_db_core
@@ -13,9 +11,9 @@ import sqlalchemy
 import utils
 
 
-# pylint: disable=R0801
-# pylint: disable=R0902
-# pylint: disable=R0903
+# pylint: disable=duplicate-code
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-instance-attributes
 class Document:
     """Managing the database table document.
 
@@ -42,7 +40,7 @@ class Document:
     DOCUMENT_FILE_TYPE_JPEG: ClassVar[str] = "jpeg"
     DOCUMENT_FILE_TYPE_JPG: ClassVar[str] = "jpg"
     DOCUMENT_FILE_TYPE_JSON: ClassVar[str] = "json"
-    DOCUMENT_FILE_TYPE_PANDOC: ClassVar[List[str]] = [
+    DOCUMENT_FILE_TYPE_PANDOC: ClassVar[list[str]] = [
         "csv",
         "docx",
         "epub",
@@ -53,7 +51,7 @@ class Document:
     ]
     DOCUMENT_FILE_TYPE_PDF: ClassVar[str] = "pdf"
     DOCUMENT_FILE_TYPE_PNG: ClassVar[str] = "png"
-    DOCUMENT_FILE_TYPE_TESSERACT: ClassVar[List[str]] = [
+    DOCUMENT_FILE_TYPE_TESSERACT: ClassVar[list[str]] = [
         "bmp",
         "gif",
         "jp2",
@@ -72,6 +70,10 @@ class Document:
     DOCUMENT_LINE_TYPE_BODY: ClassVar[str] = "b"
     DOCUMENT_LINE_TYPE_FOOTER: ClassVar[str] = "f"
     DOCUMENT_LINE_TYPE_HEADER: ClassVar[str] = "h"
+    DOCUMENT_LINE_TYPE_LIST_BULLETED: ClassVar[str] = "lb"
+    DOCUMENT_LINE_TYPE_LIST_NUMBERED: ClassVar[str] = "ln"
+    DOCUMENT_LINE_TYPE_TABLE: ClassVar[str] = "tab"
+    DOCUMENT_LINE_TYPE_TOC: ClassVar[str] = "toc"
 
     DOCUMENT_STATUS_END: ClassVar[str] = "end"
     DOCUMENT_STATUS_ERROR: ClassVar[str] = "error"
@@ -80,7 +82,7 @@ class Document:
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         action_code_last: str,
         directory_name: str,
@@ -93,6 +95,9 @@ class Document:
         error_msg_last: str = "",
         error_no: int = 0,
         file_size_bytes: int = 0,
+        no_lines_footer: int = 0,
+        no_lines_header: int = 0,
+        no_lines_toc: int = 0,
         no_pdf_pages: int = 0,
         sha256: str = "",
         status: str = "",
@@ -122,6 +127,12 @@ class Document:
                     The total number of errors in this document. Defaults to 0.
             file_size_bytes (int, optional):
                     The file size in bytes. Defaults to 0.
+            no_lines_footer (int, optional):
+                    The number of footer lines. Defaults to 0.
+            no_lines_header (int, optional):
+                    The number of header lines. Defaults to 0.
+            no_lines_toc (int, optional):
+                    The number of toc lines. Defaults to 0.
             no_pdf_pages (int, optional):
                     For a document of the type 'pdf' the number of pages. Defaults to 0.
             sha256 (str, optional):
@@ -138,20 +149,23 @@ class Document:
                 "The required instance of the class 'DBCore' does not yet exist.",
             )
 
-        self.document_action_code_last: str = action_code_last
-        self.document_action_text_last: str = action_text_last
-        self.document_directory_name: str = directory_name
-        self.document_error_code_last: str = error_code_last
-        self.document_error_msg_last: str = error_msg_last
-        self.document_error_no: int = error_no
-        self.document_file_name: str = file_name
-        self.document_file_size_bytes: int = file_size_bytes
-        self.document_id: int = _row_id
-        self.document_id_language: int = id_language
-        self.document_id_run_last: int = id_run_last
-        self.document_no_pdf_pages: int = no_pdf_pages
-        self.document_sha256: str = sha256
-        self.document_status: str = status
+        self.document_action_code_last = action_code_last
+        self.document_action_text_last = action_text_last
+        self.document_directory_name = directory_name
+        self.document_error_code_last = error_code_last
+        self.document_error_msg_last = error_msg_last
+        self.document_error_no = error_no
+        self.document_file_name = file_name
+        self.document_file_size_bytes = file_size_bytes
+        self.document_id = _row_id
+        self.document_id_language = id_language
+        self.document_id_run_last = id_run_last
+        self.document_no_lines_footer = no_lines_footer
+        self.document_no_lines_header = no_lines_header
+        self.document_no_lines_toc = no_lines_toc
+        self.document_no_pdf_pages = no_pdf_pages
+        self.document_sha256 = sha256
+        self.document_status = status
 
         if self.document_id == 0:
             self.persist_2_db()
@@ -186,6 +200,9 @@ class Document:
             db.cls_db_core.DBCore.DBC_FILE_SIZE_BYTES: self.document_file_size_bytes,
             db.cls_db_core.DBCore.DBC_ID_LANGUAGE: self.document_id_language,
             db.cls_db_core.DBCore.DBC_ID_RUN_LAST: self.document_id_run_last,
+            db.cls_db_core.DBCore.DBC_NO_LINES_FOOTER: self.document_no_lines_footer,
+            db.cls_db_core.DBCore.DBC_NO_LINES_HEADER: self.document_no_lines_header,
+            db.cls_db_core.DBCore.DBC_NO_LINES_TOC: self.document_no_lines_toc,
             db.cls_db_core.DBCore.DBC_NO_PDF_PAGES: self.document_no_pdf_pages,
             db.cls_db_core.DBCore.DBC_SHA256: self.document_sha256,
             db.cls_db_core.DBCore.DBC_STATUS: self.document_status,
@@ -241,7 +258,10 @@ class Document:
                 ),
                 nullable=False,
             ),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_PDF_PAGES, sqlalchemy.Integer, nullable=True),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LINES_FOOTER, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LINES_HEADER, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LINES_TOC, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_PDF_PAGES, sqlalchemy.Integer, nullable=False),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_SHA256, sqlalchemy.String, nullable=True),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_STATUS, sqlalchemy.String, nullable=False),
         )
@@ -367,6 +387,9 @@ class Document:
             file_size_bytes=row[db.cls_db_core.DBCore.DBC_FILE_SIZE_BYTES],
             id_language=row[db.cls_db_core.DBCore.DBC_ID_LANGUAGE],
             id_run_last=row[db.cls_db_core.DBCore.DBC_ID_RUN_LAST],
+            no_lines_footer=row[db.cls_db_core.DBCore.DBC_NO_LINES_FOOTER],
+            no_lines_header=row[db.cls_db_core.DBCore.DBC_NO_LINES_HEADER],
+            no_lines_toc=row[db.cls_db_core.DBCore.DBC_NO_LINES_TOC],
             no_pdf_pages=row[db.cls_db_core.DBCore.DBC_NO_PDF_PAGES],
             sha256=row[db.cls_db_core.DBCore.DBC_SHA256],
             status=row[db.cls_db_core.DBCore.DBC_STATUS],
@@ -375,7 +398,7 @@ class Document:
     # -----------------------------------------------------------------------------
     # Get the database columns in a tuple.
     # -----------------------------------------------------------------------------
-    def get_columns_in_tuple(self, is_file_size_bytes: bool = True, is_sha256: bool = True) -> Tuple[int | str, ...]:
+    def get_columns_in_tuple(self, is_file_size_bytes: bool = True, is_sha256: bool = True) -> tuple[int | str, ...]:
         """Get the database columns in a tuple.
 
         Args:
@@ -385,7 +408,7 @@ class Document:
                     Including column sha256?. Defaults to True.
 
         Returns:
-            Tuple[int | str, ...]:
+            tuple[int | str, ...]:
                         Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -407,6 +430,9 @@ class Document:
         columns = columns + [
             self.document_id_language,
             self.document_id_run_last,
+            self.document_no_lines_footer,
+            self.document_no_lines_header,
+            self.document_no_lines_toc,
             self.document_no_pdf_pages,
         ]
 
@@ -493,7 +519,20 @@ class Document:
         if self.document_file_name == "":
             return self.document_file_name
 
-        return utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
+        try:
+            cfg.glob.setup.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Setup' does not yet exist.",
+            )
+
+        if cfg.glob.setup.doc_id_in_file_name == "none":
+            return utils.get_stem_name(str(self.document_file_name))
+
+        if cfg.glob.setup.doc_id_in_file_name == "after":
+            return utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
+
+        return str(self.document_id) + "_" + utils.get_stem_name(str(self.document_file_name))
 
     # -----------------------------------------------------------------------------
     # Persist the object in the database.

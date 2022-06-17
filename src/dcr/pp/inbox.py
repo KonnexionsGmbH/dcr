@@ -24,14 +24,14 @@ import utils
 # -----------------------------------------------------------------------------
 # Class variables.
 # -----------------------------------------------------------------------------
-ERROR_01_901: str = "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
-ERROR_01_903: str = (
+ERROR_01_901 = "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
+ERROR_01_903 = (
     "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{file_name}' " + "- error: '{error_msg}'."
 )
-ERROR_01_905: str = (
+ERROR_01_905 = (
     "01.905 Issue (p_i): The same file has probably already been processed " + "once under the file name '{file_name}'."
 )
-ERROR_01_906: str = "01.906 Issue (p_i): The target file '{full_name}' already exists."
+ERROR_01_906 = "01.906 Issue (p_i): The target file '{full_name}' already exists."
 
 
 # -----------------------------------------------------------------------------
@@ -89,12 +89,12 @@ def initialise_action(
     Args:
         action_code (str, optional): Action code. Defaults to "".
         directory_name (str, optional): Directory name. Defaults to "".
-        directory_type (str, optional): Directory Type. Defaults to "".
+        directory_type (str, optional): Directory type. Defaults to "".
         file_name (str, optional): File name. Defaults to "".
         id_parent (int, optional): File name. Defaults to "".
 
     Returns:
-        Type[db.cls_action.Action]: A new Action instance.
+        type[db.cls_action.Action]: A new Action instance.
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 

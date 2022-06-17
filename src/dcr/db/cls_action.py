@@ -4,7 +4,6 @@ from __future__ import annotations
 import os
 import time
 from typing import ClassVar
-from typing import Tuple
 
 import cfg.glob
 import db.cls_db_core
@@ -15,9 +14,8 @@ import utils
 from sqlalchemy.engine import Connection
 
 
-# pylint: disable=R0801
-# pylint: disable=R0902
-# pylint: disable=R0903
+# pylint: disable=duplicate-code
+# pylint: disable=too-many-instance-attributes
 class Action:
     """Managing the database table action.
 
@@ -33,7 +31,7 @@ class Action:
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(  # pylint: disable=R0913, R0914
+    def __init__(  # pylint: disable=too-many-arguments
         self,
         action_code: str,
         id_run_last: int,
@@ -107,23 +105,23 @@ class Action:
                 "The required instance of the class 'Run' does not yet exist.",
             )
 
-        self.action_action_code: str = action_code
-        self.action_action_text: str = action_text
-        self.action_directory_name: str = utils.get_os_independent_name(directory_name)
-        self.action_directory_type: str = directory_type
-        self.action_duration_ns: int = duration_ns
-        self.action_error_code_last: str = error_code_last
-        self.action_error_msg_last: str = error_msg_last
-        self.action_error_no: int = error_no
-        self.action_file_name: str = file_name
-        self.action_file_size_bytes: int = file_size_bytes
-        self.action_id: int = _row_id
-        self.action_id_document: int = id_document
-        self.action_id_parent: int = id_parent if id_parent != 0 else 1
-        self.action_id_run_last: int = id_run_last
-        self.action_no_children: int = no_children
-        self.action_no_pdf_pages: int = no_pdf_pages
-        self.action_status: str = status
+        self.action_action_code = action_code
+        self.action_action_text = action_text
+        self.action_directory_name = utils.get_os_independent_name(directory_name)
+        self.action_directory_type = directory_type
+        self.action_duration_ns = duration_ns
+        self.action_error_code_last = error_code_last
+        self.action_error_msg_last = error_msg_last
+        self.action_error_no = error_no
+        self.action_file_name = file_name
+        self.action_file_size_bytes = file_size_bytes
+        self.action_id = _row_id
+        self.action_id_document = id_document
+        self.action_id_parent = id_parent if id_parent != 0 else 1
+        self.action_id_run_last = id_run_last
+        self.action_no_children = no_children
+        self.action_no_pdf_pages = no_pdf_pages
+        self.action_status = status
 
         if Action.PDF2IMAGE_FILE_TYPE == "":
             Action.PDF2IMAGE_FILE_TYPE = db.cls_document.Document.DOCUMENT_FILE_TYPE_JPEG
@@ -432,7 +430,7 @@ class Action:
     # -----------------------------------------------------------------------------
     # Get the database columns in a tuple.
     # -----------------------------------------------------------------------------
-    def get_columns_in_tuple(self, is_duration_ns: bool = True, is_file_size_bytes: bool = True) -> Tuple[int | str, ...]:
+    def get_columns_in_tuple(self, is_duration_ns: bool = True, is_file_size_bytes: bool = True) -> tuple[int | str, ...]:
         """Get the database columns in a tuple.
 
         Args:
@@ -442,7 +440,7 @@ class Action:
                     Including column file_size_bytes?. Defaults to True.
 
         Returns:
-            Tuple[int | str, ...]:
+            tuple[int | str, ...]:
                         Column values in a tuple.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)

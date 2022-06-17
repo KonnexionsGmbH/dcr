@@ -12,7 +12,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -26,8 +25,8 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_duplicate <=========")
 
-    stem_name_1: str = "tiff_pdf_text_ok"
-    file_ext_1: str = "tiff"
+    stem_name_1 = "tiff_pdf_text_ok"
+    file_ext_1 = "tiff"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
@@ -36,8 +35,8 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
         target_path=cfg.glob.setup.directory_inbox,
     )
 
-    stem_name_2: str = "tiff_pdf_text_ok_1"
-    file_ext_2: str = "pdf"
+    stem_name_2 = "tiff_pdf_text_ok_1"
+    file_ext_2 = "pdf"
 
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 
@@ -55,10 +54,10 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 1/2 <=========")
 
-    stem_name: str = "pdf_scanned_ok"
-    file_ext: str = "pdf"
+    stem_name = "pdf_scanned_ok"
+    file_ext = "pdf"
 
-    document_id, _file_tesseract_1 = pytest.helpers.help_run_action_process_inbox_normal(
+    document_id, _ = pytest.helpers.help_run_action_process_inbox_normal(
         stem_name,
         file_ext,
     )
@@ -110,8 +109,8 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_duplicate <=========")
 
-    stem_name_1: str = "translating_sql_into_relational_algebra_p01_02"
-    file_ext_1: str = "pdf"
+    stem_name_1 = "translating_sql_into_relational_algebra_p01_02"
+    file_ext_1 = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
@@ -132,8 +131,8 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     )
 
     # -------------------------------------------------------------------------
-    stem_name_2: str = "translating_sql_into_relational_algebra_p01_02_1_0"
-    file_ext_2: str = "pdf"
+    stem_name_2 = "translating_sql_into_relational_algebra_p01_02_1_0"
+    file_ext_2 = "pdf"
 
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2, is_ocr=True)
 

@@ -12,23 +12,23 @@ import utils
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_51_901: str = (
+ERROR_51_901 = (
     "51.901 Issue (tet): Opening document '{full_name}' - "
     + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 )
-ERROR_51_904: str = "51.904 Issue (pdflib): The target file '{full_name}' already exists."
+ERROR_51_904 = "51.904 Issue (pdflib): The target file '{full_name}' already exists."
 
-LINE_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector}"
-LINE_TET_PAGE_OPT_LIST: str = "granularity=line"
-LINE_XML_VARIATION: str = "line."
+LINE_TET_DOCUMENT_OPT_LIST = "engines={noannotation noimage text notextcolor novector}"
+LINE_TET_PAGE_OPT_LIST = "granularity=line"
+LINE_XML_VARIATION = "line."
 
-PAGE_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector} " + "lineseparator=U+0020"
-PAGE_TET_PAGE_OPT_LIST: str = "granularity=page"
-PAGE_XML_VARIATION: str = "page."
+PAGE_TET_DOCUMENT_OPT_LIST = "engines={noannotation noimage text notextcolor novector} " + "lineseparator=U+0020"
+PAGE_TET_PAGE_OPT_LIST = "granularity=page"
+PAGE_XML_VARIATION = "page."
 
-WORD_TET_DOCUMENT_OPT_LIST: str = "engines={noannotation noimage text notextcolor novector}"
-WORD_TET_PAGE_OPT_LIST: str = "granularity=word tetml={elements={line}}"
-WORD_XML_VARIATION: str = "word."
+WORD_TET_DOCUMENT_OPT_LIST = "engines={noannotation noimage text notextcolor novector}"
+WORD_TET_PAGE_OPT_LIST = "granularity=word tetml={elements={line}}"
+WORD_XML_VARIATION = "word."
 
 
 # -----------------------------------------------------------------------------
@@ -124,8 +124,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
 
     doc_opt_list = f"tetml={{filename={{{full_name_next}}}}} {document_opt_list}"
 
-    file_curr = tet.open_document(full_name_curr, doc_opt_list)
-    if file_curr == -1:
+    if (file_curr := tet.open_document(full_name_curr, doc_opt_list)) == -1:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
             error_msg=ERROR_51_901.replace("{full_name}", full_name_curr)

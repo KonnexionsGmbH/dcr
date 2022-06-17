@@ -30,7 +30,6 @@ if ["%1"] EQU [""] (
     echo db_c  - Create the database.
     echo db_u  - Upgrade the database.
     echo ---------------------------------------------------------
-    echo m_d   - Run the installation of the necessary 3rd party packages for development and run the development ecosystem.
     echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules.
     echo ---------------------------------------------------------
     set /P DCR_CHOICE_ACTION="Enter the desired action [default: %DCR_CHOICE_ACTION_DEFAULT%] "
@@ -62,16 +61,6 @@ echo:| TIME
 echo =======================================================================
 
 set _CHOICE=
-
-if ["%DCR_CHOICE_ACTION%"] EQU ["m_d"] (
-    make pipenv-dev
-    if ERRORLEVEL 1 (
-        echo Processing of the script: %0 - step: 'make inst_dev' was aborted
-        exit -1073741510
-    )
-
-    goto normal_exit
-)
 
 if ["%DCR_CHOICE_ACTION%"] EQU ["m_p"] (
     make pipenv-prod
@@ -164,7 +153,7 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     goto normal_exit
 )
 
-echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_d | m_p | n_2_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
+echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_p | n_2_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
 exit -1073741510
 
 :normal_exit

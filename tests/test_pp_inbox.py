@@ -16,7 +16,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -28,8 +27,8 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    stem_name_1: str = "pdf_text_ok"
-    file_ext: str = "pdf"
+    stem_name_1 = "pdf_text_ok"
+    file_ext = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
@@ -38,7 +37,7 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
         target_path=cfg.glob.setup.directory_inbox,
     )
 
-    stem_name_2: str = "pdf_text_ok_1"
+    stem_name_2 = "pdf_text_ok_1"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox_accepted
@@ -108,6 +107,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "before"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "false"),
         ],
     )
@@ -130,10 +130,10 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
         inbox_accepted=(
             [],
             [
-                "docx_french_ok_1.docx",
-                "pdf_french_ok_2.jpg",
-                "pdf_french_ok_3.pdf",
-                "pdf_french_scanned_4.pdf",
+                "1_docx_french_ok.docx",
+                "2_pdf_french_ok.jpg",
+                "3_pdf_french_ok.pdf",
+                "4_pdf_french_scanned.pdf",
             ],
         ),
     )
@@ -150,7 +150,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
         "language directory '" + language_directory_name + "' after processing missing"
     )
 
-    assert 0 == len(os.listdir(language_directory_name)), (
+    assert len(os.listdir(language_directory_name)) == 0, (
         str(len(os.listdir(language_directory_name))) + " files still found after processing"
     )
 
@@ -186,6 +186,7 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "none"),
             (cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "true"),
         ],
     )
@@ -204,8 +205,8 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
         inbox_accepted=(
             [],
             [
-                "pdf_text_ok_1.pdf",
-                "pdf_text_ok_protected_2.pdf",
+                "pdf_text_ok.pdf",
+                "pdf_text_ok_protected.pdf",
             ],
         ),
     )
@@ -288,14 +289,14 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    stem_name_1: str = "pdf_wrong_format"
-    file_ext: str = "pdf"
+    stem_name_1 = "pdf_wrong_format"
+    file_ext = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox
     )
 
-    stem_name_2: str = "pdf_wrong_format_1"
+    stem_name_2 = "pdf_wrong_format_1"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox_rejected

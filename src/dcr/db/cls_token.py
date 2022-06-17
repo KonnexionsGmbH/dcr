@@ -16,14 +16,24 @@ class Token:
         _type_: Token instance.
     """
 
+    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-instance-attributes
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         id_document: int,
-        page_data: str,
+        column_no: int,
+        column_span: int,
+        lower_left_x: float,
+        no_tokens_in_sent: int,
         page_no: int,
+        para_no: int,
+        row_no: int,
+        sent_no: int,
+        text: str,
+        tokens: str,
         _row_id: int = 0,
     ) -> None:
         """Initialise the instance.
@@ -31,10 +41,26 @@ class Token:
         Args:
             id_document (int):
                     Row id of the document
-            page_data (str):
-                    Page data
+            column_no (int):
+                    Column number.
+            column_span (int):
+                    Column span.
+            lower_left_x (float):
+                    Lower left x coordinate.
+            no_tokens_in_sent (int):
+                    Number tokens in sentence.
             page_no (int):
                     Page number.
+            para_no (int):
+                    Paragraph number.
+            row_no (int):
+                    Row number.
+            sent_no (int):
+                    Sentence number.
+            text (str):
+                    Text.
+            tokens (str):
+                    Tokens.
             _row_id (int, optional):
                     Row id. Defaults to 0.
         """
@@ -47,10 +73,18 @@ class Token:
                 "The required instance of the class 'DBCore' does not yet exist.",
             )
 
-        self.token_id: int = _row_id
-        self.token_id_document: int = id_document
-        self.token_page_data: str = page_data
-        self.token_page_no: int = page_no
+        self.token_id = _row_id
+        self.token_column_no = column_no
+        self.token_column_span = column_span
+        self.token_id_document = id_document
+        self.token_lower_left_x = lower_left_x
+        self.token_no_tokens_in_sent = no_tokens_in_sent
+        self.token_page_no = page_no
+        self.token_para_no = para_no
+        self.token_row_no = row_no
+        self.token_sent_no = sent_no
+        self.token_text = text
+        self.token_tokens = tokens
 
         if self.token_id == 0:
             self.persist_2_db()
@@ -74,8 +108,16 @@ class Token:
 
         return {
             db.cls_db_core.DBCore.DBC_ID_DOCUMENT: self.token_id_document,
-            db.cls_db_core.DBCore.DBC_PAGE_DATA: self.token_page_data,
+            db.cls_db_core.DBCore.DBC_COLUMN_NO: self.token_column_no,
+            db.cls_db_core.DBCore.DBC_COLUMN_SPAN: self.token_column_span,
+            db.cls_db_core.DBCore.DBC_LOWER_LEFT_X: self.token_lower_left_x,
+            db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT: self.token_no_tokens_in_sent,
             db.cls_db_core.DBCore.DBC_PAGE_NO: self.token_page_no,
+            db.cls_db_core.DBCore.DBC_PARA_NO: self.token_para_no,
+            db.cls_db_core.DBCore.DBC_ROW_NO: self.token_row_no,
+            db.cls_db_core.DBCore.DBC_SENT_NO: self.token_sent_no,
+            db.cls_db_core.DBCore.DBC_TEXT: self.token_text,
+            db.cls_db_core.DBCore.DBC_TOKENS: self.token_tokens,
         }
 
     # -----------------------------------------------------------------------------
@@ -105,6 +147,16 @@ class Token:
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_COLUMN_NO,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_COLUMN_SPAN,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID_DOCUMENT,
                 sqlalchemy.Integer,
                 sqlalchemy.ForeignKey(
@@ -113,13 +165,43 @@ class Token:
                 nullable=False,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_PAGE_DATA,
-                sqlalchemy.JSON,
+                db.cls_db_core.DBCore.DBC_LOWER_LEFT_X,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT,
+                sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_PAGE_NO,
                 sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_PARA_NO,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_ROW_NO,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_SENT_NO,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_TEXT,
+                sqlalchemy.String,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_TOKENS,
+                sqlalchemy.JSON,
                 nullable=False,
             ),
         )
@@ -209,8 +291,16 @@ class Token:
         return cls(
             _row_id=row[db.cls_db_core.DBCore.DBC_ID],
             id_document=row[db.cls_db_core.DBCore.DBC_ID_DOCUMENT],
-            page_data=row[db.cls_db_core.DBCore.DBC_PAGE_DATA],
+            column_no=row[db.cls_db_core.DBCore.DBC_COLUMN_NO],
+            column_span=row[db.cls_db_core.DBCore.DBC_COLUMN_SPAN],
+            lower_left_x=row[db.cls_db_core.DBCore.DBC_LOWER_LEFT_X],
+            no_tokens_in_sent=row[db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT],
             page_no=row[db.cls_db_core.DBCore.DBC_PAGE_NO],
+            para_no=row[db.cls_db_core.DBCore.DBC_PARA_NO],
+            row_no=row[db.cls_db_core.DBCore.DBC_ROW_NO],
+            sent_no=row[db.cls_db_core.DBCore.DBC_SENT_NO],
+            text=row[db.cls_db_core.DBCore.DBC_TEXT],
+            tokens=row[db.cls_db_core.DBCore.DBC_TOKENS],
         )
 
     # -----------------------------------------------------------------------------
@@ -218,7 +308,7 @@ class Token:
     # -----------------------------------------------------------------------------
     def get_columns_in_tuple(
         self,
-    ) -> tuple[int, int, str, int]:
+    ) -> tuple[int, int, int, int, float, int, int, int, int, int, str, str]:
         """Get the database columns in a tuple.
 
         Returns:
@@ -231,8 +321,16 @@ class Token:
         return (
             self.token_id,
             self.token_id_document,
-            self.token_page_data,
+            self.token_column_no,
+            self.token_column_span,
+            self.token_lower_left_x,
+            self.token_no_tokens_in_sent,
             self.token_page_no,
+            self.token_para_no,
+            self.token_row_no,
+            self.token_sent_no,
+            self.token_text,
+            self.token_tokens,
         )
 
     # -----------------------------------------------------------------------------

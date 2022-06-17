@@ -9,7 +9,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -47,8 +46,8 @@ def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_non_pdf_2_pdf_normal_duplicate <=========")
 
-    stem_name_1: str = "docx_ok"
-    file_ext_1: str = "docx"
+    stem_name_1 = "docx_ok"
+    file_ext_1 = "docx"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
@@ -57,8 +56,8 @@ def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox
         target_path=cfg.glob.setup.directory_inbox,
     )
 
-    stem_name_2: str = "docx_ok_1"
-    file_ext_2: str = "pdf"
+    stem_name_2 = "docx_ok_1"
+    file_ext_2 = "pdf"
 
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 

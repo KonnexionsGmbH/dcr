@@ -7,19 +7,20 @@ import db.cls_action
 import db.cls_document
 import db.cls_run
 import defusedxml.ElementTree
+import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import utils
 
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_61_901: str = (
+ERROR_61_901 = (
     "61.901 Issue (s_p_j): Parsing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
 )
 
-TETML_TYPE_LINE: str = "line"
-TETML_TYPE_PAGE: str = "page"
-TETML_TYPE_WORD: str = "word"
+TETML_TYPE_LINE = "line"
+TETML_TYPE_PAGE = "page"
+TETML_TYPE_WORD = "word"
 
 
 # -----------------------------------------------------------------------------
@@ -32,7 +33,7 @@ def parse_tetml() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    for (tetml_type, action_code, is_parsing_line, is_parsing_page, is_parsing_word,) in [
+    for (tetml_type, action_code, is_parsing_line, is_parsing_page, is_parsing_word,) in (
         (
             TETML_TYPE_LINE,
             db.cls_run.Run.ACTION_CODE_PARSER_LINE,
@@ -54,7 +55,7 @@ def parse_tetml() -> None:
             False,
             True,
         ),
-    ]:
+    ):
         utils.progress_msg(f"Start of processing for tetml type '{tetml_type}'")
 
         cfg.glob.setup.is_parsing_line = is_parsing_line
@@ -137,11 +138,11 @@ def parse_tetml_file() -> None:
         cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
 
         for child in root:
-            child_tag = child.tag[nlp.cls_text_parser.TextParser.PARSE_TAG_FROM :]
+            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_text_parser.TextParser.PARSE_TAG_DOCUMENT:
+                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
                     cfg.glob.text_parser.parse_tag_document(child_tag, child)
-                case nlp.cls_text_parser.TextParser.PARSE_TAG_CREATION:
+                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
                     pass
 
         cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(full_name_next),)

@@ -13,7 +13,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -27,8 +26,8 @@ def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_a
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_duplicate <=========")
 
-    stem_name_1: str = "pdf_text_ok_protected"
-    file_ext_1: str = "pdf"
+    stem_name_1 = "pdf_text_ok_protected"
+    file_ext_1 = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
@@ -37,8 +36,8 @@ def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_a
         target_path=cfg.glob.setup.directory_inbox,
     )
 
-    stem_name_2: str = "pdf_text_ok_protected_1.line"
-    file_ext_2: str = "xml"
+    stem_name_2 = "pdf_text_ok_protected_1.line"
+    file_ext_2 = "xml"
 
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 

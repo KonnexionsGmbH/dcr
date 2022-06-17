@@ -20,7 +20,7 @@ class Version:
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         _row_id: int = 0,
         version: str = "",
@@ -42,8 +42,8 @@ class Version:
                 "The required instance of the class 'DBCore' does not yet exist.",
             )
 
-        self.version_id: int = _row_id
-        self.version_version: str = version
+        self.version_id = _row_id
+        self.version_version = version
 
         if self.version_id == 0:
             self.persist_2_db()
@@ -244,7 +244,7 @@ class Version:
             autoload_with=cfg.glob.db_core.db_orm_engine,
         )
 
-        current_version: str = ""
+        current_version = ""
 
         with cfg.glob.db_core.db_orm_engine.connect() as conn:
             for row in conn.execute(sqlalchemy.select(dbt.c.version)):

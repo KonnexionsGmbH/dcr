@@ -5,9 +5,6 @@ import json
 import os
 import pathlib
 from typing import ClassVar
-from typing import Dict
-from typing import List
-from typing import Tuple
 from typing import TypeAlias
 
 import cfg.cls_setup
@@ -33,13 +30,11 @@ from sqlalchemy.engine import Engine
 # -----------------------------------------------------------------------------
 # Type declaration.
 # -----------------------------------------------------------------------------
-Columns: TypeAlias = Dict[str, bool | int | None | os.PathLike[str] | str]
+Columns: TypeAlias = dict[str, bool | float | int | None | os.PathLike[str] | str]
 
-ColumnValues: TypeAlias = Tuple[bool | int | None | os.PathLike[str] | str]
+ColumnValues: TypeAlias = tuple[bool | float | int | None | os.PathLike[str] | str]
 
 
-# pylint: disable=R0902
-# pylint: disable=R0903
 class DBCore:
     """Managing the database.
 
@@ -65,6 +60,8 @@ class DBCore:
     DBC_CODE_SPACY_DEFAULT: ClassVar[str] = "en_core_web_trf"
     DBC_CODE_TESSERACT: ClassVar[str] = "code_tesseract"
     DBC_CODE_TESSERACT_DEFAULT: ClassVar[str] = "eng"
+    DBC_COLUMN_NO: ClassVar[str] = "column_no"
+    DBC_COLUMN_SPAN: ClassVar[str] = "column_span"
     DBC_CREATED_AT: ClassVar[str] = "created_at"
     DBC_DIRECTORY_NAME: ClassVar[str] = "directory_name"
     DBC_DIRECTORY_NAME_INBOX: ClassVar[str] = "directory_name_inbox"
@@ -85,13 +82,23 @@ class DBCore:
     DBC_ID_RUN_LAST: ClassVar[str] = "id_run_last"
     DBC_ISO_LANGUAGE_NAME: ClassVar[str] = "iso_language_name"
     DBC_ISO_LANGUAGE_NAME_DEFAULT: ClassVar[str] = "English"
+    DBC_LOWER_LEFT_X: ClassVar[str] = "lower_left_x"
     DBC_MODIFIED_AT: ClassVar[str] = "modified_at"
     DBC_NO_CHILDREN: ClassVar[str] = "no_children"
+    DBC_NO_LINES_FOOTER: ClassVar[str] = "no_lines_footer"
+    DBC_NO_LINES_HEADER: ClassVar[str] = "no_lines_header"
+    DBC_NO_LINES_TOC: ClassVar[str] = "no_lines_toc"
     DBC_NO_PDF_PAGES: ClassVar[str] = "no_pdf_pages"
+    DBC_NO_TOKENS_IN_SENT: ClassVar[str] = "no_tokens_in_sent"
     DBC_PAGE_DATA: ClassVar[str] = "page_data"
     DBC_PAGE_NO: ClassVar[str] = "page_no"
+    DBC_PARA_NO: ClassVar[str] = "para_no"
+    DBC_ROW_NO: ClassVar[str] = "row_no"
+    DBC_SENT_NO: ClassVar[str] = "sent_no"
     DBC_SHA256: ClassVar[str] = "sha256"
     DBC_STATUS: ClassVar[str] = "status"
+    DBC_TEXT: ClassVar[str] = "text"
+    DBC_TOKENS: ClassVar[str] = "tokens"
     DBC_TOTAL_ERRONEOUS: ClassVar[str] = "total_erroneous"
     DBC_TOTAL_PROCESSED_OK: ClassVar[str] = "total_processed_ok"
     DBC_TOTAL_PROCESSED_TO_BE: ClassVar[str] = "total_processed_to_be"
@@ -104,14 +111,14 @@ class DBCore:
     DBT_TOKEN: ClassVar[str] = "token"
     DBT_VERSION: ClassVar[str] = "version"
 
-    JSON_NAME_API_VERSION: str = "apiVersion"
-    JSON_NAME_COLUMN_NAME: str = "columnName"
-    JSON_NAME_COLUMN_VALUE: str = "columnValue"
-    JSON_NAME_DATA: str = "data"
-    JSON_NAME_ROW: str = "row"
-    JSON_NAME_ROWS: str = "rows"
-    JSON_NAME_TABLES: str = "tables"
-    JSON_NAME_TABLE_NAME: str = "tableName"
+    JSON_NAME_API_VERSION = "apiVersion"
+    JSON_NAME_COLUMN_NAME = "columnName"
+    JSON_NAME_COLUMN_VALUE = "columnValue"
+    JSON_NAME_DATA = "data"
+    JSON_NAME_ROW = "row"
+    JSON_NAME_ROWS = "rows"
+    JSON_NAME_TABLES = "tables"
+    JSON_NAME_TABLE_NAME = "tableName"
 
     # -----------------------------------------------------------------------------
     # Initialise the instance.
@@ -128,9 +135,16 @@ class DBCore:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self._db_current_database: str = ""
-        self._db_current_password: str = ""
-        self._db_current_user: str = ""
+        try:
+            cfg.glob.setup.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Setup' does not yet exist.",
+            )
+
+        self._db_current_database = ""
+        self._db_current_password = ""  # nosec
+        self._db_current_user = ""
 
         if is_admin:
             self._db_driver_conn = self._connect_db_admin()
@@ -173,7 +187,7 @@ class DBCore:
                 f"There is no database connection for the administrator possible - error={str(err)}",
             )
 
-        self._db_driver_conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)  # type: ignore
+        self._db_driver_conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
         cfg.glob.logger.debug("The database engine is ready for the administrator")
 
@@ -182,11 +196,11 @@ class DBCore:
     # -----------------------------------------------------------------------------
     # Create a database connection for a database user.
     # -----------------------------------------------------------------------------
-    def _connect_db_user(self) -> Tuple[Engine, MetaData]:
+    def _connect_db_user(self) -> tuple[Engine, MetaData]:
         """Create a database connection for a database user.
 
         Returns:
-            Tuple[Engine,MetaData]: Database engine and metadata
+            tuple[Engine,MetaData]: Database engine and metadata
         """
         cfg.glob.logger.debug("Attempting to connect to a user database")
 
@@ -249,7 +263,7 @@ class DBCore:
         self._db_driver_conn.cursor().execute("GRANT ALL PRIVILEGES ON DATABASE " + database + " TO " + user)
         utils.progress_msg(f"The user '{user}' has now all privileges on database '{database}'")
 
-        self._db_driver_conn.close()  # type: ignore
+        self._db_driver_conn.close()
 
         self._create_schema()
 
@@ -262,7 +276,7 @@ class DBCore:
     # -----------------------------------------------------------------------------
     # Create the trigger function.
     # -----------------------------------------------------------------------------
-    # pylint: disable=R0801
+    # pylint: disable=duplicate-code
     def _create_db_trigger_function(self, column_name: str) -> None:
         """Create the trigger function.
 
@@ -361,17 +375,17 @@ class DBCore:
     # -----------------------------------------------------------------------------
     # Create the triggers for the database tables.
     # -----------------------------------------------------------------------------
-    def _create_db_triggers(self, table_names: List[str]) -> None:
+    def _create_db_triggers(self, table_names: list[str]) -> None:
         """Create the triggers for the database tables.
 
         Args:
-            table_names (List[str]): Table names.
+            table_names (list[str]): Table names.
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         utils.progress_msg("Create the database triggers ...")
 
-        for column_name in [DBCore.DBC_CREATED_AT, DBCore.DBC_MODIFIED_AT]:
+        for column_name in (DBCore.DBC_CREATED_AT, DBCore.DBC_MODIFIED_AT):
             self._create_db_trigger_function(column_name)
 
         for table_name in table_names:
@@ -529,9 +543,7 @@ class DBCore:
         """Upgrade the current database schema - from one version to the next."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        current_version: str = db.cls_version.Version.select_version_version_unique()
-
-        if current_version < "1.0.0":
+        if (current_version := db.cls_version.Version.select_version_version_unique()) < "1.0.0":
             utils.terminate_fatal("An automatic upgrade of the database version is only " + "supported from version 1.0.0.")
 
         # not testable
@@ -668,13 +680,13 @@ class DBCore:
                 table_name = json_table[DBCore.JSON_NAME_TABLE_NAME].lower()
 
                 if table_name not in ["language"]:
-                    if table_name in [
+                    if table_name in {
                         "action",
                         "document",
                         "run",
                         "token",
                         "version",
-                    ]:
+                    }:
                         utils.terminate_fatal(f"The database table '{table_name}' must not be changed via the JSON file.")
                     else:
                         utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
@@ -726,7 +738,7 @@ class DBCore:
 
         utils.progress_msg("Upgrade the database tables ...")
 
-        current_version: str = db.cls_version.Version.select_version_version_unique()
+        current_version = db.cls_version.Version.select_version_version_unique()
 
         self._db_driver_conn = self._connect_db_admin()
 

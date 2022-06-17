@@ -1,7 +1,6 @@
 """Library Stub."""
 
 import pathlib
-from typing import Type
 
 import db.cls_action
 
@@ -13,7 +12,7 @@ def initialise_action(
     directory_type: str = "",
     file_name: str = "",
     id_parent: int = 0,
-) -> Type[db.cls_action.Action]: ...
+) -> type[db.cls_action.Action]: ...
 def initialise_base(file_path: pathlib.Path) -> None: ...
 def prepare_pdf(file: pathlib.Path) -> None: ...
 def process_inbox() -> None: ...

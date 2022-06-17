@@ -15,7 +15,6 @@ import dcr
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
-# pylint: disable=W0212
 # @pytest.mark.issue
 
 
@@ -27,13 +26,13 @@ def test_levenshtein_arabic():
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    upper_limit: int = 1200
+    upper_limit = 1200
 
     for prev in range(upper_limit):
         text_curr = f"Page {prev+1} of {str(upper_limit)}"
         text_prev = f"Page {prev} of {str(upper_limit)}"
 
-        distance: int = jellyfish.levenshtein_distance(
+        distance = jellyfish.levenshtein_distance(
             text_prev,
             text_curr,
         )
@@ -62,14 +61,14 @@ def test_levenshtein_roman():
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    upper_limit: int = 1200
-    upper_limit_roman: str = roman.toRoman(upper_limit)
+    upper_limit = 1200
+    upper_limit_roman = roman.toRoman(upper_limit)
 
     for prev in range(upper_limit):
         text_curr = f"Page {roman.toRoman(prev + 1)} of {upper_limit_roman}"
         text_prev = f"Page {roman.toRoman(prev)} of {upper_limit_roman}"
 
-        distance: int = jellyfish.levenshtein_distance(
+        distance = jellyfish.levenshtein_distance(
             text_prev,
             text_curr,
         )
@@ -108,7 +107,8 @@ def test_run_action_store_parse_result_in_json_coverage(verbose_parser: str, fxt
             (cfg.cls_setup.Setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "0"),
             (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "0"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, verbose_parser),
         ],
     )
@@ -165,7 +165,8 @@ def test_run_action_store_parse_result_in_json_coverage_page(fxtr_rmdir_opt, fxt
             (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "0"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "text"),
         ],
     )
@@ -271,8 +272,8 @@ def test_run_action_store_parse_result_in_json_missing_input_file(fxtr_setup_emp
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_missing_input_file <=========")
 
-    stem_name_1: str = "case_3_pdf_text_route_inbox_pdflib"
-    file_ext_1: str = "pdf"
+    stem_name_1 = "case_3_pdf_text_route_inbox_pdflib"
+    file_ext_1 = "pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[

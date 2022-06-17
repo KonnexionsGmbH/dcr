@@ -9,12 +9,13 @@
 
 | Version | Feature(s)                    | 
 |---------|-------------------------------|
-| 0.9.3   | Extending NLP capabilities    |
+| 0.9.4   | Extending NLP capabilities    |
 
 ### 1.2 Already implemented
 
 | Version | Feature(s)                             |
 |---------|----------------------------------------|
+| 0.9.3   | Extending NLP capabilities             |
 | 0.9.2   | Refactoring database and code          |
 | 0.9.1   | Core text preprocessing and wrangling  |
 | 0.9.0   | Parser                                 |

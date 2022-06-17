@@ -18,7 +18,7 @@ import utils
 # -----------------------------------------------------------------------------
 def test_get_file_type():
     """Test: get_file_type()."""
-    assert "" == utils.get_file_type(None)
+    assert utils.get_file_type(None) == ""
 
 
 # -----------------------------------------------------------------------------
@@ -26,7 +26,7 @@ def test_get_file_type():
 # -----------------------------------------------------------------------------
 def test_get_full_name():
     """Test: get_full_name()."""
-    assert "" == utils.get_full_name(None, None)
+    assert utils.get_full_name(None, None) == ""
 
     directory_name = pathlib.Path("D:/SoftDevelopment")
 
@@ -48,7 +48,7 @@ def test_get_os_independent_name():
 # -----------------------------------------------------------------------------
 def test_get_path_name():
     """Test: get_path_name()."""
-    assert "" == utils.get_path_name(None)
+    assert utils.get_path_name(None) == ""
 
 
 # -----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ def test_get_path_name():
 # -----------------------------------------------------------------------------
 def test_get_stem_name():
     """Test: get_stem_name()."""
-    assert "" == utils.get_stem_name(None)
+    assert utils.get_stem_name(None) == ""
 
 
 # -----------------------------------------------------------------------------
