@@ -673,25 +673,102 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
 ## 4 Line Typing Algorithms
 
-The document `line` granularity attempts to determine the headers and footers of the document by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}.
-This processing action is controlled by the following configuration parameters:
+The granularity of the document `line` tries to classify the individual lines or sentences.
+The possible line types are :
+
+| line type | Meaning                                           |
+|-----------|---------------------------------------------------|
+| b         | non-classifiable line, i.e. normal text body line |
+| f         | footer line                                       |
+| h         | header line                                       |
+| lb        | line of a bulleted list                           |
+| ln        | line of a numbered list                           |
+| tab       | non-classifiable line of a table                  |
+| toc       | line of a table of content                        |
+
+### 4.1 Footers
+
+The parameters that control the classification in footer lines are:
 
 - `line_footer_max_distance = 3`
 - `line_footer_max_lines = 3`
+
+#### 4.1.1 `line_footer_max_lines`
+
+This parameter controls the number of lines from the bottom of the page to be analyzed as possible candidates for footers.
+With the value zero the classification of footers is prevented.
+
+#### 4.1.2 `line_footer_max_distance`
+
+The degree of similarity of rows is determined by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
+The value zero stands for identical lines. 
+The larger the Levenshtein distance, the more different the rows are. 
+If the header lines do not contain a page numbers, then the parameter should be set to `0`.
+
+#### 4.1.3 Algorithm
+
+1. On all pages, the last line `n`, the line `n-1`, etc. are compared up to the maximum specified line. 
+2. The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.
+3. The line is considered a footer if, except for pages `1` and `2` and pages `n-1` and `n`, the Levenshtein distance is not greater than the specified maximum value.
+
+### 4.2 Header
+
+The parameters that control the classification in header lines are:
+
 - `line_header_max_distance = 3`
 - `line_header_max_lines = 3`
 
-**Example extract from granularity `line`**:
+#### 4.2.1 `line_header_max_lines`
 
-Possible line types are 
+This parameter controls the number of lines from the top of the page to be analyzed as possible candidates for headers.
+A value of zero prevents the classification of headers.
 
-- `h` header lines, 
-- `f` footer lines,
-- `t` toc (table of content) lines, and 
-- `b` for the remaining body lines.
+#### 4.2.2 `line_header_max_distance`
 
+The degree of similarity of rows is determined by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
+The value zero stands for identical lines. 
+The larger the Levenshtein distance, the more different the rows are. 
+If the footer lines contain a page number, then depending on the number of pages in the document, the following values are useful:
 
+| document pages | Levenshtein distance |
+|----------------|----------------------|
+ | < 10           | 1                    |
+ | < 100          | 2                    |
+ | < 1000         | 3                    |
 
-### 4.1 Footers & Header
+#### 4.2.3 Algorithm
 
-### 4.2 TOC (Table of Content)
+1. On all pages, the first line, the second line, etc. are compared up to the maximum specified line. 
+2. The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.
+3. The line is considered a header if, except for pages `1` and `2` and pages `n-1` and `n`, the Levenshtein distance is not greater than the specified maximum value.
+
+### 4.3 TOC (Table of Content)
+
+The parameters that control the classification in table of content are:
+
+- `toc_last_page = 3`
+- `toc_min_entries = 3`
+
+#### 4.3.1 `toc_last_page`
+
+This parameter sets the number of pages that will be searched for a table of contents from the beginning of the document.
+A value of zero prevents the search for a table of contents.
+
+#### 4.3.2 `toc_min_entries`
+
+This parameter defines the minimum number of entries that a table of contents must contain.
+
+#### 4.3.3 Algorithm
+
+1. **Table-based: a table with the following properties is searched for**:
+
+   - except for the first row, the last column of the table must contain an integer greater than zero,
+   - the number found there must be ascending,
+   - the number must not be greater than the last page number of the document, and
+   - if such a table was found, then the algorithm ends here
+
+2. **Line-based: a block of lines with the following properties is searched here**:
+
+   - the last token from each line must contain an integer greater than zero,
+   - the number found there must be ascending, and
+   - the number must not be greater than the last page number of the document.
