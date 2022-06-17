@@ -11,6 +11,7 @@ Release Date: 17.06.2022
 
 ### 1.1 New Features
 
+- Description of the algorithms for determining the line type.
 - Determination of the lines belonging to the TOC (Table of Content).
 
 ### 1.2 Modified Features

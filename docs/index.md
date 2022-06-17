@@ -52,11 +52,11 @@ During the next run with the same action, the faulty documents are also processe
 
 ### 2.1 Preprocessor
 
-### 2.1.1 Preprocessor Architecture
+#### 2.1.1 Preprocessor Architecture
 
 ![](img/architecture_preprocessor.png)
 
-### 2.1.2 Process the inbox directory (action: **`p_i`**)
+#### 2.1.2 Process the inbox directory (action: **`p_i`**)
 
 In the first action, the file directory **`inbox`** is checked for new document files. 
 An entry is created in the **`document`** database table for each new document, showing the current processing status of the document. 
@@ -67,14 +67,14 @@ Detailed information on this can be found in the chapter **Running DCR** in the 
 
 The new document files are processed based on their file extension as follows:
 
-#### 2.1.2.1 File extension **`pdf`**
+##### 2.1.2.1 File extension **`pdf`**
 
 The module **`fitz`** from package [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/module.html){:target="_blank"} is used to check whether the **`pdf`** document is a scanned image or not. 
 A **`pdf`** document consisting of a scanned image is marked for conversion from **`pdf`** format to an image format and moved to the file directory **`ìnbox_accepted`**.
 Other **`pdf`** documents are marked for further processing with the **`pdf`** parser and then also moved to the file directory **`ìnbox_accepted`**.
 If, however, when checking the **`pdf`** document with **`fitz`**, it turns out that the document with the file extension **`pdf`** is not really a **`pdf`** document, then the document is moved to the file directory **`inbox_rejected`**.
 
-#### 2.1.2.2 File extensions of documents for processing with [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}
+##### 2.1.2.2 File extensions of documents for processing with [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}
 
 Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and 
 marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}:
@@ -89,7 +89,7 @@ marked for converting to **`pdf`** format using [Pandoc](https://pandoc.org){:ta
 
 An exception are files with the file name **`README.md`**, which are ignored and not processed.
 
-#### 2.1.2.3 File extensions of documents for processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}
+##### 2.1.2.3 File extensions of documents for processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}
 
 Document files with the following file extensions are moved to the file directory **`ìnbox_accepted`** and marked for converting to **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}:
 
@@ -103,11 +103,11 @@ Document files with the following file extensions are moved to the file director
 - **`tiff`**
 - **`webp`**
 
-#### 2.1.2.4 Other file extensions of documents
+##### 2.1.2.4 Other file extensions of documents
 
 Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory **`ìnbox_rejected`**.
 
-### 2.1.3 Convert **`pdf`** documents to image files (action: **`p_2_i`**)
+#### 2.1.3 Convert **`pdf`** documents to image files (action: **`p_2_i`**)
 
 This processing action only has to be carried out if there are new **`pdf`** documents in the document input that only consist of scanned images.
 **`pdf`** documents consisting of scanned images must first be processed with OCR software in order to extract text they contain. 
@@ -119,25 +119,25 @@ The processing of the original document (parent document) is then completed and 
 Since an image file created here always contains only one page of a **`pdf`** document, a multi-page **`pdf`** document is distributed over several image files. 
 After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, these separated files are then combined into one **`pdf`** document.
 
-### 2.1.4 Convert appropriate image files to **`pdf`** files (action: **`ocr`**)
+#### 2.1.4 Convert appropriate image files to **`pdf`** files (action: **`ocr`**)
 
 This processing action only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.3.
 In this processing action, the documents of this document types are converted to the **`pdf`** format using [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}.
 
 After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, the files split in the previous processing action are combined into a single **`pdf`** document.
 
-### 2.1.5 Convert appropriate non-**`pdf`** documents to **`pdf`** files (action: **`n_2_p`**)
+#### 2.1.5 Convert appropriate non-**`pdf`** documents to **`pdf`** files (action: **`n_2_p`**)
 
 This processing action only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.2.
 In this processing action, the documents of this document types are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
 
 ### 2.2 Natural Language Processing (NLP)
 
-### 2.2.1 NLP Architecture
+#### 2.2.1 NLP Architecture
 
 ![](img/architecture_nlp.png)
 
-### 2.2.2 Extract text from **`pdf`** documents (action: **`tet`**)
+#### 2.2.2 Extract text from **`pdf`** documents (action: **`tet`**)
 
 In this processing action, the text of the **`pdf`** documents from sections 2.1.2.1, 2.1.4 and 2.1.5 are extracted and written to **`xml`** files in **`tetml`** format for each document.
 The [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} library is used for this purpose.
@@ -245,7 +245,7 @@ The `page` variant and the `word` variant are both optional.
         <Box llx="184.69" lly="671.52" urx="193.20" ury="685.44"/>
        </Word>
 
-### 2.2.3 Store the parser result in a JSON file (action: **`s_p_j`**)
+#### 2.2.3 Store the parser result in a JSON file (action: **`s_p_j`**)
 
 From the **xml** files of the granularity document `line` (`<file_name>_<doc_id>.line.xml`) or document `word` (`<file_name>_<doc_id>.word.xml`) created in the previous action, the text contained is now extracted with the existing metadata using **xml** parsing and stored in a **`JSON`** format in the database tables `content_tetml_line` and `content_tetml_word`.
 
@@ -423,7 +423,7 @@ The document `line` granularity attempts to type the lines. Details on this proc
                                 ]
                             },
 
-### 2.2.4 Create qualified document tokens (action: **`tkn`**)
+#### 2.2.4 Create qualified document tokens (action: **`tkn`**)
 
 For tokenisation, [spaCy](https://spacy.io/usage/models){:target="_blank"} is used. 
 
@@ -549,7 +549,7 @@ In the event of an error, the original document is marked as erroneous and an ex
 The processing actions are based on different flat files, each of which is generated from the original document on an action-related basis.
 Apart from the **`JSON`** files optionally created during the 'tokenizer' action, these can be automatically deleted after error-free processing.
 
-## 3.1 Action-related naming system
+### 3.1 Action-related naming system
 
 | Code    | Action                                        | File names                                            | 
 |---------|-----------------------------------------------|-------------------------------------------------------|
@@ -584,9 +584,9 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 | `pn`   | page number         |
 
 
-## 3.2 Examples
+### 3.2 Examples
 
-### 3.2.1 Possible intermediate files from a **`docx`** document:
+#### 3.2.1 Possible intermediate files from a **`docx`** document:
 
     case_2_docx_route_inbox_pandoc_pdflib_2.docx
 
@@ -602,7 +602,7 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_2_docx_route_inbox_pandoc_pdflib_2.line.token.json
 
-### 3.2.2 Possible intermediate files from a **`jpg`** document:
+#### 3.2.2 Possible intermediate files from a **`jpg`** document:
 
     case_6_jpg_route_inbox_tesseract_pdflib_6.jpg
 
@@ -618,7 +618,7 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_6_jpg_route_inbox_tesseract_pdflib_6.line.token.json
 
-### 3.2.3 Possible intermediate files from a proper **`pdf`** document:
+#### 3.2.3 Possible intermediate files from a proper **`pdf`** document:
 
     case_3_pdf_text_route_inbox_pdflib_3.pdf
 
@@ -632,7 +632,7 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_3_pdf_text_route_inbox_pdflib_3.line.token.json
 
-### 3.2.4 Possible intermediate files from a single page scanned image **`pdf`** document:
+#### 3.2.4 Possible intermediate files from a single page scanned image **`pdf`** document:
 
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4.pdf
 
@@ -650,7 +650,7 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.token.json
 
-### 3.2.5 Possible intermediate files from a multi page scanned image **`pdf`** document:
+#### 3.2.5 Possible intermediate files from a multi page scanned image **`pdf`** document:
 
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5.pdf
 
@@ -760,7 +760,7 @@ This parameter defines the minimum number of entries that a table of contents mu
 
 #### 4.3.3 Algorithm Table-based
 
-A table with the following properties is searched for**:
+A table with the following properties is searched for:
 
    - except for the first row, the last column of the table must contain an integer greater than zero,
    - the number found there must be ascending,
@@ -769,7 +769,7 @@ A table with the following properties is searched for**:
 
 #### 4.3.4 Algorithm Line-based
 
-A block of lines with the following properties is searched here**:
+A block of lines with the following properties is searched here:
 
    - the last token from each line must contain an integer greater than zero,
    - the number found there must be ascending, and
