@@ -5,18 +5,18 @@
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.3)
 
-## 1. Version 0.9.2
+## 1. Version 0.9.3
 
-Release Date: 01.06.2022
+Release Date: 17.06.2022
 
 ### 1.1 New Features
 
-- object-oriented design.
-- selectable spaCy token attributes completed.
+- Determination of the lines belonging to the TOC (Table of Content).
 
 ### 1.2 Modified Features
 
-- database schema refactored
+- Major refactoring of the tokenizer.
+- pylint: Adjustments for latest version.
 
 ### 1.3 Applied Software
 
@@ -52,7 +52,6 @@ Release Date: 01.06.2022
 | Ubuntu                                                          | 20.04.4 LTS     | base version              | upgrade |
 | Vim                                                             | 8.1.3741        | base version (optional)   |         |
 | Wget                                                            | 1.20.3          |                           |         |
-
 
 #### 1.3.2 Windows-specific Software
 

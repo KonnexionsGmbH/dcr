@@ -249,22 +249,9 @@ The `page` variant and the `word` variant are both optional.
 
 From the **xml** files of the granularity document `line` (`<file_name>_<doc_id>.line.xml`) or document `word` (`<file_name>_<doc_id>.word.xml`) created in the previous action, the text contained is now extracted with the existing metadata using **xml** parsing and stored in a **`JSON`** format in the database tables `content_tetml_line` and `content_tetml_word`.
 
-The document `line` granularity attempts to determine the headers and footers of the document by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}.
-This processing action is controlled by the following configuration parameters:
-
-- `line_footer_max_distance = 3`
-- `line_footer_max_lines = 3`
-- `line_header_max_distance = 3`
-- `line_header_max_lines = 3`
-
+The document `line` granularity attempts to type the lines. Details on this process can be found in section 4.
+  
 **Example extract from granularity `line`**:
-
-Possible line types are 
-
-- `h` header lines, 
-- `f` footer lines,
-- `t` toc (table of content) lines, and 
-- `b` for the remaining body lines.
 
     {
         "documentId": 1,
@@ -475,49 +462,87 @@ In the event of an error, the original document is marked as erroneous and an ex
 **Example extract from granularity `line`**:
 
     {
-      "documentId": 1,
-      "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
-      "noPagesInDoc": 6,
-      "pages": [
-        {
-          "pageNo": 1,
-          "noTokensInPage": 463,
-          "tokens": [
+        "documentId": 1,
+        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
+        "noPagesInDocument": 6,
+        "noParagraphsInDocument": 33,
+        "noSentencesInDocument": 121,
+        "noLinesInDocument": 242,
+        "noTokensInDocument": 1085,
+        "pages": [
             {
-              "tknEntIob_": "B",
-              "tknEntType_": "DATE",
-              "tknI": 0,
-              "tknIsDigit": true,
-              "tknIsOov": true,
-              "tknIsSentStart": true,
-              "tknLemma_": "1812",
-              "tknLikeNum": true,
-              "tknNorm_": "1812",
-              "tknPos_": "NUM",
-              "tknTag_": "CD",
-              "tknText": "1812"
-            },
-            {
-              "tknEntIob_": "O",
-              "tknI": 1,
-              "tknIsOov": true,
-              "tknLemma_": "\n",
-              "tknNorm_": "\n",
-              "tknPos_": "SPACE",
-              "tknTag_": "_SP",
-              "tknText": "\n"
-            },
-            {
-              "tknEntIob_": "B",
-              "tknEntType_": "WORK_OF_ART",
-              "tknI": 2,
-              "tknIsOov": true,
-              "tknLemma_": "GRIMM",
-              "tknNorm_": "grimm",
-              "tknPos_": "PROPN",
-              "tknTag_": "NNP",
-              "tknText": "GRIMM"
-            },
+                "pageNo": 1,
+                "noParagraphsInPage": 8,
+                "noSentencesInPage": 19,
+                "noLinesInPage": 36,
+                "noTokensInPage": 174,
+                "paragraphs": [
+                    {
+                        "paragraphNo": 2,
+                        "noSentencesInParagraph": 1,
+                        "noLinesInParagraph": 1,
+                        "noTokensInParagraph": 1,
+                        "sentences": [
+                            {
+                                "sentenceNo": 1,
+                                "lowerLeftX": 126.0,
+                                "noTokensInSentence": 1,
+                                "text": "1812",
+                                "tokens": [
+                                    {
+                                        "tknEntIob_": "B",
+                                        "tknEntType_": "DATE",
+                                        "tknI": 0,
+                                        "tknIsDigit": true,
+                                        "tknIsOov": true,
+                                        "tknIsSentEnd": true,
+                                        "tknIsSentStart": true,
+                                        "tknLemma_": "1812",
+                                        "tknLikeNum": true,
+                                        "tknNorm_": "1812",
+                                        "tknPos_": "NUM",
+                                        "tknTag_": "CD",
+                                        "tknText": "1812"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "paragraphNo": 3,
+                        "noSentencesInParagraph": 1,
+                        "noLinesInParagraph": 3,
+                        "noTokensInParagraph": 10,
+                        "sentences": [
+                            {
+                                "sentenceNo": 1,
+                                "lowerLeftX": 126.0,
+                                "noTokensInSentence": 10,
+                                "text": "GRIMM\u2019S FAIRY TALES CINDERELLA Jacob Ludwig Grimm and Wilhelm Carl Grimm",
+                                "tokens": [
+                                    {
+                                        "tknEntIob_": "B",
+                                        "tknEntType_": "PERSON",
+                                        "tknI": 0,
+                                        "tknIsOov": true,
+                                        "tknIsSentStart": true,
+                                        "tknLemma_": "GRIMM",
+                                        "tknNorm_": "grimm",
+                                        "tknPos_": "PROPN",
+                                        "tknTag_": "NNP",
+                                        "tknText": "GRIMM"
+                                    },
+                                    {
+                                        "tknEntIob_": "O",
+                                        "tknI": 2,
+                                        "tknIsOov": true,
+                                        "tknLemma_": "fairy",
+                                        "tknNorm_": "fairy",
+                                        "tknPos_": "ADJ",
+                                        "tknTag_": "JJ",
+                                        "tknText": "FAIRY",
+                                        "tknWhitespace_": " "
+                                    },
 
 ## 3. Naming system of the auxiliary files
 
@@ -645,3 +670,28 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.xml
 
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.token.json
+
+## 4 Line Typing Algorithms
+
+The document `line` granularity attempts to determine the headers and footers of the document by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}.
+This processing action is controlled by the following configuration parameters:
+
+- `line_footer_max_distance = 3`
+- `line_footer_max_lines = 3`
+- `line_header_max_distance = 3`
+- `line_header_max_lines = 3`
+
+**Example extract from granularity `line`**:
+
+Possible line types are 
+
+- `h` header lines, 
+- `f` footer lines,
+- `t` toc (table of content) lines, and 
+- `b` for the remaining body lines.
+
+
+
+### 4.1 Footers & Header
+
+### 4.2 TOC (Table of Content)

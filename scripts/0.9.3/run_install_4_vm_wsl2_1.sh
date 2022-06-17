@@ -16,11 +16,11 @@ export CURRENT_PATH=$(pwd)
 
 export VERSION_DCR_DEV=0.9.3
 
-export VERSION_DBEAVER=22.0.5
-export VERSION_HTOP=3.2.0
+export VERSION_DBEAVER=22.1.0
+export VERSION_HTOP=3.2.1
 export VERSION_PANDOC=2.18
-export VERSION_PYTHON3=3.10.4
-export VERSION_TMUX=3.2a
+export VERSION_PYTHON3=3.10.5
+export VERSION_TMUX=3.3a
 
 if [ -z "$1" ]; then
     echo "=============================================================================="

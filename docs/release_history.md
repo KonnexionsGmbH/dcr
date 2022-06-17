@@ -3,6 +3,71 @@
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 
+## Version 0.9.2
+
+Release Date: 01.06.2022
+
+### 1 New Features
+
+- object-oriented design.
+- selectable spaCy token attributes completed.
+
+### 2 Modified Features
+
+- database schema refactored
+
+### 3 Applied Software
+
+| Software                                                                      | Version                | Remark                              | Status  |
+|:------------------------------------------------------------------------------|:-----------------------|:------------------------------------|---------|
+| DBeaver                                                                       | 22.0.5                 | for virtual machine only [optional] | upgrade |
+| Docker Desktop                                                                | 20.10.16               | base version [Docker Image & VM]    | upgrade | 
+| Git                                                                           | 2.25.1                 | base version                        |         |
+| [Pandoc](https://pandoc.org){:target="_blank"}                                | 2.18                   |                                     |         |
+| [PFlib TET](https://www.pdflib.com/products/tet){:target="_blank"}            | 5.3                    |                                     |         |
+| [Poppler](https://poppler.freedesktop.org){:target="_blank"}                  | 0.86.1                 | base version                        |         |
+| Python3                                                                       | 3.10.4                 |                                     |         |
+| Python3 - pip                                                                 | 22.0.4                 |                                     |         |
+| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} | 5.1.0                  | base version                        |         |
+| [TeX Live](https://www.tug.org/texlive){:target="_blank"}                     | 2019                   | base version                        |         |
+| [TeX Live](https://www.tug.org/texlive){:target="_blank"} - pdfTeX            | 3.14159265-2.6-1.40.20 | base version                        |         |
+
+#### 3.1 Unix-specific Software
+
+| Software                                                        | Version         | Remark                    | Status  |
+|:----------------------------------------------------------------|:----------------|:--------------------------|---------|
+| asdf                                                            | v0.10.1-711ad99 | base version (optional)   | upgrade |
+| cURL                                                            | 7.68.0          | base version              |         |
+| dos2unix                                                        | 7.4.0           | base version              |         |
+| GCC & G++                                                       | 9.4.0           | base version              |         |
+| GNU Autoconf                                                    | 2.69            | base version              |         |
+| GNU Automake                                                    | 1.16.1          | base version              |         |
+| GNU make                                                        | 4.2.1           | base version              |         |
+| [htop](https://htop.dev){:target="_blank"}                      | 3.2.0           | optional                  |         |
+| [OpenSSL](https://www.openssl.org){:target="_blank"}            | 1.1.1f          | base version              |         |
+| [procps](https://github.com/warmchang/procps){:target="_blank"} | 3.3.16          | base version (optional)   |         |
+| [tmux](https://github.com/tmux/tmux/wiki){:target="_blank"}     | 3.2a            | optional                  |         |
+| Ubuntu                                                          | 20.04.4 LTS     | base version              | upgrade |
+| Vim                                                             | 8.1.3741        | base version (optional)   |         |
+| Wget                                                            | 1.20.3          |                           |         |
+
+
+#### 3.2 Windows-specific Software
+
+| Software                                                                                | Version | Remark                   | Status |
+|:----------------------------------------------------------------------------------------|:--------|:-------------------------|--------|
+| [Grep for Windows](http://gnuwin32.sourceforge.net/packages/grep.htm){:target="_blank"} | 2.5.4   | base version             |        |
+| [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} | 3.81    | base version             |        |
+| [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}   | 4.2.1   | base version             |        |
+
+### 1.4 Open issues
+
+1. Microsoft Windows Server 2019: (see [here](#issues_windows_2019){:target="_blank"}) 
+
+2. MkApi: (see [here](#issues_mkapi){:target="_blank"})
+
+3. Tesseract OCR: (see [here](#issues_tesseract_ocr){:target="_blank"})
+
 ## Version 0.9.1
 
 Release Date: 05.05.2022
