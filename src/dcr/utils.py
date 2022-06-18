@@ -302,6 +302,19 @@ def progress_msg_line_type_headers_footers(msg: str) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Create a heading line_type progress message.
+# -----------------------------------------------------------------------------
+def progress_msg_line_type_heading(msg: str) -> None:
+    """Create a heading line_type progress message.
+
+    Args:
+        msg (str): Progress message.
+    """
+    if cfg.glob.setup.is_verbose_line_type_heading:
+        progress_msg_core(msg)
+
+
+# -----------------------------------------------------------------------------
 # Create a TOC line_type progress message.
 # -----------------------------------------------------------------------------
 def progress_msg_line_type_toc(msg: str) -> None:

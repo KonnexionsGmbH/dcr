@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 100
+    _CONFIG_PARAM_NO = 102
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -40,6 +40,7 @@ class Setup:
     _DCR_CFG_DIRECTORY_INBOX_REJECTED: ClassVar[str] = "directory_inbox_rejected"
     _DCR_CFG_DOC_ID_IN_FILE_NAME: ClassVar[str] = "doc_id_in_file_name"
     _DCR_CFG_FILE: ClassVar[str] = "setup.cfg"
+    _DCR_CFG_HEADING_MAX_LEVEL: ClassVar[str] = "heading_max_level"
     _DCR_CFG_IGNORE_DUPLICATES: ClassVar[str] = "ignore_duplicates"
     _DCR_CFG_INITIAL_DATABASE_DATA: ClassVar[str] = "initial_database_data"
     _DCR_CFG_JSON_INDENT: ClassVar[str] = "json_indent"
@@ -127,6 +128,7 @@ class Setup:
     _DCR_CFG_TOKENIZE_TOC: ClassVar[str] = "tokenize_toc"
     _DCR_CFG_VERBOSE: ClassVar[str] = "verbose"
     _DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS: ClassVar[str] = "verbose_line_type_headers_footers"
+    _DCR_CFG_VERBOSE_LINE_TYPE_HEADING: ClassVar[str] = "verbose_line_type_heading"
     _DCR_CFG_VERBOSE_LINE_TYPE_TOC: ClassVar[str] = "verbose_line_type_toc"
     _DCR_CFG_VERBOSE_PARSER: ClassVar[str] = "verbose_parser"
 
@@ -169,6 +171,7 @@ class Setup:
         self.directory_inbox_accepted = utils.get_os_independent_name("data/inbox_accepted")
         self.directory_inbox_rejected = utils.get_os_independent_name("data/inbox_rejected")
         self.doc_id_in_file_name = "none"
+        self.heading_max_level = 5
         self.initial_database_data = utils.get_os_independent_name("data/initial_database_data.json")
         self.is_delete_auxiliary_files = True
         self.is_ignore_duplicates = False
@@ -243,6 +246,7 @@ class Setup:
         self.is_tokenize_toc = False
         self.is_verbose = True
         self.is_verbose_line_type_headers_footers = False
+        self.is_verbose_line_type_heading = False
         self.is_verbose_line_type_toc = False
         self.json_indent = 4
         self.line_footer_max_distance = 3
@@ -348,6 +352,7 @@ class Setup:
         self._check_config_tokenize_toc()
         self._check_config_verbose()
         self._check_config_verbose_line_type_headers_footers()
+        self._check_config_verbose_line_type_heading()
         self._check_config_verbose_line_type_toc()
         self._check_config_verbose_parser()
 
@@ -1108,6 +1113,15 @@ class Setup:
                 self.is_verbose_line_type_toc = True
 
     # -----------------------------------------------------------------------------
+    # Check the configuration parameter - verbose_line_type_heading.
+    # -----------------------------------------------------------------------------
+    def _check_config_verbose_line_type_heading(self) -> None:
+        """Check the configuration parameter - verbose_line_type_heading."""
+        if Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING in self._config:
+            if str(self._config[Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING]).lower() == "true":
+                self.is_verbose_line_type_heading = True
+
+    # -----------------------------------------------------------------------------
     # Check the configuration parameter - verbose_parser.
     # -----------------------------------------------------------------------------
     def _check_config_verbose_parser(self) -> None:
@@ -1262,10 +1276,13 @@ class Setup:
                     | Setup._DCR_CFG_TOKENIZE_TOC
                     | Setup._DCR_CFG_VERBOSE
                     | Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS
+                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING
                     | Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC
                     | Setup._DCR_CFG_VERBOSE_PARSER
                 ):
                     continue
+                case Setup._DCR_CFG_HEADING_MAX_LEVEL:
+                    self.heading_max_level = int(item)
                 case Setup._DCR_CFG_INITIAL_DATABASE_DATA:
                     self.initial_database_data = utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_JSON_INDENT:

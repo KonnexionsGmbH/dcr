@@ -500,6 +500,44 @@ def check_param_verbose_line_type_headers_footers():
 
 
 # -----------------------------------------------------------------------------
+# Check parameter VERBOSE_LINE_TYPE_HEADING - False.
+# -----------------------------------------------------------------------------
+def check_param_verbose_line_type_heading():
+    """Check parameter VERBOSE_LINE_TYPE_HEADING - False."""
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert not cfg.glob.setup.is_verbose_line_type_heading, "DCR_CFG_VERBOSE_LINE_TYPE_HEADING: false (not true)"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "tRUE"),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert cfg.glob.setup.is_verbose_line_type_heading, "DCR_CFG_VERBOSE_LINE_TYPE_HEADING: true"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+
+# -----------------------------------------------------------------------------
 # Check parameter VERBOSE_LINE_TYPE_TOC - False.
 # -----------------------------------------------------------------------------
 def check_param_verbose_line_type_toc():
@@ -694,7 +732,7 @@ def test_get_config_logical_false(fxtr_setup_logger_environment):
     check_param_tokenize_toc()
 
     check_param_verbose_line_type_headers_footers()
-
+    check_param_verbose_line_type_heading()
     check_param_verbose_line_type_toc()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

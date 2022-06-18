@@ -1333,7 +1333,6 @@ def test_missing_dependencies_tokenizer_spacy_document(fxtr_setup_empty_db_and_i
 # -----------------------------------------------------------------------------
 # Test Function - missing dependencies - tokenizer_spacy - Setup.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_missing_dependencies_tokenizer_spacy_setup(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing dependencies - tokenizer_spacy - Setup."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

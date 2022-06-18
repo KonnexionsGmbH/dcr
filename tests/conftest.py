@@ -564,6 +564,7 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_TOC, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
     ):
