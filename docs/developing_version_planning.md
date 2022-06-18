@@ -7,14 +7,15 @@
 
 ### 1.1 Open
 
-| Version | Feature(s)                    | 
-|---------|-------------------------------|
-| 0.9.4   | Extending NLP capabilities    |
+| Version | Feature(s) | 
+|---------|------------|
+| 0.9.5   | TBD        |
 
 ### 1.2 Already implemented
 
 | Version | Feature(s)                             |
 |---------|----------------------------------------|
+| 0.9.4   | Extending NLP capabilities    |
 | 0.9.3   | Extending NLP capabilities             |
 | 0.9.2   | Refactoring database and code          |
 | 0.9.1   | Core text preprocessing and wrangling  |
