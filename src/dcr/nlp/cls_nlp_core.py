@@ -25,6 +25,8 @@ class NLPCore:
     JSON_NAME_COLUMN_SPAN: ClassVar[str] = "columnSpan"
     JSON_NAME_DOC_FILE_NAME: ClassVar[str] = "documentFileName"
     JSON_NAME_DOC_ID: ClassVar[str] = "documentId"
+    JSON_NAME_HEADING_LEVEL: ClassVar[str] = "headingLevel"
+    JSON_NAME_HEADING_TEXT: ClassVar[str] = "headingText"
     JSON_NAME_LINES: ClassVar[str] = "lines"
     JSON_NAME_LINE_INDEX_PAGE: ClassVar[str] = "lineIndexPage"
     JSON_NAME_LINE_INDEX_PARA: ClassVar[str] = "lineIndexParagraph"
@@ -59,6 +61,7 @@ class NLPCore:
     JSON_NAME_SENTS: ClassVar[str] = "sentences"
     JSON_NAME_SENT_NO: ClassVar[str] = "sentenceNo"
     JSON_NAME_TEXT: ClassVar[str] = "text"
+    JSON_NAME_TOC: ClassVar[str] = "toc"
     JSON_NAME_TOKENS: ClassVar[str] = "tokens"
 
     JSON_NAME_TOKEN_CLUSTER: ClassVar[str] = "tknCluster"

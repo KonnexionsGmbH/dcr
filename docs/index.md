@@ -425,7 +425,7 @@ The document `line` granularity attempts to type the lines. Details on this proc
 
 #### 2.2.4 Create qualified document tokens (action: **`tkn`**)
 
-For tokenisation, [spaCy](https://spacy.io/usage/models){:target="_blank"} is used. 
+For tokenization, [spaCy](https://spacy.io/usage/models){:target="_blank"} is used. 
 
 The document text is made available to spaCy page by page.
 Either the granularity document `line` or document `page` can be used for this.
@@ -551,30 +551,30 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
 ### 3.1 Action-related naming system
 
-| Code    | Action                                        | File names                                            | 
-|---------|-----------------------------------------------|-------------------------------------------------------|
-| `p_i`   | process the inbox directory                   | `in :` `<ost>.<oft>`                                  |                                      
-|         |                                               | `out:` `<ost>_<di>.<oft> `                            |                                       
-| `p_2_i` | convert pdf documents to image files          | `in :` `<ost>_<di>.pdf`                               |                                       
-|         |                                               | `out:` `<ost>_<di>.<jpeg / png>`                      |                                       
-| `ocr`   | convert image files to pdf documents          | `in :` `<ost>_<di>.<oft>`                             | `                                     
-|         |                                               | `or :` `<ost>_<di>.<jpeg / png>`                      |                                       
-|         |                                               | `out:` `<ost>_<di>_<pn>.pdf`                          |                                       
-|         |                                               | `and:` `<ost>_<di>_0.pdf`                             |                                       
-| `n_2_p` | convert non-pdf documents to pdf documents    | `in :` `<ost>_<di>.<oft>`                             |                                       
-|         |                                               | `out:` `<ost>_<di>.pdf`                               |                                      
-| `tet`   | extract text and metdata from pdf documents   | `in :` `<ost>_<di>[_<pn> / _0].pdf`                   |                                       
-|         |                                               | `out:` `<ost>_<di>[_<pn> / _0]_line.xml`              |                                       
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_page.xml`              |                                       
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_word.xml`              |                                       
-| `s_p_j` | store the parser result in a **`JSON`** file  | `in :` `<ost>_<di>[_<pn> / _0]_line.xml`              |                                       
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_page.xml`              |                                     
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_word.xml`              |                                     
-|         |                                               | `out:` `<ost>_<di>[_<pn> / _0]_line.json`             |                                      
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_page.json`             |                                     
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_word.json`             |                                     
-| `tkn`   | create qualified document tokens              | `in :` `<ost>_<di>[_<pn> / _0]_line.json`             |                                      
-|         |                                               | `out:` `<ost>_<di>[_<pn> / _0]_line_token.json`       |                                      
+| Code    | Action                                       | File names                                            | 
+|---------|----------------------------------------------|-------------------------------------------------------|
+| `p_i`   | process the inbox directory                  | `in :` `<ost>.<oft>`                                  |                                      
+|         |                                              | `out:` `<ost>_<di>.<oft> `                            |                                       
+| `p_2_i` | convert pdf documents to image files         | `in :` `<ost>_<di>.pdf`                               |                                       
+|         |                                              | `out:` `<ost>_<di>.<jpeg / png>`                      |                                       
+| `ocr`   | convert image files to pdf documents         | `in :` `<ost>_<di>.<oft>`                             | `                                     
+|         |                                              | `or :` `<ost>_<di>.<jpeg / png>`                      |                                       
+|         |                                              | `out:` `<ost>_<di>_<pn>.pdf`                          |                                       
+|         |                                              | `and:` `<ost>_<di>_0.pdf`                             |                                       
+| `n_2_p` | convert non-pdf documents to pdf documents   | `in :` `<ost>_<di>.<oft>`                             |                                       
+|         |                                              | `out:` `<ost>_<di>.pdf`                               |                                      
+| `tet`   | extract text and metadata from pdf documents | `in :` `<ost>_<di>[_<pn> / _0].pdf`                   |                                       
+|         |                                              | `out:` `<ost>_<di>[_<pn> / _0]_line.xml`              |                                       
+|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_page.xml`              |                                       
+|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_word.xml`              |                                       
+| `s_p_j` | store the parser result in a **`JSON`** file | `in :` `<ost>_<di>[_<pn> / _0]_line.xml`              |                                       
+|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_page.xml`              |                                     
+|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_word.xml`              |                                     
+|         |                                              | `out:` `<ost>_<di>[_<pn> / _0]_line.json`             |                                      
+|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_page.json`             |                                     
+|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_word.json`             |                                     
+| `tkn`   | create qualified document tokens             | `in :` `<ost>_<di>[_<pn> / _0]_line.json`             |                                      
+|         |                                              | `out:` `<ost>_<di>[_<pn> / _0]_line_token.json`       |                                      
 
 | Abbr.  | Meaning             |
 |--------|---------------------|
@@ -681,6 +681,7 @@ The possible line types are :
 | b         | non-classifiable line, i.e. normal text body line |
 | f         | footer line                                       |
 | h         | header line                                       |
+| h_9       | level 9 heading line                              |
 | lb        | line of a bulleted list                           |
 | ln        | line of a numbered list                           |
 | tab       | non-classifiable line of a table                  |
@@ -700,7 +701,7 @@ With the value zero the classification of footers is prevented.
 
 #### 4.1.2 `line_footer_max_distance`
 
-The degree of similarity of rows is determined by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
+The degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
 The value zero stands for identical lines. 
 The larger the Levenshtein distance, the more different the rows are. 
 If the header lines do not contain a page numbers, then the parameter should be set to `0`.
@@ -725,7 +726,7 @@ A value of zero prevents the classification of headers.
 
 #### 4.2.2 `line_header_max_distance`
 
-The degree of similarity of rows is determined by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
+The degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
 The value zero stands for identical lines. 
 The larger the Levenshtein distance, the more different the rows are. 
 If the footer lines contain a page number, then depending on the number of pages in the document, the following values are useful:

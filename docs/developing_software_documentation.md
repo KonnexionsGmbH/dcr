@@ -20,7 +20,7 @@ In this format, the API documentation can then be integrated into the user docum
 
     Package libs: DCR libraries.
 
-**Module Dokumentation**:
+**Module Documentation**:
 
     Module pp.inbox: Check and distribute incoming documents.
   
@@ -64,7 +64,7 @@ In this format, the API documentation can then be integrated into the user docum
 
 In Visual Studio Code, the [VSCode Python Docstring Generator](https://github.com/NilsJPWerner/autoDocstring){:target="_blank"} tool can be used to create a framework for API documentation.
 
-### 3. User Documention
+### 3. User Documentation
 
 The remaining documents for the user documentation can be found in the file directory **`docs`** in Markdown format:
 

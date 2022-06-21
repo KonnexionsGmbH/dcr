@@ -87,7 +87,7 @@ The existing entries can be modified or deleted, but new entries can also be add
 
 This file controls the logging behaviour of the application. 
 
-**Deault content**:
+**Default content**:
 
     version: 1
     
@@ -139,7 +139,10 @@ The customisable entries are:
     directory_inbox_accepted = data/inbox_prod_accepted
     directory_inbox_rejected = data/inbox_prod_rejected
     doc_id_in_file_name = none
-    heading_max_level = 5
+    heading_create_toc = true
+    heading_max_level = 3
+    heading_min_pages = 2
+    heading_tolerance_x = 5
     ignore_duplicates = false
     initial_database_data = data/initial_database_data.json
     json_indent = 4
@@ -183,7 +186,10 @@ The customisable entries are:
 | directory_inbox_accepted          | **`data/inbox_prod_accepted`**        | Directory for the accepted documents.                                                                           |
 | directory_inbox_rejected          | **`data/inbox_prod_rejected`**        | Complete file name for the **`JSON`** file with the <br>database initialisation data.                           |
 | doc_id_in_file_name               | **`none`**                            | Position of the document id in the file name : <br>**`after`**, **`before`** or **`none`**.                     |
-| heading_max_level                 | **`5`**                               | Maximum level of the heading structure.                                                                         |
+| heading_create_toc                | **`true`**                            | Create a separate **`JSON`** file with the table of contents.                                                   |
+| heading_max_level                 | **`3`**                               | Maximum level of the heading structure.                                                                         |
+| heading_min_pages                 | **`2`**                               | Minimum number of pages to determine the headings.                                                              |
+| heading_tolerance_x               | **`5`**                               | Tolerance of vertical indentation in percent.                                                                   |
 | ignore_duplicates                 | **`false`**                           | Accept presumably duplicated documents <br/>based on a SHA256 hash key.                                         |
 | initial_database_data             | **`data/initial_database_data.json`** | File with initial database contents.                                                                            |
 | json_indent                       | **`4`**                               | Improves the readability of the **`JSON`** file.                                                                |
@@ -227,6 +233,10 @@ The configuration parameters can be set differently for the individual environme
     directory_inbox_accepted = data/inbox_dev_accepted
     directory_inbox_rejected = data/inbox_dev_rejected
     doc_id_in_file_name = none
+    heading_create_toc = true
+    heading_max_level = 3
+    heading_min_pages = 2
+    heading_tolerance_x = 5
     ignore_duplicates = false
     initial_database_data = data/initial_database_data_dev.json
     line_footer_max_distance = 3
@@ -266,6 +276,10 @@ The configuration parameters can be set differently for the individual environme
     directory_inbox_accepted = data/inbox_test_accepted
     directory_inbox_rejected = data/inbox_test_rejected
     doc_id_in_file_name = after
+    heading_create_toc = true
+    heading_max_level = 3
+    heading_min_pages = 2
+    heading_tolerance_x = 5
     ignore_duplicates = false
     initial_database_data = data/initial_database_data_test.json
     line_footer_max_distance = 3

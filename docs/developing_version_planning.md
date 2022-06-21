@@ -15,7 +15,7 @@
 
 | Version | Feature(s)                             |
 |---------|----------------------------------------|
-| 0.9.4   | Extending NLP capabilities    |
+| 0.9.4   | Extending NLP capabilities             |
 | 0.9.3   | Extending NLP capabilities             |
 | 0.9.2   | Refactoring database and code          |
 | 0.9.1   | Core text preprocessing and wrangling  |
@@ -62,7 +62,7 @@
 - error handling - highly defensive
 - inbox.py - process_inbox() - processing ocr & non-ocr in the same method
 - introduce default language
-- introduce document language - eventually inbox subfolder per language
+- introduce document language - eventually inbox sub folder per language
 - load initialisation data
 - optionally save the original document in the database
 - parser result with JSON 

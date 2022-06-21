@@ -26,13 +26,13 @@
 
    2. Grant of Rights
 
-      (a)  Copyright Grant- Subject to the terms of this license, including the license 
+      (a)  Copyright Grant - Subject to the terms of this license, including the license 
            conditions and limitations in section 3, each contributor grants you a non-
            exclusive, worldwide, royalty-free copyright license to reproduce its 
            contribution, prepare derivative works of its contribution, and distribute 
            its contribution or any derivative works that you create.
 
-      (b)  Patent Grant- Subject to the terms of this license, including the license 
+      (b)  Patent Grant - Subject to the terms of this license, including the license 
            conditions and limitations in section 3, each contributor grants you a non-
            exclusive, worldwide, royalty-free license under its licensed patents to 
            make, have made, use, sell, offer for sale, import, and/or otherwise dispose
@@ -41,7 +41,7 @@
 
    3. Conditions and Limitations
 
-      (a)  No Trademark License- This license does not grant you rights to use any 
+      (a)  No Trademark License - This license does not grant you rights to use any 
            contributors' name, logo, or trademarks.
 
       (b)  If you bring a patent claim against any contributor over patents that you 

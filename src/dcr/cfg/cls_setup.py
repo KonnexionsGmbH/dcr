@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 102
+    _CONFIG_PARAM_NO = 105
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -40,7 +40,10 @@ class Setup:
     _DCR_CFG_DIRECTORY_INBOX_REJECTED: ClassVar[str] = "directory_inbox_rejected"
     _DCR_CFG_DOC_ID_IN_FILE_NAME: ClassVar[str] = "doc_id_in_file_name"
     _DCR_CFG_FILE: ClassVar[str] = "setup.cfg"
+    _DCR_CFG_HEADING_CREATE_TOC: ClassVar[str] = "heading_create_toc"
     _DCR_CFG_HEADING_MAX_LEVEL: ClassVar[str] = "heading_max_level"
+    _DCR_CFG_HEADING_MIN_PAGES: ClassVar[str] = "heading_min_pages"
+    _DCR_CFG_HEADING_TOLERANCE_X: ClassVar[str] = "heading_tolerance_x"
     _DCR_CFG_IGNORE_DUPLICATES: ClassVar[str] = "ignore_duplicates"
     _DCR_CFG_INITIAL_DATABASE_DATA: ClassVar[str] = "initial_database_data"
     _DCR_CFG_JSON_INDENT: ClassVar[str] = "json_indent"
@@ -171,9 +174,12 @@ class Setup:
         self.directory_inbox_accepted = utils.get_os_independent_name("data/inbox_accepted")
         self.directory_inbox_rejected = utils.get_os_independent_name("data/inbox_rejected")
         self.doc_id_in_file_name = "none"
-        self.heading_max_level = 5
+        self.heading_max_level = 3
+        self.heading_min_pages = 2
+        self.heading_tolerance_x = 5
         self.initial_database_data = utils.get_os_independent_name("data/initial_database_data.json")
         self.is_delete_auxiliary_files = True
+        self.is_heading_create_toc = True
         self.is_ignore_duplicates = False
         self.is_json_sort_keys = False
         self.is_line_footer_preferred = True
@@ -277,6 +283,7 @@ class Setup:
         self._check_config_directory_inbox_accepted()
         self._check_config_directory_inbox_rejected()
         self._check_config_doc_id_in_file_name()
+        self._check_config_heading_create_toc()
         self._check_config_ignore_duplicates()
         self._check_config_json_sort_keys()
         self._check_config_pdf2image_type()
@@ -417,6 +424,15 @@ class Setup:
         if Setup._DCR_CFG_DOC_ID_IN_FILE_NAME in self._config:
             if str(self._config[Setup._DCR_CFG_DOC_ID_IN_FILE_NAME]).lower() in {"after", "before"}:
                 self.doc_id_in_file_name = str(self._config[Setup._DCR_CFG_DOC_ID_IN_FILE_NAME]).lower()
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - heading_create_toc.
+    # -----------------------------------------------------------------------------
+    def _check_config_heading_create_toc(self) -> None:
+        """Check the configuration parameter - heading_create_toc."""
+        if Setup._DCR_CFG_HEADING_CREATE_TOC in self._config:
+            if str(self._config[Setup._DCR_CFG_HEADING_CREATE_TOC]).lower() == "false":
+                self.is_heading_create_toc = False
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - ignore_duplicates.
@@ -1201,6 +1217,7 @@ class Setup:
                     | Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
                     | Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
                     | Setup._DCR_CFG_DOC_ID_IN_FILE_NAME
+                    | Setup._DCR_CFG_HEADING_CREATE_TOC
                     | Setup._DCR_CFG_IGNORE_DUPLICATES
                     | Setup._DCR_CFG_JSON_SORT_KEYS
                     | Setup._DCR_CFG_PDF2IMAGE_TYPE
@@ -1283,6 +1300,10 @@ class Setup:
                     continue
                 case Setup._DCR_CFG_HEADING_MAX_LEVEL:
                     self.heading_max_level = int(item)
+                case Setup._DCR_CFG_HEADING_MIN_PAGES:
+                    self.heading_min_pages = int(item)
+                case Setup._DCR_CFG_HEADING_TOLERANCE_X:
+                    self.heading_tolerance_x = int(item)
                 case Setup._DCR_CFG_INITIAL_DATABASE_DATA:
                     self.initial_database_data = utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_JSON_INDENT:

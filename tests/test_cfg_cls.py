@@ -61,6 +61,44 @@ def check_param_delete_auxiliary_files():
 
 
 # -----------------------------------------------------------------------------
+# Check parameter HEADING_CREATE_TOC - True.
+# -----------------------------------------------------------------------------
+def check_param_heading_create_toc():
+    """Check parameter HEADING_CREATE_TOC - True."""
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_CREATE_TOC, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert cfg.glob.setup.is_heading_create_toc, "DCR_CFG_HEADING_CREATE_TOC: true (not false)"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_CREATE_TOC, "fALSE"),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert not cfg.glob.setup.is_heading_create_toc, "DCR_CFG_HEADING_CREATE_TOC: false"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+
+# -----------------------------------------------------------------------------
 # Check parameter IGNORE_DUPLICATES - False.
 # -----------------------------------------------------------------------------
 def check_param_ignore_duplicates():
@@ -717,6 +755,8 @@ def test_get_config_logical_false(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     check_param_complete()
+
+    check_param_heading_create_toc()
 
     check_param_ignore_duplicates()
 

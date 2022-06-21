@@ -992,6 +992,14 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_CREATE_TOC, "false"),
+        ],
+    )
+
+    # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
             ("docx_ok", "docx"),
@@ -1009,6 +1017,11 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
     db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_deleted <=========")
@@ -1068,6 +1081,14 @@ def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and
 def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = false."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_CREATE_TOC, "false"),
+        ],
+    )
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -1147,6 +1168,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_CREATE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
         ],

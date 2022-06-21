@@ -70,6 +70,7 @@ class Document:
     DOCUMENT_LINE_TYPE_BODY: ClassVar[str] = "b"
     DOCUMENT_LINE_TYPE_FOOTER: ClassVar[str] = "f"
     DOCUMENT_LINE_TYPE_HEADER: ClassVar[str] = "h"
+    DOCUMENT_LINE_TYPE_HEADING: ClassVar[str] = "h_"
     DOCUMENT_LINE_TYPE_LIST_BULLETED: ClassVar[str] = "lb"
     DOCUMENT_LINE_TYPE_LIST_NUMBERED: ClassVar[str] = "ln"
     DOCUMENT_LINE_TYPE_TABLE: ClassVar[str] = "tab"

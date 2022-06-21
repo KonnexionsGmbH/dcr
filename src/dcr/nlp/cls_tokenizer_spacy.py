@@ -5,6 +5,7 @@ import json
 
 import cfg.glob
 import db.cls_db_core
+import db.cls_document
 import db.cls_token
 import nlp.cls_nlp_core
 import spacy
@@ -108,6 +109,7 @@ class TokenizerSpacy:
 
         self._full_name = ""
 
+        self._line_type = ""
         self._lower_left_x = 0.0
 
         self._no_lines_in_doc = 0
@@ -253,11 +255,17 @@ class TokenizerSpacy:
 
         self._sent_no += 1
 
+        if self._line_type[:2] == db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADING and self._sent_no > 1:
+            line_type = db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY
+        else:
+            line_type = self._line_type
+
         if cfg.glob.setup.is_tokenize_2_database:
             db.cls_token.Token(
                 id_document=cfg.glob.document.document_id,
                 column_no=self._column_no,
                 column_span=self._column_span,
+                line_type=line_type,
                 lower_left_x=self._lower_left_x,
                 no_tokens_in_sent=self._no_tokens_in_sent,
                 page_no=self._page_no,
@@ -276,6 +284,7 @@ class TokenizerSpacy:
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_SENT_NO: self._sent_no,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._column_no,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN: self._column_span,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: line_type,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._lower_left_x,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_SENT: self._no_tokens_in_sent,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._row_no,
@@ -288,6 +297,7 @@ class TokenizerSpacy:
                         {
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_SENT_NO: self._sent_no,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._column_no,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: line_type,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._lower_left_x,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_SENT: self._no_tokens_in_sent,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._row_no,
@@ -299,6 +309,7 @@ class TokenizerSpacy:
                 self._token_sents.append(
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_SENT_NO: self._sent_no,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: line_type,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._lower_left_x,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_SENT: self._no_tokens_in_sent,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._sentence,
@@ -726,6 +737,9 @@ class TokenizerSpacy:
         self._no_lines_in_doc += 1
         self._no_lines_in_page += 1
         self._no_lines_in_para += 1
+
+        if not self._para_lines:
+            self._line_type = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
 
         self._para_lines.append(cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
 
