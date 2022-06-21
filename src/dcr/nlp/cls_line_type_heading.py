@@ -12,6 +12,7 @@ import nlp.cls_text_parser
 import utils
 
 
+# pylint: disable=too-many-instance-attributes
 class LineTypeHeading:
     """Determine table of content lines.
 
@@ -59,10 +60,17 @@ class LineTypeHeading:
             f"LineTypeHeading: Start create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
-        # 1: pattern name
-        # 2: pattern
+        self._PATTERN_NAME_SIZE: int = 20
+
+        # -----------------------------------------------------------------------------
+        # Anti-patterns.
+        # -----------------------------------------------------------------------------
+        # 1: name:  pattern name
+        # 2: regexp_compiled:
+        #           compiled regular expression
+        # -----------------------------------------------------------------------------
         self._anti_patterns: list[tuple[str, re.Pattern[str]]] = [
-            ("A A    ", re.compile(r"^[A-Z] [A-Z]")),
+            ("A A".ljust(self._PATTERN_NAME_SIZE), re.compile(r"^[A-Z] [A-Z]")),
         ]
 
         self._heading_max_level_curr = 0
@@ -75,156 +83,202 @@ class LineTypeHeading:
 
         self._page_no = 0
 
-        # 1: lower_left_x
-        # 2: heading level
-        # 3: pattern name
-        # 4: True: apply pattern to first token - False: apply pattern to beginning of line
-        # 5: pattern match
-        # 6: pattern display
-        # 7: comparison function for predecessor and successor
-        # 8: value predecessor
-        self._pattern_hierarchy: list[
-            tuple[str, int, str, bool, re.Pattern[str], re.Pattern[str], collections.abc.Callable[[str, str], bool], str]
-        ] = []
-
-        # 1: pattern name
-        # 2: True: apply pattern to first token - False: apply pattern to beginning of line
-        # 3: pattern match
-        # 4: pattern display
-        # 5: comparison function for predecessor and successor
-        # 6: first values
-        self._patterns: list[
-            tuple[str, bool, re.Pattern[str], re.Pattern[str], collections.abc.Callable[[str, str], bool], list[str]]
-        ] = [
+        # -----------------------------------------------------------------------------
+        # Basic patterns.
+        # -----------------------------------------------------------------------------
+        # 1: pattern_name
+        # 2: is_first_token:
+        #           True:  apply pattern to first token (split)
+        #           False: apply pattern to beginning of line
+        # 3: regexp_str:
+        #           regular expression
+        # 4: function_is_asc:
+        #           compares predecessor and successor
+        # 5: start_values:
+        #           list of strings
+        # -----------------------------------------------------------------------------
+        self._pattern_basis: list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]] = [
             (
-                "(a)                ",
+                "(a)",
                 True,
-                re.compile(r"\([a-z]\)$"),
-                re.compile(r"\([a-z]\) [^.]+"),
+                r"\([a-z]\)$",
                 self._is_asc_lowercase_letters,
                 ["(a)"],
             ),
             (
-                "(A)                ",
+                "(A)",
                 True,
-                re.compile(r"\([A-Z]\)$"),
-                re.compile(r"\([A-Z]\) [^.]+"),
+                r"\([A-Z]\)$",
                 self._is_asc_uppercase_letters,
                 ["(A)"],
             ),
             (
-                "Article 999:       ",
+                "Article 999:",
                 False,
-                re.compile(r"Article \d+:?"),
-                re.compile(r"Article \d+:? [^.]+"),
+                r"Article \d+:?",
                 self._is_asc_string_integers,
                 [],
             ),
             (
-                "ARTICLE 999 -      ",
+                "ARTICLE 999 -",
                 False,
-                re.compile(r"ARTICLE \d+ - "),
-                re.compile(r"ARTICLE \d+ - [^.]+"),
+                r"ARTICLE \d+ -",
                 self._is_asc_string_integers,
                 [],
             ),
             (
-                "ARTICLE XXX-YYY:   ",
+                "ARTICLE XXX-YYY:",
                 False,
-                re.compile(r"ARTICLE [A-Z]+(-[A-Z]+)?: "),
-                re.compile(r"ARTICLE [A-Z]+(-[A-Z]+)?: [^.]+"),
+                r"ARTICLE [A-Z]+(-[A-Z]+)?:",
                 self._is_asc_ignore,
                 [],
             ),
             (
-                "EXHIBIT A          ",
+                "EXHIBIT A",
                 False,
-                re.compile(r"EXHIBIT [A-Z]$"),
-                re.compile(r"EXHIBIT [A-Z] [^.]+"),
+                r"EXHIBIT [A-Z]$",
                 self._is_asc_strings,
                 [],
             ),
             (
                 'EXHIBIT "A"        ',
                 False,
-                re.compile(r"EXHIBIT \u201c[A-Z]\u201d$"),
-                re.compile(r"EXHIBIT \u201c[A-Z]\u201d [^.]+"),
+                r"EXHIBIT \u201c[A-Z]\u201d$",
                 self._is_asc_strings,
                 [],
             ),
             (
-                "Riders-9           ",
+                "Riders-9",
                 True,
-                re.compile(r"Riders-\d$"),
-                re.compile(r"Riders-\d$"),
+                r"Riders-\d$",
                 self._is_asc_string_integers,
                 [],
             ),
             (
-                "999.               ",
+                "999.",
                 True,
-                re.compile(r"\d+\.$"),
-                re.compile(r"\d+\. [^:]+"),
+                r"\d+\.$",
                 self._is_asc_string_integers,
                 ["1."],
             ),
             (
-                "(999)              ",
+                "(999)",
                 True,
-                re.compile(r"\(\d+\)$"),
-                re.compile(r"\(\d+\) [^:]+"),
+                r"\(\d+\)$",
                 self._is_asc_string_integers,
                 ["(1)"],
             ),
             (
-                "Section 999.999.   ",
+                "Section 999.999.",
                 False,
-                re.compile(r"Section \d+\.\d+\. "),
-                re.compile(r"Section \d+\.\d+\. [^.]+"),
+                r"Section \d+\.\d+\.",
                 self._is_asc_string_floats,
                 [],
             ),
             (
-                "999.999            ",
+                "999.999",
                 True,
-                re.compile(r"\d+\.\d+\.?$"),
-                re.compile(r"\d+\.\d+\.? [^.]+"),
+                r"\d+\.\d+\.?$",
                 self._is_asc_string_floats,
                 [],
             ),
             (
-                "a.                 ",
+                "a.",
                 True,
-                re.compile(r"[a-z]\.$"),
-                re.compile(r"[a-z]\. [^.]+"),
+                r"[a-z]\.$",
                 self._is_asc_lowercase_letters,
                 ["a", "a."],
             ),
             (
-                "A.                 ",
+                "A.",
                 True,
-                re.compile(r"[A-Z]\.$"),
-                re.compile(r"[A-Z]\. [^.]+"),
+                r"[A-Z]\.$",
                 self._is_asc_uppercase_letters,
                 ["A", "A."],
             ),
             (
-                "(rom)              ",
+                "(rom)",
                 True,
-                re.compile(r"\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$"),
-                re.compile(r"\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\) [^.]+"),
+                r"\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$",
                 self._is_asc_romans,
                 ["(i)"],
             ),
             (
-                "(ROM)              ",
+                "(ROM)",
                 True,
-                re.compile(r"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$"),
-                re.compile(r"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\) [^.]+"),
+                r"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$",
                 self._is_asc_romans,
                 ["(I)"],
             ),
         ]
+
+        # -----------------------------------------------------------------------------
+        # Pattern collection.
+        # -----------------------------------------------------------------------------
+        # 1: pattern_name
+        # 2: is_first_token:
+        #           True:  apply pattern to first token (split)
+        #           False: apply pattern to beginning of line
+        # 3: regexp_compiled_match:
+        #           compiled regular expression for matching
+        # 4: regexp_compiled_display:
+        #           compiled regular expression for showing the match
+        # 5: function_is_asc:
+        #           compares predecessor and successor
+        # 6: start_values:
+        #           list of strings
+        # -----------------------------------------------------------------------------
+        self._pattern_collection: list[
+            tuple[str, bool, re.Pattern[str], re.Pattern[str], collections.abc.Callable[[str, str], bool], list[str]]
+        ] = []
+
+        for (pattern_name, is_first_token, regexp_str, function_is_asc, start_values) in self._pattern_basis:
+            self._pattern_collection.append(
+                (
+                    pattern_name.ljust(self._PATTERN_NAME_SIZE),
+                    is_first_token,
+                    re.compile(regexp_str),
+                    re.compile(regexp_str + " [^.]+"),
+                    function_is_asc,
+                    start_values,
+                )
+            )
+
+        # -----------------------------------------------------------------------------
+        # Hierarchy of patterns for determining the headings.
+        # -----------------------------------------------------------------------------
+        # 1: pattern_name
+        # 2: is_first_token:
+        #           True:  apply pattern to first token (split)
+        #           False: apply pattern to beginning of line
+        # 3: regexp_compiled_match:
+        #           compiled regular expression for matching
+        # 4: regexp_compiled_display:
+        #           compiled regular expression for showing the match
+        # 5: function_is_asc:
+        #           compares predecessor and successor
+        # 6: start_values:
+        #           list of strings
+        # 7: level:
+        #           hierarchical level of the current heading
+        # 8: lower_left_x:
+        #           lower left x-coordinate of the beginning of the possible heading
+        # 9: predecessor:
+        #           predecessor value
+        # -----------------------------------------------------------------------------
+        self._pattern_hierarchy: list[
+            tuple[
+                str,
+                bool,
+                re.Pattern[str],
+                re.Pattern[str],
+                collections.abc.Callable[[str, str], bool],
+                list[str],
+                int,
+                str,
+                str,
+            ]
+        ] = []
 
         self._toc: list[dict[str, int | str]] = []
 
@@ -488,19 +542,20 @@ class LineTypeHeading:
 
         for ph_idx in reversed(range(ph_size := len(self._pattern_hierarchy))):
             (
-                lower_left_x,
-                level,
                 pattern_name,
                 is_first_token,
-                pattern_match,
-                pattern_display,
-                is_asc,
+                regexp_compiled_match,
+                regexp_compiled_display,
+                function_is_asc,
+                start_values,
+                level,
+                lower_left_x,
                 predecessor,
             ) = self._pattern_hierarchy[ph_idx]
 
             target_value = first_token if is_first_token else text
 
-            if pattern_matched := pattern_match.match(target_value):
+            if pattern_matched := regexp_compiled_match.match(target_value):
                 lower_left_x_curr_float = float(lower_left_x_curr)
                 lower_left_x_float = float(lower_left_x)
                 if (
@@ -509,21 +564,22 @@ class LineTypeHeading:
                 ):
                     return 0
 
-                if is_asc(predecessor, target_value):
+                if function_is_asc(predecessor, target_value):
                     self._pattern_hierarchy[ph_idx] = (
-                        lower_left_x,
-                        level,
                         pattern_name,
                         is_first_token,
-                        pattern_match,
-                        pattern_display,
-                        is_asc,
+                        regexp_compiled_match,
+                        regexp_compiled_display,
+                        function_is_asc,
+                        start_values,
+                        level,
+                        lower_left_x,
                         target_value,
                     )
 
                     self._level_prev = level
 
-                    heading = self._create_toc_entry(level, pattern_display.match(text), pattern_matched)
+                    heading = self._create_toc_entry(level, regexp_compiled_display.match(text), pattern_matched)
 
                     utils.progress_msg_line_type_heading(
                         f"LineTypeHeading: Match                                ={pattern_name} "
@@ -539,11 +595,18 @@ class LineTypeHeading:
 
                 return 0
 
-        for (pattern_name, is_first_token, pattern_match, pattern_display, is_asc, first_values) in self._patterns:
+        for (
+            pattern_name,
+            is_first_token,
+            regexp_compiled_match,
+            regexp_compiled_display,
+            function_is_asc,
+            start_values,
+        ) in self._pattern_collection:
             target_value = first_token if is_first_token else text
-            if pattern_matched := pattern_match.match(target_value):
-                if is_first_token and first_values:
-                    if first_token not in first_values:
+            if pattern_matched := regexp_compiled_match.match(target_value):
+                if is_first_token and start_values:
+                    if first_token not in start_values:
                         continue
 
                 if (level := self._level_prev + 1) > cfg.glob.setup.heading_max_level:
@@ -551,20 +614,21 @@ class LineTypeHeading:
 
                 self._pattern_hierarchy.append(
                     (
-                        lower_left_x_curr,
-                        level,
                         pattern_name,
                         is_first_token,
-                        pattern_match,
-                        pattern_display,
-                        is_asc,
+                        regexp_compiled_match,
+                        regexp_compiled_display,
+                        function_is_asc,
+                        start_values,
+                        level,
+                        lower_left_x_curr,
                         target_value,
                     )
                 )
 
                 self._level_prev = level
 
-                heading = self._create_toc_entry(level, pattern_display.match(text), pattern_matched)
+                heading = self._create_toc_entry(level, regexp_compiled_display.match(text), pattern_matched)
 
                 utils.progress_msg_line_type_heading(
                     f"LineTypeHeading: Match new level                      ={pattern_name} "

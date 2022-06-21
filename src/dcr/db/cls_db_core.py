@@ -82,6 +82,7 @@ class DBCore:
     DBC_ID_RUN_LAST: ClassVar[str] = "id_run_last"
     DBC_ISO_LANGUAGE_NAME: ClassVar[str] = "iso_language_name"
     DBC_ISO_LANGUAGE_NAME_DEFAULT: ClassVar[str] = "English"
+    DBC_LINE_TYPE: ClassVar[str] = "line_type"
     DBC_LOWER_LEFT_X: ClassVar[str] = "lower_left_x"
     DBC_MODIFIED_AT: ClassVar[str] = "modified_at"
     DBC_NO_CHILDREN: ClassVar[str] = "no_children"
