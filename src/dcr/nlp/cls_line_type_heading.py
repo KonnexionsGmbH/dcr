@@ -88,17 +88,15 @@ class LineTypeHeading:
         # 2: is_first_token:
         #           True:  apply rule to first token (split)
         #           False: apply rule to beginning of line
-        # 3: regexp_compiled_match:
-        #           compiled regular expression for matching
-        # 4: regexp_compiled_display:
-        #           compiled regular expression for showing the match
-        # 5: function_is_asc:
+        # 3: regexp_compiled:
+        #           compiled regular expression
+        # 4: function_is_asc:
         #           compares predecessor and successor
         # 6: start_values:
         #           list of strings
         # -----------------------------------------------------------------------------
         self._heading_rules_collection: list[
-            tuple[str, bool, re.Pattern[str], re.Pattern[str], collections.abc.Callable[[str, str], bool], list[str]]
+            tuple[str, bool, re.Pattern[str], collections.abc.Callable[[str, str], bool], list[str]]
         ] = []
 
         for (rule_name, is_first_token, regexp_str, function_is_asc, start_values) in self._heading_rules:
@@ -107,7 +105,6 @@ class LineTypeHeading:
                     rule_name.ljust(self._RULE_NAME_SIZE),
                     is_first_token,
                     re.compile(regexp_str),
-                    re.compile(regexp_str + " [^.]+"),
                     function_is_asc,
                     start_values,
                 )
@@ -120,26 +117,23 @@ class LineTypeHeading:
         # 2: is_first_token:
         #           True:  apply rule to first token (split)
         #           False: apply rule to beginning of line
-        # 3: regexp_compiled_match:
-        #           compiled regular expression for matching
-        # 4: regexp_compiled_display:
-        #           compiled regular expression for showing the match
-        # 5: function_is_asc:
+        # 3: regexp_compiled:
+        #           compiled regular expression
+        # 4: function_is_asc:
         #           compares predecessor and successor
-        # 6: start_values:
+        # 5: start_values:
         #           list of strings
-        # 7: level:
+        # 6: level:
         #           hierarchical level of the current heading
-        # 8: lower_left_x:
+        # 7: lower_left_x:
         #           lower left x-coordinate of the beginning of the possible heading
-        # 9: predecessor:
+        # 8: predecessor:
         #           predecessor value
         # -----------------------------------------------------------------------------
         self._heading_rules_hierarchy: list[
             tuple[
                 str,
                 bool,
-                re.Pattern[str],
                 re.Pattern[str],
                 collections.abc.Callable[[str, str], bool],
                 list[str],
@@ -209,43 +203,21 @@ class LineTypeHeading:
     # Create a table of content entry.
     # -----------------------------------------------------------------------------
     # pylint: disable=missing-param-doc
-    def _create_toc_entry(self, level: int, pattern_display: re.Match[str] | None, pattern_matched: re.Match[str]) -> str:
+    def _create_toc_entry(self, level: int, text: str) -> None:
 
         """Create a table of content entry.
 
         Args:
             level (int): Heading level.
-            pattern_display (re.Match[str] | None): Hits for display.
-            pattern_matched (re.Match[str] | None): Hits from search.
-
-        Returns:
-            str: The heading text.
+            text: Heading text.
         """
-        if not cfg.glob.setup.is_heading_create_toc:
-            return ""
-
-        if pattern_display is None:
-            heading = pattern_matched.group(0)
-            if self._idx_line_line < self._max_line_line:
-                heading = (
-                    heading
-                    + ("" if heading[-1] == " " else " ")
-                    + cfg.glob.text_parser.parse_result_line_lines[self._idx_line_line + 1][
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT
-                    ]
-                )
-        else:
-            heading = pattern_display.group(0)
-
         self._toc.append(
             {
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_HEADING_LEVEL: level,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_HEADING_TEXT: heading,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_HEADING_TEXT: text,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self._page_no,
             }
         )
-
-        return heading
 
     # -----------------------------------------------------------------------------
     # Initialise the heading rules.
@@ -599,8 +571,7 @@ class LineTypeHeading:
             (
                 rule_name,
                 is_first_token,
-                regexp_compiled_match,
-                regexp_compiled_display,
+                regexp_compiled,
                 function_is_asc,
                 start_values,
                 level,
@@ -610,7 +581,7 @@ class LineTypeHeading:
 
             target_value = first_token if is_first_token else text
 
-            if pattern_matched := regexp_compiled_match.match(target_value):
+            if regexp_compiled.match(target_value):
                 lower_left_x_curr_float = float(lower_left_x_curr)
                 lower_left_x_float = float(lower_left_x)
                 if (
@@ -623,8 +594,7 @@ class LineTypeHeading:
                     self._heading_rules_hierarchy[ph_idx] = (
                         rule_name,
                         is_first_token,
-                        regexp_compiled_match,
-                        regexp_compiled_display,
+                        regexp_compiled,
                         function_is_asc,
                         start_values,
                         level,
@@ -634,11 +604,11 @@ class LineTypeHeading:
 
                     self._level_prev = level
 
-                    heading = self._create_toc_entry(level, regexp_compiled_display.match(text), pattern_matched)
+                    self._create_toc_entry(level, text)
 
                     utils.progress_msg_line_type_heading(
                         f"LineTypeHeading: Match                                ={rule_name} "
-                        + f"- level={level} - heading={heading}"
+                        + f"- level={level} - heading={text}"
                     )
 
                     # Delete levels that are no longer needed
@@ -653,13 +623,12 @@ class LineTypeHeading:
         for (
             rule_name,
             is_first_token,
-            regexp_compiled_match,
-            regexp_compiled_display,
+            regexp_compiled,
             function_is_asc,
             start_values,
         ) in self._heading_rules_collection:
             target_value = first_token if is_first_token else text
-            if pattern_matched := regexp_compiled_match.match(target_value):
+            if regexp_compiled.match(target_value):
                 if is_first_token and start_values:
                     if first_token not in start_values:
                         continue
@@ -671,8 +640,7 @@ class LineTypeHeading:
                     (
                         rule_name,
                         is_first_token,
-                        regexp_compiled_match,
-                        regexp_compiled_display,
+                        regexp_compiled,
                         function_is_asc,
                         start_values,
                         level,
@@ -683,11 +651,11 @@ class LineTypeHeading:
 
                 self._level_prev = level
 
-                heading = self._create_toc_entry(level, regexp_compiled_display.match(text), pattern_matched)
+                self._create_toc_entry(level, text)
 
                 utils.progress_msg_line_type_heading(
                     f"LineTypeHeading: Match new level                      ={rule_name} "
-                    + f"- level={level} - heading={heading}"
+                    + f"- level={level} - heading={text}"
                 )
 
                 return level
