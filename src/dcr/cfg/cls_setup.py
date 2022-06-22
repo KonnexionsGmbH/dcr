@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 105
+    _CONFIG_PARAM_NO = 106
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -44,6 +44,7 @@ class Setup:
     _DCR_CFG_HEADING_MAX_LEVEL: ClassVar[str] = "heading_max_level"
     _DCR_CFG_HEADING_MIN_PAGES: ClassVar[str] = "heading_min_pages"
     _DCR_CFG_HEADING_TOLERANCE_X: ClassVar[str] = "heading_tolerance_x"
+    _DCR_CFG_HEADING_RULE_FILE: ClassVar[str] = "heading_rule_file"
     _DCR_CFG_IGNORE_DUPLICATES: ClassVar[str] = "ignore_duplicates"
     _DCR_CFG_INITIAL_DATABASE_DATA: ClassVar[str] = "initial_database_data"
     _DCR_CFG_JSON_INDENT: ClassVar[str] = "json_indent"
@@ -176,6 +177,7 @@ class Setup:
         self.doc_id_in_file_name = "none"
         self.heading_max_level = 3
         self.heading_min_pages = 2
+        self.heading_rule_file = "none"
         self.heading_tolerance_x = 5
         self.initial_database_data = utils.get_os_independent_name("data/initial_database_data.json")
         self.is_delete_auxiliary_files = True
@@ -1302,6 +1304,8 @@ class Setup:
                     self.heading_max_level = int(item)
                 case Setup._DCR_CFG_HEADING_MIN_PAGES:
                     self.heading_min_pages = int(item)
+                case Setup._DCR_CFG_HEADING_RULE_FILE:
+                    self.heading_rule_file = utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_HEADING_TOLERANCE_X:
                     self.heading_tolerance_x = int(item)
                 case Setup._DCR_CFG_INITIAL_DATABASE_DATA:

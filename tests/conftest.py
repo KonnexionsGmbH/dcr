@@ -551,6 +551,7 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_HEADING_CREATE_TOC, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_HEADING_MAX_LEVEL, "3"),
         (cfg.cls_setup.Setup._DCR_CFG_HEADING_MIN_PAGES, "2"),
+        (cfg.cls_setup.Setup._DCR_CFG_HEADING_RULE_FILE, "data/line_type_heading_rules_test.json"),
         (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOLERANCE_X, "5"),
         (cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_INITIAL_DATABASE_DATA, "data/initial_database_data_test.json"),

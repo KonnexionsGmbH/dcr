@@ -673,7 +673,7 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
 ## 4 Line Typing Algorithms
 
-The granularity of the document `line` tries to classify the individual lines or sentences.
+The granularity of the document `line` tries to classify the individual lines.
 The possible line types are :
 
 | line type | Meaning                                           |
@@ -684,47 +684,68 @@ The possible line types are :
 | h_9       | level 9 heading line                              |
 | lb        | line of a bulleted list                           |
 | ln        | line of a numbered list                           |
-| tab       | non-classifiable line of a table                  |
+| tab       | line of a table                                   |
 | toc       | line of a table of content                        |
 
-### 4.1 Footers
+The following three rule-based algorithms are used to determine the line type in the order given:
+
+1. `headers & footers`
+The headers and footers are determined by a similarity comparison of the first `line_header_max_lines` and last `line_footer_max_lines` lines respectively. 
+
+2. `close together`
+The elements of bulleted or numbered lists must be close together and are determined by regular expressions. 
+Tables have already been marked accordingly by PDFlib TET.
+A table of contents must be in the first `toc_last_page` pages and consists of either a list or a table with ascending page numbers.
+
+3. `headings`
+Headings extend across the entire document and can have hierarchical structures. 
+The headings are determined with rule-enriched regular expressions. 
+
+### 4.1 Headings & Footers
+
+#### 4.1.1 Footers
 
 The parameters that control the classification in footer lines are:
 
 - `line_footer_max_distance = 3`
 - `line_footer_max_lines = 3`
 
-#### 4.1.1 `line_footer_max_lines`
+##### 4.1.1.1 `line_footer_max_lines`
 
 This parameter controls the number of lines from the bottom of the page to be analyzed as possible candidates for footers.
 With the value zero the classification of footers is prevented.
 
-#### 4.1.2 `line_footer_max_distance`
+##### 4.1.1.2 `line_footer_max_distance`
 
 The degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
 The value zero stands for identical lines. 
 The larger the Levenshtein distance, the more different the rows are. 
 If the header lines do not contain a page numbers, then the parameter should be set to `0`.
 
-#### 4.1.3 Algorithm
+##### 4.1.1.3 `verbose_line_type_headers_footers`
+
+The verbose mode is an option that provides additional details as to what the processing algorithm is doing.
+
+##### 4.1.1.4 Algorithm
 
 1. On all pages, the last line `n`, the line `n-1`, etc. are compared up to the maximum specified line. 
 2. The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.
 3. The line is considered a footer if, except for pages `1` and `2` and pages `n-1` and `n`, the Levenshtein distance is not greater than the specified maximum value.
 
-### 4.2 Header
+#### 4.1.2 Headers
 
 The parameters that control the classification in header lines are:
 
 - `line_header_max_distance = 3`
 - `line_header_max_lines = 3`
+- `verbose_line_type_headers_footers = false`
 
-#### 4.2.1 `line_header_max_lines`
+##### 4.1.2.1 `line_header_max_lines`
 
 This parameter controls the number of lines from the top of the page to be analyzed as possible candidates for headers.
 A value of zero prevents the classification of headers.
 
-#### 4.2.2 `line_header_max_distance`
+##### 4.1.2.2 `line_header_max_distance`
 
 The degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
 The value zero stands for identical lines. 
@@ -737,29 +758,40 @@ If the footer lines contain a page number, then depending on the number of pages
  | < 100          | 2                    |
  | < 1000         | 3                    |
 
-#### 4.2.3 Algorithm
+##### 4.1.2.3 `verbose_line_type_headers_footers`
+
+The verbose mode is an option that provides additional details as to what the processing algorithm is doing.
+
+##### 4.1.2.4 Algorithm
 
 1. On all pages, the first line, the second line, etc. are compared up to the maximum specified line. 
 2. The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.
 3. The line is considered a header if, except for pages `1` and `2` and pages `n-1` and `n`, the Levenshtein distance is not greater than the specified maximum value.
 
-### 4.3 TOC (Table of Content)
+### 4.2 Close Together
+
+#### 4.2.1 TOC (Table of Content)
 
 The parameters that control the classification in table of content are:
 
 - `toc_last_page = 3`
 - `toc_min_entries = 3`
+- `verbose_line_type_toc = false`
 
-#### 4.3.1 `toc_last_page`
+##### 4.2.1.1 `toc_last_page`
 
 This parameter sets the number of pages that will be searched for a table of contents from the beginning of the document.
 A value of zero prevents the search for a table of contents.
 
-#### 4.3.2 `toc_min_entries`
+##### 4.2.1.2 `toc_min_entries`
 
 This parameter defines the minimum number of entries that a table of contents must contain.
 
-#### 4.3.3 Algorithm Table-based
+##### 4.2.1.3 `verbose_line_type_toc`
+
+The verbose mode is an option that provides additional details as to what the processing algorithm is doing.
+
+##### 4.2.1.4 Algorithm Table-based
 
 A table with the following properties is searched for:
 
@@ -768,10 +800,118 @@ A table with the following properties is searched for:
    - the number must not be greater than the last page number of the document, and
    - if such a table was found, then the algorithm ends here.
 
-#### 4.3.4 Algorithm Line-based
+##### 4.2.1.4 Algorithm Line-based
 
 A block of lines with the following properties is searched here:
 
    - the last token from each line must contain an integer greater than zero,
    - the number found there must be ascending, and
    - the number must not be greater than the last page number of the document.
+
+#### 4.2.2 Tables
+
+#### 4.2.3 Bulleted Lists
+
+#### 4.2.4 Numbered Lists
+
+### 4.3 Headings
+
+#### 4.3.1 Parameters
+
+The following parameters control the classification of the headings:
+
+**`heading_create_toc`**
+
+Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_toc.json` is created in the file directory `data_accepted` with the identified headings.
+
+**`heading_max_level`**
+
+Default value: **`3`** - the maximum number of hierarchical heading levels.
+
+**`heading_min_pages`**
+
+Default value: **`2`** - the minimum number of document pages for determining headings.
+
+**`heading_rules_file`**
+
+Default value: **`none`** - name of a file including file directory that contains the rules for determining the headings.
+**`none`** means that the given default rules are applied.
+
+**`heading_tolerance_x`**
+
+Default value: **`5`** - percentage tolerance for the differences in indentation of a heading at the same level.
+
+**`verbose_line_type_heading`**
+
+Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
+
+#### 4.3.2 Heading Rules
+
+A heading rule contains the following 5 elements:
+
+| Nr. | element name        | description                                                                                              |
+|-----|---------------------|----------------------------------------------------------------------------------------------------------|
+| 1   | **`name`**          | for documentation purposes, a name that characterises the rule                                           |
+| 2   | **`isFirstToken`**  | if true, the rule is applied to the first token of the line, <br/>otherwise to the beginning of the line |
+| 3   | **`regexp`**        | the regular expression to be applied                                                                     |
+| 4   | **`functionIsAsc`** | a comparison function for the values of the predecessor and the successor                                |
+| 5   | **`startValues`**   | a list of allowed start values                                                                           |
+
+The following comparison functions (**`functionIsAsc`**) can be used:
+
+| function name     | description                                                                                                   |
+|-------------------------|---------------------------------------------------------------------------------------------------------------------|
+| **`ignore`**            | no comparison is performed                                                                                          |
+| **`lowercase_letters`** | two lowercase letters are compared,  <br/>whereby the ASCII difference must be exactly **`1`**                      |
+| **`romans`**            | two Roman numerals are compared, <br/>whereby the difference must be exactly **`1`**                                |
+| **`strings`**           | two strings are compared on ascending                                                                               |
+| **`string_floats`**     | floating point numbers are compared, <br/>whereby the difference must be greater than **`0`** and less than **`1`** |
+| **`string_integers`**   | two integer numbers are compared, <br/>whereby the difference must be exactly **`1`**                               |
+| **`uppercase_letters`** | two uppercase letters are compared,  <br/>whereby the ASCII difference must be exactly **`1`**                      |
+
+The following table shows the standard rules in the standard processing order:
+
+| name        | isFirstToken | regexp           | functionIsAsc      | startValues  |
+|-------------|--------------|------------------|--------------------|--------------|
+| (a)         | True         | `"\([a-z]\)$"`   | lowercase_letters  | `["(a)"]`    |
+| (A)         | True         | `"\([A-Z]\)$"`   | uppercase_letters  | `["(A)"]`    |
+| 999.        | True         | `"\d+\.$"`       | string_integers    | `["1."]`     |
+| (999)       | True         | `"\(\d+\)$"`     | string_integers    | `["(1)"]`    |
+| 999.999     | True         | `"\d+\.\d+\.?$"` | string_floats      | `[]`         |
+| a.          | True         | `"[a-z]\.$"`     | lowercase_letters  | `["a, "a."]` |
+| A.          | True         | `"[A-Z]\.$"`     | uppercase_letters  | `["A, "A."]` |
+| (rom)       | True         | see a)           | romans             | `["(i)"]`    |
+| (ROM)       | True         | see b)          | romans             | `["(I)"]`    |
+
+a) **`"\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$"`**
+
+b) **`"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$"`**
+
+However, these default rules can also be overridden via a **`JSON`** file (see parameter **`heading_rules_file`**). 
+An example file can be found in the file directory **`data`** with the file name **`heading_rules_test.json`**.
+
+    {
+      "lineTypeHeadingRules": [
+        {
+          "name": "(a)",
+          "isFirstToken": true,
+          "regexp": "\\([a-z]\\)$",
+          "functionIsAsc": "lowercase_letters",
+          "startValues": [
+            "(a)"
+          ]
+        },
+        {
+          "name": "(A)",
+          "isFirstToken": true,
+          "regexp": "\\([A-Z]\\)$",
+          "functionIsAsc": "uppercase_letters",
+          "startValues": [
+            "(A)"
+          ]
+        },
+
+#### 4.3.3 Algorithm
+
+
+

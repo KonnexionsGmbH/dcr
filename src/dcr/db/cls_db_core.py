@@ -468,6 +468,9 @@ class DBCore:
             initial_database_data_path = utils.get_os_independent_name(cfg.glob.setup.initial_database_data)
             if os.path.isfile(initial_database_data_path):
                 self.load_db_data_from_json(pathlib.Path(initial_database_data_path))
+                utils.progress_msg(
+                    f"Initial database data was successfully loaded from the file {cfg.glob.setup.initial_database_data}"
+                )
             else:
                 utils.terminate_fatal(
                     f"File with initial database data is missing - " f"file name '{cfg.glob.setup.initial_database_data}'"

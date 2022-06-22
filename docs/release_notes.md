@@ -11,7 +11,8 @@ Release Date: dd.mm.2022
 
 ### 1.1 New Features
 
-- TBD.
+- Determination of headings.
+- Determination of local structures: lists (bulleted and numbered) and tables
 
 ### 1.2 Modified Features
 

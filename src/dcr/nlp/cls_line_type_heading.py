@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import collections
 import json
+import os
+import pathlib
 import re
 
 import cfg.glob
@@ -60,7 +62,7 @@ class LineTypeHeading:
             f"LineTypeHeading: Start create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
-        self._PATTERN_NAME_SIZE: int = 20
+        self._RULE_NAME_SIZE: int = 20
 
         # -----------------------------------------------------------------------------
         # Anti-patterns.
@@ -70,10 +72,82 @@ class LineTypeHeading:
         #           compiled regular expression
         # -----------------------------------------------------------------------------
         self._anti_patterns: list[tuple[str, re.Pattern[str]]] = [
-            ("A A".ljust(self._PATTERN_NAME_SIZE), re.compile(r"^[A-Z] [A-Z]")),
+            ("A A".ljust(self._RULE_NAME_SIZE), re.compile(r"^[A-Z] [A-Z]")),
         ]
 
         self._heading_max_level_curr = 0
+
+        self._heading_rules: list[
+            tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]
+        ] = self._init_heading_rules()
+
+        # -----------------------------------------------------------------------------
+        # Heading rules collection.
+        # -----------------------------------------------------------------------------
+        # 1: rule_name
+        # 2: is_first_token:
+        #           True:  apply rule to first token (split)
+        #           False: apply rule to beginning of line
+        # 3: regexp_compiled_match:
+        #           compiled regular expression for matching
+        # 4: regexp_compiled_display:
+        #           compiled regular expression for showing the match
+        # 5: function_is_asc:
+        #           compares predecessor and successor
+        # 6: start_values:
+        #           list of strings
+        # -----------------------------------------------------------------------------
+        self._heading_rules_collection: list[
+            tuple[str, bool, re.Pattern[str], re.Pattern[str], collections.abc.Callable[[str, str], bool], list[str]]
+        ] = []
+
+        for (rule_name, is_first_token, regexp_str, function_is_asc, start_values) in self._heading_rules:
+            self._heading_rules_collection.append(
+                (
+                    rule_name.ljust(self._RULE_NAME_SIZE),
+                    is_first_token,
+                    re.compile(regexp_str),
+                    re.compile(regexp_str + " [^.]+"),
+                    function_is_asc,
+                    start_values,
+                )
+            )
+
+        # -----------------------------------------------------------------------------
+        # Heading rules hierarchy for determining the headings.
+        # -----------------------------------------------------------------------------
+        # 1: rule_name
+        # 2: is_first_token:
+        #           True:  apply rule to first token (split)
+        #           False: apply rule to beginning of line
+        # 3: regexp_compiled_match:
+        #           compiled regular expression for matching
+        # 4: regexp_compiled_display:
+        #           compiled regular expression for showing the match
+        # 5: function_is_asc:
+        #           compares predecessor and successor
+        # 6: start_values:
+        #           list of strings
+        # 7: level:
+        #           hierarchical level of the current heading
+        # 8: lower_left_x:
+        #           lower left x-coordinate of the beginning of the possible heading
+        # 9: predecessor:
+        #           predecessor value
+        # -----------------------------------------------------------------------------
+        self._heading_rules_hierarchy: list[
+            tuple[
+                str,
+                bool,
+                re.Pattern[str],
+                re.Pattern[str],
+                collections.abc.Callable[[str, str], bool],
+                list[str],
+                int,
+                str,
+                str,
+            ]
+        ] = []
 
         self._idx_line_line = 0
 
@@ -83,21 +157,121 @@ class LineTypeHeading:
 
         self._page_no = 0
 
-        # -----------------------------------------------------------------------------
-        # Basic patterns.
-        # -----------------------------------------------------------------------------
-        # 1: pattern_name
-        # 2: is_first_token:
-        #           True:  apply pattern to first token (split)
-        #           False: apply pattern to beginning of line
-        # 3: regexp_str:
-        #           regular expression
-        # 4: function_is_asc:
-        #           compares predecessor and successor
-        # 5: start_values:
-        #           list of strings
-        # -----------------------------------------------------------------------------
-        self._pattern_basis: list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]] = [
+        self._toc: list[dict[str, int | str]] = []
+
+        self._exist = True
+
+        utils.progress_msg_line_type_heading(
+            f"LineTypeHeading: End   create instance                ={cfg.glob.action_curr.action_file_name}"
+        )
+
+        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+    # -----------------------------------------------------------------------------
+    # Convert a roman numeral to integer.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def _convert_roman_2_int(cls, roman: str) -> int:
+        """Convert a roman numeral to integer.
+
+        Args:
+            roman (str): The roman numeral.
+
+        Returns:
+            int: The corresponding integer.
+        """
+        tallies = {
+            "i": 1,
+            "v": 5,
+            "x": 10,
+            "l": 50,
+            "c": 100,
+            "d": 500,
+            "m": 1000,
+            # specify more numerals if you wish
+        }
+
+        integer: int = 0
+
+        for i in range(len(roman) - 1):
+            left = roman[i]
+            right = roman[i + 1]
+            if tallies[left] < tallies[right]:
+                integer -= tallies[left]
+            else:
+                integer += tallies[left]
+
+        integer += tallies[roman[-1]]
+
+        return integer
+
+    # -----------------------------------------------------------------------------
+    # Create a table of content entry.
+    # -----------------------------------------------------------------------------
+    # pylint: disable=missing-param-doc
+    def _create_toc_entry(self, level: int, pattern_display: re.Match[str] | None, pattern_matched: re.Match[str]) -> str:
+
+        """Create a table of content entry.
+
+        Args:
+            level (int): Heading level.
+            pattern_display (re.Match[str] | None): Hits for display.
+            pattern_matched (re.Match[str] | None): Hits from search.
+
+        Returns:
+            str: The heading text.
+        """
+        if not cfg.glob.setup.is_heading_create_toc:
+            return ""
+
+        if pattern_display is None:
+            heading = pattern_matched.group(0)
+            if self._idx_line_line < self._max_line_line:
+                heading = (
+                    heading
+                    + ("" if heading[-1] == " " else " ")
+                    + cfg.glob.text_parser.parse_result_line_lines[self._idx_line_line + 1][
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT
+                    ]
+                )
+        else:
+            heading = pattern_display.group(0)
+
+        self._toc.append(
+            {
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_HEADING_LEVEL: level,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_HEADING_TEXT: heading,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self._page_no,
+            }
+        )
+
+        return heading
+
+    # -----------------------------------------------------------------------------
+    # Initialise the heading rules.
+    # -----------------------------------------------------------------------------
+    # 1: rule_name
+    # 2: is_first_token:
+    #           True:  apply rule to first token (split)
+    #           False: apply rule to beginning of line
+    # 3: regexp_str:
+    #           regular expression
+    # 4: function_is_asc:
+    #           compares predecessor and successor
+    # 5: start_values:
+    #           list of strings
+    # -----------------------------------------------------------------------------
+    def _init_heading_rules(self) -> list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+        if cfg.glob.setup.heading_rule_file and cfg.glob.setup.heading_rule_file.lower() != "none":
+            heading_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.heading_rule_file)
+            if os.path.isfile(heading_rule_file_path):
+                return self._load_heading_rules_from_json(pathlib.Path(heading_rule_file_path))
+
+            utils.terminate_fatal(
+                f"File with heading rule file is missing - " f"file name '{cfg.glob.setup.heading_rule_file}'"
+            )
+
+        return [
             (
                 "(a)",
                 True,
@@ -212,169 +386,11 @@ class LineTypeHeading:
             ),
         ]
 
-        # -----------------------------------------------------------------------------
-        # Pattern collection.
-        # -----------------------------------------------------------------------------
-        # 1: pattern_name
-        # 2: is_first_token:
-        #           True:  apply pattern to first token (split)
-        #           False: apply pattern to beginning of line
-        # 3: regexp_compiled_match:
-        #           compiled regular expression for matching
-        # 4: regexp_compiled_display:
-        #           compiled regular expression for showing the match
-        # 5: function_is_asc:
-        #           compares predecessor and successor
-        # 6: start_values:
-        #           list of strings
-        # -----------------------------------------------------------------------------
-        self._pattern_collection: list[
-            tuple[str, bool, re.Pattern[str], re.Pattern[str], collections.abc.Callable[[str, str], bool], list[str]]
-        ] = []
-
-        for (pattern_name, is_first_token, regexp_str, function_is_asc, start_values) in self._pattern_basis:
-            self._pattern_collection.append(
-                (
-                    pattern_name.ljust(self._PATTERN_NAME_SIZE),
-                    is_first_token,
-                    re.compile(regexp_str),
-                    re.compile(regexp_str + " [^.]+"),
-                    function_is_asc,
-                    start_values,
-                )
-            )
-
-        # -----------------------------------------------------------------------------
-        # Hierarchy of patterns for determining the headings.
-        # -----------------------------------------------------------------------------
-        # 1: pattern_name
-        # 2: is_first_token:
-        #           True:  apply pattern to first token (split)
-        #           False: apply pattern to beginning of line
-        # 3: regexp_compiled_match:
-        #           compiled regular expression for matching
-        # 4: regexp_compiled_display:
-        #           compiled regular expression for showing the match
-        # 5: function_is_asc:
-        #           compares predecessor and successor
-        # 6: start_values:
-        #           list of strings
-        # 7: level:
-        #           hierarchical level of the current heading
-        # 8: lower_left_x:
-        #           lower left x-coordinate of the beginning of the possible heading
-        # 9: predecessor:
-        #           predecessor value
-        # -----------------------------------------------------------------------------
-        self._pattern_hierarchy: list[
-            tuple[
-                str,
-                bool,
-                re.Pattern[str],
-                re.Pattern[str],
-                collections.abc.Callable[[str, str], bool],
-                list[str],
-                int,
-                str,
-                str,
-            ]
-        ] = []
-
-        self._toc: list[dict[str, int | str]] = []
-
-        self._exist = True
-
-        utils.progress_msg_line_type_heading(
-            f"LineTypeHeading: End   create instance                ={cfg.glob.action_curr.action_file_name}"
-        )
-
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-    # -----------------------------------------------------------------------------
-    # Convert a roman numeral to integer.
-    # -----------------------------------------------------------------------------
-    @staticmethod
-    def _convert_roman_2_int(roman: str) -> int:
-        """Convert a roman numeral to integer.
-
-        Args:
-            roman (str): The roman numeral.
-
-        Returns:
-            int: The corresponding integer.
-        """
-        tallies = {
-            "i": 1,
-            "v": 5,
-            "x": 10,
-            "l": 50,
-            "c": 100,
-            "d": 500,
-            "m": 1000,
-            # specify more numerals if you wish
-        }
-
-        integer: int = 0
-
-        for i in range(len(roman) - 1):
-            left = roman[i]
-            right = roman[i + 1]
-            if tallies[left] < tallies[right]:
-                integer -= tallies[left]
-            else:
-                integer += tallies[left]
-
-        integer += tallies[roman[-1]]
-
-        return integer
-
-    # -----------------------------------------------------------------------------
-    # Create a table of content entry.
-    # -----------------------------------------------------------------------------
-    # pylint: disable=missing-param-doc
-    def _create_toc_entry(self, level: int, pattern_display: re.Match[str] | None, pattern_matched: re.Match[str]) -> str:
-
-        """Create a table of content entry.
-
-        Args:
-            level (int): Heading level.
-            pattern_display (re.Match[str] | None): Hits for display.
-            pattern_matched (re.Match[str] | None): Hits from search.
-
-        Returns:
-            str: The heading text.
-        """
-        if not cfg.glob.setup.is_heading_create_toc:
-            return ""
-
-        if pattern_display is None:
-            heading = pattern_matched.group(0)
-            if self._idx_line_line < self._max_line_line:
-                heading = (
-                    heading
-                    + ("" if heading[-1] == " " else " ")
-                    + cfg.glob.text_parser.parse_result_line_lines[self._idx_line_line + 1][
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT
-                    ]
-                )
-        else:
-            heading = pattern_display.group(0)
-
-        self._toc.append(
-            {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_HEADING_LEVEL: level,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_HEADING_TEXT: heading,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self._page_no,
-            }
-        )
-
-        return heading
-
     # -----------------------------------------------------------------------------
     # Ignore the comparison.
     # -----------------------------------------------------------------------------
-    @staticmethod
-    def _is_asc_ignore(_predecessor: str, _successor: str) -> bool:
+    @classmethod
+    def _is_asc_ignore(cls, _predecessor: str, _successor: str) -> bool:
         """Ignore the comparison.
 
         Returns:
@@ -385,8 +401,8 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     # Compare two lowercase letters on difference ascending 1.
     # -----------------------------------------------------------------------------
-    @staticmethod
-    def _is_asc_lowercase_letters(predecessor: str, successor: str) -> bool:
+    @classmethod
+    def _is_asc_lowercase_letters(cls, predecessor: str, successor: str) -> bool:
         """Compare two lowercase_letters on ascending.
 
         Args:
@@ -407,7 +423,8 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     # Compare two roman numerals on ascending.
     # -----------------------------------------------------------------------------
-    def _is_asc_romans(self, predecessor: str, successor: str) -> bool:
+    @classmethod
+    def _is_asc_romans(cls, predecessor: str, successor: str) -> bool:
         """Compare two roman numerals on ascending.
 
         Args:
@@ -428,7 +445,11 @@ class LineTypeHeading:
         predecessor_net = predecessor[1:-1]
         successor_net = successor[1:-1]
 
-        if self._convert_roman_2_int(successor_net.lower()) - self._convert_roman_2_int(predecessor_net.lower()) == 1:
+        if (
+            LineTypeHeading._convert_roman_2_int(successor_net.lower())
+            - LineTypeHeading._convert_roman_2_int(predecessor_net.lower())
+            == 1
+        ):
             return True
 
         return False
@@ -436,8 +457,8 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     # Compare two strings on ascending.
     # -----------------------------------------------------------------------------
-    @staticmethod
-    def _is_asc_strings(predecessor: str, successor: str) -> bool:
+    @classmethod
+    def _is_asc_strings(cls, predecessor: str, successor: str) -> bool:
         """Compare two strings on ascending.
 
         Args:
@@ -455,8 +476,8 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     # Compare two string floats on ascending.
     # -----------------------------------------------------------------------------
-    @staticmethod
-    def _is_asc_string_floats(predecessor: str, successor: str) -> bool:
+    @classmethod
+    def _is_asc_string_floats(cls, predecessor: str, successor: str) -> bool:
         """Compare two string float numbers on ascending.
 
         Args:
@@ -477,8 +498,8 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     # Compare two string integers on difference ascending 1.
     # -----------------------------------------------------------------------------
-    @staticmethod
-    def _is_asc_string_integers(predecessor: str, successor: str) -> bool:
+    @classmethod
+    def _is_asc_string_integers(cls, predecessor: str, successor: str) -> bool:
         """Compare two string integers on ascending.
 
         Args:
@@ -497,8 +518,8 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     # Compare two uppercase letters on difference ascending 1.
     # -----------------------------------------------------------------------------
-    @staticmethod
-    def _is_asc_uppercase_letters(predecessor: str, successor: str) -> bool:
+    @classmethod
+    def _is_asc_uppercase_letters(cls, predecessor: str, successor: str) -> bool:
         """Compare two uppercase_letters on ascending.
 
         Args:
@@ -517,6 +538,40 @@ class LineTypeHeading:
         return False
 
     # -----------------------------------------------------------------------------
+    # Load heading rules from a JSON file.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def _load_heading_rules_from_json(
+        heading_rule_file: pathlib.Path,
+    ) -> list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+        """Load heading rules from a JSON file.
+
+        Args:
+            heading_rule_file (Path): JSON file.
+        """
+        heading_rules = []
+
+        with open(heading_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+            json_data = json.load(file_handle)
+
+            for heading_rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_HEADING_RULES]:
+                heading_rules.append(
+                    (
+                        heading_rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_NAME],
+                        heading_rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_IS_FIRST_TOKEN],
+                        heading_rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP],
+                        getattr(
+                            LineTypeHeading, "_is_asc_" + heading_rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_FUNCTION_IS_ASC]
+                        ),
+                        heading_rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_START_VALUES],
+                    )
+                )
+
+        utils.progress_msg(f"The heading rules were successfully loaded from the file {cfg.glob.setup.heading_rule_file}")
+
+        return heading_rules
+
+    # -----------------------------------------------------------------------------
     # Process the line-related data.
     # -----------------------------------------------------------------------------
     def _process_line(self, line_line: dict[str, str]) -> int:  # noqa: C901
@@ -530,19 +585,19 @@ class LineTypeHeading:
         """
         text = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]
 
-        for (pattern_name, pattern) in self._anti_patterns:
+        for (rule_name, pattern) in self._anti_patterns:
             if pattern.match(text):
                 utils.progress_msg_line_type_heading(
-                    f"LineTypeHeading: Anti pattern                         ={pattern_name} - text={text}"
+                    f"LineTypeHeading: Anti pattern                         ={rule_name} - text={text}"
                 )
                 return 0
 
         first_token = text.split()[0]
         lower_left_x_curr = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X]
 
-        for ph_idx in reversed(range(ph_size := len(self._pattern_hierarchy))):
+        for ph_idx in reversed(range(ph_size := len(self._heading_rules_hierarchy))):
             (
-                pattern_name,
+                rule_name,
                 is_first_token,
                 regexp_compiled_match,
                 regexp_compiled_display,
@@ -551,7 +606,7 @@ class LineTypeHeading:
                 level,
                 lower_left_x,
                 predecessor,
-            ) = self._pattern_hierarchy[ph_idx]
+            ) = self._heading_rules_hierarchy[ph_idx]
 
             target_value = first_token if is_first_token else text
 
@@ -565,8 +620,8 @@ class LineTypeHeading:
                     return 0
 
                 if function_is_asc(predecessor, target_value):
-                    self._pattern_hierarchy[ph_idx] = (
-                        pattern_name,
+                    self._heading_rules_hierarchy[ph_idx] = (
+                        rule_name,
                         is_first_token,
                         regexp_compiled_match,
                         regexp_compiled_display,
@@ -582,27 +637,27 @@ class LineTypeHeading:
                     heading = self._create_toc_entry(level, regexp_compiled_display.match(text), pattern_matched)
 
                     utils.progress_msg_line_type_heading(
-                        f"LineTypeHeading: Match                                ={pattern_name} "
+                        f"LineTypeHeading: Match                                ={rule_name} "
                         + f"- level={level} - heading={heading}"
                     )
 
                     # Delete levels that are no longer needed
                     if ph_size > level:
                         for i in range(ph_size - 1, level - 1, -1):
-                            del self._pattern_hierarchy[i]
+                            del self._heading_rules_hierarchy[i]
 
                     return level
 
                 return 0
 
         for (
-            pattern_name,
+            rule_name,
             is_first_token,
             regexp_compiled_match,
             regexp_compiled_display,
             function_is_asc,
             start_values,
-        ) in self._pattern_collection:
+        ) in self._heading_rules_collection:
             target_value = first_token if is_first_token else text
             if pattern_matched := regexp_compiled_match.match(target_value):
                 if is_first_token and start_values:
@@ -612,9 +667,9 @@ class LineTypeHeading:
                 if (level := self._level_prev + 1) > cfg.glob.setup.heading_max_level:
                     return 0
 
-                self._pattern_hierarchy.append(
+                self._heading_rules_hierarchy.append(
                     (
-                        pattern_name,
+                        rule_name,
                         is_first_token,
                         regexp_compiled_match,
                         regexp_compiled_display,
@@ -631,7 +686,7 @@ class LineTypeHeading:
                 heading = self._create_toc_entry(level, regexp_compiled_display.match(text), pattern_matched)
 
                 utils.progress_msg_line_type_heading(
-                    f"LineTypeHeading: Match new level                      ={pattern_name} "
+                    f"LineTypeHeading: Match new level                      ={rule_name} "
                     + f"- level={level} - heading={heading}"
                 )
 
