@@ -19,6 +19,26 @@
       ]
     },
     {
+      "name": "a.",
+      "isFirstToken": true,
+      "regexp": "[a-z]\\.$",
+      "functionIsAsc": "lowercase_letters",
+      "startValues": [
+        "a",
+        "a."
+      ]
+    },
+    {
+      "name": "A.",
+      "isFirstToken": true,
+      "regexp": "[A-Z]\\.$",
+      "functionIsAsc": "uppercase_letters",
+      "startValues": [
+        "A",
+        "A."
+      ]
+    },
+    {
       "name": "Article 999:",
       "isFirstToken": false,
       "regexp": "Article \\d+:?",
@@ -58,6 +78,13 @@
       "isFirstToken": true,
       "regexp": "Riders-\\d$",
       "functionIsAsc": "string_integers",
+      "startValues": ["Riders-1"]
+    },
+    {
+      "name": "Section 999.999.",
+      "isFirstToken": false,
+      "regexp": "Section \\d+\\.\\d+\\.",
+      "functionIsAsc": "string_floats",
       "startValues": []
     },
     {
@@ -79,38 +106,11 @@
       ]
     },
     {
-      "name": "Section 999.999.",
-      "isFirstToken": false,
-      "regexp": "Section \\d+\\.\\d+\\.",
-      "functionIsAsc": "string_floats",
-      "startValues": []
-    },
-    {
       "name": "999.999",
       "isFirstToken": true,
       "regexp": "\\d+\\.\\d+\\.?$",
       "functionIsAsc": "string_floats",
       "startValues": []
-    },
-    {
-      "name": "a.",
-      "isFirstToken": true,
-      "regexp": "[a-z]\\.$",
-      "functionIsAsc": "lowercase_letters",
-      "startValues": [
-        "a",
-        "a."
-      ]
-    },
-    {
-      "name": "A.",
-      "isFirstToken": true,
-      "regexp": "[A-Z]\\.$",
-      "functionIsAsc": "uppercase_letters",
-      "startValues": [
-        "A",
-        "A."
-      ]
     },
     {
       "name": "(rom)",

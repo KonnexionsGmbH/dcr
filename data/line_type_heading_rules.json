@@ -19,6 +19,26 @@
       ]
     },
     {
+      "name": "a.",
+      "isFirstToken": true,
+      "regexp": "[a-z]\\.$",
+      "functionIsAsc": "lowercase_letters",
+      "startValues": [
+        "a",
+        "a."
+      ]
+    },
+    {
+      "name": "A.",
+      "isFirstToken": true,
+      "regexp": "[A-Z]\\.$",
+      "functionIsAsc": "uppercase_letters",
+      "startValues": [
+        "A",
+        "A."
+      ]
+    },
+    {
       "name": "999.",
       "isFirstToken": true,
       "regexp": "\\d+\\.$",
@@ -42,26 +62,6 @@
       "regexp": "\\d+\\.\\d+\\.?$",
       "functionIsAsc": "string_floats",
       "startValues": []
-    },
-    {
-      "name": "a.",
-      "isFirstToken": true,
-      "regexp": "[a-z]\\.$",
-      "functionIsAsc": "lowercase_letters",
-      "startValues": [
-        "a",
-        "a."
-      ]
-    },
-    {
-      "name": "A.",
-      "isFirstToken": true,
-      "regexp": "[A-Z]\\.$",
-      "functionIsAsc": "uppercase_letters",
-      "startValues": [
-        "A",
-        "A."
-      ]
     },
     {
       "name": "(rom)",
