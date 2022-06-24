@@ -501,14 +501,14 @@ class LineTypeHeading:
             predecessor_net = predecessor[1:]
         else:
             predecessor_net = predecessor
-        if predecessor_net[-1] in [")", "."]:
+        if predecessor_net[-1] in {")", "."}:
             predecessor_net = predecessor_net[:-1]
 
         if successor[0:1] == "(":
             successor_net = successor[1:]
         else:
             successor_net = successor
-        if successor_net[-1] in [")", "."]:
+        if successor_net[-1] in {")", "."}:
             successor_net = successor_net[:-1]
 
         if (
