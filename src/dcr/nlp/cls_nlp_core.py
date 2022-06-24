@@ -28,6 +28,7 @@ class NLPCore:
     JSON_NAME_FUNCTION_IS_ASC: ClassVar[str] = "functionIsAsc"
     JSON_NAME_HEADING_LEVEL: ClassVar[str] = "headingLevel"
     JSON_NAME_HEADING_TEXT: ClassVar[str] = "headingText"
+    JSON_NAME_HEADING_CTX_LINE: ClassVar[str] = "headingCtxLine"
     JSON_NAME_IS_FIRST_TOKEN: ClassVar[str] = "isFirstToken"
     JSON_NAME_LINES: ClassVar[str] = "lines"
     JSON_NAME_LINE_INDEX_PAGE: ClassVar[str] = "lineIndexPage"

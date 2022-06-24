@@ -968,7 +968,7 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 # Test Function - missing dependencies - db_core - case 0.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_db_core_0(fxtr_setup_logger_environment):
+def test_missing_dependencies_db_core_0(fxtr_setup_empty_db_and_inbox):
     """# Test Function - missing dependencies - db_core - case 0.
     ."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

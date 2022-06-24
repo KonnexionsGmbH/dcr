@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 106
+    _CONFIG_PARAM_NO = 108
 
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
@@ -40,11 +40,13 @@ class Setup:
     _DCR_CFG_DIRECTORY_INBOX_REJECTED: ClassVar[str] = "directory_inbox_rejected"
     _DCR_CFG_DOC_ID_IN_FILE_NAME: ClassVar[str] = "doc_id_in_file_name"
     _DCR_CFG_FILE: ClassVar[str] = "setup.cfg"
-    _DCR_CFG_HEADING_CREATE_TOC: ClassVar[str] = "heading_create_toc"
     _DCR_CFG_HEADING_MAX_LEVEL: ClassVar[str] = "heading_max_level"
     _DCR_CFG_HEADING_MIN_PAGES: ClassVar[str] = "heading_min_pages"
-    _DCR_CFG_HEADING_TOLERANCE_X: ClassVar[str] = "heading_tolerance_x"
     _DCR_CFG_HEADING_RULE_FILE: ClassVar[str] = "heading_rule_file"
+    _DCR_CFG_HEADING_TOC_CREATE: ClassVar[str] = "heading_toc_create"
+    _DCR_CFG_HEADING_TOC_INCL_NO_CTX: ClassVar[str] = "heading_toc_incl_no_ctx"
+    _DCR_CFG_HEADING_TOC_INCL_REGEXP: ClassVar[str] = "heading_toc_incl_regexp"
+    _DCR_CFG_HEADING_TOLERANCE_X: ClassVar[str] = "heading_tolerance_x"
     _DCR_CFG_IGNORE_DUPLICATES: ClassVar[str] = "ignore_duplicates"
     _DCR_CFG_INITIAL_DATABASE_DATA: ClassVar[str] = "initial_database_data"
     _DCR_CFG_JSON_INDENT: ClassVar[str] = "json_indent"
@@ -178,10 +180,12 @@ class Setup:
         self.heading_max_level = 3
         self.heading_min_pages = 2
         self.heading_rule_file = "none"
+        self.heading_toc_incl_no_ctx = 1
         self.heading_tolerance_x = 5
         self.initial_database_data = utils.get_os_independent_name("data/initial_database_data.json")
         self.is_delete_auxiliary_files = True
-        self.is_heading_create_toc = True
+        self.is_heading_toc_create = True
+        self.is_heading_toc_incl_regexp = False
         self.is_ignore_duplicates = False
         self.is_json_sort_keys = False
         self.is_line_footer_preferred = True
@@ -285,7 +289,8 @@ class Setup:
         self._check_config_directory_inbox_accepted()
         self._check_config_directory_inbox_rejected()
         self._check_config_doc_id_in_file_name()
-        self._check_config_heading_create_toc()
+        self._check_config_heading_toc_create()
+        self._check_config_heading_toc_incl_regexp()
         self._check_config_ignore_duplicates()
         self._check_config_json_sort_keys()
         self._check_config_pdf2image_type()
@@ -428,13 +433,22 @@ class Setup:
                 self.doc_id_in_file_name = str(self._config[Setup._DCR_CFG_DOC_ID_IN_FILE_NAME]).lower()
 
     # -----------------------------------------------------------------------------
-    # Check the configuration parameter - heading_create_toc.
+    # Check the configuration parameter - heading_toc_create.
     # -----------------------------------------------------------------------------
-    def _check_config_heading_create_toc(self) -> None:
-        """Check the configuration parameter - heading_create_toc."""
-        if Setup._DCR_CFG_HEADING_CREATE_TOC in self._config:
-            if str(self._config[Setup._DCR_CFG_HEADING_CREATE_TOC]).lower() == "false":
-                self.is_heading_create_toc = False
+    def _check_config_heading_toc_create(self) -> None:
+        """Check the configuration parameter - heading_toc_create."""
+        if Setup._DCR_CFG_HEADING_TOC_CREATE in self._config:
+            if str(self._config[Setup._DCR_CFG_HEADING_TOC_CREATE]).lower() == "false":
+                self.is_heading_toc_create = False
+
+    # -----------------------------------------------------------------------------
+    # Check the configuration parameter - heading_toc_incl_regexp.
+    # -----------------------------------------------------------------------------
+    def _check_config_heading_toc_incl_regexp(self) -> None:
+        """Check the configuration parameter - heading_toc_incl_regexp."""
+        if Setup._DCR_CFG_HEADING_TOC_INCL_REGEXP in self._config:
+            if str(self._config[Setup._DCR_CFG_HEADING_TOC_INCL_REGEXP]).lower() == "true":
+                self.is_heading_toc_incl_regexp = True
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - ignore_duplicates.
@@ -1219,7 +1233,8 @@ class Setup:
                     | Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
                     | Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
                     | Setup._DCR_CFG_DOC_ID_IN_FILE_NAME
-                    | Setup._DCR_CFG_HEADING_CREATE_TOC
+                    | Setup._DCR_CFG_HEADING_TOC_CREATE
+                    | Setup._DCR_CFG_HEADING_TOC_INCL_REGEXP
                     | Setup._DCR_CFG_IGNORE_DUPLICATES
                     | Setup._DCR_CFG_JSON_SORT_KEYS
                     | Setup._DCR_CFG_PDF2IMAGE_TYPE
@@ -1306,6 +1321,8 @@ class Setup:
                     self.heading_min_pages = int(item)
                 case Setup._DCR_CFG_HEADING_RULE_FILE:
                     self.heading_rule_file = utils.get_os_independent_name(item)
+                case Setup._DCR_CFG_HEADING_TOC_INCL_NO_CTX:
+                    self.heading_toc_incl_no_ctx = int(item)
                 case Setup._DCR_CFG_HEADING_TOLERANCE_X:
                     self.heading_tolerance_x = int(item)
                 case Setup._DCR_CFG_INITIAL_DATABASE_DATA:

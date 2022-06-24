@@ -42,7 +42,7 @@ The processing logic is as follows:
 - **`tiff`** [Tag Image File Format](https://en.wikipedia.org/wiki/TIFF){:target="_blank"}
 - **`webp`** [Image file format with lossless and lossy compression](https://developers.google.com/speed/webp){:target="_blank"}
 
-## 2. Detailed processing actions
+## 2. Detailed Processing Actions
 
 The documents to be processed are divided into individual steps, so-called actions. 
 Each action has the task of changing the state of a document by transforming an input file format into a different output file format.
@@ -131,7 +131,7 @@ After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract
 This processing action only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.2.
 In this processing action, the documents of this document types are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
 
-### 2.2 Natural Language Processing (NLP)
+### 2.2 NLP
 
 #### 2.2.1 NLP Architecture
 
@@ -544,37 +544,57 @@ In the event of an error, the original document is marked as erroneous and an ex
                                         "tknWhitespace_": " "
                                     },
 
-## 3. Naming system of the auxiliary files
+## 3. Auxiliary File Namess
 
 The processing actions are based on different flat files, each of which is generated from the original document on an action-related basis.
 Apart from the **`JSON`** files optionally created during the 'tokenizer' action, these can be automatically deleted after error-free processing.
 
-### 3.1 Action-related naming system
+### 3.1 Naming System
 
-| Code    | Action                                       | File names                                            | 
-|---------|----------------------------------------------|-------------------------------------------------------|
-| `p_i`   | process the inbox directory                  | `in :` `<ost>.<oft>`                                  |                                      
-|         |                                              | `out:` `<ost>_<di>.<oft> `                            |                                       
-| `p_2_i` | convert pdf documents to image files         | `in :` `<ost>_<di>.pdf`                               |                                       
-|         |                                              | `out:` `<ost>_<di>.<jpeg / png>`                      |                                       
-| `ocr`   | convert image files to pdf documents         | `in :` `<ost>_<di>.<oft>`                             | `                                     
-|         |                                              | `or :` `<ost>_<di>.<jpeg / png>`                      |                                       
-|         |                                              | `out:` `<ost>_<di>_<pn>.pdf`                          |                                       
-|         |                                              | `and:` `<ost>_<di>_0.pdf`                             |                                       
-| `n_2_p` | convert non-pdf documents to pdf documents   | `in :` `<ost>_<di>.<oft>`                             |                                       
-|         |                                              | `out:` `<ost>_<di>.pdf`                               |                                      
-| `tet`   | extract text and metadata from pdf documents | `in :` `<ost>_<di>[_<pn> / _0].pdf`                   |                                       
-|         |                                              | `out:` `<ost>_<di>[_<pn> / _0]_line.xml`              |                                       
-|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_page.xml`              |                                       
-|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_word.xml`              |                                       
-| `s_p_j` | store the parser result in a **`JSON`** file | `in :` `<ost>_<di>[_<pn> / _0]_line.xml`              |                                       
-|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_page.xml`              |                                     
-|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_word.xml`              |                                     
-|         |                                              | `out:` `<ost>_<di>[_<pn> / _0]_line.json`             |                                      
-|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_page.json`             |                                     
-|         |                                              | `and:` `<ost>_<di>[_<pn> / _0]_word.json`             |                                     
-| `tkn`   | create qualified document tokens             | `in :` `<ost>_<di>[_<pn> / _0]_line.json`             |                                      
-|         |                                              | `out:` `<ost>_<di>[_<pn> / _0]_line_token.json`       |                                      
+**Action** `p_i` - process the inbox directory
+
+    in : <ost>.<oft>              
+    out: <ost>_<di>.<oft>
+
+**Action** `p_2_i` - convert pdf documents to image files
+
+    in : <ost>_<di>.pdf                
+    out: <ost>_<di>.<jpeg|png>
+                                       
+**Action** `ocr` - convert image files to pdf documents
+
+    in : <ost>_<di>.<oft>              
+    or : <ost>_<di>.<jpeg|png>        
+    out: <ost>_<di>_<pn>.pdf 
+         <ost>_<di>_0.pdf        
+
+**Action** `n_2_p` - convert non-pdf documents to pdf documents
+
+    in : <ost>_<di>.<oft>              
+    out: <ost>_<di>.pdf                                      
+
+**Action** `tet` - extract text and metadata from pdf documents
+
+    in : <ost>_<di>[_<pn>|_0].pdf       
+    out: <ost>_<di>[_<pn>|_0]_line.xml        
+         <ost>_<di>[_<pn>|_0]_page.xml 
+         <ost>_<di>[_<pn>|_0]_word.xml
+
+**Action** `s_p_j` - store the parser result in a **`JSON`** file
+
+    in : <ost>_<di>[_<pn>|_0]_line.xml  
+         <ost>_<di>[_<pn>|_0]_page.xml        
+         <ost>_<di>[_<pn>|_0]_word.xml 
+    out: <ost>_<di>[_<pn>|_0]_line.json 
+         <ost>_<di>[_<pn>|_0]_line.toc.json 
+         <ost>_<di>[_<pn>|_0]_page.json 
+         <ost>_<di>[_<pn>|_0]_word.json
+
+**Action** `tkn` - create qualified document tokens
+
+    in : <ost>_<di>[_<pn>|_0]_line.json 
+    out: <ost>_<di>[_<pn>|_0]_line_token.json 
+
 
 | Abbr.  | Meaning             |
 |--------|---------------------|
@@ -597,6 +617,7 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_2_docx_route_inbox_pandoc_pdflib_2.word.xml
 
     case_2_docx_route_inbox_pandoc_pdflib_2.line.json
+    case_2_docx_route_inbox_pandoc_pdflib_2.line_toc.json
     case_2_docx_route_inbox_pandoc_pdflib_2.page.json
     case_2_docx_route_inbox_pandoc_pdflib_2.word.json
 
@@ -608,13 +629,14 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_6_jpg_route_inbox_tesseract_pdflib_6.pdf
 
-    case_6_jpg_route_inbox_tesseract_pdflib_6.line.json
-    case_6_jpg_route_inbox_tesseract_pdflib_6.page.json
-    case_6_jpg_route_inbox_tesseract_pdflib_6.word.json
-
     case_6_jpg_route_inbox_tesseract_pdflib_6.line.xml
     case_6_jpg_route_inbox_tesseract_pdflib_6.page.xml
     case_6_jpg_route_inbox_tesseract_pdflib_6.word.xml
+
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line_toc.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.page.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.word.json
 
     case_6_jpg_route_inbox_tesseract_pdflib_6.line.token.json
 
@@ -627,6 +649,7 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_3_pdf_text_route_inbox_pdflib_3.word.xml
 
     case_3_pdf_text_route_inbox_pdflib_3.line.json
+    case_3_pdf_text_route_inbox_pdflib_3.line_toc.json
     case_3_pdf_text_route_inbox_pdflib_3.page.json
     case_3_pdf_text_route_inbox_pdflib_3.word.json
 
@@ -640,13 +663,14 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.pdf
 
-    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.json
-    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.page.json
-    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.json
-
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.xml
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.page.xml
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.xml
+
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_toc.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.page.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.json
 
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.token.json
 
@@ -661,17 +685,18 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_2.pdf
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.pdf
 
-    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.json
-    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.page.json
-    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.json
-
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.xml
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.page.xml
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.xml
 
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_toc.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.page.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.json
+
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.token.json
 
-## 4 Line Typing Algorithms
+## 4 Line Type Algorithms
 
 The granularity of the document `line` tries to classify the individual lines.
 The possible line types are :
@@ -703,30 +728,31 @@ The headings are determined with rule-enriched regular expressions.
 
 ### 4.1 Headings & Footers
 
+The following parameter controls both the classification of the headers and the footers:
+
+**`verbose_line_type_headers_footers`**
+
+Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
+
 #### 4.1.1 Footers
 
-The parameters that control the classification in footer lines are:
+**4.1.1.1 Parameters**
 
-- `line_footer_max_distance = 3`
-- `line_footer_max_lines = 3`
+The following parameters control the classification of the footers:
 
-##### 4.1.1.1 `line_footer_max_lines`
+**`line_footer_max_distance`**
 
-This parameter controls the number of lines from the bottom of the page to be analyzed as possible candidates for footers.
-With the value zero the classification of footers is prevented.
-
-##### 4.1.1.2 `line_footer_max_distance`
-
-The degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
+Default value: **`3`** - The degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
 The value zero stands for identical lines. 
 The larger the Levenshtein distance, the more different the rows are. 
 If the header lines do not contain a page numbers, then the parameter should be set to `0`.
 
-##### 4.1.1.3 `verbose_line_type_headers_footers`
+**`line_footer_max_lines`**
 
-The verbose mode is an option that provides additional details as to what the processing algorithm is doing.
+Default value: **`3`** - the number of lines from the bottom of the page to be analyzed as possible candidates for footers.
+With the value zero the classification of footers is prevented.
 
-##### 4.1.1.4 Algorithm
+**4.1.1.2 Algorithm**
 
 1. On all pages, the last line `n`, the line `n-1`, etc. are compared up to the maximum specified line. 
 2. The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.
@@ -734,20 +760,13 @@ The verbose mode is an option that provides additional details as to what the pr
 
 #### 4.1.2 Headers
 
-The parameters that control the classification in header lines are:
+**4.1.2.1 Parameters**
 
-- `line_header_max_distance = 3`
-- `line_header_max_lines = 3`
-- `verbose_line_type_headers_footers = false`
+The following parameters control the classification of the headers:
 
-##### 4.1.2.1 `line_header_max_lines`
+**`line_header_max_distance`**
 
-This parameter controls the number of lines from the top of the page to be analyzed as possible candidates for headers.
-A value of zero prevents the classification of headers.
-
-##### 4.1.2.2 `line_header_max_distance`
-
-The degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
+Default value: **`3`** - the degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
 The value zero stands for identical lines. 
 The larger the Levenshtein distance, the more different the rows are. 
 If the footer lines contain a page number, then depending on the number of pages in the document, the following values are useful:
@@ -758,11 +777,12 @@ If the footer lines contain a page number, then depending on the number of pages
  | < 100          | 2                    |
  | < 1000         | 3                    |
 
-##### 4.1.2.3 `verbose_line_type_headers_footers`
+**`line_header_max_lines`**
 
-The verbose mode is an option that provides additional details as to what the processing algorithm is doing.
+Default value: **`3`** - the number of lines from the top of the page to be analyzed as possible candidates for headers.
+A value of zero prevents the classification of headers.
 
-##### 4.1.2.4 Algorithm
+**4.1.2.2 Algorithm**
 
 1. On all pages, the first line, the second line, etc. are compared up to the maximum specified line. 
 2. The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.
@@ -770,28 +790,37 @@ The verbose mode is an option that provides additional details as to what the pr
 
 ### 4.2 Close Together
 
+Here all line types are determined whose underlying text structures  have a closeness in space.
+The order of processing is as follows
+
+1. table of contents
+2. tables which have already been marked accordingly by PDFlib TET
+3. bulleted and numbered lists which must be close together and are determined by regular expressions. 
+
 #### 4.2.1 TOC (Table of Content)
 
-The parameters that control the classification in table of content are:
+**4.2.1.1 Parameters**
+
+The following parameters control the classification of the table of content:
 
 - `toc_last_page = 3`
 - `toc_min_entries = 3`
 - `verbose_line_type_toc = false`
 
-##### 4.2.1.1 `toc_last_page`
+**`toc_last_page`**
 
-This parameter sets the number of pages that will be searched for a table of contents from the beginning of the document.
+Default value: **`3`** - sets the number of pages that will be searched for a table of contents from the beginning of the document.
 A value of zero prevents the search for a table of contents.
 
-##### 4.2.1.2 `toc_min_entries`
+**`toc_min_entries`**
 
-This parameter defines the minimum number of entries that a table of contents must contain.
+Default value: **`3`** - defines the minimum number of entries that a table of contents must contain.
 
-##### 4.2.1.3 `verbose_line_type_toc`
+**`verbose_line_type_toc`**
 
-The verbose mode is an option that provides additional details as to what the processing algorithm is doing.
+Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
 
-##### 4.2.1.4 Algorithm Table-based
+**4.2.1.2 Algorithm Table-based**
 
 A table with the following properties is searched for:
 
@@ -800,7 +829,7 @@ A table with the following properties is searched for:
    - the number must not be greater than the last page number of the document, and
    - if such a table was found, then the algorithm ends here.
 
-##### 4.2.1.4 Algorithm Line-based
+**4.2.1.3 Algorithm Line-based**
 
 A block of lines with the following properties is searched here:
 
@@ -810,19 +839,21 @@ A block of lines with the following properties is searched here:
 
 #### 4.2.2 Tables
 
+TBD
+
 #### 4.2.3 Bulleted Lists
 
+TBD
+
 #### 4.2.4 Numbered Lists
+
+TBD
 
 ### 4.3 Headings
 
 #### 4.3.1 Parameters
 
 The following parameters control the classification of the headings:
-
-**`heading_create_toc`**
-
-Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_toc.json` is created in the file directory `data_accepted` with the identified headings.
 
 **`heading_max_level`**
 
@@ -836,6 +867,18 @@ Default value: **`2`** - the minimum number of document pages for determining he
 
 Default value: **`none`** - name of a file including file directory that contains the rules for determining the headings.
 **`none`** means that the given default rules are applied.
+
+**`heading_toc_create`**
+
+Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_toc.json` is created in the file directory `data_accepted` with the identified headings.
+
+**`heading_toc_incl_no_ctx`**
+
+Default value: **`1`** - the `n` lines following the heading are included as context into the **`JSON`** file.
+
+**`heading_toc_incl_regexp`**
+
+Default value: **`false`** - if true, the regular expression for the heading is included in the **`JSON`** file..
 
 **`heading_tolerance_x`**
 
@@ -859,7 +902,7 @@ A heading rule contains the following 5 elements:
 
 The following comparison functions (**`functionIsAsc`**) can be used:
 
-| function name     | description                                                                                                   |
+| function                | description                                                                                                         |
 |-------------------------|---------------------------------------------------------------------------------------------------------------------|
 | **`ignore`**            | no comparison is performed                                                                                          |
 | **`lowercase_letters`** | two lowercase letters are compared,  <br/>whereby the ASCII difference must be exactly **`1`**                      |
@@ -869,23 +912,38 @@ The following comparison functions (**`functionIsAsc`**) can be used:
 | **`string_integers`**   | two integer numbers are compared, <br/>whereby the difference must be exactly **`1`**                               |
 | **`uppercase_letters`** | two uppercase letters are compared,  <br/>whereby the ASCII difference must be exactly **`1`**                      |
 
-The following table shows the standard rules in the standard processing order:
+The following table shows the standard rules in the default processing order:
 
-| name        | isFirstToken | regexp           | functionIsAsc      | startValues  |
-|-------------|--------------|------------------|--------------------|--------------|
-| (a)         | True         | `"\([a-z]\)$"`   | lowercase_letters  | `["(a)"]`    |
-| (A)         | True         | `"\([A-Z]\)$"`   | uppercase_letters  | `["(A)"]`    |
-| 999.        | True         | `"\d+\.$"`       | string_integers    | `["1."]`     |
-| (999)       | True         | `"\(\d+\)$"`     | string_integers    | `["(1)"]`    |
-| 999.999     | True         | `"\d+\.\d+\.?$"` | string_floats      | `[]`         |
-| a.          | True         | `"[a-z]\.$"`     | lowercase_letters  | `["a, "a."]` |
-| A.          | True         | `"[A-Z]\.$"`     | uppercase_letters  | `["A, "A."]` |
-| (rom)       | True         | see a)           | romans             | `["(i)"]`    |
-| (ROM)       | True         | see b)          | romans             | `["(I)"]`    |
+| name    | isFirstToken | regexp           | functionIsAsc      | startValues  |
+|---------|--------------|------------------|--------------------|--------------|
+| (999)   | True         | `"\(\d+\)$"`     | string_integers    | `["(1)"]`    |
+| (A)     | True         | `"\([A-Z]\)$"`   | uppercase_letters  | `["(A)"]`    |
+| (ROM)   | True         | see a)           | romans             | `["(I)"]`    |
+| (a)     | True         | `"\([a-z]\)$"`   | lowercase_letters  | `["(a)"]`    |
+| (rom)   | True         | see b)           | romans             | `["(i)"]`    |
+| 999)    | True         | `"\d+\)$"`       | string_integers    | `["1)"]`     |
+| 999.    | True         | `"\d+\.$"`       | string_integers    | `["1."]`     |
+| 999.999 | True         | `"\d+\.\d+\.?$"` | string_floats      | `[]`         |
+| A)      | True         | `"[A-Z]\)$"`     | uppercase_letters  | `["A)"]`     |
+| A.      | True         | `"[A-Z]\.$"`     | uppercase_letters  | `["A, "A."]` |
+| ROM)    | True         | see c)           | romans             | `["I)"]`     |
+| ROM.    | True         | see d)           | romans             | `["I."]`     |
+| a)      | True         | `"[a-z]\)$"`     | lowercase_letters  | `["a)"]`     |
+| a.      | True         | `"[a-z]\.$"`     | lowercase_letters  | `["a, "a."]` |
+| rom)    | True         | see e)           | romans             | `["i)"]`     |
+| rom.    | True         | see f)           | romans             | `["i."]`     |
 
-a) **`"\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$"`**
+a) `"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$"`
 
-b) **`"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$"`**
+b) `"\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$"`
+
+c) `"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$"`
+
+d) `"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\.$"`
+
+e) `"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$"`
+
+f) `"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\.$"`
 
 However, these default rules can also be overridden via a **`JSON`** file (see parameter **`heading_rules_file`**). 
 An example file can be found in the file directory **`data`** with the file name **`heading_rules_test.json`**.
@@ -913,5 +971,22 @@ An example file can be found in the file directory **`data`** with the file name
 
 #### 4.3.3 Algorithm
 
-
-
+- the document is worked through page by page and within a page line by line
+- for each current heading level there is an entry in a hierarchy table
+- for each document line, this hierarchy table is searched from bottom to top for a matching entry
+- an entry is considered to be matching if
+    - the regular expression is satisfied, and
+    - the indentation is within the specified tolerance (`heading_tolerance_x`), and
+    - the comparison function is fulfilled
+- if there is a match, the following processing steps are carried out and then the next document line is processed
+    - an entry for the JSON fileii is optionally created
+    - any existing lower entries in the hierarchy table are deleted
+- if no match is found, then the given heading rules are searched in the specified order
+- a heading rule is matching if
+    - the regular expression is satisfied, and
+    - one of the optional start values matches the document line, and
+    - the new heading level is within the specified limit (`heading_max_level`)
+- if there is a match, the following processing steps are carried out and then the next document line is processed
+    - the last heading level is increased by 1,
+    - a new entry is added to the hierarchy table
+    - an entry for the JSON fileii is optionally created

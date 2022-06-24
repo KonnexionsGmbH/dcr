@@ -61,20 +61,20 @@ def check_param_delete_auxiliary_files():
 
 
 # -----------------------------------------------------------------------------
-# Check parameter HEADING_CREATE_TOC - True.
+# Check parameter HEADING_TOC_CREATE - True.
 # -----------------------------------------------------------------------------
-def check_param_heading_create_toc():
-    """Check parameter HEADING_CREATE_TOC - True."""
+def check_param_heading_toc_create():
+    """Check parameter HEADING_TOC_CREATE - True."""
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_CREATE_TOC, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOC_CREATE, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
     cfg.glob.setup = cfg.cls_setup.Setup()
-    assert cfg.glob.setup.is_heading_create_toc, "DCR_CFG_HEADING_CREATE_TOC: true (not false)"
+    assert cfg.glob.setup.is_heading_toc_create, "DCR_CFG_HEADING_TOC_CREATE: true (not false)"
 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -85,12 +85,50 @@ def check_param_heading_create_toc():
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_CREATE_TOC, "fALSE"),
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOC_CREATE, "fALSE"),
         ],
     )
 
     cfg.glob.setup = cfg.cls_setup.Setup()
-    assert not cfg.glob.setup.is_heading_create_toc, "DCR_CFG_HEADING_CREATE_TOC: false"
+    assert not cfg.glob.setup.is_heading_toc_create, "DCR_CFG_HEADING_TOC_CREATE: false"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+
+# -----------------------------------------------------------------------------
+# Check parameter HEADING_TOC_INCL_REGEXP - False.
+# -----------------------------------------------------------------------------
+def check_param_heading_toc_incl_regexp():
+    """Check parameter HEADING_TOC_INCL_REGEXP - False."""
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOC_INCL_REGEXP, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert not cfg.glob.setup.is_heading_toc_incl_regexp, "DCR_CFG_HEADING_TOC_INCL_REGEXP: false (any not true)"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOC_INCL_REGEXP, "TruE"),
+        ],
+    )
+
+    cfg.glob.setup = cfg.cls_setup.Setup()
+    assert cfg.glob.setup.is_heading_toc_incl_regexp, "DCR_CFG_HEADING_TOC_INCL_REGEXP: true"
 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -756,7 +794,8 @@ def test_get_config_logical_false(fxtr_setup_logger_environment):
 
     check_param_complete()
 
-    check_param_heading_create_toc()
+    check_param_heading_toc_create()
+    check_param_heading_toc_incl_regexp()
 
     check_param_ignore_duplicates()
 

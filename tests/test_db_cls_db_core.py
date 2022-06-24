@@ -208,7 +208,7 @@ def test_create_database(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 # Test Function - drop_database().
 # -----------------------------------------------------------------------------
-def test_drop_database(fxtr_setup_logger_environment):
+def test_drop_database(fxtr_setup_empty_db_and_inbox):
     """Test: drop_database()."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 

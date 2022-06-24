@@ -210,7 +210,7 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_CREATE_TOC, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOC_CREATE, "false"),
         ],
     )
 
@@ -323,7 +323,7 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_CREATE_TOC, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOC_CREATE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
         ],
@@ -392,7 +392,7 @@ def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_CREATE_TOC, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOC_CREATE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
         ],

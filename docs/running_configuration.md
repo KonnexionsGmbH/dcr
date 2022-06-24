@@ -139,10 +139,12 @@ The customisable entries are:
     directory_inbox_accepted = data/inbox_prod_accepted
     directory_inbox_rejected = data/inbox_prod_rejected
     doc_id_in_file_name = none
-    heading_create_toc = true
     heading_max_level = 3
     heading_min_pages = 2
     heading_rule_file = none
+    heading_toc_create = true
+    heading_toc_incl_no_ctx = 1
+    heading_toc_incl_regexp = false
     heading_tolerance_x = 5
     ignore_duplicates = false
     initial_database_data = data/initial_database_data.json
@@ -187,10 +189,12 @@ The customisable entries are:
 | directory_inbox_accepted          | **`data/inbox_prod_accepted`**          | Directory for the accepted documents.                                                                           |
 | directory_inbox_rejected          | **`data/inbox_prod_rejected`**          | Complete file name for the **`JSON`** file with the <br>database initialisation data.                           |
 | doc_id_in_file_name               | **`none`**                              | Position of the document id in the file name : <br>**`after`**, **`before`** or **`none`**.                     |
-| heading_create_toc                | **`true`**                              | Create a separate **`JSON`** file with the table of contents.                                                   |
 | heading_max_level                 | **`3`**                                 | Maximum level of the heading structure.                                                                         |
 | heading_min_pages                 | **`2`**                                 | Minimum number of pages to determine the headings.                                                              |
 | heading_rule_file                 | **`data/line_type_heading_rules.json`** | File with rules to determine the headings.                                                                      |
+| heading_toc_create                | **`true`**                              | Create a separate **`JSON`** file with the table of contents.                                                   |
+| heading_toc_incl_no_ctx           | **`1`**                                 | The number of lines following the heading to be included as context into the **`JSON`** file.                   |
+| heading_toc_incl_regexp           | **`false`**                             | If it is set to **`true`**, the regular expression for the heading is included in the **`JSON`** file.          |
 | heading_tolerance_x               | **`5`**                                 | Tolerance of vertical indentation in percent.                                                                   |
 | ignore_duplicates                 | **`false`**                             | Accept presumably duplicated documents <br/>based on a SHA256 hash key.                                         |
 | initial_database_data             | **`data/initial_database_data.json`**   | File with initial database contents.                                                                            |
@@ -229,37 +233,7 @@ The configuration parameters can be set differently for the individual environme
     db_password = postgresql
     db_password_admin = postgresql
     db_user = dcr_user
-    db_user_admin = dcr_user_admin
-    delete_auxiliary_files = false
-    directory_inbox = data/inbox_dev
-    directory_inbox_accepted = data/inbox_dev_accepted
-    directory_inbox_rejected = data/inbox_dev_rejected
-    doc_id_in_file_name = none
-    heading_create_toc = true
-    heading_max_level = 3
-    heading_min_pages = 2
-    heading_rule_file = none
-    heading_tolerance_x = 5
-    ignore_duplicates = false
-    initial_database_data = data/initial_database_data_dev.json
-    line_footer_max_distance = 3
-    line_footer_max_lines = 3
-    line_header_max_distance = 3
-    line_header_max_lines = 3
-    pdf2image_type = jpeg
-    tesseract_timeout = 30
-    tetml_page = true
-    tetml_word = true
-    tokenize_2_database = true
-    tokenize_2_jsonfile = true
-    tokenize_footers = false
-    tokenize_headers = false
-    tokenize_toc = false
-    verbose = true
-    verbose_line_type_headers_footers = false
-    verbose_line_type_heading = false
-    verbose_line_type_toc = false
-    verbose_parser = none
+    ...
     
     [dcr.env.test]
     db_connection_port = 5434
@@ -273,37 +247,7 @@ The configuration parameters can be set differently for the individual environme
     db_password_admin = postgresql
     db_schema = dcr_schema
     db_user = dcr_user
-    db_user_admin = dcr_user_admin
-    delete_auxiliary_files = true
-    directory_inbox = data/inbox_test
-    directory_inbox_accepted = data/inbox_test_accepted
-    directory_inbox_rejected = data/inbox_test_rejected
-    doc_id_in_file_name = after
-    heading_create_toc = true
-    heading_max_level = 3
-    heading_min_pages = 2
-    heading_rule_file = none
-    heading_tolerance_x = 5
-    ignore_duplicates = false
-    initial_database_data = data/initial_database_data_test.json
-    line_footer_max_distance = 3
-    line_footer_max_lines = 3
-    line_header_max_distance = 3
-    line_header_max_lines = 3
-    pdf2image_type = jpeg
-    tesseract_timeout = 30
-    tetml_page = false
-    tetml_word = false
-    tokenize_2_database = true
-    tokenize_2_jsonfile = false
-    tokenize_footers = false
-    tokenize_headers = false
-    tokenize_toc = false
-    verbose = true
-    verbose_line_type_headers_footers = false
-    verbose_line_type_heading = false
-    verbose_line_type_toc = false
-    verbose_parser = none
+    ...
 
 ## 4. **`setup.cfg`** - [spaCy](https://spacy.io){:target="_blank"} Token Attributes
 
