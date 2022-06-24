@@ -162,9 +162,6 @@ The customisable entries are:
     toc_min_entries = 5
     tokenize_2_database = true
     tokenize_2_jsonfile = true
-    tokenize_footers = false
-    tokenize_headers = false
-    tokenize_toc = false
     verbose = true
     verbose_line_type_headers_footers = false
     verbose_line_type_heading = false
@@ -212,9 +209,6 @@ The customisable entries are:
 | toc_min_entries                   | **`5`**                                 | Minimum number of TOC entries.                                                                                  |
 | tokenize_2_database               | **`true`**                              | Store the tokens in the database table **`token`**.                                                             |
 | tokenize_2_jsonfile               | **`true`**                              | Store the tokens in a **`JSON`** flat file.                                                                     |
-| tokenize_footers                  | **`false`**                             | Tokenize the footer lines.                                                                                      |
-| tokenize_headers                  | **`false`**                             | Tokenize the header lines.                                                                                      |
-| tokenize_toc                      | **`false`**                             | Tokenize the table of content lines.                                                                            |
 | verbose                           | **`true`**                              | Display progress messages for processing.                                                                       |
 | verbose_line_type_headers_footers | **`false`**                             | Display progress messages for headers & footers line type determination.                                        |
 | verbose_line_type_heading         | **`false`**                             | Display progress messages for heading line type determination.                                                  |
@@ -235,20 +229,6 @@ The configuration parameters can be set differently for the individual environme
     db_user = dcr_user
     ...
     
-    [dcr.env.test]
-    db_connection_port = 5434
-    db_connection_prefix = postgresql+psycopg2://
-    db_container_port = 5432
-    db_database = dcr_db_test
-    db_database_admin = dcr_db_test_admin
-    db_dialect = postgresql
-    db_host = localhost
-    db_password = postgresql
-    db_password_admin = postgresql
-    db_schema = dcr_schema
-    db_user = dcr_user
-    ...
-
 ## 4. **`setup.cfg`** - [spaCy](https://spacy.io){:target="_blank"} Token Attributes
 
 The tokens derived from the documents can be qualified via various attributes. 
@@ -257,6 +237,13 @@ The available options are described below.
     [dcr.spacy]
     spacy_ignore_bracket = true
     spacy_ignore_left_punct = true
+    spacy_ignore_line_type_footer = true
+    spacy_ignore_line_type_header = true
+    spacy_ignore_line_type_heading = false
+    spacy_ignore_line_type_list_bulleted = false
+    spacy_ignore_line_type_list_numbered = false
+    spacy_ignore_line_type_table = false
+    spacy_ignore_line_type_toc = true
     spacy_ignore_punct = true
     spacy_ignore_quote = true
     spacy_ignore_right_punct = true
@@ -316,70 +303,85 @@ The available options are described below.
     spacy_tkn_attr_text_with_ws = false
     spacy_tkn_attr_vocab = false
     spacy_tkn_attr_whitespace_ = true
+
+    spacy_ignore_line_type_footer = true
+    spacy_ignore_line_type_header = true
+    spacy_ignore_line_type_heading = false
+    spacy_ignore_line_type_list_bulleted = false
+    spacy_ignore_line_type_list_numbered = false
+    spacy_ignore_line_type_table = false
+    spacy_ignore_line_type_toc = true
     
-| Parameter                     | Default | Description                                                                                                   |
-|-------------------------------|---------|---------------------------------------------------------------------------------------------------------------|
- | spacy_ignore_bracket          | true    | Ignore the tokens which are brackets ?                                                                        |
- | spacy_ignore_left_punct       | true    | Ignore the tokens which are left punctuation marks, e.g. "(" ?                                                |
- | spacy_ignore_punct            | true    | Ignore the tokens which are punctuations ?                                                                    |
- | spacy_ignore_quote            | true    | Ignore the tokens which are quotation marks ?                                                                 |
- | spacy_ignore_right_punct      | true    | Ignore the tokens which are right punctuation marks, e.g. ")" ?                                               |
- | spacy_ignore_space            | true    | Ignore the tokens which consist of whitespace characters ?                                                    |
- | spacy_ignore_stop             | true    | Ignore the tokens which are part of a “stop list” ?                                                           |
- |                               |         |                                                                                                               |
- | spacy_tkn_attr_cluster        | false   | Brown cluster ID.                                                                                             |
- | spacy_tkn_attr_dep_           | false   | Syntactic dependency relation.                                                                                |
- | spacy_tkn_attr_doc            | false   | The parent document.                                                                                          |
- | spacy_tkn_attr_ent_iob_       | true    | IOB code of named entity tag.                                                                                 |
- | spacy_tkn_attr_ent_kb_id_     | false   | Knowledge base ID that refers to the named entity <br>this token is a part of, if any.                        |
- | spacy_tkn_attr_ent_type_      | true    | Named entity type.                                                                                            |
- | spacy_tkn_attr_head           | false   | The syntactic parent, or “governor”, of this token.                                                           |
- | spacy_tkn_attr_i              | true    | The index of the token within the parent document.                                                            |
- | spacy_tkn_attr_idx            | false   | The character offset of the token within the parent document.                                                 |
- | spacy_tkn_attr_is_alpha       | false   | Does the token consist of alphabetic characters?                                                              |
- | spacy_tkn_attr_is_ascii       | false   | Does the token consist of ASCII characters? <br>Equivalent to all (ord(c) < 128 for c in token.text).         |
- | spacy_tkn_attr_is_bracket     | false   | Is the token a bracket?                                                                                       |
- | spacy_tkn_attr_is_currency    | true    | Is the token a currency symbol?                                                                               |
- | spacy_tkn_attr_is_digit       | true    | Does the token consist of digits?                                                                             |
- | spacy_tkn_attr_is_left_punct  | false   | Is the token a left punctuation mark, e.g. "(" ?                                                              |
- | spacy_tkn_attr_is_lower       | false   | Is the token in lowercase? Equivalent to token.text.islower().                                                |
- | spacy_tkn_attr_is_oov         | true    | Is the token out-of-vocabulary?                                                                               |
- | spacy_tkn_attr_is_punct       | true    | Is the token punctuation?                                                                                     |
- | spacy_tkn_attr_is_quote       | false   | Is the token a quotation mark?                                                                                |
- | spacy_tkn_attr_is_right_punct | false   | Is the token a right punctuation mark, e.g. ")" ?                                                             |
- | spacy_tkn_attr_is_sent_end    | true    | Does the token end a sentence?                                                                                |
- | spacy_tkn_attr_is_sent_start  | true    | Does the token start a sentence?                                                                              |
- | spacy_tkn_attr_is_space       | false   | Does the token consist of whitespace characters? <br>Equivalent to token.text.isspace().                      |
- | spacy_tkn_attr_is_stop        | true    | Is the token part of a “stop list”?                                                                           |
- | spacy_tkn_attr_is_title       | true    | Is the token in titlecase?                                                                                    |
- | spacy_tkn_attr_is_upper       | false   | Is the token in uppercase? Equivalent to token.text.isupper().                                                |
- | spacy_tkn_attr_lang_          | false   | Language of the parent document’s vocabulary.                                                                 |
- | spacy_tkn_attr_left_edge      | false   | The leftmost token of this token’s syntactic descendants.                                                     |
- | spacy_tkn_attr_lemma_         | true    | Base form of the token, with no inflectional suffixes.                                                        |
- | spacy_tkn_attr_lex            | false   | The underlying lexeme.                                                                                        |
- | spacy_tkn_attr_lex_id         | false   | Sequential ID of the token’s lexical type, used to index into tables, e.g. for word vectors.                  |
- | spacy_tkn_attr_like_email     | true    | Does the token resemble an email address?                                                                     |
- | spacy_tkn_attr_like_num       | true    | Does the token represent a number?                                                                            |
- | spacy_tkn_attr_like_url       | true    | Does the token resemble a URL?                                                                                |
- | spacy_tkn_attr_lower_         | false   | Lowercase form of the token text. Equivalent to Token.text.lower().                                           |
- | spacy_tkn_attr_morph          | false   | Morphological analysis.                                                                                       |
- | spacy_tkn_attr_norm_          | true    | The token’s norm, i.e. a normalized form of the token text.                                                   |
- | spacy_tkn_attr_orth_          | false   | Verbatim text content (identical to Token.text). <br>Exists mostly for consistency with the other attributes. |
- | spacy_tkn_attr_pos_           | true    | Coarse-grained part-of-speech from the Universal POS tag set.                                                 |
- | spacy_tkn_attr_prefix_        | false   | A length-N substring from the start of the token. <br>Defaults to N=1.                                        |
- | spacy_tkn_attr_prob           | false   | Smoothed log probability estimate of token’s word type <br>(context-independent entry in the vocabulary).     |
- | spacy_tkn_attr_rank           | false   | Sequential ID of the token’s lexical type, used to index <br>into tables, e.g. for word vectors.              |
- | spacy_tkn_attr_right_edge     | false   | The rightmost token of this token’s syntactic descendants.                                                    |
- | spacy_tkn_attr_sent           | false   | The sentence span that this token is a part of.                                                               |
- | spacy_tkn_attr_sentiment      | false   | A scalar value indicating the positivity or negativity of the token.                                          |
- | spacy_tkn_attr_shape_         | false   | Transform of the token’s string to show orthographic features.                                                |
- | spacy_tkn_attr_suffix_        | false   | Length-N substring from the end of the token. Defaults to N=3.                                                |
- | spacy_tkn_attr_tag_           | true    | Fine-grained part-of-speech.                                                                                  |
- | spacy_tkn_attr_tensor         | false   | The token’s slice of the parent Doc’s tensor.                                                                 |
- | spacy_tkn_attr_text           | true    | Verbatim text content.                                                                                        |
- | spacy_tkn_attr_text_with_ws   | false   | Text content, with trailing space character if present.                                                       |
- | spacy_tkn_attr_vocab          | false   | The vocab object of the parent Doc.                                                                           |
- | spacy_tkn_attr_whitespace_    | true    | Trailing space character if present.                                                                          |
+| Parameter                            | Default | Description                                                                                                   |
+|--------------------------------------|---------|---------------------------------------------------------------------------------------------------------------|
+ | spacy_ignore_bracket                 | true    | Ignore the tokens which are brackets ?                                                                        |
+ | spacy_ignore_left_punct              | true    | Ignore the tokens which are left punctuation marks, e.g. "(" ?                                                |
+ | spacy_ignore_line_type_footer        | true    | Ignore the tokens from line type footer ?                                                                     |
+ | spacy_ignore_line_type_header        | true    | Ignore the tokens from line type header ?                                                                     |
+ | spacy_ignore_line_type_heading       | false   | Ignore the tokens from line type heading ?                                                                    |
+ | spacy_ignore_line_type_list_bulleted | false   | Ignore the tokens from line type bulleted list ?                                                              |
+ | spacy_ignore_line_type_list_numbered | false   | Ignore the tokens from line type numbered list ?                                                              |
+ | spacy_ignore_line_type_table         | false   | Ignore the tokens from line type table ?                                                                      |
+ | spacy_ignore_line_type_toc           | true    | Ignore the tokens from line type TOC ?                                                                        |
+ | spacy_ignore_punct                   | true    | Ignore the tokens which are punctuations ?                                                                    |
+ | spacy_ignore_quote                   | true    | Ignore the tokens which are quotation marks ?                                                                 |
+ | spacy_ignore_right_punct             | true    | Ignore the tokens which are right punctuation marks, e.g. ")" ?                                               |
+ | spacy_ignore_space                   | true    | Ignore the tokens which consist of whitespace characters ?                                                    |
+ | spacy_ignore_stop                    | true    | Ignore the tokens which are part of a “stop list” ?                                                           |
+ |                                      |         |                                                                                                               |
+ | spacy_tkn_attr_cluster               | false   | Brown cluster ID.                                                                                             |
+ | spacy_tkn_attr_dep_                  | false   | Syntactic dependency relation.                                                                                |
+ | spacy_tkn_attr_doc                   | false   | The parent document.                                                                                          |
+ | spacy_tkn_attr_ent_iob_              | true    | IOB code of named entity tag.                                                                                 |
+ | spacy_tkn_attr_ent_kb_id_            | false   | Knowledge base ID that refers to the named entity <br>this token is a part of, if any.                        |
+ | spacy_tkn_attr_ent_type_             | true    | Named entity type.                                                                                            |
+ | spacy_tkn_attr_head                  | false   | The syntactic parent, or “governor”, of this token.                                                           |
+ | spacy_tkn_attr_i                     | true    | The index of the token within the parent document.                                                            |
+ | spacy_tkn_attr_idx                   | false   | The character offset of the token within the parent document.                                                 |
+ | spacy_tkn_attr_is_alpha              | false   | Does the token consist of alphabetic characters?                                                              |
+ | spacy_tkn_attr_is_ascii              | false   | Does the token consist of ASCII characters? <br>Equivalent to all (ord(c) < 128 for c in token.text).         |
+ | spacy_tkn_attr_is_bracket            | false   | Is the token a bracket?                                                                                       |
+ | spacy_tkn_attr_is_currency           | true    | Is the token a currency symbol?                                                                               |
+ | spacy_tkn_attr_is_digit              | true    | Does the token consist of digits?                                                                             |
+ | spacy_tkn_attr_is_left_punct         | false   | Is the token a left punctuation mark, e.g. "(" ?                                                              |
+ | spacy_tkn_attr_is_lower              | false   | Is the token in lowercase? Equivalent to token.text.islower().                                                |
+ | spacy_tkn_attr_is_oov                | true    | Is the token out-of-vocabulary?                                                                               |
+ | spacy_tkn_attr_is_punct              | true    | Is the token punctuation?                                                                                     |
+ | spacy_tkn_attr_is_quote              | false   | Is the token a quotation mark?                                                                                |
+ | spacy_tkn_attr_is_right_punct        | false   | Is the token a right punctuation mark, e.g. ")" ?                                                             |
+ | spacy_tkn_attr_is_sent_end           | true    | Does the token end a sentence?                                                                                |
+ | spacy_tkn_attr_is_sent_start         | true    | Does the token start a sentence?                                                                              |
+ | spacy_tkn_attr_is_space              | false   | Does the token consist of whitespace characters? <br>Equivalent to token.text.isspace().                      |
+ | spacy_tkn_attr_is_stop               | true    | Is the token part of a “stop list”?                                                                           |
+ | spacy_tkn_attr_is_title              | true    | Is the token in titlecase?                                                                                    |
+ | spacy_tkn_attr_is_upper              | false   | Is the token in uppercase? Equivalent to token.text.isupper().                                                |
+ | spacy_tkn_attr_lang_                 | false   | Language of the parent document’s vocabulary.                                                                 |
+ | spacy_tkn_attr_left_edge             | false   | The leftmost token of this token’s syntactic descendants.                                                     |
+ | spacy_tkn_attr_lemma_                | true    | Base form of the token, with no inflectional suffixes.                                                        |
+ | spacy_tkn_attr_lex                   | false   | The underlying lexeme.                                                                                        |
+ | spacy_tkn_attr_lex_id                | false   | Sequential ID of the token’s lexical type, used to index into tables, e.g. for word vectors.                  |
+ | spacy_tkn_attr_like_email            | true    | Does the token resemble an email address?                                                                     |
+ | spacy_tkn_attr_like_num              | true    | Does the token represent a number?                                                                            |
+ | spacy_tkn_attr_like_url              | true    | Does the token resemble a URL?                                                                                |
+ | spacy_tkn_attr_lower_                | false   | Lowercase form of the token text. Equivalent to Token.text.lower().                                           |
+ | spacy_tkn_attr_morph                 | false   | Morphological analysis.                                                                                       |
+ | spacy_tkn_attr_norm_                 | true    | The token’s norm, i.e. a normalized form of the token text.                                                   |
+ | spacy_tkn_attr_orth_                 | false   | Verbatim text content (identical to Token.text). <br>Exists mostly for consistency with the other attributes. |
+ | spacy_tkn_attr_pos_                  | true    | Coarse-grained part-of-speech from the Universal POS tag set.                                                 |
+ | spacy_tkn_attr_prefix_               | false   | A length-N substring from the start of the token. <br>Defaults to N=1.                                        |
+ | spacy_tkn_attr_prob                  | false   | Smoothed log probability estimate of token’s word type <br>(context-independent entry in the vocabulary).     |
+ | spacy_tkn_attr_rank                  | false   | Sequential ID of the token’s lexical type, used to index <br>into tables, e.g. for word vectors.              |
+ | spacy_tkn_attr_right_edge            | false   | The rightmost token of this token’s syntactic descendants.                                                    |
+ | spacy_tkn_attr_sent                  | false   | The sentence span that this token is a part of.                                                               |
+ | spacy_tkn_attr_sentiment             | false   | A scalar value indicating the positivity or negativity of the token.                                          |
+ | spacy_tkn_attr_shape_                | false   | Transform of the token’s string to show orthographic features.                                                |
+ | spacy_tkn_attr_suffix_               | false   | Length-N substring from the end of the token. Defaults to N=3.                                                |
+ | spacy_tkn_attr_tag_                  | true    | Fine-grained part-of-speech.                                                                                  |
+ | spacy_tkn_attr_tensor                | false   | The token’s slice of the parent Doc’s tensor.                                                                 |
+ | spacy_tkn_attr_text                  | true    | Verbatim text content.                                                                                        |
+ | spacy_tkn_attr_text_with_ws          | false   | Text content, with trailing space character if present.                                                       |
+ | spacy_tkn_attr_vocab                 | false   | The vocab object of the parent Doc.                                                                           |
+ | spacy_tkn_attr_whitespace_           | true    | Trailing space character if present.                                                                          |
 
 More information about the [spaCy](https://spacy.io){:target="_blank"} token attributes can be found [here](https://spacy.io/api/token#attributes){:target="_blank"}.
 **DCR** currently supports only a subset of the possible attributes, but this can easily be extended if required.

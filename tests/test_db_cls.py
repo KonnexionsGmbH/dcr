@@ -230,7 +230,7 @@ def check_existing_token():
 
     expected_values = [
         1,
-        cfg.glob.document.document_id,
+        1,
         0,
         0,
         "b",
@@ -243,10 +243,8 @@ def check_existing_token():
         "Start Document ...",
         [
             {
-                "tknEntIob_": "O",
                 "tknI": 0,
                 "tknIsOov": True,
-                "tknIsSentStart": True,
                 "tknIsTitle": True,
                 "tknLemma_": "start",
                 "tknNorm_": "start",
@@ -256,7 +254,6 @@ def check_existing_token():
                 "tknWhitespace_": " ",
             },
             {
-                "tknEntIob_": "O",
                 "tknI": 1,
                 "tknIsOov": True,
                 "tknIsTitle": True,

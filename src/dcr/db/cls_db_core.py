@@ -215,7 +215,7 @@ class DBCore:
             cfg.glob.setup.db_connection_prefix
             + cfg.glob.setup.db_host
             + ":"
-            + cfg.glob.setup.db_connection_port
+            + str(cfg.glob.setup.db_connection_port)
             + "/"
             + self._db_current_database
             + "?user="

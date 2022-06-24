@@ -697,11 +697,19 @@ class TokenizerSpacy:
 
             if (
                 line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_FOOTER  # pylint: disable=too-many-boolean-expressions
-                and not cfg.glob.setup.is_tokenize_footers
+                and cfg.glob.setup.is_spacy_ignore_line_type_footer
                 or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_HEADER
-                and not cfg.glob.setup.is_tokenize_headers
+                and cfg.glob.setup.is_spacy_ignore_line_type_header
+                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_HEADING
+                and cfg.glob.setup.is_spacy_ignore_line_type_heading
+                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_LIST_BULLETED
+                and cfg.glob.setup.is_spacy_ignore_line_type_list_bulleted
+                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_LIST_NUMBERED
+                and cfg.glob.setup.is_spacy_ignore_line_type_list_numbered
+                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_TABLE
+                and cfg.glob.setup.is_spacy_ignore_line_type_table
                 or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_TOC
-                and not cfg.glob.setup.is_tokenize_toc
+                and cfg.glob.setup.is_spacy_ignore_line_type_toc
             ):
                 continue
 
