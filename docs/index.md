@@ -245,7 +245,7 @@ The `page` variant and the `word` variant are both optional.
         <Box llx="184.69" lly="671.52" urx="193.20" ury="685.44"/>
        </Word>
 
-#### 2.2.3 Store the parser result in a JSON file (action: **`s_p_j`**)
+#### 2.2.3 Store the parser result in a **`JSON`** file (action: **`s_p_j`**)
 
 From the **xml** files of the granularity document `line` (`<file_name>_<doc_id>.line.xml`) or document `word` (`<file_name>_<doc_id>.word.xml`) created in the previous action, the text contained is now extracted with the existing metadata using **xml** parsing and stored in a **`JSON`** format in the database tables `content_tetml_line` and `content_tetml_word`.
 
@@ -726,7 +726,7 @@ A table of contents must be in the first `toc_last_page` pages and consists of e
 Headings extend across the entire document and can have hierarchical structures. 
 The headings are determined with rule-enriched regular expressions. 
 
-### 4.1 Headings & Footers
+### 4.1 Headers & Footers
 
 The following parameter controls both the classification of the headers and the footers:
 
@@ -979,7 +979,7 @@ An example file can be found in the file directory **`data`** with the file name
     - the indentation is within the specified tolerance (`heading_tolerance_x`), and
     - the comparison function is fulfilled
 - if there is a match, the following processing steps are carried out and then the next document line is processed
-    - an entry for the JSON fileii is optionally created
+    - an entry for the **`JSON`** file is optionally created
     - any existing lower entries in the hierarchy table are deleted
 - if no match is found, then the given heading rules are searched in the specified order
 - a heading rule is matching if
@@ -989,4 +989,4 @@ An example file can be found in the file directory **`data`** with the file name
 - if there is a match, the following processing steps are carried out and then the next document line is processed
     - the last heading level is increased by 1,
     - a new entry is added to the hierarchy table
-    - an entry for the JSON fileii is optionally created
+    - an entry for the **`JSON`** file is optionally created
