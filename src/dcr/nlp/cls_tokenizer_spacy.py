@@ -106,11 +106,12 @@ class TokenizerSpacy:
 
         self._column_no: int = 0
         self._column_span: int = 0
+        self._coord_llx = 0.0
+        self._coord_urx = 0.0
 
         self._full_name = ""
 
         self._line_type = ""
-        self._lower_left_x = 0.0
 
         self._no_lines_in_doc = 0
         self._no_lines_in_page = 0
@@ -265,8 +266,9 @@ class TokenizerSpacy:
                 id_document=cfg.glob.document.document_id,
                 column_no=self._column_no,
                 column_span=self._column_span,
+                coord_llx=self._coord_llx,
+                coord_urx=self._coord_urx,
                 line_type=line_type,
-                lower_left_x=self._lower_left_x,
                 no_tokens_in_sent=self._no_tokens_in_sent,
                 page_no=self._page_no,
                 para_no=self._para_no_prev,
@@ -284,8 +286,9 @@ class TokenizerSpacy:
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_SENT_NO: self._sent_no,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._column_no,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN: self._column_span,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._coord_llx,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._coord_urx,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: line_type,
-                            nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._lower_left_x,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_SENT: self._no_tokens_in_sent,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._row_no,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._sentence,
@@ -297,8 +300,9 @@ class TokenizerSpacy:
                         {
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_SENT_NO: self._sent_no,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._column_no,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._coord_llx,
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._coord_urx,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: line_type,
-                            nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._lower_left_x,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_SENT: self._no_tokens_in_sent,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._row_no,
                             nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._sentence,
@@ -309,8 +313,9 @@ class TokenizerSpacy:
                 self._token_sents.append(
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_SENT_NO: self._sent_no,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._coord_llx,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._coord_urx,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: line_type,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._lower_left_x,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_SENT: self._no_tokens_in_sent,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._sentence,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_TOKENS: self._token_tokens,
@@ -636,7 +641,8 @@ class TokenizerSpacy:
             self._column_span = 0
             self._row_no = 0
 
-        self._lower_left_x = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X]
+        self._coord_llx = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]
+        self._coord_urx = cfg.glob.text_parser.parse_result_line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX]
 
         self._no_lines_in_para = 0
         self._no_tokens_in_para = 0

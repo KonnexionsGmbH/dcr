@@ -149,6 +149,7 @@ class TextParser:
         self._parse_result_line_index_page = 0
         self._parse_result_line_index_para = 0
         self._parse_result_line_llx = 0.00
+        self._parse_result_line_urx = 0.00
 
         self._parse_result_mod_date = ""
 
@@ -236,11 +237,12 @@ class TextParser:
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN: int(self._parse_result_table_col_span),
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._parse_result_line_llx,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
@@ -250,11 +252,12 @@ class TextParser:
                 self.parse_result_line_lines.append(
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._parse_result_line_llx,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
@@ -263,11 +266,12 @@ class TextParser:
         else:
             self.parse_result_line_lines.append(
                 {
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X: self._parse_result_line_llx,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
                 }
@@ -626,6 +630,7 @@ class TextParser:
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         self._parse_result_line_llx = float(parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_LLX))
+        self._parse_result_line_urx = float(parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_URX))
 
         self._parse_result_no_lines_in_para += 1
         self._parse_result_no_words_in_line = 0

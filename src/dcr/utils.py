@@ -315,6 +315,32 @@ def progress_msg_line_type_heading(msg: str) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Create a list line_type progress message.
+# -----------------------------------------------------------------------------
+def progress_msg_line_type_list(msg: str) -> None:
+    """Create a list line_type progress message.
+
+    Args:
+        msg (str): Progress message.
+    """
+    if cfg.glob.setup.is_verbose_line_type_list:
+        progress_msg_core(msg)
+
+
+# -----------------------------------------------------------------------------
+# Create a table line_type progress message.
+# -----------------------------------------------------------------------------
+def progress_msg_line_type_table(msg: str) -> None:
+    """Create a table line_type progress message.
+
+    Args:
+        msg (str): Progress message.
+    """
+    if cfg.glob.setup.is_verbose_line_type_table:
+        progress_msg_core(msg)
+
+
+# -----------------------------------------------------------------------------
 # Create a TOC line_type progress message.
 # -----------------------------------------------------------------------------
 def progress_msg_line_type_toc(msg: str) -> None:

@@ -122,6 +122,9 @@ This file controls the behaviour of the **DCR** application.
 The customisable entries are:
 
     [dcr]
+    create_extra_file_list = true
+    create_extra_file_table = true
+    create_extra_file_toc = true
     db_connection_port = 5432
     db_connection_prefix = postgresql+psycopg2://
     db_container_port = 5432
@@ -142,7 +145,6 @@ The customisable entries are:
     heading_max_level = 3
     heading_min_pages = 2
     heading_rule_file = none
-    heading_toc_create = true
     heading_toc_incl_no_ctx = 1
     heading_toc_incl_regexp = false
     heading_tolerance_x = 5
@@ -165,11 +167,16 @@ The customisable entries are:
     verbose = true
     verbose_line_type_headers_footers = false
     verbose_line_type_heading = false
+    verbose_line_type_list = false
+    verbose_line_type_table = false
     verbose_line_type_toc = false
     verbose_parser = none
 
 | Parameter                         | Default value                           | Description                                                                                                     |
 |-----------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| create_extra_file_list            | **`true`**                              | Create a separate **`JSON`** file with the bulleted and numbered lists.                                         |
+| create_extra_file_table           | **`true`**                              | Create a separate **`JSON`** file with the tables.                                                              |
+| create_extra_file_toc             | **`true`**                              | Create a separate **`JSON`** file with the table of contents.                                                   |
 | db_connection_port                | environment specific                    | Port number the DBMS server is listening on.                                                                    |
 | db_connection_prefix              | **`postgresql+psycopg2://`**            | Front part of the database URL.                                                                                 |
 | db_database                       | environment specific                    | **DCR** database name.                                                                                          |
@@ -189,7 +196,6 @@ The customisable entries are:
 | heading_max_level                 | **`3`**                                 | Maximum level of the heading structure.                                                                         |
 | heading_min_pages                 | **`2`**                                 | Minimum number of pages to determine the headings.                                                              |
 | heading_rule_file                 | **`data/line_type_heading_rules.json`** | File with rules to determine the headings.                                                                      |
-| heading_toc_create                | **`true`**                              | Create a separate **`JSON`** file with the table of contents.                                                   |
 | heading_toc_incl_no_ctx           | **`1`**                                 | The number of lines following the heading to be included as context into the **`JSON`** file.                   |
 | heading_toc_incl_regexp           | **`false`**                             | If it is set to **`true`**, the regular expression for the heading is included in the **`JSON`** file.          |
 | heading_tolerance_x               | **`5`**                                 | Tolerance of vertical indentation in percent.                                                                   |
@@ -212,6 +218,8 @@ The customisable entries are:
 | verbose                           | **`true`**                              | Display progress messages for processing.                                                                       |
 | verbose_line_type_headers_footers | **`false`**                             | Display progress messages for headers & footers line type determination.                                        |
 | verbose_line_type_heading         | **`false`**                             | Display progress messages for heading line type determination.                                                  |
+| verbose_line_type_list            | **`false`**                             | Display progress messages for list line type determination.                                                     |
+| verbose_line_type_table           | **`false`**                             | Display progress messages for table line type determination.                                                    |
 | verbose_line_type_toc             | **`false`**                             | Display progress messages for table of content line type determination.                                         |
 | verbose_parser                    | **`none`**                              | Display progress messages for parsing **`xml`** (TETML) : <br>**`all`**, **`none`** or **`text`**.              |
 

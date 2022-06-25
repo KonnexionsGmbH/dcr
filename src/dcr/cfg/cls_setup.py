@@ -20,8 +20,11 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 112
+    _CONFIG_PARAM_NO = 116
 
+    _DCR_CFG_CREATE_EXTRA_FILE_LIST: ClassVar[str] = "create_extra_file_list"
+    _DCR_CFG_CREATE_EXTRA_FILE_TABLE: ClassVar[str] = "create_extra_file_table"
+    _DCR_CFG_CREATE_EXTRA_FILE_TOC: ClassVar[str] = "create_extra_file_toc"
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
     _DCR_CFG_DB_CONTAINER_PORT: ClassVar[str] = "db_container_port"
@@ -43,7 +46,6 @@ class Setup:
     _DCR_CFG_HEADING_MAX_LEVEL: ClassVar[str] = "heading_max_level"
     _DCR_CFG_HEADING_MIN_PAGES: ClassVar[str] = "heading_min_pages"
     _DCR_CFG_HEADING_RULE_FILE: ClassVar[str] = "heading_rule_file"
-    _DCR_CFG_HEADING_TOC_CREATE: ClassVar[str] = "heading_toc_create"
     _DCR_CFG_HEADING_TOC_INCL_NO_CTX: ClassVar[str] = "heading_toc_incl_no_ctx"
     _DCR_CFG_HEADING_TOC_INCL_REGEXP: ClassVar[str] = "heading_toc_incl_regexp"
     _DCR_CFG_HEADING_TOLERANCE_X: ClassVar[str] = "heading_tolerance_x"
@@ -139,6 +141,8 @@ class Setup:
     _DCR_CFG_VERBOSE: ClassVar[str] = "verbose"
     _DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS: ClassVar[str] = "verbose_line_type_headers_footers"
     _DCR_CFG_VERBOSE_LINE_TYPE_HEADING: ClassVar[str] = "verbose_line_type_heading"
+    _DCR_CFG_VERBOSE_LINE_TYPE_LIST: ClassVar[str] = "verbose_line_type_list"
+    _DCR_CFG_VERBOSE_LINE_TYPE_TABLE: ClassVar[str] = "verbose_line_type_table"
     _DCR_CFG_VERBOSE_LINE_TYPE_TOC: ClassVar[str] = "verbose_line_type_toc"
     _DCR_CFG_VERBOSE_PARSER: ClassVar[str] = "verbose_parser"
 
@@ -168,6 +172,10 @@ class Setup:
         # -----------------------------------------------------------------------------
         # DCR configuration.
         # -----------------------------------------------------------------------------
+        self.is_create_extra_file_list = True
+        self.is_create_extra_file_table = True
+        self.is_create_extra_file_toc = True
+
         self.db_connection_port = 5432
         self.db_connection_prefix = "postgresql+psycopg2://"
         self.db_container_port = 5432
@@ -190,8 +198,6 @@ class Setup:
         self.heading_max_level = 3
         self.heading_min_pages = 2
         self.heading_rule_file = "none"
-
-        self.is_heading_toc_create = True
 
         self.heading_toc_incl_no_ctx = 1
 
@@ -224,6 +230,8 @@ class Setup:
         self.is_verbose = True
         self.is_verbose_line_type_headers_footers = False
         self.is_verbose_line_type_heading = False
+        self.is_verbose_line_type_list = False
+        self.is_verbose_line_type_table = False
         self.is_verbose_line_type_toc = False
 
         self.verbose_parser = "none"
@@ -316,6 +324,15 @@ class Setup:
     # -----------------------------------------------------------------------------
     def _check_config(self) -> None:
         """Check the configuration parameters."""
+        self.is_create_extra_file_list = self._determine_config_param_boolean(
+            Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST, self.is_create_extra_file_list
+        )
+        self.is_create_extra_file_table = self._determine_config_param_boolean(
+            Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, self.is_create_extra_file_table
+        )
+        self.is_create_extra_file_toc = self._determine_config_param_boolean(
+            Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, self.is_create_extra_file_toc
+        )
         self.db_connection_port = self._determine_config_param_integer(
             Setup._DCR_CFG_DB_CONNECTION_PORT, self.db_connection_port
         )
@@ -337,9 +354,6 @@ class Setup:
         )
         self.heading_min_pages = self._determine_config_param_integer(
             Setup._DCR_CFG_HEADING_MIN_PAGES, self.heading_min_pages
-        )
-        self.is_heading_toc_create = self._determine_config_param_boolean(
-            Setup._DCR_CFG_HEADING_TOC_CREATE, self.is_heading_toc_create
         )
         self.heading_toc_incl_no_ctx = self._determine_config_param_integer(
             Setup._DCR_CFG_HEADING_TOC_INCL_NO_CTX, self.heading_toc_incl_no_ctx
@@ -406,6 +420,12 @@ class Setup:
         )
         self.is_verbose_line_type_heading = self._determine_config_param_boolean(
             Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, self.is_verbose_line_type_heading
+        )
+        self.is_verbose_line_type_list = self._determine_config_param_boolean(
+            Setup._DCR_CFG_VERBOSE_LINE_TYPE_LIST, self.is_verbose_line_type_list
+        )
+        self.is_verbose_line_type_table = self._determine_config_param_boolean(
+            Setup._DCR_CFG_VERBOSE_LINE_TYPE_TABLE, self.is_verbose_line_type_table
         )
         self.is_verbose_line_type_toc = self._determine_config_param_boolean(
             Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, self.is_verbose_line_type_toc
@@ -813,7 +833,10 @@ class Setup:
                 case Setup._DCR_CFG_DB_USER_ADMIN:
                     self.db_user_admin = str(item)
                 case (
-                    Setup._DCR_CFG_DB_CONNECTION_PORT
+                    Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST
+                    | Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE
+                    | Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC
+                    | Setup._DCR_CFG_DB_CONNECTION_PORT
                     | Setup._DCR_CFG_DB_CONTAINER_PORT
                     | Setup._DCR_CFG_DELETE_AUXILIARY_FILES
                     | Setup._DCR_CFG_DIRECTORY_INBOX
@@ -822,7 +845,6 @@ class Setup:
                     | Setup._DCR_CFG_DOC_ID_IN_FILE_NAME
                     | Setup._DCR_CFG_HEADING_MAX_LEVEL
                     | Setup._DCR_CFG_HEADING_MIN_PAGES
-                    | Setup._DCR_CFG_HEADING_TOC_CREATE
                     | Setup._DCR_CFG_HEADING_TOC_INCL_NO_CTX
                     | Setup._DCR_CFG_HEADING_TOC_INCL_REGEXP
                     | Setup._DCR_CFG_HEADING_TOLERANCE_X
@@ -911,6 +933,8 @@ class Setup:
                     | Setup._DCR_CFG_VERBOSE
                     | Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS
                     | Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING
+                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_LIST
+                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_TABLE
                     | Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC
                     | Setup._DCR_CFG_VERBOSE_PARSER
                 ):

@@ -23,6 +23,8 @@ class NLPCore:
 
     JSON_NAME_COLUMN_NO: ClassVar[str] = "columnNo"
     JSON_NAME_COLUMN_SPAN: ClassVar[str] = "columnSpan"
+    JSON_NAME_COORD_LLX: ClassVar[str] = "coordLLX"
+    JSON_NAME_COORD_URX: ClassVar[str] = "coordURX"
     JSON_NAME_DOC_FILE_NAME: ClassVar[str] = "documentFileName"
     JSON_NAME_DOC_ID: ClassVar[str] = "documentId"
     JSON_NAME_FUNCTION_IS_ASC: ClassVar[str] = "functionIsAsc"
@@ -36,7 +38,6 @@ class NLPCore:
     JSON_NAME_LINE_NO: ClassVar[str] = "lineNo"
     JSON_NAME_LINE_TYPE: ClassVar[str] = "lineType"
     JSON_NAME_LINE_TYPE_HEADING_RULES: ClassVar[str] = "lineTypeHeadingRules"
-    JSON_NAME_LOWER_LEFT_X: ClassVar[str] = "lowerLeftX"
     JSON_NAME_NAME: ClassVar[str] = "name"
     JSON_NAME_NO_LINES_FOOTER: ClassVar[str] = "noLinesFooter"
     JSON_NAME_NO_LINES_HEADER: ClassVar[str] = "noLinesHeader"
@@ -124,6 +125,7 @@ class NLPCore:
     JSON_NAME_TOKEN_TEXT_WITH_WS: ClassVar[str] = "tknTextWithWs"
     JSON_NAME_TOKEN_WHITESPACE_: ClassVar[str] = "tknWhitespace_"
 
+    JSON_NAME_UPPER_RIGHT_X: ClassVar[str] = "upperRightX"
     JSON_NAME_WORDS: ClassVar[str] = "words"
     JSON_NAME_WORD_NO: ClassVar[str] = "wordNo"
 
@@ -131,6 +133,7 @@ class NLPCore:
 
     PARSE_ATTR_COL_SPAN: ClassVar[str] = "colSpan"
     PARSE_ATTR_LLX: ClassVar[str] = "llx"
+    PARSE_ATTR_URX: ClassVar[str] = "urx"
 
     PARSE_ELEM_ACTION: ClassVar[str] = "Action"
     PARSE_ELEM_ANNOTATIONS: ClassVar[str] = "Annotations"

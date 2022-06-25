@@ -26,8 +26,9 @@ class Token:
         id_document: int,
         column_no: int,
         column_span: int,
+        coord_llx: float,
+        coord_urx: float,
         line_type: str,
-        lower_left_x: float,
         no_tokens_in_sent: int,
         page_no: int,
         para_no: int,
@@ -46,10 +47,12 @@ class Token:
                     Column number.
             column_span (int):
                     Column span.
+            coord_llx (float):
+                    Lower left x coordinate.
+            coord_urx (float):
+                    upper right x coordinate.
             line_type (str):
                     Line type.
-            lower_left_x (float):
-                    Lower left x coordinate.
             no_tokens_in_sent (int):
                     Number tokens in sentence.
             page_no (int):
@@ -79,9 +82,10 @@ class Token:
         self.token_id = _row_id
         self.token_column_no = column_no
         self.token_column_span = column_span
+        self.token_coord_llx = coord_llx
+        self.token_coord_urx = coord_urx
         self.token_id_document = id_document
         self.token_line_type = line_type
-        self.token_lower_left_x = lower_left_x
         self.token_no_tokens_in_sent = no_tokens_in_sent
         self.token_page_no = page_no
         self.token_para_no = para_no
@@ -114,8 +118,9 @@ class Token:
             db.cls_db_core.DBCore.DBC_ID_DOCUMENT: self.token_id_document,
             db.cls_db_core.DBCore.DBC_COLUMN_NO: self.token_column_no,
             db.cls_db_core.DBCore.DBC_COLUMN_SPAN: self.token_column_span,
+            db.cls_db_core.DBCore.DBC_COORD_LLX: self.token_coord_llx,
+            db.cls_db_core.DBCore.DBC_COORD_URX: self.token_coord_urx,
             db.cls_db_core.DBCore.DBC_LINE_TYPE: self.token_line_type,
-            db.cls_db_core.DBCore.DBC_LOWER_LEFT_X: self.token_lower_left_x,
             db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT: self.token_no_tokens_in_sent,
             db.cls_db_core.DBCore.DBC_PAGE_NO: self.token_page_no,
             db.cls_db_core.DBCore.DBC_PARA_NO: self.token_para_no,
@@ -162,6 +167,16 @@ class Token:
                 nullable=False,
             ),
             sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_COORD_LLX,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_COORD_URX,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID_DOCUMENT,
                 sqlalchemy.Integer,
                 sqlalchemy.ForeignKey(
@@ -172,11 +187,6 @@ class Token:
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_LINE_TYPE,
                 sqlalchemy.String,
-                nullable=False,
-            ),
-            sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_LOWER_LEFT_X,
-                sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
@@ -303,8 +313,9 @@ class Token:
             id_document=row[db.cls_db_core.DBCore.DBC_ID_DOCUMENT],
             column_no=row[db.cls_db_core.DBCore.DBC_COLUMN_NO],
             column_span=row[db.cls_db_core.DBCore.DBC_COLUMN_SPAN],
+            coord_llx=row[db.cls_db_core.DBCore.DBC_COORD_LLX],
+            coord_urx=row[db.cls_db_core.DBCore.DBC_COORD_URX],
             line_type=row[db.cls_db_core.DBCore.DBC_LINE_TYPE],
-            lower_left_x=row[db.cls_db_core.DBCore.DBC_LOWER_LEFT_X],
             no_tokens_in_sent=row[db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT],
             page_no=row[db.cls_db_core.DBCore.DBC_PAGE_NO],
             para_no=row[db.cls_db_core.DBCore.DBC_PARA_NO],
@@ -319,7 +330,7 @@ class Token:
     # -----------------------------------------------------------------------------
     def get_columns_in_tuple(
         self,
-    ) -> tuple[int, int, int, int, str, float, int, int, int, int, int, str, str]:
+    ) -> tuple[int, int, int, int, float, float, str, int, int, int, int, int, str, str]:
         """Get the database columns in a tuple.
 
         Returns:
@@ -334,8 +345,9 @@ class Token:
             self.token_id_document,
             self.token_column_no,
             self.token_column_span,
+            self.token_coord_llx,
+            self.token_coord_urx,
             self.token_line_type,
-            self.token_lower_left_x,
             self.token_no_tokens_in_sent,
             self.token_page_no,
             self.token_para_no,

@@ -35,7 +35,7 @@ The processing logic is as follows:
 - **`odt`** [Open Document Format for Office Applications](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=office){:target="_blank"}
 - **`pdf`** [Portable Document Format](https://www.iso.org/standard/75839.html){:target="_blank"}
 - **`png`** [Portable Network Graphics](https://en.wikipedia.org/wiki/Portable_Network_Graphics){:target="_blank"}
-- **`pnm`** [portable anymap format](https://en.wikipedia.org/wiki/Netpbm#File_formats){:target="_blank"}
+- **`pnm`** [portable any-map format](https://en.wikipedia.org/wiki/Netpbm#File_formats){:target="_blank"}
 - **`rst`** [reStructuredText (RST](https://docutils.sourceforge.io/rst.html){:target="_blank"}
 - **`rtf`** [Rich Text Format](https://en.wikipedia.org/wiki/Rich_Text_Format){:target="_blank"}
 - **`tif`** [Tag Image File Format](https://en.wikipedia.org/wiki/TIFF){:target="_blank"}
@@ -116,7 +116,7 @@ This is done with the software [pdf2image](https://pypi.org/project/pdf2image){:
 
 The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image file(s) (child document(s)).
 
-Since an image file created here always contains only one page of a **`pdf`** document, a multi-page **`pdf`** document is distributed over several image files. 
+Since an image file created here always contains only one page of a **`pdf`** document, a multipage **`pdf`** document is distributed over several image files. 
 After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, these separated files are then combined into one **`pdf`** document.
 
 #### 2.1.4 Convert appropriate image files to **`pdf`** files (action: **`ocr`**)
@@ -544,7 +544,7 @@ In the event of an error, the original document is marked as erroneous and an ex
                                         "tknWhitespace_": " "
                                     },
 
-## 3. Auxiliary File Namess
+## 3. Auxiliary File Names
 
 The processing actions are based on different flat files, each of which is generated from the original document on an action-related basis.
 Apart from the **`JSON`** files optionally created during the 'tokenizer' action, these can be automatically deleted after error-free processing.
@@ -788,24 +788,16 @@ A value of zero prevents the classification of headers.
 2. The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.
 3. The line is considered a header if, except for pages `1` and `2` and pages `n-1` and `n`, the Levenshtein distance is not greater than the specified maximum value.
 
-### 4.2 Close Together
+### 4.2 TOC (Table of Content)
 
-Here all line types are determined whose underlying text structures  have a closeness in space.
-The order of processing is as follows
+An attempt is made here to recognise a table of contents contained in the document. There are two main reasons for this:
 
-1. table of contents
-2. tables which have already been marked accordingly by PDFlib TET
-3. bulleted and numbered lists which must be close together and are determined by regular expressions. 
+1. there is the possibility to ignore the resulting tokens afterwards, and
+2. on the other hand, the table of contents could be in the form of a table, which, however, is then not to be processed as a table in the sense of 4.3.  
 
-#### 4.2.1 TOC (Table of Content)
+#### 4.2.1 Parameters
 
-**4.2.1.1 Parameters**
-
-The following parameters control the classification of the table of content:
-
-- `toc_last_page = 3`
-- `toc_min_entries = 3`
-- `verbose_line_type_toc = false`
+The following parameters control the classification of a table of contents included in the document:
 
 **`toc_last_page`**
 
@@ -820,7 +812,7 @@ Default value: **`3`** - defines the minimum number of entries that a table of c
 
 Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
 
-**4.2.1.2 Algorithm Table-based**
+#### 4.2.2 Algorithm Table-based
 
 A table with the following properties is searched for:
 
@@ -829,7 +821,7 @@ A table with the following properties is searched for:
    - the number must not be greater than the last page number of the document, and
    - if such a table was found, then the algorithm ends here.
 
-**4.2.1.3 Algorithm Line-based**
+#### 4.2.3 Algorithm Line-based
 
 A block of lines with the following properties is searched here:
 
@@ -837,23 +829,39 @@ A block of lines with the following properties is searched here:
    - the number found there must be ascending, and
    - the number must not be greater than the last page number of the document.
 
-#### 4.2.2 Tables
+### 4.3 Tables
 
-TBD
+TBD: tables which have already been marked accordingly by PDFlib TET
 
-#### 4.2.3 Bulleted Lists
-
-TBD
-
-#### 4.2.4 Numbered Lists
-
-TBD
-
-### 4.3 Headings
-
-#### 4.3.1 Parameters
+#### 4.6.1 Parameters
 
 The following parameters control the classification of the headings:
+
+**`create_extra_file_table`**
+
+Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_table.json` is created in the file directory `data_accepted` with the identified tables.
+
+**`verbose_line_type_table`**
+
+Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
+
+### 4.4 Bulleted Lists
+
+TBD: bulleted and numbered lists which must be close together and are determined by regular expressions. 
+
+### 4.5 Numbered Lists
+
+TBD
+
+### 4.6 Headings
+
+#### 4.6.1 Parameters
+
+The following parameters control the classification of the headings:
+
+**`create_extra_file_toc`**
+
+Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_toc.json` is created in the file directory `data_accepted` with the identified headings.
 
 **`heading_max_level`**
 
@@ -868,17 +876,13 @@ Default value: **`2`** - the minimum number of document pages for determining he
 Default value: **`none`** - name of a file including file directory that contains the rules for determining the headings.
 **`none`** means that the given default rules are applied.
 
-**`heading_toc_create`**
-
-Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_toc.json` is created in the file directory `data_accepted` with the identified headings.
-
 **`heading_toc_incl_no_ctx`**
 
 Default value: **`1`** - the `n` lines following the heading are included as context into the **`JSON`** file.
 
 **`heading_toc_incl_regexp`**
 
-Default value: **`false`** - if true, the regular expression for the heading is included in the **`JSON`** file..
+Default value: **`false`** - if true, the regular expression for the heading is included in the **`JSON`** file.
 
 **`heading_tolerance_x`**
 
@@ -888,7 +892,7 @@ Default value: **`5`** - percentage tolerance for the differences in indentation
 
 Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
 
-#### 4.3.2 Heading Rules
+#### 4.6.2 Heading Rules
 
 A heading rule contains the following 5 elements:
 
@@ -969,23 +973,28 @@ An example file can be found in the file directory **`data`** with the file name
           ]
         },
 
-#### 4.3.3 Algorithm
+#### 4.6.3 Algorithm
 
 - the document is worked through page by page and within a page line by line
 - for each current heading level there is an entry in a hierarchy table
 - for each document line, this hierarchy table is searched from bottom to top for a matching entry
+
 - an entry is considered to be matching if
     - the regular expression is satisfied, and
     - the indentation is within the specified tolerance (`heading_tolerance_x`), and
     - the comparison function is fulfilled
+
 - if there is a match, the following processing steps are carried out and then the next document line is processed
     - an entry for the **`JSON`** file is optionally created
     - any existing lower entries in the hierarchy table are deleted
+
 - if no match is found, then the given heading rules are searched in the specified order
+
 - a heading rule is matching if
     - the regular expression is satisfied, and
     - one of the optional start values matches the document line, and
     - the new heading level is within the specified limit (`heading_max_level`)
+
 - if there is a match, the following processing steps are carried out and then the next document line is processed
     - the last heading level is increased by 1,
     - a new entry is added to the hierarchy table

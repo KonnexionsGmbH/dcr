@@ -439,15 +439,16 @@ def create_token():
         id_document=values[1],
         column_no=values[2],
         column_span=values[3],
-        line_type=values[4],
-        lower_left_x=values[5],
-        no_tokens_in_sent=values[6],
-        page_no=values[7],
-        para_no=values[8],
-        row_no=values[9],
-        sent_no=values[10],
-        text=values[11],
-        tokens=values[12],
+        coord_llx=values[4],
+        coord_urx=values[5],
+        line_type=values[6],
+        no_tokens_in_sent=values[7],
+        page_no=values[8],
+        para_no=values[9],
+        row_no=values[10],
+        sent_no=values[11],
+        text=values[12],
+        tokens=values[13],
     )
 
     values[0] = instance.token_id
@@ -532,6 +533,9 @@ def fxtr_before_any_test():
     CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
     for (config_param, config_value) in (
+        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PORT, "5434"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PREFIX, "postgresql+psycopg2://"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONTAINER_PORT, "5432"),
@@ -552,7 +556,6 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_HEADING_MAX_LEVEL, "3"),
         (cfg.cls_setup.Setup._DCR_CFG_HEADING_MIN_PAGES, "2"),
         (cfg.cls_setup.Setup._DCR_CFG_HEADING_RULE_FILE, "data/line_type_heading_rules_test.json"),
-        (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOC_CREATE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOC_INCL_NO_CTX, "3"),
         (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOC_INCL_REGEXP, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOLERANCE_X, "5"),
@@ -575,6 +578,8 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_LIST, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TABLE, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
     ):
@@ -874,8 +879,9 @@ def get_values_token() -> list[int | list[dict] | str | None]:
         cfg.glob.document.document_id,
         0,
         2,
-        "b",
         71,
+        0,
+        "b",
         2,
         2,
         1,

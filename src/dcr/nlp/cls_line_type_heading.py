@@ -146,7 +146,7 @@ class LineTypeHeading:
         #           list of strings
         # 6: level:
         #           hierarchical level of the current heading
-        # 7: lower_left_x:
+        # 7: coord_llx:
         #           lower left x-coordinate of the beginning of the possible heading
         # 8: predecessor:
         #           predecessor value
@@ -235,7 +235,7 @@ class LineTypeHeading:
             level (int): Heading level.
             text: Heading text.
         """
-        if not cfg.glob.setup.is_heading_toc_create:
+        if not cfg.glob.setup.is_create_extra_file_toc:
             return
 
         toc_entry = {
@@ -659,7 +659,7 @@ class LineTypeHeading:
                 return 0
 
         first_token = text.split()[0]
-        lower_left_x_curr = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LOWER_LEFT_X]
+        coord_llx_curr = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]
 
         for ph_idx in reversed(range(ph_size := len(self._heading_rules_hierarchy))):
             (
@@ -669,7 +669,7 @@ class LineTypeHeading:
                 function_is_asc,
                 start_values,
                 level,
-                lower_left_x,
+                coord_llx,
                 predecessor,
                 regexp_str,
             ) = self._heading_rules_hierarchy[ph_idx]
@@ -677,11 +677,11 @@ class LineTypeHeading:
             target_value = first_token if is_first_token else text
 
             if regexp_compiled.match(target_value):
-                lower_left_x_curr_float = float(lower_left_x_curr)
-                lower_left_x_float = float(lower_left_x)
+                coord_llx_curr_float = float(coord_llx_curr)
+                coord_llx_float = float(coord_llx)
                 if (
-                    lower_left_x_curr_float < lower_left_x_float * (100 - cfg.glob.setup.heading_tolerance_x) / 100
-                    or lower_left_x_curr_float > lower_left_x_float * (100 + cfg.glob.setup.heading_tolerance_x) / 100
+                    coord_llx_curr_float < coord_llx_float * (100 - cfg.glob.setup.heading_tolerance_x) / 100
+                    or coord_llx_curr_float > coord_llx_float * (100 + cfg.glob.setup.heading_tolerance_x) / 100
                 ):
                     return 0
 
@@ -693,7 +693,7 @@ class LineTypeHeading:
                         function_is_asc,
                         start_values,
                         level,
-                        lower_left_x,
+                        coord_llx,
                         target_value,
                         regexp_str,
                     )
@@ -741,7 +741,7 @@ class LineTypeHeading:
                         function_is_asc,
                         start_values,
                         level,
-                        lower_left_x_curr,
+                        coord_llx_curr,
                         target_value,
                         regexp_str,
                     )
@@ -775,14 +775,6 @@ class LineTypeHeading:
         for line_lines_idx, line_line in enumerate(cfg.glob.text_parser.parse_result_line_lines):
             self._line_lines_idx = line_lines_idx
             if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
-                continue
-
-            if nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO in line_line:
-                utils.progress_msg_line_type_heading(
-                    f"LineTypeHeading: Table row                            ={line_lines_idx}"
-                )
-                line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE
-                cfg.glob.text_parser.parse_result_line_lines[line_lines_idx] = line_line
                 continue
 
             if (level := self._process_line(line_line)) > 0:
@@ -831,7 +823,7 @@ class LineTypeHeading:
             cfg.glob.text_parser.parse_result_line_lines = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
-        if cfg.glob.setup.is_heading_toc_create and self._toc:
+        if cfg.glob.setup.is_create_extra_file_toc and self._toc:
             full_name_toc = utils.get_full_name(
                 cfg.glob.action_curr.action_directory_name,
                 cfg.glob.action_curr.get_stem_name()  # type: ignore
