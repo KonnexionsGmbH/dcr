@@ -168,7 +168,9 @@ class TextParser:
 
         self._parse_result_table = False
         self._parse_result_table_cell = 0
+        self._parse_result_table_cell_is_empty = True
         self._parse_result_table_col_span = 0
+        self._parse_result_table_col_span_prev = 1
         self._parse_result_table_row = 0
         self._parse_result_text = ""
 
@@ -544,14 +546,58 @@ class TextParser:
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
-        self._parse_result_table_cell += 1
+        self._parse_result_table_cell_is_empty = True
+
+        self._parse_result_table_cell += self._parse_result_table_col_span_prev
+
         self._parse_result_table_col_span = parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_COL_SPAN)
+
+        if self._parse_result_table_col_span:
+            self._parse_result_table_col_span_prev = int(self._parse_result_table_col_span)
+        else:
+            self._parse_result_table_col_span_prev = 1
 
         for child in parent:
             child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
                 case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PARA:
+                    self._parse_result_table_cell_is_empty = False
                     self._parse_tag_para(child_tag, child)
+
+        if self._parse_result_table_cell_is_empty:
+            self._parse_result_line_llx = float(parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_LLX))
+            self._parse_result_line_urx = float(parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_URX))
+            if self._parse_result_table_col_span:
+                self.parse_result_line_lines.append(
+                    {
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN: int(self._parse_result_table_col_span),
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: "",
+                    }
+                )
+            else:
+                self.parse_result_line_lines.append(
+                    {
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: "",
+                    }
+                )
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -837,6 +883,7 @@ class TextParser:
 
         self._parse_result_table_row += 1
         self._parse_result_table_cell = 0
+        self._parse_result_table_col_span_prev = 1
 
         for child in parent:
             child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]

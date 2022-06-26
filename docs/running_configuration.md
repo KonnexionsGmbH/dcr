@@ -142,11 +142,11 @@ The customisable entries are:
     directory_inbox_accepted = data/inbox_prod_accepted
     directory_inbox_rejected = data/inbox_prod_rejected
     doc_id_in_file_name = none
+    heading_file_incl_no_ctx = 1
+    heading_file_incl_regexp = false
     heading_max_level = 3
     heading_min_pages = 2
     heading_rule_file = none
-    heading_toc_incl_no_ctx = 1
-    heading_toc_incl_regexp = false
     heading_tolerance_x = 5
     ignore_duplicates = false
     initial_database_data = data/initial_database_data.json
@@ -193,11 +193,11 @@ The customisable entries are:
 | directory_inbox_accepted          | **`data/inbox_prod_accepted`**          | Directory for the accepted documents.                                                                           |
 | directory_inbox_rejected          | **`data/inbox_prod_rejected`**          | Complete file name for the **`JSON`** file with the <br>database initialisation data.                           |
 | doc_id_in_file_name               | **`none`**                              | Position of the document id in the file name : <br>**`after`**, **`before`** or **`none`**.                     |
+| heading_file_incl_no_ctx          | **`1`**                                 | The number of lines following the heading to be included as context into the **`JSON`** file.                   |
+| heading_file_incl_regexp          | **`false`**                             | If it is set to **`true`**, the regular expression for the heading is included in the **`JSON`** file.          |
 | heading_max_level                 | **`3`**                                 | Maximum level of the heading structure.                                                                         |
 | heading_min_pages                 | **`2`**                                 | Minimum number of pages to determine the headings.                                                              |
 | heading_rule_file                 | **`data/line_type_heading_rules.json`** | File with rules to determine the headings.                                                                      |
-| heading_toc_incl_no_ctx           | **`1`**                                 | The number of lines following the heading to be included as context into the **`JSON`** file.                   |
-| heading_toc_incl_regexp           | **`false`**                             | If it is set to **`true`**, the regular expression for the heading is included in the **`JSON`** file.          |
 | heading_tolerance_x               | **`5`**                                 | Tolerance of vertical indentation in percent.                                                                   |
 | ignore_duplicates                 | **`false`**                             | Accept presumably duplicated documents <br/>based on a SHA256 hash key.                                         |
 | initial_database_data             | **`data/initial_database_data.json`**   | File with initial database contents.                                                                            |

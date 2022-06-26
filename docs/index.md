@@ -863,6 +863,14 @@ The following parameters control the classification of the headings:
 
 Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_toc.json` is created in the file directory `data_accepted` with the identified headings.
 
+**`heading_file_incl_no_ctx`**
+
+Default value: **`1`** - the `n` lines following the heading are included as context into the **`JSON`** file.
+
+**`heading_file_incl_regexp`**
+
+Default value: **`false`** - if true, the regular expression for the heading is included in the **`JSON`** file.
+
 **`heading_max_level`**
 
 Default value: **`3`** - the maximum number of hierarchical heading levels.
@@ -875,14 +883,6 @@ Default value: **`2`** - the minimum number of document pages for determining he
 
 Default value: **`none`** - name of a file including file directory that contains the rules for determining the headings.
 **`none`** means that the given default rules are applied.
-
-**`heading_toc_incl_no_ctx`**
-
-Default value: **`1`** - the `n` lines following the heading are included as context into the **`JSON`** file.
-
-**`heading_toc_incl_regexp`**
-
-Default value: **`false`** - if true, the regular expression for the heading is included in the **`JSON`** file.
 
 **`heading_tolerance_x`**
 

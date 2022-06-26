@@ -43,11 +43,11 @@ class Setup:
     _DCR_CFG_DIRECTORY_INBOX_REJECTED: ClassVar[str] = "directory_inbox_rejected"
     _DCR_CFG_DOC_ID_IN_FILE_NAME: ClassVar[str] = "doc_id_in_file_name"
     _DCR_CFG_FILE: ClassVar[str] = "setup.cfg"
+    _DCR_CFG_HEADING_FILE_INCL_NO_CTX: ClassVar[str] = "heading_file_incl_no_ctx"
+    _DCR_CFG_HEADING_FILE_INCL_REGEXP: ClassVar[str] = "heading_file_incl_regexp"
     _DCR_CFG_HEADING_MAX_LEVEL: ClassVar[str] = "heading_max_level"
     _DCR_CFG_HEADING_MIN_PAGES: ClassVar[str] = "heading_min_pages"
     _DCR_CFG_HEADING_RULE_FILE: ClassVar[str] = "heading_rule_file"
-    _DCR_CFG_HEADING_TOC_INCL_NO_CTX: ClassVar[str] = "heading_toc_incl_no_ctx"
-    _DCR_CFG_HEADING_TOC_INCL_REGEXP: ClassVar[str] = "heading_toc_incl_regexp"
     _DCR_CFG_HEADING_TOLERANCE_X: ClassVar[str] = "heading_tolerance_x"
     _DCR_CFG_IGNORE_DUPLICATES: ClassVar[str] = "ignore_duplicates"
     _DCR_CFG_INITIAL_DATABASE_DATA: ClassVar[str] = "initial_database_data"
@@ -195,14 +195,13 @@ class Setup:
         self.directory_inbox_accepted = utils.get_os_independent_name("data/inbox_accepted")
         self.directory_inbox_rejected = utils.get_os_independent_name("data/inbox_rejected")
         self.doc_id_in_file_name = "none"
+        self.heading_file_incl_no_ctx = 1
+
+        self.is_heading_file_incl_regexp = False
+
         self.heading_max_level = 3
         self.heading_min_pages = 2
         self.heading_rule_file = "none"
-
-        self.heading_toc_incl_no_ctx = 1
-
-        self.is_heading_toc_incl_regexp = False
-
         self.heading_tolerance_x = 5
 
         self.is_ignore_duplicates = False
@@ -349,17 +348,17 @@ class Setup:
         self._check_config_directory_inbox_rejected()
         self._check_config_doc_id_in_file_name()
 
+        self.heading_file_incl_no_ctx = self._determine_config_param_integer(
+            Setup._DCR_CFG_HEADING_FILE_INCL_NO_CTX, self.heading_file_incl_no_ctx
+        )
+        self.is_heading_file_incl_regexp = self._determine_config_param_boolean(
+            Setup._DCR_CFG_HEADING_FILE_INCL_REGEXP, self.is_heading_file_incl_regexp
+        )
         self.heading_max_level = self._determine_config_param_integer(
             Setup._DCR_CFG_HEADING_MAX_LEVEL, self.heading_max_level
         )
         self.heading_min_pages = self._determine_config_param_integer(
             Setup._DCR_CFG_HEADING_MIN_PAGES, self.heading_min_pages
-        )
-        self.heading_toc_incl_no_ctx = self._determine_config_param_integer(
-            Setup._DCR_CFG_HEADING_TOC_INCL_NO_CTX, self.heading_toc_incl_no_ctx
-        )
-        self.is_heading_toc_incl_regexp = self._determine_config_param_boolean(
-            Setup._DCR_CFG_HEADING_TOC_INCL_REGEXP, self.is_heading_toc_incl_regexp
         )
         self.heading_tolerance_x = self._determine_config_param_integer(
             Setup._DCR_CFG_HEADING_TOLERANCE_X, self.heading_tolerance_x
@@ -843,10 +842,10 @@ class Setup:
                     | Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
                     | Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
                     | Setup._DCR_CFG_DOC_ID_IN_FILE_NAME
+                    | Setup._DCR_CFG_HEADING_FILE_INCL_NO_CTX
+                    | Setup._DCR_CFG_HEADING_FILE_INCL_REGEXP
                     | Setup._DCR_CFG_HEADING_MAX_LEVEL
                     | Setup._DCR_CFG_HEADING_MIN_PAGES
-                    | Setup._DCR_CFG_HEADING_TOC_INCL_NO_CTX
-                    | Setup._DCR_CFG_HEADING_TOC_INCL_REGEXP
                     | Setup._DCR_CFG_HEADING_TOLERANCE_X
                     | Setup._DCR_CFG_IGNORE_DUPLICATES
                     | Setup._DCR_CFG_JSON_INDENT

@@ -129,14 +129,15 @@ class LineTypeToc:
 
         for line_line in cfg.glob.text_parser.parse_result_line_lines:
             if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
-                line_tokens = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT].split()
-                try:
-                    self._process_toc_candidate_line_line(line_line, int(line_tokens[-1]))
-                except ValueError:
-                    self._check_toc_candidate()
+                if (text := line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]) != "":
+                    line_tokens = text.split()
+                    try:
+                        self._process_toc_candidate_line_line(line_line, int(line_tokens[-1]))
+                    except ValueError:
+                        self._check_toc_candidate()
 
-                if self._is_toc_existing:
-                    break
+                    if self._is_toc_existing:
+                        break
 
         utils.progress_msg_line_type_toc(f"LineTypeToc: End   page (lines)                   ={self._page_no}")
 

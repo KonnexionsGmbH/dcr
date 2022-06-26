@@ -244,12 +244,12 @@ class LineTypeHeading:
             nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self._page_idx + 1,
         }
 
-        if cfg.glob.setup.heading_toc_incl_no_ctx > 0:
+        if cfg.glob.setup.heading_file_incl_no_ctx > 0:
             page_idx = self._page_idx
             line_lines: LineLines = cfg.glob.text_parser.parse_result_line_lines
             line_lines_idx = self._line_lines_idx + 1
 
-            for idx in range(cfg.glob.setup.heading_toc_incl_no_ctx):
+            for idx in range(cfg.glob.setup.heading_file_incl_no_ctx):
                 (line, new_page_idx, new_line_lines, new_line_lines_idx) = self._get_next_body_line(
                     page_idx, line_lines, line_lines_idx
                 )
@@ -263,7 +263,7 @@ class LineTypeHeading:
                 line_lines = new_line_lines
                 line_lines_idx = new_line_lines_idx
 
-        if cfg.glob.setup.is_heading_toc_incl_regexp:
+        if cfg.glob.setup.is_heading_file_incl_regexp:
             toc_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP] = self._heading_rules_hierarchy[level - 1][8]
 
         self._toc.append(toc_entry)
@@ -649,7 +649,8 @@ class LineTypeHeading:
         Returns:
             int: The heading level or zero.
         """
-        text = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]
+        if (text := line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]) == "":
+            return 0
 
         for (rule_name, pattern) in self._anti_patterns:
             if pattern.match(text):
