@@ -194,6 +194,7 @@ class LineTypeToc:
 
         try:
             self._toc_candidates[-1][0] = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+            self._toc_candidates[-1][2] = para_no
         except ValueError:
             self._toc_candidates[-1][0] = -1
 
@@ -233,8 +234,10 @@ class LineTypeToc:
                 para_no = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO]
 
                 if page_no == page_no_from and para_no < para_no_from:
+                    print("continue")
                     continue
                 if page_no == page_no_till and para_no > para_no_till:
+                    print("break")
                     break
 
                 if self._strategy == nlp.cls_nlp_core.NLPCore.SEARCH_STRATEGY_LINES:

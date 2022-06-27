@@ -91,19 +91,10 @@ class Action:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        try:
-            cfg.glob.db_core.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'DBCore' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.run.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Run' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_db_core=True,
+            is_run=True,
+        )
 
         self.action_action_code = action_code
         self.action_action_text = action_text
@@ -259,12 +250,9 @@ class Action:
 
         self.persist_2_db()
 
-        try:
-            cfg.glob.document.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Document' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_document=True,
+        )
 
         cfg.glob.document.document_action_code_last = self.action_action_code
         cfg.glob.document.document_id_run_last = cfg.glob.run.run_id
@@ -309,12 +297,9 @@ class Action:
 
         self.persist_2_db()
 
-        try:
-            cfg.glob.document.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Document' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_document=True,
+        )
 
         cfg.glob.document.document_action_code_last = self.action_action_code
         cfg.glob.document.document_error_code_last = self.action_error_code_last
@@ -333,12 +318,9 @@ class Action:
                 f"Error: {error_msg}."
             )
         else:
-            try:
-                cfg.glob.action_curr.exists()  # type: ignore
-            except AttributeError:
-                utils.terminate_fatal(
-                    "The required instance of the class 'Action (action_curr)' does not yet exist.",
-                )
+            utils.check_exists_object(
+                is_action_curr=True,
+            )
 
             cfg.glob.run.run_total_erroneous += 1
 

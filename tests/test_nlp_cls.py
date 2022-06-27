@@ -390,6 +390,7 @@ def test_cls_line_type_heading_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
@@ -452,6 +453,7 @@ def test_cls_line_type_heading_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
@@ -509,6 +511,7 @@ def test_cls_line_type_heading_3(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
@@ -518,6 +521,7 @@ def test_cls_line_type_heading_3(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TABLE, "true"),
         ],
     )
 
@@ -540,6 +544,7 @@ def test_cls_line_type_heading_3(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             [],
             [
                 "docx_heading.line.json",
+                "docx_heading.line_table.json",
                 "docx_heading.page.json",
                 "docx_heading.pdf",
             ],
@@ -649,7 +654,7 @@ def test_cls_line_type_toc(toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_empty_
         target_toc_exp_table = 0
     else:
         target_toc_exp_line = 7
-        target_toc_exp_table = 14
+        target_toc_exp_table = 15
 
     check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "pdf_toc_line_bullet_list_1.line.json")),
@@ -1786,7 +1791,7 @@ def test_missing_dependencies_tokenizer_spacy_setup(fxtr_setup_empty_db_and_inbo
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        instance.process_document(full_name="", pipeline_name="")
+        instance.process_document(full_name="", pipeline_name="en_core_web_trf")
 
     assert expt.type == SystemExit, "Instance of class 'Setup' is missing: process_document()"
     assert expt.value.code == 1, "Instance of class 'Setup' is missing: process_document()"
@@ -1846,7 +1851,7 @@ def test_missing_dependencies_tokenizer_spacy_text_parser(fxtr_setup_empty_db_an
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        instance.process_document(full_name="", pipeline_name="")
+        instance.process_document(full_name="", pipeline_name="en_core_web_trf")
 
     assert expt.type == SystemExit, "Instance of class 'TextParser' is missing: process_document()"
     assert expt.value.code == 1, "Instance of class 'TextParser' is missing: process_document()"

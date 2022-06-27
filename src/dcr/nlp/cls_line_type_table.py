@@ -94,12 +94,10 @@ class LineTypeTable:
         self._page_no_from = 0
         self._page_no_till = 0
 
-        self._row: Row = {}
         self._row_no = 0
         self._row_no_prev = 0
         self._rows: Rows = []
 
-        self._table: Table = {}
         self._tables: Tables = []
 
         self._exist = True
@@ -115,24 +113,39 @@ class LineTypeTable:
     # -----------------------------------------------------------------------------
     def _finish_row(self) -> None:
         """Finish a row."""
-        no_columns = len(self._columns)
+        if (no_columns := len(self._columns)) == 0:
+            return
+
         self._no_columns_table += no_columns
+        row_no = len(self._rows) + 1
 
         self._rows.append(
             {
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_COLUMN_LLX: self._first_column_llx,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_LAST_COLUMN_URX: self._last_column_urx,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_COLUMNS: no_columns,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._row_no_prev,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: row_no,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMNS: self._columns,
             }
         )
+
+        self._columns = []
+
+        utils.progress_msg_line_type_table(f"LineTypeTable: End   row                            ={row_no}")
 
     # -----------------------------------------------------------------------------
     # Finish a table.
     # -----------------------------------------------------------------------------
     def _finish_table(self) -> None:
         """Finish a table."""
+        if not cfg.glob.setup.is_create_extra_file_table:
+            return
+
+        self._finish_row()
+
+        if (no_rows := len(self._rows)) == 0:
+            return
+
         self._page_no_till = self._page_idx + 1
 
         self._tables.append(
@@ -140,14 +153,26 @@ class LineTypeTable:
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ROW_LLX: self._first_row_llx,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ROW_URX: self._first_row_urx,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_COLUMNS: self._no_columns_table,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ROWS: len(self._rows),
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ROWS: no_rows,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._page_no_from,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._page_no_till,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLE_NO: len(self._tables) + 1,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_ROWS: self._rows,
             }
         )
 
-        utils.progress_msg_line_type_table(f"LineTypeTable: End   table                          ={self._page_idx+1}")
+        self._is_table_open = False
+
+        self._first_row_llx = 0.0
+        self._first_row_urx = 0.0
+        self._no_columns_table = 0
+        self._page_no_from = 0
+        self._page_no_till = 0
+
+        self._rows = []
+        self._columns = []
+
+        utils.progress_msg_line_type_table(f"LineTypeTable: End   table                   on page={self._page_idx+1}")
 
     # -----------------------------------------------------------------------------
     # Initialise a new row.
@@ -158,23 +183,17 @@ class LineTypeTable:
         self._last_column_urx = 0.0
         self._row_no_prev = self._row_no
 
-        self._columns = []
+        utils.progress_msg_line_type_table(f"LineTypeTable: Start row                            ={self._row_no}")
 
     # -----------------------------------------------------------------------------
     # Initialise a new table.
     # -----------------------------------------------------------------------------
     def _init_table(self) -> None:
         """Initialise a new table."""
-        self._first_row_llx = 0.0
-        self._first_row_urx = 0.0
-        self._no_columns_table = 0
-        self._page_no_from = 0
-        self._page_no_till = 0
-
-        self._rows = []
+        self._is_table_open = True
 
         utils.progress_msg_line_type_table("LineTypeTable")
-        utils.progress_msg_line_type_table(f"LineTypeTable: Start table                          ={self._page_idx+1}")
+        utils.progress_msg_line_type_table(f"LineTypeTable: Start table                   on page={self._page_idx+1}")
 
     # -----------------------------------------------------------------------------
     # Process the line-related data.
@@ -189,10 +208,6 @@ class LineTypeTable:
             str: The new or the old line type.
         """
         if nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO not in line_line:
-            if cfg.glob.setup.is_create_extra_file_table:
-                if self._is_table_open:
-                    self._finish_table()
-
             return db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY
 
         if not cfg.glob.setup.is_create_extra_file_table:
@@ -200,12 +215,13 @@ class LineTypeTable:
 
         self._row_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO])
 
-        if self._row_no == 1:
+        if self._row_no == 1 and not self._columns:
             if self._is_table_open:
                 self._finish_table()
+
             self._init_table()
 
-        if self._row_no_prev == 0:
+        if not self._columns:
             self._init_row()
         elif self._row_no != self._row_no_prev:
             self._finish_row()
@@ -241,7 +257,7 @@ class LineTypeTable:
             nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT],
         }
 
-        if nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN not in line_line:
+        if nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN in line_line:
             new_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN] = line_line[
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN
             ]
@@ -267,6 +283,8 @@ class LineTypeTable:
             if self._process_line(line_line) == db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE:
                 line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE
                 cfg.glob.text_parser.parse_result_line_lines[line_lines_idx] = line_line
+            elif self._is_table_open:
+                self._finish_table()
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -293,7 +311,6 @@ class LineTypeTable:
             f"LineTypeTable: Start document                       ={cfg.glob.action_curr.action_file_name}"
         )
 
-        self._is_table_open = False
         self._max_page = cfg.glob.text_parser.parse_result_no_pages_in_doc
         self._tables = []
 
@@ -302,7 +319,7 @@ class LineTypeTable:
             cfg.glob.text_parser.parse_result_line_lines = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
-        if cfg.glob.setup.is_create_extra_file_table and self._table:
+        if cfg.glob.setup.is_create_extra_file_table and self._tables:
             full_name_toc = utils.get_full_name(
                 cfg.glob.action_curr.action_directory_name,
                 cfg.glob.action_curr.get_stem_name()  # type: ignore
@@ -314,6 +331,7 @@ class LineTypeTable:
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES: len(self._tables),
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLES: self._tables,
                     },
                     file_handle,
