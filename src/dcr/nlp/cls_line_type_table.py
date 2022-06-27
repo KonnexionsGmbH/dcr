@@ -138,6 +138,9 @@ class LineTypeTable:
     # -----------------------------------------------------------------------------
     def _finish_table(self) -> None:
         """Finish a table."""
+        if not self._is_table_open:
+            return
+
         if not cfg.glob.setup.is_create_extra_file_table:
             return
 
@@ -216,9 +219,7 @@ class LineTypeTable:
         self._row_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO])
 
         if self._row_no == 1 and not self._columns:
-            if self._is_table_open:
-                self._finish_table()
-
+            self._finish_table()
             self._init_table()
 
         if not self._columns:
@@ -226,6 +227,12 @@ class LineTypeTable:
         elif self._row_no != self._row_no_prev:
             self._finish_row()
             self._init_row()
+
+        text = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]
+
+        if not cfg.glob.setup.is_create_extra_file_table:
+            if text == "":
+                return
 
         coord_llx = float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
         coord_urx = float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX])
@@ -254,7 +261,7 @@ class LineTypeTable:
             ],
             nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO],
             nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO],
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT],
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: text,
         }
 
         if nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN in line_line:
@@ -283,7 +290,7 @@ class LineTypeTable:
             if self._process_line(line_line) == db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE:
                 line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE
                 cfg.glob.text_parser.parse_result_line_lines[line_lines_idx] = line_line
-            elif self._is_table_open:
+            else:
                 self._finish_table()
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
