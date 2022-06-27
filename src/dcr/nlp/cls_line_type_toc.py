@@ -22,26 +22,11 @@ class LineTypeToc:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        try:
-            cfg.glob.action_curr.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Action (action_curr)' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.setup.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Setup' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.text_parser.exists()
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'TextParser' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_action_curr=True,
+            is_setup=True,
+            is_text_parser=True,
+        )
 
         utils.progress_msg_line_type_toc("LineTypeToc")
         utils.progress_msg_line_type_toc(
@@ -217,12 +202,9 @@ class LineTypeToc:
     # -----------------------------------------------------------------------------
     def _store_results(self) -> None:  # noqa: C901
         """Store the found TOC entries in parser result."""
-        try:
-            cfg.glob.document.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Document' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_document=True,
+        )
 
         utils.progress_msg_line_type_toc("LineTypeToc: Start store result")
 

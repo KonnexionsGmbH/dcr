@@ -72,12 +72,9 @@ class Token:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        try:
-            cfg.glob.db_core.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'DBCore' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_db_core=True,
+        )
 
         self.token_id = _row_id
         self.token_column_no = column_no

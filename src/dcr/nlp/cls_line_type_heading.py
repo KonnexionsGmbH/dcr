@@ -47,33 +47,12 @@ class LineTypeHeading:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        try:
-            cfg.glob.action_curr.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Action (action_curr)' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.document.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Document' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.setup.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Setup' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.text_parser.exists()
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'TextParser' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_action_curr=True,
+            is_document=True,
+            is_setup=True,
+            is_text_parser=True,
+        )
 
         utils.progress_msg_line_type_heading("LineTypeHeading")
         utils.progress_msg_line_type_heading(
@@ -269,11 +248,25 @@ class LineTypeHeading:
         self._toc.append(toc_entry)
 
     # -----------------------------------------------------------------------------
-    # Initialise the heading rules.
+    # Get the next body line.
     # -----------------------------------------------------------------------------
     def _get_next_body_line(
         self, page_idx: int, line_lines: LineLines, line_lines_idx: int
     ) -> tuple[str, int, LineLines, int]:
+        """Get the next body line.
+
+        Args:
+            page_idx (int):
+                    Start with this page number.
+            line_lines (LineLines):
+                    The lines of the start page.
+            line_lines_idx (int):
+                    Start with this line number.
+
+        Returns:
+            tuple[str, int, LineLines, int]:
+                    found line or empty, last page searched, lines of this page, last checked line.
+        """
         for idx in range(line_lines_idx + 1, len(line_lines)):
             line_line: LineLine = line_lines[idx]
 

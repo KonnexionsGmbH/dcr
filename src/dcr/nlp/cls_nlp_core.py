@@ -20,25 +20,36 @@ class NLPCore:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-
+    JSON_NAME_COLUMNS: ClassVar[str] = "columns"
     JSON_NAME_COLUMN_NO: ClassVar[str] = "columnNo"
     JSON_NAME_COLUMN_SPAN: ClassVar[str] = "columnSpan"
     JSON_NAME_COORD_LLX: ClassVar[str] = "coordLLX"
     JSON_NAME_COORD_URX: ClassVar[str] = "coordURX"
     JSON_NAME_DOC_FILE_NAME: ClassVar[str] = "documentFileName"
+
     JSON_NAME_DOC_ID: ClassVar[str] = "documentId"
+
+    JSON_NAME_FIRST_COLUMN_LLX: ClassVar[str] = "firstColumnLLX"
+    JSON_NAME_FIRST_ROW_LLX: ClassVar[str] = "firstRowLLX"
+    JSON_NAME_FIRST_ROW_URX: ClassVar[str] = "firstRowURX"
     JSON_NAME_FUNCTION_IS_ASC: ClassVar[str] = "functionIsAsc"
+
+    JSON_NAME_HEADING_CTX_LINE: ClassVar[str] = "headingCtxLine"
     JSON_NAME_HEADING_LEVEL: ClassVar[str] = "headingLevel"
     JSON_NAME_HEADING_TEXT: ClassVar[str] = "headingText"
-    JSON_NAME_HEADING_CTX_LINE: ClassVar[str] = "headingCtxLine"
+
     JSON_NAME_IS_FIRST_TOKEN: ClassVar[str] = "isFirstToken"
+
+    JSON_NAME_LAST_COLUMN_URX: ClassVar[str] = "lastColumnURX"
     JSON_NAME_LINES: ClassVar[str] = "lines"
     JSON_NAME_LINE_INDEX_PAGE: ClassVar[str] = "lineIndexPage"
     JSON_NAME_LINE_INDEX_PARA: ClassVar[str] = "lineIndexParagraph"
     JSON_NAME_LINE_NO: ClassVar[str] = "lineNo"
     JSON_NAME_LINE_TYPE: ClassVar[str] = "lineType"
     JSON_NAME_LINE_TYPE_HEADING_RULES: ClassVar[str] = "lineTypeHeadingRules"
+
     JSON_NAME_NAME: ClassVar[str] = "name"
+    JSON_NAME_NO_COLUMNS: ClassVar[str] = "noColumns"
     JSON_NAME_NO_LINES_FOOTER: ClassVar[str] = "noLinesFooter"
     JSON_NAME_NO_LINES_HEADER: ClassVar[str] = "noLinesHeader"
     JSON_NAME_NO_LINES_IN_DOC: ClassVar[str] = "noLinesInDocument"
@@ -48,6 +59,7 @@ class NLPCore:
     JSON_NAME_NO_PAGES_IN_DOC: ClassVar[str] = "noPagesInDocument"
     JSON_NAME_NO_PARAS_IN_DOC: ClassVar[str] = "noParagraphsInDocument"
     JSON_NAME_NO_PARAS_IN_PAGE: ClassVar[str] = "noParagraphsInPage"
+    JSON_NAME_NO_ROWS: ClassVar[str] = "noRows"
     JSON_NAME_NO_SENTS_IN_DOC: ClassVar[str] = "noSentencesInDocument"
     JSON_NAME_NO_SENTS_IN_PAGE: ClassVar[str] = "noSentencesInPage"
     JSON_NAME_NO_SENTS_IN_PARA: ClassVar[str] = "noSentencesInParagraph"
@@ -59,15 +71,23 @@ class NLPCore:
     JSON_NAME_NO_WORDS_IN_LINE: ClassVar[str] = "noWordsInLine"
     JSON_NAME_NO_WORDS_IN_PAGE: ClassVar[str] = "noWordsInPage"
     JSON_NAME_NO_WORDS_IN_PARA: ClassVar[str] = "noWordsInParagraph"
+
     JSON_NAME_PAGES: ClassVar[str] = "pages"
     JSON_NAME_PAGE_NO: ClassVar[str] = "pageNo"
+    JSON_NAME_PAGE_NO_FROM: ClassVar[str] = "pageNoFrom"
+    JSON_NAME_PAGE_NO_TILL: ClassVar[str] = "pageNoTill"
     JSON_NAME_PARAS: ClassVar[str] = "paragraphs"
     JSON_NAME_PARA_NO: ClassVar[str] = "paragraphNo"
+
     JSON_NAME_REGEXP: ClassVar[str] = "regexp"
+    JSON_NAME_ROWS: ClassVar[str] = "rows"
     JSON_NAME_ROW_NO: ClassVar[str] = "rowNo"
+
     JSON_NAME_SENTS: ClassVar[str] = "sentences"
     JSON_NAME_SENT_NO: ClassVar[str] = "sentenceNo"
     JSON_NAME_START_VALUES: ClassVar[str] = "startValues"
+
+    JSON_NAME_TABLES: ClassVar[str] = "tables"
     JSON_NAME_TEXT: ClassVar[str] = "text"
     JSON_NAME_TOC: ClassVar[str] = "toc"
     JSON_NAME_TOKENS: ClassVar[str] = "tokens"
@@ -126,6 +146,7 @@ class NLPCore:
     JSON_NAME_TOKEN_WHITESPACE_: ClassVar[str] = "tknWhitespace_"
 
     JSON_NAME_UPPER_RIGHT_X: ClassVar[str] = "upperRightX"
+
     JSON_NAME_WORDS: ClassVar[str] = "words"
     JSON_NAME_WORD_NO: ClassVar[str] = "wordNo"
 

@@ -17,6 +17,75 @@ import utils
 # -----------------------------------------------------------------------------
 # Compute the SHA256 hash string of a file.
 # -----------------------------------------------------------------------------
+def check_exists_object(  # noqa: C901
+    is_action_curr: bool = False,
+    is_action_next: bool = False,
+    is_db_core: bool = False,
+    is_document: bool = False,
+    is_run: bool = False,
+    is_setup: bool = False,
+    is_text_parser: bool = False,
+) -> None:
+    if is_action_curr:
+        try:
+            cfg.glob.action_curr.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Action (action_curr)' does not yet exist.",
+            )
+
+    if is_action_next:
+        try:
+            cfg.glob.action_next.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Action (action_next)' does not yet exist.",
+            )
+
+    if is_db_core:
+        try:
+            cfg.glob.db_core.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'DBCore' does not yet exist.",
+            )
+
+    if is_document:
+        try:
+            cfg.glob.document.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Document' does not yet exist.",
+            )
+
+    if is_run:
+        try:
+            cfg.glob.run.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Run' does not yet exist.",
+            )
+
+    if is_setup:
+        try:
+            cfg.glob.setup.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'Setup' does not yet exist.",
+            )
+
+    if is_text_parser:
+        try:
+            cfg.glob.text_parser.exists()
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'TextParser' does not yet exist.",
+            )
+
+
+# -----------------------------------------------------------------------------
+# Compute the SHA256 hash string of a file.
+# -----------------------------------------------------------------------------
 def compute_sha256(file: pathlib.Path) -> str:
     """Compute the SHA256 hash string of a file.
 

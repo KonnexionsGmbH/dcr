@@ -987,7 +987,6 @@ def check_db_content_version() -> None:
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

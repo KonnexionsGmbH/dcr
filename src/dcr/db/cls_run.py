@@ -95,12 +95,9 @@ class Run:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        try:
-            cfg.glob.db_core.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'DBCore' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_db_core=True,
+        )
 
         if Run.ID_RUN_UMBRELLA == 0:
             Run.ID_RUN_UMBRELLA = Run.get_id_latest() + 1

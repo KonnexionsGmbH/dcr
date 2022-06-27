@@ -135,12 +135,9 @@ class TextParser:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        try:
-            cfg.glob.setup.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Setup' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_setup=True,
+        )
 
         self._parse_result_author = ""
 
@@ -195,19 +192,10 @@ class TextParser:
     # Create the data structure line: document.
     # -----------------------------------------------------------------------------
     def _create_line_document(self):
-        try:
-            cfg.glob.action_next.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Action (action next)' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.document.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Document' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_action_next=True,
+            is_document=True,
+        )
 
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
@@ -233,51 +221,24 @@ class TextParser:
     def _create_line_lines(self):
         self._debug_xml_element_text_line()
 
+        new_entry = {
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
+        }
+
         if self._parse_result_table:
+            new_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO] = self._parse_result_table_cell
+            new_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO] = self._parse_result_table_row
             if self._parse_result_table_col_span:
-                self.parse_result_line_lines.append(
-                    {
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN: int(self._parse_result_table_col_span),
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
-                    }
-                )
-            else:
-                self.parse_result_line_lines.append(
-                    {
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
-                    }
-                )
-        else:
-            self.parse_result_line_lines.append(
-                {
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
-                }
-            )
+                new_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN] = int(self._parse_result_table_col_span)
+
+        self.parse_result_line_lines.append(new_entry)
 
     # -----------------------------------------------------------------------------
     # Create the data structure line: pages.
@@ -296,19 +257,10 @@ class TextParser:
     # Create the data structure page: document.
     # -----------------------------------------------------------------------------
     def _create_page_document(self):
-        try:
-            cfg.glob.action_next.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Action (action next)' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.document.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Document' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_action_next=True,
+            is_document=True,
+        )
 
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
@@ -353,19 +305,10 @@ class TextParser:
     # Create the data structure word: document.
     # -----------------------------------------------------------------------------
     def _create_word_document(self):
-        try:
-            cfg.glob.action_next.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Action (action next)' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.document.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Document' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_action_next=True,
+            is_document=True,
+        )
 
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
@@ -567,37 +510,24 @@ class TextParser:
         if self._parse_result_table_cell_is_empty:
             self._parse_result_line_llx = float(parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_LLX))
             self._parse_result_line_urx = float(parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_URX))
+            new_entry = {
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: "",
+            }
+
             if self._parse_result_table_col_span:
-                self.parse_result_line_lines.append(
-                    {
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN: int(self._parse_result_table_col_span),
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: "",
-                    }
-                )
-            else:
-                self.parse_result_line_lines.append(
-                    {
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: "",
-                    }
-                )
+                # not testable
+                new_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN] = int(self._parse_result_table_col_span)
+
+            self.parse_result_line_lines.append(new_entry)
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
@@ -776,19 +706,10 @@ class TextParser:
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
-        try:
-            cfg.glob.action_next.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Action (action next)' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.document.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Document' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_action_next=True,
+            is_document=True,
+        )
 
         self._parse_result_no_paras_in_doc = 0
         self.parse_result_no_pages_in_doc = 0

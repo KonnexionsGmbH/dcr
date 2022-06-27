@@ -23,10 +23,36 @@ def check_param_complete():
 
 
 # -----------------------------------------------------------------------------
-# Test Function - get_config().
+# Check parameter TOKENIZE_2_.
 # -----------------------------------------------------------------------------
-def test_get_config(fxtr_setup_logger_environment):
-    """Test: get_config()."""
+def check_param_tokenize_2_():
+    """Check parameter TOKENIZE_2_."""
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "fALSE"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "fALSE"),
+        ],
+    )
+
+    with pytest.raises(SystemExit) as expt:
+        cfg.glob.setup = cfg.cls_setup.Setup()
+
+    assert expt.type == SystemExit, "both DCR_CFG_TOKENIZE_2_DATABASE and DCR_CFG_TOKENIZE_2_JSONFILE false"
+    assert expt.value.code == 1, "both DCR_CFG_TOKENIZE_2_DATABASE and DCR_CFG_TOKENIZE_2_JSONFILE false"
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+
+# -----------------------------------------------------------------------------
+# Test Function - get_config() - 1.
+# -----------------------------------------------------------------------------
+def test_get_config_1(fxtr_setup_logger_environment):
+    """Test: get_config() - 1."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -53,6 +79,20 @@ def test_get_config(fxtr_setup_logger_environment):
 
 
 # -----------------------------------------------------------------------------
+# Test Function - get_config() - 2.
+# -----------------------------------------------------------------------------
+def test_get_config_2(fxtr_setup_logger_environment):
+    """Test: test_get_config - 2."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    check_param_complete()
+
+    check_param_tokenize_2_()
+
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test Function - get_config() - coverage - false.
 # -----------------------------------------------------------------------------
 def test_get_config_coverage_false(fxtr_setup_logger_environment):
@@ -68,6 +108,9 @@ def test_get_config_coverage_false(fxtr_setup_logger_environment):
         cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         values_original,
     )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.setup._determine_config_param_integer(cfg.glob.INFORMATION_NOT_YET_AVAILABLE, 4711)
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -153,18 +196,6 @@ def test_get_config_doc_id_in_file_name(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test Function - get_config().
-# -----------------------------------------------------------------------------
-def test_get_config_logical_false(fxtr_setup_logger_environment):
-    """Test: test_get_config_tetml()."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    check_param_complete()
-
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 

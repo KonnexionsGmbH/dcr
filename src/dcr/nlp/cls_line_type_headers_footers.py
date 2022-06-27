@@ -41,26 +41,11 @@ class LineTypeHeaderFooters:
         """Initialise the instance."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        try:
-            cfg.glob.action_curr.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Action (action_curr)' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.setup.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Setup' does not yet exist.",
-            )
-
-        try:
-            cfg.glob.text_parser.exists()
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'TextParser' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_action_curr=True,
+            is_setup=True,
+            is_text_parser=True,
+        )
 
         utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters")
         utils.progress_msg_line_type_headers_footers(
@@ -283,12 +268,9 @@ class LineTypeHeaderFooters:
     # -----------------------------------------------------------------------------
     def _store_results(self) -> None:
         """Store the found line types in parser result."""
-        try:
-            cfg.glob.document.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'Document' does not yet exist.",
-            )
+        utils.check_exists_object(
+            is_document=True,
+        )
 
         self.no_lines_footer = 0
         self.no_lines_header = 0
