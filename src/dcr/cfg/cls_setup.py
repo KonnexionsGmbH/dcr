@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 116
+    _CONFIG_PARAM_NO = 117
 
     _DCR_CFG_CREATE_EXTRA_FILE_LIST: ClassVar[str] = "create_extra_file_list"
     _DCR_CFG_CREATE_EXTRA_FILE_TABLE: ClassVar[str] = "create_extra_file_table"
@@ -32,6 +32,7 @@ class Setup:
     _DCR_CFG_DB_DATABASE_ADMIN: ClassVar[str] = "db_database_admin"
     _DCR_CFG_DB_DIALECT: ClassVar[str] = "db_dialect"
     _DCR_CFG_DB_HOST: ClassVar[str] = "db_host"
+    _DCR_CFG_DB_INITIAL_DATA_FILE: ClassVar[str] = "db_initial_data_file"
     _DCR_CFG_DB_PASSWORD: ClassVar[str] = "db_password"
     _DCR_CFG_DB_PASSWORD_ADMIN: ClassVar[str] = "db_password_admin"
     _DCR_CFG_DB_SCHEMA: ClassVar[str] = "db_schema"
@@ -43,20 +44,22 @@ class Setup:
     _DCR_CFG_DIRECTORY_INBOX_REJECTED: ClassVar[str] = "directory_inbox_rejected"
     _DCR_CFG_DOC_ID_IN_FILE_NAME: ClassVar[str] = "doc_id_in_file_name"
     _DCR_CFG_FILE: ClassVar[str] = "setup.cfg"
-    _DCR_CFG_HEADING_FILE_INCL_NO_CTX: ClassVar[str] = "heading_file_incl_no_ctx"
-    _DCR_CFG_HEADING_FILE_INCL_REGEXP: ClassVar[str] = "heading_file_incl_regexp"
-    _DCR_CFG_HEADING_MAX_LEVEL: ClassVar[str] = "heading_max_level"
-    _DCR_CFG_HEADING_MIN_PAGES: ClassVar[str] = "heading_min_pages"
-    _DCR_CFG_HEADING_RULE_FILE: ClassVar[str] = "heading_rule_file"
-    _DCR_CFG_HEADING_TOLERANCE_X: ClassVar[str] = "heading_tolerance_x"
     _DCR_CFG_IGNORE_DUPLICATES: ClassVar[str] = "ignore_duplicates"
-    _DCR_CFG_INITIAL_DATABASE_DATA: ClassVar[str] = "initial_database_data"
     _DCR_CFG_JSON_INDENT: ClassVar[str] = "json_indent"
     _DCR_CFG_JSON_SORT_KEYS: ClassVar[str] = "json_sort_keys"
-    _DCR_CFG_LINE_FOOTER_MAX_DISTANCE: ClassVar[str] = "line_footer_max_distance"
-    _DCR_CFG_LINE_FOOTER_MAX_LINES: ClassVar[str] = "line_footer_max_lines"
-    _DCR_CFG_LINE_HEADER_MAX_DISTANCE: ClassVar[str] = "line_header_max_distance"
-    _DCR_CFG_LINE_HEADER_MAX_LINES: ClassVar[str] = "line_header_max_lines"
+    _DCR_CFG_LT_FOOTER_MAX_DISTANCE: ClassVar[str] = "lt_footer_max_distance"
+    _DCR_CFG_LT_FOOTER_MAX_LINES: ClassVar[str] = "lt_footer_max_lines"
+    _DCR_CFG_LT_HEADER_MAX_DISTANCE: ClassVar[str] = "lt_header_max_distance"
+    _DCR_CFG_LT_HEADER_MAX_LINES: ClassVar[str] = "lt_header_max_lines"
+    _DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX: ClassVar[str] = "lt_heading_file_incl_no_ctx"
+    _DCR_CFG_LT_HEADING_FILE_INCL_REGEXP: ClassVar[str] = "lt_heading_file_incl_regexp"
+    _DCR_CFG_LT_HEADING_MAX_LEVEL: ClassVar[str] = "lt_heading_max_level"
+    _DCR_CFG_LT_HEADING_MIN_PAGES: ClassVar[str] = "lt_heading_min_pages"
+    _DCR_CFG_LT_HEADING_RULE_FILE: ClassVar[str] = "lt_heading_rule_file"
+    _DCR_CFG_LT_HEADING_TOLERANCE_LLX: ClassVar[str] = "lt_heading_tolerance_llx"
+    _DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS: ClassVar[str] = "lt_table_file_incl_empty_columns"
+    _DCR_CFG_LT_TOC_LAST_PAGE: ClassVar[str] = "lt_toc_last_page"
+    _DCR_CFG_LT_TOC_MIN_ENTRIES: ClassVar[str] = "lt_toc_min_entries"
     _DCR_CFG_PDF2IMAGE_TYPE: ClassVar[str] = "pdf2image_type"
     _DCR_CFG_SECTION: ClassVar[str] = "dcr"
     _DCR_CFG_SECTION_ENV_TEST: ClassVar[str] = "dcr.env.test"
@@ -134,8 +137,6 @@ class Setup:
     _DCR_CFG_TESSERACT_TIMEOUT: ClassVar[str] = "tesseract_timeout"
     _DCR_CFG_TETML_PAGE: ClassVar[str] = "tetml_page"
     _DCR_CFG_TETML_WORD: ClassVar[str] = "tetml_word"
-    _DCR_CFG_TOC_LAST_PAGE: ClassVar[str] = "toc_last_page"
-    _DCR_CFG_TOC_MIN_ENTRIES: ClassVar[str] = "toc_min_entries"
     _DCR_CFG_TOKENIZE_2_DATABASE: ClassVar[str] = "tokenize_2_database"
     _DCR_CFG_TOKENIZE_2_JSONFILE: ClassVar[str] = "tokenize_2_jsonfile"
     _DCR_CFG_VERBOSE: ClassVar[str] = "verbose"
@@ -183,6 +184,7 @@ class Setup:
         self.db_database_admin = "dcr_db_prod_admin"
         self.db_dialect = "postgresql"
         self.db_host = "localhost"
+        self.db_initial_data_file = utils.get_os_independent_name("data/db_initial_data_file.json")
         self.db_password = "postgresql"  # nosec
         self.db_password_admin = "postgresql"  # nosec
         self.db_schema = "dcr_schema"
@@ -195,34 +197,36 @@ class Setup:
         self.directory_inbox_accepted = utils.get_os_independent_name("data/inbox_accepted")
         self.directory_inbox_rejected = utils.get_os_independent_name("data/inbox_rejected")
         self.doc_id_in_file_name = "none"
-        self.heading_file_incl_no_ctx = 1
-
-        self.is_heading_file_incl_regexp = False
-
-        self.heading_max_level = 3
-        self.heading_min_pages = 2
-        self.heading_rule_file = "none"
-        self.heading_tolerance_x = 5
 
         self.is_ignore_duplicates = False
 
-        self.initial_database_data = utils.get_os_independent_name("data/initial_database_data.json")
         self.json_indent = 4
 
         self.is_json_sort_keys = False
 
-        self.line_footer_max_distance = 3
-        self.line_footer_max_lines = 3
-        self.line_header_max_distance = 3
-        self.line_header_max_lines = 3
+        self.lt_footer_max_distance = 3
+        self.lt_footer_max_lines = 3
+        self.lt_header_max_distance = 3
+        self.lt_header_max_lines = 3
+        self.lt_heading_file_incl_no_ctx = 1
+
+        self.is_lt_heading_file_incl_regexp = False
+
+        self.lt_heading_max_level = 3
+        self.lt_heading_min_pages = 2
+        self.lt_heading_rule_file = "none"
+        self.lt_heading_tolerance_llx = 5
+
+        self.is_lt_table_file_incl_empty_columns = True
+
+        self.lt_toc_last_page = 5
+        self.lt_toc_min_entries = 5
+
         self.pdf2image_type = Setup.PDF2IMAGE_TYPE_JPEG
         self.tesseract_timeout = 10
 
         self.is_tetml_page = False
         self.is_tetml_word = False
-
-        self.toc_last_page = 5
-        self.toc_min_entries = 5
 
         self.is_tokenize_2_database = True
         self.is_tokenize_2_jsonfile = True
@@ -348,22 +352,6 @@ class Setup:
         self._check_config_directory_inbox_rejected()
         self._check_config_doc_id_in_file_name()
 
-        self.heading_file_incl_no_ctx = self._determine_config_param_integer(
-            Setup._DCR_CFG_HEADING_FILE_INCL_NO_CTX, self.heading_file_incl_no_ctx
-        )
-        self.is_heading_file_incl_regexp = self._determine_config_param_boolean(
-            Setup._DCR_CFG_HEADING_FILE_INCL_REGEXP, self.is_heading_file_incl_regexp
-        )
-        self.heading_max_level = self._determine_config_param_integer(
-            Setup._DCR_CFG_HEADING_MAX_LEVEL, self.heading_max_level
-        )
-        self.heading_min_pages = self._determine_config_param_integer(
-            Setup._DCR_CFG_HEADING_MIN_PAGES, self.heading_min_pages
-        )
-        self.heading_tolerance_x = self._determine_config_param_integer(
-            Setup._DCR_CFG_HEADING_TOLERANCE_X, self.heading_tolerance_x
-        )
-
         self.is_ignore_duplicates = self._determine_config_param_boolean(
             Setup._DCR_CFG_IGNORE_DUPLICATES, self.is_ignore_duplicates
         )
@@ -372,17 +360,39 @@ class Setup:
 
         self.is_json_sort_keys = self._determine_config_param_boolean(Setup._DCR_CFG_JSON_SORT_KEYS, self.is_json_sort_keys)
 
-        self.line_footer_max_distance = self._determine_config_param_integer(
-            Setup._DCR_CFG_LINE_FOOTER_MAX_DISTANCE, self.line_footer_max_distance
+        self.lt_footer_max_distance = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, self.lt_footer_max_distance
         )
-        self.line_footer_max_lines = self._determine_config_param_integer(
-            Setup._DCR_CFG_LINE_FOOTER_MAX_LINES, self.line_footer_max_lines
+        self.lt_footer_max_lines = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_FOOTER_MAX_LINES, self.lt_footer_max_lines
         )
-        self.line_header_max_distance = self._determine_config_param_integer(
-            Setup._DCR_CFG_LINE_HEADER_MAX_DISTANCE, self.line_header_max_distance
+        self.lt_header_max_distance = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, self.lt_header_max_distance
         )
-        self.line_header_max_lines = self._determine_config_param_integer(
-            Setup._DCR_CFG_LINE_HEADER_MAX_LINES, self.line_header_max_lines
+        self.lt_header_max_lines = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_HEADER_MAX_LINES, self.lt_header_max_lines
+        )
+        self.lt_heading_file_incl_no_ctx = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, self.lt_heading_file_incl_no_ctx
+        )
+        self.is_lt_heading_file_incl_regexp = self._determine_config_param_boolean(
+            Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP, self.is_lt_heading_file_incl_regexp
+        )
+        self.lt_heading_max_level = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, self.lt_heading_max_level
+        )
+        self.lt_heading_min_pages = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_HEADING_MIN_PAGES, self.lt_heading_min_pages
+        )
+        self.lt_heading_tolerance_llx = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX, self.lt_heading_tolerance_llx
+        )
+        self.is_lt_table_file_incl_empty_columns = self._determine_config_param_boolean(
+            Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS, self.is_lt_table_file_incl_empty_columns
+        )
+        self.lt_toc_last_page = self._determine_config_param_integer(Setup._DCR_CFG_LT_TOC_LAST_PAGE, self.lt_toc_last_page)
+        self.lt_toc_min_entries = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_TOC_MIN_ENTRIES, self.lt_toc_min_entries
         )
 
         self._check_config_pdf2image_type()
@@ -396,9 +406,6 @@ class Setup:
 
         self.is_tetml_page = self._determine_config_param_boolean(Setup._DCR_CFG_TETML_PAGE, self.is_tetml_page)
         self.is_tetml_word = self._determine_config_param_boolean(Setup._DCR_CFG_TETML_WORD, self.is_tetml_word)
-
-        self.toc_last_page = self._determine_config_param_integer(Setup._DCR_CFG_TOC_LAST_PAGE, self.toc_last_page)
-        self.toc_min_entries = self._determine_config_param_integer(Setup._DCR_CFG_TOC_MIN_ENTRIES, self.toc_min_entries)
 
         self.is_tokenize_2_database = self._determine_config_param_boolean(
             Setup._DCR_CFG_TOKENIZE_2_DATABASE, self.is_tokenize_2_database
@@ -821,6 +828,8 @@ class Setup:
                     self.db_dialect = str(item)
                 case Setup._DCR_CFG_DB_HOST:
                     self.db_host = str(item)
+                case Setup._DCR_CFG_DB_INITIAL_DATA_FILE:
+                    self.db_initial_data_file = utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_DB_PASSWORD:
                     self.db_password = str(item)
                 case Setup._DCR_CFG_DB_PASSWORD_ADMIN:
@@ -842,18 +851,21 @@ class Setup:
                     | Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
                     | Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
                     | Setup._DCR_CFG_DOC_ID_IN_FILE_NAME
-                    | Setup._DCR_CFG_HEADING_FILE_INCL_NO_CTX
-                    | Setup._DCR_CFG_HEADING_FILE_INCL_REGEXP
-                    | Setup._DCR_CFG_HEADING_MAX_LEVEL
-                    | Setup._DCR_CFG_HEADING_MIN_PAGES
-                    | Setup._DCR_CFG_HEADING_TOLERANCE_X
                     | Setup._DCR_CFG_IGNORE_DUPLICATES
                     | Setup._DCR_CFG_JSON_INDENT
                     | Setup._DCR_CFG_JSON_SORT_KEYS
-                    | Setup._DCR_CFG_LINE_FOOTER_MAX_DISTANCE
-                    | Setup._DCR_CFG_LINE_FOOTER_MAX_LINES
-                    | Setup._DCR_CFG_LINE_HEADER_MAX_DISTANCE
-                    | Setup._DCR_CFG_LINE_HEADER_MAX_LINES
+                    | Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE
+                    | Setup._DCR_CFG_LT_FOOTER_MAX_LINES
+                    | Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE
+                    | Setup._DCR_CFG_LT_HEADER_MAX_LINES
+                    | Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX
+                    | Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP
+                    | Setup._DCR_CFG_LT_HEADING_MAX_LEVEL
+                    | Setup._DCR_CFG_LT_HEADING_MIN_PAGES
+                    | Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX
+                    | Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS
+                    | Setup._DCR_CFG_LT_TOC_LAST_PAGE
+                    | Setup._DCR_CFG_LT_TOC_MIN_ENTRIES
                     | Setup._DCR_CFG_PDF2IMAGE_TYPE
                     | Setup._DCR_CFG_SPACY_IGNORE_BRACKET
                     | Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT
@@ -925,8 +937,6 @@ class Setup:
                     | Setup._DCR_CFG_TESSERACT_TIMEOUT
                     | Setup._DCR_CFG_TETML_PAGE
                     | Setup._DCR_CFG_TETML_WORD
-                    | Setup._DCR_CFG_TOC_LAST_PAGE
-                    | Setup._DCR_CFG_TOC_MIN_ENTRIES
                     | Setup._DCR_CFG_TOKENIZE_2_DATABASE
                     | Setup._DCR_CFG_TOKENIZE_2_JSONFILE
                     | Setup._DCR_CFG_VERBOSE
@@ -938,10 +948,8 @@ class Setup:
                     | Setup._DCR_CFG_VERBOSE_PARSER
                 ):
                     continue
-                case Setup._DCR_CFG_HEADING_RULE_FILE:
-                    self.heading_rule_file = utils.get_os_independent_name(item)
-                case Setup._DCR_CFG_INITIAL_DATABASE_DATA:
-                    self.initial_database_data = utils.get_os_independent_name(item)
+                case Setup._DCR_CFG_LT_HEADING_RULE_FILE:
+                    self.lt_heading_rule_file = utils.get_os_independent_name(item)
                 case _:
                     utils.terminate_fatal_setup(f"Unknown configuration parameter '{key}'")
 

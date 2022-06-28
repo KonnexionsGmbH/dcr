@@ -104,8 +104,8 @@ def test_run_action_store_parse_result_in_json_coverage(verbose_parser: str, fxt
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "0"),
-            (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "0"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "0"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "0"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "true"),
@@ -161,8 +161,8 @@ def test_run_action_store_parse_result_in_json_coverage_page(fxtr_rmdir_opt, fxt
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "0"),
-            (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "0"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "0"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "0"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "true"),

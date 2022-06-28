@@ -186,15 +186,15 @@ def test_create_database(fxtr_setup_logger_environment):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_INITIAL_DATABASE_DATA, "unknown_file"),
+            (cfg.cls_setup.Setup._DCR_CFG_DB_INITIAL_DATA_FILE, "unknown_file"),
         ],
     )
 
     with pytest.raises(SystemExit) as expt:
         dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
-    assert expt.type == SystemExit, "DCR_CFG_INITIAL_DATABASE_DATA: unknown file"
-    assert expt.value.code == 1, "DCR_CFG_INITIAL_DATABASE_DATA: unknown file"
+    assert expt.type == SystemExit, "DCR_CFG_DB_INITIAL_DATA_FILE: unknown file"
+    assert expt.value.code == 1, "DCR_CFG_DB_INITIAL_DATA_FILE: unknown file"
 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -268,16 +268,16 @@ def test_load_db_data_from_json_content(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    initial_database_data_path = pathlib.Path(cfg.glob.setup.initial_database_data)
-    initial_database_data_path_directory = os.path.dirname(initial_database_data_path)
-    initial_database_data_path_file_name = os.path.basename(initial_database_data_path)
+    db_initial_data_file_path = pathlib.Path(cfg.glob.setup.db_initial_data_file)
+    db_initial_data_file_path_directory = os.path.dirname(db_initial_data_file_path)
+    db_initial_data_file_path_file_name = os.path.basename(db_initial_data_file_path)
 
-    initial_database_data_path_file_name_test = "initial_database_data_content.json"
+    db_initial_data_file_path_file_name_test = "db_initial_data_file_content.json"
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), initial_database_data_path_file_name_test),
-        utils.get_full_name(initial_database_data_path_directory, initial_database_data_path_file_name),
+        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
+        utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
     with pytest.raises(SystemExit) as expt:
@@ -298,13 +298,13 @@ def test_load_db_data_from_json_missing(fxtr_setup_logger_environment):
     """Test Load Database Data - initial database data is missing."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    initial_database_data_path = pathlib.Path(cfg.glob.setup.initial_database_data)
-    initial_database_data_path_directory = os.path.dirname(initial_database_data_path)
-    initial_database_data_path_file_name = os.path.basename(initial_database_data_path)
+    db_initial_data_file_path = pathlib.Path(cfg.glob.setup.db_initial_data_file)
+    db_initial_data_file_path_directory = os.path.dirname(db_initial_data_file_path)
+    db_initial_data_file_path_file_name = os.path.basename(db_initial_data_file_path)
 
     # delete original file
-    if pathlib.Path(initial_database_data_path):
-        os.remove(initial_database_data_path)
+    if pathlib.Path(db_initial_data_file_path):
+        os.remove(db_initial_data_file_path)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -313,8 +313,8 @@ def test_load_db_data_from_json_missing(fxtr_setup_logger_environment):
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), initial_database_data_path_file_name),
-        initial_database_data_path_directory,
+        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name),
+        db_initial_data_file_path_directory,
     )
 
     assert expt.type == SystemExit, "Initial database data file is missing."
@@ -332,16 +332,16 @@ def test_load_db_data_from_json_unknown(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    initial_database_data_path = pathlib.Path(cfg.glob.setup.initial_database_data)
-    initial_database_data_path_directory = os.path.dirname(initial_database_data_path)
-    initial_database_data_path_file_name = os.path.basename(initial_database_data_path)
+    db_initial_data_file_path = pathlib.Path(cfg.glob.setup.db_initial_data_file)
+    db_initial_data_file_path_directory = os.path.dirname(db_initial_data_file_path)
+    db_initial_data_file_path_file_name = os.path.basename(db_initial_data_file_path)
 
-    initial_database_data_path_file_name_test = "initial_database_data_unknown.json"
+    db_initial_data_file_path_file_name_test = "db_initial_data_file_unknown.json"
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), initial_database_data_path_file_name_test),
-        utils.get_full_name(initial_database_data_path_directory, initial_database_data_path_file_name),
+        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
+        utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
     with pytest.raises(SystemExit) as expt:
@@ -363,16 +363,16 @@ def test_load_db_data_from_json_version(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    initial_database_data_path = pathlib.Path(cfg.glob.setup.initial_database_data)
-    initial_database_data_path_directory = os.path.dirname(initial_database_data_path)
-    initial_database_data_path_file_name = os.path.basename(initial_database_data_path)
+    db_initial_data_file_path = pathlib.Path(cfg.glob.setup.db_initial_data_file)
+    db_initial_data_file_path_directory = os.path.dirname(db_initial_data_file_path)
+    db_initial_data_file_path_file_name = os.path.basename(db_initial_data_file_path)
 
-    initial_database_data_path_file_name_test = "initial_database_data_version.json"
+    db_initial_data_file_path_file_name_test = "db_initial_data_file_version.json"
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), initial_database_data_path_file_name_test),
-        utils.get_full_name(initial_database_data_path_directory, initial_database_data_path_file_name),
+        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
+        utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
     with pytest.raises(SystemExit) as expt:

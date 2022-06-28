@@ -81,16 +81,16 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    initial_database_data_path = pathlib.Path(cfg.glob.setup.initial_database_data)
-    initial_database_data_path_directory = os.path.dirname(initial_database_data_path)
-    initial_database_data_path_file_name = os.path.basename(initial_database_data_path)
+    db_initial_data_file_path = pathlib.Path(cfg.glob.setup.db_initial_data_file)
+    db_initial_data_file_path_directory = os.path.dirname(db_initial_data_file_path)
+    db_initial_data_file_path_file_name = os.path.basename(db_initial_data_file_path)
 
-    initial_database_data_path_file_name_test = "initial_database_data_french.json"
+    db_initial_data_file_path_file_name_test = "db_initial_data_file_french.json"
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), initial_database_data_path_file_name_test),
-        utils.get_full_name(initial_database_data_path_directory, initial_database_data_path_file_name),
+        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
+        utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
     cfg.glob.db_core = db.cls_db_core.DBCore(is_admin=True)

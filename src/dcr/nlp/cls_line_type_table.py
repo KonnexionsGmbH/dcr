@@ -230,9 +230,8 @@ class LineTypeTable:
 
         text = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]
 
-        if not cfg.glob.setup.is_create_extra_file_table:
-            if text == "":
-                return
+        if text == "" and not cfg.glob.setup.is_lt_table_file_incl_empty_columns:
+            return db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE
 
         coord_llx = float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
         coord_urx = float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX])

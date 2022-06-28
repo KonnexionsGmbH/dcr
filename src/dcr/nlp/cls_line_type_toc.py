@@ -102,7 +102,7 @@ class LineTypeToc:
     # -----------------------------------------------------------------------------
     def _process_page_lines(self) -> None:
         """Process the page-related data - line version."""
-        if self._is_toc_existing or self._page_no >= cfg.glob.setup.toc_last_page:
+        if self._is_toc_existing or self._page_no >= cfg.glob.setup.lt_toc_last_page:
             return
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -133,7 +133,7 @@ class LineTypeToc:
     # -----------------------------------------------------------------------------
     def _process_page_table(self) -> None:
         """Process the page-related data - table version."""
-        if self._is_toc_existing or self._page_no >= cfg.glob.setup.toc_last_page:
+        if self._is_toc_existing or self._page_no >= cfg.glob.setup.lt_toc_last_page:
             return
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -209,7 +209,7 @@ class LineTypeToc:
 
         utils.progress_msg_line_type_toc("LineTypeToc: Start store result")
 
-        if len(self._toc_candidates) < cfg.glob.setup.toc_min_entries:
+        if len(self._toc_candidates) < cfg.glob.setup.lt_toc_min_entries:
             utils.progress_msg_line_type_toc(
                 f"LineTypeToc: End   store result (min. entries)    ={len(self._toc_candidates)}"
             )
@@ -284,7 +284,7 @@ class LineTypeToc:
     # -----------------------------------------------------------------------------
     def process_document(self) -> None:
         """Process the document related data."""
-        if cfg.glob.setup.toc_last_page == 0:
+        if cfg.glob.setup.lt_toc_last_page == 0:
             return
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)

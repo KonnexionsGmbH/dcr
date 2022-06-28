@@ -543,6 +543,7 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_DB_DATABASE_ADMIN, "dcr_db_test_admin"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT, "postgresql"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_HOST, "localhost"),
+        (cfg.cls_setup.Setup._DCR_CFG_DB_INITIAL_DATA_FILE, "data/db_initial_data_file_test.json"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_PASSWORD, "postgresql"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_PASSWORD_ADMIN, "postgresql"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_SCHEMA, "dcr_schema"),
@@ -553,26 +554,26 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED, "data/inbox_test_accepted"),
         (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED, "data/inbox_test_rejected"),
         (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
-        (cfg.cls_setup.Setup._DCR_CFG_HEADING_FILE_INCL_NO_CTX, "3"),
-        (cfg.cls_setup.Setup._DCR_CFG_HEADING_FILE_INCL_REGEXP, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_HEADING_MAX_LEVEL, "3"),
-        (cfg.cls_setup.Setup._DCR_CFG_HEADING_MIN_PAGES, "2"),
-        (cfg.cls_setup.Setup._DCR_CFG_HEADING_RULE_FILE, "data/line_type_heading_rules_test.json"),
-        (cfg.cls_setup.Setup._DCR_CFG_HEADING_TOLERANCE_X, "5"),
         (cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_INITIAL_DATABASE_DATA, "data/initial_database_data_test.json"),
         (cfg.cls_setup.Setup._DCR_CFG_JSON_INDENT, "4"),
         (cfg.cls_setup.Setup._DCR_CFG_JSON_SORT_KEYS, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_LINE_FOOTER_MAX_DISTANCE, "3"),
-        (cfg.cls_setup.Setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "3"),
-        (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_DISTANCE, "3"),
-        (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MIN_PAGES, "2"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "data/line_type_heading_rules_test.json"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX, "5"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, "5"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_MIN_ENTRIES, "5"),
         (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, "jpeg"),
         (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
         (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_TOC_LAST_PAGE, "5"),
-        (cfg.cls_setup.Setup._DCR_CFG_TOC_MIN_ENTRIES, "5"),
         (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
@@ -663,9 +664,9 @@ def fxtr_setup_empty_db_and_inbox(
     # restore original file
     shutil.copy(
         utils.get_full_name(
-            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
+            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))
         ),
-        os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
+        os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
@@ -709,9 +710,9 @@ def fxtr_setup_empty_inbox(
     # restore original file
     shutil.copy(
         utils.get_full_name(
-            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
+            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))
         ),
-        os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
+        os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
     )
 
     fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
@@ -754,9 +755,9 @@ def fxtr_setup_logger_environment():
     # restore original file
     shutil.copy(
         utils.get_full_name(
-            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.initial_database_data))
+            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))
         ),
-        os.path.dirname(pathlib.Path(cfg.glob.setup.initial_database_data)),
+        os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
     )
 
     cfg.glob.setup.environment_type = cfg.glob.setup.ENVIRONMENT_TYPE_TEST

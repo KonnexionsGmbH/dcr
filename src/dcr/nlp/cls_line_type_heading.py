@@ -72,7 +72,7 @@ class LineTypeHeading:
             ("A A".ljust(self._RULE_NAME_SIZE), re.compile(r"^[A-Z] [A-Z]")),
         ]
 
-        self._heading_max_level_curr = 0
+        self._lt_heading_max_level_curr = 0
 
         self._heading_rules: list[
             tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]
@@ -223,12 +223,12 @@ class LineTypeHeading:
             nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self._page_idx + 1,
         }
 
-        if cfg.glob.setup.heading_file_incl_no_ctx > 0:
+        if cfg.glob.setup.lt_heading_file_incl_no_ctx > 0:
             page_idx = self._page_idx
             line_lines: LineLines = cfg.glob.text_parser.parse_result_line_lines
             line_lines_idx = self._line_lines_idx + 1
 
-            for idx in range(cfg.glob.setup.heading_file_incl_no_ctx):
+            for idx in range(cfg.glob.setup.lt_heading_file_incl_no_ctx):
                 (line, new_page_idx, new_line_lines, new_line_lines_idx) = self._get_next_body_line(
                     page_idx, line_lines, line_lines_idx
                 )
@@ -242,7 +242,7 @@ class LineTypeHeading:
                 line_lines = new_line_lines
                 line_lines_idx = new_line_lines_idx
 
-        if cfg.glob.setup.is_heading_file_incl_regexp:
+        if cfg.glob.setup.is_lt_heading_file_incl_regexp:
             toc_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP] = self._heading_rules_hierarchy[level - 1][8]
 
         self._toc.append(toc_entry)
@@ -310,13 +310,13 @@ class LineTypeHeading:
     #           list of strings
     # -----------------------------------------------------------------------------
     def _init_heading_rules(self) -> list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
-        if cfg.glob.setup.heading_rule_file and cfg.glob.setup.heading_rule_file.lower() != "none":
-            heading_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.heading_rule_file)
-            if os.path.isfile(heading_rule_file_path):
-                return self._load_heading_rules_from_json(pathlib.Path(heading_rule_file_path))
+        if cfg.glob.setup.lt_heading_rule_file and cfg.glob.setup.lt_heading_rule_file.lower() != "none":
+            lt_heading_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.lt_heading_rule_file)
+            if os.path.isfile(lt_heading_rule_file_path):
+                return self._load_heading_rules_from_json(pathlib.Path(lt_heading_rule_file_path))
 
             utils.terminate_fatal(
-                f"File with heading rule file is missing - " f"file name '{cfg.glob.setup.heading_rule_file}'"
+                f"File with heading rule file is missing - " f"file name '{cfg.glob.setup.lt_heading_rule_file}'"
             )
 
         return [
@@ -601,16 +601,16 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     @staticmethod
     def _load_heading_rules_from_json(
-        heading_rule_file: pathlib.Path,
+        lt_heading_rule_file: pathlib.Path,
     ) -> list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
         """Load heading rules from a JSON file.
 
         Args:
-            heading_rule_file (Path): JSON file.
+            lt_heading_rule_file (Path): JSON file.
         """
         heading_rules = []
 
-        with open(heading_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        with open(lt_heading_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
             for heading_rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_HEADING_RULES]:
@@ -626,7 +626,7 @@ class LineTypeHeading:
                     )
                 )
 
-        utils.progress_msg(f"The heading rules were successfully loaded from the file {cfg.glob.setup.heading_rule_file}")
+        utils.progress_msg(f"The heading rules were successfully loaded from the file {cfg.glob.setup.lt_heading_rule_file}")
 
         return heading_rules
 
@@ -674,8 +674,8 @@ class LineTypeHeading:
                 coord_llx_curr_float = float(coord_llx_curr)
                 coord_llx_float = float(coord_llx)
                 if (
-                    coord_llx_curr_float < coord_llx_float * (100 - cfg.glob.setup.heading_tolerance_x) / 100
-                    or coord_llx_curr_float > coord_llx_float * (100 + cfg.glob.setup.heading_tolerance_x) / 100
+                    coord_llx_curr_float < coord_llx_float * (100 - cfg.glob.setup.lt_heading_tolerance_llx) / 100
+                    or coord_llx_curr_float > coord_llx_float * (100 + cfg.glob.setup.lt_heading_tolerance_llx) / 100
                 ):
                     return 0
 
@@ -724,7 +724,7 @@ class LineTypeHeading:
                     if first_token not in start_values:
                         continue
 
-                if (level := self._level_prev + 1) > cfg.glob.setup.heading_max_level:
+                if (level := self._level_prev + 1) > cfg.glob.setup.lt_heading_max_level:
                     return 0
 
                 self._heading_rules_hierarchy.append(
@@ -798,8 +798,8 @@ class LineTypeHeading:
     def process_document(self) -> None:
         """Process the document related data."""
         if (
-            cfg.glob.setup.heading_max_level == 0
-            or len(cfg.glob.text_parser.parse_result_line_pages) < cfg.glob.setup.heading_min_pages
+            cfg.glob.setup.lt_heading_max_level == 0
+            or len(cfg.glob.text_parser.parse_result_line_pages) < cfg.glob.setup.lt_heading_min_pages
         ):
             return
 

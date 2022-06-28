@@ -715,12 +715,12 @@ The possible line types are :
 The following three rule-based algorithms are used to determine the line type in the order given:
 
 1. `headers & footers`
-The headers and footers are determined by a similarity comparison of the first `line_header_max_lines` and last `line_footer_max_lines` lines respectively. 
+The headers and footers are determined by a similarity comparison of the first `lt_header_max_lines` and last `lt_footer_max_lines` lines respectively. 
 
 2. `close together`
 The elements of bulleted or numbered lists must be close together and are determined by regular expressions. 
 Tables have already been marked accordingly by PDFlib TET.
-A table of contents must be in the first `toc_last_page` pages and consists of either a list or a table with ascending page numbers.
+A table of contents must be in the first `lt_toc_last_page` pages and consists of either a list or a table with ascending page numbers.
 
 3. `headings`
 Headings extend across the entire document and can have hierarchical structures. 
@@ -740,17 +740,21 @@ Default value: **`false`** - the verbose mode is an option that provides additio
 
 The following parameters control the classification of the footers:
 
-**`line_footer_max_distance`**
+**`lt_footer_max_distance`**
 
 Default value: **`3`** - The degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
 The value zero stands for identical lines. 
 The larger the Levenshtein distance, the more different the rows are. 
 If the header lines do not contain a page numbers, then the parameter should be set to `0`.
 
-**`line_footer_max_lines`**
+**`lt_footer_max_lines`**
 
 Default value: **`3`** - the number of lines from the bottom of the page to be analyzed as possible candidates for footers.
 With the value zero the classification of footers is prevented.
+
+**`spacy_ignore_line_type_footer`**
+
+Default value: **`true`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
 
 **4.1.1.2 Algorithm**
 
@@ -764,7 +768,7 @@ With the value zero the classification of footers is prevented.
 
 The following parameters control the classification of the headers:
 
-**`line_header_max_distance`**
+**`lt_header_max_distance`**
 
 Default value: **`3`** - the degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
 The value zero stands for identical lines. 
@@ -777,10 +781,14 @@ If the footer lines contain a page number, then depending on the number of pages
  | < 100          | 2                    |
  | < 1000         | 3                    |
 
-**`line_header_max_lines`**
+**`lt_header_max_lines`**
 
 Default value: **`3`** - the number of lines from the top of the page to be analyzed as possible candidates for headers.
 A value of zero prevents the classification of headers.
+
+**`spacy_ignore_line_type_header`**
+
+Default value: **`true`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
 
 **4.1.2.2 Algorithm**
 
@@ -799,14 +807,18 @@ An attempt is made here to recognise a table of contents contained in the docume
 
 The following parameters control the classification of a table of contents included in the document:
 
-**`toc_last_page`**
+**`lt_toc_last_page`**
 
 Default value: **`3`** - sets the number of pages that will be searched for a table of contents from the beginning of the document.
 A value of zero prevents the search for a table of contents.
 
-**`toc_min_entries`**
+**`lt_toc_min_entries`**
 
 Default value: **`3`** - defines the minimum number of entries that a table of contents must contain.
+
+**`spacy_ignore_line_type_toc`**
+
+Default value: **`true`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
 
 **`verbose_line_type_toc`**
 
@@ -841,6 +853,14 @@ The following parameters control the classification of the headings:
 
 Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_table.json` is created in the file directory `data_accepted` with the identified tables.
 
+**`lt_table_file_incl_empty_columns`**
+
+Default value: **`false`** - if true, the empty columns are included in the **`JSON`** file.
+
+**`spacy_ignore_line_type_table`**
+
+Default value: **`false`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
+
 **`verbose_line_type_table`**
 
 Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
@@ -863,19 +883,19 @@ The following parameters control the classification of the headings:
 
 Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_toc.json` is created in the file directory `data_accepted` with the identified headings.
 
-**`heading_file_incl_no_ctx`**
+**`lt_heading_file_incl_no_ctx`**
 
 Default value: **`1`** - the `n` lines following the heading are included as context into the **`JSON`** file.
 
-**`heading_file_incl_regexp`**
+**`lt_heading_file_incl_regexp`**
 
 Default value: **`false`** - if true, the regular expression for the heading is included in the **`JSON`** file.
 
-**`heading_max_level`**
+**`lt_heading_max_level`**
 
 Default value: **`3`** - the maximum number of hierarchical heading levels.
 
-**`heading_min_pages`**
+**`lt_heading_min_pages`**
 
 Default value: **`2`** - the minimum number of document pages for determining headings.
 
@@ -884,9 +904,13 @@ Default value: **`2`** - the minimum number of document pages for determining he
 Default value: **`none`** - name of a file including file directory that contains the rules for determining the headings.
 **`none`** means that the given default rules are applied.
 
-**`heading_tolerance_x`**
+**`lt_heading_tolerance_llx`**
 
 Default value: **`5`** - percentage tolerance for the differences in indentation of a heading at the same level.
+
+**`spacy_ignore_line_type_heading`**
+
+Default value: **`false`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
 
 **`verbose_line_type_heading`**
 
@@ -981,7 +1005,7 @@ An example file can be found in the file directory **`data`** with the file name
 
 - an entry is considered to be matching if
     - the regular expression is satisfied, and
-    - the indentation is within the specified tolerance (`heading_tolerance_x`), and
+    - the indentation is within the specified tolerance (`lt_heading_tolerance_llx`), and
     - the comparison function is fulfilled
 
 - if there is a match, the following processing steps are carried out and then the next document line is processed
@@ -993,7 +1017,7 @@ An example file can be found in the file directory **`data`** with the file name
 - a heading rule is matching if
     - the regular expression is satisfied, and
     - one of the optional start values matches the document line, and
-    - the new heading level is within the specified limit (`heading_max_level`)
+    - the new heading level is within the specified limit (`lt_heading_max_level`)
 
 - if there is a match, the following processing steps are carried out and then the next document line is processed
     - the last heading level is increased by 1,

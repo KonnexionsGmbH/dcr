@@ -52,7 +52,7 @@ class LineTypeHeaderFooters:
             f"LineTypeHeaderFooters: Start create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
-        self._line_data_max = cfg.glob.setup.line_header_max_lines + cfg.glob.setup.line_footer_max_lines
+        self._line_data_max = cfg.glob.setup.lt_header_max_lines + cfg.glob.setup.lt_footer_max_lines
         self._page_ind = -1
         self._page_max = cfg.glob.action_curr.action_no_pdf_pages
 
@@ -170,10 +170,10 @@ class LineTypeHeaderFooters:
             f"LineTypeHeaderFooters: Start page                           ={self._page_ind + 1}"
         )
 
-        if cfg.glob.setup.line_header_max_lines > 0:
+        if cfg.glob.setup.lt_header_max_lines > 0:
             self._store_line_data_header()
 
-        if cfg.glob.setup.line_footer_max_lines > 0:
+        if cfg.glob.setup.lt_footer_max_lines > 0:
             self._store_line_data_footer()
 
         if self._page_ind > 0:
@@ -203,7 +203,7 @@ class LineTypeHeaderFooters:
 
         line_lines_ind = len(cfg.glob.text_parser.parse_result_line_lines) - 1
 
-        for ind in range(self._line_data_max - 1, cfg.glob.setup.line_header_max_lines - 1, -1):
+        for ind in range(self._line_data_max - 1, cfg.glob.setup.lt_header_max_lines - 1, -1):
             (_, prev) = self._line_data[ind]
 
             page_line: dict[str, int | str] = cfg.glob.text_parser.parse_result_line_lines[line_lines_ind]
@@ -242,7 +242,7 @@ class LineTypeHeaderFooters:
 
         line_lines_max = len(cfg.glob.text_parser.parse_result_line_lines)
 
-        for ind in range(cfg.glob.setup.line_header_max_lines):
+        for ind in range(cfg.glob.setup.lt_header_max_lines):
             if ind >= line_lines_max:
                 break
 
@@ -335,7 +335,7 @@ class LineTypeHeaderFooters:
     # -----------------------------------------------------------------------------
     def process_document(self) -> None:
         """Process the document related data."""
-        if cfg.glob.setup.line_footer_max_lines == 0 and cfg.glob.setup.line_header_max_lines == 0:
+        if cfg.glob.setup.lt_footer_max_lines == 0 and cfg.glob.setup.lt_header_max_lines == 0:
             return
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -353,11 +353,11 @@ class LineTypeHeaderFooters:
             self._process_page()
 
         for line_ind in range(self._line_data_max):
-            if line_ind < cfg.glob.setup.line_header_max_lines:
-                distance_max = cfg.glob.setup.line_header_max_distance
+            if line_ind < cfg.glob.setup.lt_header_max_lines:
+                distance_max = cfg.glob.setup.lt_header_max_distance
                 line_type = db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADER
             else:
-                distance_max = cfg.glob.setup.line_footer_max_distance
+                distance_max = cfg.glob.setup.lt_footer_max_distance
                 line_type = db.cls_document.Document.DOCUMENT_LINE_TYPE_FOOTER
 
             if self._determine_candidate(distance_max, line_ind):

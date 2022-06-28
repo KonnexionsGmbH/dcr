@@ -806,6 +806,7 @@ class TokenizerSpacy:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         utils.check_exists_object(
+            is_setup=True,
             is_text_parser=True,
         )
 

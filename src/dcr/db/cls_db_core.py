@@ -462,16 +462,16 @@ class DBCore:
             },
         )
 
-        if cfg.glob.setup.initial_database_data:
-            initial_database_data_path = utils.get_os_independent_name(cfg.glob.setup.initial_database_data)
-            if os.path.isfile(initial_database_data_path):
-                self.load_db_data_from_json(pathlib.Path(initial_database_data_path))
+        if cfg.glob.setup.db_initial_data_file:
+            db_initial_data_file_path = utils.get_os_independent_name(cfg.glob.setup.db_initial_data_file)
+            if os.path.isfile(db_initial_data_file_path):
+                self.load_db_data_from_json(pathlib.Path(db_initial_data_file_path))
                 utils.progress_msg(
-                    f"Initial database data was successfully loaded from the file {cfg.glob.setup.initial_database_data}"
+                    f"Initial database data was successfully loaded from the file {cfg.glob.setup.db_initial_data_file}"
                 )
             else:
                 utils.terminate_fatal(
-                    f"File with initial database data is missing - " f"file name '{cfg.glob.setup.initial_database_data}'"
+                    f"File with initial database data is missing - " f"file name '{cfg.glob.setup.db_initial_data_file}'"
                 )
 
         # Disconnect from the database.
@@ -662,13 +662,13 @@ class DBCore:
     # -----------------------------------------------------------------------------
     # Load database data from a JSON file.
     # -----------------------------------------------------------------------------
-    def load_db_data_from_json(self, initial_database_data: pathlib.Path) -> None:
+    def load_db_data_from_json(self, db_initial_data_file: pathlib.Path) -> None:
         """Load database data from a JSON file.
 
         Args:
-            initial_database_data (Path): JSON file.
+            db_initial_data_file (Path): JSON file.
         """
-        with open(initial_database_data, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        with open(db_initial_data_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
             api_version = json_data[DBCore.JSON_NAME_API_VERSION]

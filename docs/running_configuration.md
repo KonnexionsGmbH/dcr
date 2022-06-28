@@ -132,6 +132,7 @@ The customisable entries are:
     db_database_admin = dcr_db_prod_admin
     db_dialect = postgresql
     db_host = localhost
+    db_initial_data_file = data/db_initial_data_file.json
     db_password = postgresql
     db_password_admin = postgresql
     db_schema = dcr_schema
@@ -142,26 +143,26 @@ The customisable entries are:
     directory_inbox_accepted = data/inbox_prod_accepted
     directory_inbox_rejected = data/inbox_prod_rejected
     doc_id_in_file_name = none
-    heading_file_incl_no_ctx = 1
-    heading_file_incl_regexp = false
-    heading_max_level = 3
-    heading_min_pages = 2
-    heading_rule_file = none
-    heading_tolerance_x = 5
     ignore_duplicates = false
-    initial_database_data = data/initial_database_data.json
     json_indent = 4
     json_sort_keys = false
-    line_footer_max_distance = 3
-    line_footer_max_lines = 3
-    line_header_max_distance = 3
-    line_header_max_lines = 3
+    lt_footer_max_distance = 3
+    lt_footer_max_lines = 3
+    lt_header_max_distance = 3
+    lt_header_max_lines = 3
+    lt_heading_file_incl_no_ctx = 1
+    lt_heading_file_incl_regexp = false
+    lt_heading_max_level = 3
+    lt_heading_min_pages = 2
+    lt_heading_rule_file = none
+    lt_heading_tolerance_llx = 5
+    lt_table_file_incl_empty_columns = true
+    lt_toc_last_page = 5
+    lt_toc_min_entries = 5
     pdf2image_type = jpeg
     tesseract_timeout = 30
     tetml_page = false
     tetml_word = false
-    toc_last_page = 5
-    toc_min_entries = 5
     tokenize_2_database = true
     tokenize_2_jsonfile = true
     verbose = true
@@ -172,56 +173,57 @@ The customisable entries are:
     verbose_line_type_toc = false
     verbose_parser = none
 
-| Parameter                         | Default value                           | Description                                                                                                     |
-|-----------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| create_extra_file_list            | **`true`**                              | Create a separate **`JSON`** file with the bulleted and numbered lists.                                         |
-| create_extra_file_table           | **`true`**                              | Create a separate **`JSON`** file with the tables.                                                              |
-| create_extra_file_toc             | **`true`**                              | Create a separate **`JSON`** file with the table of contents.                                                   |
-| db_connection_port                | environment specific                    | Port number the DBMS server is listening on.                                                                    |
-| db_connection_prefix              | **`postgresql+psycopg2://`**            | Front part of the database URL.                                                                                 |
-| db_database                       | environment specific                    | **DCR** database name.                                                                                          |
-| db_database_admin                 | environment specific                    | Administrative database name.                                                                                   |
-| db_dialect                        | **`postgresql`**                        | DBMS used, currently: only PostgreSQL allowed.                                                                  |
-| db_host                           | **`localhost`**                         | Host name of the DBMS server.                                                                                   |
-| db_password                       | **`postgresql`**                        | **DCR** database user password.                                                                                 |
-| db_password_admin                 | **`postgresql`**                        | Administrative database password.                                                                               |
-| db_schema                         | **`dcr_schema`**                        | Database schema name.                                                                                           |
-| db_user                           | **`postgresql`**                        | **DCR** database user name.                                                                                     |
-| db_user_admin                     | **`postgresql`**                        | Administrative database user name.                                                                              |
-| delete_auxiliary_files            | **`true`**                              | Delete the auxiliary files after a successful <br>processing step.                                              |
-| directory_inbox                   | **`data/inbox_prod`**                   | Directory for the new documents received.                                                                       |
-| directory_inbox_accepted          | **`data/inbox_prod_accepted`**          | Directory for the accepted documents.                                                                           |
-| directory_inbox_rejected          | **`data/inbox_prod_rejected`**          | Complete file name for the **`JSON`** file with the <br>database initialisation data.                           |
-| doc_id_in_file_name               | **`none`**                              | Position of the document id in the file name : <br>**`after`**, **`before`** or **`none`**.                     |
-| heading_file_incl_no_ctx          | **`1`**                                 | The number of lines following the heading to be included as context into the **`JSON`** file.                   |
-| heading_file_incl_regexp          | **`false`**                             | If it is set to **`true`**, the regular expression for the heading is included in the **`JSON`** file.          |
-| heading_max_level                 | **`3`**                                 | Maximum level of the heading structure.                                                                         |
-| heading_min_pages                 | **`2`**                                 | Minimum number of pages to determine the headings.                                                              |
-| heading_rule_file                 | **`data/line_type_heading_rules.json`** | File with rules to determine the headings.                                                                      |
-| heading_tolerance_x               | **`5`**                                 | Tolerance of vertical indentation in percent.                                                                   |
-| ignore_duplicates                 | **`false`**                             | Accept presumably duplicated documents <br/>based on a SHA256 hash key.                                         |
-| initial_database_data             | **`data/initial_database_data.json`**   | File with initial database contents.                                                                            |
-| json_indent                       | **`4`**                                 | Improves the readability of the **`JSON`** file.                                                                |
-| json_sort_keys                    | **`false`**                             | If it is set to **`true`**, the keys are set in ascending order else, <br/>they appear as in the Python object. |
-| line_footer_max_distance          | **`3`**                                 | Maximum Levenshtein distance for a footer line.                                                                 |
-| line_footer_max_lines             | **`3`**                                 | Maximum number of footers.                                                                                      |
-| line_header_max_distance          | **`3`**                                 | Maximum Levenshtein distance for a header line.                                                                 |
-| line_header_max_lines             | **`3`**                                 | Maximum number of headers.                                                                                      |
-| pdfimage_type                     | **`jpeg`**                              | Format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**.                         |
-| tesseract_timeout                 | **`30`**                                | Terminate the tesseract job after a <br>period of time (seconds).                                               |
-| tetml_page                        | **`false`**                             | PDFlib TET granularity 'page'.                                                                                  |
-| tetml_word                        | **`false`**                             | PDFlib TET granularity 'word'.                                                                                  |
-| toc_last_page                     | **`5`**                                 | Maximum number of pages for the search of the TOC (from the beginning).                                         |
-| toc_min_entries                   | **`5`**                                 | Minimum number of TOC entries.                                                                                  |
-| tokenize_2_database               | **`true`**                              | Store the tokens in the database table **`token`**.                                                             |
-| tokenize_2_jsonfile               | **`true`**                              | Store the tokens in a **`JSON`** flat file.                                                                     |
-| verbose                           | **`true`**                              | Display progress messages for processing.                                                                       |
-| verbose_line_type_headers_footers | **`false`**                             | Display progress messages for headers & footers line type determination.                                        |
-| verbose_line_type_heading         | **`false`**                             | Display progress messages for heading line type determination.                                                  |
-| verbose_line_type_list            | **`false`**                             | Display progress messages for list line type determination.                                                     |
-| verbose_line_type_table           | **`false`**                             | Display progress messages for table line type determination.                                                    |
-| verbose_line_type_toc             | **`false`**                             | Display progress messages for table of content line type determination.                                         |
-| verbose_parser                    | **`none`**                              | Display progress messages for parsing **`xml`** (TETML) : <br>**`all`**, **`none`** or **`text`**.              |
+| Parameter                         | Default value                           | Description                                                                                                           |
+|-----------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| create_extra_file_list            | **`true`**                              | Create a separate **`JSON`** file with the bulleted and numbered lists.                                               |
+| create_extra_file_table           | **`true`**                              | Create a separate **`JSON`** file with the tables.                                                                    |
+| create_extra_file_toc             | **`true`**                              | Create a separate **`JSON`** file with the table of contents.                                                         |
+| db_connection_port                | environment specific                    | Port number the DBMS server is listening on.                                                                          |
+| db_connection_prefix              | **`postgresql+psycopg2://`**            | Front part of the database URL.                                                                                       |
+| db_database                       | environment specific                    | **DCR** database name.                                                                                                |
+| db_database_admin                 | environment specific                    | Administrative database name.                                                                                         |
+| db_dialect                        | **`postgresql`**                        | DBMS used, currently: only PostgreSQL allowed.                                                                        |
+| db_host                           | **`localhost`**                         | Host name of the DBMS server.                                                                                         |
+| db_initial_data_file              | **`data/db_initial_data_file.json`**    | File with initial database contents.                                                                                  |
+| db_password                       | **`postgresql`**                        | **DCR** database user password.                                                                                       |
+| db_password_admin                 | **`postgresql`**                        | Administrative database password.                                                                                     |
+| db_schema                         | **`dcr_schema`**                        | Database schema name.                                                                                                 |
+| db_user                           | **`postgresql`**                        | **DCR** database user name.                                                                                           |
+| db_user_admin                     | **`postgresql`**                        | Administrative database user name.                                                                                    |
+| delete_auxiliary_files            | **`true`**                              | Delete the auxiliary files after a successful <br>processing step.                                                    |
+| directory_inbox                   | **`data/inbox_prod`**                   | Directory for the new documents received.                                                                             |
+| directory_inbox_accepted          | **`data/inbox_prod_accepted`**          | Directory for the accepted documents.                                                                                 |
+| directory_inbox_rejected          | **`data/inbox_prod_rejected`**          | Complete file name for the **`JSON`** file with the <br>database initialisation data.                                 |
+| doc_id_in_file_name               | **`none`**                              | Position of the document id in the file name : <br>**`after`**, **`before`** or **`none`**.                           |
+| ignore_duplicates                 | **`false`**                             | Accept presumably duplicated documents <br/>based on a SHA256 hash key.                                               |
+| json_indent                       | **`4`**                                 | Improves the readability of the **`JSON`** file.                                                                      |
+| json_sort_keys                    | **`false`**                             | If it is set to **`true`**, the keys are set in ascending order else, <br/>they appear as in the Python object.       |
+| lt_footer_max_distance            | **`3`**                                 | Maximum Levenshtein distance for a footer line.                                                                       |
+| lt_footer_max_lines               | **`3`**                                 | Maximum number of footers.                                                                                            |
+| lt_header_max_distance            | **`3`**                                 | Maximum Levenshtein distance for a header line.                                                                       |
+| lt_header_max_lines               | **`3`**                                 | Maximum number of headers.                                                                                            |
+| lt_heading_file_incl_no_ctx       | **`1`**                                 | The number of lines following the heading to be included as context into the **`JSON`** file.                         |
+| lt_heading_file_incl_regexp       | **`false`**                             | If it is set to **`true`**, the regular expression for the heading is included in the **`JSON`** file.                |
+| lt_heading_max_level              | **`3`**                                 | Maximum level of the heading structure.                                                                               |
+| lt_heading_min_pages              | **`2`**                                 | Minimum number of pages to determine the headings.                                                                    |
+| lt_heading_rule_file              | **`data/line_type_heading_rules.json`** | File with rules to determine the headings.                                                                            |
+| lt_heading_tolerance_llx          | **`5`**                                 | Tolerance of vertical indentation in percent.                                                                         |
+| lt_table_file_incl_empty_columns     | **`true`**                              | If it is set to **`true`**, the the empty cells are not included <br/>in the eparate **`JSON`** file with the tables. |
+| lt_toc_last_page                  | **`5`**                                 | Maximum number of pages for the search of the TOC (from the beginning).                                               |
+| lt_toc_min_entries                | **`5`**                                 | Minimum number of TOC entries.                                                                                        |
+| pdfimage_type                     | **`jpeg`**                              | Format of the image files for the scanned <br/>`pdf` document: **`jpeg`** or **`pdf`**.                               |
+| tesseract_timeout                 | **`30`**                                | Terminate the tesseract job after a <br>period of time (seconds).                                                     |
+| tetml_page                        | **`false`**                             | PDFlib TET granularity 'page'.                                                                                        |
+| tetml_word                        | **`false`**                             | PDFlib TET granularity 'word'.                                                                                        |
+| tokenize_2_database               | **`true`**                              | Store the tokens in the database table **`token`**.                                                                   |
+| tokenize_2_jsonfile               | **`true`**                              | Store the tokens in a **`JSON`** flat file.                                                                           |
+| verbose                           | **`true`**                              | Display progress messages for processing.                                                                             |
+| verbose_line_type_headers_footers | **`false`**                             | Display progress messages for headers & footers line type determination.                                              |
+| verbose_line_type_heading         | **`false`**                             | Display progress messages for heading line type determination.                                                        |
+| verbose_line_type_list            | **`false`**                             | Display progress messages for list line type determination.                                                           |
+| verbose_line_type_table           | **`false`**                             | Display progress messages for table line type determination.                                                          |
+| verbose_line_type_toc             | **`false`**                             | Display progress messages for table of content line type determination.                                               |
+| verbose_parser                    | **`none`**                              | Display progress messages for parsing **`xml`** (TETML) : <br>**`all`**, **`none`** or **`text`**.                    |
 
 The configuration parameters can be set differently for the individual environments (`dev`, `prod` and `test`).
 

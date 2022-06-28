@@ -229,8 +229,8 @@ def test_cls_line_type_headers_footers(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "3"),
-            (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "false"),
@@ -394,9 +394,9 @@ def test_cls_line_type_heading_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_FILE_INCL_NO_CTX, "3"),
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_FILE_INCL_REGEXP, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_RULE_FILE, "none"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "none"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "true"),
@@ -515,9 +515,9 @@ def test_cls_line_type_heading_3(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_FILE_INCL_NO_CTX, "3"),
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_FILE_INCL_REGEXP, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_MAX_LEVEL, "0"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "0"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "false"),
@@ -576,8 +576,8 @@ def test_cls_line_type_heading_4(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_MAX_LEVEL, "0"),
-            (cfg.cls_setup.Setup._DCR_CFG_HEADING_RULE_FILE, "n/a"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "0"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "n/a"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "false"),
@@ -607,8 +607,8 @@ def test_cls_line_type_heading_4(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 # Test LineType TOC.
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize("toc_last_page", ["0", "5"])
-def test_cls_line_type_toc(toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+@pytest.mark.parametrize("lt_toc_last_page", ["0", "5"])
+def test_cls_line_type_toc(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType TOC."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -626,11 +626,11 @@ def test_cls_line_type_toc(toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_empty_
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_LINE_FOOTER_MAX_LINES, "3"),
-            (cfg.cls_setup.Setup._DCR_CFG_LINE_HEADER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_TOC_LAST_PAGE, toc_last_page),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, lt_toc_last_page),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "false"),
@@ -649,7 +649,7 @@ def test_cls_line_type_toc(toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_empty_
     )
 
     # -------------------------------------------------------------------------
-    if toc_last_page == "0":
+    if lt_toc_last_page == "0":
         target_toc_exp_line = 0
         target_toc_exp_table = 0
     else:
