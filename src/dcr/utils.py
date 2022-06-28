@@ -15,7 +15,7 @@ import utils
 
 
 # -----------------------------------------------------------------------------
-# Compute the SHA256 hash string of a file.
+# Check the existence of objects.
 # -----------------------------------------------------------------------------
 def check_exists_object(  # noqa: C901
     is_action_curr: bool = False,
@@ -26,6 +26,24 @@ def check_exists_object(  # noqa: C901
     is_setup: bool = False,
     is_text_parser: bool = False,
 ) -> None:
+    """Check the existence of objects.
+
+    Args:
+        is_action_curr (bool, optional):
+                Check an object of class Action. Defaults to False.
+        is_action_next (bool, optional):
+                Check an object of class Action . Defaults to False.
+        is_db_core (bool, optional):
+                Check an object of class DBCore. Defaults to False.
+        is_document (bool, optional):
+                Check an object of class Document. Defaults to False.
+        is_run (bool, optional):
+                Check an object of class Run. Defaults to False.
+        is_setup (bool, optional):
+                Check an object of class Setup. Defaults to False.
+        is_text_parser (bool, optional):
+                Check an object of class TextParser. Defaults to False.
+    """
     if is_action_curr:
         try:
             cfg.glob.action_curr.exists()  # type: ignore

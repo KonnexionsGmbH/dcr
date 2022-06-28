@@ -75,6 +75,8 @@ class LineTypeTable:
             f"LineTypeTable: Start create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
+        self._column_no = 0
+        self._column_no_prev = 0
         self._columns: Columns = []
 
         self._first_column_llx = 0.0
@@ -129,7 +131,7 @@ class LineTypeTable:
             }
         )
 
-        self._columns = []
+        self._reset_row()
 
         utils.progress_msg_line_type_table(f"LineTypeTable: End   row                            ={row_no}")
 
@@ -138,10 +140,7 @@ class LineTypeTable:
     # -----------------------------------------------------------------------------
     def _finish_table(self) -> None:
         """Finish a table."""
-        if not self._is_table_open:
-            return
-
-        if not cfg.glob.setup.is_create_extra_file_table:
+        if not (self._is_table_open and cfg.glob.setup.is_create_extra_file_table):
             return
 
         self._finish_row()
@@ -164,39 +163,9 @@ class LineTypeTable:
             }
         )
 
-        self._is_table_open = False
-
-        self._first_row_llx = 0.0
-        self._first_row_urx = 0.0
-        self._no_columns_table = 0
-        self._page_no_from = 0
-        self._page_no_till = 0
-
-        self._rows = []
-        self._columns = []
+        self._reset_table()
 
         utils.progress_msg_line_type_table(f"LineTypeTable: End   table                   on page={self._page_idx+1}")
-
-    # -----------------------------------------------------------------------------
-    # Initialise a new row.
-    # -----------------------------------------------------------------------------
-    def _init_row(self) -> None:
-        """Initialise a new row."""
-        self._first_column_llx = 0.0
-        self._last_column_urx = 0.0
-        self._row_no_prev = self._row_no
-
-        utils.progress_msg_line_type_table(f"LineTypeTable: Start row                            ={self._row_no}")
-
-    # -----------------------------------------------------------------------------
-    # Initialise a new table.
-    # -----------------------------------------------------------------------------
-    def _init_table(self) -> None:
-        """Initialise a new table."""
-        self._is_table_open = True
-
-        utils.progress_msg_line_type_table("LineTypeTable")
-        utils.progress_msg_line_type_table(f"LineTypeTable: Start table                   on page={self._page_idx+1}")
 
     # -----------------------------------------------------------------------------
     # Process the line-related data.
@@ -216,17 +185,15 @@ class LineTypeTable:
         if not cfg.glob.setup.is_create_extra_file_table:
             return db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE
 
+        self._column_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO])
         self._row_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO])
 
-        if self._row_no == 1 and not self._columns:
+        if not self._is_table_open:
+            self._reset_table()
+        elif self._row_no < self._row_no_prev:
             self._finish_table()
-            self._init_table()
-
-        if not self._columns:
-            self._init_row()
         elif self._row_no != self._row_no_prev:
             self._finish_row()
-            self._init_row()
 
         text = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]
 
@@ -240,11 +207,11 @@ class LineTypeTable:
             self._page_no_from = self._page_idx + 1
 
         if self._row_no == 1:
-            if self._first_row_llx == 0:
+            if self._column_no_prev == 0:
                 self._first_row_llx = coord_llx
             self._first_row_urx = coord_urx
 
-        if self._first_column_llx == 0:
+        if self._column_no_prev == 0:
             self._first_column_llx = coord_llx
         self._last_column_urx = coord_urx
 
@@ -269,6 +236,10 @@ class LineTypeTable:
             ]
 
         self._columns.append(new_entry)
+
+        self._is_table_open = True
+        self._column_no_prev = self._column_no
+        self._row_no_prev = self._row_no
 
         return db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE
 
@@ -295,6 +266,54 @@ class LineTypeTable:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
+    # Reset the document memory.
+    # -----------------------------------------------------------------------------
+    def _reset_document(self) -> None:
+        """Reset the document memory."""
+        self._max_page = cfg.glob.text_parser.parse_result_no_pages_in_doc
+
+        self._tables = []
+
+        utils.progress_msg_line_type_table("LineTypeTable: Reset the document memory")
+
+        self._reset_table()
+
+    # -----------------------------------------------------------------------------
+    # Reset the row memory.
+    # -----------------------------------------------------------------------------
+    def _reset_row(self) -> None:
+        """Reset the row memory."""
+        self._column_no_prev = 0
+        self._columns = []
+
+        self._first_column_llx = 0.0
+        self._last_column_urx = 0.0
+
+        utils.progress_msg_line_type_table("LineTypeTable: Reset the row memory")
+
+    # -----------------------------------------------------------------------------
+    # Reset the table memory.
+    # -----------------------------------------------------------------------------
+    def _reset_table(self) -> None:
+        """Reset the table memory."""
+        self._first_row_llx = 0.0
+        self._first_row_urx = 0.0
+
+        self._is_table_open = False
+
+        self._no_columns_table = 0
+
+        self._page_no_from = 0
+        self._page_no_till = 0
+
+        self._row_no_prev = 0
+        self._rows = []
+
+        utils.progress_msg_line_type_table("LineTypeTable: Reset the table memory")
+
+        self._reset_row()
+
+    # -----------------------------------------------------------------------------
     # Check the object existence.
     # -----------------------------------------------------------------------------
     def exists(self) -> bool:
@@ -317,8 +336,7 @@ class LineTypeTable:
             f"LineTypeTable: Start document                       ={cfg.glob.action_curr.action_file_name}"
         )
 
-        self._max_page = cfg.glob.text_parser.parse_result_no_pages_in_doc
-        self._tables = []
+        self._reset_document()
 
         for page_idx, page in enumerate(cfg.glob.text_parser.parse_result_line_pages):
             self._page_idx = page_idx

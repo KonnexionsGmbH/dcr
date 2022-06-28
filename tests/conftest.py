@@ -20,6 +20,8 @@ import db.cls_language
 import db.cls_run
 import db.cls_token
 import db.cls_version
+import nlp.cls_nlp_core
+import nlp.cls_text_parser
 import pytest
 import sqlalchemy
 import utils
@@ -219,6 +221,66 @@ def check_dbt_version(param: tuple[int, tuple[int, str]]) -> None:
         print(f"values expected={expected_values}")
         print(f"values actual  ={actual_values}")
         assert False, f"issue with dbt version and id={id_row} - see above"
+
+
+# -----------------------------------------------------------------------------
+# Test LineType.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def check_cls_line_type(
+    json_file: str,
+    target_footer: list[tuple[int, list[int]]],
+    target_header: list[tuple[int, list[int]]],
+    target_toc: int = 0,
+) -> None:
+    """Test LineType.
+
+    Args:
+        json_file (str): JSON file from text parser.
+        target_footer (list[tuple[int, list[int]]]):
+                Target footer lines.
+        target_header (list[tuple[int, list[int]]]):
+                Target header lines.
+        target_toc (int):
+                Target toc lines.
+    """
+    instance = nlp.cls_text_parser.TextParser.from_files(full_name_line=json_file)
+
+    actual_footer = []
+    actual_header = []
+
+    pages = instance.parse_result_line_document[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES]
+
+    actual_toc = 0
+
+    for page in pages:
+        page_no = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
+
+        actual_page_footer = []
+        actual_page_header = []
+
+        for line in page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]:
+            line_type = line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+            if line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_FOOTER:
+                actual_page_footer.append(line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE])
+            elif line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADER:
+                actual_page_header.append(line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE])
+            elif line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_TOC:
+                actual_toc += 1
+
+        if actual_page_footer:
+            actual_footer.append((page_no, actual_page_footer))
+
+        if actual_page_header:
+            actual_header.append((page_no, actual_page_header))
+
+    assert (
+        actual_header == target_header
+    ), f"file={json_file} header difference: \ntarget={target_header} \nactual={actual_header}"
+    assert (
+        actual_footer == target_footer
+    ), f"file={json_file} footer difference: \ntarget={target_footer} \nactual={actual_footer}"
+    assert actual_toc == target_toc, f"file={json_file} toc difference: \ntarget={target_toc} \nactual={actual_toc}"
 
 
 # -----------------------------------------------------------------------------
@@ -503,6 +565,108 @@ def delete_config_param(config_section: str, config_param: str) -> list[tuple[st
         CONFIG_PARSER.write(configfile)
 
     return [(config_param, config_value_orig)]
+
+
+# -----------------------------------------------------------------------------
+# Delete existing objects.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def delete_existing_object(  # noqa: C901
+    is_action_curr: bool = False,
+    is_action_next: bool = False,
+    is_db_core: bool = False,
+    is_document: bool = False,
+    is_run: bool = False,
+    is_setup: bool = False,
+    is_text_parser: bool = False,
+) -> None:
+    """Delete existing objects.
+
+    Args:
+        is_action_curr (bool, optional):
+                Check an object of class Action. Defaults to False.
+        is_action_next (bool, optional):
+                Check an object of class Action . Defaults to False.
+        is_db_core (bool, optional):
+                Check an object of class DbCore. Defaults to False.
+        is_document (bool, optional):
+                Check an object of class Document. Defaults to False.
+        is_run (bool, optional):
+                Check an object of class Run. Defaults to False.
+        is_setup (bool, optional):
+                Check an object of class Setup. Defaults to False.
+        is_text_parser (bool, optional):
+                Check an object of class TextParser. Defaults to False.
+    """
+    if is_action_curr:
+        try:
+            cfg.glob.action_curr.exists()  # type: ignore
+
+            del cfg.glob.action_curr
+
+            cfg.glob.logger.debug("The existing object 'cfg.glob.action_curr' of the class Action was deleted.")
+        except AttributeError:
+            pass
+
+    if is_action_next:
+        try:
+            cfg.glob.action_next.exists()  # type: ignore
+
+            del cfg.glob.action_next
+
+            cfg.glob.logger.debug("The existing object 'cfg.glob.action_next' of the class Action was deleted.")
+        except AttributeError:
+            pass
+
+    if is_db_core:
+        try:
+            cfg.glob.db_core.exists()  # type: ignore
+
+            del cfg.glob.db_core
+
+            cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
+        except AttributeError:
+            pass
+
+    if is_document:
+        try:
+            cfg.glob.document.exists()  # type: ignore
+
+            del cfg.glob.document
+
+            cfg.glob.logger.debug("The existing object 'cfg.glob.document' of the class Document was deleted.")
+        except AttributeError:
+            pass
+
+    if is_run:
+        try:
+            cfg.glob.run.exists()  # type: ignore
+
+            del cfg.glob.run
+
+            cfg.glob.logger.debug("The existing object 'cfg.glob.run' of the class Run was deleted.")
+        except AttributeError:
+            pass
+
+    if is_setup:
+        try:
+            cfg.glob.setup.exists()  # type: ignore
+
+            del cfg.glob.setup
+
+            cfg.glob.logger.debug("The existing object 'cfg.glob.setup' of the class Setup was deleted.")
+        except AttributeError:
+            pass
+
+    if is_text_parser:
+        try:
+            cfg.glob.text_parser.exists()  # type: ignore
+
+            del cfg.glob.text_parser
+
+            cfg.glob.logger.debug("The existing object 'cfg.glob.text_parser' of the class TextParser was deleted.")
+        except AttributeError:
+            pass
 
 
 # -----------------------------------------------------------------------------

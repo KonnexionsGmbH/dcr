@@ -173,6 +173,7 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "none"),

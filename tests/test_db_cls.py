@@ -782,14 +782,7 @@ def test_missing_dependencies_action_0(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    try:
-        cfg.glob.db_core.exists()  # type: ignore
-
-        del cfg.glob.db_core
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
-    except AttributeError:
-        pass
+    pytest.helpers.delete_existing_object(is_db_core=True)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -813,14 +806,7 @@ def test_missing_dependencies_action_0(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_action_1(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing dependencies - action - case 1."""
-    try:
-        cfg.glob.run.exists()  # type: ignore
-
-        del cfg.glob.run
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.run' of the class Run was deleted.")
-    except AttributeError:
-        pass
+    pytest.helpers.delete_existing_object(is_run=True)
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -868,32 +854,7 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    try:
-        cfg.glob.action_curr.exists()  # type: ignore
-
-        del cfg.glob.action_curr
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.action_curr' of the class Action was deleted.")
-    except AttributeError:
-        pass
-
-    try:
-        cfg.glob.document.exists()  # type: ignore
-
-        del cfg.glob.document
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.document' of the class Document was deleted.")
-    except AttributeError:
-        pass
-
-    try:
-        cfg.glob.run.exists()  # type: ignore
-
-        del cfg.glob.run
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.run' of the class Run was deleted.")
-    except AttributeError:
-        pass
+    pytest.helpers.delete_existing_object(is_action_curr=True, is_document=True, is_run=True)
 
     # -------------------------------------------------------------------------
     cfg.glob.start_time_document = time.perf_counter_ns()
@@ -975,14 +936,7 @@ def test_missing_dependencies_db_core_0(fxtr_setup_empty_db_and_inbox):
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    try:
-        cfg.glob.setup.exists()  # type: ignore
-
-        del cfg.glob.setup
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.setup' of the class Setup was deleted.")
-    except AttributeError:
-        pass
+    pytest.helpers.delete_existing_object(is_setup=True)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -1004,14 +958,7 @@ def test_missing_dependencies_document_0(fxtr_setup_logger):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    try:
-        cfg.glob.db_core.exists()  # type: ignore
-
-        del cfg.glob.db_core
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
-    except AttributeError:
-        pass
+    pytest.helpers.delete_existing_object(is_db_core=True)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -1043,14 +990,7 @@ def test_missing_dependencies_document_1(fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    try:
-        cfg.glob.setup.exists()  # type: ignore
-
-        del cfg.glob.setup
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.setup' of the class Setup was deleted.")
-    except AttributeError:
-        pass
+    pytest.helpers.delete_existing_object(is_setup=True)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -1072,14 +1012,7 @@ def test_missing_dependencies_language_0(fxtr_setup_logger):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    try:
-        cfg.glob.db_core.exists()  # type: ignore
-
-        del cfg.glob.db_core
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
-    except AttributeError:
-        pass
+    pytest.helpers.delete_existing_object(is_db_core=True)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -1111,14 +1044,7 @@ def test_missing_dependencies_language_1(fxtr_setup_empty_db_and_inbox):
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    try:
-        cfg.glob.setup.exists()  # type: ignore
-
-        del cfg.glob.setup
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.setup' of the class Setup was deleted.")
-    except AttributeError:
-        pass
+    pytest.helpers.delete_existing_object(is_setup=True)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -1147,14 +1073,7 @@ def test_missing_dependencies_run_0(fxtr_setup_logger):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    try:
-        cfg.glob.db_core.exists()  # type: ignore
-
-        del cfg.glob.db_core
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
-    except AttributeError:
-        pass
+    pytest.helpers.delete_existing_object(is_db_core=True)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -1178,14 +1097,7 @@ def test_missing_dependencies_token_0(fxtr_setup_logger):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    try:
-        cfg.glob.db_core.exists()  # type: ignore
-
-        del cfg.glob.db_core
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
-    except AttributeError:
-        pass
+    pytest.helpers.delete_existing_object(is_db_core=True)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -1221,14 +1133,7 @@ def test_missing_dependencies_version_0(fxtr_setup_logger):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    try:
-        cfg.glob.db_core.exists()  # type: ignore
-
-        del cfg.glob.db_core
-
-        cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
-    except AttributeError:
-        pass
+    pytest.helpers.delete_existing_object(is_db_core=True)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
