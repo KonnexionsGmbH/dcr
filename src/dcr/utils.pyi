@@ -6,6 +6,7 @@ def check_exists_object(
     is_action_next: bool = False,
     is_db_core: bool = False,
     is_document: bool = False,
+    is_line_type_table: bool = False,
     is_run: bool = False,
     is_setup: bool = False,
     is_text_parser: bool = False,

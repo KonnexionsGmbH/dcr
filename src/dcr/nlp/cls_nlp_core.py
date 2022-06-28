@@ -63,7 +63,7 @@ class NLPCore:
     JSON_NAME_NO_SENTS_IN_DOC: ClassVar[str] = "noSentencesInDocument"
     JSON_NAME_NO_SENTS_IN_PAGE: ClassVar[str] = "noSentencesInPage"
     JSON_NAME_NO_SENTS_IN_PARA: ClassVar[str] = "noSentencesInParagraph"
-    JSON_NAME_NO_TABLES: ClassVar[str] = "noTables"
+    JSON_NAME_NO_TABLES_IN_DOC: ClassVar[str] = "noTablesInDocument"
     JSON_NAME_NO_TOKENS_IN_DOC: ClassVar[str] = "noTokensInDocument"
     JSON_NAME_NO_TOKENS_IN_PAGE: ClassVar[str] = "noTokensInPage"
     JSON_NAME_NO_TOKENS_IN_PARA: ClassVar[str] = "noTokensInParagraph"

@@ -65,6 +65,7 @@ class LineTypeTable:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         utils.check_exists_object(
+            is_action_curr=True,
             is_document=True,
             is_setup=True,
             is_text_parser=True,
@@ -100,7 +101,7 @@ class LineTypeTable:
         self._row_no_prev = 0
         self._rows: Rows = []
 
-        self._tables: Tables = []
+        self.tables: Tables = []
 
         self._exist = True
 
@@ -145,20 +146,17 @@ class LineTypeTable:
 
         self._finish_row()
 
-        if (no_rows := len(self._rows)) == 0:
-            return
-
         self._page_no_till = self._page_idx + 1
 
-        self._tables.append(
+        self.tables.append(
             {
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ROW_LLX: self._first_row_llx,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ROW_URX: self._first_row_urx,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_COLUMNS: self._no_columns_table,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ROWS: no_rows,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ROWS: len(self._rows),
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._page_no_from,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._page_no_till,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLE_NO: len(self._tables) + 1,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLE_NO: len(self.tables) + 1,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_ROWS: self._rows,
             }
         )
@@ -272,7 +270,7 @@ class LineTypeTable:
         """Reset the document memory."""
         self._max_page = cfg.glob.text_parser.parse_result_no_pages_in_doc
 
-        self._tables = []
+        self.tables = []
 
         utils.progress_msg_line_type_table("LineTypeTable: Reset the document memory")
 
@@ -343,7 +341,7 @@ class LineTypeTable:
             cfg.glob.text_parser.parse_result_line_lines = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
-        if cfg.glob.setup.is_create_extra_file_table and self._tables:
+        if cfg.glob.setup.is_create_extra_file_table and self.tables:
             full_name_toc = utils.get_full_name(
                 cfg.glob.action_curr.action_directory_name,
                 cfg.glob.action_curr.get_stem_name()  # type: ignore
@@ -355,8 +353,8 @@ class LineTypeTable:
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES: len(self._tables),
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLES: self._tables,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: len(self.tables),
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLES: self.tables,
                     },
                     file_handle,
                     indent=cfg.glob.setup.json_indent,

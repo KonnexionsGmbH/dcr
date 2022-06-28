@@ -7,6 +7,7 @@ import cfg.glob
 import db.cls_db_core
 import db.cls_document
 import db.cls_token
+import nlp.cls_line_type_table
 import nlp.cls_nlp_core
 import spacy
 import spacy.tokens
@@ -156,6 +157,7 @@ class TokenizerSpacy:
 
         utils.check_exists_object(
             is_document=True,
+            is_line_type_table=True,
         )
 
         if cfg.glob.setup.is_tokenize_2_jsonfile:
@@ -171,6 +173,9 @@ class TokenizerSpacy:
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self._no_pages_in_doc,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._no_paras_in_doc,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_SENTS_IN_DOC: self._no_sents_in_doc,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: cfg.glob.text_parser.parse_result_line_document[
+                            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC
+                        ],
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_DOC: self._no_tokens_in_doc,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self._token_pages,
                     },

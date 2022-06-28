@@ -196,6 +196,7 @@ class TextParser:
         utils.check_exists_object(
             is_action_next=True,
             is_document=True,
+            is_line_type_table=True,
         )
 
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
@@ -209,6 +210,7 @@ class TextParser:
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: cfg.glob.document.document_no_lines_toc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: len(cfg.glob.line_type_table.tables),
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self.parse_result_line_pages,
                 },
                 file_handle,

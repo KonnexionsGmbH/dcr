@@ -22,6 +22,7 @@ def check_exists_object(  # noqa: C901
     is_action_next: bool = False,
     is_db_core: bool = False,
     is_document: bool = False,
+    is_line_type_table: bool = False,
     is_run: bool = False,
     is_setup: bool = False,
     is_text_parser: bool = False,
@@ -37,6 +38,8 @@ def check_exists_object(  # noqa: C901
                 Check an object of class DBCore. Defaults to False.
         is_document (bool, optional):
                 Check an object of class Document. Defaults to False.
+        is_line_type_table (bool, optional):
+                Check an object of class LineTypeTable. Defaults to False.
         is_run (bool, optional):
                 Check an object of class Run. Defaults to False.
         is_setup (bool, optional):
@@ -74,6 +77,14 @@ def check_exists_object(  # noqa: C901
         except AttributeError:
             utils.terminate_fatal(
                 "The required instance of the class 'Document' does not yet exist.",
+            )
+
+    if is_line_type_table:
+        try:
+            cfg.glob.line_type_table.exists()  # type: ignore
+        except AttributeError:
+            utils.terminate_fatal(
+                "The required instance of the class 'LineTypeTable' does not yet exist.",
             )
 
     if is_run:
