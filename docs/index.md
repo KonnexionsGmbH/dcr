@@ -116,7 +116,7 @@ This is done with the software [pdf2image](https://pypi.org/project/pdf2image){:
 
 The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image file(s) (child document(s)).
 
-Since an image file created here always contains only one page of a **`pdf`** document, a multipage **`pdf`** document is distributed over several image files. 
+Since an image file created here always contains only one page of a **`pdf`** document, a multi-page **`pdf`** document is distributed over several image files. 
 After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}, these separated files are then combined into one **`pdf`** document.
 
 #### 2.1.4 Convert appropriate image files to **`pdf`** files (action: **`ocr`**)
@@ -153,96 +153,49 @@ The `page` variant and the `word` variant are both optional.
 **Example extract from granularity `line`**:
 
     <Pages>
-    <Page number="1" width="612.00" height="792.00">
+    <Page number="1" width="594.96" height="840.96">
     <Options>granularity=line</Options>
     <Content granularity="line" dehyphenation="false" dropcap="false" font="false" geometry="false" shadow="false" sub="false" sup="false">
     <Para>
-     <Box llx="303.36" lly="746.40" urx="308.40" ury="756.48">
-      <Line llx="303.36" lly="746.40" urx="308.40" ury="756.48">
-       <Text>1</Text>
+     <Box llx="26.45" lly="818.96" urx="485.41" ury="826.96">
+      <Line llx="26.45" lly="818.96" urx="485.41" ury="826.96">
+       <Text>19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm</Text>
       </Line>
      </Box>
     </Para>
-    <Para>
-     <Box llx="126.00" lly="706.56" urx="153.84" ury="720.48">
-      <Line llx="126.00" lly="706.56" urx="153.84" ury="720.48">
-       <Text>1812</Text>
-      </Line>
-     </Box>
-    </Para>
-    <Para>
-     <Box llx="126.00" lly="607.92" urx="420.27" ury="685.44">
-      <Line llx="126.00" lly="671.52" urx="289.21" ury="685.44">
-       <Text>GRIMM’S FAIRY TALES</Text>
-      </Line>
-      <Line llx="126.00" lly="639.36" urx="219.16" ury="653.28">
-       <Text>CINDERELLA</Text>
-      </Line>
-      <Line llx="126.00" lly="607.92" urx="420.27" ury="621.84">
-       <Text>Jacob Ludwig Grimm and Wilhelm Carl Grimm</Text>
-      </Line>
-     </Box>
-    </Para>
-    <Para>
-     <Box llx="126.00" lly="460.32" urx="486.03" ury="589.44">
-      <Line llx="126.00" lly="577.44" urx="485.98" ury="589.44">
-       <Text>Grimm, Jacob (1785-1863) and Wilhelm (1786-1859) - German</Text>
-      </Line>
-      <Line llx="126.00" lly="562.80" urx="486.00" ury="574.80">
-       <Text>philologists whose collection “Kinder- und Hausmarchen,” known</Text>
-      </Line>
 
 **Example extract from granularity `page`**:
 
-    1
-    1812
-    GRIMM’S FAIRY TALES CINDERELLA Jacob Ludwig Grimm and Wilhelm Carl Grimm
-    Grimm, Jacob (1785-1863) and Wilhelm (1786-1859) - German philologists whose collection “Kinder- und Hausmarchen,” known in English as “Grimm’s Fairy Tales,” is a timeless literary masterpiece. The brothers transcribed these tales directly from folk and fairy stories told to them by common villagers. Cinderella (1812) - The famous tale of a girl who is mistreated by her evil stepmother and step-sisters but goes on to marry the prince. This, the original “Cindrella,” differs greatly from many of its modern variations.
-    CINDERELLA
-    THERE WAS once a rich man whose wife lay sick, and when she felt her end drawing near she called to her only daughter to come near her bed, and said, “Dear child, be good and pious, and God will always take care of you, and I will look down upon you from heaven, and will be with you.” And then she closed her eyes and died. The maiden went every day to her mother’s grave and wept, and was always pious and good. When the winter came the snow covered the grave with a white covering, and when the sun came in the early spring and melted it away, the man took to himself another wife.
-    The new wife brought two daughters home with her, and they were beautiful and fair in appearance, but at heart were black and ugly. And then began very evil times for the poor step-daughter.
-    “Is the stupid creature to sit in the same room with us?” said they; “those who eat food must earn it. She is nothing but a kitchenmaid!” They took away her pretty dresses, and put on her an old gray kirtle, and gave her wooden shoes to wear.
-    “Just look now at the proud princess, how she is decked out!” cried they laughing, and then they sent her into the kitchen. There she was obliged to do heavy work from morning to night, get up early in the morning, draw water, make the fires, cook, and wash. Besides that, the sisters did their utmost to torment her- mocking
+    <Pages>
+    <Page number="1" width="594.96" height="840.96">
+    <Options>granularity=page</Options>
+    <Content granularity="page" dehyphenation="false" dropcap="false" font="false" geometry="false" shadow="false" sub="false" sup="false">
+    <Para>
+     <Box llx="26.45" lly="818.96" urx="485.41" ury="826.96">
+      <Text>19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm</Text>
+     </Box>
+    </Para>
 
 **Example extract from granularity `word`**:
 
-    <Page number="1" width="612.00" height="792.00">
+    <Pages>
+    <Page number="1" width="594.96" height="840.96">
     <Options>granularity=word tetml={elements={line}}</Options>
     <Content granularity="word" dehyphenation="false" dropcap="false" font="false" geometry="false" shadow="false" sub="false" sup="false">
     <Para>
-     <Box llx="303.36" lly="746.40" urx="308.40" ury="756.48">
-      <Line llx="303.36" lly="746.40" urx="308.40" ury="756.48">
+     <Box llx="26.45" lly="818.96" urx="485.41" ury="826.96">
+      <Line llx="26.45" lly="818.96" urx="485.41" ury="826.96">
        <Word>
-        <Text>1</Text>
-        <Box llx="303.36" lly="746.40" urx="308.40" ury="756.48"/>
-       </Word>
-      </Line>
-     </Box>
-    </Para>
-    <Para>
-     <Box llx="126.00" lly="706.56" urx="153.84" ury="720.48">
-      <Line llx="126.00" lly="706.56" urx="153.84" ury="720.48">
-       <Word>
-        <Text>1812</Text>
-        <Box llx="126.00" lly="706.56" urx="153.84" ury="720.48"/>
-       </Word>
-      </Line>
-     </Box>
-    </Para>
-    <Para>
-     <Box llx="126.00" lly="607.92" urx="420.27" ury="685.44">
-      <Line llx="126.00" lly="671.52" urx="289.21" ury="685.44">
-       <Word>
-        <Text>GRIMM</Text>
-        <Box llx="126.00" lly="671.52" urx="180.85" ury="685.44"/>
+        <Text>19</Text>
+        <Box llx="26.45" lly="818.96" urx="34.45" ury="826.96"/>
        </Word>
        <Word>
-        <Text>’</Text>
-        <Box llx="180.83" lly="671.52" urx="184.70" ury="685.44"/>
+        <Text>/</Text>
+        <Box llx="34.45" lly="818.96" urx="36.67" ury="826.96"/>
        </Word>
        <Word>
-        <Text>S</Text>
-        <Box llx="184.69" lly="671.52" urx="193.20" ury="685.44"/>
+        <Text>04</Text>
+        <Box llx="36.67" lly="818.96" urx="44.67" ury="826.96"/>
        </Word>
 
 #### 2.2.3 Store the parser result in a **`JSON`** file (action: **`s_p_j`**)
@@ -255,173 +208,126 @@ The document `line` granularity attempts to type the lines. Details on this proc
 
     {
         "documentId": 1,
-        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
-        "noPagesInDocument": 6,
-        "noParagraphsInDocument": 39,
-        "noLinesInDocument": 248,
-        "noLinesFooter": 0,
+        "documentFileName": "Example.pdf",
+        "noLinesFooter": 1,
         "noLinesHeader": 1,
-        "noLinesToc": 0,
+        "noLinesInDocument": 2220,
+        "noLinesToc": 85,
+        "noPagesInDocument": 57,
+        "noParagraphsInDocument": 829,
+        "noTablesInDocument": 5,
         "pages": [
             {
                 "pageNo": 1,
-                "noParagraphsInPage": 9,
-                "noLinesInPage": 37,
+                "noLinesInPage": 15,
+                "noParagraphsInPage": 7,
                 "lines": [
                     {
-                        "lineNo": 1,
+                        "coordLLX": 26.45,
+                        "coordURX": 485.41,
                         "lineIndexPage": 0,
                         "lineIndexParagraph": 0,
+                        "lineNo": 1,
                         "lineType": "h",
-                        "lowerLeftX": 303.36,
                         "paragraphNo": 1,
-                        "text": "1"
+                        "text": "19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm"
                     },
+
+**Example extract from the optional file `line_table`**:
+
+    {
+        "documentId": 1,
+        "documentFileName": "Example.pdf",
+        "noTablesInDocument": 5,
+        "tables": [
+            {
+                "firstRowLLX": 52.0,
+                "firstRowURX": 426.45,
+                "noColumns": 30,
+                "noRows": 10,
+                "pageNoFrom": 9,
+                "pageNoTill": 9,
+                "tableNo": 1,
+                "rows": [
                     {
-                        "lineNo": 1,
-                        "lineIndexPage": 1,
-                        "lineIndexParagraph": 0,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 2,
-                        "text": "1812"
-                    },
+                        "firstColumnLLX": 52.0,
+                        "lastColumnURX": 426.45,
+                        "noColumns": 3,
+                        "rowNo": 1,
+                        "columns": [
+                            {
+                                "columnNo": 1,
+                                "coordLLX": 52.0,
+                                "coordURX": 63.77,
+                                "lineIndexPage": 18,
+                                "lineIndexParagraph": 0,
+                                "lineNo": 1,
+                                "paragraphNo": 4,
+                                "text": "No."
+                            },
+
+**Example extract from the optional file `line_toc`**:
+
+    {
+        "documentId": 1,
+        "documentFileName": "Example.pdf",
+        "toc": [
+            {
+                "headingLevel": 1,
+                "headingText": "1. Lease Term: After the existing Tenant has vacated Landlord will allow Tenant to access the Demised",
+                "pageNo": 4,
+                "headingCtxLine1": "not delay or interfere with the completion of the Allowance Improvements by the Landlord in any material respect; and (b) prior to",
+                "headingCtxLine2": "entering the Demised Premises the Tenant shall provide insurance coverage as required by this Lease. Landlord shall offer the",
+                "headingCtxLine3": "existing tenant an early termination of its lease on December 31, 2011, instead of the normal expiration date of January 31, 2012.",
+                "regexp": "\\d+\\.$"
+            },
+
+**Example extract from granularity `page`**:
+
+    {
+        "documentId": 1,
+        "documentFileName": "Example.pdf",
+        "noPagesInDocument": 57,
+        "noParagraphsInDocument": 829,
+        "pages": [
+            {
+                "pageNo": 1,
+                "noParagraphsInPage": 7,
+                "paragraphs": [
                     {
-                        "lineNo": 1,
-                        "lineIndexPage": 2,
-                        "lineIndexParagraph": 0,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 3,
-                        "text": "GRIMM\u2019S FAIRY TALES"
-                    },
-                    {
-                        "lineNo": 2,
-                        "lineIndexPage": 3,
-                        "lineIndexParagraph": 1,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 3,
-                        "text": "CINDERELLA"
-                    },
-                    {
-                        "lineNo": 3,
-                        "lineIndexPage": 4,
-                        "lineIndexParagraph": 2,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 3,
-                        "text": "Jacob Ludwig Grimm and Wilhelm Carl Grimm"
-                    },
-                    {
-                        "lineNo": 1,
-                        "lineIndexPage": 5,
-                        "lineIndexParagraph": 0,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 4,
-                        "text": "Grimm, Jacob (1785-1863) and Wilhelm (1786-1859) - German"
-                    },
-                    {
-                        "lineNo": 2,
-                        "lineIndexPage": 6,
-                        "lineIndexParagraph": 1,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 4,
-                        "text": "philologists whose collection \u201cKinder- und Hausmarchen,\u201d known"
-                    },
-                    {
-                        "lineNo": 3,
-                        "lineIndexPage": 7,
-                        "lineIndexParagraph": 2,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 4,
-                        "text": "in English as \u201cGrimm\u2019s Fairy Tales,\u201d is a timeless literary"
+                        "paragraphNo": 1,
+                        "text": "19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm"
                     },
 
 **Example extract from granularity `word`**:
 
     {
         "documentId": 1,
-        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
-        "noPagesInDocument": 6,
-        "noParagraphsInDocument": 39,
-        "noLinesInDocument": 248,
-        "noWordsInDocument": 3267,
+        "documentFileName": "Example.pdf",
+        "noLinesInDocument": 2217,
+        "noPagesInDocument": 57,
+        "noParagraphsInDocument": 828,
+        "noWordsInDocument": 38674,
         "pages": [
             {
                 "pageNo": 1,
-                "noParagraphsInPage": 9,
-                "noLinesInPage": 37,
-                "noWordsInPage": 417,
+                "noLinesInPage": 15,
+                "noParagraphsInPage": 7,
+                "noWordsInPage": 112,
                 "paragraphs": [
                     {
                         "paragraphNo": 1,
                         "noLinesInParagraph": 1,
-                        "noWordsInParagraph": 1,
+                        "noWordsInParagraph": 28,
                         "lines": [
                             {
                                 "lineNo": 1,
-                                "noWordsInLine": 1,
+                                "noWordsInLine": 28,
                                 "words": [
                                     {
                                         "wordNo": 1,
-                                        "text": "1"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "paragraphNo": 2,
-                        "noLinesInParagraph": 1,
-                        "noWordsInParagraph": 1,
-                        "lines": [
-                            {
-                                "lineNo": 1,
-                                "noWordsInLine": 1,
-                                "words": [
-                                    {
-                                        "wordNo": 1,
-                                        "text": "1812"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "paragraphNo": 3,
-                        "noLinesInParagraph": 3,
-                        "noWordsInParagraph": 13,
-                        "lines": [
-                            {
-                                "lineNo": 1,
-                                "noWordsInLine": 5,
-                                "words": [
-                                    {
-                                        "wordNo": 1,
-                                        "text": "GRIMM"
+                                        "text": "19"
                                     },
-                                    {
-                                        "wordNo": 2,
-                                        "text": "\u2019"
-                                    },
-                                    {
-                                        "wordNo": 3,
-                                        "text": "S"
-                                    },
-                                    {
-                                        "wordNo": 4,
-                                        "text": "FAIRY"
-                                    },
-                                    {
-                                        "wordNo": 5,
-                                        "text": "TALES"
-                                    }
-                                ]
-                            },
 
 #### 2.2.4 Create qualified document tokens (action: **`tkn`**)
 
@@ -463,84 +369,46 @@ In the event of an error, the original document is marked as erroneous and an ex
 
     {
         "documentId": 1,
-        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
-        "noPagesInDocument": 6,
-        "noParagraphsInDocument": 33,
-        "noSentencesInDocument": 121,
-        "noLinesInDocument": 242,
-        "noTokensInDocument": 1085,
+        "documentFileName": "Example.pdf",
+        "noLinesFooter": 1,
+        "noLinesHeader": 1,
+        "noLinesInDocument": 2031,
+        "noLinesToc": 85,
+        "noPagesInDocument": 57,
+        "noParagraphsInDocument": 630,
+        "noSentencesInDocument": 949,
+        "noTablesInDocument": 5,
+        "noTokensInDocument": 16495,
         "pages": [
             {
                 "pageNo": 1,
-                "noParagraphsInPage": 8,
-                "noSentencesInPage": 19,
-                "noLinesInPage": 36,
-                "noTokensInPage": 174,
+                "noLinesInPage": 13,
+                "noParagraphsInPage": 5,
+                "noSentencesInPage": 5,
+                "noTokensInPage": 39,
                 "paragraphs": [
                     {
                         "paragraphNo": 2,
+                        "noLinesInParagraph": 2,
                         "noSentencesInParagraph": 1,
-                        "noLinesInParagraph": 1,
-                        "noTokensInParagraph": 1,
+                        "noTokensInParagraph": 7,
                         "sentences": [
                             {
                                 "sentenceNo": 1,
-                                "lowerLeftX": 126.0,
-                                "noTokensInSentence": 1,
-                                "text": "1812",
+                                "coordLLX": 34.0,
+                                "coordURX": 244.18,
+                                "lineType": "b",
+                                "noTokensInSentence": 7,
+                                "text": "EX-10.19 3 t1700141_ex10-19.htm EXHIBIT 10.19 Exhibit 10.19",
                                 "tokens": [
                                     {
-                                        "tknEntIob_": "B",
-                                        "tknEntType_": "DATE",
                                         "tknI": 0,
-                                        "tknIsDigit": true,
                                         "tknIsOov": true,
-                                        "tknIsSentEnd": true,
-                                        "tknIsSentStart": true,
-                                        "tknLemma_": "1812",
-                                        "tknLikeNum": true,
-                                        "tknNorm_": "1812",
+                                        "tknLemma_": "ex-10.19",
+                                        "tknNorm_": "ex-10.19",
                                         "tknPos_": "NUM",
                                         "tknTag_": "CD",
-                                        "tknText": "1812"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "paragraphNo": 3,
-                        "noSentencesInParagraph": 1,
-                        "noLinesInParagraph": 3,
-                        "noTokensInParagraph": 10,
-                        "sentences": [
-                            {
-                                "sentenceNo": 1,
-                                "lowerLeftX": 126.0,
-                                "noTokensInSentence": 10,
-                                "text": "GRIMM\u2019S FAIRY TALES CINDERELLA Jacob Ludwig Grimm and Wilhelm Carl Grimm",
-                                "tokens": [
-                                    {
-                                        "tknEntIob_": "B",
-                                        "tknEntType_": "PERSON",
-                                        "tknI": 0,
-                                        "tknIsOov": true,
-                                        "tknIsSentStart": true,
-                                        "tknLemma_": "GRIMM",
-                                        "tknNorm_": "grimm",
-                                        "tknPos_": "PROPN",
-                                        "tknTag_": "NNP",
-                                        "tknText": "GRIMM"
-                                    },
-                                    {
-                                        "tknEntIob_": "O",
-                                        "tknI": 2,
-                                        "tknIsOov": true,
-                                        "tknLemma_": "fairy",
-                                        "tknNorm_": "fairy",
-                                        "tknPos_": "ADJ",
-                                        "tknTag_": "JJ",
-                                        "tknText": "FAIRY",
+                                        "tknText": "EX-10.19",
                                         "tknWhitespace_": " "
                                     },
 
@@ -843,11 +711,12 @@ A block of lines with the following properties is searched here:
 
 ### 4.3 Tables
 
-TBD: tables which have already been marked accordingly by PDFlib TET
+[PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} determines the tables contained in the **`pdf`** document and marks them accordingly in its **`xml`** output file. 
+**DCR** now uses these marks to determine the line type **`tab`** and optionally to output the tables in a separate file.
 
-#### 4.6.1 Parameters
+#### 4.3.1 Parameters
 
-The following parameters control the classification of the headings:
+The following parameters control the classification of the tables:
 
 **`create_extra_file_table`**
 
@@ -855,7 +724,7 @@ Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_ta
 
 **`lt_table_file_incl_empty_columns`**
 
-Default value: **`false`** - if true, the empty columns are included in the **`JSON`** file.
+Default value: **`true`** - if true, the empty columns are included in the **`JSON`** file `<document_name>_table.json`.
 
 **`spacy_ignore_line_type_table`**
 

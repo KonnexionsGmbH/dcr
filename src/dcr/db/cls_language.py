@@ -50,7 +50,7 @@ class Language:
             code_pandoc (str):
                     The Pandoc code of the language.
             code_spacy (str):
-                    The SpaCy code of the model to be applied.
+                    The spaCy code of the model to be applied.
             code_tesseract (str):
                     The Tesseract OCR code of the language.
             iso_language_name (str):

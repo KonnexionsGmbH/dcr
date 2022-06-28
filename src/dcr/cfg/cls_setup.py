@@ -258,7 +258,7 @@ class Setup:
         self.is_spacy_ignore_stop = True
 
         # -----------------------------------------------------------------------------
-        # SpaCy token attributes.
+        # spaCy token attributes.
         # -----------------------------------------------------------------------------
         self.is_spacy_tkn_attr_cluster = False
         self.is_spacy_tkn_attr_dep_ = False
@@ -564,10 +564,10 @@ class Setup:
         return var
 
     # -----------------------------------------------------------------------------
-    # Determine a SpaCy token configuration parameter.
+    # Determine a spaCy token configuration parameter.
     # -----------------------------------------------------------------------------
     def _determine_config_spacy_tkn(self) -> None:
-        """Determine a SpaCy token configuration parameter."""
+        """Determine a spaCy token configuration parameter."""
         self.is_spacy_tkn_attr_cluster = self._determine_config_param_boolean(
             Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER, self.is_spacy_tkn_attr_cluster
         )
@@ -729,10 +729,10 @@ class Setup:
         )
 
     # -----------------------------------------------------------------------------
-    # Determine a SpaCy token configuration parameter to ignore the token creation.
+    # Determine a spaCy token configuration parameter to ignore the token creation.
     # -----------------------------------------------------------------------------
     def _determine_config_spacy_tkn_ignore(self) -> None:
-        """Determine a SpaCy token configuration parameter to ignore the token
+        """Determine a spaCy token configuration parameter to ignore the token
         creation."""
         self.is_spacy_ignore_bracket = self._determine_config_param_boolean(
             Setup._DCR_CFG_SPACY_IGNORE_BRACKET, self.is_spacy_ignore_bracket

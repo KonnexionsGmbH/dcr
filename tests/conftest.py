@@ -1248,11 +1248,11 @@ def restore_setup_cfg():
 
 
 # -----------------------------------------------------------------------------
-# Set all SpaCy configuration parameters to the same logical value.
+# Set all spaCy configuration parameters to the same logical value.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def set_complete_cfg_spacy(false_or_true: str):
-    """Set all SpaCy configuration parameters to the same logical value."""
+    """Set all spaCy configuration parameters to the same logical value."""
     return pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
