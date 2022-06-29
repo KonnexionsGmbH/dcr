@@ -65,9 +65,7 @@ Release Date: dd.mm.2022
 
 1. Microsoft Windows Server 2019: (see [here](#issues_windows_2019){:target="_blank"}) 
 
-2. MkApi: (see [here](#issues_mkapi){:target="_blank"})
-
-3. Tesseract OCR: (see [here](#issues_tesseract_ocr){:target="_blank"})
+2. Tesseract OCR: (see [here](#issues_tesseract_ocr){:target="_blank"})
 
 ## 2. Detailed Open Issues
 
@@ -116,13 +114,7 @@ Release Date: dd.mm.2022
     Aborted!
 ```
 
-### <a name="issues_mkapi"></a> 2.2 MkApi
-
-Python version 3.10 is not yet supported.
-
-- Issue: Python 3.10 (see [here](https://github.com/daizutabi/mkapi/issues/56){:target="_blank"}).
-
-### <a name="issues_tesseract_ocr"></a> 2.3 [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}
+### <a name="issues_tesseract_ocr"></a> 2.2 [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}
 
 - Issue: Images of type 'jp2': Error in pixReadStreamJp2k: version 2.3.0: differs from minor = 2 ... [see #57](https://github.com/UB-Mannheim/tesseract/issues/57){:target="_blank"}
 
