@@ -372,9 +372,23 @@ class LineTypeHeading:
             (
                 "999.999",
                 True,
-                r"\d+\.\d+\.?$",
+                r"\d+\.\d\d\d$",
                 self._is_asc_string_floats,
-                [],
+                ["1.000", "1.001"],
+            ),
+            (
+                "999.99",
+                True,
+                r"\d+\.\d\d$",
+                self._is_asc_string_floats,
+                ["1.00", "1.01"],
+            ),
+            (
+                "999.9",
+                True,
+                r"\d+\.\d$",
+                self._is_asc_string_floats,
+                ["1.0", "1.1"],
             ),
             (
                 "A)",

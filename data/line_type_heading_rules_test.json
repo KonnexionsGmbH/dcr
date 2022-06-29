@@ -43,11 +43,25 @@
       "startValues": ["Riders-1"]
     },
     {
-      "name": "Section 999.999.",
-      "isFirstToken": false,
-      "regexp": "Section \\d+\\.\\d+\\.",
+      "name": "999.999",
+      "isFirstToken": true,
+      "regexp": "\\d+\\.\\d\\d\\d$",
       "functionIsAsc": "string_floats",
-      "startValues": []
+      "startValues": ["1.000", "1.001"]
+    },
+    {
+      "name": "999.99",
+      "isFirstToken": true,
+      "regexp": "\\d+\\.\\d\\d$",
+      "functionIsAsc": "string_floats",
+      "startValues": ["1.00", "1.01"]
+    },
+    {
+      "name": "999.9",
+      "isFirstToken": true,
+      "regexp": "\\d+\\.\\d$",
+      "functionIsAsc": "string_floats",
+      "startValues": ["1.0", "1.1"]
     },
     {
       "name": "(999)",
@@ -115,9 +129,23 @@
     {
       "name": "999.999",
       "isFirstToken": true,
-      "regexp": "\\d+\\.\\d+\\.?$",
+      "regexp": "\\d+\\.\\d\\d\\d$",
       "functionIsAsc": "string_floats",
-      "startValues": []
+      "startValues": ["1.000", "1.001"]
+    },
+    {
+      "name": "999.99",
+      "isFirstToken": true,
+      "regexp": "\\d+\\.\\d\\d$",
+      "functionIsAsc": "string_floats",
+      "startValues": ["1.00", "1.01"]
+    },
+    {
+      "name": "999.9",
+      "isFirstToken": true,
+      "regexp": "\\d+\\.\\d$",
+      "functionIsAsc": "string_floats",
+      "startValues": ["1.0", "1.1"]
     },
     {
       "name": "A)",

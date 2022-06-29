@@ -712,7 +712,7 @@ A block of lines with the following properties is searched here:
 ### 4.3 Tables
 
 [PDFlib TET](https://www.pdflib.com/products/tet/){:target="_blank"} determines the tables contained in the **`pdf`** document and marks them accordingly in its **`xml`** output file. 
-**DCR** now uses these marks to determine the line type **`tab`** and optionally to output the tables in a separate file.
+**DCR** now uses these marks to determine the line type **`tab`** and optionally to output the tables in a separate **`JSON`** file.
 
 #### 4.3.1 Parameters
 
@@ -811,24 +811,26 @@ The following comparison functions (**`functionIsAsc`**) can be used:
 
 The following table shows the standard rules in the default processing order:
 
-| name    | isFirstToken | regexp           | functionIsAsc      | startValues  |
-|---------|--------------|------------------|--------------------|--------------|
-| (999)   | True         | `"\(\d+\)$"`     | string_integers    | `["(1)"]`    |
-| (A)     | True         | `"\([A-Z]\)$"`   | uppercase_letters  | `["(A)"]`    |
-| (ROM)   | True         | see a)           | romans             | `["(I)"]`    |
-| (a)     | True         | `"\([a-z]\)$"`   | lowercase_letters  | `["(a)"]`    |
-| (rom)   | True         | see b)           | romans             | `["(i)"]`    |
-| 999)    | True         | `"\d+\)$"`       | string_integers    | `["1)"]`     |
-| 999.    | True         | `"\d+\.$"`       | string_integers    | `["1."]`     |
-| 999.999 | True         | `"\d+\.\d+\.?$"` | string_floats      | `[]`         |
-| A)      | True         | `"[A-Z]\)$"`     | uppercase_letters  | `["A)"]`     |
-| A.      | True         | `"[A-Z]\.$"`     | uppercase_letters  | `["A, "A."]` |
-| ROM)    | True         | see c)           | romans             | `["I)"]`     |
-| ROM.    | True         | see d)           | romans             | `["I."]`     |
-| a)      | True         | `"[a-z]\)$"`     | lowercase_letters  | `["a)"]`     |
-| a.      | True         | `"[a-z]\.$"`     | lowercase_letters  | `["a, "a."]` |
-| rom)    | True         | see e)           | romans             | `["i)"]`     |
-| rom.    | True         | see f)           | romans             | `["i."]`     |
+| name    | isFirstToken | regexp           | functionIsAsc      | startValues         |
+|---------|--------------|------------------|--------------------|---------------------|
+| (999)   | True         | `"\(\d+\)$"`     | string_integers    | `["(1)"]`           |
+| (A)     | True         | `"\([A-Z]\)$"`   | uppercase_letters  | `["(A)"]`           |
+| (ROM)   | True         | see a)           | romans             | `["(I)"]`           |
+| (a)     | True         | `"\([a-z]\)$"`   | lowercase_letters  | `["(a)"]`           |
+| (rom)   | True         | see b)           | romans             | `["(i)"]`           |
+| 999)    | True         | `"\d+\)$"`       | string_integers    | `["1)"]`            |
+| 999.    | True         | `"\d+\.$"`       | string_integers    | `["1."]`            |
+| 999.999 | True         | `"\d+\.\d\d\d$"` | string_floats      | `["1.000, "1.001"]` |
+| 999.99  | True         | `"\d+\.\d\d$"`   | string_floats      | `["1.00", "1.01"]`  |
+| 999.9   | True         | `"\d+\.\d$"`     | string_floats      | `["1.0", 1.1]`      |
+| A)      | True         | `"[A-Z]\)$"`     | uppercase_letters  | `["A)"]`            |
+| A.      | True         | `"[A-Z]\.$"`     | uppercase_letters  | `["A, "A."]`        |
+| ROM)    | True         | see c)           | romans             | `["I)"]`            |
+| ROM.    | True         | see d)           | romans             | `["I."]`            |
+| a)      | True         | `"[a-z]\)$"`     | lowercase_letters  | `["a)"]`            |
+| a.      | True         | `"[a-z]\.$"`     | lowercase_letters  | `["a, "a."]`        |
+| rom)    | True         | see e)           | romans             | `["i)"]`            |
+| rom.    | True         | see f)           | romans             | `["i."]`            |
 
 a) `"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$"`
 
