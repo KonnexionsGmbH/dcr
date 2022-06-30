@@ -9,6 +9,7 @@ import cfg.glob
 import db.cls_document
 import nlp.cls_line_type_headers_footers
 import nlp.cls_line_type_heading
+import nlp.cls_line_type_list_bullet
 import nlp.cls_line_type_table
 import nlp.cls_line_type_toc
 import nlp.cls_nlp_core
@@ -736,6 +737,7 @@ class TextParser:
             cfg.glob.line_type_headers_footers = nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
             cfg.glob.line_type_toc = nlp.cls_line_type_toc.LineTypeToc()
             cfg.glob.line_type_table = nlp.cls_line_type_table.LineTypeTable()
+            cfg.glob.line_type_list_bullet = nlp.cls_line_type_list_bullet.LineTypeListBullet()
             cfg.glob.line_type_heading = nlp.cls_line_type_heading.LineTypeHeading()
         elif cfg.glob.setup.is_parsing_page:
             self._parse_result_page_pages = []
@@ -757,6 +759,7 @@ class TextParser:
             cfg.glob.line_type_headers_footers.process_document()
             cfg.glob.line_type_toc.process_document()
             cfg.glob.line_type_table.process_document()
+            cfg.glob.line_type_list_bullet.process_document()
             cfg.glob.line_type_heading.process_document()
             self._create_line_document()
         elif cfg.glob.setup.is_parsing_page:

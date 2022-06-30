@@ -407,16 +407,16 @@ class Setup:
             Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX, self.lt_heading_tolerance_llx
         )
         self.lt_list_bullet_min_entries = self._determine_config_param_integer(
-            Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, self.lt_list_bullet_min_entries
+            Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, self.lt_list_bullet_min_entries
         )
         self.lt_list_bullet_tolerance_llx = self._determine_config_param_integer(
-            Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, self.lt_list_bullet_tolerance_llx
+            Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, self.lt_list_bullet_tolerance_llx
         )
         self.lt_list_number_min_entries = self._determine_config_param_integer(
             Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES, self.lt_list_number_min_entries
         )
         self.lt_list_number_tolerance_llx = self._determine_config_param_integer(
-            Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES, self.lt_list_number_tolerance_llx
+            Setup._DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX, self.lt_list_number_tolerance_llx
         )
         self.is_lt_table_file_incl_empty_columns = self._determine_config_param_boolean(
             Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS, self.is_lt_table_file_incl_empty_columns

@@ -53,29 +53,35 @@ class LineTypeListBullet:
             f"LineTypeListBullet: Start create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
-        self._bullet_curr = ""
+        self._bullet = ""
         self._bullet_rules = self._init_list_bullet_rules()
 
         for key in self._bullet_rules:
             self._bullet_rules[key] = len(key)
 
-        self._entry_no = 0
+        # page_idx, para_no, line_lines_idx
+        self._entries: list[
+            tuple[
+                int,
+                int,
+                int,
+            ]
+        ] = []
 
-        self._line_lines_idx = 0
-        self._line_lines_idx_from = 0
-        self._line_lines_idx_till = 0
-        self._lists: Lists = []
+        self._line_lines_idx = -1
+
+        self._lists: list[dict[str, str]]
+
         self._llx_lower_limit = 0.0
         self._llx_upper_limit = 0.0
 
-        self._max_page = 0
-
         self._no_entries = 0
 
-        self._page_idx = 0
-        self._para_no_curr = 0
-        self._page_no_from = 0
-        self._page_no_till = 0
+        self._page_idx = -1
+        self._page_idx_prev = -1
+
+        self._para_no = 0
+        self._para_no_prev = 0
 
         self._exist = True
 
@@ -90,12 +96,19 @@ class LineTypeListBullet:
     # -----------------------------------------------------------------------------
     def _finish_list(self) -> None:
         """Finish a list."""
+        if self._no_entries == 0:
+            return
+
         if self._no_entries < cfg.glob.setup.lt_list_bullet_min_entries:
             utils.progress_msg_line_type_list_bullet(
-                f"LineTypeListBullet: Not enough list entries   found only={self._no_entries}"
+                f"LineTypeListBullet: Not enough list entries    found only={self._no_entries} - bullet='{self._bullet}' - entries={self._entries}"
             )
             self._reset_list()
             return
+
+        utils.progress_msg_line_type_list_bullet(
+                f"LineTypeListBullet: List entries                    found={self._no_entries} - bullet='{self._bullet}' - entries={self._entries}"
+        )
 
         if not cfg.glob.setup.is_create_extra_file_list_bullet:
             self._reset_list()
@@ -105,7 +118,7 @@ class LineTypeListBullet:
 
         # self._lists.append(
         #     {
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_BULLET: self._bullet_curr,
+        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_BULLET: self._bullet_prev,
         #         nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ENTRY_LLX: self._first_entry_llx,
         #         nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ENTRIES: len(self._entries),
         #         nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._page_no_from,
@@ -118,7 +131,7 @@ class LineTypeListBullet:
         self._reset_list()
 
         utils.progress_msg_line_type_list_bullet(
-            f"LineTypeListBullet: End   list                   on page={self._page_idx+1}"
+            f"LineTypeListBullet: End   list                    on page={self._page_idx+1}"
         )
 
     # -----------------------------------------------------------------------------
@@ -137,12 +150,13 @@ class LineTypeListBullet:
             )
 
         return {
-            "-": 0,
-            ".": 0,
-            "\u2022": 0,
-            "\u2023": 0,
-            "\ufffd": 0,
-            "°": 0,
+            "- ": 0,
+            ". ": 0,
+            "\ufffd ": 0,
+            "o ": 0,
+            "° ": 0,
+            "• ": 0,
+            "‣ ": 0,
         }
 
     # -----------------------------------------------------------------------------
@@ -181,13 +195,7 @@ class LineTypeListBullet:
             line_line (dict[str, str]):
                     The line to be processed.
         """
-        if (para_no := int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO])) == self._para_no_curr:
-            # Paragraph already in progress.
-            return
-
-        # New paragraph.
-        self._para_no_curr = para_no
-
+        para_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO])
         text = str(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
 
         bullet = ""
@@ -197,36 +205,42 @@ class LineTypeListBullet:
                 bullet = key
                 break
 
-        # No bulleted paragraph.
         if not bullet:
+            if self._page_idx == self._page_idx_prev and para_no == self._para_no_prev:
+                # Paragraph already in progress.
+                return
+
             self._finish_list()
             return
 
         if (
-            bullet == self._bullet_curr
-            and self._llx_lower_limit
+            bullet != self._bullet
+            or self._llx_upper_limit
             <= float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
-            <= self._llx_upper_limit
+            <= self._llx_lower_limit
         ):
-            if self._line_lines_idx_from > 0:
-                # Continuing existing bulleted paragraph.
-                self._line_lines_idx_till = self._line_lines_idx
-                self._no_entries += 1
-                return
+            self._finish_list()
 
-        self._finish_list()
+        self._bullet = bullet
 
-        # New bulleted paragraph.
-        self._line_lines_idx_from = self._line_lines_idx
-        self._line_lines_idx_till = self._line_lines_idx
-        self._llx_lower_limit = round(
-            coord_llx := float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
-            * (100 - cfg.glob.setup.lt_list_bullet_tolerance_llx)
-            / 100,
-            2,
-        )
-        self._llx_upper_limit = round(coord_llx * (100 + cfg.glob.setup.lt_list_bullet_tolerance_llx) / 100, 2)
-        self._no_entries = 1
+        if not self._entries:
+            # New bulleted paragraph.
+            self._line_lines_idx_from = self._line_lines_idx
+            self._line_lines_idx_till = self._line_lines_idx
+            self._llx_lower_limit = round(
+                coord_llx := float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
+                * (100 - cfg.glob.setup.lt_list_bullet_tolerance_llx)
+                / 100,
+                2,
+            )
+            self._llx_upper_limit = round(coord_llx * (100 + cfg.glob.setup.lt_list_bullet_tolerance_llx) / 100, 2)
+
+        self._entries.append((self._page_idx, para_no, self._line_lines_idx))
+
+        self._no_entries += 1
+
+        self._page_idx_prev = self._page_idx
+        self._para_no_prev = para_no
 
     # -----------------------------------------------------------------------------
     # Process the page-related data.
@@ -235,6 +249,10 @@ class LineTypeListBullet:
         """Process the page-related data."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
+        utils.progress_msg_line_type_list_bullet(
+            f"LineTypeListBullet: Start page                           ={self._page_idx + 1}"
+        )
+
         self._max_line_line = len(cfg.glob.text_parser.parse_result_line_lines)
 
         for line_lines_idx, line_line in enumerate(cfg.glob.text_parser.parse_result_line_lines):
@@ -242,7 +260,9 @@ class LineTypeListBullet:
             if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 self._process_line(line_line)
 
-        self._finish_list()
+        utils.progress_msg_line_type_list_bullet(
+            f"LineTypeListBullet: End   page                           ={self._page_idx + 1}"
+        )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -264,19 +284,17 @@ class LineTypeListBullet:
     # -----------------------------------------------------------------------------
     def _reset_list(self) -> None:
         """Reset the list memory."""
-        self._bullet_curr = ""
+        self._bullet = ""
 
-        self._first_entry_llx = 0.0
+        self._entries = []
 
-        self.f = False
-
-        self._line_lines_idx_from = 0
-        self._line_lines_idx_till = 0
+        self._llx_lower_limit = 0.0
+        self._llx_upper_limit = 0.0
 
         self._no_entries = 0
 
-        self._page_no_from = 0
-        self._page_no_till = 0
+        self._page_idx_prev = -1
+        self._para_no_prev = 0
 
         utils.progress_msg_line_type_list_bullet("LineTypeListBullet: Reset the list memory")
 
@@ -309,6 +327,8 @@ class LineTypeListBullet:
             self._page_idx = page_idx
             cfg.glob.text_parser.parse_result_line_lines = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
+
+        self._finish_list()
 
         if cfg.glob.setup.is_create_extra_file_list_bullet and self._lists:
             full_name_toc = utils.get_full_name(
