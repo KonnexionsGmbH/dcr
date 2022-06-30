@@ -101,13 +101,15 @@ class LineTypeListBullet:
 
         if self._no_entries < cfg.glob.setup.lt_list_bullet_min_entries:
             utils.progress_msg_line_type_list_bullet(
-                f"LineTypeListBullet: Not enough list entries    found only={self._no_entries} - bullet='{self._bullet}' - entries={self._entries}"
+                f"LineTypeListBullet: Not enough list entries    found only={self._no_entries} - "
+                + f"bullet='{self._bullet}' - entries={self._entries}"
             )
             self._reset_list()
             return
 
         utils.progress_msg_line_type_list_bullet(
-                f"LineTypeListBullet: List entries                    found={self._no_entries} - bullet='{self._bullet}' - entries={self._entries}"
+            f"LineTypeListBullet: List entries                    found={self._no_entries} - "
+            + f"bullet='{self._bullet}' - entries={self._entries}"
         )
 
         if not cfg.glob.setup.is_create_extra_file_list_bullet:
