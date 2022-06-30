@@ -395,7 +395,7 @@ def progress_msg_line_type_headers_footers(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    if cfg.glob.setup.is_verbose_line_type_headers_footers:
+    if cfg.glob.setup.is_verbose_lt_headers_footers:
         progress_msg_core(msg)
 
 
@@ -408,20 +408,33 @@ def progress_msg_line_type_heading(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    if cfg.glob.setup.is_verbose_line_type_heading:
+    if cfg.glob.setup.is_verbose_lt_heading:
         progress_msg_core(msg)
 
 
 # -----------------------------------------------------------------------------
-# Create a list line_type progress message.
+# Create a bulleted list line_type progress message.
 # -----------------------------------------------------------------------------
-def progress_msg_line_type_list(msg: str) -> None:
-    """Create a list line_type progress message.
+def progress_msg_line_type_list_bullet(msg: str) -> None:
+    """Create a bulleted list line_type progress message.
 
     Args:
         msg (str): Progress message.
     """
-    if cfg.glob.setup.is_verbose_line_type_list:
+    if cfg.glob.setup.is_verbose_lt_list_bullet:
+        progress_msg_core(msg)
+
+
+# -----------------------------------------------------------------------------
+# Create a numbered list line_type progress message.
+# -----------------------------------------------------------------------------
+def progress_msg_line_type_list_number(msg: str) -> None:
+    """Create a numbered list line_type progress message.
+
+    Args:
+        msg (str): Progress message.
+    """
+    if cfg.glob.setup.is_verbose_lt_list_number:
         progress_msg_core(msg)
 
 
@@ -434,7 +447,7 @@ def progress_msg_line_type_table(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    if cfg.glob.setup.is_verbose_line_type_table:
+    if cfg.glob.setup.is_verbose_lt_table:
         progress_msg_core(msg)
 
 
@@ -447,7 +460,7 @@ def progress_msg_line_type_toc(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    if cfg.glob.setup.is_verbose_line_type_toc:
+    if cfg.glob.setup.is_verbose_lt_toc:
         progress_msg_core(msg)
 
 

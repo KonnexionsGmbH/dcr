@@ -70,8 +70,8 @@ def test_cls_line_type_headers_footers(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
             (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "false"),
         ],
     )

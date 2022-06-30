@@ -20,9 +20,10 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 117
+    _CONFIG_PARAM_NO = 125
 
-    _DCR_CFG_CREATE_EXTRA_FILE_LIST: ClassVar[str] = "create_extra_file_list"
+    _DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET: ClassVar[str] = "create_extra_file_list_bullet"
+    _DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER: ClassVar[str] = "create_extra_file_list_number"
     _DCR_CFG_CREATE_EXTRA_FILE_TABLE: ClassVar[str] = "create_extra_file_table"
     _DCR_CFG_CREATE_EXTRA_FILE_TOC: ClassVar[str] = "create_extra_file_toc"
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
@@ -57,6 +58,12 @@ class Setup:
     _DCR_CFG_LT_HEADING_MIN_PAGES: ClassVar[str] = "lt_heading_min_pages"
     _DCR_CFG_LT_HEADING_RULE_FILE: ClassVar[str] = "lt_heading_rule_file"
     _DCR_CFG_LT_HEADING_TOLERANCE_LLX: ClassVar[str] = "lt_heading_tolerance_llx"
+    _DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES: ClassVar[str] = "lt_list_bullet_min_entries"
+    _DCR_CFG_LT_LIST_BULLET_RULE_FILE: ClassVar[str] = "lt_list_bullet_rule_file"
+    _DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX: ClassVar[str] = "lt_list_bullet_tolerance_llx"
+    _DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES: ClassVar[str] = "lt_list_number_min_entries"
+    _DCR_CFG_LT_LIST_NUMBER_RULE_FILE: ClassVar[str] = "lt_list_number_rule_file"
+    _DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX: ClassVar[str] = "lt_list_number_tolerance_llx"
     _DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS: ClassVar[str] = "lt_table_file_incl_empty_columns"
     _DCR_CFG_LT_TOC_LAST_PAGE: ClassVar[str] = "lt_toc_last_page"
     _DCR_CFG_LT_TOC_MIN_ENTRIES: ClassVar[str] = "lt_toc_min_entries"
@@ -140,11 +147,12 @@ class Setup:
     _DCR_CFG_TOKENIZE_2_DATABASE: ClassVar[str] = "tokenize_2_database"
     _DCR_CFG_TOKENIZE_2_JSONFILE: ClassVar[str] = "tokenize_2_jsonfile"
     _DCR_CFG_VERBOSE: ClassVar[str] = "verbose"
-    _DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS: ClassVar[str] = "verbose_line_type_headers_footers"
-    _DCR_CFG_VERBOSE_LINE_TYPE_HEADING: ClassVar[str] = "verbose_line_type_heading"
-    _DCR_CFG_VERBOSE_LINE_TYPE_LIST: ClassVar[str] = "verbose_line_type_list"
-    _DCR_CFG_VERBOSE_LINE_TYPE_TABLE: ClassVar[str] = "verbose_line_type_table"
-    _DCR_CFG_VERBOSE_LINE_TYPE_TOC: ClassVar[str] = "verbose_line_type_toc"
+    _DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS: ClassVar[str] = "verbose_lt_headers_footers"
+    _DCR_CFG_VERBOSE_LT_HEADING: ClassVar[str] = "verbose_lt_heading"
+    _DCR_CFG_VERBOSE_LT_LIST_BULLET: ClassVar[str] = "verbose_lt_list_bullet"
+    _DCR_CFG_VERBOSE_LT_LIST_NUMBER: ClassVar[str] = "verbose_lt_list_number"
+    _DCR_CFG_VERBOSE_LT_TABLE: ClassVar[str] = "verbose_lt_table"
+    _DCR_CFG_VERBOSE_LT_TOC: ClassVar[str] = "verbose_lt_toc"
     _DCR_CFG_VERBOSE_PARSER: ClassVar[str] = "verbose_parser"
 
     _DCR_ENVIRONMENT_TYPE: ClassVar[str] = "DCR_ENVIRONMENT_TYPE"
@@ -173,7 +181,8 @@ class Setup:
         # -----------------------------------------------------------------------------
         # DCR configuration.
         # -----------------------------------------------------------------------------
-        self.is_create_extra_file_list = True
+        self.is_create_extra_file_list_bullet = True
+        self.is_create_extra_file_list_number = True
         self.is_create_extra_file_table = True
         self.is_create_extra_file_toc = True
 
@@ -216,6 +225,12 @@ class Setup:
         self.lt_heading_min_pages = 2
         self.lt_heading_rule_file = "none"
         self.lt_heading_tolerance_llx = 5
+        self.lt_list_bullet_min_entries = 2
+        self.lt_list_bullet_rule_file = "none"
+        self.lt_list_bullet_tolerance_llx = 5
+        self.lt_list_number_min_entries = 2
+        self.lt_list_number_rule_file = "none"
+        self.lt_list_number_tolerance_llx = 5
 
         self.is_lt_table_file_incl_empty_columns = True
 
@@ -231,11 +246,12 @@ class Setup:
         self.is_tokenize_2_database = True
         self.is_tokenize_2_jsonfile = True
         self.is_verbose = True
-        self.is_verbose_line_type_headers_footers = False
-        self.is_verbose_line_type_heading = False
-        self.is_verbose_line_type_list = False
-        self.is_verbose_line_type_table = False
-        self.is_verbose_line_type_toc = False
+        self.is_verbose_lt_headers_footers = False
+        self.is_verbose_lt_heading = False
+        self.is_verbose_lt_list_bullet = False
+        self.is_verbose_lt_list_number = False
+        self.is_verbose_lt_table = False
+        self.is_verbose_lt_toc = False
 
         self.verbose_parser = "none"
 
@@ -327,8 +343,11 @@ class Setup:
     # -----------------------------------------------------------------------------
     def _check_config(self) -> None:
         """Check the configuration parameters."""
-        self.is_create_extra_file_list = self._determine_config_param_boolean(
-            Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST, self.is_create_extra_file_list
+        self.is_create_extra_file_list_bullet = self._determine_config_param_boolean(
+            Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, self.is_create_extra_file_list_bullet
+        )
+        self.is_create_extra_file_list_number = self._determine_config_param_boolean(
+            Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, self.is_create_extra_file_list_number
         )
         self.is_create_extra_file_table = self._determine_config_param_boolean(
             Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, self.is_create_extra_file_table
@@ -387,6 +406,18 @@ class Setup:
         self.lt_heading_tolerance_llx = self._determine_config_param_integer(
             Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX, self.lt_heading_tolerance_llx
         )
+        self.lt_list_bullet_min_entries = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, self.lt_list_bullet_min_entries
+        )
+        self.lt_list_bullet_tolerance_llx = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, self.lt_list_bullet_tolerance_llx
+        )
+        self.lt_list_number_min_entries = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES, self.lt_list_number_min_entries
+        )
+        self.lt_list_number_tolerance_llx = self._determine_config_param_integer(
+            Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES, self.lt_list_number_tolerance_llx
+        )
         self.is_lt_table_file_incl_empty_columns = self._determine_config_param_boolean(
             Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS, self.is_lt_table_file_incl_empty_columns
         )
@@ -421,21 +452,22 @@ class Setup:
                 )
 
         self.is_verbose = self._determine_config_param_boolean(Setup._DCR_CFG_VERBOSE, self.is_verbose)
-        self.is_verbose_line_type_headers_footers = self._determine_config_param_boolean(
-            Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, self.is_verbose_line_type_headers_footers
+        self.is_verbose_lt_headers_footers = self._determine_config_param_boolean(
+            Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, self.is_verbose_lt_headers_footers
         )
-        self.is_verbose_line_type_heading = self._determine_config_param_boolean(
-            Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, self.is_verbose_line_type_heading
+        self.is_verbose_lt_heading = self._determine_config_param_boolean(
+            Setup._DCR_CFG_VERBOSE_LT_HEADING, self.is_verbose_lt_heading
         )
-        self.is_verbose_line_type_list = self._determine_config_param_boolean(
-            Setup._DCR_CFG_VERBOSE_LINE_TYPE_LIST, self.is_verbose_line_type_list
+        self.is_verbose_lt_list_bullet = self._determine_config_param_boolean(
+            Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET, self.is_verbose_lt_list_bullet
         )
-        self.is_verbose_line_type_table = self._determine_config_param_boolean(
-            Setup._DCR_CFG_VERBOSE_LINE_TYPE_TABLE, self.is_verbose_line_type_table
+        self.is_verbose_lt_list_number = self._determine_config_param_boolean(
+            Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER, self.is_verbose_lt_list_number
         )
-        self.is_verbose_line_type_toc = self._determine_config_param_boolean(
-            Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, self.is_verbose_line_type_toc
+        self.is_verbose_lt_table = self._determine_config_param_boolean(
+            Setup._DCR_CFG_VERBOSE_LT_TABLE, self.is_verbose_lt_table
         )
+        self.is_verbose_lt_toc = self._determine_config_param_boolean(Setup._DCR_CFG_VERBOSE_LT_TOC, self.is_verbose_lt_toc)
         self._check_config_verbose_parser()
 
     # -----------------------------------------------------------------------------
@@ -841,7 +873,8 @@ class Setup:
                 case Setup._DCR_CFG_DB_USER_ADMIN:
                     self.db_user_admin = str(item)
                 case (
-                    Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST
+                    Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET
+                    | Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER
                     | Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE
                     | Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC
                     | Setup._DCR_CFG_DB_CONNECTION_PORT
@@ -863,6 +896,10 @@ class Setup:
                     | Setup._DCR_CFG_LT_HEADING_MAX_LEVEL
                     | Setup._DCR_CFG_LT_HEADING_MIN_PAGES
                     | Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX
+                    | Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES
+                    | Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX
+                    | Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES
+                    | Setup._DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX
                     | Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS
                     | Setup._DCR_CFG_LT_TOC_LAST_PAGE
                     | Setup._DCR_CFG_LT_TOC_MIN_ENTRIES
@@ -940,16 +977,21 @@ class Setup:
                     | Setup._DCR_CFG_TOKENIZE_2_DATABASE
                     | Setup._DCR_CFG_TOKENIZE_2_JSONFILE
                     | Setup._DCR_CFG_VERBOSE
-                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS
-                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING
-                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_LIST
-                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_TABLE
-                    | Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC
+                    | Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS
+                    | Setup._DCR_CFG_VERBOSE_LT_HEADING
+                    | Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET
+                    | Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER
+                    | Setup._DCR_CFG_VERBOSE_LT_TABLE
+                    | Setup._DCR_CFG_VERBOSE_LT_TOC
                     | Setup._DCR_CFG_VERBOSE_PARSER
                 ):
                     continue
                 case Setup._DCR_CFG_LT_HEADING_RULE_FILE:
                     self.lt_heading_rule_file = utils.get_os_independent_name(item)
+                case Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE:
+                    self.lt_list_bullet_rule_file = utils.get_os_independent_name(item)
+                case Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE:
+                    self.lt_list_number_rule_file = utils.get_os_independent_name(item)
                 case _:
                     utils.terminate_fatal_setup(f"Unknown configuration parameter '{key}'")
 

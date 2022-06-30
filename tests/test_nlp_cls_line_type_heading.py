@@ -51,7 +51,7 @@ def test_cls_line_type_heading_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "none"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "true"),
         ],
     )
 
@@ -111,7 +111,7 @@ def test_cls_line_type_heading_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
         ],
     )
 
@@ -172,8 +172,8 @@ def test_cls_line_type_heading_3(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "0"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TABLE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TABLE, "true"),
         ],
     )
 
@@ -232,7 +232,7 @@ def test_cls_line_type_heading_4(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "n/a"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
         ],
     )
 

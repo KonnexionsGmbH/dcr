@@ -50,8 +50,8 @@ def test_line_type_toc(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_empty_d
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, lt_toc_last_page),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "false"),
         ],
     )

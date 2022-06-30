@@ -36,7 +36,7 @@ The headings are determined with rule-enriched regular expressions.
 
 The following parameter controls both the classification of the headers and the footers:
 
-**`verbose_line_type_headers_footers`**
+**`verbose_lt_headers_footers`**
 
 Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
 
@@ -126,7 +126,7 @@ Default value: **`3`** - defines the minimum number of entries that a table of c
 
 Default value: **`true`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
 
-**`verbose_line_type_toc`**
+**`verbose_lt_toc`**
 
 Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
 
@@ -168,7 +168,7 @@ Default value: **`true`** - if true, the empty columns are included in the **`JS
 
 Default value: **`false`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
 
-**`verbose_line_type_table`**
+**`verbose_lt_table`**
 
 Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
 
@@ -219,7 +219,7 @@ Default value: **`5`** - percentage tolerance for the differences in indentation
 
 Default value: **`false`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
 
-**`verbose_line_type_heading`**
+**`verbose_lt_heading`**
 
 Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
 

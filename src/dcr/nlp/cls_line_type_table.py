@@ -251,7 +251,6 @@ class LineTypeTable:
         self._max_line_line = len(cfg.glob.text_parser.parse_result_line_lines)
 
         for line_lines_idx, line_line in enumerate(cfg.glob.text_parser.parse_result_line_lines):
-            self._line_lines_idx = line_lines_idx
             if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 continue
 

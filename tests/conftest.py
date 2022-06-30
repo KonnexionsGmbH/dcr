@@ -697,7 +697,8 @@ def fxtr_before_any_test():
     CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
     for (config_param, config_value) in (
-        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PORT, "5434"),
@@ -731,6 +732,12 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MIN_PAGES, "2"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "data/line_type_heading_rules_test.json"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX, "5"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, "2"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE, "data/line_type_list_bullet_rules_test.json"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, "5"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES, "2"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE, "data/line_type_list_number_rules_test.json"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX, "5"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, "5"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_MIN_ENTRIES, "5"),
@@ -741,11 +748,12 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADERS_FOOTERS, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_HEADING, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_LIST, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TABLE, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LINE_TYPE_TOC, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TABLE, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
     ):
         CONFIG_PARSER[cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value

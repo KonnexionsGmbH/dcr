@@ -20,6 +20,8 @@ class NLPCore:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
+    JSON_NAME_BULLET: ClassVar[str] = "bullet"
+
     JSON_NAME_COLUMNS: ClassVar[str] = "columns"
     JSON_NAME_COLUMN_NO: ClassVar[str] = "columnNo"
     JSON_NAME_COLUMN_SPAN: ClassVar[str] = "columnSpan"
@@ -29,7 +31,10 @@ class NLPCore:
 
     JSON_NAME_DOC_ID: ClassVar[str] = "documentId"
 
+    JSON_NAME_ENTRIES: ClassVar[str] = "entries"
+
     JSON_NAME_FIRST_COLUMN_LLX: ClassVar[str] = "firstColumnLLX"
+    JSON_NAME_FIRST_ENTRY_LLX: ClassVar[str] = "firstEntryLLX"
     JSON_NAME_FIRST_ROW_LLX: ClassVar[str] = "firstRowLLX"
     JSON_NAME_FIRST_ROW_URX: ClassVar[str] = "firstRowURX"
     JSON_NAME_FUNCTION_IS_ASC: ClassVar[str] = "functionIsAsc"
@@ -47,15 +52,22 @@ class NLPCore:
     JSON_NAME_LINE_NO: ClassVar[str] = "lineNo"
     JSON_NAME_LINE_TYPE: ClassVar[str] = "lineType"
     JSON_NAME_LINE_TYPE_HEADING_RULES: ClassVar[str] = "lineTypeHeadingRules"
+    JSON_NAME_LINE_TYPE_LIST_BULLET_RULES: ClassVar[str] = "lineTypeListBulletRules"
+    JSON_NAME_LIST_NO: ClassVar[str] = "listNo"
+    JSON_NAME_LISTS_BULLET: ClassVar[str] = "listsBullet"
+    JSON_NAME_LISTS_NUMBER: ClassVar[str] = "listsNumber"
 
     JSON_NAME_NAME: ClassVar[str] = "name"
     JSON_NAME_NO_COLUMNS: ClassVar[str] = "noColumns"
+    JSON_NAME_NO_ENTRIES: ClassVar[str] = "noEntries"
     JSON_NAME_NO_LINES_FOOTER: ClassVar[str] = "noLinesFooter"
     JSON_NAME_NO_LINES_HEADER: ClassVar[str] = "noLinesHeader"
     JSON_NAME_NO_LINES_IN_DOC: ClassVar[str] = "noLinesInDocument"
     JSON_NAME_NO_LINES_IN_PAGE: ClassVar[str] = "noLinesInPage"
     JSON_NAME_NO_LINES_IN_PARA: ClassVar[str] = "noLinesInParagraph"
     JSON_NAME_NO_LINES_TOC: ClassVar[str] = "noLinesToc"
+    JSON_NAME_NO_LISTS_BULLET_IN_DOC: ClassVar[str] = "noListsBulletInDocument"
+    JSON_NAME_NO_LISTS_NUMBER_IN_DOC: ClassVar[str] = "noListsNumberInDocument"
     JSON_NAME_NO_PAGES_IN_DOC: ClassVar[str] = "noPagesInDocument"
     JSON_NAME_NO_PARAS_IN_DOC: ClassVar[str] = "noParagraphsInDocument"
     JSON_NAME_NO_PARAS_IN_PAGE: ClassVar[str] = "noParagraphsInPage"

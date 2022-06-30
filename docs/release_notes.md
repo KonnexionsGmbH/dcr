@@ -11,6 +11,7 @@ Release Date: dd.mm.2022
 
 ### 1.1 New Features
 
+- API documentation added
 - Determination of headings.
 - Determination of local structures: lists (bulleted and numbered) and tables
 
