@@ -55,6 +55,7 @@ class NLPCore:
     JSON_NAME_LINE_TYPE: ClassVar[str] = "lineType"
     JSON_NAME_LINE_TYPE_HEADING_RULES: ClassVar[str] = "lineTypeHeadingRules"
     JSON_NAME_LINE_TYPE_LIST_BULLET_RULES: ClassVar[str] = "lineTypeListBulletRules"
+    JSON_NAME_LINE_TYPE_LIST_NUMBER_RULES: ClassVar[str] = "lineTypeListNumberRules"
     JSON_NAME_LIST_NO: ClassVar[str] = "listNo"
     JSON_NAME_LISTS_BULLET: ClassVar[str] = "listsBullet"
     JSON_NAME_LISTS_NUMBER: ClassVar[str] = "listsNumber"

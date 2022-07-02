@@ -191,7 +191,7 @@ class LineTypeListNumber:
         with open(lt_list_number_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
-            for number in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_LIST_BULLET_RULES]:
+            for number in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_LIST_NUMBER_RULES]:
                 list_number_rules[number] = 0
 
         utils.progress_msg(
@@ -357,8 +357,8 @@ class LineTypeListNumber:
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: len(self._lists),
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LISTS_BULLET: self._lists,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: len(self._lists),
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LISTS_NUMBER: self._lists,
                     },
                     file_handle,
                     indent=cfg.glob.setup.json_indent,

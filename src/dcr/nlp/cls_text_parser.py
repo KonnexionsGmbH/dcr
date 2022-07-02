@@ -10,6 +10,7 @@ import db.cls_document
 import nlp.cls_line_type_headers_footers
 import nlp.cls_line_type_heading
 import nlp.cls_line_type_list_bullet
+import nlp.cls_line_type_list_number
 import nlp.cls_line_type_table
 import nlp.cls_line_type_toc
 import nlp.cls_nlp_core
@@ -126,6 +127,7 @@ class TextParser:
     #     "noLinesInDocument": 99,
     #     "noLinesToc": 99,
     #     "noListsBulletInDocument": 99,
+    #     "noListsNumberInDocument": 99,
     #     "noPagesInDocument": 99,
     #     "noParagraphsInDocument": 99,
     #     "noTablesInDocument": 99,
@@ -150,6 +152,7 @@ class TextParser:
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: cfg.glob.document.document_no_lines_toc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: cfg.glob.line_type_list_bullet.no_lists,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: cfg.glob.line_type_list_number.no_lists,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: cfg.glob.line_type_table.no_tables,
@@ -743,6 +746,7 @@ class TextParser:
             cfg.glob.line_type_toc = nlp.cls_line_type_toc.LineTypeToc()
             cfg.glob.line_type_table = nlp.cls_line_type_table.LineTypeTable()
             cfg.glob.line_type_list_bullet = nlp.cls_line_type_list_bullet.LineTypeListBullet()
+            cfg.glob.line_type_list_number = nlp.cls_line_type_list_number.LineTypeListNumber()
             cfg.glob.line_type_heading = nlp.cls_line_type_heading.LineTypeHeading()
         elif cfg.glob.setup.is_parsing_page:
             self._parse_result_page_pages = []
@@ -765,6 +769,7 @@ class TextParser:
             cfg.glob.line_type_toc.process_document()
             cfg.glob.line_type_table.process_document()
             cfg.glob.line_type_list_bullet.process_document()
+            cfg.glob.line_type_list_number.process_document()
             cfg.glob.line_type_heading.process_document()
             self._create_line_document()
         elif cfg.glob.setup.is_parsing_page:
