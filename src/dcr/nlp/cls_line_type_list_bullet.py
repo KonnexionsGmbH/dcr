@@ -14,15 +14,10 @@ import utils
 # -----------------------------------------------------------------------------
 # Global type aliases.
 # -----------------------------------------------------------------------------
-# {
-#    "bullet": "xxx",
-#    "firstEntryLLX": 99.99,
-#    "noEntries": 99,
-#    "pageNoFrom": 99,
-#    "pageNoTill": 99,
-#    "entries": []
-# },
-List = dict[str, float | int | list[str] | str]
+Entry = dict[str, int | str]
+Entries = list[Entry]
+
+List = dict[str, Entries | float | int | str]
 Lists = list[List]
 
 
@@ -59,18 +54,12 @@ class LineTypeListBullet:
         for key in self._bullet_rules:
             self._bullet_rules[key] = len(key)
 
-        # page_idx, para_no, line_lines_idx
-        self._entries: list[
-            tuple[
-                int,
-                int,
-                int,
-            ]
-        ] = []
+        # page_idx, para_no, line_lines_idx_from, line_lines_idx_till
+        self._entries: list[list[int]] = []
 
         self._line_lines_idx = -1
 
-        self._lists: list[dict[str, str]]
+        self._lists: Lists = []
 
         self._llx_lower_limit = 0.0
         self._llx_upper_limit = 0.0
@@ -82,6 +71,8 @@ class LineTypeListBullet:
 
         self._para_no = 0
         self._para_no_prev = 0
+
+        self.no_lists = 0
 
         self._exist = True
 
@@ -112,23 +103,66 @@ class LineTypeListBullet:
             + f"bullet='{self._bullet}' - entries={self._entries}"
         )
 
-        if not cfg.glob.setup.is_create_extra_file_list_bullet:
-            self._reset_list()
-            return
+        self.no_lists += 1
 
-        self._page_no_till = self._page_idx + 1
+        entries: Entries = []
 
-        # self._lists.append(
-        #     {
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_BULLET: self._bullet_prev,
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ENTRY_LLX: self._first_entry_llx,
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ENTRIES: len(self._entries),
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._page_no_from,
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._page_no_till,
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_LIST_NO: len(self._lists) + 1,
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRIES: self._entries,
-        #     }
-        # )
+        for [page_idx, para_no, line_lines_idx_from, line_lines_idx_till] in self._entries:
+            line_lines: nlp.cls_text_parser.LineLines = cfg.glob.text_parser.parse_result_line_pages[page_idx][
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
+            ]
+
+            text = []
+
+            for idx in range(line_lines_idx_from, line_lines_idx_till + 1):
+                line_lines[idx][
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
+                ] = db.cls_document.Document.DOCUMENT_LINE_TYPE_LIST_BULLET
+
+                if cfg.glob.setup.is_create_extra_file_list_bullet:
+                    text.append(line_lines[idx][nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+
+            if cfg.glob.setup.is_create_extra_file_list_bullet:
+                # {
+                #     "entryNo": 99,
+                #     "lineNoPageFrom": 99,
+                #     "lineNoPageTill": 99,
+                #     "pageNo": 99,
+                #     "paragraphNo": 99,
+                #     "text": "xxx"
+                # },
+                entries.append(
+                    {
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRY_NO: len(entries) + 1,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_FROM: line_lines_idx_from + 1,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_TILL: line_lines_idx_till + 1,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: page_idx + 1,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: para_no,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: " ".join(text),
+                    }
+                )
+
+            cfg.glob.text_parser.parse_result_line_pages[page_idx][nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES] = line_lines
+
+        if cfg.glob.setup.is_create_extra_file_list_bullet:
+            # {
+            #     "bullet": "xxx",
+            #     "listNo": 99,
+            #     "noEntries": 99,
+            #     "pageNoFrom": 99,
+            #     "pageNoTill": 99,
+            #     "entries": []
+            # },
+            self._lists.append(
+                {
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_BULLET: self._bullet,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LIST_NO: self.no_lists,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ENTRIES: len(entries),
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._entries[0][0] + 1,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._entries[-1][0] + 1,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRIES: entries,
+                }
+            )
 
         self._reset_list()
 
@@ -142,6 +176,12 @@ class LineTypeListBullet:
     # 1: bullet character(s)
     # -----------------------------------------------------------------------------
     def _init_list_bullet_rules(self) -> dict[str, int]:
+        """Initialise the bullet rules.
+
+        Returns:
+            dict[str, int]:
+                    All valid bullets and their length.
+        """
         if cfg.glob.setup.lt_list_bullet_rule_file and cfg.glob.setup.lt_list_bullet_rule_file.lower() != "none":
             lt_list_bullet_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.lt_list_bullet_rule_file)
             if os.path.isfile(lt_list_bullet_rule_file_path):
@@ -162,16 +202,17 @@ class LineTypeListBullet:
         }
 
     # -----------------------------------------------------------------------------
-    # Load bulleted list rules from a JSON file.
+    # Load the valid bullets from a JSON file.
     # -----------------------------------------------------------------------------
     @staticmethod
     def _load_list_bullet_rules_from_json(
         lt_list_bullet_rule_file: pathlib.Path,
     ) -> dict[str, int]:
-        """Load bulleted list rules from a JSON file.
+        """Load the valid bullets from a JSON file.
 
         Args:
-            lt_list_bullet_rule_file (Path): JSON file.
+            lt_list_bullet_rule_file (Path):
+                    JSON file name including directory path.
         """
         list_bullet_rules = {}
 
@@ -210,6 +251,7 @@ class LineTypeListBullet:
         if not bullet:
             if self._page_idx == self._page_idx_prev and para_no == self._para_no_prev:
                 # Paragraph already in progress.
+                self._entries[-1][-1] = self._line_lines_idx
                 return
 
             self._finish_list()
@@ -237,7 +279,7 @@ class LineTypeListBullet:
             )
             self._llx_upper_limit = round(coord_llx * (100 + cfg.glob.setup.lt_list_bullet_tolerance_llx) / 100, 2)
 
-        self._entries.append((self._page_idx, para_no, self._line_lines_idx))
+        self._entries.append([self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx])
 
         self._no_entries += 1
 
@@ -259,6 +301,7 @@ class LineTypeListBullet:
 
         for line_lines_idx, line_line in enumerate(cfg.glob.text_parser.parse_result_line_lines):
             self._line_lines_idx = line_lines_idx
+
             if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 self._process_line(line_line)
 
@@ -273,11 +316,12 @@ class LineTypeListBullet:
     # -----------------------------------------------------------------------------
     def _reset_document(self) -> None:
         """Reset the document memory."""
-        self._max_page = cfg.glob.text_parser.parse_result_no_pages_in_doc
-
-        self._lists = []
-
         utils.progress_msg_line_type_list_bullet("LineTypeListBullet: Reset the document memory")
+
+        self.no_lists = 0
+
+        if cfg.glob.setup.is_create_extra_file_list_bullet:
+            self._lists = []
 
         self._reset_list()
 
@@ -340,11 +384,18 @@ class LineTypeListBullet:
                 + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON,
             )
             with open(full_name_toc, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+                # {
+                #     "documentId": 99,
+                #     "documentFileName": "xxx",
+                #     "noListsBulletInDocument": 99,
+                #     "listsBullet": [
+                #     ]
+                # }
                 json.dump(
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: len(self._lists),
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: self.no_lists,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LISTS_BULLET: self._lists,
                     },
                     file_handle,

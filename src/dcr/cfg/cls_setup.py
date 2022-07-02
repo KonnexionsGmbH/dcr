@@ -77,8 +77,8 @@ class Setup:
     _DCR_CFG_SPACY_IGNORE_LINE_TYPE_FOOTER: ClassVar[str] = "spacy_ignore_line_type_footer"
     _DCR_CFG_SPACY_IGNORE_LINE_TYPE_HEADER: ClassVar[str] = "spacy_ignore_line_type_header"
     _DCR_CFG_SPACY_IGNORE_LINE_TYPE_HEADING: ClassVar[str] = "spacy_ignore_line_type_heading"
-    _DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_BULLETED: ClassVar[str] = "spacy_ignore_line_type_list_bulleted"
-    _DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_NUMBERED: ClassVar[str] = "spacy_ignore_line_type_list_numbered"
+    _DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_BULLET: ClassVar[str] = "spacy_ignore_line_type_list_bullet"
+    _DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_NUMBER: ClassVar[str] = "spacy_ignore_line_type_list_number"
     _DCR_CFG_SPACY_IGNORE_LINE_TYPE_TABLE: ClassVar[str] = "spacy_ignore_line_type_table"
     _DCR_CFG_SPACY_IGNORE_LINE_TYPE_TOC: ClassVar[str] = "spacy_ignore_line_type_toc"
     _DCR_CFG_SPACY_IGNORE_PUNCT: ClassVar[str] = "spacy_ignore_punct"
@@ -263,8 +263,8 @@ class Setup:
         self.is_spacy_ignore_line_type_footer = True
         self.is_spacy_ignore_line_type_header = True
         self.is_spacy_ignore_line_type_heading = False
-        self.is_spacy_ignore_line_type_list_bulleted = False
-        self.is_spacy_ignore_line_type_list_numbered = False
+        self.is_spacy_ignore_line_type_list_bullet = False
+        self.is_spacy_ignore_line_type_list_number = False
         self.is_spacy_ignore_line_type_table = False
         self.is_spacy_ignore_line_type_toc = True
         self.is_spacy_ignore_punct = True
@@ -781,11 +781,11 @@ class Setup:
         self.is_spacy_ignore_line_type_heading = self._determine_config_param_boolean(
             Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_HEADING, self.is_spacy_ignore_line_type_heading
         )
-        self.is_spacy_ignore_line_type_list_bulleted = self._determine_config_param_boolean(
-            Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_BULLETED, self.is_spacy_ignore_line_type_list_bulleted
+        self.is_spacy_ignore_line_type_list_bullet = self._determine_config_param_boolean(
+            Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_BULLET, self.is_spacy_ignore_line_type_list_bullet
         )
-        self.is_spacy_ignore_line_type_list_numbered = self._determine_config_param_boolean(
-            Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_NUMBERED, self.is_spacy_ignore_line_type_list_numbered
+        self.is_spacy_ignore_line_type_list_number = self._determine_config_param_boolean(
+            Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_NUMBER, self.is_spacy_ignore_line_type_list_number
         )
         self.is_spacy_ignore_line_type_table = self._determine_config_param_boolean(
             Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_TABLE, self.is_spacy_ignore_line_type_table
@@ -909,8 +909,8 @@ class Setup:
                     | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_FOOTER
                     | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_HEADER
                     | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_HEADING
-                    | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_BULLETED
-                    | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_NUMBERED
+                    | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_BULLET
+                    | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_NUMBER
                     | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_TABLE
                     | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_TOC
                     | Setup._DCR_CFG_SPACY_IGNORE_PUNCT

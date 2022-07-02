@@ -19,107 +19,32 @@ import utils
 # -----------------------------------------------------------------------------
 # Global type aliases.
 # -----------------------------------------------------------------------------
-# {
-#    "columnNo": 99,
-#    "columnSpan": 99,
-#    "lineNo": 99,
-#    "lineIndexPage": 99,
-#    "lineIndexParagraph": 99,
-#    "lineType": "...",
-#    "lowerLeftX": 99.99,
-#    "paragraphNo": 99,
-#    "rowNo": 99,
-#    "text": "..."
-# },
 LineLine = dict[str, int | str]
 LineLines = list[LineLine]
 
-# {
-#   "pageNo": 99,
-#   "noParagraphsInPage": 99,
-#   "noLinesInPage": 99,
-#   "lines": [...]
-# }
 LinePage = dict[str, int | LineLines]
 LinePages = list[LinePage]
 
-# {
-#    "documentId": 99,
-#    "documentFileName": "...",
-#    "noPagesInDocument": 99,
-#    "noParagraphsInDocument": 99,
-#    "noLinesInDocument": 99,
-#    "pages": [...]
-# }
-LineDocument = dict[str, int | str | LinePages]
-
-# {
-#   "paragraphNo": 99,
-#   "text": "..."
-# }
 PagePara = dict[str, int | str]
 PageParas = list[PagePara]
 
-# {
-#   "pageNo": 99,
-#   "noParagraphsInPage": 99,
-#   "paragraphs": [...]
-# }
 PagePage = dict[str, int | PageParas]
 PagePages = list[PagePage]
 
-# {
-#   "documentId": 99,
-#   "documentFileName": "...",
-#   "noPagesInDocument": 99,
-#   "noParagraphsInDocument": 99,
-#   "pages": [...]
-# }
 PageDocument = dict[str, int | PagePages | str]
 
-# {
-#   "wordNo": 99,
-#   "text": "..."
-# }
 WordWord = dict[str, int | str]
 WordWords = list[WordWord]
 
-# {
-#   "lineNo": 99,
-#   "noWordsInLine": 99,
-#   "words": [...]
-# }
 WordLine = dict[str, int | WordWords]
 WordLines = list[WordLine]
 
-# {
-#   "paragraphNo": 99,
-#   "noLinesInParagraph": 99,
-#   "noWordsInParagraph": 99,
-#   "lines": [...]
-# }
 WordPara = dict[str, int | WordLines]
 WordParas = list[WordPara]
 
-# {
-#   "pageNo": 99,
-#   "noParagraphsInPage": 99,
-#   "noLinesInPage": 99,
-#   "noWordsInPage": 99,
-#   "paragraphs": [...]
-# }
 WordPage = dict[str, int | str | WordParas]
 WordPages = list[WordPage]
 
-# {
-#   "documentId": 99,
-#   "documentFileName": "...",
-#   "noPagesInDocument": 99,
-#   "noParagraphsInDocument": 99,
-#   "noLinesInDocument": 99,
-#   "noWordsInDocument": 99,
-#   "pages": [...]
-# }
 WordDocument = dict[str, int | str | WordPages]
 
 
@@ -193,6 +118,21 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Create the data structure line: document.
     # -----------------------------------------------------------------------------
+    # {
+    #     "documentId": 99,
+    #     "documentFileName": "xxx",
+    #     "noLinesFooter": 99,
+    #     "noLinesHeader": 99,
+    #     "noLinesInDocument": 99,
+    #     "noLinesToc": 99,
+    #     "noListsBulletInDocument": 99,
+    #     "noPagesInDocument": 99,
+    #     "noParagraphsInDocument": 99,
+    #     "noTablesInDocument": 99,
+    #     "pages": [
+    #     ]
+    # }
+    # -----------------------------------------------------------------------------
     def _create_line_document(self):
         utils.check_exists_object(
             is_action_next=True,
@@ -200,33 +140,21 @@ class TextParser:
             is_line_type_table=True,
         )
 
-        json_data = {
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-        }
-
-        if cfg.glob.document.document_no_lines_footer > 0:
-            json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER] = cfg.glob.document.document_no_lines_footer
-
-        if cfg.glob.document.document_no_lines_header > 0:
-            json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER] = cfg.glob.document.document_no_lines_header
-
-        json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC] = self._parse_result_no_lines_in_doc
-
-        if cfg.glob.document.document_no_lines_toc > 0:
-            json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC] = cfg.glob.document.document_no_lines_toc
-
-        json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC] = self.parse_result_no_pages_in_doc
-        json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC] = self._parse_result_no_paras_in_doc
-
-        if cfg.glob.line_type_table.tables:
-            json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC] = len(cfg.glob.line_type_table.tables)
-
-        json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES] = self.parse_result_line_pages
-
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
-                json_data,
+                {
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER: cfg.glob.document.document_no_lines_footer,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER: cfg.glob.document.document_no_lines_header,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: cfg.glob.document.document_no_lines_toc,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: cfg.glob.line_type_list_bullet.no_lists,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: cfg.glob.line_type_table.no_tables,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self.parse_result_line_pages,
+                },
                 file_handle,
                 indent=cfg.glob.setup.json_indent,
                 sort_keys=cfg.glob.setup.is_json_sort_keys,
@@ -235,15 +163,24 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Create the data structure line: lines.
     # -----------------------------------------------------------------------------
+    # {
+    #     "coordLLX": 99.9,
+    #     "coordURX": 99.9,
+    #     "lineNo": 99,
+    #     "lineNoPage": 99,
+    #     "lineType": "xxx",
+    #     "paragraphNo": 99,
+    #     "text": "xxx"
+    # }
+    # -----------------------------------------------------------------------------
     def _create_line_lines(self):
         self._debug_xml_element_text_line()
 
         new_entry = {
             nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
             nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
             nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: self._parse_result_line_index_page + 1,
             nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
             nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
             nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
@@ -260,6 +197,14 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Create the data structure line: pages.
     # -----------------------------------------------------------------------------
+    # {
+    #     "pageNo": 99,
+    #     "noLinesInPage": 99,
+    #     "noParagraphsInPage": 99,
+    #     "lines": [
+    #     ]
+    # }
+    # -----------------------------------------------------------------------------
     def _create_line_pages(self):
         self.parse_result_line_pages.append(
             {
@@ -272,6 +217,15 @@ class TextParser:
 
     # -----------------------------------------------------------------------------
     # Create the data structure page: document.
+    # -----------------------------------------------------------------------------
+    # {
+    #     "documentId": 99,
+    #     "documentFileName": "xxx",
+    #     "noPagesInDocument": 99,
+    #     "noParagraphsInDocument": 99,
+    #     "pages": [
+    #     ]
+    # }
     # -----------------------------------------------------------------------------
     def _create_page_document(self):
         utils.check_exists_object(
@@ -296,6 +250,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Create the data structure page: pages.
     # -----------------------------------------------------------------------------
+    # {
+    #     "pageNo": 99,
+    #     "noParagraphsInPage": 99,
+    #     "paragraphs": [
+    #     ]
+    # }
+    # -----------------------------------------------------------------------------
     def _create_page_pages(self):
         self._parse_result_page_pages.append(
             {
@@ -307,6 +268,11 @@ class TextParser:
 
     # -----------------------------------------------------------------------------
     # Create the data structure page: paras.
+    # -----------------------------------------------------------------------------
+    # {
+    #     "paragraphNo": 99,
+    #     "text": "xxx"
+    # }
     # -----------------------------------------------------------------------------
     def _create_page_paras(self):
         self._debug_xml_element_text_page()
@@ -320,6 +286,17 @@ class TextParser:
 
     # -----------------------------------------------------------------------------
     # Create the data structure word: document.
+    # -----------------------------------------------------------------------------
+    # {
+    #     "documentId": 99,
+    #     "documentFileName": "xxx",
+    #     "noLinesInDocument": 99,
+    #     "noPagesInDocument": 99,
+    #     "noParagraphsInDocument": 99,
+    #     "noWordsInDocument": 99,
+    #     "pages": [
+    #     ]
+    # }
     # -----------------------------------------------------------------------------
     def _create_word_document(self):
         utils.check_exists_object(
@@ -346,6 +323,13 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Create the data structure word: lines.
     # -----------------------------------------------------------------------------
+    # {
+    #     "lineNo": 99,
+    #     "noWordsInLine": 99,
+    #     "words": [
+    #     ]
+    # }
+    # -----------------------------------------------------------------------------
     def _create_word_lines(self):
         self._parse_result_word_lines.append(
             {
@@ -357,6 +341,15 @@ class TextParser:
 
     # -----------------------------------------------------------------------------
     # Create the data structure word: pages.
+    # -----------------------------------------------------------------------------
+    # {
+    #     "pageNo": 99,
+    #     "noLinesInPage": 99,
+    #     "noParagraphsInPage": 99,
+    #     "noWordsInPage": 99,
+    #     "paragraphs": [
+    #     ]
+    # }
     # -----------------------------------------------------------------------------
     def _create_word_pages(self):
         self._parse_result_word_pages.append(
@@ -372,6 +365,14 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Create the data structure word: paras.
     # -----------------------------------------------------------------------------
+    # {
+    #     "paragraphNo": 99,
+    #     "noLinesInParagraph": 99,
+    #     "noWordsInParagraph": 99,
+    #     "lines": [
+    #     ]
+    # }
+    # -----------------------------------------------------------------------------
     def _create_word_paras(self):
         self._parse_result_word_paras.append(
             {
@@ -384,6 +385,11 @@ class TextParser:
 
     # -----------------------------------------------------------------------------
     # Create the data structure word: words.
+    # -----------------------------------------------------------------------------
+    # {
+    #     "wordNo": 99,
+    #     "text": "xxx"
+    # }
     # -----------------------------------------------------------------------------
     def _create_word_words(self):
         self._debug_xml_element_text_word()
@@ -531,9 +537,8 @@ class TextParser:
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: self._parse_result_line_index_page,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: self._parse_result_line_index_para,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: self._parse_result_line_index_page + 1,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,

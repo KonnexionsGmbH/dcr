@@ -163,30 +163,19 @@ class TokenizerSpacy:
         json_data = {
             nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
             nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-        }
-
-        if cfg.glob.document.document_no_lines_footer > 0:
-            json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER] = cfg.glob.document.document_no_lines_footer
-
-        if cfg.glob.document.document_no_lines_header > 0:
-            json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER] = cfg.glob.document.document_no_lines_header
-
-        json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC] = self._no_lines_in_doc
-
-        if cfg.glob.document.document_no_lines_toc > 0:
-            json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC] = cfg.glob.document.document_no_lines_toc
-
-        json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC] = self._no_pages_in_doc
-        json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC] = self._no_paras_in_doc
-        json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_SENTS_IN_DOC] = self._no_sents_in_doc
-
-        if nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC in cfg.glob.text_parser.parse_result_line_document:
-            json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC] = cfg.glob.text_parser.parse_result_line_document[
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER: cfg.glob.document.document_no_lines_footer,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER: cfg.glob.document.document_no_lines_header,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._no_lines_in_doc,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: cfg.glob.document.document_no_lines_toc,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self._no_pages_in_doc,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._no_paras_in_doc,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_SENTS_IN_DOC: self._no_sents_in_doc,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: cfg.glob.text_parser.parse_result_line_document[
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC
-            ]
-
-        json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_DOC] = self._no_tokens_in_doc
-        json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES] = self._token_pages
+            ],
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_DOC: self._no_tokens_in_doc,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self._token_pages,
+        }
 
         if cfg.glob.setup.is_tokenize_2_jsonfile:
             with open(self._full_name, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
@@ -711,10 +700,10 @@ class TokenizerSpacy:
                 and cfg.glob.setup.is_spacy_ignore_line_type_header
                 or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_HEADING
                 and cfg.glob.setup.is_spacy_ignore_line_type_heading
-                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_LIST_BULLETED
-                and cfg.glob.setup.is_spacy_ignore_line_type_list_bulleted
-                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_LIST_NUMBERED
-                and cfg.glob.setup.is_spacy_ignore_line_type_list_numbered
+                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_LIST_BULLET
+                and cfg.glob.setup.is_spacy_ignore_line_type_list_bullet
+                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_LIST_NUMBER
+                and cfg.glob.setup.is_spacy_ignore_line_type_list_number
                 or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_TABLE
                 and cfg.glob.setup.is_spacy_ignore_line_type_table
                 or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_TOC

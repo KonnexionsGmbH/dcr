@@ -210,7 +210,7 @@ class LineTypeHeaderFooters:
 
             self._line_data[ind] = (  # type: ignore
                 (
-                    page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE],
+                    int(page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1,
                     page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT],
                 ),
                 prev,
@@ -252,7 +252,7 @@ class LineTypeHeaderFooters:
 
             self._line_data[ind] = (  # type: ignore
                 (
-                    page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE],
+                    int(page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1,
                     page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT],
                 ),
                 prev,
@@ -279,7 +279,7 @@ class LineTypeHeaderFooters:
             page_no = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
 
             for line_line in page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]:
-                line_index_page = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE]
+                line_index_page = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1
                 if (page_no, line_index_page) in self._result_data:
                     line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = self._result_data[(page_no, line_index_page)]
                     if page_no == 2:

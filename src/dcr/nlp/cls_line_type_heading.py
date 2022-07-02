@@ -16,20 +16,6 @@ import utils
 # -----------------------------------------------------------------------------
 # Global type aliases.
 # -----------------------------------------------------------------------------
-# {
-#    "columnNo": 99,
-#    "columnSpan": 99,
-#    "lineNo": 99,
-#    "lineIndexPage": 99,
-#    "lineIndexParagraph": 99,
-#    "lineType": "...",
-#    "lowerLeftX": 99.99,
-#    "paragraphNo": 99,
-#    "rowNo": 99,
-#    "text": "..."
-# },
-LineLine = dict[str, int | str]
-LineLines = list[LineLine]
 
 
 # pylint: disable=too-many-instance-attributes
@@ -155,6 +141,15 @@ class LineTypeHeading:
 
         self._page_idx = 0
 
+        # [
+        #     {
+        #         "headingLevel": 99,
+        #         "headingText": "xxx",
+        #         "pageNo": 99,
+        #         "headingCtxLine99": "xxx",
+        #         "regexp": "xxx"
+        #     },
+        # ]
         self._toc: list[dict[str, int | object | str]] = []
 
         self._exist = True
@@ -206,6 +201,14 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     # Create a table of content entry.
     # -----------------------------------------------------------------------------
+    #     {
+    #         "headingLevel": 99,
+    #         "headingText": "xxx",
+    #         "pageNo": 99,
+    #         "headingCtxLine9": "xxx",
+    #         "regexp": "xxxx"
+    #     }
+    # -----------------------------------------------------------------------------
     def _create_toc_entry(self, level: int, text: str) -> None:
 
         """Create a table of content entry.
@@ -225,7 +228,7 @@ class LineTypeHeading:
 
         if cfg.glob.setup.lt_heading_file_incl_no_ctx > 0:
             page_idx = self._page_idx
-            line_lines: LineLines = cfg.glob.text_parser.parse_result_line_lines
+            line_lines: nlp.cls_text_parser.LineLines = cfg.glob.text_parser.parse_result_line_lines
             line_lines_idx = self._line_lines_idx + 1
 
             for idx in range(cfg.glob.setup.lt_heading_file_incl_no_ctx):
@@ -238,9 +241,10 @@ class LineTypeHeading:
 
                 toc_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_HEADING_CTX_LINE + str(idx + 1)] = line
 
-                page_idx = new_page_idx
                 line_lines = new_line_lines
                 line_lines_idx = new_line_lines_idx
+
+                page_idx = new_page_idx
 
         if cfg.glob.setup.is_lt_heading_file_incl_regexp:
             toc_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP] = self._heading_rules_hierarchy[level - 1][8]
@@ -251,8 +255,8 @@ class LineTypeHeading:
     # Get the next body line.
     # -----------------------------------------------------------------------------
     def _get_next_body_line(
-        self, page_idx: int, line_lines: LineLines, line_lines_idx: int
-    ) -> tuple[str, int, LineLines, int]:
+        self, page_idx: int, line_lines: nlp.cls_text_parser.LineLines, line_lines_idx: int
+    ) -> tuple[str, int, nlp.cls_text_parser.LineLines, int]:
         """Get the next body line.
 
         Args:
@@ -268,17 +272,17 @@ class LineTypeHeading:
                     found line or empty, last page searched, lines of this page, last checked line.
         """
         for idx in range(line_lines_idx + 1, len(line_lines)):
-            line_line: LineLine = line_lines[idx]
+            line_line: nlp.cls_text_parser.LineLine = line_lines[idx]
 
             if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 continue
 
-            return line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT], page_idx, line_lines, idx  # type: ignore
+            return line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT], page_idx, line_lines, idx
 
         if (page_idx_local := page_idx + 1) == self._max_page:
             return "", page_idx, line_lines, line_lines_idx
 
-        line_lines_local: LineLines = cfg.glob.text_parser.parse_result_line_pages[page_idx_local][
+        line_lines_local: nlp.cls_text_parser.LineLines = cfg.glob.text_parser.parse_result_line_pages[page_idx_local][
             nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
         ]
 
@@ -291,8 +295,9 @@ class LineTypeHeading:
                 page_idx_local,
                 line_lines_local,
                 idx + 1,
-            )  # type: ignore
+            )
 
+        # not testable
         return "", page_idx, line_lines, line_lines_idx
 
     # -----------------------------------------------------------------------------
@@ -657,6 +662,7 @@ class LineTypeHeading:
             int: The heading level or zero.
         """
         if (text := line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]) == "":
+            # not testable
             return 0
 
         for (rule_name, pattern) in self._anti_patterns:
@@ -839,6 +845,12 @@ class LineTypeHeading:
                 + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON,
             )
             with open(full_name_toc, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+                # {
+                #     "documentId": 99,
+                #     "documentFileName": "xxx",
+                #     "toc": [
+                #     ]
+                # }
                 json.dump(
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,

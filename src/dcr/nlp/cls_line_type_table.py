@@ -12,39 +12,12 @@ import utils
 # -----------------------------------------------------------------------------
 # Global type aliases.
 # -----------------------------------------------------------------------------
-# {
-#    "columnNo": 99,
-#    "columnSpan": 99,
-#    "coordLLX": 99.99,
-#    "coordURX": 99.99,
-#    "lineIndexPage": 99,
-#    "lineIndexParagraph": 99,
-#    "lineNo": 99,
-#    "paragraphNo": 99,
-#    "text": "..."
-# },
 Column = dict[str, float | int | object | str]
 Columns = list[Column]
 
-# {
-#    "firstColumnLLX": 99.99,
-#    "lastColumnURX": 99.99,
-#    "noColumns": 99,
-#    "rowNo": 99,
-#    "columns": []
-# },
 Row = dict[str, Columns | float | int | str]
 Rows = list[Row]
 
-# {
-#    "firstRowURX": 99.99,
-#    "firstRowLLX": 99.99,
-#    "noColumns": 99,
-#    "noRows": 99,
-#    "pageNoFrom": 99,
-#    "pageNoTill": 99,
-#    "rows": []
-# },
 Table = dict[str, float | int | Rows]
 Tables = list[Table]
 
@@ -101,7 +74,9 @@ class LineTypeTable:
         self._row_no_prev = 0
         self._rows: Rows = []
 
-        self.tables: Tables = []
+        self._tables: Tables = []
+
+        self.no_tables = 0
 
         self._exist = True
 
@@ -122,6 +97,13 @@ class LineTypeTable:
         self._no_columns_table += no_columns
         row_no = len(self._rows) + 1
 
+        # {
+        #    "firstColumnLLX": 99.99,
+        #    "lastColumnURX": 99.99,
+        #    "noColumns": 99,
+        #    "rowNo": 99,
+        #    "columns": []
+        # },
         self._rows.append(
             {
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_COLUMN_LLX: self._first_column_llx,
@@ -146,9 +128,20 @@ class LineTypeTable:
 
         self._finish_row()
 
+        self.no_tables += 1
         self._page_no_till = self._page_idx + 1
 
-        self.tables.append(
+        # {
+        #    "firstRowLLX": 99.99,
+        #    "firstRowURX": 99.99,
+        #    "noColumns": 99,
+        #    "noRows": 99,
+        #    "pageNoFrom": 99,
+        #    "pageNoTill": 99,
+        #    "tableNo": 99,
+        #    "rows": []
+        # },
+        self._tables.append(
             {
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ROW_LLX: self._first_row_llx,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ROW_URX: self._first_row_urx,
@@ -156,7 +149,7 @@ class LineTypeTable:
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ROWS: len(self._rows),
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._page_no_from,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._page_no_till,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLE_NO: len(self.tables) + 1,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLE_NO: self.no_tables,
                 nlp.cls_nlp_core.NLPCore.JSON_NAME_ROWS: self._rows,
             }
         )
@@ -213,17 +206,21 @@ class LineTypeTable:
             self._first_column_llx = coord_llx
         self._last_column_urx = coord_urx
 
+        # {
+        #     "columnNo": 99,
+        #     "coordLLX": 99.9,
+        #     "coordURX": 99.9,
+        #     "lineNo": 99,
+        #     "lineNoPage": 99,
+        #     "paragraphNo": 99,
+        #     "text": "xxx"
+        # }
         new_entry = {
             nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO],
             nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: coord_llx,
             nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: coord_urx,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE: line_line[
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PAGE
-            ],
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA: line_line[
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_INDEX_PARA
-            ],
             nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO],
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE],
             nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO],
             nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: text,
         }
@@ -269,7 +266,11 @@ class LineTypeTable:
         """Reset the document memory."""
         self._max_page = cfg.glob.text_parser.parse_result_no_pages_in_doc
 
-        self.tables = []
+        self.no_tables = 0
+
+        self._tables = []
+
+        self.table_no = 0
 
         utils.progress_msg_line_type_table("LineTypeTable: Reset the document memory")
 
@@ -306,6 +307,8 @@ class LineTypeTable:
         self._row_no_prev = 0
         self._rows = []
 
+        self.table_no = 0
+
         utils.progress_msg_line_type_table("LineTypeTable: Reset the table memory")
 
         self._reset_row()
@@ -340,7 +343,7 @@ class LineTypeTable:
             cfg.glob.text_parser.parse_result_line_lines = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
-        if cfg.glob.setup.is_create_extra_file_table and self.tables:
+        if cfg.glob.setup.is_create_extra_file_table and self._tables:
             full_name_toc = utils.get_full_name(
                 cfg.glob.action_curr.action_directory_name,
                 cfg.glob.action_curr.get_stem_name()  # type: ignore
@@ -348,12 +351,19 @@ class LineTypeTable:
                 + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON,
             )
             with open(full_name_toc, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+                # {
+                #     "documentId": 99,
+                #     "documentFileName": "xxx",
+                #     "noTablesInDocument": 99,
+                #     "tables": [
+                #     ]
+                # }
                 json.dump(
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: len(self.tables),
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLES: self.tables,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: self.no_tables,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLES: self._tables,
                     },
                     file_handle,
                     indent=cfg.glob.setup.json_indent,

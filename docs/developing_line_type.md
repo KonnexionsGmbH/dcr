@@ -24,9 +24,9 @@ The following three rule-based algorithms are used to determine the line type in
 The headers and footers are determined by a similarity comparison of the first `lt_header_max_lines` and last `lt_footer_max_lines` lines respectively. 
 
 2. `close together`
-The elements of bulleted or numbered lists must be close together and are determined by regular expressions. 
-Tables have already been marked accordingly by PDFlib TET.
 A table of contents must be in the first `lt_toc_last_page` pages and consists of either a list or a table with ascending page numbers.
+Tables have already been marked accordingly by PDFlib TET.
+The elements of bulleted or numbered lists must be close together and are determined by regular expressions. 
 
 3. `headings`
 Headings extend across the entire document and can have hierarchical structures. 
@@ -36,7 +36,7 @@ The headings are determined with rule-enriched regular expressions.
 
 The following parameter controls both the classification of the headers and the footers:
 
-**`verbose_lt_headers_footers`**
+- **`verbose_lt_headers_footers`**
 
 Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
 
@@ -46,21 +46,21 @@ Default value: **`false`** - the verbose mode is an option that provides additio
 
 The following parameters control the classification of the footers:
 
-**`lt_footer_max_distance`**
+- **`lt_footer_max_distance`**
 
 Default value: **`3`** - The degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
 The value zero stands for identical lines. 
 The larger the Levenshtein distance, the more different the rows are. 
 If the header lines do not contain a page numbers, then the parameter should be set to `0`.
 
-**`lt_footer_max_lines`**
+- **`lt_footer_max_lines`**
 
 Default value: **`3`** - the number of lines from the bottom of the page to be analyzed as possible candidates for footers.
 With the value zero the classification of footers is prevented.
 
-**`spacy_ignore_line_type_footer`**
+- **`spacy_ignore_line_type_footer`**
 
-Default value: **`true`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
+Default value: **`true`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenization.
 
 #### 1.1.2 Algorithm
 
@@ -74,7 +74,7 @@ Default value: **`true`** -  determines whether the lines of this type are ignor
 
 The following parameters control the classification of the headers:
 
-**`lt_header_max_distance`**
+- **`lt_header_max_distance`**
 
 Default value: **`3`** - the degree of similarity of rows is determined by means of the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
 The value zero stands for identical lines. 
@@ -87,14 +87,14 @@ If the footer lines contain a page number, then depending on the number of pages
  | < 100          | 2                    |
  | < 1000         | 3                    |
 
-**`lt_header_max_lines`**
+- **`lt_header_max_lines`**
 
 Default value: **`3`** - the number of lines from the top of the page to be analyzed as possible candidates for headers.
 A value of zero prevents the classification of headers.
 
-**`spacy_ignore_line_type_header`**
+- **`spacy_ignore_line_type_header`**
 
-Default value: **`true`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
+Default value: **`true`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenization.
 
 #### 1.2.2 Algorithm
 
@@ -113,20 +113,20 @@ An attempt is made here to recognise a table of contents contained in the docume
 
 The following parameters control the classification of a table of contents included in the document:
 
-**`lt_toc_last_page`**
+- **`lt_toc_last_page`**
 
 Default value: **`3`** - sets the number of pages that will be searched for a table of contents from the beginning of the document.
 A value of zero prevents the search for a table of contents.
 
-**`lt_toc_min_entries`**
+- **`lt_toc_min_entries`**
 
 Default value: **`3`** - defines the minimum number of entries that a table of contents must contain.
 
-**`spacy_ignore_line_type_toc`**
+- **`spacy_ignore_line_type_toc`**
 
-Default value: **`true`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
+Default value: **`true`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenization.
 
-**`verbose_lt_toc`**
+- **`verbose_lt_toc`**
 
 Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
 
@@ -156,25 +156,84 @@ A block of lines with the following properties is searched here:
 
 The following parameters control the classification of the tables:
 
-**`create_extra_file_table`**
+- **`create_extra_file_table`**
 
 Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_table.json` is created in the file directory `data_accepted` with the identified tables.
 
-**`lt_table_file_incl_empty_columns`**
+- **`lt_table_file_incl_empty_columns`**
 
 Default value: **`true`** - if true, the empty columns are included in the **`JSON`** file `<document_name>_table.json`.
 
-**`spacy_ignore_line_type_table`**
+- **`spacy_ignore_line_type_table`**
 
-Default value: **`false`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
+Default value: **`false`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenization.
 
-**`verbose_lt_table`**
+- **`verbose_lt_table`**
 
 Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
 
 ## 4 Bulleted Lists
 
-TBD: bulleted and numbered lists which must be close together and are determined by regular expressions. 
+An element of a bulleted list extends either over a whole line or over a complete paragraph.
+All elements of a bulleted list must begin with one or more of the same characters and must not be interrupted by other lines or paragraphs.
+
+### 4.1 Parameters
+
+The following parameters control the classification of a bulleted list:
+
+- **`create_extra_file_list_bullet`**
+
+Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_list_bullet.json` is created in the file directory `data_accepted` with the identified bulleted lists.
+
+- **`lt_list_bullet_min_entries`**
+
+Default value: **`2`** - the minimum number of entries in a bulleted list.
+
+- **`lt_list_bullet_rule_file`**
+
+Default value: **`none`** - name of a file including file directory that contains the rules for determining the bulleted lists.
+**`none`** means that the given default rules are applied.
+
+- **`lt_list_bullet_tolerance_llx`**
+
+Default value: **`5`** - percentage tolerance for the differences in indentation of an entry in a bulleted list.
+
+- **`spacy_ignore_line_type_list_bullet`**
+
+Default value: **`false`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenization.
+
+- **`verbose_lt_list_bullet`**
+
+Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
+
+### 4.2 Classification Identifiers
+
+The following table shows the standard identifiers in the default processing order:
+
+| identifier | Hexadecimal |
+|------------|-------------|
+| "- "       | 2D20        | 
+| ". "       | 2E20        |
+| "\ufffd "  |             |
+| "o "       | 6F20        |
+| "° "       | C2B020      |
+| "• "       | E280A220    |
+| "‣ "       | E280A320    |
+
+However, these default rules can also be overridden via a **`JSON`** file (see parameter **`lt_list_bullet_rule_file`**). 
+An example file can be found in the file directory **`data`** with the file name **`line_type_list_bullet_rules.json`**.
+
+    {
+      "lineTypeListBulletRules": [
+        "- ",
+        ". ",
+        "\ufffd ",
+        "o ",
+        "° ",
+        "• ",
+        "‣ "
+      ]
+    }
 
 ## 5 Numbered Lists
 
@@ -186,46 +245,46 @@ TBD
 
 The following parameters control the classification of the headings:
 
-**`create_extra_file_toc`**
+- **`create_extra_file_toc`**
 
 Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_toc.json` is created in the file directory `data_accepted` with the identified headings.
 
-**`lt_heading_file_incl_no_ctx`**
+- **`lt_heading_file_incl_no_ctx`**
 
 Default value: **`1`** - the `n` lines following the heading are included as context into the **`JSON`** file.
 
-**`lt_heading_file_incl_regexp`**
+- **`lt_heading_file_incl_regexp`**
 
 Default value: **`false`** - if true, the regular expression for the heading is included in the **`JSON`** file.
 
-**`lt_heading_max_level`**
+- **`lt_heading_max_level`**
 
 Default value: **`3`** - the maximum number of hierarchical heading levels.
 
-**`lt_heading_min_pages`**
+- **`lt_heading_min_pages`**
 
 Default value: **`2`** - the minimum number of document pages for determining headings.
 
-**`heading_rules_file`**
+- **`lt_heading_rule_file`**
 
 Default value: **`none`** - name of a file including file directory that contains the rules for determining the headings.
 **`none`** means that the given default rules are applied.
 
-**`lt_heading_tolerance_llx`**
+- **`lt_heading_tolerance_llx`**
 
 Default value: **`5`** - percentage tolerance for the differences in indentation of a heading at the same level.
 
-**`spacy_ignore_line_type_heading`**
+- **`spacy_ignore_line_type_heading`**
 
-Default value: **`false`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenisation.
+Default value: **`false`** -  determines whether the lines of this type are ignored (**true**) or not (**false**) during tokenization.
 
-**`verbose_lt_heading`**
+- **`verbose_lt_heading`**
 
 Default value: **`false`** - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.
 
-### 6.2 Heading Rules
+### 6.2 Classification Rules
 
-A heading rule contains the following 5 elements:
+A heading classification rule contains the following 5 elements:
 
 | Nr. | element name        | description                                                                                              |
 |-----|---------------------|----------------------------------------------------------------------------------------------------------|
@@ -282,7 +341,7 @@ e) `"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$"`
 
 f) `"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\.$"`
 
-However, these default rules can also be overridden via a **`JSON`** file (see parameter **`heading_rules_file`**). 
+However, these default rules can also be overridden via a **`JSON`** file (see parameter **`lt_heading_rule_file`**). 
 An example file can be found in the file directory **`data`** with the file name **`heading_rules_test.json`**.
 
     {

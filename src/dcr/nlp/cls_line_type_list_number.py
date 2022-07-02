@@ -15,6 +15,17 @@ import utils
 # Global type aliases.
 # -----------------------------------------------------------------------------
 # {
+#     "entryNo": 99,
+#     "lineNoPageFrom": 99,
+#     "lineNoPageTill": 99,
+#     "pageNo": 99,
+#     "paragraphNo": 99,
+#     "text": "xxx"
+# },
+Entry = dict[str, int | str]
+Entries = list[Entry]
+
+# {
 #    "number": "xxx",
 #    "firstEntryLLX": 99.99,
 #    "noEntries": 99,
@@ -22,7 +33,7 @@ import utils
 #    "pageNoTill": 99,
 #    "entries": []
 # },
-List = dict[str, float | int | list[str] | str]
+List = dict[str, Entries | float | int | str]
 Lists = list[List]
 
 
@@ -70,7 +81,7 @@ class LineTypeListNumber:
 
         self._line_lines_idx = -1
 
-        self._lists: list[dict[str, str]]
+        self._lists: Lists = []
 
         self._llx_lower_limit = 0.0
         self._llx_upper_limit = 0.0
@@ -82,6 +93,8 @@ class LineTypeListNumber:
 
         self._para_no = 0
         self._para_no_prev = 0
+
+        self.no_lists = 0
 
         self._exist = True
 

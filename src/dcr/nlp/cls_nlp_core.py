@@ -32,6 +32,7 @@ class NLPCore:
     JSON_NAME_DOC_ID: ClassVar[str] = "documentId"
 
     JSON_NAME_ENTRIES: ClassVar[str] = "entries"
+    JSON_NAME_ENTRY_NO: ClassVar[str] = "entryNo"
 
     JSON_NAME_FIRST_COLUMN_LLX: ClassVar[str] = "firstColumnLLX"
     JSON_NAME_FIRST_ENTRY_LLX: ClassVar[str] = "firstEntryLLX"
@@ -47,9 +48,10 @@ class NLPCore:
 
     JSON_NAME_LAST_COLUMN_URX: ClassVar[str] = "lastColumnURX"
     JSON_NAME_LINES: ClassVar[str] = "lines"
-    JSON_NAME_LINE_INDEX_PAGE: ClassVar[str] = "lineIndexPage"
-    JSON_NAME_LINE_INDEX_PARA: ClassVar[str] = "lineIndexParagraph"
     JSON_NAME_LINE_NO: ClassVar[str] = "lineNo"
+    JSON_NAME_LINE_NO_PAGE: ClassVar[str] = "lineNoPage"
+    JSON_NAME_LINE_NO_PAGE_FROM: ClassVar[str] = "lineNoPageFrom"
+    JSON_NAME_LINE_NO_PAGE_TILL: ClassVar[str] = "lineNoPageTill"
     JSON_NAME_LINE_TYPE: ClassVar[str] = "lineType"
     JSON_NAME_LINE_TYPE_HEADING_RULES: ClassVar[str] = "lineTypeHeadingRules"
     JSON_NAME_LINE_TYPE_LIST_BULLET_RULES: ClassVar[str] = "lineTypeListBulletRules"
