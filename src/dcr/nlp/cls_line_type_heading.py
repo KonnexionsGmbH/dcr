@@ -60,9 +60,16 @@ class LineTypeHeading:
 
         self._lt_heading_max_level_curr = 0
 
-        self._heading_rules: list[
-            tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]
-        ] = self._init_heading_rules()
+        self._line_lines_idx = 0
+
+        self._level_prev = 0
+
+        self._max_line_line = 0
+        self._max_page = 0
+
+        self._page_idx = 0
+
+        self._rules: list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]] = self._init_rules()
 
         # -----------------------------------------------------------------------------
         # Heading rules collection.
@@ -80,12 +87,12 @@ class LineTypeHeading:
         # 6: regexp_str:
         #           regular expression
         # -----------------------------------------------------------------------------
-        self._heading_rules_collection: list[
+        self._rules_collection: list[
             tuple[str, bool, re.Pattern[str], collections.abc.Callable[[str, str], bool], list[str], str]
         ] = []
 
-        for (rule_name, is_first_token, regexp_str, function_is_asc, start_values) in self._heading_rules:
-            self._heading_rules_collection.append(
+        for (rule_name, is_first_token, regexp_str, function_is_asc, start_values) in self._rules:
+            self._rules_collection.append(
                 (
                     rule_name.ljust(self._RULE_NAME_SIZE),
                     is_first_token,
@@ -97,7 +104,7 @@ class LineTypeHeading:
             )
 
         # -----------------------------------------------------------------------------
-        # Heading rules hierarchy for determining the headings.
+        # Rules hierarchy for determining the headings.
         # -----------------------------------------------------------------------------
         # 1: rule_name
         # 2: is_first_token:
@@ -118,7 +125,7 @@ class LineTypeHeading:
         # 9: regexp_str:
         #           regular expression
         # -----------------------------------------------------------------------------
-        self._heading_rules_hierarchy: list[
+        self._rules_hierarchy: list[
             tuple[
                 str,
                 bool,
@@ -131,15 +138,6 @@ class LineTypeHeading:
                 str,
             ]
         ] = []
-
-        self._line_lines_idx = 0
-
-        self._level_prev = 0
-
-        self._max_line_line = 0
-        self._max_page = 0
-
-        self._page_idx = 0
 
         # [
         #     {
@@ -159,44 +157,6 @@ class LineTypeHeading:
         )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-    # -----------------------------------------------------------------------------
-    # Convert a roman numeral to integer.
-    # -----------------------------------------------------------------------------
-    @classmethod
-    def _convert_roman_2_int(cls, roman: str) -> int:
-        """Convert a roman numeral to integer.
-
-        Args:
-            roman (str): The roman numeral.
-
-        Returns:
-            int: The corresponding integer.
-        """
-        tallies = {
-            "i": 1,
-            "v": 5,
-            "x": 10,
-            "l": 50,
-            "c": 100,
-            "d": 500,
-            "m": 1000,
-            # specify more numerals if you wish
-        }
-
-        integer: int = 0
-
-        for i in range(len(roman) - 1):
-            left = roman[i]
-            right = roman[i + 1]
-            if tallies[left] < tallies[right]:
-                integer -= tallies[left]
-            else:
-                integer += tallies[left]
-
-        integer += tallies[roman[-1]]
-
-        return integer
 
     # -----------------------------------------------------------------------------
     # Create a table of content entry.
@@ -247,7 +207,7 @@ class LineTypeHeading:
                 page_idx = new_page_idx
 
         if cfg.glob.setup.is_lt_heading_file_incl_regexp:
-            toc_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP] = self._heading_rules_hierarchy[level - 1][8]
+            toc_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP] = self._rules_hierarchy[level - 1][8]
 
         self._toc.append(toc_entry)
 
@@ -314,14 +274,20 @@ class LineTypeHeading:
     # 5: start_values:
     #           list of strings
     # -----------------------------------------------------------------------------
-    def _init_heading_rules(self) -> list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+    def _init_rules(self) -> list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+        """Initialise the heading rules.
+
+        Returns:
+            list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+                The valid heading rules.
+        """
         if cfg.glob.setup.lt_heading_rule_file and cfg.glob.setup.lt_heading_rule_file.lower() != "none":
             lt_heading_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.lt_heading_rule_file)
             if os.path.isfile(lt_heading_rule_file_path):
-                return self._load_heading_rules_from_json(pathlib.Path(lt_heading_rule_file_path))
+                return self._load_rules_from_json(pathlib.Path(lt_heading_rule_file_path))
 
             utils.terminate_fatal(
-                f"File with heading rule file is missing - " f"file name '{cfg.glob.setup.lt_heading_rule_file}'"
+                f"File with heading rules is missing - " f"file name '{cfg.glob.setup.lt_heading_rule_file}'"
             )
 
         return [
@@ -329,325 +295,168 @@ class LineTypeHeading:
                 "(999)",
                 True,
                 r"\(\d+\)$",
-                self._is_asc_string_integers,
+                nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
                 ["(1)"],
             ),
             (
                 "(A)",
                 True,
                 r"\([A-Z]\)$",
-                self._is_asc_uppercase_letters,
+                nlp.cls_nlp_core.NLPCore.is_asc_uppercase_letters,
                 ["(A)"],
             ),
             (
                 "(ROM)",
                 True,
                 r"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$",
-                self._is_asc_romans,
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
                 ["(I)"],
             ),
             (
                 "(a)",
                 True,
                 r"\([a-z]\)$",
-                self._is_asc_lowercase_letters,
+                nlp.cls_nlp_core.NLPCore.is_asc_lowercase_letters,
                 ["(a)"],
             ),
             (
                 "(rom)",
                 True,
                 r"\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$",
-                self._is_asc_romans,
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
                 ["(i)"],
             ),
             (
                 "999)",
                 True,
                 r"\d+\)$",
-                self._is_asc_string_integers,
+                nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
                 ["1)"],
             ),
             (
                 "999.",
                 True,
                 r"\d+\.$",
-                self._is_asc_string_integers,
+                nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
                 ["1."],
             ),
             (
                 "999.999",
                 True,
                 r"\d+\.\d\d\d$",
-                self._is_asc_string_floats,
+                nlp.cls_nlp_core.NLPCore.is_asc_string_floats,
                 ["1.000", "1.001"],
             ),
             (
                 "999.99",
                 True,
                 r"\d+\.\d\d$",
-                self._is_asc_string_floats,
+                nlp.cls_nlp_core.NLPCore.is_asc_string_floats,
                 ["1.00", "1.01"],
             ),
             (
                 "999.9",
                 True,
                 r"\d+\.\d$",
-                self._is_asc_string_floats,
+                nlp.cls_nlp_core.NLPCore.is_asc_string_floats,
                 ["1.0", "1.1"],
             ),
             (
                 "A)",
                 True,
                 r"[A-Z]\)$",
-                self._is_asc_uppercase_letters,
+                nlp.cls_nlp_core.NLPCore.is_asc_uppercase_letters,
                 ["A)"],
             ),
             (
                 "A.",
                 True,
                 r"[A-Z]\.$",
-                self._is_asc_uppercase_letters,
+                nlp.cls_nlp_core.NLPCore.is_asc_uppercase_letters,
                 ["A."],
             ),
             (
                 "ROM)",
                 True,
                 r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$",
-                self._is_asc_romans,
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
                 ["I)"],
             ),
             (
                 "ROM.",
                 True,
                 r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\.$",
-                self._is_asc_romans,
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
                 ["I."],
             ),
             (
                 "a)",
                 True,
                 r"[a-z]\)$",
-                self._is_asc_lowercase_letters,
+                nlp.cls_nlp_core.NLPCore.is_asc_lowercase_letters,
                 ["a)"],
             ),
             (
                 "a.",
                 True,
                 r"[a-z]\.$",
-                self._is_asc_lowercase_letters,
+                nlp.cls_nlp_core.NLPCore.is_asc_lowercase_letters,
                 ["a."],
             ),
             (
                 "rom)",
                 True,
                 r"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$",
-                self._is_asc_romans,
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
                 ["i)"],
             ),
             (
                 "rom.",
                 True,
                 r"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\.$",
-                self._is_asc_romans,
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
                 ["i."],
             ),
         ]
 
     # -----------------------------------------------------------------------------
-    # Ignore the comparison.
-    # -----------------------------------------------------------------------------
-    @classmethod
-    def _is_asc_ignore(cls, _predecessor: str, _successor: str) -> bool:
-        """Ignore the comparison.
-
-        Returns:
-            bool: True.
-        """
-        return True
-
-    # -----------------------------------------------------------------------------
-    # Compare two lowercase letters on difference ascending 1.
-    # -----------------------------------------------------------------------------
-    @classmethod
-    def _is_asc_lowercase_letters(cls, predecessor: str, successor: str) -> bool:
-        """Compare two lowercase_letters on ascending.
-
-        Args:
-            predecessor (str): The previous string.
-            successor (str): The current string.
-
-        Returns:
-            bool: True, if the successor - predecessor is equal to 1, False else.
-        """
-        if (predecessor_ints := re.findall(r"[a-z]", predecessor.lower())) and (
-            successor_ints := re.findall(r"[a-z]", successor.lower())
-        ):
-            if ord(successor_ints[0]) - ord(predecessor_ints[0]) == 1:
-                return True
-
-        return False
-
-    # -----------------------------------------------------------------------------
-    # Compare two roman numerals on ascending.
-    # -----------------------------------------------------------------------------
-    @classmethod
-    def _is_asc_romans(cls, predecessor: str, successor: str) -> bool:
-        """Compare two roman numerals on ascending.
-
-        Args:
-            predecessor (str): The previous roman numeral.
-            successor (str): The current roman numeral.
-
-        Returns:
-            bool: False, if the predecessor is greater than the current value, True else.
-        """
-        # TBD depending on different regexp patterns
-        # if predecessor[0] == "(":
-        #     predecessor_net = predecessor[1:-1]
-        #     successor_net = successor[1:-1]
-        # else:
-        #     predecessor_net = predecessor
-        #     successor_net = successor
-
-        if predecessor[0:1] == "(":
-            predecessor_net = predecessor[1:]
-        else:
-            predecessor_net = predecessor
-        if predecessor_net[-1] in {")", "."}:
-            predecessor_net = predecessor_net[:-1]
-
-        if successor[0:1] == "(":
-            successor_net = successor[1:]
-        else:
-            successor_net = successor
-        if successor_net[-1] in {")", "."}:
-            successor_net = successor_net[:-1]
-
-        if (
-            LineTypeHeading._convert_roman_2_int(successor_net.lower())
-            - LineTypeHeading._convert_roman_2_int(predecessor_net.lower())
-            == 1
-        ):
-            return True
-
-        return False
-
-    # -----------------------------------------------------------------------------
-    # Compare two strings on ascending.
-    # -----------------------------------------------------------------------------
-    @classmethod
-    def _is_asc_strings(cls, predecessor: str, successor: str) -> bool:
-        """Compare two strings on ascending.
-
-        Args:
-            predecessor (str): The previous string.
-            successor (str): The current string.
-
-        Returns:
-            bool: False, if the predecessor is greater than the current value, True else.
-        """
-        if predecessor > successor:
-            return False
-
-        return True
-
-    # -----------------------------------------------------------------------------
-    # Compare two string floats on ascending.
-    # -----------------------------------------------------------------------------
-    @classmethod
-    def _is_asc_string_floats(cls, predecessor: str, successor: str) -> bool:
-        """Compare two string float numbers on ascending.
-
-        Args:
-            predecessor (str): The previous string float number.
-            successor (str): The current string float number.
-
-        Returns:
-            bool: False, if the predecessor is greater than the current value, True else.
-        """
-        if (predecessor_floats := re.findall(r"\d+\.\d+", predecessor)) and (
-            successor_floats := re.findall(r"\d+\.\d+", successor)
-        ):
-            if 0 < float(successor_floats[0]) - float(predecessor_floats[0]) <= 1:
-                return True
-
-        return False
-
-    # -----------------------------------------------------------------------------
-    # Compare two string integers on difference ascending 1.
-    # -----------------------------------------------------------------------------
-    @classmethod
-    def _is_asc_string_integers(cls, predecessor: str, successor: str) -> bool:
-        """Compare two string integers on ascending.
-
-        Args:
-            predecessor (str): The previous string integer.
-            successor (str): The current string integer.
-
-        Returns:
-            bool: True, if the successor - predecessor is equal to 1, False else.
-        """
-        if (predecessor_ints := re.findall(r"\d+", predecessor)) and (successor_ints := re.findall(r"\d+", successor)):
-            if int(successor_ints[0]) - int(predecessor_ints[0]) == 1:
-                return True
-
-        return False
-
-    # -----------------------------------------------------------------------------
-    # Compare two uppercase letters on difference ascending 1.
-    # -----------------------------------------------------------------------------
-    @classmethod
-    def _is_asc_uppercase_letters(cls, predecessor: str, successor: str) -> bool:
-        """Compare two uppercase_letters on ascending.
-
-        Args:
-            predecessor (str): The previous string.
-            successor (str): The current string.
-
-        Returns:
-            bool: True, if the successor - predecessor is equal to 1, False else.
-        """
-        if (predecessor_ints := re.findall(r"[A-Z]", predecessor.upper())) and (
-            successor_ints := re.findall(r"[A-Z]", successor.upper())
-        ):
-            if ord(successor_ints[0]) - ord(predecessor_ints[0]) == 1:
-                return True
-
-        return False
-
-    # -----------------------------------------------------------------------------
-    # Load heading rules from a JSON file.
+    # Load the valid heading rules from a JSON file.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def _load_heading_rules_from_json(
+    def _load_rules_from_json(
         lt_heading_rule_file: pathlib.Path,
     ) -> list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
-        """Load heading rules from a JSON file.
+        """Load the valid heading rules from a JSON file.
 
         Args:
-            lt_heading_rule_file (Path): JSON file.
+            lt_heading_rule_file (Path):
+                    JSON file.
+
+        Returns:
+            list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+                The valid heading rules from the JSON file,
         """
-        heading_rules = []
+        rules = []
 
         with open(lt_heading_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
-            for heading_rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_HEADING_RULES]:
-                heading_rules.append(
+            for rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_HEADING_RULES]:
+                rules.append(
                     (
-                        heading_rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_NAME],
-                        heading_rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_IS_FIRST_TOKEN],
-                        heading_rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP],
+                        rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_NAME],
+                        rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_IS_FIRST_TOKEN],
+                        rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP],
                         getattr(
-                            LineTypeHeading, "_is_asc_" + heading_rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_FUNCTION_IS_ASC]
+                            nlp.cls_nlp_core.NLPCore, "is_asc_" + rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_FUNCTION_IS_ASC]
                         ),
-                        heading_rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_START_VALUES],
+                        rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_START_VALUES],
                     )
                 )
 
         utils.progress_msg(f"The heading rules were successfully loaded from the file {cfg.glob.setup.lt_heading_rule_file}")
 
-        return heading_rules
+        return rules
 
     # -----------------------------------------------------------------------------
     # Process the line-related data.
@@ -675,7 +484,7 @@ class LineTypeHeading:
         first_token = text.split()[0]
         coord_llx_curr = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]
 
-        for ph_idx in reversed(range(ph_size := len(self._heading_rules_hierarchy))):
+        for ph_idx in reversed(range(ph_size := len(self._rules_hierarchy))):
             (
                 rule_name,
                 is_first_token,
@@ -686,7 +495,7 @@ class LineTypeHeading:
                 coord_llx,
                 predecessor,
                 regexp_str,
-            ) = self._heading_rules_hierarchy[ph_idx]
+            ) = self._rules_hierarchy[ph_idx]
 
             target_value = first_token if is_first_token else text
 
@@ -700,7 +509,7 @@ class LineTypeHeading:
                     return 0
 
                 if function_is_asc(predecessor, target_value):
-                    self._heading_rules_hierarchy[ph_idx] = (
+                    self._rules_hierarchy[ph_idx] = (
                         rule_name,
                         is_first_token,
                         regexp_compiled,
@@ -724,7 +533,7 @@ class LineTypeHeading:
                     # Delete levels that are no longer needed
                     if ph_size > level:
                         for i in range(ph_size - 1, level - 1, -1):
-                            del self._heading_rules_hierarchy[i]
+                            del self._rules_hierarchy[i]
 
                     return level
 
@@ -737,7 +546,7 @@ class LineTypeHeading:
             function_is_asc,
             start_values,
             regexp_str,
-        ) in self._heading_rules_collection:
+        ) in self._rules_collection:
             target_value = first_token if is_first_token else text
             if regexp_compiled.match(target_value):
                 if is_first_token and start_values:
@@ -747,7 +556,7 @@ class LineTypeHeading:
                 if (level := self._level_prev + 1) > cfg.glob.setup.lt_heading_max_level:
                     return 0
 
-                self._heading_rules_hierarchy.append(
+                self._rules_hierarchy.append(
                     (
                         rule_name,
                         is_first_token,

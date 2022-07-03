@@ -13,6 +13,7 @@ Release Date: dd.mm.2022
 
 - API documentation added
 - Determination of bulleted lists.
+- Determination of numbered lists.
 - Determination of headings.
 
 ### 1.2 Modified Features
