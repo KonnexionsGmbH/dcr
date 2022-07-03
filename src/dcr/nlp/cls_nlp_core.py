@@ -1,6 +1,7 @@
 """Module nlp.cls_nlp_core: Managing the NLP processing."""
 from __future__ import annotations
 
+import re
 from typing import ClassVar
 
 import cfg.glob
@@ -87,6 +88,7 @@ class NLPCore:
     JSON_NAME_NO_WORDS_IN_LINE: ClassVar[str] = "noWordsInLine"
     JSON_NAME_NO_WORDS_IN_PAGE: ClassVar[str] = "noWordsInPage"
     JSON_NAME_NO_WORDS_IN_PARA: ClassVar[str] = "noWordsInParagraph"
+    JSON_NAME_NUMBER: ClassVar[str] = "number"
 
     JSON_NAME_PAGES: ClassVar[str] = "pages"
     JSON_NAME_PAGE_NO: ClassVar[str] = "pageNo"
@@ -228,6 +230,44 @@ class NLPCore:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
+    # Convert a roman numeral to integer.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def _convert_roman_2_int(cls, roman: str) -> int:
+        """Convert a roman numeral to integer.
+
+        Args:
+            roman (str): The roman numeral.
+
+        Returns:
+            int: The corresponding integer.
+        """
+        tallies = {
+            "i": 1,
+            "v": 5,
+            "x": 10,
+            "l": 50,
+            "c": 100,
+            "d": 500,
+            "m": 1000,
+            # specify more numerals if you wish
+        }
+
+        integer: int = 0
+
+        for i in range(len(roman) - 1):
+            left = roman[i]
+            right = roman[i + 1]
+            if tallies[left] < tallies[right]:
+                integer -= tallies[left]
+            else:
+                integer += tallies[left]
+
+        integer += tallies[roman[-1]]
+
+        return integer
+
+    # -----------------------------------------------------------------------------
     # Check the object existence.
     # -----------------------------------------------------------------------------
     def exists(self) -> bool:
@@ -237,3 +277,161 @@ class NLPCore:
             bool:   Always true
         """
         return self._exist
+
+    # -----------------------------------------------------------------------------
+    # Ignore the comparison.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_ignore(cls, _predecessor: str, _successor: str) -> bool:
+        """Ignore the comparison.
+
+        Returns:
+            bool: True.
+        """
+        return True
+
+    # -----------------------------------------------------------------------------
+    # Compare two lowercase letters on difference ascending 1.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_lowercase_letters(cls, predecessor: str, successor: str) -> bool:
+        """Compare two lowercase_letters on ascending.
+
+        Args:
+            predecessor (str): The previous string.
+            successor (str): The current string.
+
+        Returns:
+            bool: True, if the successor - predecessor is equal to 1, False else.
+        """
+        if (predecessor_ints := re.findall(r"[a-z]", predecessor.lower())) and (
+            successor_ints := re.findall(r"[a-z]", successor.lower())
+        ):
+            if ord(successor_ints[0]) - ord(predecessor_ints[0]) == 1:
+                return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+    # Compare two roman numerals on ascending.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_romans(cls, predecessor: str, successor: str) -> bool:
+        """Compare two roman numerals on ascending.
+
+        Args:
+            predecessor (str): The previous roman numeral.
+            successor (str): The current roman numeral.
+
+        Returns:
+            bool: False, if the predecessor is greater than the current value, True else.
+        """
+        # TBD depending on different regexp patterns
+        # if predecessor[0] == "(":
+        #     predecessor_net = predecessor[1:-1]
+        #     successor_net = successor[1:-1]
+        # else:
+        #     predecessor_net = predecessor
+        #     successor_net = successor
+
+        if predecessor[0:1] == "(":
+            predecessor_net = predecessor[1:]
+        else:
+            predecessor_net = predecessor
+        if predecessor_net[-1] in {")", "."}:
+            predecessor_net = predecessor_net[:-1]
+
+        if successor[0:1] == "(":
+            successor_net = successor[1:]
+        else:
+            successor_net = successor
+        if successor_net[-1] in {")", "."}:
+            successor_net = successor_net[:-1]
+
+        if NLPCore._convert_roman_2_int(successor_net.lower()) - NLPCore._convert_roman_2_int(predecessor_net.lower()) == 1:
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+    # Compare two strings on ascending.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_strings(cls, predecessor: str, successor: str) -> bool:
+        """Compare two strings on ascending.
+
+        Args:
+            predecessor (str): The previous string.
+            successor (str): The current string.
+
+        Returns:
+            bool: False, if the predecessor is greater than the current value, True else.
+        """
+        if predecessor > successor:
+            return False
+
+        return True
+
+    # -----------------------------------------------------------------------------
+    # Compare two string floats on ascending.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_string_floats(cls, predecessor: str, successor: str) -> bool:
+        """Compare two string float numbers on ascending.
+
+        Args:
+            predecessor (str): The previous string float number.
+            successor (str): The current string float number.
+
+        Returns:
+            bool: False, if the predecessor is greater than the current value, True else.
+        """
+        if (predecessor_floats := re.findall(r"\d+\.\d+", predecessor)) and (
+            successor_floats := re.findall(r"\d+\.\d+", successor)
+        ):
+            if 0 < float(successor_floats[0]) - float(predecessor_floats[0]) <= 1:
+                return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+    # Compare two string integers on difference ascending 1.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_string_integers(cls, predecessor: str, successor: str) -> bool:
+        """Compare two string integers on ascending.
+
+        Args:
+            predecessor (str): The previous string integer.
+            successor (str): The current string integer.
+
+        Returns:
+            bool: True, if the successor - predecessor is equal to 1, False else.
+        """
+        if (predecessor_ints := re.findall(r"\d+", predecessor)) and (successor_ints := re.findall(r"\d+", successor)):
+            if int(successor_ints[0]) - int(predecessor_ints[0]) == 1:
+                return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+    # Compare two uppercase letters on difference ascending 1.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_uppercase_letters(cls, predecessor: str, successor: str) -> bool:
+        """Compare two uppercase_letters on ascending.
+
+        Args:
+            predecessor (str): The previous string.
+            successor (str): The current string.
+
+        Returns:
+            bool: True, if the successor - predecessor is equal to 1, False else.
+        """
+        if (predecessor_ints := re.findall(r"[A-Z]", predecessor.upper())) and (
+            successor_ints := re.findall(r"[A-Z]", successor.upper())
+        ):
+            if ord(successor_ints[0]) - ord(predecessor_ints[0]) == 1:
+                return True
+
+        return False

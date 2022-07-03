@@ -49,10 +49,6 @@ class LineTypeListBullet:
         )
 
         self._bullet = ""
-        self._bullet_rules = self._init_list_bullet_rules()
-
-        for key in self._bullet_rules:
-            self._bullet_rules[key] = len(key)
 
         # page_idx, para_no, line_lines_idx_from, line_lines_idx_till
         self._entries: list[list[int]] = []
@@ -71,6 +67,10 @@ class LineTypeListBullet:
 
         self._para_no = 0
         self._para_no_prev = 0
+
+        self._rules = self._init_rules()
+        for key in self._rules:
+            self._rules[key] = len(key)
 
         self.no_lists = 0
 
@@ -155,7 +155,7 @@ class LineTypeListBullet:
             # },
             self._lists.append(
                 {
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_BULLET: self._bullet,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_BULLET: self._bullet.rstrip(),
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_LIST_NO: self.no_lists,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ENTRIES: len(entries),
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._entries[0][0] + 1,
@@ -171,24 +171,25 @@ class LineTypeListBullet:
         )
 
     # -----------------------------------------------------------------------------
-    # Initialise the bullet rules.
+    # Initialise the valid bullets.
     # -----------------------------------------------------------------------------
     # 1: bullet character(s)
     # -----------------------------------------------------------------------------
-    def _init_list_bullet_rules(self) -> dict[str, int]:
-        """Initialise the bullet rules.
+    def _init_rules(self) -> dict[str, int]:
+        """Initialise the valid bullets.
 
         Returns:
             dict[str, int]:
-                    All valid bullets and their length.
+                    All valid bullets.
         """
         if cfg.glob.setup.lt_list_bullet_rule_file and cfg.glob.setup.lt_list_bullet_rule_file.lower() != "none":
             lt_list_bullet_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.lt_list_bullet_rule_file)
+
             if os.path.isfile(lt_list_bullet_rule_file_path):
-                return self._load_list_bullet_rules_from_json(pathlib.Path(lt_list_bullet_rule_file_path))
+                return self._load_rules_from_json(pathlib.Path(lt_list_bullet_rule_file_path))
 
             utils.terminate_fatal(
-                f"File with bulleted list rule file is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'"
+                f"File with valid bullets is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'"
             )
 
         return {
@@ -205,7 +206,7 @@ class LineTypeListBullet:
     # Load the valid bullets from a JSON file.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def _load_list_bullet_rules_from_json(
+    def _load_rules_from_json(
         lt_list_bullet_rule_file: pathlib.Path,
     ) -> dict[str, int]:
         """Load the valid bullets from a JSON file.
@@ -213,6 +214,10 @@ class LineTypeListBullet:
         Args:
             lt_list_bullet_rule_file (Path):
                     JSON file name including directory path.
+
+        Returns:
+            dict[str, int]:
+                The valid bullets from the JSON file,
         """
         list_bullet_rules = {}
 
@@ -243,7 +248,7 @@ class LineTypeListBullet:
 
         bullet = ""
 
-        for key, value in self._bullet_rules.items():
+        for key, value in self._rules.items():
             if text[0:value] == key:
                 bullet = key
                 break

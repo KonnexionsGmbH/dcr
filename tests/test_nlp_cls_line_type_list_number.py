@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module nlp.cls_line_type_heading."""
+"""Testing Module nlp.cls_line_type_list_number."""
 
 import cfg.cls_setup
 import cfg.glob
@@ -8,7 +8,7 @@ import db.cls_db_core
 import db.cls_document
 import db.cls_run
 import nlp.cls_line_type_headers_footers
-import nlp.cls_line_type_heading
+import nlp.cls_line_type_list_number
 import nlp.cls_line_type_toc
 import nlp.cls_nlp_core
 import nlp.cls_text_parser
@@ -24,16 +24,16 @@ import dcr
 
 
 # -----------------------------------------------------------------------------
-# Test LineType Heading - 1.
+# Test LineType Numbered List - 1.
 # -----------------------------------------------------------------------------
-def test_cls_line_type_heading_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
-    """Test LineType Heading - 1."""
+def test_line_type_list_number_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType Numbered List - 1."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
-            ("docx_heading", "pdf"),
+            ("docx_list_number", "pdf"),
         ],
         target_path=cfg.glob.setup.directory_inbox,
     )
@@ -42,10 +42,9 @@ def test_cls_line_type_heading_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, "3"),
@@ -54,6 +53,7 @@ def test_cls_line_type_heading_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER, "true"),
         ],
     )
 
@@ -69,17 +69,17 @@ def test_cls_line_type_heading_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_heading_2 <=========")
+    cfg.glob.logger.info("=========> test_line_type_list_number_2 <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
             [],
             [
-                "docx_heading.line.json",
-                "docx_heading.line_toc.json",
-                "docx_heading.page.json",
-                "docx_heading.pdf",
-                "docx_heading.word.json",
+                "docx_list_number.line.json",
+                "docx_list_number.line_list_number.json",
+                "docx_list_number.page.json",
+                "docx_list_number.pdf",
+                "docx_list_number.word.json",
             ],
         ),
     )
@@ -89,16 +89,16 @@ def test_cls_line_type_heading_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test LineType Heading - 2.
+# Test LineType Numbered List - 2.
 # -----------------------------------------------------------------------------
-def test_cls_line_type_heading_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
-    """Test LineType Heading - 2."""
+def test_line_type_list_number_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType Numbered List - 2."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
-            ("docx_heading", "pdf"),
+            ("docx_list_number", "pdf"),
         ],
         target_path=cfg.glob.setup.directory_inbox,
     )
@@ -107,12 +107,12 @@ def test_cls_line_type_heading_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE, "none"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
@@ -131,15 +131,15 @@ def test_cls_line_type_heading_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_heading_2 <=========")
+    cfg.glob.logger.info("=========> test_line_type_list_number_2 <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
             [],
             [
-                "docx_heading.line.json",
-                "docx_heading.pdf",
-                "docx_heading.word.json",
+                "docx_list_number.line.json",
+                "docx_list_number.pdf",
+                "docx_list_number.word.json",
             ],
         ),
     )
@@ -149,16 +149,16 @@ def test_cls_line_type_heading_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test LineType Heading - 3.
+# Test LineType Numbered List - 3.
 # -----------------------------------------------------------------------------
-def test_cls_line_type_heading_3(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
-    """Test LineType Heading - 3."""
+def test_line_type_list_number_3(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType Numbered List - 3."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
-            ("docx_heading", "pdf"),
+            ("docx_list_number", "pdf"),
         ],
         target_path=cfg.glob.setup.directory_inbox,
     )
@@ -167,10 +167,9 @@ def test_cls_line_type_heading_3(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, "3"),
@@ -179,7 +178,7 @@ def test_cls_line_type_heading_3(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TABLE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER, "true"),
         ],
     )
 
@@ -195,16 +194,16 @@ def test_cls_line_type_heading_3(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_heading_3 <=========")
+    cfg.glob.logger.info("=========> test_line_type_list_number_3 <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
             [],
             [
-                "docx_heading.line.json",
-                "docx_heading.line_table.json",
-                "docx_heading.page.json",
-                "docx_heading.pdf",
+                "docx_list_number.line.json",
+                "docx_list_number.line_list_number.json",
+                "docx_list_number.page.json",
+                "docx_list_number.pdf",
             ],
         ),
     )
@@ -214,16 +213,16 @@ def test_cls_line_type_heading_3(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test LineType Heading - 4.
+# Test LineType Numbered List - 4.
 # -----------------------------------------------------------------------------
-def test_cls_line_type_heading_4(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
-    """Test LineType Heading - 4."""
+def test_line_type_list_number_4(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType Numbered List - 4."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
-            ("docx_heading", "pdf"),
+            ("docx_list_number", "pdf"),
         ],
         target_path=cfg.glob.setup.directory_inbox,
     )
@@ -232,15 +231,12 @@ def test_cls_line_type_heading_4(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "0"),
-            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "n/a"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE, "n/a"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER, "false"),
         ],
     )
 
@@ -252,8 +248,8 @@ def test_cls_line_type_heading_4(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     with pytest.raises(SystemExit) as expt:
         dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
-    assert expt.type == SystemExit, "Heading rule file is missing"
-    assert expt.value.code == 1, "Heading rule file is missing"
+    assert expt.type == SystemExit, "Numbered List rule file is missing"
+    assert expt.value.code == 1, "Numbered List rule file is missing"
 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -265,10 +261,10 @@ def test_cls_line_type_heading_4(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_heading - Action (action_curr).
+# Test Function - missing dependencies - line_type_list_number - Action (action_curr).
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_heading_action_curr(fxtr_setup_logger_environment):
-    """Test Function - missing dependencies - line_type_heading - Action (action_curr)."""
+def test_line_type_list_number_missing_dependencies_action_curr(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - line_type_list_number - Action (action_curr)."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -276,7 +272,7 @@ def test_missing_dependencies_line_type_heading_action_curr(fxtr_setup_logger_en
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type_heading.LineTypeHeading()
+        nlp.cls_line_type_list_number.LineTypeListNumber()
 
     assert expt.type == SystemExit, "Instance of class 'Action (action_curr)' is missing"
     assert expt.value.code == 1, "Instance of class 'Action (action_curr)' is missing"
@@ -286,10 +282,10 @@ def test_missing_dependencies_line_type_heading_action_curr(fxtr_setup_logger_en
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_heading - coverage - exists.
+# Test Function - missing dependencies - line_type_list_number - coverage - exists.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_heading_coverage_exists(fxtr_setup_empty_db_and_inbox):
-    """Test Function - missing dependencies - line_type_heading - coverage - exists."""
+def test_line_type_list_number_missing_dependencies_coverage_exists(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_list_number - coverage - exists."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -320,7 +316,7 @@ def test_missing_dependencies_line_type_heading_coverage_exists(fxtr_setup_empty
     cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_line_type_heading.LineTypeHeading()
+    instance = nlp.cls_line_type_list_number.LineTypeListNumber()
 
     instance.exists()
 
@@ -329,10 +325,10 @@ def test_missing_dependencies_line_type_heading_coverage_exists(fxtr_setup_empty
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_heading - Document.
+# Test Function - missing dependencies - line_type_list_number - Document.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_heading_document(fxtr_setup_logger_environment):
-    """Test Function - missing dependencies - line_type_heading - Document."""
+def test_line_type_list_number_missing_dependencies_document(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - line_type_list_number - Document."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -347,7 +343,7 @@ def test_missing_dependencies_line_type_heading_document(fxtr_setup_logger_envir
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type_heading.LineTypeHeading()
+        nlp.cls_line_type_list_number.LineTypeListNumber()
 
     assert expt.type == SystemExit, "Instance of class 'Document' is missing"
     assert expt.value.code == 1, "Instance of class 'Document' is missing"
@@ -357,10 +353,10 @@ def test_missing_dependencies_line_type_heading_document(fxtr_setup_logger_envir
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_heading - Setup.
+# Test Function - missing dependencies - line_type_list_number - Setup.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_heading_setup(fxtr_setup_logger_environment):
-    """Test Function - missing dependencies - line_type_heading - Setup."""
+def test_line_type_list_number_missing_dependencies_setup(fxtr_setup_logger_environment):
+    """Test Function - missing dependencies - line_type_list_number - Setup."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -380,7 +376,7 @@ def test_missing_dependencies_line_type_heading_setup(fxtr_setup_logger_environm
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type_heading.LineTypeHeading()
+        nlp.cls_line_type_list_number.LineTypeListNumber()
 
     assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
     assert expt.value.code == 1, "Instance of class 'Setup' is missing"
@@ -390,10 +386,10 @@ def test_missing_dependencies_line_type_heading_setup(fxtr_setup_logger_environm
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_heading - TextParser.
+# Test Function - missing dependencies - line_type_list_number - TextParser.
 # -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_heading_text_parser(fxtr_setup_empty_db_and_inbox):
-    """Test Function - missing dependencies - line_type_heading - TextParser."""
+def test_line_type_list_number_missing_dependencies_text_parser(fxtr_setup_empty_db_and_inbox):
+    """Test Function - missing dependencies - line_type_list_number - TextParser."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -425,7 +421,7 @@ def test_missing_dependencies_line_type_heading_text_parser(fxtr_setup_empty_db_
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type_heading.LineTypeHeading()
+        nlp.cls_line_type_list_number.LineTypeListNumber()
 
     assert expt.type == SystemExit, "Instance of class 'TextParser' is missing"
     assert expt.value.code == 1, "Instance of class 'TextParser' is missing"

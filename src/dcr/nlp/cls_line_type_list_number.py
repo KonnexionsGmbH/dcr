@@ -1,9 +1,11 @@
 """Module nlp.cls_line_type_list_number: Determine numbered lists."""
 from __future__ import annotations
 
+import collections
 import json
 import os
 import pathlib
+import re
 
 import cfg.glob
 import db.cls_document
@@ -14,25 +16,9 @@ import utils
 # -----------------------------------------------------------------------------
 # Global type aliases.
 # -----------------------------------------------------------------------------
-# {
-#     "entryNo": 99,
-#     "lineNoPageFrom": 99,
-#     "lineNoPageTill": 99,
-#     "pageNo": 99,
-#     "paragraphNo": 99,
-#     "text": "xxx"
-# },
 Entry = dict[str, int | str]
 Entries = list[Entry]
 
-# {
-#    "number": "xxx",
-#    "firstEntryLLX": 99.99,
-#    "noEntries": 99,
-#    "pageNoFrom": 99,
-#    "pageNoTill": 99,
-#    "entries": []
-# },
 List = dict[str, Entries | float | int | str]
 Lists = list[List]
 
@@ -64,18 +50,16 @@ class LineTypeListNumber:
             f"LineTypeListNumber: Start create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
-        self._number = ""
-        self._number_rules = self._init_list_number_rules()
+        self._RULE_NAME_SIZE: int = 20
 
-        for key in self._number_rules:
-            self._number_rules[key] = len(key)
-
-        # page_idx, para_no, line_lines_idx
+        # page_idx, para_no, line_lines_idx, target_value
         self._entries: list[
             tuple[
                 int,
                 int,
                 int,
+                int,
+                str,
             ]
         ] = []
 
@@ -93,6 +77,38 @@ class LineTypeListNumber:
 
         self._para_no = 0
         self._para_no_prev = 0
+
+        self._rule: tuple[str, collections.abc.Callable[[str, str], bool], list[str], str] = ()  # type: ignore
+
+        self._rules: list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]] = self._init_rules()
+
+        # -----------------------------------------------------------------------------
+        # Number rules collection.
+        # -----------------------------------------------------------------------------
+        # 1: rule_name
+        # 2: regexp_compiled:
+        #           compiled regular expression
+        # 3: function_is_asc:
+        #           compares predecessor and successor
+        # 4: start_values:
+        #           list of strings
+        # 5: regexp_str:
+        #           regular expression
+        # -----------------------------------------------------------------------------
+        self._rules_collection: list[
+            tuple[str, re.Pattern[str], collections.abc.Callable[[str, str], bool], list[str], str]
+        ] = []
+
+        for (rule_name, regexp_str, function_is_asc, start_values) in self._rules:
+            self._rules_collection.append(
+                (
+                    rule_name.ljust(self._RULE_NAME_SIZE),
+                    re.compile(regexp_str),
+                    function_is_asc,
+                    start_values,
+                    regexp_str,
+                )
+            )
 
         self.no_lists = 0
 
@@ -115,33 +131,76 @@ class LineTypeListNumber:
         if self._no_entries < cfg.glob.setup.lt_list_number_min_entries:
             utils.progress_msg_line_type_list_number(
                 f"LineTypeListNumber: Not enough list entries    found only={self._no_entries} - "
-                + f"number='{self._number}' - entries={self._entries}"
+                + f"number='{self._rule[0]}' - entries={self._entries}"
             )
             self._reset_list()
             return
 
         utils.progress_msg_line_type_list_number(
             f"LineTypeListNumber: List entries                    found={self._no_entries} - "
-            + f"number='{self._number}' - entries={self._entries}"
+            + f"number='{self._rule[0]}' - entries={self._entries}"
         )
 
-        if not cfg.glob.setup.is_create_extra_file_list_number:
-            self._reset_list()
-            return
+        self.no_lists += 1
 
-        self._page_no_till = self._page_idx + 1
+        entries: Entries = []
 
-        # self._lists.append(
-        #     {
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_BULLET: self._number_prev,
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ENTRY_LLX: self._first_entry_llx,
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ENTRIES: len(self._entries),
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._page_no_from,
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._page_no_till,
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_LIST_NO: len(self._lists) + 1,
-        #         nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRIES: self._entries,
-        #     }
-        # )
+        for [page_idx, para_no, line_lines_idx_from, line_lines_idx_till, _] in self._entries:
+            line_lines: nlp.cls_text_parser.LineLines = cfg.glob.text_parser.parse_result_line_pages[page_idx][
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
+            ]
+
+            text = []
+
+            for idx in range(line_lines_idx_from, line_lines_idx_till + 1):
+                line_lines[idx][
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
+                ] = db.cls_document.Document.DOCUMENT_LINE_TYPE_LIST_NUMBER
+
+                if cfg.glob.setup.is_create_extra_file_list_number:
+                    text.append(line_lines[idx][nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+
+            if cfg.glob.setup.is_create_extra_file_list_number:
+                # {
+                #     "entryNo": 99,
+                #     "lineNoPageFrom": 99,
+                #     "lineNoPageTill": 99,
+                #     "pageNo": 99,
+                #     "paragraphNo": 99,
+                #     "text": "xxx"
+                # },
+                entries.append(
+                    {
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRY_NO: len(entries) + 1,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_FROM: line_lines_idx_from + 1,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_TILL: line_lines_idx_till + 1,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: page_idx + 1,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: para_no,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: " ".join(text),
+                    }
+                )
+
+            cfg.glob.text_parser.parse_result_line_pages[page_idx][nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES] = line_lines
+
+        if cfg.glob.setup.is_create_extra_file_list_number:
+            # {
+            #     "number": "xxx",
+            #     "listNo": 99,
+            #     "noEntries": 99,
+            #     "pageNoFrom": 99,
+            #     "pageNoTill": 99,
+            #     "entries": []
+            # },
+            self._lists.append(
+                {
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NUMBER: self._rule[0].rstrip(),
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LIST_NO: self.no_lists,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ENTRIES: len(entries),
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._entries[0][0] + 1,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._entries[-1][0] + 1,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRIES: entries,
+                }
+            )
 
         self._reset_list()
 
@@ -150,55 +209,182 @@ class LineTypeListNumber:
         )
 
     # -----------------------------------------------------------------------------
-    # Initialise the number rules.
+    # Initialise the numbered list rules.
     # -----------------------------------------------------------------------------
-    # 1: number character(s)
+    # 1: rule_name
+    # 2: regexp_str:
+    #           regular expression
+    # 3: function_is_asc:
+    #           compares predecessor and successor
+    # 4: start_values:
+    #           list of strings
     # -----------------------------------------------------------------------------
-    def _init_list_number_rules(self) -> dict[str, int]:
+    def _init_rules(self) -> list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+        """Initialise the numbered list rules.
+
+        Returns:
+            list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+                    The valid heading rules.
+        """
         if cfg.glob.setup.lt_list_number_rule_file and cfg.glob.setup.lt_list_number_rule_file.lower() != "none":
             lt_list_number_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.lt_list_number_rule_file)
             if os.path.isfile(lt_list_number_rule_file_path):
-                return self._load_list_number_rules_from_json(pathlib.Path(lt_list_number_rule_file_path))
+                return self._load_rules_from_json(pathlib.Path(lt_list_number_rule_file_path))
 
             utils.terminate_fatal(
-                f"File with numbered list rule file is missing - " f"file name '{cfg.glob.setup.lt_list_number_rule_file}'"
+                f"File with numbered list rules is missing - " f"file name '{cfg.glob.setup.lt_list_number_rule_file}'"
             )
 
-        return {
-            "- ": 0,
-            ". ": 0,
-            "\ufffd ": 0,
-            "o ": 0,
-            "° ": 0,
-            "• ": 0,
-            "‣ ": 0,
-        }
+        return [
+            (
+                "(999)",
+                r"\(\d+\)$",
+                nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
+                ["(1)"],
+            ),
+            (
+                "(A)",
+                r"\([A-Z]\)$",
+                nlp.cls_nlp_core.NLPCore.is_asc_uppercase_letters,
+                ["(A)"],
+            ),
+            (
+                "(ROM)",
+                r"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$",
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
+                ["(I)"],
+            ),
+            (
+                "(a)",
+                r"\([a-z]\)$",
+                nlp.cls_nlp_core.NLPCore.is_asc_lowercase_letters,
+                ["(a)"],
+            ),
+            (
+                "(rom)",
+                r"\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$",
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
+                ["(i)"],
+            ),
+            (
+                "999)",
+                r"\d+\)$",
+                nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
+                ["1)"],
+            ),
+            (
+                "999.",
+                r"\d+\.$",
+                nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
+                ["1."],
+            ),
+            (
+                "999.999",
+                r"\d+\.\d\d\d$",
+                nlp.cls_nlp_core.NLPCore.is_asc_string_floats,
+                ["1.000", "1.001"],
+            ),
+            (
+                "999.99",
+                r"\d+\.\d\d$",
+                nlp.cls_nlp_core.NLPCore.is_asc_string_floats,
+                ["1.00", "1.01"],
+            ),
+            (
+                "999.9",
+                r"\d+\.\d$",
+                nlp.cls_nlp_core.NLPCore.is_asc_string_floats,
+                ["1.0", "1.1"],
+            ),
+            (
+                "A)",
+                r"[A-Z]\)$",
+                nlp.cls_nlp_core.NLPCore.is_asc_uppercase_letters,
+                ["A)"],
+            ),
+            (
+                "A.",
+                r"[A-Z]\.$",
+                nlp.cls_nlp_core.NLPCore.is_asc_uppercase_letters,
+                ["A."],
+            ),
+            (
+                "ROM)",
+                r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$",
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
+                ["I)"],
+            ),
+            (
+                "ROM.",
+                r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\.$",
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
+                ["I."],
+            ),
+            (
+                "a)",
+                r"[a-z]\)$",
+                nlp.cls_nlp_core.NLPCore.is_asc_lowercase_letters,
+                ["a)"],
+            ),
+            (
+                "a.",
+                r"[a-z]\.$",
+                nlp.cls_nlp_core.NLPCore.is_asc_lowercase_letters,
+                ["a."],
+            ),
+            (
+                "rom)",
+                r"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$",
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
+                ["i)"],
+            ),
+            (
+                "rom.",
+                r"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\.$",
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
+                ["i."],
+            ),
+        ]
 
     # -----------------------------------------------------------------------------
     # Load numbered list rules from a JSON file.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def _load_list_number_rules_from_json(
+    def _load_rules_from_json(
         lt_list_number_rule_file: pathlib.Path,
-    ) -> dict[str, int]:
+    ) -> list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]]:
         """Load numbered list rules from a JSON file.
 
         Args:
-            lt_list_number_rule_file (Path): JSON file.
+            lt_list_number_rule_file (Path):
+                    JSON file.
+
+        Returns:
+            list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+                The valid numbered list rules from the JSON file,
         """
-        list_number_rules = {}
+        rules = []
 
         with open(lt_list_number_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
-            for number in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_LIST_NUMBER_RULES]:
-                list_number_rules[number] = 0
+            for rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_HEADING_RULES]:
+                rules.append(
+                    (
+                        rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_NAME],
+                        rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP],
+                        getattr(
+                            nlp.cls_nlp_core.NLPCore, "is_asc_" + rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_FUNCTION_IS_ASC]
+                        ),
+                        rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_START_VALUES],
+                    )
+                )
 
         utils.progress_msg(
             f"The list_number rules were successfully loaded from the file {cfg.glob.setup.lt_list_number_rule_file}"
         )
 
-        return list_number_rules
+        return rules
 
     # -----------------------------------------------------------------------------
     # Process the line-related data.
@@ -211,16 +397,22 @@ class LineTypeListNumber:
                     The line to be processed.
         """
         para_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO])
-        text = str(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+        target_value = str(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]).split()[0]
 
-        number = ""
+        rule: tuple[str, collections.abc.Callable[[str, str], bool], list[str], str] = ()  # type: ignore
 
-        for key, value in self._number_rules.items():
-            if text[0:value] == key:
-                number = key
+        for (
+            rule_name,
+            regexp_compiled,
+            function_is_asc,
+            start_values,
+            regexp_str,
+        ) in self._rules_collection:
+            if regexp_compiled.match(target_value):
+                rule = (rule_name, function_is_asc, start_values, regexp_str)
                 break
 
-        if not number:
+        if not rule:
             if self._page_idx == self._page_idx_prev and para_no == self._para_no_prev:
                 # Paragraph already in progress.
                 return
@@ -229,14 +421,15 @@ class LineTypeListNumber:
             return
 
         if (
-            number != self._number
+            rule != self._rule
             or self._llx_upper_limit
             <= float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
             <= self._llx_lower_limit
+            or not rule[1](self._entries[-1][4], target_value)
         ):
             self._finish_list()
 
-        self._number = number
+        self._rule = rule
 
         if not self._entries:
             # New numbered paragraph.
@@ -250,7 +443,7 @@ class LineTypeListNumber:
             )
             self._llx_upper_limit = round(coord_llx * (100 + cfg.glob.setup.lt_list_number_tolerance_llx) / 100, 2)
 
-        self._entries.append((self._page_idx, para_no, self._line_lines_idx))
+        self._entries.append((self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx, target_value))
 
         self._no_entries += 1
 
@@ -272,6 +465,7 @@ class LineTypeListNumber:
 
         for line_lines_idx, line_line in enumerate(cfg.glob.text_parser.parse_result_line_lines):
             self._line_lines_idx = line_lines_idx
+
             if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 self._process_line(line_line)
 
@@ -299,7 +493,7 @@ class LineTypeListNumber:
     # -----------------------------------------------------------------------------
     def _reset_list(self) -> None:
         """Reset the list memory."""
-        self._number = ""
+        self._rule = ()  # type: ignore
 
         self._entries = []
 
@@ -310,6 +504,8 @@ class LineTypeListNumber:
 
         self._page_idx_prev = -1
         self._para_no_prev = 0
+
+        self._predecessor = ""
 
         utils.progress_msg_line_type_list_number("LineTypeListNumber: Reset the list memory")
 
@@ -357,7 +553,7 @@ class LineTypeListNumber:
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: len(self._lists),
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: self.no_lists,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_LISTS_NUMBER: self._lists,
                     },
                     file_handle,
