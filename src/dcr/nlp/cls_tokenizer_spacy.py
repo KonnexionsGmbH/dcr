@@ -19,68 +19,18 @@ import utils
 # -----------------------------------------------------------------------------
 # Global type aliases.
 # -----------------------------------------------------------------------------
-# {
-#     "tknEntIob_": "O",
-#     "tknI": 0,
-#     "tknIsOov": true,
-#     "tknIsSentStart": true,
-#     "tknIsStop": true,
-#     "tknIsTitle": true,
-#     "tknLemma_": "this",
-#     "tknNorm_": "this",
-#     "tknPos_": "PRON",
-#     "tknTag_": "DT",
-#     "tknText": "This",
-#     "tknWhitespace_": " "
-# }
-
 TokenToken = dict[str, bool | float | int | str]
 TokenTokens = list[TokenToken]
 
-# {
-# 	"sentenceNo": 99,
-# 	"columnNo": 99,
-# 	"columnSpan": 99,
-# 	"lowerLeftX": 99.99,
-# 	"noTokensInSentence": 99,
-# 	"rowNo": 99,
-#   "text" = "...",
-# 	"tokens": [...]
-# }
 TokenSent = dict[str, float | int | None | str | TokenTokens]
 TokenSents = list[TokenSent]
 
-# {
-# 	"paragraphNo": 99,
-# 	"noSentencesInParagraph": 99,
-# 	"noLinesInParagraph": 99,
-# 	"noTokensInParagraph": 99,
-# 	"sentences": [...]
-# }
 TokenPara = dict[str, int | TokenSents]
 TokenParas = list[TokenPara]
 
-# {
-# 	"pageNo": 99,
-# 	"noParagraphsInPage": 99,
-# 	"noSentencesInPage": 99,
-# 	"noTLinesInPage": 99,
-# 	"noTokensInPage": 99,
-# 	"paragraphs": [...]
-# }
 TokenPage = dict[str, int | TokenParas]
 TokenPages = list[TokenPage]
 
-# {
-#     "documentId": 99,
-#     "documentFileName": "...",
-#     "noPagesInDocument": 99,
-#     "noParagraphsInDocument": 99,
-#     "noSentencesInDocument": 99,
-#     "noLinesInDocument": 99,
-#     "noTokensInDocument": 99,
-#     "pages": [...]
-# }
 TokenDocument = dict[str, int | TokenPages | str]
 
 
@@ -151,6 +101,24 @@ class TokenizerSpacy:
     # -----------------------------------------------------------------------------
     # Finish current document.
     # -----------------------------------------------------------------------------
+    # {
+    #     "documentId": 99,
+    #     "documentFileName": "xxx",
+    #     "noLinesFooter": 99,
+    #     "noLinesHeader": 99,
+    #     "noLinesInDocument": 99,
+    #     "noLinesToc": 99,
+    #     "noListsBulletInDocument": 99,
+    #     "noListsNumberInDocument": 99,
+    #     "noPagesInDocument": 99,
+    #     "noParagraphsInDocument": 99,
+    #     "noSentencesInDocument": 99,
+    #     "noTablesInDocument": 99,
+    #     "noTokensInDocument": 99,
+    #     "pages": [
+    #     ]
+    # }
+    # -----------------------------------------------------------------------------
     def _finish_document(self) -> None:
         """Finish current ent."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -167,6 +135,12 @@ class TokenizerSpacy:
             nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER: cfg.glob.document.document_no_lines_header,
             nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._no_lines_in_doc,
             nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: cfg.glob.document.document_no_lines_toc,
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: cfg.glob.text_parser.parse_result_line_document[
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC
+            ],
+            nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: cfg.glob.text_parser.parse_result_line_document[
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC
+            ],
             nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self._no_pages_in_doc,
             nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._no_paras_in_doc,
             nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_SENTS_IN_DOC: self._no_sents_in_doc,
@@ -191,6 +165,16 @@ class TokenizerSpacy:
     # -----------------------------------------------------------------------------
     # Finish current page.
     # -----------------------------------------------------------------------------
+    # {
+    #     "pageNo": 99,
+    #     "noLinesInPage": 99,
+    #     "noParagraphsInPage": 99,
+    #     "noSentencesInPage": 99,
+    #     "noTokensInPage": 99,
+    #     "paragraphs": [
+    #     ]
+    # }
+    # -----------------------------------------------------------------------------
     def _finish_page(self) -> None:
         """Finish current page."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -213,6 +197,15 @@ class TokenizerSpacy:
 
     # -----------------------------------------------------------------------------
     # Finish current paragraph.
+    # -----------------------------------------------------------------------------
+    # {
+    #     "paragraphNo": 99,
+    #     "noLinesInParagraph": 99,
+    #     "noSentencesInParagraph": 99,
+    #     "noTokensInParagraph": 99,
+    #     "sentences": [
+    #     ]
+    # }
     # -----------------------------------------------------------------------------
     def _finish_para(self) -> None:
         """Finish current paragraph."""
@@ -240,6 +233,19 @@ class TokenizerSpacy:
 
     # -----------------------------------------------------------------------------
     # Finish current sentence.
+    # -----------------------------------------------------------------------------
+    # {
+    #     "sentenceNo": 99,
+    #     "columnNo": 99,
+    #     "coordLLX": 99.99,
+    #     "coordURX": 99.99,
+    #     "lineType": "xxx",
+    #     "noTokensInSentence": 99,
+    #     "rowNo": 99,
+    #     "text": "xxx",
+    #     "tokens": [
+    #     ]
+    # }
     # -----------------------------------------------------------------------------
     def _finish_sent(self) -> None:
         """Finish current sentence."""
@@ -770,6 +776,18 @@ class TokenizerSpacy:
 
     # -----------------------------------------------------------------------------
     # Process all tokens of a sentence.
+    # -----------------------------------------------------------------------------
+    # {
+    #     "tknI": 99,
+    #     "tknIsOov": boolean,
+    #     "tknIsTitle": boolean,
+    #     "tknLemma_": "xxx",
+    #     "tknNorm_": "xxx",
+    #     "tknPos_": "xxx",
+    #     "tknTag_": "xxx",
+    #     "tknText": "xxx",
+    #     "tknWhitespace_": "xxx"
+    # }
     # -----------------------------------------------------------------------------
     def _process_tokens(self) -> None:
         """Process all tokens of a sentence."""

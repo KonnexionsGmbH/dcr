@@ -196,8 +196,9 @@ class LineTypeHeading:
                     page_idx, line_lines, line_lines_idx
                 )
 
-                if line == "":
-                    break
+                # wwe
+                # if line == "":
+                #     break
 
                 toc_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_HEADING_CTX_LINE + str(idx + 1)] = line
 
@@ -214,8 +215,9 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     # Get the next body line.
     # -----------------------------------------------------------------------------
-    def _get_next_body_line(
-        self, page_idx: int, line_lines: nlp.cls_text_parser.LineLines, line_lines_idx: int
+    @staticmethod
+    def _get_next_body_line(  # type: ignore
+        page_idx: int, line_lines: nlp.cls_text_parser.LineLines, line_lines_idx: int
     ) -> tuple[str, int, nlp.cls_text_parser.LineLines, int]:
         """Get the next body line.
 
@@ -239,8 +241,10 @@ class LineTypeHeading:
 
             return line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT], page_idx, line_lines, idx
 
-        if (page_idx_local := page_idx + 1) == self._max_page:
-            return "", page_idx, line_lines, line_lines_idx
+        # wwe
+        # if (page_idx_local := page_idx + 1) == self._max_page:
+        #     return "", page_idx, line_lines, line_lines_idx
+        page_idx_local = page_idx + 1
 
         line_lines_local: nlp.cls_text_parser.LineLines = cfg.glob.text_parser.parse_result_line_pages[page_idx_local][
             nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
@@ -553,8 +557,10 @@ class LineTypeHeading:
                     if first_token not in start_values:
                         continue
 
-                if (level := self._level_prev + 1) > cfg.glob.setup.lt_heading_max_level:
-                    return 0
+                # wwe
+                # if (level := self._level_prev + 1) > cfg.glob.setup.lt_heading_max_level:
+                #     return 0
+                level = self._level_prev + 1
 
                 self._rules_hierarchy.append(
                     (
