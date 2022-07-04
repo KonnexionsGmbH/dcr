@@ -277,7 +277,7 @@ class LineTypeListBullet:
             self._line_lines_idx_from = self._line_lines_idx
             self._line_lines_idx_till = self._line_lines_idx
             self._llx_lower_limit = round(
-                coord_llx := float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
+                (coord_llx := float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]))
                 * (100 - cfg.glob.setup.lt_list_bullet_tolerance_llx)
                 / 100,
                 2,

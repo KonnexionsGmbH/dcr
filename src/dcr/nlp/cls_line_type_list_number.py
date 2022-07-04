@@ -22,6 +22,9 @@ Entries = list[Entry]
 List = dict[str, Entries | float | int | str]
 Lists = list[List]
 
+RuleExtern = tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]
+RuleIntern = tuple[str, re.Pattern[str], collections.abc.Callable[[str, str], bool], list[str], str]
+
 
 # pylint: disable=too-many-instance-attributes
 class LineTypeListNumber:
@@ -52,16 +55,8 @@ class LineTypeListNumber:
 
         self._RULE_NAME_SIZE: int = 20
 
-        # page_idx, para_no, line_lines_idx, target_value
-        self._entries: list[
-            tuple[
-                int,
-                int,
-                int,
-                int,
-                str,
-            ]
-        ] = []
+        # page_idx, para_no, line_lines_idx_from, line_lines_idx_till, target_value
+        self._entries: list[list[int | str]] = []
 
         self._line_lines_idx = -1
 
@@ -78,9 +73,9 @@ class LineTypeListNumber:
         self._para_no = 0
         self._para_no_prev = 0
 
-        self._rule: tuple[str, collections.abc.Callable[[str, str], bool], list[str], str] = ()  # type: ignore
+        self._rule: RuleIntern = ()  # type: ignore
 
-        self._rules: list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]] = self._init_rules()
+        self._rules: list[RuleExtern] = self._init_rules()
 
         # -----------------------------------------------------------------------------
         # Number rules collection.
@@ -95,9 +90,7 @@ class LineTypeListNumber:
         # 5: regexp_str:
         #           regular expression
         # -----------------------------------------------------------------------------
-        self._rules_collection: list[
-            tuple[str, re.Pattern[str], collections.abc.Callable[[str, str], bool], list[str], str]
-        ] = []
+        self._rules_collection: list[RuleIntern] = []
 
         for (rule_name, regexp_str, function_is_asc, start_values) in self._rules:
             self._rules_collection.append(
@@ -152,7 +145,7 @@ class LineTypeListNumber:
 
             text = []
 
-            for idx in range(line_lines_idx_from, line_lines_idx_till + 1):
+            for idx in range(int(line_lines_idx_from), int(line_lines_idx_till) + 1):
                 line_lines[idx][
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
                 ] = db.cls_document.Document.DOCUMENT_LINE_TYPE_LIST_NUMBER
@@ -172,9 +165,9 @@ class LineTypeListNumber:
                 entries.append(
                     {
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRY_NO: len(entries) + 1,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_FROM: line_lines_idx_from + 1,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_TILL: line_lines_idx_till + 1,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: page_idx + 1,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_FROM: int(line_lines_idx_from) + 1,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_TILL: int(line_lines_idx_till) + 1,
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: int(page_idx) + 1,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: para_no,
                         nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: " ".join(text),
                     }
@@ -196,8 +189,8 @@ class LineTypeListNumber:
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NUMBER: self._rule[0].rstrip(),
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_LIST_NO: self.no_lists,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ENTRIES: len(entries),
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._entries[0][0] + 1,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._entries[-1][0] + 1,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: int(self._entries[0][0]) + 1,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: int(self._entries[-1][0]) + 1,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRIES: entries,
                 }
             )
@@ -219,12 +212,12 @@ class LineTypeListNumber:
     # 4: start_values:
     #           list of strings
     # -----------------------------------------------------------------------------
-    def _init_rules(self) -> list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+    def _init_rules(self) -> list[RuleExtern]:
         """Initialise the numbered list rules.
 
         Returns:
             list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]]:
-                    The valid heading rules.
+                    The valid numbered list rules.
         """
         if cfg.glob.setup.lt_list_number_rule_file and cfg.glob.setup.lt_list_number_rule_file.lower() != "none":
             lt_list_number_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.lt_list_number_rule_file)
@@ -352,7 +345,7 @@ class LineTypeListNumber:
     @staticmethod
     def _load_rules_from_json(
         lt_list_number_rule_file: pathlib.Path,
-    ) -> list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+    ) -> list[RuleExtern]:
         """Load numbered list rules from a JSON file.
 
         Args:
@@ -363,7 +356,7 @@ class LineTypeListNumber:
             list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]]:
                 The valid numbered list rules from the JSON file,
         """
-        rules = []
+        rules: list[RuleExtern] = []
 
         with open(lt_list_number_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
@@ -399,35 +392,51 @@ class LineTypeListNumber:
         para_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO])
         target_value = str(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]).split()[0]
 
-        rule: tuple[str, collections.abc.Callable[[str, str], bool], list[str], str] = ()  # type: ignore
+        print(
+            f"wwe para_no={para_no} - target_value={target_value} - "
+            + f"text={line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]}"
+        )
 
-        for (
-            rule_name,
-            regexp_compiled,
-            function_is_asc,
-            start_values,
-            regexp_str,
-        ) in self._rules_collection:
-            if regexp_compiled.match(target_value):
-                rule = (rule_name, function_is_asc, start_values, regexp_str)
-                break
+        if self._rule:
+            if self._rule[1].match(target_value):
+                print(f"wwe hit={target_value}")
+                if self._llx_lower_limit <= float(
+                    line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]
+                ) <= self._llx_upper_limit and self._rule[2](str(self._entries[-1][4]), target_value):
+                    self._entries.append([self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx, target_value])
+                    print(f"wwe 1 self._entries={self._entries}")
+                    self._no_entries += 1
+                    return
 
-        if not rule:
-            if self._page_idx == self._page_idx_prev and para_no == self._para_no_prev:
-                # Paragraph already in progress.
-                return
+                self._finish_list()
 
-            self._finish_list()
+        rule: RuleIntern = ()  # type: ignore
+
+        # rule_name, regexp_compiled, function_is_asc, start_values, regexp_str,
+        for elem in self._rules_collection:
+            if not elem[1].match(target_value):
+                continue
+
+            if elem[3]:
+                if target_value not in elem[3]:
+                    continue
+
+            rule = elem
+            break
+
+        if rule:
+            if self._rule:
+                self._finish_list()
+        else:
+            if self._rule:
+                if self._page_idx == self._page_idx_prev and para_no == self._para_no_prev:
+                    # Paragraph already in progress.
+                    self._entries[-1][-2] = self._line_lines_idx
+                    print(f"wwe 2 self._entries={self._entries}")
+                else:
+                    self._finish_list()
+
             return
-
-        if (
-            rule != self._rule
-            or self._llx_upper_limit
-            <= float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
-            <= self._llx_lower_limit
-            or not rule[1](self._entries[-1][4], target_value)
-        ):
-            self._finish_list()
 
         self._rule = rule
 
@@ -436,14 +445,15 @@ class LineTypeListNumber:
             self._line_lines_idx_from = self._line_lines_idx
             self._line_lines_idx_till = self._line_lines_idx
             self._llx_lower_limit = round(
-                coord_llx := float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
+                (coord_llx := float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]))
                 * (100 - cfg.glob.setup.lt_list_number_tolerance_llx)
                 / 100,
                 2,
             )
             self._llx_upper_limit = round(coord_llx * (100 + cfg.glob.setup.lt_list_number_tolerance_llx) / 100, 2)
 
-        self._entries.append((self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx, target_value))
+        self._entries.append([self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx, target_value])
+        print(f"wwe 3 self._entries={self._entries}")
 
         self._no_entries += 1
 
@@ -506,6 +516,8 @@ class LineTypeListNumber:
         self._para_no_prev = 0
 
         self._predecessor = ""
+
+        self._rule = ()  # type: ignore
 
         utils.progress_msg_line_type_list_number("LineTypeListNumber: Reset the list memory")
 
