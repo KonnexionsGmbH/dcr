@@ -392,19 +392,12 @@ class LineTypeListNumber:
         para_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO])
         target_value = str(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]).split()[0]
 
-        print(
-            f"wwe para_no={para_no} - target_value={target_value} - "
-            + f"text={line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]}"
-        )
-
         if self._rule:
             if self._rule[1].match(target_value):
-                print(f"wwe hit={target_value}")
                 if self._llx_lower_limit <= float(
                     line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]
                 ) <= self._llx_upper_limit and self._rule[2](str(self._entries[-1][4]), target_value):
                     self._entries.append([self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx, target_value])
-                    print(f"wwe 1 self._entries={self._entries}")
                     self._no_entries += 1
                     return
 
@@ -432,7 +425,6 @@ class LineTypeListNumber:
                 if self._page_idx == self._page_idx_prev and para_no == self._para_no_prev:
                     # Paragraph already in progress.
                     self._entries[-1][-2] = self._line_lines_idx
-                    print(f"wwe 2 self._entries={self._entries}")
                 else:
                     self._finish_list()
 
@@ -453,7 +445,6 @@ class LineTypeListNumber:
             self._llx_upper_limit = round(coord_llx * (100 + cfg.glob.setup.lt_list_number_tolerance_llx) / 100, 2)
 
         self._entries.append([self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx, target_value])
-        print(f"wwe 3 self._entries={self._entries}")
 
         self._no_entries += 1
 
