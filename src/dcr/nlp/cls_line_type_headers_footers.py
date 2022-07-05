@@ -27,6 +27,7 @@ ResultKey = tuple[int, int]
 ResultData = dict[ResultKey, str]
 
 
+# pylint: disable=too-many-instance-attributes
 class LineTypeHeaderFooters:
     """Determine footer and header lines.
 
@@ -52,6 +53,9 @@ class LineTypeHeaderFooters:
             f"LineTypeHeaderFooters: Start create instance                ={cfg.glob.action_curr.action_file_name}"
         )
 
+        self._is_irregular_footer = True
+        self._is_irregular_header = True
+
         self._line_data_max = cfg.glob.setup.lt_header_max_lines + cfg.glob.setup.lt_footer_max_lines
         self._page_ind = -1
         self._page_max = cfg.glob.action_curr.action_no_pdf_pages
@@ -67,6 +71,17 @@ class LineTypeHeaderFooters:
         )
 
         self._result_data: ResultData = {}
+
+        self._irregular_footer_cand: tuple[int, int] = ()  # type: ignore
+        self._irregular_footer_cand_fp: list[tuple[int, int]] = []
+        self._irregular_footer_cands: list[tuple[int, int]] = []
+
+        self._irregular_header_cand: tuple[int, int] = ()  # type: ignore
+        self._irregular_header_cand_fp: list[tuple[int, int]] = []
+        self._irregular_header_cands: list[tuple[int, int]] = []
+
+        self._no_irregular_footer = 0
+        self._no_irregular_header = 0
 
         self.no_lines_footer = 0
         self.no_lines_header = 0
@@ -108,6 +123,66 @@ class LineTypeHeaderFooters:
             f"LineTypeHeaderFooters: Value of lsd_data                    ={self._lsd_data}"
         )
         utils.progress_msg_line_type_headers_footers("LineTypeHeaderFooters: End   Levenshtein distance")
+
+    # -----------------------------------------------------------------------------
+    # Try to determine an ascending page number in the footers.
+    # -----------------------------------------------------------------------------
+    def _check_irregular_footer(self, line_ind: int, text: str) -> None:
+        """Try to determine an ascending page number in the footers.
+
+        Args:
+            line_ind (int): Line index in page.
+            text (str): Line text.
+        """
+        try:
+            page_no_cand = int(text.split()[-1])
+
+            if self._page_ind == 0:
+                self._irregular_footer_cand_fp.append((line_ind, page_no_cand))
+                return
+
+            if self._page_ind == 1:
+                for line, page_no_prev in self._irregular_footer_cand_fp:
+                    if page_no_cand == int(page_no_prev) + 1:
+                        self._irregular_footer_cands.append((line, page_no_prev))
+                        self._irregular_footer_cand = (line_ind, page_no_cand)
+                        return
+                return
+
+            if page_no_cand == self._irregular_footer_cands[-1][1] + 1:
+                self._irregular_footer_cand = (line_ind, page_no_cand)
+        except ValueError:
+            return
+
+    # -----------------------------------------------------------------------------
+    # Try to determine an ascending page number in the headers.
+    # -----------------------------------------------------------------------------
+    def _check_irregular_header(self, line_ind: int, text: str) -> None:
+        """Try to determine an ascending page number in the headers.
+
+        Args:
+            line_ind (int): Line index in page.
+            text (str): Line text.
+        """
+        try:
+            page_no_cand = int(text.split()[-1])
+
+            if self._page_ind == 0:
+                self._irregular_header_cand_fp.append((line_ind, page_no_cand))
+                return
+
+            if self._page_ind == 1:
+                for line, page_no_prev in self._irregular_header_cand_fp:
+                    if page_no_cand == int(page_no_prev) + 1:
+                        self._irregular_header_cands.append((line, page_no_prev))
+                        self._irregular_header_cand = (line_ind, page_no_cand)
+                        return
+                return
+
+            if page_no_cand == self._irregular_header_cands[-1][1] + 1:
+                self._irregular_header_cand = (line_ind, page_no_cand)
+        except ValueError:
+            return
 
     # -----------------------------------------------------------------------------
     # Determine the candidates.
@@ -159,7 +234,7 @@ class LineTypeHeaderFooters:
     # -----------------------------------------------------------------------------
     # Process the page-related data.
     # -----------------------------------------------------------------------------
-    def _process_page(self) -> None:
+    def _process_page(self) -> None:  # noqa: C901
         """Process the page-related data."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -170,11 +245,35 @@ class LineTypeHeaderFooters:
             f"LineTypeHeaderFooters: Start page                           ={self._page_ind + 1}"
         )
 
+        if self._is_irregular_footer:
+            self._irregular_footer_cand = ()  # type: ignore
+
+        if self._is_irregular_header:
+            self._irregular_header_cand = ()  # type: ignore
+
         if cfg.glob.setup.lt_header_max_lines > 0:
             self._store_line_data_header()
 
         if cfg.glob.setup.lt_footer_max_lines > 0:
             self._store_line_data_footer()
+
+        if self._is_irregular_footer:
+            if self._page_ind == 0:
+                if not self._irregular_footer_cand_fp:
+                    self._is_irregular_footer = False
+            elif self._irregular_footer_cand:
+                self._irregular_footer_cands.append(self._irregular_footer_cand)
+            else:
+                self._is_irregular_footer = False
+
+        if self._is_irregular_header:
+            if self._page_ind == 0:
+                if not self._irregular_header_cand_fp:
+                    self._is_irregular_header = False
+            elif self._irregular_header_cand:
+                self._irregular_header_cands.append(self._irregular_header_cand)
+            else:
+                self._is_irregular_header = False
 
         if self._page_ind > 0:
             self._calc_levenshtein()
@@ -186,6 +285,61 @@ class LineTypeHeaderFooters:
         )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+    # -----------------------------------------------------------------------------
+    # Store the irregular footers and headers.
+    # -----------------------------------------------------------------------------
+    def _store_irregulars(self) -> None:
+        """Store the irregular footers and headers."""
+        if self._is_irregular_footer:
+            self._no_irregular_footer = 1
+            utils.progress_msg_line_type_headers_footers(
+                f"LineTypeHeaderFooters: Value of irregular footers           ={self._irregular_footer_cands}"
+            )
+
+        if self._is_irregular_header:
+            self._no_irregular_header = 1
+            utils.progress_msg_line_type_headers_footers(
+                f"LineTypeHeaderFooters: Value of irregular headers           ={self._irregular_header_cands}"
+            )
+
+        for page_ind, page in enumerate(cfg.glob.text_parser.parse_result_line_pages):
+            lines = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
+
+            is_changed = False
+
+            if self._is_irregular_footer:
+                if (
+                    lines[self._irregular_footer_cands[page_ind][0]][nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+                    == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY
+                ):
+                    lines[self._irregular_footer_cands[page_ind][0]][
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
+                    ] = db.cls_document.Document.DOCUMENT_LINE_TYPE_FOOTER
+                    is_changed = True
+                else:
+                    self._no_irregular_footer = 0
+
+            if self._is_irregular_header:
+                if (
+                    lines[self._irregular_header_cands[page_ind][0]][nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+                    == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY
+                ):
+                    lines[self._irregular_header_cands[page_ind][0]][
+                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
+                    ] = db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADER
+                    is_changed = True
+                else:
+                    self._no_irregular_header = 0
+
+            if is_changed:
+                cfg.glob.text_parser.parse_result_line_pages[page_ind] = page
+
+        if self._is_irregular_footer != 0 or self._is_irregular_header != 0:
+            cfg.glob.document.document_no_lines_footer = self._no_irregular_footer
+            cfg.glob.document.document_no_lines_header = self._no_irregular_header
+            cfg.glob.document.persist_2_db()  # type: ignore
+
 
     # -----------------------------------------------------------------------------
     # Store the footers of the current page.
@@ -208,10 +362,15 @@ class LineTypeHeaderFooters:
 
             page_line: dict[str, int | str] = cfg.glob.text_parser.parse_result_line_lines[line_lines_ind]
 
-            self._line_data[ind] = (  # type: ignore
+            text = str(page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+
+            if self._is_irregular_footer:
+                self._check_irregular_footer(line_lines_ind, text)
+
+            self._line_data[ind] = (
                 (
                     int(page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1,
-                    page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT],
+                    text,
                 ),
                 prev,
             )
@@ -250,10 +409,15 @@ class LineTypeHeaderFooters:
 
             page_line: dict[str, int | str] = cfg.glob.text_parser.parse_result_line_lines[ind]
 
-            self._line_data[ind] = (  # type: ignore
+            text = str(page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+
+            if self._is_irregular_header:
+                self._check_irregular_header(ind, text)
+
+            self._line_data[ind] = (
                 (
                     int(page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1,
-                    page_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT],
+                    text,
                 ),
                 prev,
             )
@@ -372,6 +536,11 @@ class LineTypeHeaderFooters:
                 f"LineTypeHeaderFooters: Value of result_data                 ={self._result_data}"
             )
             self._store_results()
+
+        if self._is_irregular_footer or self._is_irregular_header:
+            self._store_irregulars()
+            self.no_lines_footer += self._no_irregular_footer
+            self.no_lines_header += self._no_irregular_header
 
         utils.progress_msg_line_type_headers_footers(
             f"LineTypeHeaderFooters: End document                         ={cfg.glob.action_curr.action_file_name}"

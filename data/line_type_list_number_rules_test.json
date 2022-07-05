@@ -41,6 +41,46 @@
       ]
     },
     {
+      "name": "[999]",
+      "regexp": "\\[\\d+\\]$",
+      "functionIsAsc": "string_integers",
+      "startValues": [
+        "[1]"
+      ]
+    },
+    {
+      "name": "[A]",
+      "regexp": "\\[[A-Z]\\]$",
+      "functionIsAsc": "uppercase_letters",
+      "startValues": [
+        "[A]"
+      ]
+    },
+    {
+      "name": "[ROM]",
+      "regexp": "\\[M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\\]$",
+      "functionIsAsc": "romans",
+      "startValues": [
+        "[I]"
+      ]
+    },
+    {
+      "name": "[a]",
+      "regexp": "\\([a-z]\\]$",
+      "functionIsAsc": "lowercase_letters",
+      "startValues": [
+        "[a]"
+      ]
+    },
+    {
+      "name": "[rom]",
+      "regexp": "\\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\\]$",
+      "functionIsAsc": "romans",
+      "startValues": [
+        "[i]"
+      ]
+    },
+    {
       "name": "999)",
       "regexp": "\\d+\\)$",
       "functionIsAsc": "string_integers",

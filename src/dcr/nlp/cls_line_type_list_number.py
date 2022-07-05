@@ -265,6 +265,36 @@ class LineTypeListNumber:
                 ["(i)"],
             ),
             (
+                "[999]",
+                r"\[\d+\]$",
+                nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
+                ["[1]"],
+            ),
+            (
+                "[A]",
+                r"\[[A-Z]\]$",
+                nlp.cls_nlp_core.NLPCore.is_asc_uppercase_letters,
+                ["[A]"],
+            ),
+            (
+                "[ROM]",
+                r"\[M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\]$",
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
+                ["[I]"],
+            ),
+            (
+                "[a]",
+                r"\[[a-z]\]$",
+                nlp.cls_nlp_core.NLPCore.is_asc_lowercase_letters,
+                ["[a]"],
+            ),
+            (
+                "[rom]",
+                r"\[m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\]$",
+                nlp.cls_nlp_core.NLPCore.is_asc_romans,
+                ["[i]"],
+            ),
+            (
                 "999)",
                 r"\d+\)$",
                 nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
