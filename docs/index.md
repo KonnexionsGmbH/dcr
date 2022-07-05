@@ -233,6 +233,14 @@ The document `line` granularity attempts to type the lines. Details on this proc
                         "text": "19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm"
                     },
 
+**Example extract from the optional file `line_list_bullet`**:
+
+    {
+
+**Example extract from the optional file `line_list_number`**:
+
+    {
+
 **Example extract from the optional file `line_table`**:
 
     {
@@ -454,6 +462,9 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
          <ost>_<di>[_<pn>|_0]_page.xml        
          <ost>_<di>[_<pn>|_0]_word.xml 
     out: <ost>_<di>[_<pn>|_0]_line.json 
+         <ost>_<di>[_<pn>|_0]_line.list_bullet.json 
+         <ost>_<di>[_<pn>|_0]_line.list_number.json 
+         <ost>_<di>[_<pn>|_0]_line.table.json 
          <ost>_<di>[_<pn>|_0]_line.toc.json 
          <ost>_<di>[_<pn>|_0]_page.json 
          <ost>_<di>[_<pn>|_0]_word.json
@@ -485,6 +496,9 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_2_docx_route_inbox_pandoc_pdflib_2.word.xml
 
     case_2_docx_route_inbox_pandoc_pdflib_2.line.json
+    case_2_docx_route_inbox_pandoc_pdflib_2.line_list_bullet.json
+    case_2_docx_route_inbox_pandoc_pdflib_2.line_list_number.json
+    case_2_docx_route_inbox_pandoc_pdflib_2.line_table.json
     case_2_docx_route_inbox_pandoc_pdflib_2.line_toc.json
     case_2_docx_route_inbox_pandoc_pdflib_2.page.json
     case_2_docx_route_inbox_pandoc_pdflib_2.word.json
@@ -502,6 +516,9 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_6_jpg_route_inbox_tesseract_pdflib_6.word.xml
 
     case_6_jpg_route_inbox_tesseract_pdflib_6.line.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line_list_bullet.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line_list_number.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line_table.json
     case_6_jpg_route_inbox_tesseract_pdflib_6.line_toc.json
     case_6_jpg_route_inbox_tesseract_pdflib_6.page.json
     case_6_jpg_route_inbox_tesseract_pdflib_6.word.json
@@ -517,6 +534,9 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_3_pdf_text_route_inbox_pdflib_3.word.xml
 
     case_3_pdf_text_route_inbox_pdflib_3.line.json
+    case_3_pdf_text_route_inbox_pdflib_3.line_list_bullet.json
+    case_3_pdf_text_route_inbox_pdflib_3.line_list_number.json
+    case_3_pdf_text_route_inbox_pdflib_3.line_table.json
     case_3_pdf_text_route_inbox_pdflib_3.line_toc.json
     case_3_pdf_text_route_inbox_pdflib_3.page.json
     case_3_pdf_text_route_inbox_pdflib_3.word.json
@@ -536,6 +556,9 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.xml
 
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_list_bullet.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_list_number.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_table.json
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_toc.json
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.page.json
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.json
@@ -558,6 +581,9 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.xml
 
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_list_bullet.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_list_number.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_table.json
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_toc.json
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.page.json
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.json

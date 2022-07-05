@@ -20,4 +20,4 @@ In case of software changes we strongly recommend you to respect the license ter
 
 ## 3. Notes on the Software Development Process
 
-[See **`Developing DCR`** here](https://konnexionsgmbh.github.io/dcr){:target="_blank"}
+[See **`Developing DCR`** here](https://konnexionsgmbh.github.io/dcr/developing_research_notes/){:target="_blank"}
