@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 125
+    _CONFIG_PARAM_NO = 126
 
     _DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET: ClassVar[str] = "create_extra_file_list_bullet"
     _DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER: ClassVar[str] = "create_extra_file_list_number"
@@ -61,6 +61,7 @@ class Setup:
     _DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES: ClassVar[str] = "lt_list_bullet_min_entries"
     _DCR_CFG_LT_LIST_BULLET_RULE_FILE: ClassVar[str] = "lt_list_bullet_rule_file"
     _DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX: ClassVar[str] = "lt_list_bullet_tolerance_llx"
+    _DCR_CFG_LT_LIST_NUMBER_FILE_INCL_REGEXP: ClassVar[str] = "lt_list_number_file_incl_regexp"
     _DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES: ClassVar[str] = "lt_list_number_min_entries"
     _DCR_CFG_LT_LIST_NUMBER_RULE_FILE: ClassVar[str] = "lt_list_number_rule_file"
     _DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX: ClassVar[str] = "lt_list_number_tolerance_llx"
@@ -228,6 +229,9 @@ class Setup:
         self.lt_list_bullet_min_entries = 2
         self.lt_list_bullet_rule_file = "none"
         self.lt_list_bullet_tolerance_llx = 5
+
+        self.is_lt_list_number_file_incl_regexp = False
+
         self.lt_list_number_min_entries = 2
         self.lt_list_number_rule_file = "none"
         self.lt_list_number_tolerance_llx = 5
@@ -411,6 +415,9 @@ class Setup:
         )
         self.lt_list_bullet_tolerance_llx = self._determine_config_param_integer(
             Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, self.lt_list_bullet_tolerance_llx
+        )
+        self.is_lt_list_number_file_incl_regexp = self._determine_config_param_boolean(
+            Setup._DCR_CFG_LT_LIST_NUMBER_FILE_INCL_REGEXP, self.is_lt_list_number_file_incl_regexp
         )
         self.lt_list_number_min_entries = self._determine_config_param_integer(
             Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES, self.lt_list_number_min_entries
@@ -898,6 +905,7 @@ class Setup:
                     | Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX
                     | Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES
                     | Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX
+                    | Setup._DCR_CFG_LT_LIST_NUMBER_FILE_INCL_REGEXP
                     | Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES
                     | Setup._DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX
                     | Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS

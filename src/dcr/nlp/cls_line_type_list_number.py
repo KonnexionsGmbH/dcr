@@ -19,7 +19,7 @@ import utils
 Entry = dict[str, int | str]
 Entries = list[Entry]
 
-List = dict[str, Entries | float | int | str]
+List = dict[str, Entries | float | int | object | str]
 Lists = list[List]
 
 RuleExtern = tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]
@@ -182,18 +182,23 @@ class LineTypeListNumber:
             #     "noEntries": 99,
             #     "pageNoFrom": 99,
             #     "pageNoTill": 99,
+            #     "regexp": "xxx",
             #     "entries": []
-            # },
-            self._lists.append(
-                {
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NUMBER: self._rule[0].rstrip(),
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LIST_NO: self.no_lists,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ENTRIES: len(entries),
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: int(self._entries[0][0]) + 1,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: int(self._entries[-1][0]) + 1,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRIES: entries,
-                }
-            )
+            # }
+            entry = {
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_NUMBER: self._rule[0].rstrip(),
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_LIST_NO: self.no_lists,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ENTRIES: len(entries),
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: int(self._entries[0][0]) + 1,
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: int(self._entries[-1][0]) + 1,
+            }
+
+            if cfg.glob.setup.is_lt_list_number_file_incl_regexp:
+                entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP] = self._rule[-1]
+
+            entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRIES] = entries
+
+            self._lists.append(entry)
 
         self._reset_list()
 

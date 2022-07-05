@@ -160,6 +160,7 @@ The customisable entries are:
     lt_list_bullet_min_entries = 2
     lt_list_bullet_rule_file = none
     lt_list_bullet_tolerance_llx = 5
+    lt_list_number_file_incl_regexp = false
     lt_list_number_min_entries = 2
     lt_list_number_rule_file = none
     lt_list_number_tolerance_llx = 5
@@ -220,6 +221,7 @@ The customisable entries are:
 | lt_list_bullet_min_entries       | **`2`**                                     | Minimum number of entries to determine a bulleted list.                                                                |
 | lt_list_bullet_rule_file         | **`data/line_type_list_bullet_rules.json`** | File with rules to determine the bulleted lists.                                                                       |
 | lt_list_bullet_tolerance_llx     | **`5`**                                     | Tolerance of vertical indentation in percent.                                                                          |
+| lt_list_number_file_incl_regexp  | **`false`**                                 | If it is set to **`true`**, the regular expression for the numbered list is included in the **`JSON`** file.           |
 | lt_list_number_min_entries       | **`2`**                                     | Minimum number of entries to determine a numbered list.                                                                |
 | lt_list_number_rule_file         | **`data/line_type_list_number_rules.json`** | File with rules to determine the numbered lists.                                                                       |
 | lt_list_number_tolerance_llx     | **`5`**                                     | Tolerance of vertical indentation in percent.                                                                          |
