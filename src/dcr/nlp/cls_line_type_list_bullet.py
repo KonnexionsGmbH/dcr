@@ -288,7 +288,6 @@ class LineTypeListBullet:
 
         self._no_entries += 1
 
-        self._page_idx_prev = self._page_idx
         self._para_no_prev = para_no
 
     # -----------------------------------------------------------------------------
@@ -309,6 +308,7 @@ class LineTypeListBullet:
 
             if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 self._process_line(line_line)
+                self._page_idx_prev = self._page_idx
 
         utils.progress_msg_line_type_list_bullet(
             f"LineTypeListBullet: End   page                           ={self._page_idx + 1}"

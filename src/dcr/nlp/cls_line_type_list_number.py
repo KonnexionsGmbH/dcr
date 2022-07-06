@@ -434,6 +434,7 @@ class LineTypeListNumber:
                 ) <= self._llx_upper_limit and self._rule[2](str(self._entries[-1][4]), target_value):
                     self._entries.append([self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx, target_value])
                     self._no_entries += 1
+                    self._para_no_prev = para_no
                     return
 
                 self._finish_list()
@@ -463,6 +464,7 @@ class LineTypeListNumber:
                 else:
                     self._finish_list()
 
+            self._para_no_prev = para_no
             return
 
         self._rule = rule
@@ -483,7 +485,6 @@ class LineTypeListNumber:
 
         self._no_entries += 1
 
-        self._page_idx_prev = self._page_idx
         self._para_no_prev = para_no
 
     # -----------------------------------------------------------------------------
@@ -504,6 +505,7 @@ class LineTypeListNumber:
 
             if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 self._process_line(line_line)
+                self._page_idx_prev = self._page_idx
 
         utils.progress_msg_line_type_list_number(
             f"LineTypeListNumber: End   page                           ={self._page_idx + 1}"

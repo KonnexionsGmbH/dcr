@@ -539,6 +539,12 @@ class LineTypeHeading:
             target_value = first_token if is_first_token else text
 
             if regexp_compiled.match(target_value):
+                if not function_is_asc(predecessor, target_value):
+                    if is_first_token and start_values and  first_token in start_values:
+                        break
+                    else:
+                        continue
+
                 coord_llx_curr_float = float(coord_llx_curr)
                 coord_llx_float = float(coord_llx)
                 if (
@@ -547,36 +553,33 @@ class LineTypeHeading:
                 ):
                     return 0
 
-                if function_is_asc(predecessor, target_value):
-                    self._rules_hierarchy[ph_idx] = (
-                        rule_name,
-                        is_first_token,
-                        regexp_compiled,
-                        function_is_asc,
-                        start_values,
-                        level,
-                        coord_llx,
-                        target_value,
-                        regexp_str,
-                    )
+                self._rules_hierarchy[ph_idx] = (
+                    rule_name,
+                    is_first_token,
+                    regexp_compiled,
+                    function_is_asc,
+                    start_values,
+                    level,
+                    coord_llx,
+                    target_value,
+                    regexp_str,
+                )
 
-                    self._level_prev = level
+                self._level_prev = level
 
-                    self._create_toc_entry(level, text)
+                self._create_toc_entry(level, text)
 
-                    utils.progress_msg_line_type_heading(
-                        f"LineTypeHeading: Match                                ={rule_name} "
-                        + f"- level={level} - heading={text}"
-                    )
+                utils.progress_msg_line_type_heading(
+                    f"LineTypeHeading: Match                                ={rule_name} "
+                    + f"- level={level} - heading={text}"
+                )
 
-                    # Delete levels that are no longer needed
-                    if ph_size > level:
-                        for i in range(ph_size - 1, level - 1, -1):
-                            del self._rules_hierarchy[i]
+                # Delete levels that are no longer needed
+                if ph_size > level:
+                    for i in range(ph_size - 1, level - 1, -1):
+                        del self._rules_hierarchy[i]
 
-                    return level
-
-                return 0
+                return level
 
         for (
             rule_name,
@@ -588,8 +591,7 @@ class LineTypeHeading:
         ) in self._rules_collection:
             target_value = first_token if is_first_token else text
             if regexp_compiled.match(target_value):
-                if is_first_token and start_values:
-                    if first_token not in start_values:
+                if is_first_token and start_values and  first_token not in start_values:
                         continue
 
                 # wwe
