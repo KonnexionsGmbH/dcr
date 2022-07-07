@@ -20,7 +20,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 126
+    _CONFIG_PARAM_NO = 129
 
     _DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET: ClassVar[str] = "create_extra_file_list_bullet"
     _DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER: ClassVar[str] = "create_extra_file_list_number"
@@ -48,6 +48,9 @@ class Setup:
     _DCR_CFG_IGNORE_DUPLICATES: ClassVar[str] = "ignore_duplicates"
     _DCR_CFG_JSON_INDENT: ClassVar[str] = "json_indent"
     _DCR_CFG_JSON_SORT_KEYS: ClassVar[str] = "json_sort_keys"
+    _DCR_CFG_LT_EXPORT_RULE_FILE_HEADING: ClassVar[str] = "lt_export_rule_file_heading"
+    _DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET: ClassVar[str] = "lt_export_rule_file_list_bullet"
+    _DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER: ClassVar[str] = "lt_export_rule_file_list_number"
     _DCR_CFG_LT_FOOTER_MAX_DISTANCE: ClassVar[str] = "lt_footer_max_distance"
     _DCR_CFG_LT_FOOTER_MAX_LINES: ClassVar[str] = "lt_footer_max_lines"
     _DCR_CFG_LT_HEADER_MAX_DISTANCE: ClassVar[str] = "lt_header_max_distance"
@@ -222,6 +225,9 @@ class Setup:
 
         self.is_lt_heading_file_incl_regexp = False
 
+        self.lt_export_rule_file_heading = "data/lt_export_rule_heading.json"
+        self.lt_export_rule_file_list_bullet = "data/lt_export_rule_list_bullet.json"
+        self.lt_export_rule_file_list_number = "data/lt_export_rule_list_number.json"
         self.lt_heading_max_level = 3
         self.lt_heading_min_pages = 2
         self.lt_heading_rule_file = "none"
@@ -994,6 +1000,12 @@ class Setup:
                     | Setup._DCR_CFG_VERBOSE_PARSER
                 ):
                     continue
+                case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_HEADING:
+                    self.lt_export_rule_file_heading = utils.get_os_independent_name(item)
+                case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET:
+                    self.lt_export_rule_file_list_bullet = utils.get_os_independent_name(item)
+                case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER:
+                    self.lt_export_rule_file_list_number = utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_LT_HEADING_RULE_FILE:
                     self.lt_heading_rule_file = utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE:

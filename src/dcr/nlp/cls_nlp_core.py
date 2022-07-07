@@ -274,7 +274,7 @@ class NLPCore:
         return integer
 
     # -----------------------------------------------------------------------------
-    # Get the default line type rules.
+    # Get the default heading & numbered list line type rules.
     # -----------------------------------------------------------------------------
     # 1: rule_name
     # 2: is_first_token:
@@ -288,12 +288,14 @@ class NLPCore:
     #           list of strings
     # -----------------------------------------------------------------------------
     @staticmethod
-    def _get_lt_rules_default() -> list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
-        """Get the default line type rules.
+    def _get_lt_rules_default_heading_list_number() -> list[
+        tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]
+    ]:
+        """Get the default heading & numbered list line type rules.
 
         Returns:
             list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
-                The line type rules.
+                The heading & numbered list line type rules.
         """
         return [
             (
@@ -481,6 +483,29 @@ class NLPCore:
         ]
 
     # -----------------------------------------------------------------------------
+    # Get the default bulleted list line type rules.
+    # -----------------------------------------------------------------------------
+    # 1: bullet character(s)
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def _get_lt_rules_default_list_bullet() -> dict[str, int]:
+        """Get the default bulleted list line type rules.
+
+        Returns:
+            dict[str, int]:
+                The bulleted list line type rules.
+        """
+        return {
+            "- ": 0,
+            ". ": 0,
+            "\ufffd ": 0,
+            "o ": 0,
+            "° ": 0,
+            "• ": 0,
+            "‣ ": 0,
+        }
+
+    # -----------------------------------------------------------------------------
     # Check the object existence.
     # -----------------------------------------------------------------------------
     def exists(self) -> bool:
@@ -502,7 +527,20 @@ class NLPCore:
             list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
                 The heading line type rules.
         """
-        return NLPCore._get_lt_rules_default()
+        return NLPCore._get_lt_rules_default_heading_list_number()
+
+    # -----------------------------------------------------------------------------
+    # Get the default bulleted list line type rules.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def get_lt_rules_default_list_bullet() -> dict[str, int]:
+        """Get the default bulleted list line type rules.
+
+        Returns:
+            dict[str, int]:
+                The bulleted list line type rules.
+        """
+        return NLPCore._get_lt_rules_default_list_bullet()
 
     # -----------------------------------------------------------------------------
     # Get the default numbered list line type rules.
@@ -517,7 +555,13 @@ class NLPCore:
         """
         rules: list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]] = []
 
-        for rule_name, is_first_token, regexp_str, function_is_asc, start_values in NLPCore._get_lt_rules_default():
+        for (
+            rule_name,
+            is_first_token,
+            regexp_str,
+            function_is_asc,
+            start_values,
+        ) in NLPCore._get_lt_rules_default_heading_list_number():
             if is_first_token:
                 rules.append((rule_name, regexp_str, function_is_asc, start_values))
 

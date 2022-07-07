@@ -192,15 +192,7 @@ class LineTypeListBullet:
                 f"File with valid bullets is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'"
             )
 
-        return {
-            "- ": 0,
-            ". ": 0,
-            "\ufffd ": 0,
-            "o ": 0,
-            "° ": 0,
-            "• ": 0,
-            "‣ ": 0,
-        }
+        return nlp.cls_nlp_core.NLPCore.get_lt_rules_default_list_bullet()
 
     # -----------------------------------------------------------------------------
     # Load the valid bullets from a JSON file.
