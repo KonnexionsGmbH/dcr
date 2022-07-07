@@ -308,7 +308,7 @@ class LineTypeHeaderFooters:
 
             is_changed = False
 
-            if self._is_irregular_footer:
+            if self._is_irregular_footer and self._irregular_footer_cands:
                 if (
                     lines[self._irregular_footer_cands[page_ind][0]][nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
                     == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY
@@ -320,7 +320,7 @@ class LineTypeHeaderFooters:
                 else:
                     self._no_irregular_footer = 0
 
-            if self._is_irregular_header:
+            if self._is_irregular_header and self._irregular_header_cands:
                 if (
                     lines[self._irregular_header_cands[page_ind][0]][nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
                     == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY
@@ -335,11 +335,10 @@ class LineTypeHeaderFooters:
             if is_changed:
                 cfg.glob.text_parser.parse_result_line_pages[page_ind] = page
 
-        if self._is_irregular_footer != 0 or self._is_irregular_header != 0:
+        if self._no_irregular_footer != 0 or self._no_irregular_header != 0:
             cfg.glob.document.document_no_lines_footer = self._no_irregular_footer
             cfg.glob.document.document_no_lines_header = self._no_irregular_header
             cfg.glob.document.persist_2_db()  # type: ignore
-
 
     # -----------------------------------------------------------------------------
     # Store the footers of the current page.

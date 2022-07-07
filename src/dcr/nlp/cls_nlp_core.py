@@ -1,14 +1,11 @@
 """Module nlp.cls_nlp_core: Managing the NLP processing."""
 from __future__ import annotations
 
+import collections
 import re
 from typing import ClassVar
 
 import cfg.glob
-
-# -----------------------------------------------------------------------------
-# Global type aliases.
-# -----------------------------------------------------------------------------
 
 
 class NLPCore:
@@ -80,6 +77,7 @@ class NLPCore:
     JSON_NAME_NO_SENTS_IN_PAGE: ClassVar[str] = "noSentencesInPage"
     JSON_NAME_NO_SENTS_IN_PARA: ClassVar[str] = "noSentencesInParagraph"
     JSON_NAME_NO_TABLES_IN_DOC: ClassVar[str] = "noTablesInDocument"
+    JSON_NAME_NO_TITLES_IN_DOC: ClassVar[str] = "noTitlesInDocument"
     JSON_NAME_NO_TOKENS_IN_DOC: ClassVar[str] = "noTokensInDocument"
     JSON_NAME_NO_TOKENS_IN_PAGE: ClassVar[str] = "noTokensInPage"
     JSON_NAME_NO_TOKENS_IN_PARA: ClassVar[str] = "noTokensInParagraph"
@@ -109,6 +107,7 @@ class NLPCore:
     JSON_NAME_TABLE_NO: ClassVar[str] = "tableNo"
     JSON_NAME_TEXT: ClassVar[str] = "text"
     JSON_NAME_TOC: ClassVar[str] = "toc"
+    JSON_NAME_TITLES: ClassVar[str] = "titles"
     JSON_NAME_TOKENS: ClassVar[str] = "tokens"
 
     JSON_NAME_TOKEN_CLUSTER: ClassVar[str] = "tknCluster"
@@ -179,6 +178,7 @@ class NLPCore:
     PARSE_ELEM_ANNOTATIONS: ClassVar[str] = "Annotations"
     PARSE_ELEM_ATTACHMENTS: ClassVar[str] = "Attachments"
     PARSE_ELEM_AUTHOR: ClassVar[str] = "Author"
+    PARSE_ELEM_BOOKMARK: ClassVar[str] = "Bookmark"
     PARSE_ELEM_BOOKMARKS: ClassVar[str] = "Bookmarks"
     PARSE_ELEM_BOX: ClassVar[str] = "Box"
     PARSE_ELEM_CELL: ClassVar[str] = "Cell"
@@ -233,15 +233,21 @@ class NLPCore:
     # Convert a roman numeral to integer.
     # -----------------------------------------------------------------------------
     @classmethod
-    def _convert_roman_2_int(cls, roman: str) -> int:
+    def _convert_roman_2_int(cls, roman_in: str) -> int:
         """Convert a roman numeral to integer.
 
         Args:
-            roman (str): The roman numeral.
+            roman_in (str): The roman numeral.
 
         Returns:
             int: The corresponding integer.
         """
+        roman = re.match(  # type: ignore
+            "(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3}))"
+            + "|(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3}))",
+            roman_in,
+        ).group(0)
+
         tallies = {
             "i": 1,
             "v": 5,
@@ -268,6 +274,213 @@ class NLPCore:
         return integer
 
     # -----------------------------------------------------------------------------
+    # Get the default line type rules.
+    # -----------------------------------------------------------------------------
+    # 1: rule_name
+    # 2: is_first_token:
+    #           True:  apply rule to first token (split)
+    #           False: apply rule to beginning of line
+    # 3: regexp_str:
+    #           regular expression
+    # 4: function_is_asc:
+    #           compares predecessor and successor
+    # 5: start_values:
+    #           list of strings
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def _get_lt_rules_default() -> list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+        """Get the default line type rules.
+
+        Returns:
+            list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+                The line type rules.
+        """
+        return [
+            (
+                "(999)",
+                True,
+                r"\(\d+\)$",
+                NLPCore.is_asc_string_integers,
+                ["(1)"],
+            ),
+            (
+                "(A)",
+                True,
+                r"\([A-Z]\)$",
+                NLPCore.is_asc_uppercase_letters,
+                ["(A)"],
+            ),
+            (
+                "(ROM)",
+                True,
+                r"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$",
+                NLPCore.is_asc_romans,
+                ["(I)"],
+            ),
+            (
+                "(a)",
+                True,
+                r"\([a-z]\)$",
+                NLPCore.is_asc_lowercase_letters,
+                ["(a)"],
+            ),
+            (
+                "(rom)",
+                True,
+                r"\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$",
+                NLPCore.is_asc_romans,
+                ["(i)"],
+            ),
+            (
+                "[999]",
+                True,
+                r"\[\d+\]$",
+                NLPCore.is_asc_string_integers,
+                ["[1]"],
+            ),
+            (
+                "[A]",
+                True,
+                r"\[[A-Z]\]$",
+                NLPCore.is_asc_uppercase_letters,
+                ["[A]"],
+            ),
+            (
+                "[ROM]",
+                True,
+                r"\[M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\]$",
+                NLPCore.is_asc_romans,
+                ["[I]"],
+            ),
+            (
+                "[a]",
+                True,
+                r"\[[a-z]\]$",
+                NLPCore.is_asc_lowercase_letters,
+                ["[a]"],
+            ),
+            (
+                "[rom]",
+                True,
+                r"\[m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\]$",
+                NLPCore.is_asc_romans,
+                ["[i]"],
+            ),
+            (
+                "999)",
+                True,
+                r"\d+\)$",
+                NLPCore.is_asc_string_integers,
+                ["1)"],
+            ),
+            (
+                "999.",
+                False,
+                r"\d+\.",
+                NLPCore.is_asc_string_integers,
+                ["1."],
+            ),
+            (
+                "999.999",
+                True,
+                r"\d+\.\d{1,3}$",
+                NLPCore.is_asc_string_floats,
+                ["0.0", "0.1", "0.01", "0.001"],
+            ),
+            (
+                "A)",
+                True,
+                r"[A-Z]\)$",
+                NLPCore.is_asc_uppercase_letters,
+                ["A)"],
+            ),
+            (
+                "A.",
+                False,
+                r"[A-Z]\.",
+                NLPCore.is_asc_uppercase_letters,
+                ["A."],
+            ),
+            (
+                "ROM)",
+                True,
+                r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$",
+                NLPCore.is_asc_romans,
+                ["I)"],
+            ),
+            (
+                "ROM.",
+                False,
+                r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\.",
+                NLPCore.is_asc_romans,
+                ["I."],
+            ),
+            (
+                "a)",
+                True,
+                r"[a-z]\)$",
+                NLPCore.is_asc_lowercase_letters,
+                ["a)"],
+            ),
+            (
+                "a.",
+                False,
+                r"[a-z]\.",
+                NLPCore.is_asc_lowercase_letters,
+                ["a."],
+            ),
+            (
+                "rom)",
+                True,
+                r"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$",
+                NLPCore.is_asc_romans,
+                ["i)"],
+            ),
+            (
+                "rom.",
+                False,
+                r"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\.",
+                NLPCore.is_asc_romans,
+                ["i."],
+            ),
+            (
+                "999",
+                False,
+                r"\d+[ ]+[A-Z][a-zA-Z]+",
+                NLPCore.is_asc_string_integers_token,
+                ["1 "],
+            ),
+            (
+                "A",
+                False,
+                r"[A-Z][ ]+[A-Z][a-zA-Z]+",
+                NLPCore.is_asc_uppercase_letters_token,
+                ["A "],
+            ),
+            (
+                "ROM",
+                False,
+                r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})[ ]+[A-Z][a-zA-Z]+",
+                NLPCore.is_asc_romans_token,
+                ["I "],
+            ),
+            (
+                "a",
+                False,
+                r"[a-z][ ]+[A-Z][a-zA-Z]+",
+                NLPCore.is_asc_lowercase_letters_token,
+                ["a "],
+            ),
+            (
+                "rom",
+                False,
+                r"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})[ ]+[A-Z][a-zA-Z]+",
+                NLPCore.is_asc_romans_token,
+                ["i "],
+            ),
+        ]
+
+    # -----------------------------------------------------------------------------
     # Check the object existence.
     # -----------------------------------------------------------------------------
     def exists(self) -> bool:
@@ -277,6 +490,38 @@ class NLPCore:
             bool:   Always true
         """
         return self._exist
+
+    # -----------------------------------------------------------------------------
+    # Get the default heading line type rules.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def get_lt_rules_default_heading() -> list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+        """Get the default heading line type rules.
+
+        Returns:
+            list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+                The heading line type rules.
+        """
+        return NLPCore._get_lt_rules_default()
+
+    # -----------------------------------------------------------------------------
+    # Get the default numbered list line type rules.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def get_lt_rules_default_list_number() -> list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+        """Get the default numbered list line type rules.
+
+        Returns:
+            list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
+                The numbered list line type rules.
+        """
+        rules: list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]] = []
+
+        for rule_name, is_first_token, regexp_str, function_is_asc, start_values in NLPCore._get_lt_rules_default():
+            if is_first_token:
+                rules.append((rule_name, regexp_str, function_is_asc, start_values))
+
+        return rules
 
     # -----------------------------------------------------------------------------
     # Ignore the comparison.
@@ -311,6 +556,22 @@ class NLPCore:
                 return True
 
         return False
+
+    # -----------------------------------------------------------------------------
+    # Compare two lowercase letters on difference ascending 1 - only first token.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_lowercase_letters_token(cls, predecessor: str, successor: str) -> bool:
+        """Compare two lowercase_letters on ascending - only first token.
+
+        Args:
+            predecessor (str): The previous string.
+            successor (str): The current string.
+
+        Returns:
+            bool: True, if the successor - predecessor is equal to 1, False else.
+        """
+        return cls.is_asc_lowercase_letters(predecessor.split()[0], successor.split()[0])
 
     # -----------------------------------------------------------------------------
     # Compare two roman numerals on ascending.
@@ -354,6 +615,29 @@ class NLPCore:
         return False
 
     # -----------------------------------------------------------------------------
+    # Compare two roman numerals on ascending - only first token.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_romans_token(cls, predecessor: str, successor: str) -> bool:
+        """Compare two roman numerals on ascending - only first token.
+
+        Args:
+            predecessor (str): The previous roman numeral.
+            successor (str): The current roman numeral.
+
+        Returns:
+            bool: False, if the predecessor is greater than the current value, True else.
+        """
+        # TBD depending on different regexp patterns
+        # if predecessor[0] == "(":
+        #     predecessor_net = predecessor[1:-1]
+        #     successor_net = successor[1:-1]
+        # else:
+        #     predecessor_net = predecessor
+        #     successor_net = successor
+        return cls.is_asc_romans(predecessor.split()[0], successor.split()[0])
+
+    # -----------------------------------------------------------------------------
     # Compare two strings on ascending.
     # -----------------------------------------------------------------------------
     @classmethod
@@ -395,6 +679,22 @@ class NLPCore:
         return False
 
     # -----------------------------------------------------------------------------
+    # Compare two string floats on ascending - only first token.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_string_floats_token(cls, predecessor: str, successor: str) -> bool:
+        """Compare two string float numbers on ascending - only first token.
+
+        Args:
+            predecessor (str): The previous string float number.
+            successor (str): The current string float number.
+
+        Returns:
+            bool: False, if the predecessor is greater than the current value, True else.
+        """
+        return cls.is_asc_string_floats(predecessor.split()[0], successor.split()[0])
+
+    # -----------------------------------------------------------------------------
     # Compare two string integers on difference ascending 1.
     # -----------------------------------------------------------------------------
     @classmethod
@@ -413,6 +713,22 @@ class NLPCore:
                 return True
 
         return False
+
+    # -----------------------------------------------------------------------------
+    # Compare two string integers on difference ascending 1 - only first token.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_string_integers_token(cls, predecessor: str, successor: str) -> bool:
+        """Compare two string integers on ascending - only first token.
+
+        Args:
+            predecessor (str): The previous string integer.
+            successor (str): The current string integer.
+
+        Returns:
+            bool: True, if the successor - predecessor is equal to 1, False else.
+        """
+        return cls.is_asc_string_integers(predecessor.split()[0], successor.split()[0])
 
     # -----------------------------------------------------------------------------
     # Compare two uppercase letters on difference ascending 1.
@@ -435,3 +751,19 @@ class NLPCore:
                 return True
 
         return False
+
+    # -----------------------------------------------------------------------------
+    # Compare two uppercase letters on difference ascending 1 - only first token.
+    # -----------------------------------------------------------------------------
+    @classmethod
+    def is_asc_uppercase_letters_token(cls, predecessor: str, successor: str) -> bool:
+        """Compare two uppercase_letters on ascending - only first token.
+
+        Args:
+            predecessor (str): The previous string.
+            successor (str): The current string.
+
+        Returns:
+            bool: True, if the successor - predecessor is equal to 1, False else.
+        """
+        return cls.is_asc_uppercase_letters(predecessor.split()[0], successor.split()[0])

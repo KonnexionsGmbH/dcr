@@ -200,6 +200,15 @@
       "startValues": [
         "i."
       ]
+    },
+    {
+      "name": "A",
+      "isFirstToken": false,
+      "regexp": "[A-Z] [A-Z][a-zA-Z]+",
+      "functionIsAsc": "uppercase_letters_token",
+      "startValues": [
+        "A "
+      ]
     }
   ]
 }

@@ -83,7 +83,7 @@ def test_line_type_toc(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_empty_d
     )
     pytest.helpers.check_cls_line_type(
         json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "pdf_toc_table_bullet_list_2.line.json")),
-        target_footer=[(1, [17, 18]), (2, [10, 11]), (3, [10, 11]), (4, [6, 7]), (5, [6, 7]), (6, [6, 7])],
+        target_footer=[(1, [17, 18]), (2, [10, 11]), (3, [9, 10, 11]), (4, [6, 7]), (5, [6, 7]), (6, [6, 7])],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1]), (6, [0, 1])],
         target_toc=target_toc_exp_table,
     )

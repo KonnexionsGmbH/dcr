@@ -112,6 +112,8 @@ class TextParser:
 
         self.parse_result_no_pages_in_doc = 0
 
+        self.parse_result_titles: list[str] = []
+
         self._exist = True
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -156,6 +158,8 @@ class TextParser:
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: cfg.glob.line_type_table.no_tables,
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TITLES_IN_DOC: len(self.parse_result_titles),
+                    nlp.cls_nlp_core.NLPCore.JSON_NAME_TITLES: self.parse_result_titles,
                     nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self.parse_result_line_pages,
                 },
                 file_handle,
@@ -476,6 +480,56 @@ class TextParser:
                 f"words_i_line={self._parse_result_no_words_in_line:2d} "
                 f"text='{self._parse_result_text}'"
             )
+
+    # -----------------------------------------------------------------------------
+    # Processing tag Bookmark.
+    # -----------------------------------------------------------------------------
+    def _parse_tag_bookmark(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
+        """Processing tag 'Bookmark'.
+
+        Args:
+            parent_tag (str):
+                    Parent tag.
+            parent (collections.abc.Iterable[str]):
+                    Parent data structure.
+        """
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+
+        for child in parent:
+            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            match child_tag:
+                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ACTION:
+                    pass
+                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOOKMARK:
+                    self._parse_tag_bookmark(child_tag, child)
+                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TITLE:
+                    self._parse_tag_title(child_tag, child)
+
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+
+    # -----------------------------------------------------------------------------
+    # Processing tag Bookmarks.
+    # -----------------------------------------------------------------------------
+    def _parse_tag_bookmarks(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
+        """Processing tag 'Bookmarks'.
+
+        Args:
+            parent_tag (str):
+                    Parent tag.
+            parent (collections.abc.Iterable[str]):
+                    Parent data structure.
+        """
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+
+        for child in parent:
+            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            match child_tag:
+                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOOKMARK:
+                    self._parse_tag_bookmark(child_tag, child)
+                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TEXT:
+                    self._parse_tag_text(child_tag, child)
+
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
     # Processing tag Box.
@@ -891,6 +945,24 @@ class TextParser:
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
 
     # -----------------------------------------------------------------------------
+    # Processing tag Title.
+    # -----------------------------------------------------------------------------
+    def _parse_tag_title(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
+        """Processing tag 'Title'.
+
+        Args:
+            parent_tag (str):
+                    Parent tag.
+            parent (collections.abc.Iterable[str]):
+                    Parent data structure.
+        """
+        self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
+
+        self.parse_result_titles.append(parent.text)
+
+        self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
+
+    # -----------------------------------------------------------------------------
     # Processing tag Word.
     # -----------------------------------------------------------------------------
     def _parse_tag_word(self, parent_tag: str, parent: collections.abc.Iterable[str]) -> None:
@@ -988,7 +1060,6 @@ class TextParser:
                 case (
                     nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ACTION
                     | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ATTACHMENTS
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOOKMARKS
                     | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DESTINATIONS
                     | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ENCRYPTION
                     | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_EXCEPTION
@@ -1000,6 +1071,8 @@ class TextParser:
                     | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_XFA
                 ):
                     pass
+                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOOKMARKS:
+                    self._parse_tag_bookmarks(child_tag, child)
                 case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT_INFO:
                     self._parse_tag_doc_info(child_tag, child)
                 case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PAGES:

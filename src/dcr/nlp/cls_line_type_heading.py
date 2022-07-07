@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import collections
+import decimal
 import json
+import math
 import os
 import pathlib
 import re
@@ -55,7 +57,7 @@ class LineTypeHeading:
         #           compiled regular expression
         # -----------------------------------------------------------------------------
         self._anti_patterns: list[tuple[str, re.Pattern[str]]] = [
-            ("A A".ljust(self._RULE_NAME_SIZE), re.compile(r"^[A-Z] [A-Z]")),
+            ("A A".ljust(self._RULE_NAME_SIZE), re.compile(r"^[A-Z] [A-Z] ")),
         ]
 
         self._lt_heading_max_level_curr = 0
@@ -159,6 +161,57 @@ class LineTypeHeading:
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
+    # Check whether a valid start value is present.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def _check_valid_start_value(target_value: str, is_first_token: bool, start_values: list[str]) -> bool:  # noqa: C901
+        """Check whether a valid start value is present.
+
+        Args:
+            target_value (str):
+                    Value to be checked.
+            is_first_token (bool):
+                    Restrict the check to the first token.
+            start_values (list[str]):
+                    Valid start values.
+
+        Returns:
+            bool:   True if a valid start value is present, false else.
+        """
+        if is_first_token:
+            try:
+                float(target_value)
+                target_value_decimal = decimal.Decimal(target_value)
+                target_fraction = target_value_decimal - math.floor(target_value_decimal)
+
+                for start_value in start_values:
+                    try:
+                        start_value_decimal = decimal.Decimal(start_value)
+                        start_fraction = start_value_decimal - math.floor(start_value_decimal)
+
+                        if target_fraction == start_fraction:
+                            return True
+                    except ValueError:
+                        pass
+
+                return False
+            except ValueError:
+                if target_value in start_values:
+                    return True
+                return False
+
+        for start_value in start_values:
+            start_value_len = len(start_value)
+
+            if len(target_value) < start_value_len:
+                continue
+
+            if start_value == target_value[0:start_value_len]:
+                return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
     # Create a table of content entry.
     # -----------------------------------------------------------------------------
     #     {
@@ -196,10 +249,6 @@ class LineTypeHeading:
                     page_idx, line_lines, line_lines_idx
                 )
 
-                # wwe
-                # if line == "":
-                #     break
-
                 toc_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_HEADING_CTX_LINE + str(idx + 1)] = line
 
                 line_lines = new_line_lines
@@ -215,9 +264,8 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     # Get the next body line.
     # -----------------------------------------------------------------------------
-    @staticmethod
-    def _get_next_body_line(  # type: ignore
-        page_idx: int, line_lines: nlp.cls_text_parser.LineLines, line_lines_idx: int
+    def _get_next_body_line(
+        self, page_idx: int, line_lines: nlp.cls_text_parser.LineLines, line_lines_idx: int
     ) -> tuple[str, int, nlp.cls_text_parser.LineLines, int]:
         """Get the next body line.
 
@@ -241,25 +289,26 @@ class LineTypeHeading:
 
             return line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT], page_idx, line_lines, idx
 
-        # wwe
-        # if (page_idx_local := page_idx + 1) == self._max_page:
-        #     return "", page_idx, line_lines, line_lines_idx
-        page_idx_local = page_idx + 1
+        if (page_idx + 1) < self._max_page:
+            page_idx_local = page_idx + 1
 
-        line_lines_local: nlp.cls_text_parser.LineLines = cfg.glob.text_parser.parse_result_line_pages[page_idx_local][
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
-        ]
+            line_lines_local: nlp.cls_text_parser.LineLines = cfg.glob.text_parser.parse_result_line_pages[page_idx_local][
+                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
+            ]
 
-        for idx, line_line in enumerate(line_lines_local):
-            if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
-                continue
+            for idx, line_line in enumerate(line_lines_local):
+                if (
+                    line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+                    != db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY
+                ):
+                    continue
 
-            return (
-                line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT],
-                page_idx_local,
-                line_lines_local,
-                idx + 1,
-            )
+                return (
+                    line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT],
+                    page_idx_local,
+                    line_lines_local,
+                    idx + 1,
+                )
 
         # not testable
         return "", page_idx, line_lines, line_lines_idx
@@ -294,169 +343,7 @@ class LineTypeHeading:
                 f"File with heading rules is missing - " f"file name '{cfg.glob.setup.lt_heading_rule_file}'"
             )
 
-        return [
-            (
-                "(999)",
-                True,
-                r"\(\d+\)$",
-                nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
-                ["(1)"],
-            ),
-            (
-                "(A)",
-                True,
-                r"\([A-Z]\)$",
-                nlp.cls_nlp_core.NLPCore.is_asc_uppercase_letters,
-                ["(A)"],
-            ),
-            (
-                "(ROM)",
-                True,
-                r"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$",
-                nlp.cls_nlp_core.NLPCore.is_asc_romans,
-                ["(I)"],
-            ),
-            (
-                "(a)",
-                True,
-                r"\([a-z]\)$",
-                nlp.cls_nlp_core.NLPCore.is_asc_lowercase_letters,
-                ["(a)"],
-            ),
-            (
-                "(rom)",
-                True,
-                r"\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$",
-                nlp.cls_nlp_core.NLPCore.is_asc_romans,
-                ["(i)"],
-            ),
-            (
-                "[999]",
-                True,
-                r"\[\d+\]$",
-                nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
-                ["[1]"],
-            ),
-            (
-                "[A]",
-                True,
-                r"\[[A-Z]\]$",
-                nlp.cls_nlp_core.NLPCore.is_asc_uppercase_letters,
-                ["[A]"],
-            ),
-            (
-                "[ROM]",
-                True,
-                r"\[M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\]$",
-                nlp.cls_nlp_core.NLPCore.is_asc_romans,
-                ["[I]"],
-            ),
-            (
-                "[a]",
-                True,
-                r"\[[a-z]\]$",
-                nlp.cls_nlp_core.NLPCore.is_asc_lowercase_letters,
-                ["[a]"],
-            ),
-            (
-                "[rom]",
-                True,
-                r"\[m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\]$",
-                nlp.cls_nlp_core.NLPCore.is_asc_romans,
-                ["[i]"],
-            ),
-            (
-                "999)",
-                True,
-                r"\d+\)$",
-                nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
-                ["1)"],
-            ),
-            (
-                "999.",
-                True,
-                r"\d+\.$",
-                nlp.cls_nlp_core.NLPCore.is_asc_string_integers,
-                ["1."],
-            ),
-            (
-                "999.999",
-                True,
-                r"\d+\.\d\d\d$",
-                nlp.cls_nlp_core.NLPCore.is_asc_string_floats,
-                ["1.000", "1.001"],
-            ),
-            (
-                "999.99",
-                True,
-                r"\d+\.\d\d$",
-                nlp.cls_nlp_core.NLPCore.is_asc_string_floats,
-                ["1.00", "1.01"],
-            ),
-            (
-                "999.9",
-                True,
-                r"\d+\.\d$",
-                nlp.cls_nlp_core.NLPCore.is_asc_string_floats,
-                ["1.0", "1.1"],
-            ),
-            (
-                "A)",
-                True,
-                r"[A-Z]\)$",
-                nlp.cls_nlp_core.NLPCore.is_asc_uppercase_letters,
-                ["A)"],
-            ),
-            (
-                "A.",
-                True,
-                r"[A-Z]\.$",
-                nlp.cls_nlp_core.NLPCore.is_asc_uppercase_letters,
-                ["A."],
-            ),
-            (
-                "ROM)",
-                True,
-                r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$",
-                nlp.cls_nlp_core.NLPCore.is_asc_romans,
-                ["I)"],
-            ),
-            (
-                "ROM.",
-                True,
-                r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\.$",
-                nlp.cls_nlp_core.NLPCore.is_asc_romans,
-                ["I."],
-            ),
-            (
-                "a)",
-                True,
-                r"[a-z]\)$",
-                nlp.cls_nlp_core.NLPCore.is_asc_lowercase_letters,
-                ["a)"],
-            ),
-            (
-                "a.",
-                True,
-                r"[a-z]\.$",
-                nlp.cls_nlp_core.NLPCore.is_asc_lowercase_letters,
-                ["a."],
-            ),
-            (
-                "rom)",
-                True,
-                r"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$",
-                nlp.cls_nlp_core.NLPCore.is_asc_romans,
-                ["i)"],
-            ),
-            (
-                "rom.",
-                True,
-                r"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\.$",
-                nlp.cls_nlp_core.NLPCore.is_asc_romans,
-                ["i."],
-            ),
-        ]
+        return nlp.cls_nlp_core.NLPCore.get_lt_rules_default_heading()
 
     # -----------------------------------------------------------------------------
     # Load the valid heading rules from a JSON file.
@@ -500,19 +387,20 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     # Process the line-related data.
     # -----------------------------------------------------------------------------
-    def _process_line(self, line_line: dict[str, str]) -> int:  # noqa: C901
+    def _process_line(self, line_line: dict[str, str], text: str, first_token: str) -> int:  # noqa: C901
         """Process the line-related data.
 
         Args:
-            line_line (dict[str, str]): The line to be processed.
+            line_line (dict[str, str]):
+                    The line to be processed.
+            text (str):
+                    The text of the line.
+            first_token (str):
+                    The first token of the text.
 
         Returns:
             int: The heading level or zero.
         """
-        if (text := line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]) == "":
-            # not testable
-            return 0
-
         for (rule_name, pattern) in self._anti_patterns:
             if pattern.match(text):
                 utils.progress_msg_line_type_heading(
@@ -520,7 +408,6 @@ class LineTypeHeading:
                 )
                 return 0
 
-        first_token = text.split()[0]
         coord_llx_curr = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]
 
         for ph_idx in reversed(range(ph_size := len(self._rules_hierarchy))):
@@ -540,10 +427,9 @@ class LineTypeHeading:
 
             if regexp_compiled.match(target_value):
                 if not function_is_asc(predecessor, target_value):
-                    if is_first_token and start_values and  first_token in start_values:
+                    if self._check_valid_start_value(target_value, is_first_token, start_values):
                         break
-                    else:
-                        continue
+                    continue
 
                 coord_llx_curr_float = float(coord_llx_curr)
                 coord_llx_float = float(coord_llx)
@@ -591,12 +477,9 @@ class LineTypeHeading:
         ) in self._rules_collection:
             target_value = first_token if is_first_token else text
             if regexp_compiled.match(target_value):
-                if is_first_token and start_values and  first_token not in start_values:
-                        continue
+                if not self._check_valid_start_value(target_value, is_first_token, start_values):
+                    continue
 
-                # wwe
-                # if (level := self._level_prev + 1) > cfg.glob.setup.lt_heading_max_level:
-                #     return 0
                 level = self._level_prev + 1
 
                 self._rules_hierarchy.append(
@@ -638,16 +521,48 @@ class LineTypeHeading:
 
         self._max_line_line = len(cfg.glob.text_parser.parse_result_line_lines)
 
+        # wwe max_line_line_idx = self._max_line_line - 1
+
         for line_lines_idx, line_line in enumerate(cfg.glob.text_parser.parse_result_line_lines):
             self._line_lines_idx = line_lines_idx
             if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 continue
 
-            if (level := self._process_line(line_line)) > 0:
+            if (text := line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]) == "":
+                # not testable
+                continue
+
+            if (first_token := text.split()[0]) == text:
+                continue
+
+            # wwe
+            # if not (
+            #     cfg.glob.text_parser.parse_result_titles
+            #     and line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT] in cfg.glob.text_parser.parse_result_titles
+            # ):
+            #     # Headings are limited to single-line paragraphs.
+            #     if self._line_lines_idx > 0:
+            #         if (
+            #             line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO]
+            #             == cfg.glob.text_parser.parse_result_line_lines[self._line_lines_idx - 1][
+            #                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO
+            #             ]
+            #         ):
+            #             continue
+            #     if self._line_lines_idx < max_line_line_idx:
+            #         if (
+            #             line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO]
+            #             == cfg.glob.text_parser.parse_result_line_lines[self._line_lines_idx + 1][
+            #                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO
+            #             ]
+            #         ):
+            #             continue
+
+            if (level := self._process_line(line_line, text, first_token)) > 0:
                 line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = (
                     db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADER + "_" + str(level)
                 )
-                cfg.glob.text_parser.parse_result_line_lines[line_lines_idx] = line_line
+                cfg.glob.text_parser.parse_result_line_lines[self._line_lines_idx] = line_line
 
         utils.progress_msg_line_type_heading(f"LineTypeHeading: End   page (lines)                   ={self._page_idx+1}")
 
