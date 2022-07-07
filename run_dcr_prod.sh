@@ -30,6 +30,8 @@ if [ -z "$1" ]; then
     echo "db_c  - Create the database."
     echo "db_u  - Upgrade the database."
     echo "------------------------------------------------------------------------------"
+    echo "e_lt  - Export the line type rules."
+    echo "------------------------------------------------------------------------------"
     echo "m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules."
     echo "------------------------------------------------------------------------------"
     read -rp "Enter the desired action [default: ${DCR_CHOICE_ACTION_DEFAULT}] " DCR_CHOICE_ACTION
@@ -80,8 +82,11 @@ case "${DCR_CHOICE_ACTION}" in
         exit 255
     fi
     ;;
-  all|db_c|db_u|n_2_p|ocr|p_i|p_2_i|s_p_j|tet|tkn)
+  all|db_c|db_u|e_lt|n_2_p|ocr|p_i|p_2_i|s_p_j|tet|tkn)
     case "${DCR_CHOICE_ACTION}" in
+      e_lt)
+        export DCR_CHOICE_ACTION=e_lt
+        ;;
       p_2_i)
         export DCR_CHOICE_ACTION=p_i ${DCR_CHOICE_ACTION?}
         ;;
@@ -108,7 +113,7 @@ case "${DCR_CHOICE_ACTION}" in
     fi
     ;;
   *)
-    echo "Usage: ./run_dcr_prod.sh all | db_c | db_u | m_p | n_i_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
+    echo "Usage: ./run_dcr_prod.sh all | db_c | db_u | e_lt | m_p | n_i_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
     ;;
 esac
 

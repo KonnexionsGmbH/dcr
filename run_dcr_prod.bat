@@ -23,12 +23,14 @@ if ["%1"] EQU [""] (
     echo ocr   - 3. Convert image files to pdf documents:          Tesseract OCR / Tex Live.
     echo n_2_p - 2. Convert non-pdf documents to pdf documents:    Pandoc
     echo ---------------------------------------------------------
-    echo tet   - 4. Extract text and metdata from pdf documents:   PDFlib TET.
+    echo tet   - 4. Extract text and metadata from pdf documents:  PDFlib TET.
     echo s_p_j - 5. Store the parser result in a JSON file.
     echo tkn   - 6. Create qualified document tokens.              SpaCy.
     echo ---------------------------------------------------------
     echo db_c  - Create the database.
     echo db_u  - Upgrade the database.
+    echo ---------------------------------------------------------
+    echo e_lt  - Export the line type rules.
     echo ---------------------------------------------------------
     echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules.
     echo ---------------------------------------------------------
@@ -98,6 +100,10 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
+if ["%DCR_CHOICE_ACTION%"] EQU ["e_lt"] (
+    set _CHOICE=%DCR_CHOICE_ACTION%
+)
+
 if ["%DCR_CHOICE_ACTION%"] EQU ["n_2_p"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
@@ -127,6 +133,9 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
 )
 
 if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["e_lt"] (
+        set DCR_CHOICE_ACTION=e_lt
+    )
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
         set DCR_CHOICE_ACTION=p_i %DCR_CHOICE_ACTION%
     )
@@ -153,7 +162,7 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     goto normal_exit
 )
 
-echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_p | n_2_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
+echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | e_lt | m_p | n_2_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
 exit -1073741510
 
 :normal_exit

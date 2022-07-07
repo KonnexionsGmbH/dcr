@@ -23,7 +23,7 @@ def test_get_args(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     args = dcr.get_args([dcr.DCR_ARGV_0, "AlL"])
 
-    assert len(args) == 9, "arg: all"
+    assert len(args) == 10, "arg: all"
     assert args[db.cls_run.Run.ACTION_CODE_TESSERACT], "arg: all"
     assert args[db.cls_run.Run.ACTION_CODE_PANDOC], "arg: all"
     assert args[db.cls_run.Run.ACTION_CODE_PDF2IMAGE], "arg: all"

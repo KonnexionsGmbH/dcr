@@ -14,6 +14,7 @@ import db.cls_db_core
 import db.cls_language
 import db.cls_run
 import db.cls_version
+import nlp.cls_nlp_core
 import nlp.parser
 import nlp.pdflib_dcr
 import nlp.tokenizer
@@ -77,6 +78,7 @@ def get_args(argv: list[str]) -> dict[str, bool]:
         all   - Run the complete core processing of all new documents.
         db_c  - Create the database.
         db_u  - Upgrade the database.
+        e_lt  - Export the line type rules.
         m_d   - Run the installation of the necessary 3rd party packages
                 for development and run the development ecosystem.
         m_p   - Run the installation of the necessary 3rd party packages
@@ -118,6 +120,7 @@ def get_args(argv: list[str]) -> dict[str, bool]:
 
     args = {
         db.cls_run.Run.ACTION_CODE_CREATE_DB: False,
+        db.cls_run.Run.ACTION_CODE_EXPORT_LT_RULES: False,
         db.cls_run.Run.ACTION_CODE_INBOX: False,
         db.cls_run.Run.ACTION_CODE_PANDOC: False,
         db.cls_run.Run.ACTION_CODE_PARSER: False,
@@ -140,6 +143,7 @@ def get_args(argv: list[str]) -> dict[str, bool]:
             args[db.cls_run.Run.ACTION_CODE_TOKENIZE] = True
         elif arg in (
             db.cls_run.Run.ACTION_CODE_CREATE_DB,
+            db.cls_run.Run.ACTION_CODE_EXPORT_LT_RULES,
             db.cls_run.Run.ACTION_CODE_INBOX,
             db.cls_run.Run.ACTION_CODE_PANDOC,
             db.cls_run.Run.ACTION_CODE_PARSER,
@@ -305,6 +309,12 @@ def process_documents(args: dict[str, bool]) -> None:
     # Load the data from the database table 'language'.
     db.cls_language.Language.load_data_from_dbt_language()
 
+    # Export the line type rules.
+    if args[db.cls_run.Run.ACTION_CODE_EXPORT_LT_RULES]:
+        start_time_process = time.perf_counter_ns()
+        process_export_lt_rules()
+        utils.progress_msg(f"Time : {round((time.perf_counter_ns() - start_time_process) / 1000000000, 2) :10.2f} s")
+
     # Process the documents in the inbox file directory.
     if args[db.cls_run.Run.ACTION_CODE_INBOX]:
         start_time_process = time.perf_counter_ns()
@@ -351,6 +361,23 @@ def process_documents(args: dict[str, bool]) -> None:
     cfg.glob.db_core.disconnect_db()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Export the line type rules.
+# -----------------------------------------------------------------------------
+# noinspection PyArgumentList
+def process_export_lt_rules() -> None:
+    """Export the line type rules."""
+    utils.progress_msg_empty_before("Start: Export the line type rules ...")
+
+    nlp.cls_nlp_core.NLPCore.export_rule_file_heading()
+
+    nlp.cls_nlp_core.NLPCore.export_rule_file_list_bullet()
+
+    nlp.cls_nlp_core.NLPCore.export_rule_file_list_number()
+
+    utils.progress_msg("End  : Export the line type rules ...")
 
 
 # -----------------------------------------------------------------------------

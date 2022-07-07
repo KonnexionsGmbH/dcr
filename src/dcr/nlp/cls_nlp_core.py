@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 import collections
+import json
 import re
 from typing import ClassVar
 
 import cfg.glob
+import utils
 
 
 class NLPCore:
@@ -515,6 +517,145 @@ class NLPCore:
             bool:   Always true
         """
         return self._exist
+
+    # -----------------------------------------------------------------------------
+    # Export the default heading line type rules.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def export_rule_file_heading(file_name: str = "") -> None:
+        """Export the default heading line type rules.
+
+        Args:
+            file_name (str, optional):
+                    File name of the output file. Defaults to cfg.glob.setup.lt_export_rule_file_heading.
+        """
+        if file_name == "":
+            file_name_extern = cfg.glob.setup.lt_export_rule_file_heading
+        else:
+            file_name_extern = file_name
+
+        rules = []
+
+        for name, is_first_token, regexp, function_is_asc, start_values in NLPCore.get_lt_rules_default_heading():
+            rules.append(
+                {
+                    NLPCore.JSON_NAME_NAME: name,
+                    NLPCore.JSON_NAME_IS_FIRST_TOKEN: is_first_token,
+                    NLPCore.JSON_NAME_REGEXP: regexp,
+                    NLPCore.JSON_NAME_FUNCTION_IS_ASC: function_is_asc.__qualname__[15:],
+                    NLPCore.JSON_NAME_START_VALUES: start_values,
+                }
+            )
+
+        with open(file_name_extern, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+            # {
+            #     "lineTypeHeadingRules": [
+            #       {
+            #          "name": "xxx",
+            #          "isFirstToken": bool,
+            #          "regexp": "xxx",
+            #          "functionIsAsc": "xxx",
+            #          "startValues": ["xxx"]
+            #       },
+            #     ]
+            # }
+            json.dump(
+                {
+                    NLPCore.JSON_NAME_LINE_TYPE_HEADING_RULES: rules,
+                },
+                file_handle,
+                indent=cfg.glob.setup.json_indent,
+                sort_keys=cfg.glob.setup.is_json_sort_keys,
+            )
+
+        utils.progress_msg(f"{len(rules):3d} heading       line type rules exported")
+
+    # -----------------------------------------------------------------------------
+    # Export the default bulleted list line type rules.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def export_rule_file_list_bullet(file_name: str = "") -> None:
+        """Export the default bulleted list line type rules.
+
+        Args:
+            file_name (str, optional):
+                    File name of the output file. Defaults to cfg.glob.setup.lt_export_rule_file_list_bullet.
+        """
+        if file_name == "":
+            file_name_extern = cfg.glob.setup.lt_export_rule_file_list_bullet
+        else:
+            file_name_extern = file_name
+
+        rules = []
+
+        for rule in NLPCore.get_lt_rules_default_list_bullet():
+            rules.append(rule)
+
+        with open(file_name_extern, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+            # {
+            #     "lineTypeListBulletRules": [
+            #     ]
+            # }
+            json.dump(
+                {
+                    NLPCore.JSON_NAME_LINE_TYPE_LIST_BULLET_RULES: rules,
+                },
+                file_handle,
+                indent=cfg.glob.setup.json_indent,
+                sort_keys=cfg.glob.setup.is_json_sort_keys,
+            )
+
+        utils.progress_msg(f"{len(rules):3d} bulleted list line type rules exported")
+
+    # -----------------------------------------------------------------------------
+    # Export the default numbered list line type rules.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def export_rule_file_list_number(file_name: str = "") -> None:
+        """Export the default numbered list line type rules.
+
+        Args:
+            file_name (str, optional):
+                    File name of the output file. Defaults to cfg.glob.setup.lt_export_rule_file_list_number.
+        """
+        if file_name == "":
+            file_name_extern = cfg.glob.setup.lt_export_rule_file_list_number
+        else:
+            file_name_extern = file_name
+
+        rules = []
+
+        for name, regexp, function_is_asc, start_values in NLPCore.get_lt_rules_default_list_number():
+            rules.append(
+                {
+                    NLPCore.JSON_NAME_NAME: name,
+                    NLPCore.JSON_NAME_REGEXP: regexp,
+                    NLPCore.JSON_NAME_FUNCTION_IS_ASC: function_is_asc.__qualname__[15:],
+                    NLPCore.JSON_NAME_START_VALUES: start_values,
+                }
+            )
+
+        with open(file_name_extern, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+            # {
+            #     "lineTypeListBulletRules": [
+            #       {
+            #          "name": "xxx",
+            #          "regexp": "xxx",
+            #          "functionIsAsc": "xxx",
+            #          "startValues": ["xxx"]
+            #       },
+            #     ]
+            # }
+            json.dump(
+                {
+                    NLPCore.JSON_NAME_LINE_TYPE_LIST_NUMBER_RULES: rules,
+                },
+                file_handle,
+                indent=cfg.glob.setup.json_indent,
+                sort_keys=cfg.glob.setup.is_json_sort_keys,
+            )
+
+        utils.progress_msg(f"{len(rules):3d} numbered list line type rules exported")
 
     # -----------------------------------------------------------------------------
     # Get the default heading line type rules.

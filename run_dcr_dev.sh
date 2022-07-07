@@ -30,6 +30,8 @@ if [ -z "$1" ]; then
     echo "db_c         - Create the database."
     echo "db_u         - Upgrade the database."
     echo "------------------------------------------------------------------------------"
+    echo "e_lt         - Export the line type rules."
+    echo "------------------------------------------------------------------------------"
     echo "m_d          - Run the installation of the necessary 3rd party packages for development and run the development ecosystem."
     echo "------------------------------------------------------------------------------"
     read -rp "Enter the desired action [default: ${DCR_CHOICE_ACTION_DEFAULT}] " DCR_CHOICE_ACTION
@@ -75,8 +77,11 @@ case "${DCR_CHOICE_ACTION}" in
   db_c)
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
-  db_u|n_2_p|ocr|p_2_i|s_p_j|tet|tkn)
+  db_u|e_lt|n_2_p|ocr|p_2_i|s_p_j|tet|tkn)
     case "${DCR_CHOICE_ACTION}" in
+      e_lt)
+        export DCR_CHOICE_ACTION=e_lt
+        ;;
       n_2_p)
         export DCR_CHOICE_ACTION=p_i p_2_i ocr ${DCR_CHOICE_ACTION}
         ;;
@@ -126,7 +131,7 @@ case "${DCR_CHOICE_ACTION}" in
     pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
-    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | m_d | n_i_p[_only] | ocr[_only] | p_i | p_2_i[_only] | s_p_j[_only] | tet[_only] | tkn[_only]"
+    echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | e_lt | m_d | n_i_p[_only] | ocr[_only] | p_i | p_2_i[_only] | s_p_j[_only] | tet[_only] | tkn[_only]"
     ;;
 esac
 

@@ -27,6 +27,7 @@ class Run:
     # Class variables.
     # -----------------------------------------------------------------------------
     # _ACTION_TEXT_CREATE_DB: ClassVar[str] = "Create Database"
+    _ACTION_TEXT_EXPORT_LT_RULES: ClassVar[str] = "export_lt_rules"
     _ACTION_TEXT_INBOX: ClassVar[str] = "inbox         (preprocessor)"
     _ACTION_TEXT_PANDOC: ClassVar[str] = "pandoc        (preprocessor)"
     _ACTION_TEXT_PARSER: ClassVar[str] = "parser        (nlp)"
@@ -43,6 +44,7 @@ class Run:
 
     ACTION_CODE_ALL_COMPLETE: ClassVar[str] = "all"
     ACTION_CODE_CREATE_DB: ClassVar[str] = "db_c"
+    ACTION_CODE_EXPORT_LT_RULES: ClassVar[str] = "e_lt"
     ACTION_CODE_INBOX: ClassVar[str] = "p_i"
     ACTION_CODE_PANDOC: ClassVar[str] = "n_2_p"
     ACTION_CODE_PARSER: ClassVar[str] = "s_p_j"
