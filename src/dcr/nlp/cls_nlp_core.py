@@ -698,13 +698,12 @@ class NLPCore:
 
         for (
             rule_name,
-            is_first_token,
+            _,
             regexp_str,
             function_is_asc,
             start_values,
         ) in NLPCore._get_lt_rules_default_heading_list_number():
-            if is_first_token:
-                rules.append((rule_name, regexp_str, function_is_asc, start_values))
+            rules.append((rule_name, regexp_str, function_is_asc, start_values))
 
         return rules
 

@@ -257,7 +257,7 @@ class LineTypeListNumber:
         with open(lt_list_number_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
-            for rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_HEADING_RULES]:
+            for rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_LIST_NUMBER_RULES]:
                 rules.append(
                     (
                         rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_NAME],
