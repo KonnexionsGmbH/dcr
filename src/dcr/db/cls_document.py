@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Module db.cls_document: Managing the database table document."""
 from __future__ import annotations
 

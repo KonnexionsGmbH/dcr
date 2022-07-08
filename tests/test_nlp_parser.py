@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # pylint: disable=unused-argument
 """Testing Module nlp.parser."""
 import os

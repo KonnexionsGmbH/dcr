@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Module nlp.cls_line_type_list_number: Determine numbered lists."""
 from __future__ import annotations
 

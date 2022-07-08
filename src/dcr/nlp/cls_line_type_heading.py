@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Module nlp.cls_line_type_heading: Determine headings."""
 from __future__ import annotations
 

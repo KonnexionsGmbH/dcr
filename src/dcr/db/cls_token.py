@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Module db.cls_token: Managing the database table token."""
 from __future__ import annotations
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Testing Module all."""
 
 import cfg.cls_setup

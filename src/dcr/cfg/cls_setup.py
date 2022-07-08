@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Module cfg.cls_setup: Managing the application configuration parameters."""
 from __future__ import annotations
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Module nlp.cls_tokenizer: Store the document tokens page by page in the
 database."""
 

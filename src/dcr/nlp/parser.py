@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Module nlp.parser: Store the document structure from the parser result."""
 import os
 import time
