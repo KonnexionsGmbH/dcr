@@ -180,6 +180,7 @@ class LineTypeHeaderFooters:
                 return
 
             if page_no_cand == self._irregular_header_cands[-1][1] + 1:
+                # not testable
                 self._irregular_header_cand = (line_ind, page_no_cand)
         except ValueError:
             return

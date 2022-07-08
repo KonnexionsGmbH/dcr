@@ -1,5 +1,10 @@
 {
-  "lineTypeAntiPatterns": [],
+  "lineTypeAntiPatterns": [
+    {
+      "name": "n/a",
+      "regexp": "^_n/a_$"
+    }
+  ],
   "lineTypeRules": [
     {
       "name": "(999)",

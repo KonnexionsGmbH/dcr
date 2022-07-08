@@ -7,6 +7,7 @@ import re
 from typing import ClassVar
 
 import cfg.glob
+import cfg.cls_setup
 import utils
 
 
@@ -290,7 +291,10 @@ class NLPCore:
                 The heading line type anti-patterns.
         """
         return [
-            ("A A", r"^[A-Z] [A-Z] "),
+            ("9 AAA aaa", r"^\d+[ ][A-Z]+ [A-Z][a-z]+"),
+            ("A A ", r"^[A-Z] [A-Z] "),
+            ("A AAA Aaa", r"^[A-Z][ ]+[A-Z]+ [A-Z]*[a-z]+"),
+            ("a) * a)", r"^[a-z]{1}\) [a-z A-Z0-9\.!\?]* [a-z]{1}\)"),
         ]
 
     # -----------------------------------------------------------------------------
@@ -308,6 +312,11 @@ class NLPCore:
             list[tuple[str, str]]:
                 The bulleted list line type anti-patterns.
         """
+        if cfg.glob.setup.environment_variant == cfg.cls_setup.Setup.ENVIRONMENT_TYPE_TEST:
+            return [
+                ("n/a", r"^_n/a_$"),
+            ]
+
         return []
 
     # -----------------------------------------------------------------------------
@@ -325,6 +334,11 @@ class NLPCore:
             list[tuple[str, str]]:
                 The numbered list line type anti-patterns.
         """
+        if cfg.glob.setup.environment_variant == cfg.cls_setup.Setup.ENVIRONMENT_TYPE_TEST:
+            return [
+                ("n/a", r"^_n/a_$"),
+            ]
+
         return []
 
     # -----------------------------------------------------------------------------
