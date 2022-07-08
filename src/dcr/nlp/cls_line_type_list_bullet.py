@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import pathlib
+import re
 
 import cfg.glob
 import db.cls_document
@@ -47,6 +48,8 @@ class LineTypeListBullet:
         utils.progress_msg_line_type_list_bullet(
             f"LineTypeListBullet: Start create instance                ={cfg.glob.action_curr.action_file_name}"
         )
+
+        self._anti_patterns: list[tuple[str, re.Pattern[str]]] = self._init_anti_patterns()
 
         self._bullet = ""
 
@@ -171,6 +174,36 @@ class LineTypeListBullet:
         )
 
     # -----------------------------------------------------------------------------
+    # Initialise the bulleted list anti-patterns.
+    # -----------------------------------------------------------------------------
+    # 1: name:  pattern name
+    # 2: regexp regular expression
+    # -----------------------------------------------------------------------------
+    def _init_anti_patterns(self) -> list[tuple[str, re.Pattern[str]]]:
+        """Initialise the bulleted list anti-patterns.
+
+        Returns:
+            list[tuple[str, re.Pattern[str]]]:
+                The valid bulleted list anti-patterns.
+        """
+        if cfg.glob.setup.lt_list_bullet_rule_file and cfg.glob.setup.lt_list_bullet_rule_file.lower() != "none":
+            lt_list_bullet_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.lt_list_bullet_rule_file)
+            if os.path.isfile(lt_list_bullet_rule_file_path):
+                return self._load_anti_patterns_from_json(pathlib.Path(lt_list_bullet_rule_file_path))
+
+            utils.terminate_fatal(
+                f"File with bulleted list anti-patterns is missing - "
+                f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'"
+            )
+
+        anti_patterns = []
+
+        for name, regexp in nlp.cls_nlp_core.NLPCore.get_lt_anti_patterns_default_list_bullet():
+            anti_patterns.append((name, re.compile(regexp)))
+
+        return anti_patterns
+
+    # -----------------------------------------------------------------------------
     # Initialise the valid bullets.
     # -----------------------------------------------------------------------------
     # 1: bullet character(s)
@@ -193,6 +226,43 @@ class LineTypeListBullet:
             )
 
         return nlp.cls_nlp_core.NLPCore.get_lt_rules_default_list_bullet()
+
+    # -----------------------------------------------------------------------------
+    # Load the valid bulleted list anti-patterns from a JSON file.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def _load_anti_patterns_from_json(
+        lt_list_bullet_rule_file: pathlib.Path,
+    ) -> list[tuple[str, re.Pattern[str]]]:
+        """Load the valid bulleted list anti-patterns from a JSON file.
+
+        Args:
+            lt_list_bullet_rule_file (Path):
+                    JSON file.
+
+        Returns:
+            list[tuple[str, re.Pattern[str]]]:
+                    The valid bulleted list anti-patterns from the JSON file,
+        """
+        anti_patterns = []
+
+        with open(lt_list_bullet_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+            json_data = json.load(file_handle)
+
+            for rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_ANTI_PATTERNS]:
+                anti_patterns.append(
+                    (
+                        rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_NAME],
+                        re.compile(rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP]),
+                    )
+                )
+
+        utils.progress_msg(
+            "The bulleted list anti-patterns were successfully loaded "
+            + f"from the file {cfg.glob.setup.lt_list_bullet_rule_file}"
+        )
+
+        return anti_patterns
 
     # -----------------------------------------------------------------------------
     # Load the valid bullets from a JSON file.
@@ -235,8 +305,16 @@ class LineTypeListBullet:
             line_line (dict[str, str]):
                     The line to be processed.
         """
-        para_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO])
         text = str(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+
+        for (rule_name, pattern) in self._anti_patterns:
+            if pattern.match(text):
+                utils.progress_msg_line_type_list_bullet(
+                    f"LineTypeListBullet: Anti pattern                         ={rule_name} - text={text}"
+                )
+                return
+
+        para_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO])
 
         bullet = ""
 

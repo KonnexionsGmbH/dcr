@@ -314,7 +314,6 @@ def test_line_type_table_missing_dependencies_document(fxtr_setup_logger_environ
 # -----------------------------------------------------------------------------
 # Test Function - missing dependencies - line_type_table - Setup.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_line_type_table_missing_dependencies_setup(fxtr_setup_logger_environment):
     """Test Function - missing dependencies - line_type_table - Setup."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

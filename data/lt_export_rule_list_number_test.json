@@ -1,4 +1,5 @@
 {
+  "lineTypeAntiPatterns": [],
   "lineTypeRules": [
     {
       "name": "(999)",

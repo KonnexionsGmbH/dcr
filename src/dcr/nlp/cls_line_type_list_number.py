@@ -55,6 +55,8 @@ class LineTypeListNumber:
 
         self._RULE_NAME_SIZE: int = 20
 
+        self._anti_patterns: list[tuple[str, re.Pattern[str]]] = self._init_anti_patterns()
+
         # page_idx, para_no, line_lines_idx_from, line_lines_idx_till, target_value
         self._entries: list[list[int | str]] = []
 
@@ -207,6 +209,36 @@ class LineTypeListNumber:
         )
 
     # -----------------------------------------------------------------------------
+    # Initialise the numbered list anti-patterns.
+    # -----------------------------------------------------------------------------
+    # 1: name:  pattern name
+    # 2: regexp regular expression
+    # -----------------------------------------------------------------------------
+    def _init_anti_patterns(self) -> list[tuple[str, re.Pattern[str]]]:
+        """Initialise the numbered list anti-patterns.
+
+        Returns:
+            list[tuple[str, re.Pattern[str]]]:
+                The valid numbered list anti-patterns.
+        """
+        if cfg.glob.setup.lt_list_number_rule_file and cfg.glob.setup.lt_list_number_rule_file.lower() != "none":
+            lt_list_number_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.lt_list_number_rule_file)
+            if os.path.isfile(lt_list_number_rule_file_path):
+                return self._load_anti_patterns_from_json(pathlib.Path(lt_list_number_rule_file_path))
+
+            utils.terminate_fatal(
+                f"File with numbered list anti-patterns is missing - "
+                f"file name '{cfg.glob.setup.lt_list_number_rule_file}'"
+            )
+
+        anti_patterns = []
+
+        for name, regexp in nlp.cls_nlp_core.NLPCore.get_lt_anti_patterns_default_list_number():
+            anti_patterns.append((name, re.compile(regexp)))
+
+        return anti_patterns
+
+    # -----------------------------------------------------------------------------
     # Initialise the numbered list rules.
     # -----------------------------------------------------------------------------
     # 1: rule_name
@@ -234,6 +266,43 @@ class LineTypeListNumber:
             )
 
         return nlp.cls_nlp_core.NLPCore.get_lt_rules_default_list_number()
+
+    # -----------------------------------------------------------------------------
+    # Load the valid numbered list anti-patterns from a JSON file.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def _load_anti_patterns_from_json(
+        lt_list_number_rule_file: pathlib.Path,
+    ) -> list[tuple[str, re.Pattern[str]]]:
+        """Load the valid numbered list anti-patterns from a JSON file.
+
+        Args:
+            lt_list_number_rule_file (Path):
+                    JSON file.
+
+        Returns:
+            list[tuple[str, re.Pattern[str]]]:
+                    The valid numbered list anti-patterns from the JSON file,
+        """
+        anti_patterns = []
+
+        with open(lt_list_number_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+            json_data = json.load(file_handle)
+
+            for rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_ANTI_PATTERNS]:
+                anti_patterns.append(
+                    (
+                        rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_NAME],
+                        re.compile(rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP]),
+                    )
+                )
+
+        utils.progress_msg(
+            "The numbered list anti-patterns were successfully loaded "
+            + f"from the file {cfg.glob.setup.lt_list_number_rule_file}"
+        )
+
+        return anti_patterns
 
     # -----------------------------------------------------------------------------
     # Load numbered list rules from a JSON file.
@@ -285,8 +354,17 @@ class LineTypeListNumber:
             line_line (dict[str, str]):
                     The line to be processed.
         """
+        text = str(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+
+        for (rule_name, pattern) in self._anti_patterns:
+            if pattern.match(text):
+                utils.progress_msg_line_type_list_number(
+                    f"LineTypeListNumber: Anti pattern                         ={rule_name} - text={text}"
+                )
+                return
+
         para_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO])
-        target_value = str(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]).split()[0]
+        target_value = text.split()[0]
 
         if self._rule:
             if self._rule[1].match(target_value):
