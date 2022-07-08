@@ -1,5 +1,5 @@
 {
-  "lineTypeListNumberRules": [
+  "lineTypeRules": [
     {
       "name": "(999)",
       "regexp": "\\(\\d+\\)$",

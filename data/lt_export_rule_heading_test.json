@@ -1,5 +1,11 @@
 {
-  "lineTypeHeadingRules": [
+  "lineTypeAntiPatterns": [
+    {
+      "name": "A A",
+      "regexp": "^[A-Z] [A-Z] "
+    }
+  ],
+  "lineTypeRules": [
     {
       "name": "Article 999:",
       "isFirstToken": false,

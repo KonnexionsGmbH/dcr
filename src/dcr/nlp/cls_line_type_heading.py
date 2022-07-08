@@ -56,9 +56,7 @@ class LineTypeHeading:
         # 2: regexp_compiled:
         #           compiled regular expression
         # -----------------------------------------------------------------------------
-        self._anti_patterns: list[tuple[str, re.Pattern[str]]] = [
-            ("A A".ljust(self._RULE_NAME_SIZE), re.compile(r"^[A-Z] [A-Z] ")),
-        ]
+        self._anti_patterns: list[tuple[str, re.Pattern[str]]] = self._init_anti_patterns()
 
         self._lt_heading_max_level_curr = 0
 
@@ -314,6 +312,35 @@ class LineTypeHeading:
         return "", page_idx, line_lines, line_lines_idx
 
     # -----------------------------------------------------------------------------
+    # Initialise the heading anti-patterns.
+    # -----------------------------------------------------------------------------
+    # 1: name:  pattern name
+    # 2: regexp regular expression
+    # -----------------------------------------------------------------------------
+    def _init_anti_patterns(self) -> list[tuple[str, re.Pattern[str]]]:
+        """Initialise the heading anti-patterns.
+
+        Returns:
+            list[tuple[str, re.Pattern[str]]]:
+                The valid heading anti-patterns.
+        """
+        if cfg.glob.setup.lt_heading_rule_file and cfg.glob.setup.lt_heading_rule_file.lower() != "none":
+            lt_heading_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.lt_heading_rule_file)
+            if os.path.isfile(lt_heading_rule_file_path):
+                return self._load_anti_patterns_from_json(pathlib.Path(lt_heading_rule_file_path))
+
+            utils.terminate_fatal(
+                f"File with heading anti-patterns is missing - " f"file name '{cfg.glob.setup.lt_heading_rule_file}'"
+            )
+
+        anti_patterns = []
+
+        for name, regexp in nlp.cls_nlp_core.NLPCore.get_lt_anti_patterns_default_heading():
+            anti_patterns.append((name, re.compile(regexp)))
+
+        return anti_patterns
+
+    # -----------------------------------------------------------------------------
     # Initialise the heading rules.
     # -----------------------------------------------------------------------------
     # 1: rule_name
@@ -346,6 +373,42 @@ class LineTypeHeading:
         return nlp.cls_nlp_core.NLPCore.get_lt_rules_default_heading()
 
     # -----------------------------------------------------------------------------
+    # Load the valid heading anti-patterns from a JSON file.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def _load_anti_patterns_from_json(
+        lt_heading_rule_file: pathlib.Path,
+    ) -> list[tuple[str, re.Pattern[str]]]:
+        """Load the valid heading anti-patterns from a JSON file.
+
+        Args:
+            lt_heading_rule_file (Path):
+                    JSON file.
+
+        Returns:
+            list[tuple[str, re.Pattern[str]]]:
+                    The valid heading anti-patterns from the JSON file,
+        """
+        anti_patterns = []
+
+        with open(lt_heading_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+            json_data = json.load(file_handle)
+
+            for rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_ANTI_PATTERNS]:
+                anti_patterns.append(
+                    (
+                        rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_NAME],
+                        re.compile(rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP]),
+                    )
+                )
+
+        utils.progress_msg(
+            f"The heading anti-patterns were successfully loaded from the file {cfg.glob.setup.lt_heading_rule_file}"
+        )
+
+        return anti_patterns
+
+    # -----------------------------------------------------------------------------
     # Load the valid heading rules from a JSON file.
     # -----------------------------------------------------------------------------
     @staticmethod
@@ -367,7 +430,7 @@ class LineTypeHeading:
         with open(lt_heading_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
-            for rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_HEADING_RULES]:
+            for rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_RULES]:
                 rules.append(
                     (
                         rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_NAME],

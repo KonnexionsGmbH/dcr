@@ -53,9 +53,8 @@ class NLPCore:
     JSON_NAME_LINE_NO_PAGE_FROM: ClassVar[str] = "lineNoPageFrom"
     JSON_NAME_LINE_NO_PAGE_TILL: ClassVar[str] = "lineNoPageTill"
     JSON_NAME_LINE_TYPE: ClassVar[str] = "lineType"
-    JSON_NAME_LINE_TYPE_HEADING_RULES: ClassVar[str] = "lineTypeHeadingRules"
-    JSON_NAME_LINE_TYPE_LIST_BULLET_RULES: ClassVar[str] = "lineTypeListBulletRules"
-    JSON_NAME_LINE_TYPE_LIST_NUMBER_RULES: ClassVar[str] = "lineTypeListNumberRules"
+    JSON_NAME_LINE_TYPE_ANTI_PATTERNS: ClassVar[str] = "lineTypeAntiPatterns"
+    JSON_NAME_LINE_TYPE_RULES: ClassVar[str] = "lineTypeRules"
     JSON_NAME_LIST_NO: ClassVar[str] = "listNo"
     JSON_NAME_LISTS_BULLET: ClassVar[str] = "listsBullet"
     JSON_NAME_LISTS_NUMBER: ClassVar[str] = "listsNumber"
@@ -274,6 +273,25 @@ class NLPCore:
         integer += tallies[roman[-1]]
 
         return integer
+
+    # -----------------------------------------------------------------------------
+    # Get the default heading line type anti-patterns.
+    # -----------------------------------------------------------------------------
+    # 1: rule_name
+    # 2: regexp_str:
+    #           regular expression
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def _get_lt_anti_patterns_default_heading() -> list[tuple[str, str]]:
+        """Get the default heading line type anti-patterns.
+
+        Returns:
+            list[tuple[str, str]]:
+                The heading line type anti-patterns.
+        """
+        return [
+            ("A A", r"^[A-Z] [A-Z] "),
+        ]
 
     # -----------------------------------------------------------------------------
     # Get the default heading & numbered list line type rules.
@@ -534,6 +552,16 @@ class NLPCore:
         else:
             file_name_extern = file_name
 
+        anti_patterns = []
+
+        for name, regexp in NLPCore.get_lt_anti_patterns_default_heading():
+            anti_patterns.append(
+                {
+                    NLPCore.JSON_NAME_NAME: name,
+                    NLPCore.JSON_NAME_REGEXP: regexp,
+                }
+            )
+
         rules = []
 
         for name, is_first_token, regexp, function_is_asc, start_values in NLPCore.get_lt_rules_default_heading():
@@ -549,7 +577,7 @@ class NLPCore:
 
         with open(file_name_extern, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             # {
-            #     "lineTypeHeadingRules": [
+            #     "lineTypeRules": [
             #       {
             #          "name": "xxx",
             #          "isFirstToken": bool,
@@ -561,7 +589,8 @@ class NLPCore:
             # }
             json.dump(
                 {
-                    NLPCore.JSON_NAME_LINE_TYPE_HEADING_RULES: rules,
+                    NLPCore.JSON_NAME_LINE_TYPE_ANTI_PATTERNS: anti_patterns,
+                    NLPCore.JSON_NAME_LINE_TYPE_RULES: rules,
                 },
                 file_handle,
                 indent=cfg.glob.setup.json_indent,
@@ -598,7 +627,7 @@ class NLPCore:
             # }
             json.dump(
                 {
-                    NLPCore.JSON_NAME_LINE_TYPE_LIST_BULLET_RULES: rules,
+                    NLPCore.JSON_NAME_LINE_TYPE_RULES: rules,
                 },
                 file_handle,
                 indent=cfg.glob.setup.json_indent,
@@ -648,7 +677,7 @@ class NLPCore:
             # }
             json.dump(
                 {
-                    NLPCore.JSON_NAME_LINE_TYPE_LIST_NUMBER_RULES: rules,
+                    NLPCore.JSON_NAME_LINE_TYPE_RULES: rules,
                 },
                 file_handle,
                 indent=cfg.glob.setup.json_indent,
@@ -656,6 +685,24 @@ class NLPCore:
             )
 
         utils.progress_msg(f"{len(rules):3d} numbered list line type rules exported")
+
+    # -----------------------------------------------------------------------------
+    # Get the default heading line type anti-patterns.
+    # -----------------------------------------------------------------------------
+    @staticmethod
+    def get_lt_anti_patterns_default_heading() -> list[
+        tuple[
+            str,
+            str,
+        ]
+    ]:
+        """Get the default heading line type anti-patterns.
+
+        Returns:
+            list[tuple[str, str,]]:
+                The heading line type anti-patterns.
+        """
+        return NLPCore._get_lt_anti_patterns_default_heading()
 
     # -----------------------------------------------------------------------------
     # Get the default heading line type rules.

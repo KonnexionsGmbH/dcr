@@ -1,4 +1,10 @@
 {
+  "lineTypeAntiPatterns": [
+    {
+      "name": "A A",
+      "regexp": "^[A-Z] [A-Z] "
+    }
+  ],
   "lineTypeHeadingRules": [
     {
       "name": "(999)",

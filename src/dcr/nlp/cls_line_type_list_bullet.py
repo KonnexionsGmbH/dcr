@@ -216,7 +216,7 @@ class LineTypeListBullet:
         with open(lt_list_bullet_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
-            for bullet in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_LIST_BULLET_RULES]:
+            for bullet in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_RULES]:
                 list_bullet_rules[bullet] = 0
 
         utils.progress_msg(

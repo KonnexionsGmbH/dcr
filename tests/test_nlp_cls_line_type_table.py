@@ -282,6 +282,15 @@ def test_line_type_table_missing_dependencies_document(fxtr_setup_logger_environ
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.run = db.cls_run.Run(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+    )
+
+    # -------------------------------------------------------------------------
     cfg.glob.action_curr = db.cls_action.Action(
         _row_id=1,
         action_code=db.cls_run.Run.ACTION_CODE_INBOX,
@@ -305,6 +314,7 @@ def test_line_type_table_missing_dependencies_document(fxtr_setup_logger_environ
 # -----------------------------------------------------------------------------
 # Test Function - missing dependencies - line_type_table - Setup.
 # -----------------------------------------------------------------------------
+@pytest.mark.issue
 def test_line_type_table_missing_dependencies_setup(fxtr_setup_logger_environment):
     """Test Function - missing dependencies - line_type_table - Setup."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
