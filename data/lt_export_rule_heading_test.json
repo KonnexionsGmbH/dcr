@@ -1,8 +1,20 @@
 {
   "lineTypeAntiPatterns": [
     {
-      "name": "A A",
+      "name": "9 AAA aaa",
+      "regexp": "^\\d+[ ][A-Z]+ [A-Z][a-z]+"
+    },
+    {
+      "name": "A A ",
       "regexp": "^[A-Z] [A-Z] "
+    },
+    {
+      "name": "A AAA Aaa",
+      "regexp": "^[A-Z][ ]+[A-Z]+ [A-Z]*[a-z]+"
+    },
+    {
+      "name": "a) * a)",
+      "regexp": "^[a-z]{1}\\) [a-z A-Z0-9\\.!\\?]* [a-z]{1}\\)"
     }
   ],
   "lineTypeRules": [
