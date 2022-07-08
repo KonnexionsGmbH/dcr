@@ -6,8 +6,8 @@ import json
 import re
 from typing import ClassVar
 
-import cfg.glob
 import cfg.cls_setup
+import cfg.glob
 import utils
 
 
@@ -564,13 +564,21 @@ class NLPCore:
                 The bulleted list line type rules.
         """
         return {
-            "- ": 0,
-            ". ": 0,
-            "\ufffd ": 0,
-            "o ": 0,
-            "° ": 0,
-            "• ": 0,
-            "‣ ": 0,
+            "\u2022": 0,
+            "\u2023": 0,
+            "\u2043": 0,
+            "\u204C": 0,
+            "\u204D": 0,
+            "\u2219": 0,
+            "\u25CB": 0,
+            "\u25CF": 0,
+            "\u25D8": 0,
+            "\u25E6": 0,
+            "\u2619": 0,
+            "\u2765": 0,
+            "\u2767": 0,
+            "\u29BE": 0,
+            "\u29BF": 0,
         }
 
     # -----------------------------------------------------------------------------

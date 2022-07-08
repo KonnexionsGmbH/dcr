@@ -30,3 +30,4 @@
 /tests/__pycache__/
 /tests/inbox/*
 /tests/inbox/html_ok_files/
+/tmp/
