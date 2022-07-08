@@ -1,0 +1,1762 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Document Content Recognition">
+      
+      
+        <meta name="author" content="Konnexions GmbH Team">
+      
+      
+        <link rel="canonical" href="https://www.konnexions.ch/developing_line_type/">
+      
+      <link rel="icon" href="../img/Icon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.9">
+    
+    
+      
+        <title>Line Type Algorithms - DCR - Document Content Recognition</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.1d29e8d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../assets/pymdownx-extras/extra-b1466b3f51.css">
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="red">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dcr-developing-line-type-algorithms" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DCR - Document Content Recognition" class="md-header__button md-logo" aria-label="DCR - Document Content Recognition" data-md-component="logo">
+      
+  <img src="../img/Logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DCR - Document Content Recognition
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Line Type Algorithms
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/KonnexionsGmbH/dcr/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DCR - Document Content Recognition" class="md-nav__button md-logo" aria-label="DCR - Document Content Recognition" data-md-component="logo">
+      
+  <img src="../img/Logo.png" alt="logo">
+
+    </a>
+    DCR - Document Content Recognition
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/KonnexionsGmbH/dcr/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Running DCR
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Running DCR" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Running DCR
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../running_requirements/" class="md-nav__link">
+        Requirementes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../running_installation/" class="md-nav__link">
+        Installaion
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../running_configuration/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../running_operations/" class="md-nav__link">
+        Operations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../running_document_language/" class="md-nav__link">
+        Document Language
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Release Documents
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Release Documents" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Release Documents
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_notes/" class="md-nav__link">
+        Release Notes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_history/" class="md-nav__link">
+        Release History
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Developing DCR
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Developing DCR" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Developing DCR
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_research_notes/" class="md-nav__link">
+        Research Notes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_system_environment/" class="md-nav__link">
+        System Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_data_model/" class="md-nav__link">
+        Data Model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_coding_standards/" class="md-nav__link">
+        Coding Standards
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_code_formatting/" class="md-nav__link">
+        Code Formatting
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_static_code_analysis/" class="md-nav__link">
+        Static Code Analysis
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_7" type="checkbox" id="__nav_4_7" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_7">
+          Documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Documentation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_7">
+          <span class="md-nav__icon md-icon"></span>
+          Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_software_documentation/" class="md-nav__link">
+        Software Documentation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Line Type Algorithms
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Line Type Algorithms
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-headers-footers" class="md-nav__link">
+    1 Headers &amp; Footers
+  </a>
+  
+    <nav class="md-nav" aria-label="1 Headers &amp; Footers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-footers" class="md-nav__link">
+    1.1 Footers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-headers" class="md-nav__link">
+    1.2 Headers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-toc-table-of-content" class="md-nav__link">
+    2 TOC (Table of Content)
+  </a>
+  
+    <nav class="md-nav" aria-label="2 TOC (Table of Content)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-parameters" class="md-nav__link">
+    2.1 Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-algorithm-table-based" class="md-nav__link">
+    2.2 Algorithm Table-based
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-algorithm-line-based" class="md-nav__link">
+    2.3 Algorithm Line-based
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tables" class="md-nav__link">
+    3 Tables
+  </a>
+  
+    <nav class="md-nav" aria-label="3 Tables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-parameters" class="md-nav__link">
+    3.1 Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-bulleted-lists" class="md-nav__link">
+    4 Bulleted Lists
+  </a>
+  
+    <nav class="md-nav" aria-label="4 Bulleted Lists">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-parameters" class="md-nav__link">
+    4.1 Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-classification-identifiers" class="md-nav__link">
+    4.2 Classification Identifiers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-numbered-lists" class="md-nav__link">
+    5 Numbered Lists
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-headings" class="md-nav__link">
+    6 Headings
+  </a>
+  
+    <nav class="md-nav" aria-label="6 Headings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-parameters" class="md-nav__link">
+    6.1 Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-classification-rules" class="md-nav__link">
+    6.2 Classification Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-algorithm" class="md-nav__link">
+    6.3 Algorithm
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_api_documentation/" class="md-nav__link">
+        API Documentation
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_software_testing/" class="md-nav__link">
+        Software Testing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_continouos_delivery/" class="md-nav__link">
+        Continouos Delivery
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_development_environment/" class="md-nav__link">
+        Development Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_version_planning/" class="md-nav__link">
+        Version Planning
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        Contributing Guide
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-headers-footers" class="md-nav__link">
+    1 Headers &amp; Footers
+  </a>
+  
+    <nav class="md-nav" aria-label="1 Headers &amp; Footers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-footers" class="md-nav__link">
+    1.1 Footers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-headers" class="md-nav__link">
+    1.2 Headers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-toc-table-of-content" class="md-nav__link">
+    2 TOC (Table of Content)
+  </a>
+  
+    <nav class="md-nav" aria-label="2 TOC (Table of Content)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-parameters" class="md-nav__link">
+    2.1 Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-algorithm-table-based" class="md-nav__link">
+    2.2 Algorithm Table-based
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-algorithm-line-based" class="md-nav__link">
+    2.3 Algorithm Line-based
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tables" class="md-nav__link">
+    3 Tables
+  </a>
+  
+    <nav class="md-nav" aria-label="3 Tables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-parameters" class="md-nav__link">
+    3.1 Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-bulleted-lists" class="md-nav__link">
+    4 Bulleted Lists
+  </a>
+  
+    <nav class="md-nav" aria-label="4 Bulleted Lists">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-parameters" class="md-nav__link">
+    4.1 Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-classification-identifiers" class="md-nav__link">
+    4.2 Classification Identifiers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-numbered-lists" class="md-nav__link">
+    5 Numbered Lists
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-headings" class="md-nav__link">
+    6 Headings
+  </a>
+  
+    <nav class="md-nav" aria-label="6 Headings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-parameters" class="md-nav__link">
+    6.1 Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-classification-rules" class="md-nav__link">
+    6.2 Classification Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-algorithm" class="md-nav__link">
+    6.3 Algorithm
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="dcr-developing-line-type-algorithms">DCR - Developing - Line Type Algorithms</h1>
+<p><img alt="GitHub (Pre-)Release" src="https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases" />
+<img alt="GitHub (Pre-)Release Date" src="https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr" /></p>
+<p>The granularity of the document <code>line</code> tries to classify the individual lines.
+The possible line types are :</p>
+<table>
+<thead>
+<tr>
+<th>line type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b</td>
+<td>non-classifiable line, i.e. normal text body line</td>
+</tr>
+<tr>
+<td>f</td>
+<td>footer line</td>
+</tr>
+<tr>
+<td>h</td>
+<td>header line</td>
+</tr>
+<tr>
+<td>h_9</td>
+<td>level 9 heading line</td>
+</tr>
+<tr>
+<td>lb</td>
+<td>line of a bulleted list</td>
+</tr>
+<tr>
+<td>ln</td>
+<td>line of a numbered list</td>
+</tr>
+<tr>
+<td>tab</td>
+<td>line of a table</td>
+</tr>
+<tr>
+<td>toc</td>
+<td>line of a table of content</td>
+</tr>
+</tbody>
+</table>
+<p>The following three rule-based algorithms are used to determine the line type in the order given:</p>
+<ol>
+<li>
+<p><code>headers &amp; footers</code>
+The headers and footers are determined by a similarity comparison of the first <code>lt_header_max_lines</code> and last <code>lt_footer_max_lines</code> lines respectively. </p>
+</li>
+<li>
+<p><code>close together</code>
+A table of contents must be in the first <code>lt_toc_last_page</code> pages and consists of either a list or a table with ascending page numbers.
+Tables have already been marked accordingly by PDFlib TET.
+The elements of bulleted or numbered lists must be close together and are determined by regular expressions. </p>
+</li>
+<li>
+<p><code>headings</code>
+Headings extend across the entire document and can have hierarchical structures. 
+The headings are determined with rule-enriched regular expressions. </p>
+</li>
+</ol>
+<h2 id="1-headers-footers">1 Headers &amp; Footers</h2>
+<p>The following parameter controls both the classification of the headers and the footers:</p>
+<ul>
+<li><strong><code>verbose_lt_headers_footers</code></strong></li>
+</ul>
+<p>Default value: <strong><code>false</code></strong> - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.</p>
+<h3 id="11-footers">1.1 Footers</h3>
+<h4 id="111-parameters">1.1.1 Parameters</h4>
+<p>The following parameters control the classification of the footers:</p>
+<ul>
+<li><strong><code>lt_footer_max_distance</code></strong></li>
+</ul>
+<p>Default value: <strong><code>3</code></strong> - The degree of similarity of rows is determined by means of the <a href="https://en.wikipedia.org/wiki/Levenshtein_distance" target="_blank">Levenshtein distance</a>. 
+The value zero stands for identical lines. 
+The larger the Levenshtein distance, the more different the rows are. 
+If the header lines do not contain a page numbers, then the parameter should be set to <code>0</code>.</p>
+<ul>
+<li><strong><code>lt_footer_max_lines</code></strong></li>
+</ul>
+<p>Default value: <strong><code>3</code></strong> - the number of lines from the bottom of the page to be analyzed as possible candidates for footers.
+With the value zero the classification of footers is prevented.</p>
+<ul>
+<li><strong><code>spacy_ignore_line_type_footer</code></strong></li>
+</ul>
+<p>Default value: <strong><code>true</code></strong> -  determines whether the lines of this type are ignored (<strong>true</strong>) or not (<strong>false</strong>) during tokenization.</p>
+<h4 id="112-algorithm">1.1.2 Algorithm</h4>
+<ol>
+<li>On all pages, the last line <code>n</code>, the line <code>n-1</code>, etc. are compared up to the maximum specified line. </li>
+<li>The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.</li>
+<li>The line is considered a footer if, except for pages <code>1</code> and <code>2</code> and pages <code>n-1</code> and <code>n</code>, the Levenshtein distance is not greater than the specified maximum value.</li>
+</ol>
+<h3 id="12-headers">1.2 Headers</h3>
+<h4 id="121-parameters">1.2.1 Parameters</h4>
+<p>The following parameters control the classification of the headers:</p>
+<ul>
+<li><strong><code>lt_header_max_distance</code></strong></li>
+</ul>
+<p>Default value: <strong><code>3</code></strong> - the degree of similarity of rows is determined by means of the <a href="https://en.wikipedia.org/wiki/Levenshtein_distance" target="_blank">Levenshtein distance</a>. 
+The value zero stands for identical lines. 
+The larger the Levenshtein distance, the more different the rows are. 
+If the footer lines contain a page number, then depending on the number of pages in the document, the following values are useful:</p>
+<table>
+<thead>
+<tr>
+<th>document pages</th>
+<th>Levenshtein distance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt; 10</td>
+<td>1</td>
+</tr>
+<tr>
+<td>&lt; 100</td>
+<td>2</td>
+</tr>
+<tr>
+<td>&lt; 1000</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong><code>lt_header_max_lines</code></strong></li>
+</ul>
+<p>Default value: <strong><code>3</code></strong> - the number of lines from the top of the page to be analyzed as possible candidates for headers.
+A value of zero prevents the classification of headers.</p>
+<ul>
+<li><strong><code>spacy_ignore_line_type_header</code></strong></li>
+</ul>
+<p>Default value: <strong><code>true</code></strong> -  determines whether the lines of this type are ignored (<strong>true</strong>) or not (<strong>false</strong>) during tokenization.</p>
+<h4 id="122-algorithm">1.2.2 Algorithm</h4>
+<ol>
+<li>On all pages, the first line, the second line, etc. are compared up to the maximum specified line. </li>
+<li>The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.</li>
+<li>The line is considered a header if, except for pages <code>1</code> and <code>2</code> and pages <code>n-1</code> and <code>n</code>, the Levenshtein distance is not greater than the specified maximum value.</li>
+</ol>
+<h2 id="2-toc-table-of-content">2 TOC (Table of Content)</h2>
+<p>An attempt is made here to recognise a table of contents contained in the document. There are two main reasons for this:</p>
+<ol>
+<li>there is the possibility to ignore the resulting tokens afterwards, and</li>
+<li>on the other hand, the table of contents could be in the form of a table, which, however, is then not to be processed as a table in the sense of 4.3.  </li>
+</ol>
+<h3 id="21-parameters">2.1 Parameters</h3>
+<p>The following parameters control the classification of a table of contents included in the document:</p>
+<ul>
+<li><strong><code>lt_toc_last_page</code></strong></li>
+</ul>
+<p>Default value: <strong><code>3</code></strong> - sets the number of pages that will be searched for a table of contents from the beginning of the document.
+A value of zero prevents the search for a table of contents.</p>
+<ul>
+<li><strong><code>lt_toc_min_entries</code></strong></li>
+</ul>
+<p>Default value: <strong><code>3</code></strong> - defines the minimum number of entries that a table of contents must contain.</p>
+<ul>
+<li><strong><code>spacy_ignore_line_type_toc</code></strong></li>
+</ul>
+<p>Default value: <strong><code>true</code></strong> -  determines whether the lines of this type are ignored (<strong>true</strong>) or not (<strong>false</strong>) during tokenization.</p>
+<ul>
+<li><strong><code>verbose_lt_toc</code></strong></li>
+</ul>
+<p>Default value: <strong><code>false</code></strong> - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.</p>
+<h3 id="22-algorithm-table-based">2.2 Algorithm Table-based</h3>
+<p>A table with the following properties is searched for:</p>
+<ul>
+<li>except for the first row, the last column of the table must contain an integer greater than zero,</li>
+<li>the number found there must be ascending,</li>
+<li>the number must not be greater than the last page number of the document, and</li>
+<li>if such a table was found, then the algorithm ends here.</li>
+</ul>
+<h3 id="23-algorithm-line-based">2.3 Algorithm Line-based</h3>
+<p>A block of lines with the following properties is searched here:</p>
+<ul>
+<li>the last token from each line must contain an integer greater than zero,</li>
+<li>the number found there must be ascending, and</li>
+<li>the number must not be greater than the last page number of the document.</li>
+</ul>
+<h2 id="3-tables">3 Tables</h2>
+<p><a href="https://www.pdflib.com/products/tet/" target="_blank">PDFlib TET</a> determines the tables contained in the <strong><code>pdf</code></strong> document and marks them accordingly in its <strong><code>xml</code></strong> output file. 
+<strong>DCR</strong> now uses these marks to determine the line type <strong><code>tab</code></strong> and optionally to output the tables in a separate <strong><code>JSON</code></strong> file.</p>
+<h3 id="31-parameters">3.1 Parameters</h3>
+<p>The following parameters control the classification of the tables:</p>
+<ul>
+<li><strong><code>create_extra_file_table</code></strong></li>
+</ul>
+<p>Default value: <strong><code>true</code></strong> - if true, a <strong><code>JSON</code></strong> file named <code>&lt;document_name&gt;_table.json</code> is created in the file directory <code>data_accepted</code> with the identified tables.</p>
+<ul>
+<li><strong><code>lt_table_file_incl_empty_columns</code></strong></li>
+</ul>
+<p>Default value: <strong><code>true</code></strong> - if true, the empty columns are included in the <strong><code>JSON</code></strong> file <code>&lt;document_name&gt;_table.json</code>.</p>
+<ul>
+<li><strong><code>spacy_ignore_line_type_table</code></strong></li>
+</ul>
+<p>Default value: <strong><code>false</code></strong> -  determines whether the lines of this type are ignored (<strong>true</strong>) or not (<strong>false</strong>) during tokenization.</p>
+<ul>
+<li><strong><code>verbose_lt_table</code></strong></li>
+</ul>
+<p>Default value: <strong><code>false</code></strong> - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.</p>
+<h2 id="4-bulleted-lists">4 Bulleted Lists</h2>
+<p>An element of a bulleted list extends either over a whole line or over a complete paragraph.
+All elements of a bulleted list must begin with one or more of the same characters and must not be interrupted by other lines or paragraphs.</p>
+<h3 id="41-parameters">4.1 Parameters</h3>
+<p>The following parameters control the classification of a bulleted list:</p>
+<ul>
+<li><strong><code>create_extra_file_list_bullet</code></strong></li>
+</ul>
+<p>Default value: <strong><code>true</code></strong> - if true, a <strong><code>JSON</code></strong> file named <code>&lt;document_name&gt;_list_bullet.json</code> is created in the file directory <code>data_accepted</code> with the identified bulleted lists.</p>
+<ul>
+<li><strong><code>lt_list_bullet_min_entries</code></strong></li>
+</ul>
+<p>Default value: <strong><code>2</code></strong> - the minimum number of entries in a bulleted list.</p>
+<ul>
+<li><strong><code>lt_list_bullet_rule_file</code></strong></li>
+</ul>
+<p>Default value: <strong><code>none</code></strong> - name of a file including file directory that contains the rules for determining the bulleted lists.
+<strong><code>none</code></strong> means that the given default rules are applied.</p>
+<ul>
+<li><strong><code>lt_list_bullet_tolerance_llx</code></strong></li>
+</ul>
+<p>Default value: <strong><code>5</code></strong> - percentage tolerance for the differences in indentation of an entry in a bulleted list.</p>
+<ul>
+<li><strong><code>spacy_ignore_line_type_list_bullet</code></strong></li>
+</ul>
+<p>Default value: <strong><code>false</code></strong> -  determines whether the lines of this type are ignored (<strong>true</strong>) or not (<strong>false</strong>) during tokenization.</p>
+<ul>
+<li><strong><code>verbose_lt_list_bullet</code></strong></li>
+</ul>
+<p>Default value: <strong><code>false</code></strong> - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.</p>
+<h3 id="42-classification-identifiers">4.2 Classification Identifiers</h3>
+<p>The following table shows the standard identifiers in the default processing order:</p>
+<table>
+<thead>
+<tr>
+<th>identifier</th>
+<th>Hexadecimal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"- "</td>
+<td>2D20</td>
+</tr>
+<tr>
+<td>". "</td>
+<td>2E20</td>
+</tr>
+<tr>
+<td>"\ufffd "</td>
+<td></td>
+</tr>
+<tr>
+<td>"o "</td>
+<td>6F20</td>
+</tr>
+<tr>
+<td>"° "</td>
+<td>C2B020</td>
+</tr>
+<tr>
+<td>"• "</td>
+<td>E280A220</td>
+</tr>
+<tr>
+<td>"‣ "</td>
+<td>E280A320</td>
+</tr>
+</tbody>
+</table>
+<p>However, these default rules can also be overridden via a <strong><code>JSON</code></strong> file (see parameter <strong><code>lt_list_bullet_rule_file</code></strong>). 
+An example file can be found in the file directory <strong><code>data</code></strong> with the file name <strong><code>line_type_list_bullet_rules.json</code></strong>.</p>
+<pre><code>{
+  "lineTypeListBulletRules": [
+    "- ",
+    ". ",
+    "\ufffd ",
+    "o ",
+    "° ",
+    "• ",
+    "‣ "
+  ]
+}
+</code></pre>
+<h2 id="5-numbered-lists">5 Numbered Lists</h2>
+<p>TBD</p>
+<h2 id="6-headings">6 Headings</h2>
+<h3 id="61-parameters">6.1 Parameters</h3>
+<p>The following parameters control the classification of the headings:</p>
+<ul>
+<li><strong><code>create_extra_file_toc</code></strong></li>
+</ul>
+<p>Default value: <strong><code>true</code></strong> - if true, a <strong><code>JSON</code></strong> file named <code>&lt;document_name&gt;_toc.json</code> is created in the file directory <code>data_accepted</code> with the identified headings.</p>
+<ul>
+<li><strong><code>lt_heading_file_incl_no_ctx</code></strong></li>
+</ul>
+<p>Default value: <strong><code>1</code></strong> - the <code>n</code> lines following the heading are included as context into the <strong><code>JSON</code></strong> file.</p>
+<ul>
+<li><strong><code>lt_heading_file_incl_regexp</code></strong></li>
+</ul>
+<p>Default value: <strong><code>false</code></strong> - if true, the regular expression for the heading is included in the <strong><code>JSON</code></strong> file.</p>
+<ul>
+<li><strong><code>lt_heading_max_level</code></strong></li>
+</ul>
+<p>Default value: <strong><code>3</code></strong> - the maximum number of hierarchical heading levels.</p>
+<ul>
+<li><strong><code>lt_heading_min_pages</code></strong></li>
+</ul>
+<p>Default value: <strong><code>2</code></strong> - the minimum number of document pages for determining headings.</p>
+<ul>
+<li><strong><code>lt_heading_rule_file</code></strong></li>
+</ul>
+<p>Default value: <strong><code>none</code></strong> - name of a file including file directory that contains the rules for determining the headings.
+<strong><code>none</code></strong> means that the given default rules are applied.</p>
+<ul>
+<li><strong><code>lt_heading_tolerance_llx</code></strong></li>
+</ul>
+<p>Default value: <strong><code>5</code></strong> - percentage tolerance for the differences in indentation of a heading at the same level.</p>
+<ul>
+<li><strong><code>spacy_ignore_line_type_heading</code></strong></li>
+</ul>
+<p>Default value: <strong><code>false</code></strong> -  determines whether the lines of this type are ignored (<strong>true</strong>) or not (<strong>false</strong>) during tokenization.</p>
+<ul>
+<li><strong><code>verbose_lt_heading</code></strong></li>
+</ul>
+<p>Default value: <strong><code>false</code></strong> - the verbose mode is an option that provides additional details as to what the processing algorithm is doing.</p>
+<h3 id="62-classification-rules">6.2 Classification Rules</h3>
+<p>A heading classification rule contains the following 5 elements:</p>
+<table>
+<thead>
+<tr>
+<th>Nr.</th>
+<th>element name</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong><code>name</code></strong></td>
+<td>for documentation purposes, a name that characterises the rule</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong><code>isFirstToken</code></strong></td>
+<td>if true, the rule is applied to the first token of the line, <br/>otherwise to the beginning of the line</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong><code>regexp</code></strong></td>
+<td>the regular expression to be applied</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong><code>functionIsAsc</code></strong></td>
+<td>a comparison function for the values of the predecessor and the successor</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong><code>startValues</code></strong></td>
+<td>a list of allowed start values</td>
+</tr>
+</tbody>
+</table>
+<p>The following comparison functions (<strong><code>functionIsAsc</code></strong>) can be used:</p>
+<table>
+<thead>
+<tr>
+<th>function</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>ignore</code></strong></td>
+<td>no comparison is performed</td>
+</tr>
+<tr>
+<td><strong><code>lowercase_letters</code></strong></td>
+<td>two lowercase letters are compared,  <br/>whereby the ASCII difference must be exactly <strong><code>1</code></strong></td>
+</tr>
+<tr>
+<td><strong><code>romans</code></strong></td>
+<td>two Roman numerals are compared, <br/>whereby the difference must be exactly <strong><code>1</code></strong></td>
+</tr>
+<tr>
+<td><strong><code>strings</code></strong></td>
+<td>two strings are compared on ascending</td>
+</tr>
+<tr>
+<td><strong><code>string_floats</code></strong></td>
+<td>floating point numbers are compared, <br/>whereby the difference must be greater than <strong><code>0</code></strong> and less than <strong><code>1</code></strong></td>
+</tr>
+<tr>
+<td><strong><code>string_integers</code></strong></td>
+<td>two integer numbers are compared, <br/>whereby the difference must be exactly <strong><code>1</code></strong></td>
+</tr>
+<tr>
+<td><strong><code>uppercase_letters</code></strong></td>
+<td>two uppercase letters are compared,  <br/>whereby the ASCII difference must be exactly <strong><code>1</code></strong></td>
+</tr>
+</tbody>
+</table>
+<p>The following table shows the standard rules in the default processing order:</p>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>isFirstToken</th>
+<th>regexp</th>
+<th>functionIsAsc</th>
+<th>startValues</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(999)</td>
+<td>True</td>
+<td><code>"\(\d+\)$"</code></td>
+<td>string_integers</td>
+<td><code>["(1)"]</code></td>
+</tr>
+<tr>
+<td>(A)</td>
+<td>True</td>
+<td><code>"\([A-Z]\)$"</code></td>
+<td>uppercase_letters</td>
+<td><code>["(A)"]</code></td>
+</tr>
+<tr>
+<td>(ROM)</td>
+<td>True</td>
+<td>see a)</td>
+<td>romans</td>
+<td><code>["(I)"]</code></td>
+</tr>
+<tr>
+<td>(a)</td>
+<td>True</td>
+<td><code>"\([a-z]\)$"</code></td>
+<td>lowercase_letters</td>
+<td><code>["(a)"]</code></td>
+</tr>
+<tr>
+<td>(rom)</td>
+<td>True</td>
+<td>see b)</td>
+<td>romans</td>
+<td><code>["(i)"]</code></td>
+</tr>
+<tr>
+<td>999)</td>
+<td>True</td>
+<td><code>"\d+\)$"</code></td>
+<td>string_integers</td>
+<td><code>["1)"]</code></td>
+</tr>
+<tr>
+<td>999.</td>
+<td>True</td>
+<td><code>"\d+\.$"</code></td>
+<td>string_integers</td>
+<td><code>["1."]</code></td>
+</tr>
+<tr>
+<td>999.999</td>
+<td>True</td>
+<td><code>"\d+\.\d\d\d$"</code></td>
+<td>string_floats</td>
+<td><code>["1.000, "1.001"]</code></td>
+</tr>
+<tr>
+<td>999.99</td>
+<td>True</td>
+<td><code>"\d+\.\d\d$"</code></td>
+<td>string_floats</td>
+<td><code>["1.00", "1.01"]</code></td>
+</tr>
+<tr>
+<td>999.9</td>
+<td>True</td>
+<td><code>"\d+\.\d$"</code></td>
+<td>string_floats</td>
+<td><code>["1.0", 1.1]</code></td>
+</tr>
+<tr>
+<td>A)</td>
+<td>True</td>
+<td><code>"[A-Z]\)$"</code></td>
+<td>uppercase_letters</td>
+<td><code>["A)"]</code></td>
+</tr>
+<tr>
+<td>A.</td>
+<td>True</td>
+<td><code>"[A-Z]\.$"</code></td>
+<td>uppercase_letters</td>
+<td><code>["A, "A."]</code></td>
+</tr>
+<tr>
+<td>ROM)</td>
+<td>True</td>
+<td>see c)</td>
+<td>romans</td>
+<td><code>["I)"]</code></td>
+</tr>
+<tr>
+<td>ROM.</td>
+<td>True</td>
+<td>see d)</td>
+<td>romans</td>
+<td><code>["I."]</code></td>
+</tr>
+<tr>
+<td>a)</td>
+<td>True</td>
+<td><code>"[a-z]\)$"</code></td>
+<td>lowercase_letters</td>
+<td><code>["a)"]</code></td>
+</tr>
+<tr>
+<td>a.</td>
+<td>True</td>
+<td><code>"[a-z]\.$"</code></td>
+<td>lowercase_letters</td>
+<td><code>["a, "a."]</code></td>
+</tr>
+<tr>
+<td>rom)</td>
+<td>True</td>
+<td>see e)</td>
+<td>romans</td>
+<td><code>["i)"]</code></td>
+</tr>
+<tr>
+<td>rom.</td>
+<td>True</td>
+<td>see f)</td>
+<td>romans</td>
+<td><code>["i."]</code></td>
+</tr>
+</tbody>
+</table>
+<p>a) <code>"\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$"</code></p>
+<p>b) <code>"\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$"</code></p>
+<p>c) <code>"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\)$"</code></p>
+<p>d) <code>"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\.$"</code></p>
+<p>e) <code>"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\)$"</code></p>
+<p>f) <code>"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\.$"</code></p>
+<p>However, these default rules can also be overridden via a <strong><code>JSON</code></strong> file (see parameter <strong><code>lt_heading_rule_file</code></strong>). 
+An example file can be found in the file directory <strong><code>data</code></strong> with the file name <strong><code>heading_rules_test.json</code></strong>.</p>
+<pre><code>{
+  "lineTypeHeadingRules": [
+    {
+      "name": "(a)",
+      "isFirstToken": true,
+      "regexp": "\\([a-z]\\)$",
+      "functionIsAsc": "lowercase_letters",
+      "startValues": [
+        "(a)"
+      ]
+    },
+    {
+      "name": "(A)",
+      "isFirstToken": true,
+      "regexp": "\\([A-Z]\\)$",
+      "functionIsAsc": "uppercase_letters",
+      "startValues": [
+        "(A)"
+      ]
+    },
+</code></pre>
+<h3 id="63-algorithm">6.3 Algorithm</h3>
+<ul>
+<li>the document is worked through page by page and within a page line by line</li>
+<li>for each current heading level there is an entry in a hierarchy table</li>
+<li>
+<p>for each document line, this hierarchy table is searched from bottom to top for a matching entry</p>
+</li>
+<li>
+<p>an entry is considered to be matching if</p>
+<ul>
+<li>the regular expression is satisfied, and</li>
+<li>the indentation is within the specified tolerance (<code>lt_heading_tolerance_llx</code>), and</li>
+<li>the comparison function is fulfilled</li>
+</ul>
+</li>
+<li>
+<p>if there is a match, the following processing steps are carried out and then the next document line is processed</p>
+<ul>
+<li>an entry for the <strong><code>JSON</code></strong> file is optionally created</li>
+<li>any existing lower entries in the hierarchy table are deleted</li>
+</ul>
+</li>
+<li>
+<p>if no match is found, then the given heading rules are searched in the specified order</p>
+</li>
+<li>
+<p>a heading rule is matching if</p>
+<ul>
+<li>the regular expression is satisfied, and</li>
+<li>one of the optional start values matches the document line, and</li>
+<li>the new heading level is within the specified limit (<code>lt_heading_max_level</code>)</li>
+</ul>
+</li>
+<li>
+<p>if there is a match, the following processing steps are carried out and then the next document line is processed</p>
+<ul>
+<li>the last heading level is increased by 1,</li>
+<li>a new entry is added to the hierarchy table</li>
+<li>an entry for the <strong><code>JSON</code></strong> file is optionally created</li>
+</ul>
+</li>
+</ul>
+
+              
+            </article>
+            
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../developing_software_documentation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Software Documentation" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Software Documentation
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../developing_api_documentation/" class="md-footer__link md-footer__link--next" aria-label="Next: API Documentation" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              API Documentation
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy;2021-2022, Konnexions GmbH.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.highlight", "search.suggest"], "search": "../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.6c7ad80a.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@8.13.3/dist/mermaid.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../assets/pymdownx-extras/extra-loader-9e2c67b9.js"></script>
+      
+    
+  </body>
+</html>
