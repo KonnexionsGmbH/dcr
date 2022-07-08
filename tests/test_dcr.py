@@ -2,11 +2,10 @@
 """Testing Module dcr.dcr."""
 import os
 
+import cfg.cls_setup
 import cfg.glob
 import db.cls_run
 import pytest
-import cfg.cls_setup
-import cfg.glob
 
 import dcr
 
@@ -99,7 +98,7 @@ def test_dcr_process_export_lt_rules(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     try:
         os.mkdir("tmp")
-    except OSError as error:
+    except OSError:
         pass
 
     values_original = pytest.helpers.backup_config_params(
