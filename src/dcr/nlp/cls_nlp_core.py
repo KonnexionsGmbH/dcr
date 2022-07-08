@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module nlp.cls_nlp_core: Managing the NLP processing."""
 from __future__ import annotations
 

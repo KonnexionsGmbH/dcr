@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # pylint: disable=unused-argument
 """Testing Module nlp.cls_line_type_toc."""
 import os.path

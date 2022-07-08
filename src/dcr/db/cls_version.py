@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module db.cls_version: Managing the database table version."""
 from __future__ import annotations
 

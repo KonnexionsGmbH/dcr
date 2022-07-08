@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Library Stub."""
 
 PANDOC_PDF_ENGINE_LULATEX: str

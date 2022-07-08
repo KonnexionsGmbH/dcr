@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module pp.inbox: Check, distribute and process incoming documents.
 
 New documents are made available in the file directory inbox. These are

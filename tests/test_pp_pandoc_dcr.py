@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # pylint: disable=unused-argument
 """Testing Module pp.pandoc_dcr."""
 import cfg.glob

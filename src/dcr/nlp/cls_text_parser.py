@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module nlp.cls_text_parser: Extract text and metadata from PDFlib TET."""
 from __future__ import annotations
 

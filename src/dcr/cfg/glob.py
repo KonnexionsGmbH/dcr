@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module cfg.glob: DCR Global Data."""
 from __future__ import annotations
 
@@ -24,7 +22,7 @@ import nlp.cls_tokenizer_spacy
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
-FILE_ENCODING_DEFAULT = "utf-16"
+FILE_ENCODING_DEFAULT = "utf-8"
 
 INFORMATION_NOT_YET_AVAILABLE = "n/a"
 

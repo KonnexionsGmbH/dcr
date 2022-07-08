@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Testing Module conftest."""
 import os
 import pathlib

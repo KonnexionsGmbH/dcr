@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module nlp.cls_line_type_table: Determine tables."""
 from __future__ import annotations
 

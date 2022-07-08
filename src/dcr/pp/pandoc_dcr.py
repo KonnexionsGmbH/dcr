@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module pp.pandoc_dcr: Convert non-pdf documents to pdf documents."""
 import os
 import time

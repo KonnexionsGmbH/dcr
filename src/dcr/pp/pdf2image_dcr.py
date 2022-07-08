@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module pp.pdf2image_dcr: Convert scanned image pdf documents to image
 files."""
 import os

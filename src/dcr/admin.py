@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Class Admin: Administration root window.
 
 This is the entry point to the administration user interface application

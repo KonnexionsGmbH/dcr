@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module dcr: Entry Point Functionality.
 
 This is the entry point to the application DCR.

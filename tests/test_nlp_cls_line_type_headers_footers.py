@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # pylint: disable=unused-argument
 """Testing Module nlp.cls_line_type_headers_footers."""
 import os.path

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Library Stub."""
 
 def convert_image_2_pdf() -> None: ...

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module db.cls_vdb_core: Managing the database."""
 from __future__ import annotations
 

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module nlp.pdflib_dcr: Extract text from pdf documents."""
 import os
 import time

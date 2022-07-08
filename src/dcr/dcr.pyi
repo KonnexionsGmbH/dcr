@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Library Stub."""
 
 DCR_ARGV_0: str

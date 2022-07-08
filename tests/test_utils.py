@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # pylint: disable=unused-argument
 """Testing Module dcr.utils."""
 import pathlib

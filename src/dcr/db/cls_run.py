@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module db.cls_run: Managing the database table run."""
 from __future__ import annotations
 

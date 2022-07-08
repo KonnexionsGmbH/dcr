@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module db.cls_language: Managing the database table language."""
 from __future__ import annotations
 

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module nlp.cls_line_type_toc: Determine table of content lines."""
 from __future__ import annotations
 
