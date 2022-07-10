@@ -11,11 +11,11 @@ import nlp.cls_line_type_heading
 import nlp.cls_line_type_list_bullet
 import nlp.cls_line_type_list_number
 import nlp.cls_line_type_table
-import nlp.cls_line_type_toc
-import nlp.cls_nlp_core
 import utils
 
 import dcr_core.nlp.cls_line_type_headers_footers
+import dcr_core.nlp.cls_line_type_toc
+import dcr_core.nlp.cls_nlp_core
 
 # pylint: disable=too-many-instance-attributes
 # -----------------------------------------------------------------------------
@@ -148,20 +148,20 @@ class TextParser:
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER: cfg.glob.document.document_no_lines_footer,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER: cfg.glob.document.document_no_lines_header,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: cfg.glob.document.document_no_lines_toc,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: cfg.glob.line_type_list_bullet.no_lists,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: cfg.glob.line_type_list_number.no_lists,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: cfg.glob.line_type_table.no_tables,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TITLES_IN_DOC: len(self.parse_result_titles),
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_TITLES: self.parse_result_titles,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self.parse_result_line_pages,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER: cfg.glob.document.document_no_lines_footer,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER: cfg.glob.document.document_no_lines_header,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: cfg.glob.document.document_no_lines_toc,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: cfg.glob.line_type_list_bullet.no_lists,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: cfg.glob.line_type_list_number.no_lists,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: cfg.glob.line_type_table.no_tables,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TITLES_IN_DOC: len(self.parse_result_titles),
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TITLES: self.parse_result_titles,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self.parse_result_line_pages,
                 },
                 file_handle,
                 indent=cfg.glob.setup.json_indent,
@@ -185,20 +185,20 @@ class TextParser:
         self._debug_xml_element_text_line()
 
         new_entry = {
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: self._parse_result_line_index_page + 1,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: self._parse_result_line_index_page + 1,
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
         }
 
         if self._parse_result_table:
-            new_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO] = self._parse_result_table_cell
-            new_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO] = self._parse_result_table_row
+            new_entry[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO] = self._parse_result_table_cell
+            new_entry[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO] = self._parse_result_table_row
             if self._parse_result_table_col_span:
-                new_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN] = int(self._parse_result_table_col_span)
+                new_entry[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN] = int(self._parse_result_table_col_span)
 
         self.parse_result_line_lines.append(new_entry)
 
@@ -216,10 +216,10 @@ class TextParser:
     def _create_line_pages(self):
         self.parse_result_line_pages.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_PAGE: self._parse_result_no_lines_in_page,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_PAGE: self._parse_result_no_paras_in_page,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES: self.parse_result_line_lines,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_PAGE: self._parse_result_no_lines_in_page,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_PAGE: self._parse_result_no_paras_in_page,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES: self.parse_result_line_lines,
             }
         )
 
@@ -244,11 +244,11 @@ class TextParser:
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self._parse_result_page_pages,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self._parse_result_page_pages,
                 },
                 file_handle,
                 indent=cfg.glob.setup.json_indent,
@@ -268,9 +268,9 @@ class TextParser:
     def _create_page_pages(self):
         self._parse_result_page_pages.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_PAGE: self._parse_result_no_paras_in_page,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PARAS: self._parse_result_page_paras,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_PAGE: self._parse_result_no_paras_in_page,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARAS: self._parse_result_page_paras,
             }
         )
 
@@ -287,8 +287,8 @@ class TextParser:
 
         self._parse_result_page_paras.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
             }
         )
 
@@ -315,13 +315,13 @@ class TextParser:
         with open(cfg.glob.action_next.get_full_name(), "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_WORDS_IN_DOC: self._parse_result_no_words_in_doc,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self._parse_result_word_pages,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_WORDS_IN_DOC: self._parse_result_no_words_in_doc,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self._parse_result_word_pages,
                 },
                 file_handle,
                 indent=cfg.glob.setup.json_indent,
@@ -341,9 +341,9 @@ class TextParser:
     def _create_word_lines(self):
         self._parse_result_word_lines.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_WORDS_IN_LINE: self._parse_result_no_words_in_line,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_WORDS: self._parse_result_word_words,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_WORDS_IN_LINE: self._parse_result_no_words_in_line,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_WORDS: self._parse_result_word_words,
             }
         )
 
@@ -362,11 +362,11 @@ class TextParser:
     def _create_word_pages(self):
         self._parse_result_word_pages.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_PAGE: self._parse_result_no_lines_in_page,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_PAGE: self._parse_result_no_paras_in_page,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_WORDS_IN_PAGE: self._parse_result_no_words_in_page,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PARAS: self._parse_result_word_paras,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_PAGE: self._parse_result_no_lines_in_page,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_PAGE: self._parse_result_no_paras_in_page,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_WORDS_IN_PAGE: self._parse_result_no_words_in_page,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARAS: self._parse_result_word_paras,
             }
         )
 
@@ -384,10 +384,10 @@ class TextParser:
     def _create_word_paras(self):
         self._parse_result_word_paras.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_PARA: self._parse_result_no_lines_in_para,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_WORDS_IN_PARA: self._parse_result_no_words_in_para,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES: self._parse_result_word_lines,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_PARA: self._parse_result_no_lines_in_para,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_WORDS_IN_PARA: self._parse_result_no_words_in_para,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES: self._parse_result_word_lines,
             }
         )
 
@@ -404,8 +404,8 @@ class TextParser:
 
         self._parse_result_word_words.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_WORD_NO: self._parse_result_no_words_in_line,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_WORD_NO: self._parse_result_no_words_in_line,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
             }
         )
 
@@ -413,9 +413,7 @@ class TextParser:
     # Debug an XML element detailed.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def _debug_xml_element_all(
-        event: str, parent_tag: str, attrib: dict[str, str], text: collections.abc.Iterable[str | None]
-    ) -> None:
+    def _debug_xml_element_all(event: str, parent_tag: str, attrib: dict[str, str], text: collections.abc.Iterable[str | None]) -> None:
         """Debug an XML element detailed.
 
         Args:
@@ -497,13 +495,13 @@ class TextParser:
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ACTION:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ACTION:
                     pass
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOOKMARK:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOOKMARK:
                     self._parse_tag_bookmark(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TITLE:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TITLE:
                     self._parse_tag_title(child_tag, child)
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -523,11 +521,11 @@ class TextParser:
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOOKMARK:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOOKMARK:
                     self._parse_tag_bookmark(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TEXT:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TEXT:
                     self._parse_tag_text(child_tag, child)
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -547,11 +545,11 @@ class TextParser:
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_LINE:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_LINE:
                     self._parse_tag_line(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TEXT:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TEXT:
                     self._parse_tag_text(child_tag, child)
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -574,7 +572,7 @@ class TextParser:
 
         self._parse_result_table_cell += self._parse_result_table_col_span_prev
 
-        self._parse_result_table_col_span = parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_COL_SPAN)
+        self._parse_result_table_col_span = parent.attrib.get(dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ATTR_COL_SPAN)
 
         if self._parse_result_table_col_span:
             self._parse_result_table_col_span_prev = int(self._parse_result_table_col_span)
@@ -582,30 +580,30 @@ class TextParser:
             self._parse_result_table_col_span_prev = 1
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PARA:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PARA:
                     self._parse_result_table_cell_is_empty = False
                     self._parse_tag_para(child_tag, child)
 
         if self._parse_result_table_cell_is_empty:
-            self._parse_result_line_llx = float(parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_LLX))
-            self._parse_result_line_urx = float(parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_URX))
+            self._parse_result_line_llx = float(parent.attrib.get(dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ATTR_LLX))
+            self._parse_result_line_urx = float(parent.attrib.get(dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ATTR_URX))
             new_entry = {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: self._parse_result_line_index_page + 1,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: "",
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: self._parse_result_table_cell,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: self._parse_result_line_llx,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: self._parse_result_line_index_page + 1,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: "",
             }
 
             if self._parse_result_table_col_span:
                 # not testable
-                new_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN] = int(self._parse_result_table_col_span)
+                new_entry[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN] = int(self._parse_result_table_col_span)
 
             self.parse_result_line_lines.append(new_entry)
 
@@ -626,14 +624,14 @@ class TextParser:
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PARA:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PARA:
                     self._parse_tag_para(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TABLE:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TABLE:
                     self._parse_tag_table(child_tag, child)
                 # not testable
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PLACED_IMAGE:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PLACED_IMAGE:
                     pass
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -653,20 +651,20 @@ class TextParser:
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_AUTHOR:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_AUTHOR:
                     self._parse_result_author = child.text
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION_DATE:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION_DATE:
                     self._parse_result_creation_date = child.text
                 case (
-                    nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATOR
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PRODUCER
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CUSTOM
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TITLE
+                    dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATOR
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PRODUCER
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CUSTOM
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TITLE
                 ):
                     pass
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_MOD_DATE:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_MOD_DATE:
                     self._parse_result_mod_date = datetime.datetime.strptime(child.text, "%Y-%m-%dT%H:%M:%S%z")
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -685,8 +683,8 @@ class TextParser:
         """
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
-        self._parse_result_line_llx = float(parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_LLX))
-        self._parse_result_line_urx = float(parent.attrib.get(nlp.cls_nlp_core.NLPCore.PARSE_ATTR_URX))
+        self._parse_result_line_llx = float(parent.attrib.get(dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ATTR_LLX))
+        self._parse_result_line_urx = float(parent.attrib.get(dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ATTR_URX))
 
         self._parse_result_no_lines_in_para += 1
         self._parse_result_no_words_in_line = 0
@@ -695,11 +693,11 @@ class TextParser:
             self._parse_result_word_words = []
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TEXT:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TEXT:
                     self._parse_tag_text(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_WORD:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_WORD:
                     self._parse_tag_word(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
@@ -744,18 +742,18 @@ class TextParser:
 
         # Process the page related tags.
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
                 case (
-                    nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ACTION
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ANNOTATIONS
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_EXCEPTION
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FIELDS
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_OPTIONS
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_OUTPUT_INTENTS
+                    dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ACTION
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ANNOTATIONS
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_EXCEPTION
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FIELDS
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_OPTIONS
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_OUTPUT_INTENTS
                 ):
                     pass
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CONTENT:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CONTENT:
                     self._parse_tag_content(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
@@ -806,7 +804,12 @@ class TextParser:
                 lt_header_max_distance=cfg.glob.setup.lt_header_max_distance,
                 lt_header_max_lines=cfg.glob.setup.lt_header_max_lines,
             )
-            cfg.glob.line_type_toc = nlp.cls_line_type_toc.LineTypeToc()
+            cfg.glob.line_type_toc = dcr_core.nlp.cls_line_type_toc.LineTypeToc(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                is_verbose_lt_toc=cfg.glob.setup.is_verbose_lt_toc,
+                lt_toc_last_page=cfg.glob.setup.lt_toc_last_page,
+                lt_toc_min_entries=cfg.glob.setup.lt_toc_min_entries,
+            )
             cfg.glob.line_type_table = nlp.cls_line_type_table.LineTypeTable()
             cfg.glob.line_type_list_bullet = nlp.cls_line_type_list_bullet.LineTypeListBullet()
             cfg.glob.line_type_list_number = nlp.cls_line_type_list_number.LineTypeListNumber()
@@ -820,16 +823,18 @@ class TextParser:
 
         # Process the tags of all document pages.
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_GRAPHICS | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_RESOURCES:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_GRAPHICS | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_RESOURCES:
                     pass
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PAGE:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PAGE:
                     self._parse_tag_page(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
             cfg.glob.line_type_headers_footers.process_document(parse_result_line_pages=self.parse_result_line_pages)
-            cfg.glob.line_type_toc.process_document()
+            cfg.glob.line_type_toc.process_document(
+                parse_result_line_pages=self.parse_result_line_pages,
+            )
             cfg.glob.line_type_table.process_document()
             cfg.glob.line_type_list_bullet.process_document()
             cfg.glob.line_type_list_number.process_document()
@@ -867,9 +872,9 @@ class TextParser:
             self._parse_result_word_lines = []
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOX:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOX:
                     self._parse_tag_box(child_tag, child)
 
         if cfg.glob.setup.is_parsing_page:
@@ -901,9 +906,9 @@ class TextParser:
         self._parse_result_table_col_span_prev = 1
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CELL:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CELL:
                     self._parse_tag_cell(child_tag, child)
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -926,9 +931,9 @@ class TextParser:
         self._parse_result_table_row = 0
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ROW:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ROW:
                     self._parse_tag_row(child_tag, child)
 
         self._parse_result_table = False
@@ -988,11 +993,11 @@ class TextParser:
         self._parse_result_no_words_in_line += 1
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOX:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOX:
                     self._parse_tag_box(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TEXT:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_TEXT:
                     self._parse_tag_text(child_tag, child)
 
         self._create_word_words()
@@ -1064,27 +1069,27 @@ class TextParser:
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 
         for child in parent:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
                 case (
-                    nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ACTION
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ATTACHMENTS
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DESTINATIONS
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ENCRYPTION
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_EXCEPTION
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_JAVA_SCRIPTS
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_METADATA
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_OPTIONS
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_OUTPUT_INTENTS
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_SIGNATURE_FIELDS
-                    | nlp.cls_nlp_core.NLPCore.PARSE_ELEM_XFA
+                    dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ACTION
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ATTACHMENTS
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DESTINATIONS
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_ENCRYPTION
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_EXCEPTION
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_JAVA_SCRIPTS
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_METADATA
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_OPTIONS
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_OUTPUT_INTENTS
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_SIGNATURE_FIELDS
+                    | dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_XFA
                 ):
                     pass
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOOKMARKS:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOOKMARKS:
                     self._parse_tag_bookmarks(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT_INFO:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT_INFO:
                     self._parse_tag_doc_info(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PAGES:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PAGES:
                     self._parse_tag_pages(child_tag, child)
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)

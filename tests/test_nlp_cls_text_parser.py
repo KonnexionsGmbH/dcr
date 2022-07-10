@@ -8,13 +8,13 @@ import db.cls_db_core
 import db.cls_document
 import db.cls_run
 import defusedxml.ElementTree
-import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 import pytest
 import utils
 
 import dcr
+import dcr_core.nlp.cls_nlp_core
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -188,11 +188,11 @@ def test_missing_dependencies_text_parser_action_next(fxtr_setup_logger_environm
 
     with pytest.raises(SystemExit) as expt:
         for child in root:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
                     instance.parse_tag_document(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
                     pass
 
     assert expt.type == SystemExit, "Instance of class 'Action (action_next)' is missing"
@@ -236,11 +236,11 @@ def test_missing_dependencies_text_parser_document(fxtr_setup_empty_db_and_inbox
 
     with pytest.raises(SystemExit) as expt:
         for child in root:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
                     instance.parse_tag_document(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
                     pass
 
     assert expt.type == SystemExit, "Instance of class 'Document' is missing"

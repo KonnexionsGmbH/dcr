@@ -5,9 +5,9 @@ import json
 
 import cfg.glob
 import db.cls_document
-import nlp.cls_nlp_core
-import nlp.cls_text_parser
 import utils
+
+import dcr_core.nlp.cls_nlp_core
 
 # -----------------------------------------------------------------------------
 # Global type aliases.
@@ -45,9 +45,7 @@ class LineTypeTable:
         )
 
         utils.progress_msg_line_type_table("LineTypeTable")
-        utils.progress_msg_line_type_table(
-            f"LineTypeTable: Start create instance                ={cfg.glob.action_curr.action_file_name}"
-        )
+        utils.progress_msg_line_type_table(f"LineTypeTable: Start create instance                ={cfg.glob.action_curr.action_file_name}")
 
         self._column_no = 0
         self._column_no_prev = 0
@@ -80,9 +78,7 @@ class LineTypeTable:
 
         self._exist = True
 
-        utils.progress_msg_line_type_table(
-            f"LineTypeTable: End   create instance                ={cfg.glob.action_curr.action_file_name}"
-        )
+        utils.progress_msg_line_type_table(f"LineTypeTable: End   create instance                ={cfg.glob.action_curr.action_file_name}")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -106,11 +102,11 @@ class LineTypeTable:
         # },
         self._rows.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_COLUMN_LLX: self._first_column_llx,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LAST_COLUMN_URX: self._last_column_urx,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_COLUMNS: no_columns,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: row_no,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMNS: self._columns,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_COLUMN_LLX: self._first_column_llx,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LAST_COLUMN_URX: self._last_column_urx,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_COLUMNS: no_columns,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: row_no,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMNS: self._columns,
             }
         )
 
@@ -143,14 +139,14 @@ class LineTypeTable:
         # },
         self._tables.append(
             {
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ROW_LLX: self._first_row_llx,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ROW_URX: self._first_row_urx,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_COLUMNS: self._no_columns_table,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ROWS: len(self._rows),
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._page_no_from,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._page_no_till,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLE_NO: self.no_tables,
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_ROWS: self._rows,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ROW_LLX: self._first_row_llx,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_FIRST_ROW_URX: self._first_row_urx,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_COLUMNS: self._no_columns_table,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ROWS: len(self._rows),
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._page_no_from,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._page_no_till,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLE_NO: self.no_tables,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROWS: self._rows,
             }
         )
 
@@ -170,14 +166,14 @@ class LineTypeTable:
         Returns:
             str: The new or the old line type.
         """
-        if nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO not in line_line:
+        if dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO not in line_line:
             return db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY
 
         if not cfg.glob.setup.is_create_extra_file_table:
             return db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE
 
-        self._column_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO])
-        self._row_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO])
+        self._column_no = int(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO])
+        self._row_no = int(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO])
 
         if not self._is_table_open:
             self._reset_table()
@@ -186,13 +182,13 @@ class LineTypeTable:
         elif self._row_no != self._row_no_prev:
             self._finish_row()
 
-        text = line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]
+        text = line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]
 
         if text == "" and not cfg.glob.setup.is_lt_table_file_incl_empty_columns:
             return db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE
 
-        coord_llx = float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
-        coord_urx = float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX])
+        coord_llx = float(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
+        coord_urx = float(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX])
 
         if self._page_no_from == 0:
             self._page_no_from = self._page_idx + 1
@@ -216,19 +212,17 @@ class LineTypeTable:
         #     "text": "xxx"
         # }
         new_entry = {
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO],
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: coord_llx,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: coord_urx,
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO],
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE],
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO],
-            nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: text,
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO],
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: coord_llx,
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: coord_urx,
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO],
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE],
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO],
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: text,
         }
 
-        if nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN in line_line:
-            new_entry[nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN] = line_line[
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN
-            ]
+        if dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN in line_line:
+            new_entry[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN] = line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN]
 
         self._columns.append(new_entry)
 
@@ -248,11 +242,11 @@ class LineTypeTable:
         self._max_line_line = len(cfg.glob.text_parser.parse_result_line_lines)
 
         for line_lines_idx, line_line in enumerate(cfg.glob.text_parser.parse_result_line_lines):
-            if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
+            if line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 continue
 
             if self._process_line(line_line) == db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE:
-                line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE
+                line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE
                 cfg.glob.text_parser.parse_result_line_lines[line_lines_idx] = line_line
             else:
                 self._finish_table()
@@ -332,23 +326,19 @@ class LineTypeTable:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         utils.progress_msg_line_type_table("LineTypeTable")
-        utils.progress_msg_line_type_table(
-            f"LineTypeTable: Start document                       ={cfg.glob.action_curr.action_file_name}"
-        )
+        utils.progress_msg_line_type_table(f"LineTypeTable: Start document                       ={cfg.glob.action_curr.action_file_name}")
 
         self._reset_document()
 
         for page_idx, page in enumerate(cfg.glob.text_parser.parse_result_line_pages):
             self._page_idx = page_idx
-            cfg.glob.text_parser.parse_result_line_lines = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
+            cfg.glob.text_parser.parse_result_line_lines = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
         if cfg.glob.setup.is_create_extra_file_table and self._tables:
             full_name_toc = utils.get_full_name(
                 cfg.glob.action_curr.action_directory_name,
-                cfg.glob.action_curr.get_stem_name()  # type: ignore
-                + "_table."
-                + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON,
+                cfg.glob.action_curr.get_stem_name() + "_table." + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON,  # type: ignore
             )
             with open(full_name_toc, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
                 # {
@@ -360,18 +350,16 @@ class LineTypeTable:
                 # }
                 json.dump(
                     {
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: self.no_tables,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLES: self._tables,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: self.no_tables,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLES: self._tables,
                     },
                     file_handle,
                     indent=cfg.glob.setup.json_indent,
                     sort_keys=cfg.glob.setup.is_json_sort_keys,
                 )
 
-        utils.progress_msg_line_type_table(
-            f"LineTypeTable: End   document                       ={cfg.glob.action_curr.action_file_name}"
-        )
+        utils.progress_msg_line_type_table(f"LineTypeTable: End   document                       ={cfg.glob.action_curr.action_file_name}")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)

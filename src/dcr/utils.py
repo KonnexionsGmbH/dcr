@@ -346,17 +346,9 @@ def progress_msg_disconnected() -> None:
                 utils.progress_msg("Database is now disconnected")
                 return
 
-            database = (
-                cfg.glob.INFORMATION_NOT_YET_AVAILABLE
-                if cfg.glob.db_core.db_current_database == ""
-                else cfg.glob.db_core.db_current_database
-            )
+            database = cfg.glob.INFORMATION_NOT_YET_AVAILABLE if cfg.glob.db_core.db_current_database == "" else cfg.glob.db_core.db_current_database
 
-            user = (
-                cfg.glob.INFORMATION_NOT_YET_AVAILABLE
-                if cfg.glob.db_core.db_current_user == ""
-                else cfg.glob.db_core.db_current_user
-            )
+            user = cfg.glob.INFORMATION_NOT_YET_AVAILABLE if cfg.glob.db_core.db_current_user == "" else cfg.glob.db_core.db_current_user
 
             print("")
             utils.progress_msg(f"User '{user}' is now disconnected from database '{database}'")
@@ -492,13 +484,9 @@ def show_statistics_language() -> None:
 
     if cfg.glob.language.total_processed_to_be > 0:
         utils.progress_msg(f"Number documents accepted - " f"Pandoc:        {cfg.glob.language.total_processed_pandoc:6d}")
-        utils.progress_msg(
-            f"Number documents accepted - " f"pdf2image:     {cfg.glob.language.total_processed_pdf2image:6d}"
-        )
+        utils.progress_msg(f"Number documents accepted - " f"pdf2image:     {cfg.glob.language.total_processed_pdf2image:6d}")
         utils.progress_msg(f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.language.total_processed_pdflib:6d}")
-        utils.progress_msg(
-            f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.language.total_processed_tesseract:6d}"
-        )
+        utils.progress_msg(f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.language.total_processed_tesseract:6d}")
         utils.progress_msg(f"Number documents accepted - " f"Total:         {cfg.glob.language.total_processed:6d}")
         utils.progress_msg(f"Number documents rejected:                 {cfg.glob.language.total_erroneous:6d}")
 

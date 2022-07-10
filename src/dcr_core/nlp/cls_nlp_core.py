@@ -170,6 +170,17 @@ class NLPCore:
     JSON_NAME_WORDS: ClassVar[str] = "words"
     JSON_NAME_WORD_NO: ClassVar[str] = "wordNo"
 
+    LINE_TYPE_BODY: ClassVar[str] = "b"
+    LINE_TYPE_FOOTER: ClassVar[str] = "f"
+    LINE_TYPE_HEADER: ClassVar[str] = "h"
+    LINE_TYPE_HEADING: ClassVar[str] = "h_"
+    LINE_TYPE_LIST_BULLET: ClassVar[str] = "lb"
+    LINE_TYPE_LIST_NUMBER: ClassVar[str] = "ln"
+    LINE_TYPE_TABLE: ClassVar[str] = "tab"
+    LINE_TYPE_TOC: ClassVar[str] = "toc"
+
+    LOGGER_PROGRESS_UPDATE: ClassVar[str] = "Progress update "
+
     PARSE_NAME_SPACE: ClassVar[str] = "{http://www.pdflib.com/XML/TET5/TET-5.0}"
 
     PARSE_ATTR_COL_SPAN: ClassVar[str] = "colSpan"
@@ -225,11 +236,7 @@ class NLPCore:
     # -----------------------------------------------------------------------------
     def __init__(self) -> None:
         """Initialise the instance."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
         self._exist = True
-
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Convert a roman numeral to integer.
@@ -239,14 +246,14 @@ class NLPCore:
         """Convert a roman numeral to integer.
 
         Args:
-            roman_in (str): The roman numeral.
+            roman_in (str):
+                    The roman numeral.
 
         Returns:
-            int: The corresponding integer.
+            int:    The corresponding integer.
         """
         roman = re.match(  # type: ignore
-            "(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3}))"
-            + "|(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3}))",
+            "(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3}))" + "|(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3}))",
             roman_in,
         ).group(0)
 
@@ -305,14 +312,14 @@ class NLPCore:
     #           regular expression
     # -----------------------------------------------------------------------------
     @staticmethod
-    def _get_lt_anti_patterns_default_list_bullet() -> list[tuple[str, str]]:
+    def _get_lt_anti_patterns_default_list_bullet(environment_variant: str) -> list[tuple[str, str]]:
         """Get the default bulleted list line type anti-patterns.
 
         Returns:
             list[tuple[str, str]]:
                 The bulleted list line type anti-patterns.
         """
-        if cfg.glob.setup.environment_variant == cfg.cls_setup.Setup.ENVIRONMENT_TYPE_TEST:
+        if environment_variant == cfg.cls_setup.Setup.ENVIRONMENT_TYPE_TEST:
             return [
                 ("n/a", r"^_n/a_$"),
             ]
@@ -327,14 +334,18 @@ class NLPCore:
     #           regular expression
     # -----------------------------------------------------------------------------
     @staticmethod
-    def _get_lt_anti_patterns_default_list_number() -> list[tuple[str, str]]:
+    def _get_lt_anti_patterns_default_list_number(environment_variant: str) -> list[tuple[str, str]]:
         """Get the default numbered list line type anti-patterns.
+
+        Args:
+            environment_variant (str):
+                    Environment variant: dev, prod or test.
 
         Returns:
             list[tuple[str, str]]:
                 The numbered list line type anti-patterns.
         """
-        if cfg.glob.setup.environment_variant == cfg.cls_setup.Setup.ENVIRONMENT_TYPE_TEST:
+        if environment_variant == cfg.cls_setup.Setup.ENVIRONMENT_TYPE_TEST:
             return [
                 ("n/a", r"^_n/a_$"),
             ]
@@ -356,14 +367,12 @@ class NLPCore:
     #           list of strings
     # -----------------------------------------------------------------------------
     @staticmethod
-    def _get_lt_rules_default_heading_list_number() -> list[
-        tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]
-    ]:
+    def _get_lt_rules_default_heading_list_number() -> list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
         """Get the default heading & numbered list line type rules.
 
         Returns:
             list[tuple[str, bool, str, collections.abc.Callable[[str, str], bool], list[str]]]:
-                The heading & numbered list line type rules.
+                    The heading & numbered list line type rules.
         """
         return [
             (
@@ -682,12 +691,15 @@ class NLPCore:
     # Export the default bulleted list line type rules.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def export_rule_file_list_bullet(file_name: str = "") -> None:
+    def export_rule_file_list_bullet(file_name: str, environment_variant: str) -> None:
         """Export the default bulleted list line type rules.
 
         Args:
             file_name (str, optional):
                     File name of the output file. Defaults to cfg.glob.setup.lt_export_rule_file_list_bullet.
+
+            environment_variant (str):
+                    Environment variant: dev, prod or test.
         """
         if file_name == "":
             file_name_extern = cfg.glob.setup.lt_export_rule_file_list_bullet
@@ -696,7 +708,7 @@ class NLPCore:
 
         anti_patterns = []
 
-        for name, regexp in NLPCore.get_lt_anti_patterns_default_list_bullet():
+        for name, regexp in NLPCore.get_lt_anti_patterns_default_list_bullet(environment_variant):
             anti_patterns.append(
                 {
                     NLPCore.JSON_NAME_NAME: name,
@@ -737,12 +749,15 @@ class NLPCore:
     # Export the default numbered list line type rules.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def export_rule_file_list_number(file_name: str = "") -> None:
+    def export_rule_file_list_number(file_name: str, environment_variant: str) -> None:
         """Export the default numbered list line type rules.
 
         Args:
             file_name (str, optional):
                     File name of the output file. Defaults to cfg.glob.setup.lt_export_rule_file_list_number.
+
+            environment_variant (str):
+                    Environment variant: dev, prod or test.
         """
         if file_name == "":
             file_name_extern = cfg.glob.setup.lt_export_rule_file_list_number
@@ -751,7 +766,7 @@ class NLPCore:
 
         anti_patterns = []
 
-        for name, regexp in NLPCore.get_lt_anti_patterns_default_list_number():
+        for name, regexp in NLPCore.get_lt_anti_patterns_default_list_number(environment_variant):
             anti_patterns.append(
                 {
                     NLPCore.JSON_NAME_NAME: name,
@@ -822,37 +837,37 @@ class NLPCore:
     # Get the default bulleted list line type anti-patterns.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def get_lt_anti_patterns_default_list_bullet() -> list[
-        tuple[
-            str,
-            str,
-        ]
-    ]:
+    def get_lt_anti_patterns_default_list_bullet(
+        environment_variant: str,
+    ) -> list[tuple[str, str]]:
         """Get the default bulleted list line type anti-patterns.
 
+        Args:
+            environment_variant (str):
+                    Environment variant: dev, prod or test.
+
         Returns:
-            list[tuple[str, str,]]:
+            list[tuple[str, str]]:
                 The bulleted list line type anti-patterns.
         """
-        return NLPCore._get_lt_anti_patterns_default_list_bullet()
+        return NLPCore._get_lt_anti_patterns_default_list_bullet(environment_variant)
 
     # -----------------------------------------------------------------------------
     # Get the default numbered list line type anti-patterns.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def get_lt_anti_patterns_default_list_number() -> list[
-        tuple[
-            str,
-            str,
-        ]
-    ]:
+    def get_lt_anti_patterns_default_list_number(environment_variant: str) -> list[tuple[str, str]]:
         """Get the default numbered list line type anti-patterns.
 
+        Args:
+            environment_variant (str):
+                    Environment variant: dev, prod or test.
+
         Returns:
-            list[tuple[str, str,]]:
+            list[tuple[str, str]]:
                 The numbered list line type anti-patterns.
         """
-        return NLPCore._get_lt_anti_patterns_default_list_number()
+        return NLPCore._get_lt_anti_patterns_default_list_number(environment_variant)
 
     # -----------------------------------------------------------------------------
     # Get the default heading line type rules.
@@ -924,15 +939,15 @@ class NLPCore:
         """Compare two lowercase_letters on ascending.
 
         Args:
-            predecessor (str): The previous string.
-            successor (str): The current string.
+            predecessor (str):
+                    The previous string.
+            successor (str):
+                    The current string.
 
         Returns:
-            bool: True, if the successor - predecessor is equal to 1, False else.
+            bool:   True, if the successor - predecessor is equal to 1, False else.
         """
-        if (predecessor_ints := re.findall(r"[a-z]", predecessor.lower())) and (
-            successor_ints := re.findall(r"[a-z]", successor.lower())
-        ):
+        if (predecessor_ints := re.findall(r"[a-z]", predecessor.lower())) and (successor_ints := re.findall(r"[a-z]", successor.lower())):
             if ord(successor_ints[0]) - ord(predecessor_ints[0]) == 1:
                 return True
 
@@ -946,11 +961,13 @@ class NLPCore:
         """Compare two lowercase_letters on ascending - only first token.
 
         Args:
-            predecessor (str): The previous string.
-            successor (str): The current string.
+            predecessor (str):
+                    The previous string.
+            successor (str):
+                    The current string.
 
         Returns:
-            bool: True, if the successor - predecessor is equal to 1, False else.
+            bool:   True, if the successor - predecessor is equal to 1, False else.
         """
         return cls.is_asc_lowercase_letters(predecessor.split()[0], successor.split()[0])
 
@@ -962,11 +979,14 @@ class NLPCore:
         """Compare two roman numerals on ascending.
 
         Args:
-            predecessor (str): The previous roman numeral.
-            successor (str): The current roman numeral.
+            predecessor (str):
+                    The previous roman numeral.
+            successor (str):
+                    The current roman numeral.
 
         Returns:
-            bool: False, if the predecessor is greater than the current value, True else.
+            bool:
+            False, if the predecessor is greater than the current value, True else.
         """
         # TBD depending on different regexp patterns
         # if predecessor[0] == "(":
@@ -1003,11 +1023,13 @@ class NLPCore:
         """Compare two roman numerals on ascending - only first token.
 
         Args:
-            predecessor (str): The previous roman numeral.
-            successor (str): The current roman numeral.
+            predecessor (str):
+                    The previous roman numeral.
+            successor (str):
+                    The current roman numeral.
 
         Returns:
-            bool: False, if the predecessor is greater than the current value, True else.
+            bool:   False, if the predecessor is greater than the current value, True else.
         """
         # TBD depending on different regexp patterns
         # if predecessor[0] == "(":
@@ -1026,11 +1048,13 @@ class NLPCore:
         """Compare two strings on ascending.
 
         Args:
-            predecessor (str): The previous string.
-            successor (str): The current string.
+            predecessor (str):
+                    The previous string.
+            successor (str):
+                    The current string.
 
         Returns:
-            bool: False, if the predecessor is greater than the current value, True else.
+            bool:   False, if the predecessor is greater than the current value, True else.
         """
         if predecessor > successor:
             return False
@@ -1045,15 +1069,15 @@ class NLPCore:
         """Compare two string float numbers on ascending.
 
         Args:
-            predecessor (str): The previous string float number.
-            successor (str): The current string float number.
+            predecessor (str):
+                    The previous string float number.
+            successor (str):
+                    The current string float number.
 
         Returns:
-            bool: False, if the predecessor is greater than the current value, True else.
+            bool:   False, if the predecessor is greater than the current value, True else.
         """
-        if (predecessor_floats := re.findall(r"\d+\.\d+", predecessor)) and (
-            successor_floats := re.findall(r"\d+\.\d+", successor)
-        ):
+        if (predecessor_floats := re.findall(r"\d+\.\d+", predecessor)) and (successor_floats := re.findall(r"\d+\.\d+", successor)):
             if 0 < float(successor_floats[0]) - float(predecessor_floats[0]) <= 1:
                 return True
 
@@ -1067,11 +1091,13 @@ class NLPCore:
         """Compare two string float numbers on ascending - only first token.
 
         Args:
-            predecessor (str): The previous string float number.
-            successor (str): The current string float number.
+            predecessor (str):
+                    The previous string float number.
+            successor (str):
+                    The current string float number.
 
         Returns:
-            bool: False, if the predecessor is greater than the current value, True else.
+            bool:   False, if the predecessor is greater than the current value, True else.
         """
         return cls.is_asc_string_floats(predecessor.split()[0], successor.split()[0])
 
@@ -1083,11 +1109,13 @@ class NLPCore:
         """Compare two string integers on ascending.
 
         Args:
-            predecessor (str): The previous string integer.
-            successor (str): The current string integer.
+            predecessor (str):
+                    The previous string integer.
+            successor (str):
+                    The current string integer.
 
         Returns:
-            bool: True, if the successor - predecessor is equal to 1, False else.
+            bool:   True, if the successor - predecessor is equal to 1, False else.
         """
         if (predecessor_ints := re.findall(r"\d+", predecessor)) and (successor_ints := re.findall(r"\d+", successor)):
             if int(successor_ints[0]) - int(predecessor_ints[0]) == 1:
@@ -1103,11 +1131,13 @@ class NLPCore:
         """Compare two string integers on ascending - only first token.
 
         Args:
-            predecessor (str): The previous string integer.
-            successor (str): The current string integer.
+            predecessor (str):
+                    The previous string integer.
+            successor (str):
+                    The current string integer.
 
         Returns:
-            bool: True, if the successor - predecessor is equal to 1, False else.
+            bool:   True, if the successor - predecessor is equal to 1, False else.
         """
         return cls.is_asc_string_integers(predecessor.split()[0], successor.split()[0])
 
@@ -1119,15 +1149,15 @@ class NLPCore:
         """Compare two uppercase_letters on ascending.
 
         Args:
-            predecessor (str): The previous string.
-            successor (str): The current string.
+            predecessor (str):
+                    The previous string.
+            successor (str):
+                    The current string.
 
         Returns:
-            bool: True, if the successor - predecessor is equal to 1, False else.
+            bool:   True, if the successor - predecessor is equal to 1, False else.
         """
-        if (predecessor_ints := re.findall(r"[A-Z]", predecessor.upper())) and (
-            successor_ints := re.findall(r"[A-Z]", successor.upper())
-        ):
+        if (predecessor_ints := re.findall(r"[A-Z]", predecessor.upper())) and (successor_ints := re.findall(r"[A-Z]", successor.upper())):
             if ord(successor_ints[0]) - ord(predecessor_ints[0]) == 1:
                 return True
 
@@ -1141,10 +1171,12 @@ class NLPCore:
         """Compare two uppercase_letters on ascending - only first token.
 
         Args:
-            predecessor (str): The previous string.
-            successor (str): The current string.
+            predecessor (str):
+                    The previous string.
+            successor (str):
+                    The current string.
 
         Returns:
-            bool: True, if the successor - predecessor is equal to 1, False else.
+            bool:   True, if the successor - predecessor is equal to 1, False else.
         """
         return cls.is_asc_uppercase_letters(predecessor.split()[0], successor.split()[0])

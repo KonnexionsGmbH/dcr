@@ -266,9 +266,7 @@ class DBCore:
 
         self._create_schema()
 
-        utils.progress_msg(
-            f"The database has been successfully created, " f"version number='{cfg.cls_setup.Setup.DCR_VERSION}'"
-        )
+        utils.progress_msg(f"The database has been successfully created, " f"version number='{cfg.cls_setup.Setup.DCR_VERSION}'")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -466,13 +464,9 @@ class DBCore:
             db_initial_data_file_path = utils.get_os_independent_name(cfg.glob.setup.db_initial_data_file)
             if os.path.isfile(db_initial_data_file_path):
                 self.load_db_data_from_json(pathlib.Path(db_initial_data_file_path))
-                utils.progress_msg(
-                    f"Initial database data was successfully loaded from the file {cfg.glob.setup.db_initial_data_file}"
-                )
+                utils.progress_msg(f"Initial database data was successfully loaded from the file {cfg.glob.setup.db_initial_data_file}")
             else:
-                utils.terminate_fatal(
-                    f"File with initial database data is missing - " f"file name '{cfg.glob.setup.db_initial_data_file}'"
-                )
+                utils.terminate_fatal(f"File with initial database data is missing - " f"file name '{cfg.glob.setup.db_initial_data_file}'")
 
         # Disconnect from the database.
         self.disconnect_db()
@@ -673,9 +667,7 @@ class DBCore:
 
             api_version = json_data[DBCore.JSON_NAME_API_VERSION]
             if api_version != cfg.cls_setup.Setup.DCR_VERSION:
-                utils.terminate_fatal(
-                    f"Expected api version is' {cfg.cls_setup.Setup.DCR_VERSION}' " f"- got '{api_version}'"
-                )
+                utils.terminate_fatal(f"Expected api version is' {cfg.cls_setup.Setup.DCR_VERSION}' " f"- got '{api_version}'")
 
             data = json_data[DBCore.JSON_NAME_DATA]
             for json_table in data[DBCore.JSON_NAME_TABLES]:

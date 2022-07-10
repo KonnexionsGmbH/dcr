@@ -118,9 +118,7 @@ def convert_non_pdf_2_pdf_file() -> None:
     except RuntimeError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-            error_msg=ERROR_31_902.replace("{full_name}", full_name_curr)
-            .replace("{error_type}", str(type(err)))
-            .replace("{error_msg}", str(err)),
+            error_msg=ERROR_31_902.replace("{full_name}", full_name_curr).replace("{error_type}", str(type(err))).replace("{error_msg}", str(err)),
         )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

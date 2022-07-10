@@ -103,9 +103,7 @@ def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, 
 # Test RUN_ACTION_TOKENIZE - attributes - true - coverage.
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("spacy_ignore", ["false", "true"])
-def test_run_action_tokenize_attributes_false_true_coverage(
-    spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
-):
+def test_run_action_tokenize_attributes_false_true_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - attributes - false & true - coverage."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -277,9 +275,7 @@ def test_run_action_tokenize_french(fxtr_setup_empty_inbox):
 
     # -------------------------------------------------------------------------
     # Copy language subdirectory
-    pytest.helpers.copy_directories_4_pytest_2_dir(
-        source_directories=["french"], target_dir=str(cfg.glob.setup.directory_inbox)
-    )
+    pytest.helpers.copy_directories_4_pytest_2_dir(source_directories=["french"], target_dir=str(cfg.glob.setup.directory_inbox))
 
     # -------------------------------------------------------------------------
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])

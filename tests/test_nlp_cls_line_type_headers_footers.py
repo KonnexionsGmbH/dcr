@@ -8,14 +8,14 @@ import db.cls_action
 import db.cls_db_core
 import db.cls_document
 import db.cls_run
-import nlp.cls_line_type_toc
-import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 import pytest
 
 import dcr
 import dcr_core.nlp.cls_line_type_headers_footers
+import dcr_core.nlp.cls_line_type_toc
+import dcr_core.nlp.cls_nlp_core
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

@@ -14,7 +14,6 @@ import db.cls_db_core
 import db.cls_language
 import db.cls_run
 import db.cls_version
-import nlp.cls_nlp_core
 import nlp.parser
 import nlp.pdflib
 import nlp.tokenizer
@@ -25,6 +24,8 @@ import pp.tesseract_dcr
 import sqlalchemy
 import utils
 import yaml
+
+import dcr_core.nlp.cls_nlp_core
 
 # -----------------------------------------------------------------------------
 # Class variables.
@@ -56,10 +57,7 @@ def check_db_up_to_date() -> None:
     current_version = db.cls_version.Version.select_version_version_unique()
 
     if cfg.cls_setup.Setup.DCR_VERSION != current_version:
-        utils.terminate_fatal(
-            f"Current database version is '{current_version}' - but expected version is '"
-            f"{cfg.cls_setup.Setup.DCR_VERSION}''"
-        )
+        utils.terminate_fatal(f"Current database version is '{current_version}' - but expected version is '" f"{cfg.cls_setup.Setup.DCR_VERSION}''")
 
     utils.progress_msg(f"The current version of database is '{current_version}'")
 
@@ -371,11 +369,11 @@ def process_export_lt_rules() -> None:
     """Export the line type rules."""
     utils.progress_msg_empty_before("Start: Export the line type rules ...")
 
-    nlp.cls_nlp_core.NLPCore.export_rule_file_heading()
+    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_heading()
 
-    nlp.cls_nlp_core.NLPCore.export_rule_file_list_bullet()
+    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_bullet(environment_variant=cfg.glob.setup.environment_variant, file_name="")
 
-    nlp.cls_nlp_core.NLPCore.export_rule_file_list_number()
+    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_number(environment_variant=cfg.glob.setup.environment_variant, file_name="")
 
     utils.progress_msg("End  : Export the line type rules ...")
 

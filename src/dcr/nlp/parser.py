@@ -7,16 +7,15 @@ import db.cls_action
 import db.cls_document
 import db.cls_run
 import defusedxml.ElementTree
-import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import utils
+
+import dcr_core.nlp.cls_nlp_core
 
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_61_901 = (
-    "61.901 Issue (s_p_j): Parsing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
-)
+ERROR_61_901 = "61.901 Issue (s_p_j): Parsing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
 
 TETML_TYPE_LINE = "line"
 TETML_TYPE_PAGE = "page"
@@ -136,20 +135,18 @@ def parse_tetml_file() -> None:
         cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
 
         for child in root:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
+            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
                     cfg.glob.text_parser.parse_tag_document(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
+                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
                     pass
 
         cfg.glob.run.run_total_processed_ok += 1
     except FileNotFoundError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PARSER,
-            error_msg=ERROR_61_901.replace("{full_name_curr}", full_name_curr)
-            .replace("{error_type}", str(type(err)))
-            .replace("{error}", str(err)),
+            error_msg=ERROR_61_901.replace("{full_name_curr}", full_name_curr).replace("{error_type}", str(type(err))).replace("{error}", str(err)),
         )
         return
 

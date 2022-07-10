@@ -10,7 +10,7 @@ setlocal EnableDelayedExpansion
 
 set DCR_CHOICE_ACTION_DEFAULT=aui
 set DCR_ENVIRONMENT_TYPE=prod
-set PYTHONPATH=%PYTHONPATH%;src\dcr
+set PYTHONPATH=%PYTHONPATH%;src
 
 if ["%1"] EQU [""] (
     echo =========================================================

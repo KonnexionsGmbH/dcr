@@ -15,8 +15,7 @@ import utils
 # Global variables.
 # -----------------------------------------------------------------------------
 ERROR_41_901 = (
-    "41.901 Issue (ocr): Converting the file '{full_name_curr}' with Tesseract OCR failed - "
-    + "error type: '{error_type}' - error: '{error}'."
+    "41.901 Issue (ocr): Converting the file '{full_name_curr}' with Tesseract OCR failed - " + "error type: '{error_type}' - error: '{error}'."
 )
 ERROR_41_903 = "41.903 Issue (ocr): The target file '{full_name}' already exists."
 ERROR_41_904 = "41.904 Issue (pypdf2): The target file '{full_name}' already exists."
@@ -112,9 +111,7 @@ def convert_image_2_pdf_file() -> None:
     except RuntimeError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-            error_msg=ERROR_41_901.replace("{full_name_curr}", full_name_curr)
-            .replace("{error_type}", str(type(err)))
-            .replace("{error}", str(err)),
+            error_msg=ERROR_41_901.replace("{full_name_curr}", full_name_curr).replace("{error_type}", str(type(err))).replace("{error}", str(err)),
         )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -156,9 +153,7 @@ def reunite_pdfs() -> None:
         conn.close()
 
     with cfg.glob.db_core.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_id_document_by_action_code_pypdf2(
-            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDFLIB
-        )
+        rows = db.cls_action.Action.select_id_document_by_action_code_pypdf2(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDFLIB)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()

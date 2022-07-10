@@ -20,13 +20,13 @@ import db.cls_language
 import db.cls_run
 import db.cls_token
 import db.cls_version
-import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import pytest
 import sqlalchemy
 import utils
 
 import dcr
+import dcr_core.nlp.cls_nlp_core
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -249,22 +249,22 @@ def check_cls_line_type(
     actual_footer = []
     actual_header = []
 
-    pages = instance.parse_result_line_document[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES]
+    pages = instance.parse_result_line_document[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES]
 
     actual_toc = 0
 
     for page in pages:
-        page_no = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
+        page_no = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
 
         actual_page_footer = []
         actual_page_header = []
 
-        for line in page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]:
-            line_type = line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+        for line in page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]:
+            line_type = line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
             if line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_FOOTER:
-                actual_page_footer.append(int(line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
+                actual_page_footer.append(int(line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
             elif line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADER:
-                actual_page_header.append(int(line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
+                actual_page_header.append(int(line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
             elif line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_TOC:
                 actual_toc += 1
 
@@ -274,12 +274,8 @@ def check_cls_line_type(
         if actual_page_header:
             actual_header.append((page_no, actual_page_header))
 
-    assert (
-        actual_header == target_header
-    ), f"file={json_file} header difference: \ntarget={target_header} \nactual={actual_header}"
-    assert (
-        actual_footer == target_footer
-    ), f"file={json_file} footer difference: \ntarget={target_footer} \nactual={actual_footer}"
+    assert actual_header == target_header, f"file={json_file} header difference: \ntarget={target_header} \nactual={actual_header}"
+    assert actual_footer == target_footer, f"file={json_file} footer difference: \ntarget={target_footer} \nactual={actual_footer}"
     assert actual_toc == target_toc, f"file={json_file} toc difference: \ntarget={target_toc} \nactual={actual_toc}"
 
 
@@ -304,9 +300,7 @@ def copy_directories_4_pytest_2_dir(
     for source in source_directories:
         source_dir = get_test_inbox_directory_name() + "/" + source
         source_path = utils.get_full_name(get_test_inbox_directory_name(), pathlib.Path(source))
-        assert os.path.isdir(utils.get_os_independent_name(source_path)), (
-            "source language directory '" + str(source_path) + "' missing"
-        )
+        assert os.path.isdir(utils.get_os_independent_name(source_path)), "source language directory '" + str(source_path) + "' missing"
         target_path = utils.get_full_name(target_dir, pathlib.Path(source))
         shutil.copytree(source_dir, target_path)
 
@@ -336,9 +330,7 @@ def copy_files_4_pytest(file_list: list[tuple[tuple[str, str | None], tuple[path
         assert os.path.isfile(source_file), "source file '" + str(source_file) + "' missing"
 
         assert os.path.isdir(utils.get_os_independent_name(target_dir)), "target directory '" + target_dir + "' missing"
-        target_file_name = (
-            "_".join(target_file_comp) if target_ext is None else "_".join(target_file_comp) + "." + target_ext
-        )
+        target_file_name = "_".join(target_file_comp) if target_ext is None else "_".join(target_file_comp) + "." + target_ext
         target_file = utils.get_full_name(target_dir, target_file_name)
         assert os.path.isfile(target_file) is False, "target file '" + str(target_file) + "' already existing"
 
@@ -836,9 +828,7 @@ def fxtr_setup_empty_db_and_inbox(
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(
-            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))
-        ),
+        utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
         os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
     )
 
@@ -882,9 +872,7 @@ def fxtr_setup_empty_inbox(
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(
-            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))
-        ),
+        utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
         os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
     )
 
@@ -927,9 +915,7 @@ def fxtr_setup_logger_environment():
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(
-            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))
-        ),
+        utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
         os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
     )
 
@@ -1116,9 +1102,7 @@ def help_run_action_all_complete_duplicate_file(
     is_ocr: bool = False,
 ) -> None:
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        source_files=[(stem_name_1, file_ext_1)], target_path=cfg.glob.setup.directory_inbox_accepted
-    )
+    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext_1)], target_path=cfg.glob.setup.directory_inbox_accepted)
 
     os.rename(
         utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
@@ -1162,9 +1146,7 @@ def help_run_action_process_inbox_normal(
     file_ext,
 ):
     """Help RUN_ACTION_PROCESS_INBOX - normal."""
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        source_files=[(stem_name, file_ext)], target_path=cfg.glob.setup.directory_inbox
-    )
+    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name, file_ext)], target_path=cfg.glob.setup.directory_inbox)
 
     # -------------------------------------------------------------------------
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])

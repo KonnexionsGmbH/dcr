@@ -10,7 +10,7 @@ set -e
 
 export DCR_CHOICE_ACTION_DEFAULT=aui
 export DCR_ENVIRONMENT_TYPE=dev
-export PYTHONPATH=${PYTHONPATH}:src/dcr
+export PYTHONPATH=${PYTHONPATH}:src
 
 if [ -z "$1" ]; then
     echo "=============================================================================="

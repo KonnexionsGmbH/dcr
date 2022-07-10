@@ -8,8 +8,6 @@ import db.cls_db_core
 import db.cls_document
 import db.cls_run
 import nlp.cls_line_type_list_bullet
-import nlp.cls_line_type_toc
-import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 import pytest
@@ -302,9 +300,7 @@ def test_line_type_list_bullet_missing_dependencies_coverage_exists(fxtr_setup_e
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.document = db.cls_document.Document(
-        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
-    )
+    cfg.glob.document = db.cls_document.Document(action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711)
 
     # -------------------------------------------------------------------------
     cfg.glob.setup = cfg.cls_setup.Setup()
@@ -364,9 +360,7 @@ def test_line_type_list_bullet_missing_dependencies_setup(fxtr_setup_logger_envi
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.document = db.cls_document.Document(
-        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
-    )
+    cfg.glob.document = db.cls_document.Document(action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711)
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_setup=True)
@@ -406,9 +400,7 @@ def test_line_type_list_bullet_missing_dependencies_text_parser(fxtr_setup_empty
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.document = db.cls_document.Document(
-        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
-    )
+    cfg.glob.document = db.cls_document.Document(action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711)
 
     # -------------------------------------------------------------------------
     cfg.glob.setup = cfg.cls_setup.Setup()

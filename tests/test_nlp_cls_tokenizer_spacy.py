@@ -7,7 +7,6 @@ import db.cls_action
 import db.cls_db_core
 import db.cls_document
 import db.cls_run
-import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 import pytest
@@ -47,9 +46,7 @@ def test_missing_dependencies_tokenizer_spacy_document(fxtr_setup_empty_db_and_i
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_document = db.cls_document.Document(
-        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
-    )
+    cfg.glob.db_document = db.cls_document.Document(action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711)
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_document=True)
@@ -117,9 +114,7 @@ def test_missing_dependencies_tokenizer_spacy_text_parser(fxtr_setup_empty_db_an
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_document = db.cls_document.Document(
-        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
-    )
+    cfg.glob.db_document = db.cls_document.Document(action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711)
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_text_parser=True)

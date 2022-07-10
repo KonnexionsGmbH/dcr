@@ -207,9 +207,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX
-    )
+    values_original = pytest.helpers.delete_config_param(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX)
     values_original_test = pytest.helpers.delete_config_param(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX
     )
@@ -230,9 +228,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
-    )
+    values_original = pytest.helpers.delete_config_param(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED)
     values_original_test = pytest.helpers.delete_config_param(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
     )
@@ -253,9 +249,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
-    )
+    values_original = pytest.helpers.delete_config_param(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED)
     values_original_test = pytest.helpers.delete_config_param(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
     )
@@ -292,9 +286,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE
-    )
+    values_original = pytest.helpers.delete_config_param(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE)
 
     cfg.glob.setup.pdf2image_type = cfg.glob.setup.PDF2IMAGE_TYPE_JPEG
 
@@ -310,12 +302,8 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_VERBOSE
-    )
-    values_original_test = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_VERBOSE
-    )
+    values_original = pytest.helpers.delete_config_param(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_VERBOSE)
+    values_original_test = pytest.helpers.delete_config_param(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_VERBOSE)
 
     cfg.glob.setup.is_verbose = True
 
@@ -333,9 +321,7 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER
-    )
+    values_original = pytest.helpers.delete_config_param(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER)
     values_original_test = pytest.helpers.delete_config_param(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER
     )

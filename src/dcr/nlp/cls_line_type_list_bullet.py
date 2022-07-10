@@ -8,9 +8,10 @@ import re
 
 import cfg.glob
 import db.cls_document
-import nlp.cls_nlp_core
 import nlp.cls_text_parser
 import utils
+
+import dcr_core.nlp.cls_nlp_core
 
 # -----------------------------------------------------------------------------
 # Global type aliases.
@@ -45,9 +46,7 @@ class LineTypeListBullet:
         )
 
         utils.progress_msg_line_type_list_bullet("LineTypeListBullet")
-        utils.progress_msg_line_type_list_bullet(
-            f"LineTypeListBullet: Start create instance                ={cfg.glob.action_curr.action_file_name}"
-        )
+        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: Start create instance                ={cfg.glob.action_curr.action_file_name}")
 
         self._anti_patterns: list[tuple[str, re.Pattern[str]]] = self._init_anti_patterns()
 
@@ -79,9 +78,7 @@ class LineTypeListBullet:
 
         self._exist = True
 
-        utils.progress_msg_line_type_list_bullet(
-            f"LineTypeListBullet: End   create instance                ={cfg.glob.action_curr.action_file_name}"
-        )
+        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: End   create instance                ={cfg.glob.action_curr.action_file_name}")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -102,8 +99,7 @@ class LineTypeListBullet:
             return
 
         utils.progress_msg_line_type_list_bullet(
-            f"LineTypeListBullet: List entries                    found={self._no_entries} - "
-            + f"bullet='{self._bullet}' - entries={self._entries}"
+            f"LineTypeListBullet: List entries                    found={self._no_entries} - " + f"bullet='{self._bullet}' - entries={self._entries}"
         )
 
         self.no_lists += 1
@@ -112,18 +108,16 @@ class LineTypeListBullet:
 
         for [page_idx, para_no, line_lines_idx_from, line_lines_idx_till] in self._entries:
             line_lines: nlp.cls_text_parser.LineLines = cfg.glob.text_parser.parse_result_line_pages[page_idx][
-                nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
             ]
 
             text = []
 
             for idx in range(line_lines_idx_from, line_lines_idx_till + 1):
-                line_lines[idx][
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
-                ] = db.cls_document.Document.DOCUMENT_LINE_TYPE_LIST_BULLET
+                line_lines[idx][dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = db.cls_document.Document.DOCUMENT_LINE_TYPE_LIST_BULLET
 
                 if cfg.glob.setup.is_create_extra_file_list_bullet:
-                    text.append(line_lines[idx][nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+                    text.append(line_lines[idx][dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
 
             if cfg.glob.setup.is_create_extra_file_list_bullet:
                 # {
@@ -136,16 +130,16 @@ class LineTypeListBullet:
                 # },
                 entries.append(
                     {
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRY_NO: len(entries) + 1,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_FROM: line_lines_idx_from + 1,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_TILL: line_lines_idx_till + 1,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: page_idx + 1,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: para_no,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: " ".join(text),
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRY_NO: len(entries) + 1,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_FROM: line_lines_idx_from + 1,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE_TILL: line_lines_idx_till + 1,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: page_idx + 1,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: para_no,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: " ".join(text),
                     }
                 )
 
-            cfg.glob.text_parser.parse_result_line_pages[page_idx][nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES] = line_lines
+            cfg.glob.text_parser.parse_result_line_pages[page_idx][dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES] = line_lines
 
         if cfg.glob.setup.is_create_extra_file_list_bullet:
             # {
@@ -158,20 +152,18 @@ class LineTypeListBullet:
             # },
             self._lists.append(
                 {
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_BULLET: self._bullet.rstrip(),
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_LIST_NO: self.no_lists,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ENTRIES: len(entries),
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._entries[0][0] + 1,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._entries[-1][0] + 1,
-                    nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRIES: entries,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_BULLET: self._bullet.rstrip(),
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LIST_NO: self.no_lists,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_ENTRIES: len(entries),
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_FROM: self._entries[0][0] + 1,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO_TILL: self._entries[-1][0] + 1,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ENTRIES: entries,
                 }
             )
 
         self._reset_list()
 
-        utils.progress_msg_line_type_list_bullet(
-            f"LineTypeListBullet: End   list                    on page={self._page_idx+1}"
-        )
+        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: End   list                    on page={self._page_idx+1}")
 
     # -----------------------------------------------------------------------------
     # Initialise the bulleted list anti-patterns.
@@ -191,14 +183,13 @@ class LineTypeListBullet:
             if os.path.isfile(lt_list_bullet_rule_file_path):
                 return self._load_anti_patterns_from_json(pathlib.Path(lt_list_bullet_rule_file_path))
 
-            utils.terminate_fatal(
-                f"File with bulleted list anti-patterns is missing - "
-                f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'"
-            )
+            utils.terminate_fatal(f"File with bulleted list anti-patterns is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'")
 
         anti_patterns = []
 
-        for name, regexp in nlp.cls_nlp_core.NLPCore.get_lt_anti_patterns_default_list_bullet():
+        for name, regexp in dcr_core.nlp.cls_nlp_core.NLPCore.get_lt_anti_patterns_default_list_bullet(
+            environment_variant=cfg.glob.setup.environment_variant
+        ):
             anti_patterns.append((name, re.compile(regexp)))
 
         return anti_patterns
@@ -221,11 +212,9 @@ class LineTypeListBullet:
             if os.path.isfile(lt_list_bullet_rule_file_path):
                 return self._load_rules_from_json(pathlib.Path(lt_list_bullet_rule_file_path))
 
-            utils.terminate_fatal(
-                f"File with valid bullets is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'"
-            )
+            utils.terminate_fatal(f"File with valid bullets is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'")
 
-        return nlp.cls_nlp_core.NLPCore.get_lt_rules_default_list_bullet()
+        return dcr_core.nlp.cls_nlp_core.NLPCore.get_lt_rules_default_list_bullet()
 
     # -----------------------------------------------------------------------------
     # Load the valid bulleted list anti-patterns from a JSON file.
@@ -249,18 +238,15 @@ class LineTypeListBullet:
         with open(lt_list_bullet_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
-            for rule in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_ANTI_PATTERNS]:
+            for rule in json_data[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_ANTI_PATTERNS]:
                 anti_patterns.append(
                     (
-                        rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_NAME],
-                        re.compile(rule[nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP]),
+                        rule[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NAME],
+                        re.compile(rule[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_REGEXP]),
                     )
                 )
 
-        utils.progress_msg(
-            "The bulleted list anti-patterns were successfully loaded "
-            + f"from the file {cfg.glob.setup.lt_list_bullet_rule_file}"
-        )
+        utils.progress_msg("The bulleted list anti-patterns were successfully loaded " + f"from the file {cfg.glob.setup.lt_list_bullet_rule_file}")
 
         return anti_patterns
 
@@ -286,12 +272,10 @@ class LineTypeListBullet:
         with open(lt_list_bullet_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
-            for bullet in json_data[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_RULES]:
+            for bullet in json_data[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_RULES]:
                 list_bullet_rules[bullet] = 0
 
-        utils.progress_msg(
-            f"The list_bullet rules were successfully loaded from the file {cfg.glob.setup.lt_list_bullet_rule_file}"
-        )
+        utils.progress_msg(f"The list_bullet rules were successfully loaded from the file {cfg.glob.setup.lt_list_bullet_rule_file}")
 
         return list_bullet_rules
 
@@ -305,16 +289,14 @@ class LineTypeListBullet:
             line_line (dict[str, str]):
                     The line to be processed.
         """
-        text = str(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+        text = str(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
 
         for (rule_name, pattern) in self._anti_patterns:
             if pattern.match(text):
-                utils.progress_msg_line_type_list_bullet(
-                    f"LineTypeListBullet: Anti pattern                         ={rule_name} - text={text}"
-                )
+                utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: Anti pattern                         ={rule_name} - text={text}")
                 return
 
-        para_no = int(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO])
+        para_no = int(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO])
 
         bullet = ""
 
@@ -334,9 +316,7 @@ class LineTypeListBullet:
 
         if (
             bullet != self._bullet
-            or self._llx_upper_limit
-            <= float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
-            <= self._llx_lower_limit
+            or self._llx_upper_limit <= float(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]) <= self._llx_lower_limit
         ):
             self._finish_list()
 
@@ -347,7 +327,7 @@ class LineTypeListBullet:
             self._line_lines_idx_from = self._line_lines_idx
             self._line_lines_idx_till = self._line_lines_idx
             self._llx_lower_limit = round(
-                (coord_llx := float(line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]))
+                (coord_llx := float(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]))
                 * (100 - cfg.glob.setup.lt_list_bullet_tolerance_llx)
                 / 100,
                 2,
@@ -367,22 +347,18 @@ class LineTypeListBullet:
         """Process the page-related data."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        utils.progress_msg_line_type_list_bullet(
-            f"LineTypeListBullet: Start page                           ={self._page_idx + 1}"
-        )
+        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: Start page                           ={self._page_idx + 1}")
 
         self._max_line_line = len(cfg.glob.text_parser.parse_result_line_lines)
 
         for line_lines_idx, line_line in enumerate(cfg.glob.text_parser.parse_result_line_lines):
             self._line_lines_idx = line_lines_idx
 
-            if line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
+            if line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 self._process_line(line_line)
                 self._page_idx_prev = self._page_idx
 
-        utils.progress_msg_line_type_list_bullet(
-            f"LineTypeListBullet: End   page                           ={self._page_idx + 1}"
-        )
+        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: End   page                           ={self._page_idx + 1}")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -438,15 +414,13 @@ class LineTypeListBullet:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         utils.progress_msg_line_type_list_bullet("LineTypeListBullet")
-        utils.progress_msg_line_type_list_bullet(
-            f"LineTypeListBullet: Start document                       ={cfg.glob.action_curr.action_file_name}"
-        )
+        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: Start document                       ={cfg.glob.action_curr.action_file_name}")
 
         self._reset_document()
 
         for page_idx, page in enumerate(cfg.glob.text_parser.parse_result_line_pages):
             self._page_idx = page_idx
-            cfg.glob.text_parser.parse_result_line_lines = page[nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
+            cfg.glob.text_parser.parse_result_line_lines = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
         self._finish_list()
@@ -454,9 +428,7 @@ class LineTypeListBullet:
         if cfg.glob.setup.is_create_extra_file_list_bullet and self._lists:
             full_name_toc = utils.get_full_name(
                 cfg.glob.action_curr.action_directory_name,
-                cfg.glob.action_curr.get_stem_name()  # type: ignore
-                + "_list_bullet."
-                + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON,
+                cfg.glob.action_curr.get_stem_name() + "_list_bullet." + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON,  # type: ignore
             )
             with open(full_name_toc, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
                 # {
@@ -468,18 +440,16 @@ class LineTypeListBullet:
                 # }
                 json.dump(
                     {
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: self.no_lists,
-                        nlp.cls_nlp_core.NLPCore.JSON_NAME_LISTS_BULLET: self._lists,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: self.no_lists,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LISTS_BULLET: self._lists,
                     },
                     file_handle,
                     indent=cfg.glob.setup.json_indent,
                     sort_keys=cfg.glob.setup.is_json_sort_keys,
                 )
 
-        utils.progress_msg_line_type_list_bullet(
-            f"LineTypeListBullet: End   document                       ={cfg.glob.action_curr.action_file_name}"
-        )
+        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: End   document                       ={cfg.glob.action_curr.action_file_name}")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)

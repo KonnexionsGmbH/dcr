@@ -15,10 +15,7 @@ from pdf2image.exceptions import PDFPageCountError
 # -----------------------------------------------------------------------------
 # Class variables.
 # -----------------------------------------------------------------------------
-ERROR_21_901 = (
-    "21.901 Issue (p_2_i): Processing file '{full_name_curr}' with pdf2image failed - "
-    + "error type: '{error_type}' - error: '{error}'."
-)
+ERROR_21_901 = "21.901 Issue (p_2_i): Processing file '{full_name_curr}' with pdf2image failed - " + "error type: '{error_type}' - error: '{error}'."
 ERROR_21_903 = "21.903 Issue (p_2_i): The target file '{full_name}' already exists."
 
 
@@ -135,9 +132,7 @@ def convert_pdf_2_image_file() -> None:
     except PDFPageCountError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-            error_msg=ERROR_21_901.replace("{full_name_curr}", full_name_curr)
-            .replace("{error_type}", str(type(err)))
-            .replace("{error}", str(err)),
+            error_msg=ERROR_21_901.replace("{full_name_curr}", full_name_curr).replace("{error_type}", str(type(err))).replace("{error}", str(err)),
         )
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

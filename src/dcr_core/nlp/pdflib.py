@@ -3,10 +3,7 @@ import dcr_core.PDFlib.TET
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_51_901 = (
-    "51.901 Issue (tet): Opening document '{full_name}' - "
-    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-)
+ERROR_51_901 = "51.901 Issue (tet): Opening document '{full_name}' - " + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
 
 RETURN_OK = ("ok", "")
 

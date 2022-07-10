@@ -25,12 +25,8 @@ import utils
 # Class variables.
 # -----------------------------------------------------------------------------
 ERROR_01_901 = "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
-ERROR_01_903 = (
-    "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{file_name}' " + "- error: '{error_msg}'."
-)
-ERROR_01_905 = (
-    "01.905 Issue (p_i): The same file has probably already been processed " + "once under the file name '{file_name}'."
-)
+ERROR_01_903 = "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{file_name}' " + "- error: '{error_msg}'."
+ERROR_01_905 = "01.905 Issue (p_i): The same file has probably already been processed " + "once under the file name '{file_name}'."
 ERROR_01_906 = "01.906 Issue (p_i): The target file '{full_name}' already exists."
 
 
@@ -276,9 +272,7 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     initialise_base(file_path)
 
     if not cfg.glob.setup.is_ignore_duplicates:
-        file_name = db.cls_document.Document.select_duplicate_file_name_by_sha256(
-            cfg.glob.document.document_id, cfg.glob.document.document_sha256
-        )
+        file_name = db.cls_document.Document.select_duplicate_file_name_by_sha256(cfg.glob.document.document_id, cfg.glob.document.document_sha256)
     else:
         file_name = None
 

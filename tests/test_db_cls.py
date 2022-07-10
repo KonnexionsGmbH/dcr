@@ -90,9 +90,7 @@ def check_existing_action():
     # Select unprocessed actions based on action_code und document id.
     # -----------------------------------------------------------------------------
     with cfg.glob.db_core.db_orm_engine.begin() as conn:
-        cfg.glob.action_curr.select_action_by_action_code_id_document(
-            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_INBOX, id_document=1
-        )
+        cfg.glob.action_curr.select_action_by_action_code_id_document(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_INBOX, id_document=1)
 
 
 # -----------------------------------------------------------------------------

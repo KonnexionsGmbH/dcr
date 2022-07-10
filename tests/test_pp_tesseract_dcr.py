@@ -137,9 +137,7 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2, is_ocr=True)
 
     # -------------------------------------------------------------------------
-    os.remove(
-        os.path.join(cfg.glob.setup.directory_inbox_accepted, "translating_sql_into_relational_algebra_p01_02_1_0.pdf")
-    )
+    os.remove(os.path.join(cfg.glob.setup.directory_inbox_accepted, "translating_sql_into_relational_algebra_p01_02_1_0.pdf"))
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 

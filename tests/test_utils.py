@@ -72,9 +72,7 @@ def test_progress_msg_disconnected_1(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     del cfg.glob.setup
 
-    utils.progress_msg_connected(
-        database=cfg.glob.INFORMATION_NOT_YET_AVAILABLE, user=cfg.glob.INFORMATION_NOT_YET_AVAILABLE
-    )
+    utils.progress_msg_connected(database=cfg.glob.INFORMATION_NOT_YET_AVAILABLE, user=cfg.glob.INFORMATION_NOT_YET_AVAILABLE)
 
     # -------------------------------------------------------------------------
     utils.progress_msg_disconnected()
