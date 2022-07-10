@@ -10,13 +10,14 @@ import db.cls_db_core
 import db.cls_document
 import db.cls_language
 import db.cls_run
-import nlp.cls_line_type_headers_footers
 import nlp.cls_line_type_heading
 import nlp.cls_line_type_list_bullet
 import nlp.cls_line_type_table
 import nlp.cls_line_type_toc
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
+
+import dcr_core.nlp.cls_line_type_headers_footers
 
 # -----------------------------------------------------------------------------
 # Global Constants.
@@ -47,7 +48,7 @@ document: type[db.cls_document.Document]
 
 language: type[db.cls_language.Language]
 
-line_type_headers_footers: type[nlp.cls_line_type_headers_footers.LineTypeHeaderFooters]
+line_type_headers_footers: type[dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters]
 line_type_heading: type[nlp.cls_line_type_heading.LineTypeHeading]
 line_type_list_bullet: type[nlp.cls_line_type_list_bullet.LineTypeListBullet]
 line_type_table: type[nlp.cls_line_type_table.LineTypeTable]

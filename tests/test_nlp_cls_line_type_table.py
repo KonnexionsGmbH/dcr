@@ -7,7 +7,6 @@ import db.cls_action
 import db.cls_db_core
 import db.cls_document
 import db.cls_run
-import nlp.cls_line_type_headers_footers
 import nlp.cls_line_type_table
 import nlp.cls_line_type_toc
 import nlp.cls_nlp_core

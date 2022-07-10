@@ -7,7 +7,6 @@ import json
 
 import cfg.glob
 import db.cls_document
-import nlp.cls_line_type_headers_footers
 import nlp.cls_line_type_heading
 import nlp.cls_line_type_list_bullet
 import nlp.cls_line_type_list_number
@@ -15,6 +14,8 @@ import nlp.cls_line_type_table
 import nlp.cls_line_type_toc
 import nlp.cls_nlp_core
 import utils
+
+import dcr_core.nlp.cls_line_type_headers_footers
 
 # pylint: disable=too-many-instance-attributes
 # -----------------------------------------------------------------------------
@@ -796,7 +797,15 @@ class TextParser:
         if cfg.glob.setup.is_parsing_line:
             self._parse_result_no_lines_in_doc = 0
             self.parse_result_line_pages = []
-            cfg.glob.line_type_headers_footers = nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
+            cfg.glob.line_type_headers_footers = dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                action_no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
+                is_verbose_lt_headers_footers=cfg.glob.setup.is_verbose_lt_headers_footers,
+                lt_footer_max_distance=cfg.glob.setup.lt_footer_max_distance,
+                lt_footer_max_lines=cfg.glob.setup.lt_footer_max_lines,
+                lt_header_max_distance=cfg.glob.setup.lt_header_max_distance,
+                lt_header_max_lines=cfg.glob.setup.lt_header_max_lines,
+            )
             cfg.glob.line_type_toc = nlp.cls_line_type_toc.LineTypeToc()
             cfg.glob.line_type_table = nlp.cls_line_type_table.LineTypeTable()
             cfg.glob.line_type_list_bullet = nlp.cls_line_type_list_bullet.LineTypeListBullet()
@@ -819,7 +828,7 @@ class TextParser:
                     self._parse_tag_page(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
-            cfg.glob.line_type_headers_footers.process_document()
+            cfg.glob.line_type_headers_footers.process_document(parse_result_line_pages=self.parse_result_line_pages)
             cfg.glob.line_type_toc.process_document()
             cfg.glob.line_type_table.process_document()
             cfg.glob.line_type_list_bullet.process_document()

@@ -8,7 +8,6 @@ import db.cls_action
 import db.cls_db_core
 import db.cls_document
 import db.cls_run
-import nlp.cls_line_type_headers_footers
 import nlp.cls_line_type_toc
 import nlp.cls_nlp_core
 import nlp.cls_text_parser
@@ -16,6 +15,7 @@ import nlp.cls_tokenizer_spacy
 import pytest
 
 import dcr
+import dcr_core.nlp.cls_line_type_headers_footers
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -220,7 +220,13 @@ def test_missing_dependencies_line_type_headers_footers_action_curr(fxtr_setup_l
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
+        dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(
+            is_verbose_lt_headers_footers=cfg.glob.setup.is_verbose_lt_headers_footers,
+            lt_footer_max_distance=cfg.glob.setup.lt_footer_max_distance,
+            lt_footer_max_lines=cfg.glob.setup.lt_footer_max_lines,
+            lt_header_max_distance=cfg.glob.setup.lt_header_max_distance,
+            lt_header_max_lines=cfg.glob.setup.lt_header_max_lines,
+        )
 
     assert expt.type == SystemExit, "Instance of class 'Action (action_curr)' is missing"
     assert expt.value.code == 1, "Instance of class 'Action (action_curr)' is missing"
@@ -258,7 +264,15 @@ def test_missing_dependencies_line_type_headers_footers_coverage_exists(fxtr_set
     cfg.glob.text_parser.exists()
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
+    instance = dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(
+        action_file_name=cfg.glob.action_curr.action_file_name,
+        action_no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
+        is_verbose_lt_headers_footers=cfg.glob.setup.is_verbose_lt_headers_footers,
+        lt_footer_max_distance=cfg.glob.setup.lt_footer_max_distance,
+        lt_footer_max_lines=cfg.glob.setup.lt_footer_max_lines,
+        lt_header_max_distance=cfg.glob.setup.lt_header_max_distance,
+        lt_header_max_lines=cfg.glob.setup.lt_header_max_lines,
+    )
 
     instance.exists()
 
@@ -295,7 +309,15 @@ def test_missing_dependencies_line_type_headers_footers_document(fxtr_setup_empt
     cfg.glob.text_parser.exists()
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
+    instance = dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(
+        action_file_name=cfg.glob.action_curr.action_file_name,
+        action_no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
+        is_verbose_lt_headers_footers=cfg.glob.setup.is_verbose_lt_headers_footers,
+        lt_footer_max_distance=cfg.glob.setup.lt_footer_max_distance,
+        lt_footer_max_lines=cfg.glob.setup.lt_footer_max_lines,
+        lt_header_max_distance=cfg.glob.setup.lt_header_max_distance,
+        lt_header_max_lines=cfg.glob.setup.lt_header_max_lines,
+    )
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_document=True)
@@ -306,43 +328,6 @@ def test_missing_dependencies_line_type_headers_footers_document(fxtr_setup_empt
 
     assert expt.type == SystemExit, "Instance of class 'Document' is missing"
     assert expt.value.code == 1, "Instance of class 'Document' is missing"
-
-    # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_headers_footers - Setup.
-# -----------------------------------------------------------------------------
-def test_missing_dependencies_line_type_headers_footers_setup(fxtr_setup_empty_db_and_inbox):
-    """Test Function - missing dependencies - line_type_headers_footers - Setup."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
-
-    # -------------------------------------------------------------------------
-    cfg.glob.run = db.cls_run.Run(
-        _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
-    )
-
-    # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action(
-        _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
-        id_run_last=1,
-    )
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.delete_existing_object(is_setup=True)
-
-    # -------------------------------------------------------------------------
-    with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
-
-    assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
-    assert expt.value.code == 1, "Instance of class 'Setup' is missing"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -376,7 +361,15 @@ def test_missing_dependencies_line_type_headers_footers_text_parser(fxtr_setup_e
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_line_type_headers_footers.LineTypeHeaderFooters()
+        dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(
+            action_file_name=cfg.glob.action_curr.action_file_name,
+            action_no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
+            is_verbose_lt_headers_footers=cfg.glob.setup.is_verbose_lt_headers_footers,
+            lt_footer_max_distance=cfg.glob.setup.lt_footer_max_distance,
+            lt_footer_max_lines=cfg.glob.setup.lt_footer_max_lines,
+            lt_header_max_distance=cfg.glob.setup.lt_header_max_distance,
+            lt_header_max_lines=cfg.glob.setup.lt_header_max_lines,
+        )
 
     assert expt.type == SystemExit, "Instance of class 'TextParser' is missing"
     assert expt.value.code == 1, "Instance of class 'TextParser' is missing"

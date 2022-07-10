@@ -8,7 +8,7 @@ import db.cls_document
 import db.cls_run
 import utils
 
-import dcr_core.pandoc
+import dcr_core.nlp.pdflib
 
 # -----------------------------------------------------------------------------
 # Global variables.
@@ -117,13 +117,13 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
 
         return False
 
-    (error_code, error_msg) = dcr_core.pandoc.process(
+    (error_code, error_msg) = dcr_core.nlp.pdflib.process(
         file_name_in=full_name_curr,
         file_name_out=full_name_next,
         document_opt_list=document_opt_list,
         page_opt_list=page_opt_list,
     )
-    if (error_code, error_msg) != dcr_core.pandoc.RETURN_OK:
+    if (error_code, error_msg) != dcr_core.nlp.pdflib.RETURN_OK:
         cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return False
 
