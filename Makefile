@@ -32,12 +32,12 @@ export DCR_ENVIRONMENT_TYPE=test
 
 ifeq ($(OS),Windows_NT)
 	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
-    export MYPYPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\nlp;src\\dcr\\PDFlib;src\\dcr\\pp;src\\dcr\\setup
-    export PYTHONPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\nlp;src\\dcr\\PDFlib;src\\dcr\\pp;src\\dcr\\setup
+    export MYPYPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\nlp;src\\dcr\\PDFlib;src\\dcr\\pp;src\\dcr\\setup;src\\dcr_core
+    export PYTHONPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\nlp;src\\dcr\\PDFlib;src\\dcr\\pp;src\\dcr\\setup;src\\dcr_core
 else
 	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
-    export MYPYPATH=src/dcr:src/dcr/db:src/dcr/db/orm:src/dcr/libs:src/dcr/nlp:src/dcr/PDFlib:src/dcr/pp:src/dcr/setup
-    export PYTHONPATH=src/dcr:src/dcr/db:src/dcr/db/orm:src/dcr/libs:src/dcr/nlp:src/dcr/PDFlib:src/dcr/pp:src/dcr/setup
+    export MYPYPATH=src/dcr:src/dcr/db:src/dcr/db/orm:src/dcr/libs:src/dcr/nlp:src/dcr/PDFlib:src/dcr/pp:src/dcr/setup:src/dcr_core
+    export PYTHONPATH=src/dcr:src/dcr/db:src/dcr/db/orm:src/dcr/libs:src/dcr/nlp:src/dcr/PDFlib:src/dcr/pp:src/dcr/setup:src/dcr_core
 endif
 
 # Bandit is a tool designed to find common security issues in Python code.
@@ -124,7 +124,7 @@ mypy:               ## Find typing issues with Mypy.
 	@echo MYPYPATH=${MYPYPATH}
 	pipenv run pip freeze | grep mypy
 	pipenv run mypy --version
-	pipenv run mypy --exclude src/dcr/nlp/cls_text_parser.py --exclude src/dcr/PDFlib/TET.py src
+	pipenv run mypy --exclude src/dcr/nlp/cls_text_parser.py --exclude src/dcr_core/PDFlib/TET.py src
 	@echo "Info **********  End:   Mypy ****************************************"
 
 # pip is the package installer for Python.
@@ -172,7 +172,7 @@ pipenv-prod:        ## Install the package dependencies for production.
 pydoc-markdown:     ## Create Python API documentation in Markdown format with Pydoc-Markdown.
 	@echo "Info **********  Start: Pydoc-Markdown ******************************"
 	pipenv run pydoc-markdown --version
-	pipenv run pydoc-markdown -I src/dcr --render-toc > docs/developing_api_documentation.md
+	pipenv run pydoc-markdown -I src/dcr src/dcr_core --render-toc > docs/developing_api_documentation.md
 	@echo "Info **********  End:   Pydoc-Markdown ******************************"
 
 # pydocstyle - docstring style checker.

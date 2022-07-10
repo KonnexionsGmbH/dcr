@@ -6,16 +6,13 @@ import cfg.glob
 import db.cls_action
 import db.cls_document
 import db.cls_run
-import PDFlib.TET
 import utils
+
+import dcr_core.file
 
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_51_901 = (
-    "51.901 Issue (tet): Opening document '{full_name}' - "
-    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-)
 ERROR_51_904 = "51.904 Issue (pdflib): The target file '{full_name}' already exists."
 
 LINE_TET_DOCUMENT_OPT_LIST = "engines={noannotation noimage text notextcolor novector}"
@@ -120,32 +117,15 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
 
         return False
 
-    tet = PDFlib.TET.TET()
-
-    doc_opt_list = f"tetml={{filename={{{full_name_next}}}}} {document_opt_list}"
-
-    if (file_curr := tet.open_document(full_name_curr, doc_opt_list)) == -1:
-        cfg.glob.action_curr.finalise_error(
-            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_OPEN,
-            error_msg=ERROR_51_901.replace("{full_name}", full_name_curr)
-            .replace("{error_no}", str(tet.get_errnum()))
-            .replace("{api_name}", tet.get_apiname() + "()")
-            .replace("{error}", tet.get_errmsg()),
-        )
-
+    (error_code, error_msg) = dcr_core.file.process_pdflib(
+        file_name_in=full_name_curr,
+        file_name_out=full_name_next,
+        document_opt_list=document_opt_list,
+        page_opt_list=page_opt_list,
+    )
+    if (error_code, error_msg) != dcr_core.file.RETURN_OK:
+        cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return False
-
-    # get number of pages in the document */
-    no_pages = tet.pcos_get_number(file_curr, "length:pages")
-
-    # loop over pages in the document */
-    for page_no in range(1, int(no_pages) + 1):
-        tet.process_page(file_curr, page_no, page_opt_list)
-
-    # This could be combined with the last page-related call
-    tet.process_page(file_curr, 0, "tetml={trailer}")
-
-    tet.close_document(file_curr)
 
     if xml_variation == LINE_XML_VARIATION:
         action_code = db.cls_run.Run.ACTION_CODE_PARSER_LINE
@@ -166,8 +146,6 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
         no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
         status=db.cls_document.Document.DOCUMENT_STATUS_START,
     )
-
-    tet.delete()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
