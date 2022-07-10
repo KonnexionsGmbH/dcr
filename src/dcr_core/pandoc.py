@@ -14,7 +14,7 @@ RETURN_OK = ("ok", "")
 # -----------------------------------------------------------------------------
 # Processing a file with PDFlib TET.
 # -----------------------------------------------------------------------------
-def process_pdflib(file_name_in: str, file_name_out: str, document_opt_list: str, page_opt_list: str) -> tuple[str, str]:
+def process(file_name_in: str, file_name_out: str, document_opt_list: str, page_opt_list: str) -> tuple[str, str]:
     """Processing a PDF file with PDFlib TET.
 
     The data from a PDF file is made available in XML files
