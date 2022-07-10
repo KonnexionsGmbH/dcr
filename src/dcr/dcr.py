@@ -16,7 +16,7 @@ import db.cls_run
 import db.cls_version
 import nlp.cls_nlp_core
 import nlp.parser
-import nlp.pdflib_dcr
+import nlp.pdflib
 import nlp.tokenizer
 import pp.inbox
 import pp.pandoc_dcr
@@ -390,7 +390,7 @@ def process_extract_text_from_pdf() -> None:
 
     cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PDFLIB)
 
-    nlp.pdflib_dcr.extract_text_from_pdf()
+    nlp.pdflib.extract_text_from_pdf()
 
     cfg.glob.run.finalise()
 

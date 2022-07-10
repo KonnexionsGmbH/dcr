@@ -240,7 +240,7 @@ pytest-module:      ## Run tests of specific module(s) with pytest - test_all & 
 #																	      tests/test_db_driver.py \
 #																	      tests/test_dcr.py \
 #																	      tests/test_nlp_parser.py \
-#																	      tests/test_nlp_pdflib_dcr.py \
+#																	      tests/test_nlp_pdflib.py \
 #																	      tests/test_nlp_tokenize.py \
 #																	      tests/test_pp_inbox.py \
 #																	      tests/test_pp_pandoc_dcr.py \

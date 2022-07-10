@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module nlp.pdflib_dcr."""
+"""Testing Module nlp.pdflib."""
 import os
 
 import cfg.cls_setup
