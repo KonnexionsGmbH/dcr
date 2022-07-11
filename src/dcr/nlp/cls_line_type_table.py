@@ -7,7 +7,9 @@ import cfg.glob
 import db.cls_document
 import utils
 
+import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Global type aliases.
@@ -41,6 +43,9 @@ class LineTypeTable:
             is_action_curr=True,
             is_document=True,
             is_setup=True,
+        )
+
+        dcr_core.utils.check_exists_object(
             is_text_parser=True,
         )
 
@@ -239,15 +244,15 @@ class LineTypeTable:
         """Process the page-related data."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        self._max_line_line = len(cfg.glob.text_parser.parse_result_line_lines)
+        self._max_line_line = len(dcr_core.cfg.glob.text_parser.parse_result_line_lines)
 
-        for line_lines_idx, line_line in enumerate(cfg.glob.text_parser.parse_result_line_lines):
+        for line_lines_idx, line_line in enumerate(dcr_core.cfg.glob.text_parser.parse_result_line_lines):
             if line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 continue
 
             if self._process_line(line_line) == db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE:
                 line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = db.cls_document.Document.DOCUMENT_LINE_TYPE_TABLE
-                cfg.glob.text_parser.parse_result_line_lines[line_lines_idx] = line_line
+                dcr_core.cfg.glob.text_parser.parse_result_line_lines[line_lines_idx] = line_line
             else:
                 self._finish_table()
 
@@ -258,7 +263,7 @@ class LineTypeTable:
     # -----------------------------------------------------------------------------
     def _reset_document(self) -> None:
         """Reset the document memory."""
-        self._max_page = cfg.glob.text_parser.parse_result_no_pages_in_doc
+        self._max_page = dcr_core.cfg.glob.text_parser.parse_result_no_pages_in_doc
 
         self.no_tables = 0
 
@@ -330,9 +335,9 @@ class LineTypeTable:
 
         self._reset_document()
 
-        for page_idx, page in enumerate(cfg.glob.text_parser.parse_result_line_pages):
+        for page_idx, page in enumerate(dcr_core.cfg.glob.text_parser.parse_result_line_pages):
             self._page_idx = page_idx
-            cfg.glob.text_parser.parse_result_line_lines = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
+            dcr_core.cfg.glob.text_parser.parse_result_line_lines = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
         if cfg.glob.setup.is_create_extra_file_table and self._tables:

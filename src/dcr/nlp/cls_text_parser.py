@@ -16,40 +16,10 @@ import utils
 import dcr_core.nlp.cls_line_type_headers_footers
 import dcr_core.nlp.cls_line_type_toc
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.utils
+
 
 # pylint: disable=too-many-instance-attributes
-# -----------------------------------------------------------------------------
-# Global type aliases.
-# -----------------------------------------------------------------------------
-LineLine = dict[str, int | str]
-LineLines = list[LineLine]
-
-LinePage = dict[str, int | LineLines]
-LinePages = list[LinePage]
-
-PagePara = dict[str, int | str]
-PageParas = list[PagePara]
-
-PagePage = dict[str, int | PageParas]
-PagePages = list[PagePage]
-
-PageDocument = dict[str, int | PagePages | str]
-
-WordWord = dict[str, int | str]
-WordWords = list[WordWord]
-
-WordLine = dict[str, int | WordWords]
-WordLines = list[WordLine]
-
-WordPara = dict[str, int | WordLines]
-WordParas = list[WordPara]
-
-WordPage = dict[str, int | str | WordParas]
-WordPages = list[WordPage]
-
-WordDocument = dict[str, int | str | WordPages]
-
-
 class TextParser:
     """Extract text and metadata from PDFlib TET.
 
@@ -89,8 +59,8 @@ class TextParser:
         self._parse_result_no_words_in_page = 0
         self._parse_result_no_words_in_para = 0
 
-        self._parse_result_page_pages: PagePages = []
-        self._parse_result_page_paras: PageParas = []
+        self._parse_result_page_pages: dcr_core.nlp.cls_nlp_core.NLPCore.PagePages = []
+        self._parse_result_page_paras: dcr_core.nlp.cls_nlp_core.NLPCore.PageParas = []
 
         self._parse_result_table = False
         self._parse_result_table_cell = 0
@@ -103,13 +73,13 @@ class TextParser:
         self._parse_result_word_index_line = 0
         self._parse_result_word_index_page = 0
         self._parse_result_word_index_para = 0
-        self._parse_result_word_lines: WordLines = []
-        self._parse_result_word_pages: WordPages = []
-        self._parse_result_word_paras: WordParas = []
-        self._parse_result_word_words: WordWords = []
+        self._parse_result_word_lines: dcr_core.nlp.cls_nlp_core.NLPCore.WordLines = []
+        self._parse_result_word_pages: dcr_core.nlp.cls_nlp_core.NLPCore.WordPages = []
+        self._parse_result_word_paras: dcr_core.nlp.cls_nlp_core.NLPCore.WordParas = []
+        self._parse_result_word_words: dcr_core.nlp.cls_nlp_core.NLPCore.WordWords = []
 
-        self.parse_result_line_lines: LineLines = []
-        self.parse_result_line_pages: LinePages = []
+        self.parse_result_line_lines: dcr_core.nlp.cls_nlp_core.NLPCore.LineLines = []
+        self.parse_result_line_pages: dcr_core.nlp.cls_nlp_core.NLPCore.LinePages = []
 
         self.parse_result_no_pages_in_doc = 0
 
@@ -142,6 +112,9 @@ class TextParser:
         utils.check_exists_object(
             is_action_next=True,
             is_document=True,
+        )
+
+        dcr_core.utils.check_exists_object(
             is_line_type_table=True,
         )
 
@@ -154,11 +127,11 @@ class TextParser:
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER: cfg.glob.document.document_no_lines_header,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: cfg.glob.document.document_no_lines_toc,
-                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: cfg.glob.line_type_list_bullet.no_lists,
-                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: cfg.glob.line_type_list_number.no_lists,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: dcr_core.cfg.glob.line_type_list_bullet.no_lists,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: dcr_core.cfg.glob.line_type_list_number.no_lists,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
-                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: cfg.glob.line_type_table.no_tables,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: dcr_core.cfg.glob.line_type_table.no_tables,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TITLES_IN_DOC: len(self.parse_result_titles),
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TITLES: self.parse_result_titles,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self.parse_result_line_pages,
@@ -795,7 +768,7 @@ class TextParser:
         if cfg.glob.setup.is_parsing_line:
             self._parse_result_no_lines_in_doc = 0
             self.parse_result_line_pages = []
-            cfg.glob.line_type_headers_footers = dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(
+            dcr_core.cfg.glob.line_type_headers_footers = dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(
                 action_file_name=cfg.glob.action_curr.action_file_name,
                 action_no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
                 is_verbose_lt_headers_footers=cfg.glob.setup.is_verbose_lt_headers_footers,
@@ -804,16 +777,16 @@ class TextParser:
                 lt_header_max_distance=cfg.glob.setup.lt_header_max_distance,
                 lt_header_max_lines=cfg.glob.setup.lt_header_max_lines,
             )
-            cfg.glob.line_type_toc = dcr_core.nlp.cls_line_type_toc.LineTypeToc(
+            dcr_core.cfg.glob.line_type_toc = dcr_core.nlp.cls_line_type_toc.LineTypeToc(
                 action_file_name=cfg.glob.action_curr.action_file_name,
                 is_verbose_lt_toc=cfg.glob.setup.is_verbose_lt_toc,
                 lt_toc_last_page=cfg.glob.setup.lt_toc_last_page,
                 lt_toc_min_entries=cfg.glob.setup.lt_toc_min_entries,
             )
-            cfg.glob.line_type_table = nlp.cls_line_type_table.LineTypeTable()
-            cfg.glob.line_type_list_bullet = nlp.cls_line_type_list_bullet.LineTypeListBullet()
-            cfg.glob.line_type_list_number = nlp.cls_line_type_list_number.LineTypeListNumber()
-            cfg.glob.line_type_heading = nlp.cls_line_type_heading.LineTypeHeading()
+            dcr_core.cfg.glob.line_type_table = nlp.cls_line_type_table.LineTypeTable()
+            dcr_core.cfg.glob.line_type_list_bullet = nlp.cls_line_type_list_bullet.LineTypeListBullet()
+            dcr_core.cfg.glob.line_type_list_number = nlp.cls_line_type_list_number.LineTypeListNumber()
+            dcr_core.cfg.glob.line_type_heading = nlp.cls_line_type_heading.LineTypeHeading()
         elif cfg.glob.setup.is_parsing_page:
             self._parse_result_page_pages = []
         elif cfg.glob.setup.is_parsing_word:
@@ -831,14 +804,14 @@ class TextParser:
                     self._parse_tag_page(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
-            cfg.glob.line_type_headers_footers.process_document(parse_result_line_pages=self.parse_result_line_pages)
-            cfg.glob.line_type_toc.process_document(
+            dcr_core.cfg.glob.line_type_headers_footers.process_document(parse_result_line_pages=self.parse_result_line_pages)
+            dcr_core.cfg.glob.line_type_toc.process_document(
                 parse_result_line_pages=self.parse_result_line_pages,
             )
-            cfg.glob.line_type_table.process_document()
-            cfg.glob.line_type_list_bullet.process_document()
-            cfg.glob.line_type_list_number.process_document()
-            cfg.glob.line_type_heading.process_document()
+            dcr_core.cfg.glob.line_type_table.process_document()
+            dcr_core.cfg.glob.line_type_list_bullet.process_document()
+            dcr_core.cfg.glob.line_type_list_number.process_document()
+            dcr_core.cfg.glob.line_type_heading.process_document()
             self._create_line_document()
         elif cfg.glob.setup.is_parsing_page:
             self._create_page_document()

@@ -26,6 +26,7 @@ import utils
 import yaml
 
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Class variables.
@@ -45,19 +46,21 @@ def check_db_up_to_date() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     if cfg.glob.db_core.db_orm_engine is None:
-        utils.terminate_fatal(
+        dcr_core.utils.terminate_fatal(
             "The database does not yet exist.",
         )
 
     if not sqlalchemy.inspect(cfg.glob.db_core.db_orm_engine).has_table(db.cls_db_core.DBCore.DBT_VERSION):
-        utils.terminate_fatal(
+        dcr_core.utils.terminate_fatal(
             "The database table 'version' does not yet exist.",
         )
 
     current_version = db.cls_version.Version.select_version_version_unique()
 
     if cfg.cls_setup.Setup.DCR_VERSION != current_version:
-        utils.terminate_fatal(f"Current database version is '{current_version}' - but expected version is '" f"{cfg.cls_setup.Setup.DCR_VERSION}''")
+        dcr_core.utils.terminate_fatal(
+            f"Current database version is '{current_version}' - but expected version is '" f"{cfg.cls_setup.Setup.DCR_VERSION}''"
+        )
 
     utils.progress_msg(f"The current version of database is '{current_version}'")
 
@@ -111,10 +114,10 @@ def get_args(argv: list[str]) -> dict[str, bool]:
     num = len(argv)
 
     if num == 0:
-        utils.terminate_fatal("No command line arguments found")
+        dcr_core.utils.terminate_fatal("No command line arguments found")
 
     if num == 1:
-        utils.terminate_fatal("The specific command line arguments are missing")
+        dcr_core.utils.terminate_fatal("The specific command line arguments are missing")
 
     args = {
         db.cls_run.Run.ACTION_CODE_CREATE_DB: False,
@@ -153,7 +156,7 @@ def get_args(argv: list[str]) -> dict[str, bool]:
         ):
             args[arg] = True
         else:
-            utils.terminate_fatal(f"Unknown command line argument='{argv[i]}'")
+            dcr_core.utils.terminate_fatal(f"Unknown command line argument='{argv[i]}'")
 
     utils.progress_msg("The command line arguments are validated and loaded")
 
@@ -369,11 +372,31 @@ def process_export_lt_rules() -> None:
     """Export the line type rules."""
     utils.progress_msg_empty_before("Start: Export the line type rules ...")
 
-    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_heading()
+    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_heading(
+        is_verbose=cfg.glob.setup.is_verbose,
+        file_name=cfg.glob.setup.lt_export_rule_file_heading,
+        file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+        json_indent=cfg.glob.setup.json_indent,
+        is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
+    )
 
-    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_bullet(environment_variant=cfg.glob.setup.environment_variant, file_name="")
+    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_bullet(
+        is_verbose=cfg.glob.setup.is_verbose,
+        file_name=cfg.glob.setup.lt_export_rule_file_list_bullet,
+        file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+        json_indent=cfg.glob.setup.json_indent,
+        is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
+        environment_variant=cfg.glob.setup.environment_variant,
+    )
 
-    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_number(environment_variant=cfg.glob.setup.environment_variant, file_name="")
+    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_number(
+        is_verbose=cfg.glob.setup.is_verbose,
+        file_name=cfg.glob.setup.lt_export_rule_file_list_number,
+        file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+        json_indent=cfg.glob.setup.json_indent,
+        is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
+        environment_variant=cfg.glob.setup.environment_variant,
+    )
 
     utils.progress_msg("End  : Export the line type rules ...")
 

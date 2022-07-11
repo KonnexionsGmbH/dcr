@@ -11,6 +11,8 @@ import sqlalchemy.engine
 import sqlalchemy.orm
 import utils
 
+import dcr_core.utils
+
 
 # pylint: disable=duplicate-code
 # pylint: disable=too-many-instance-attributes
@@ -200,7 +202,7 @@ class Language:
             conn.close()
 
         if row is None:
-            utils.terminate_fatal(
+            dcr_core.utils.terminate_fatal(
                 f"The language with id={id_language} does not exist in the database table 'language'",
             )
 

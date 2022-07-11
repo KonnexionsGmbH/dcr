@@ -13,6 +13,8 @@ import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 import utils
 
+import dcr_core.cfg.glob
+
 # -----------------------------------------------------------------------------
 # Global constants.
 # -----------------------------------------------------------------------------
@@ -85,7 +87,7 @@ def tokenize_file() -> None:
         full_name_next = ""
 
     try:
-        cfg.glob.text_parser = nlp.cls_text_parser.TextParser.from_files(full_name_line=full_name_curr)
+        dcr_core.cfg.glob.text_parser = nlp.cls_text_parser.TextParser.from_files(full_name_line=full_name_curr)
 
         cfg.glob.tokenizer_spacy.process_document(full_name=full_name_next, pipeline_name=pipeline_name)
 

@@ -5,8 +5,6 @@ from __future__ import annotations
 import datetime
 
 import jellyfish
-import nlp.cls_text_parser
-import utils
 
 import dcr_core.nlp.cls_nlp_core
 
@@ -50,11 +48,6 @@ class LineTypeHeaderFooters:
         is_verbose_lt_headers_footers: bool = True,
     ) -> None:
         """Initialise the instance."""
-        utils.check_exists_object(
-            is_action_curr=True,
-            is_text_parser=True,
-        )
-
         self._action_file_name = action_file_name
         self._action_no_pdf_pages = action_no_pdf_pages
         self._is_verbose_lt_headers_footers = is_verbose_lt_headers_footers
@@ -90,14 +83,14 @@ class LineTypeHeaderFooters:
         self._no_irregular_footer = 0
         self._no_irregular_header = 0
 
-        self._parse_result_line_lines: nlp.cls_text_parser.LineLines = []
+        self._parse_result_line_lines: dcr_core.nlp.cls_nlp_core.NLPCore.LineLines = []
 
         self._result_data: ResultData = {}
 
         self.no_lines_footer = 0
         self.no_lines_header = 0
 
-        self.parse_result_line_pages: nlp.cls_text_parser.LinePages = []
+        self.parse_result_line_pages: dcr_core.nlp.cls_nlp_core.NLPCore.LinePages = []
 
         self._exist = True
 
@@ -426,10 +419,6 @@ class LineTypeHeaderFooters:
     # -----------------------------------------------------------------------------
     def _store_results(self) -> None:
         """Store the found line types in parser result."""
-        utils.check_exists_object(
-            is_document=True,
-        )
-
         self._progress_msg("LineTypeHeaderFooters: Start store result")
 
         self.no_lines_footer = 0
@@ -486,7 +475,7 @@ class LineTypeHeaderFooters:
     # -----------------------------------------------------------------------------
     def process_document(
         self,
-        parse_result_line_pages: nlp.cls_text_parser.LinePages,
+        parse_result_line_pages: dcr_core.nlp.cls_nlp_core.NLPCore.LinePages,
     ) -> None:
         """Process the document related data."""
         if self._lt_footer_max_lines == 0 and self._lt_header_max_lines == 0:

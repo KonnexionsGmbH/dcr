@@ -8,6 +8,7 @@ import db.cls_run
 import pytest
 
 import dcr
+import dcr_core.cfg.glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -78,7 +79,7 @@ def test_dcr_get_args(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        dcr.get_args([cfg.glob.INFORMATION_NOT_YET_AVAILABLE, "second"])
+        dcr.get_args([dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE, "second"])
 
     assert expt.type == SystemExit, "invalid arg"
     assert expt.value.code == 1, "invalid arg"
@@ -90,7 +91,6 @@ def test_dcr_get_args(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 # Test Function - process_export_lt_rules().
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_dcr_process_export_lt_rules(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

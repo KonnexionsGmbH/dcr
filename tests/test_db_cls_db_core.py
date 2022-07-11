@@ -13,6 +13,7 @@ import sqlalchemy
 import utils
 
 import dcr
+import dcr_core.cfg.glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -165,7 +166,7 @@ def test_create_database(fxtr_setup_logger_environment):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT, dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
@@ -235,7 +236,7 @@ def test_drop_database(fxtr_setup_empty_db_and_inbox):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT, dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 

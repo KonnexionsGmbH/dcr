@@ -10,6 +10,7 @@ import defusedxml.ElementTree
 import nlp.cls_text_parser
 import utils
 
+import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
 
 # -----------------------------------------------------------------------------
@@ -132,13 +133,13 @@ def parse_tetml_file() -> None:
         # Get the root Element
         root = tree.getroot()
 
-        cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+        dcr_core.cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
 
         for child in root:
             child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
                 case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
-                    cfg.glob.text_parser.parse_tag_document(child_tag, child)
+                    dcr_core.cfg.glob.text_parser.parse_tag_document(child_tag, child)
                 case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
                     pass
 
@@ -150,10 +151,16 @@ def parse_tetml_file() -> None:
         )
         return
 
-    if cfg.glob.line_type_headers_footers.no_lines_footer != 0 or cfg.glob.line_type_headers_footers.no_lines_header != 0:
-        cfg.glob.document.document_no_lines_footer = cfg.glob.line_type_headers_footers.no_lines_footer
-        cfg.glob.document.document_no_lines_header = cfg.glob.line_type_headers_footers.no_lines_header
-        cfg.glob.document.persist_2_db()  # type: ignore
+    if cfg.glob.setup.is_parsing_line:
+        if (
+            dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer != 0
+            or dcr_core.cfg.glob.line_type_headers_footers.no_lines_header != 0
+            or dcr_core.cfg.glob.line_type_toc.no_lines_toc != 0
+        ):
+            cfg.glob.document.document_no_lines_footer = dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer
+            cfg.glob.document.document_no_lines_header = dcr_core.cfg.glob.line_type_headers_footers.no_lines_header
+            cfg.glob.document.document_no_lines_toc = dcr_core.cfg.glob.line_type_toc.no_lines_toc
+            cfg.glob.document.persist_2_db()  # type: ignore
 
     cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(full_name_next),)
 

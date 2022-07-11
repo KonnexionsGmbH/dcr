@@ -1,11 +1,10 @@
+import dcr_core.cfg.glob
 import dcr_core.PDFlib.TET
 
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
 ERROR_51_901 = "51.901 Issue (tet): Opening document '{full_name}' - " + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-
-RETURN_OK = ("ok", "")
 
 
 # -----------------------------------------------------------------------------
@@ -67,4 +66,4 @@ def process(file_name_in: str, file_name_out: str, document_opt_list: str, page_
 
     tet.delete()
 
-    return RETURN_OK
+    return dcr_core.cfg.glob.RETURN_OK

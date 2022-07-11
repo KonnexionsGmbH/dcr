@@ -13,6 +13,7 @@ import nlp.cls_tokenizer_spacy
 import pytest
 
 import dcr
+import dcr_core.cfg.glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -258,7 +259,7 @@ def test_line_type_table_missing_dependencies_coverage_exists(fxtr_setup_empty_d
     cfg.glob.setup = cfg.cls_setup.Setup()
 
     # -------------------------------------------------------------------------
-    cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+    dcr_core.cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
     instance = nlp.cls_line_type_table.LineTypeTable()

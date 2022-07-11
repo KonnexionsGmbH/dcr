@@ -15,6 +15,7 @@ import pytest
 import utils
 
 import dcr
+import dcr_core.cfg.glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -348,12 +349,12 @@ def check_missing_run():
     with pytest.raises(SystemExit) as expt:
         db.cls_run.Run(
             _row_id=0,
-            action_code=cfg.glob.INFORMATION_NOT_YET_AVAILABLE,
+            action_code=dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE,
             total_erroneous=1,
         )
 
-    assert expt.type == SystemExit, f"invalid action code={cfg.glob.INFORMATION_NOT_YET_AVAILABLE}"
-    assert expt.value.code == 1, f"invalid action code={cfg.glob.INFORMATION_NOT_YET_AVAILABLE}"
+    assert expt.type == SystemExit, f"invalid action code={dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE}"
+    assert expt.value.code == 1, f"invalid action code={dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE}"
 
     # -----------------------------------------------------------------------------
     # Untested action codes.

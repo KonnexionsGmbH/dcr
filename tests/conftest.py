@@ -26,6 +26,7 @@ import sqlalchemy
 import utils
 
 import dcr
+import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
 
 # -----------------------------------------------------------------------------
@@ -652,9 +653,9 @@ def delete_existing_object(  # noqa: C901
 
     if is_text_parser:
         try:
-            cfg.glob.text_parser.exists()  # type: ignore
+            dcr_core.cfg.glob.text_parser.exists()  # type: ignore
 
-            del cfg.glob.text_parser
+            del dcr_core.cfg.glob.text_parser
 
             cfg.glob.logger.debug("The existing object 'cfg.glob.text_parser' of the class TextParser was deleted.")
         except AttributeError:

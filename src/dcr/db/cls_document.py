@@ -10,6 +10,8 @@ import db.cls_run
 import sqlalchemy
 import utils
 
+import dcr_core.utils
+
 
 # pylint: disable=duplicate-code
 # pylint: disable=too-many-arguments
@@ -343,7 +345,7 @@ class Document:
             conn.close()
 
         if row is None:
-            utils.terminate_fatal(
+            dcr_core.utils.terminate_fatal(
                 f"The document with id={id_document} does not exist in the database table 'document'",
             )
 

@@ -258,7 +258,6 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_STORE_FROM_PARSER - missing input file.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_store_parse_result_in_json_missing_input_file(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - missing input file."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

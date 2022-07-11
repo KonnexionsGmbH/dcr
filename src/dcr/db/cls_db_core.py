@@ -27,6 +27,8 @@ import utils
 from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine
 
+import dcr_core.utils
+
 # -----------------------------------------------------------------------------
 # Type declaration.
 # -----------------------------------------------------------------------------
@@ -182,7 +184,7 @@ class DBCore:
                 user=self._db_current_user,
             )
         except psycopg2.OperationalError as err:
-            utils.terminate_fatal(
+            dcr_core.utils.terminate_fatal(
                 f"There is no database connection for the administrator possible - error={str(err)}",
             )
 
@@ -227,7 +229,7 @@ class DBCore:
             conn = self.db_orm_engine.connect()
             conn.close()
         except sqlalchemy.exc.OperationalError as err:
-            utils.terminate_fatal(
+            dcr_core.utils.terminate_fatal(
                 f"No database connection possible - error={str(err)}",
             )
 
@@ -466,7 +468,7 @@ class DBCore:
                 self.load_db_data_from_json(pathlib.Path(db_initial_data_file_path))
                 utils.progress_msg(f"Initial database data was successfully loaded from the file {cfg.glob.setup.db_initial_data_file}")
             else:
-                utils.terminate_fatal(f"File with initial database data is missing - " f"file name '{cfg.glob.setup.db_initial_data_file}'")
+                dcr_core.utils.terminate_fatal(f"File with initial database data is missing - " f"file name '{cfg.glob.setup.db_initial_data_file}'")
 
         # Disconnect from the database.
         self.disconnect_db()
@@ -483,7 +485,7 @@ class DBCore:
         if cfg.glob.setup.db_dialect == DBCore.DB_DIALECT_POSTGRESQL:
             self._drop_database_postgresql()
         else:
-            utils.terminate_fatal(f"A database dialect '{cfg.glob.setup.db_dialect}' " f"is not supported in DCR")
+            dcr_core.utils.terminate_fatal(f"A database dialect '{cfg.glob.setup.db_dialect}' " f"is not supported in DCR")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -504,7 +506,7 @@ class DBCore:
             pass
             # not testable
         except psycopg2.errors.ObjectInUse as err:  # pylint: disable=no-member
-            utils.terminate_fatal(
+            dcr_core.utils.terminate_fatal(
                 f"The database can currently not be dropped - error={str(err)}",
             )
 
@@ -540,7 +542,7 @@ class DBCore:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         if (current_version := db.cls_version.Version.select_version_version_unique()) < "1.0.0":
-            utils.terminate_fatal("An automatic upgrade of the database version is only " + "supported from version 1.0.0.")
+            dcr_core.utils.terminate_fatal("An automatic upgrade of the database version is only " + "supported from version 1.0.0.")
 
         # not testable
         self._connect_db_admin()
@@ -550,7 +552,7 @@ class DBCore:
         #     _upgrade_database_version_0_5_0()
         #     return
 
-        utils.terminate_fatal(
+        dcr_core.utils.terminate_fatal(
             "Database file has the wrong version, version number=" + current_version,
         )
 
@@ -564,7 +566,7 @@ class DBCore:
         if cfg.glob.setup.db_dialect == DBCore.DB_DIALECT_POSTGRESQL:
             self._create_database_postgresql()
         else:
-            utils.terminate_fatal(f"A database dialect '{cfg.glob.setup.db_dialect}' " f"is not supported in DCR")
+            dcr_core.utils.terminate_fatal(f"A database dialect '{cfg.glob.setup.db_dialect}' " f"is not supported in DCR")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -667,7 +669,7 @@ class DBCore:
 
             api_version = json_data[DBCore.JSON_NAME_API_VERSION]
             if api_version != cfg.cls_setup.Setup.DCR_VERSION:
-                utils.terminate_fatal(f"Expected api version is' {cfg.cls_setup.Setup.DCR_VERSION}' " f"- got '{api_version}'")
+                dcr_core.utils.terminate_fatal(f"Expected api version is' {cfg.cls_setup.Setup.DCR_VERSION}' " f"- got '{api_version}'")
 
             data = json_data[DBCore.JSON_NAME_DATA]
             for json_table in data[DBCore.JSON_NAME_TABLES]:
@@ -681,9 +683,9 @@ class DBCore:
                         "token",
                         "version",
                     }:
-                        utils.terminate_fatal(f"The database table '{table_name}' must not be changed via the JSON file.")
+                        dcr_core.utils.terminate_fatal(f"The database table '{table_name}' must not be changed via the JSON file.")
                     else:
-                        utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
+                        dcr_core.utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
 
                 for json_row in json_table[DBCore.JSON_NAME_ROWS]:
                     db_columns = {}

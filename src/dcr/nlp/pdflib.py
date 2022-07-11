@@ -8,6 +8,7 @@ import db.cls_document
 import db.cls_run
 import utils
 
+import dcr_core.cfg.glob
 import dcr_core.nlp.pdflib
 
 # -----------------------------------------------------------------------------
@@ -121,7 +122,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
         document_opt_list=document_opt_list,
         page_opt_list=page_opt_list,
     )
-    if (error_code, error_msg) != dcr_core.nlp.pdflib.RETURN_OK:
+    if (error_code, error_msg) != dcr_core.cfg.glob.RETURN_OK:
         cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return False
 

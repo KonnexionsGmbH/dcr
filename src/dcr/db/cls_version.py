@@ -9,6 +9,8 @@ import sqlalchemy.orm
 import utils
 from sqlalchemy import Integer
 
+import dcr_core.utils
+
 
 class Version:
     """Managing the database table version.
@@ -153,7 +155,7 @@ class Version:
             conn.close()
 
         if row is None:
-            utils.terminate_fatal(
+            dcr_core.utils.terminate_fatal(
                 f"The version with id={id_version} does not exist in the database table 'version'",
             )
 
@@ -248,12 +250,12 @@ class Version:
                 if current_version == "":
                     current_version = row.version
                 else:
-                    utils.terminate_fatal(
+                    dcr_core.utils.terminate_fatal(
                         "Column version in database table version not unique",
                     )
             conn.close()
 
         if current_version == "":
-            utils.terminate_fatal("Column version in database table version not found")
+            dcr_core.utils.terminate_fatal("Column version in database table version not found")
 
         return current_version

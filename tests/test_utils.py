@@ -7,6 +7,9 @@ import db.cls_db_core
 import pytest
 import utils
 
+import dcr_core.cfg.glob
+import dcr_core.utils
+
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
@@ -72,7 +75,7 @@ def test_progress_msg_disconnected_1(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     del cfg.glob.setup
 
-    utils.progress_msg_connected(database=cfg.glob.INFORMATION_NOT_YET_AVAILABLE, user=cfg.glob.INFORMATION_NOT_YET_AVAILABLE)
+    utils.progress_msg_connected(database=dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE, user=dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE)
 
     # -------------------------------------------------------------------------
     utils.progress_msg_disconnected()
@@ -81,7 +84,7 @@ def test_progress_msg_disconnected_1(fxtr_setup_logger_environment):
     utils.progress_msg_empty_before("Test")
 
     with pytest.raises(SystemExit) as expt:
-        utils.terminate_fatal("Test")
+        dcr_core.utils.terminate_fatal("Test")
 
     assert expt.type == SystemExit, "End of programme without object 'cfg.glob.setup'"
     assert expt.value.code == 1, "End of programme without object 'cfg.glob.setup'"
@@ -97,15 +100,15 @@ def test_progress_msg_disconnected_2(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
-    cfg.glob.db_core.db_current_database = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
-    cfg.glob.db_core.db_current_user = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+    cfg.glob.db_core.db_current_database = dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+    cfg.glob.db_core.db_current_user = dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE
 
     utils.progress_msg_disconnected()
 
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
-    cfg.glob.db_core.db_current_database = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+    cfg.glob.db_core.db_current_database = dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE
     cfg.glob.db_core.db_current_user = ""
 
     utils.progress_msg_disconnected()
@@ -114,7 +117,7 @@ def test_progress_msg_disconnected_2(fxtr_setup_empty_db_and_inbox):
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
     cfg.glob.db_core.db_current_database = ""
-    cfg.glob.db_core.db_current_user = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+    cfg.glob.db_core.db_current_user = dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE
 
     utils.progress_msg_disconnected()
 

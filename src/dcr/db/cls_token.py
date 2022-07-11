@@ -8,6 +8,8 @@ import sqlalchemy.engine
 import sqlalchemy.orm
 import utils
 
+import dcr_core.utils
+
 
 class Token:
     """Managing the database table token.
@@ -278,7 +280,7 @@ class Token:
             conn.close()
 
         if row is None:
-            utils.terminate_fatal(
+            dcr_core.utils.terminate_fatal(
                 f"The token with id={id_token} does not exist in the database table 'token'",
             )
 

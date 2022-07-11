@@ -13,6 +13,8 @@ import sqlalchemy
 import utils
 from sqlalchemy.engine import Connection
 
+import dcr_core.utils
+
 
 # pylint: disable=duplicate-code
 # pylint: disable=too-many-instance-attributes
@@ -356,7 +358,7 @@ class Action:
             conn.close()
 
         if row is None:
-            utils.terminate_fatal(
+            dcr_core.utils.terminate_fatal(
                 f"The action with id={id_action} does not exist in the database table 'action'",
             )
 

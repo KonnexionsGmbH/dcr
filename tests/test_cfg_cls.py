@@ -5,6 +5,8 @@ import cfg.cls_setup
 import cfg.glob
 import pytest
 
+import dcr_core.cfg.glob
+
 # -----------------------------------------------------------------------------
 # Constants & Globals.
 # -----------------------------------------------------------------------------
@@ -59,7 +61,7 @@ def test_get_config_1(fxtr_setup_logger_environment):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
@@ -110,7 +112,7 @@ def test_get_config_coverage_false(fxtr_setup_logger_environment):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.setup._determine_config_param_integer(cfg.glob.INFORMATION_NOT_YET_AVAILABLE, 4711)
+    cfg.glob.setup._determine_config_param_integer(dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE, 4711)
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -182,7 +184,7 @@ def test_get_config_doc_id_in_file_name(fxtr_setup_logger_environment):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
@@ -400,7 +402,7 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
     )
 
@@ -444,7 +446,7 @@ def test_get_environment(fxtr_setup_logger):
     # -------------------------------------------------------------------------
     cfg.glob.setup = cfg.cls_setup.Setup()
 
-    os.environ[cfg.glob.setup._DCR_ENVIRONMENT_TYPE] = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+    os.environ[cfg.glob.setup._DCR_ENVIRONMENT_TYPE] = dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE
 
     with pytest.raises(SystemExit) as expt:
         cfg.glob.setup._get_environment_variant()

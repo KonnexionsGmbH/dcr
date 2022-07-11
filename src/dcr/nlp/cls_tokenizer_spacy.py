@@ -11,7 +11,9 @@ import spacy
 import spacy.tokens
 import utils
 
+import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.utils
 
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-instance-attributes
@@ -125,6 +127,9 @@ class TokenizerSpacy:
 
         utils.check_exists_object(
             is_document=True,
+        )
+
+        dcr_core.utils.check_exists_object(
             is_line_type_table=True,
         )
 
@@ -135,16 +140,16 @@ class TokenizerSpacy:
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER: cfg.glob.document.document_no_lines_header,
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._no_lines_in_doc,
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: cfg.glob.document.document_no_lines_toc,
-            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: cfg.glob.text_parser.parse_result_line_document[
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: dcr_core.cfg.glob.text_parser.parse_result_line_document[
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC
             ],
-            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: cfg.glob.text_parser.parse_result_line_document[
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: dcr_core.cfg.glob.text_parser.parse_result_line_document[
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC
             ],
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self._no_pages_in_doc,
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._no_paras_in_doc,
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_SENTS_IN_DOC: self._no_sents_in_doc,
-            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: cfg.glob.text_parser.parse_result_line_document[
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: dcr_core.cfg.glob.text_parser.parse_result_line_document[
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC
             ],
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TOKENS_IN_DOC: self._no_tokens_in_doc,
@@ -624,15 +629,15 @@ class TokenizerSpacy:
         """Initialize a new paragraph."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        utils.check_exists_object(
+        dcr_core.utils.check_exists_object(
             is_text_parser=True,
         )
 
-        if dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO in cfg.glob.text_parser.parse_result_line_line:
-            self._column_no = cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO]
-            self._row_no = cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO]
-            if dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN in cfg.glob.text_parser.parse_result_line_line:
-                self._column_span = cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN]
+        if dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO in dcr_core.cfg.glob.text_parser.parse_result_line_line:
+            self._column_no = dcr_core.cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO]
+            self._row_no = dcr_core.cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO]
+            if dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN in dcr_core.cfg.glob.text_parser.parse_result_line_line:
+                self._column_span = dcr_core.cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN]
             else:
                 self._column_span = 0
         else:
@@ -640,8 +645,8 @@ class TokenizerSpacy:
             self._column_span = 0
             self._row_no = 0
 
-        self._coord_llx = cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]
-        self._coord_urx = cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX]
+        self._coord_llx = dcr_core.cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]
+        self._coord_urx = dcr_core.cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX]
 
         self._no_lines_in_para = 0
         self._no_tokens_in_para = 0
@@ -674,7 +679,7 @@ class TokenizerSpacy:
         """Process a whole new page."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        utils.check_exists_object(
+        dcr_core.utils.check_exists_object(
             is_text_parser=True,
         )
 
@@ -692,10 +697,10 @@ class TokenizerSpacy:
         #    "rowNo": 99,
         #    "text": "..."
         # },
-        for cfg.glob.text_parser.parse_result_line_line in cfg.glob.text_parser.parse_result_line_page[
+        for dcr_core.cfg.glob.text_parser.parse_result_line_line in dcr_core.cfg.glob.text_parser.parse_result_line_page[
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
         ]:
-            line_type = cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+            line_type = dcr_core.cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
 
             if (
                 line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_FOOTER  # pylint: disable=too-many-boolean-expressions
@@ -715,7 +720,7 @@ class TokenizerSpacy:
             ):
                 continue
 
-            self._para_no = cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO]
+            self._para_no = dcr_core.cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO]
 
             if self._para_no_prev == 0:
                 self._init_para()
@@ -737,7 +742,7 @@ class TokenizerSpacy:
         """Process a whole new paragraph."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        utils.check_exists_object(
+        dcr_core.utils.check_exists_object(
             is_text_parser=True,
         )
 
@@ -746,9 +751,9 @@ class TokenizerSpacy:
         self._no_lines_in_para += 1
 
         if not self._para_lines:
-            self._line_type = cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+            self._line_type = dcr_core.cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
 
-        self._para_lines.append(cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+        self._para_lines.append(dcr_core.cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -830,6 +835,9 @@ class TokenizerSpacy:
 
         utils.check_exists_object(
             is_setup=True,
+        )
+
+        dcr_core.utils.check_exists_object(
             is_text_parser=True,
         )
 
@@ -849,10 +857,10 @@ class TokenizerSpacy:
         #   "noLinesInPage": 99,
         #   "lines": [...]
         # }
-        for cfg.glob.text_parser.parse_result_line_page in cfg.glob.text_parser.parse_result_line_document[
+        for dcr_core.cfg.glob.text_parser.parse_result_line_page in dcr_core.cfg.glob.text_parser.parse_result_line_document[
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES
         ]:
-            self._page_no = cfg.glob.text_parser.parse_result_line_page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
+            self._page_no = dcr_core.cfg.glob.text_parser.parse_result_line_page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
 
             self._init_page()
             self._process_page()

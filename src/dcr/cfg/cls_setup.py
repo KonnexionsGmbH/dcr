@@ -8,6 +8,8 @@ from typing import ClassVar
 import cfg.glob
 import utils
 
+import dcr_core.utils
+
 
 # pylint: disable=too-many-instance-attributes
 class Setup:
@@ -427,7 +429,7 @@ class Setup:
         self.is_tokenize_2_jsonfile = self._determine_config_param_boolean(Setup._DCR_CFG_TOKENIZE_2_JSONFILE, self.is_tokenize_2_jsonfile)
         if not self.is_tokenize_2_database:
             if not self.is_tokenize_2_jsonfile:
-                utils.terminate_fatal_setup(
+                dcr_core.utils.terminate_fatal(
                     "At least one of the configuration parameters 'tokenize_2_database' or " + "'tokenize_2_jsonfile' must be 'true'"
                 )
 
@@ -452,7 +454,7 @@ class Setup:
 
             self.directory_inbox = utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX]))
         else:
-            utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
+            dcr_core.utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_accepted.
@@ -464,7 +466,7 @@ class Setup:
 
             self.directory_inbox_accepted = utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED]))
         else:
-            utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'")
+            dcr_core.utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_rejected.
@@ -476,7 +478,7 @@ class Setup:
 
             self.directory_inbox_rejected = utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED]))
         else:
-            utils.terminate_fatal_setup(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'")
+            dcr_core.utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - doc_id_in_file_name.
@@ -498,7 +500,7 @@ class Setup:
                 Setup.PDF2IMAGE_TYPE_JPEG,
                 Setup.PDF2IMAGE_TYPE_PNG,
             ]:
-                utils.terminate_fatal_setup(f"Invalid configuration parameter value for parameter " f"'pdf2image_type': '{self.pdf2image_type}'")
+                dcr_core.utils.terminate_fatal(f"Invalid configuration parameter value for parameter " f"'pdf2image_type': '{self.pdf2image_type}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - verbose_parser.
@@ -717,14 +719,14 @@ class Setup:
         try:
             self.environment_variant = os.environ[Setup._DCR_ENVIRONMENT_TYPE]
         except KeyError:
-            utils.terminate_fatal_setup(f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' is missing")
+            dcr_core.utils.terminate_fatal(f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' is missing")
 
         if self.environment_variant not in [
             Setup.ENVIRONMENT_TYPE_DEV,
             Setup.ENVIRONMENT_TYPE_PROD,
             Setup.ENVIRONMENT_TYPE_TEST,
         ]:
-            utils.terminate_fatal_setup(
+            dcr_core.utils.terminate_fatal(
                 f"The environment variable '{Setup._DCR_ENVIRONMENT_TYPE}' " f"has the invalid content '{self.environment_variant}'"
             )
 
@@ -747,28 +749,6 @@ class Setup:
 
         for key, item in self._config.items():
             match key:
-                case Setup._DCR_CFG_DB_CONNECTION_PREFIX:
-                    self.db_connection_prefix = str(item)
-                case Setup._DCR_CFG_DB_DATABASE:
-                    self.db_database = str(item)
-                case Setup._DCR_CFG_DB_DATABASE_ADMIN:
-                    self.db_database_admin = str(item)
-                case Setup._DCR_CFG_DB_DIALECT:
-                    self.db_dialect = str(item)
-                case Setup._DCR_CFG_DB_HOST:
-                    self.db_host = str(item)
-                case Setup._DCR_CFG_DB_INITIAL_DATA_FILE:
-                    self.db_initial_data_file = utils.get_os_independent_name(item)
-                case Setup._DCR_CFG_DB_PASSWORD:
-                    self.db_password = str(item)
-                case Setup._DCR_CFG_DB_PASSWORD_ADMIN:
-                    self.db_password_admin = str(item)
-                case Setup._DCR_CFG_DB_SCHEMA:
-                    self.db_schema = str(item)
-                case Setup._DCR_CFG_DB_USER:
-                    self.db_user = str(item)
-                case Setup._DCR_CFG_DB_USER_ADMIN:
-                    self.db_user_admin = str(item)
                 case (
                     Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET
                     | Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER
@@ -884,6 +864,28 @@ class Setup:
                     | Setup._DCR_CFG_VERBOSE_PARSER
                 ):
                     continue
+                case Setup._DCR_CFG_DB_CONNECTION_PREFIX:
+                    self.db_connection_prefix = str(item)
+                case Setup._DCR_CFG_DB_DATABASE:
+                    self.db_database = str(item)
+                case Setup._DCR_CFG_DB_DATABASE_ADMIN:
+                    self.db_database_admin = str(item)
+                case Setup._DCR_CFG_DB_DIALECT:
+                    self.db_dialect = str(item)
+                case Setup._DCR_CFG_DB_HOST:
+                    self.db_host = str(item)
+                case Setup._DCR_CFG_DB_INITIAL_DATA_FILE:
+                    self.db_initial_data_file = utils.get_os_independent_name(item)
+                case Setup._DCR_CFG_DB_PASSWORD:
+                    self.db_password = str(item)
+                case Setup._DCR_CFG_DB_PASSWORD_ADMIN:
+                    self.db_password_admin = str(item)
+                case Setup._DCR_CFG_DB_SCHEMA:
+                    self.db_schema = str(item)
+                case Setup._DCR_CFG_DB_USER:
+                    self.db_user = str(item)
+                case Setup._DCR_CFG_DB_USER_ADMIN:
+                    self.db_user_admin = str(item)
                 case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_HEADING:
                     self.lt_export_rule_file_heading = utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET:
@@ -897,7 +899,7 @@ class Setup:
                 case Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE:
                     self.lt_list_number_rule_file = utils.get_os_independent_name(item)
                 case _:
-                    utils.terminate_fatal_setup(f"Unknown configuration parameter '{key}'")
+                    dcr_core.utils.terminate_fatal(f"Unknown configuration parameter '{key}'")
 
         self._check_config()
 

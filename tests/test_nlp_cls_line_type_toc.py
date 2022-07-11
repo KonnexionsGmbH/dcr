@@ -13,6 +13,7 @@ import nlp.cls_tokenizer_spacy
 import pytest
 
 import dcr
+import dcr_core.cfg.glob
 import dcr_core.nlp.cls_line_type_toc
 
 # -----------------------------------------------------------------------------
@@ -25,7 +26,6 @@ import dcr_core.nlp.cls_line_type_toc
 # -----------------------------------------------------------------------------
 # Test LineType TOC.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 @pytest.mark.parametrize("lt_toc_last_page", ["0", "5"])
 def test_line_type_toc(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType TOC."""
@@ -116,9 +116,9 @@ def test_line_type_toc_missing_dependencies_coverage_exists(fxtr_setup_empty_db_
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+    dcr_core.cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
 
-    cfg.glob.text_parser.exists()
+    dcr_core.cfg.glob.text_parser.exists()
 
     # -------------------------------------------------------------------------
     instance = dcr_core.nlp.cls_line_type_toc.LineTypeToc(
@@ -129,56 +129,6 @@ def test_line_type_toc_missing_dependencies_coverage_exists(fxtr_setup_empty_db_
     )
 
     instance.exists()
-
-    # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test Function - missing dependencies - line_type_toc - document.
-# -----------------------------------------------------------------------------
-def test_line_type_toc_missing_dependencies_document(fxtr_setup_empty_db_and_inbox):
-    """Test Function - missing dependencies - line_type_toc - document."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
-
-    # -------------------------------------------------------------------------
-    cfg.glob.run = db.cls_run.Run(
-        _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
-    )
-
-    # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action(
-        _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
-        id_run_last=1,
-    )
-
-    # -------------------------------------------------------------------------
-    cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
-
-    cfg.glob.text_parser.exists()
-
-    # -------------------------------------------------------------------------
-    instance = dcr_core.nlp.cls_line_type_toc.LineTypeToc(
-        action_file_name=cfg.glob.action_curr.action_file_name,
-        is_verbose_lt_toc=cfg.glob.setup.is_verbose_lt_toc,
-        lt_toc_last_page=cfg.glob.setup.lt_toc_last_page,
-        lt_toc_min_entries=cfg.glob.setup.lt_toc_min_entries,
-    )
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.delete_existing_object(is_document=True)
-
-    # -------------------------------------------------------------------------
-    with pytest.raises(SystemExit) as expt:
-        instance._store_results()
-
-    assert expt.type == SystemExit, "Instance of class 'Document' is missing"
-    assert expt.value.code == 1, "Instance of class 'Document' is missing"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

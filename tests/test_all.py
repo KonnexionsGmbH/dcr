@@ -987,7 +987,6 @@ def check_db_content_version() -> None:
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -1094,6 +1093,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
     )
 
@@ -1110,13 +1110,6 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-        ],
-    )
-
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     pytest.helpers.restore_config_params(

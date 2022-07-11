@@ -6,9 +6,7 @@ import json
 import re
 from typing import ClassVar
 
-import cfg.cls_setup
-import cfg.glob
-import utils
+import dcr_core.utils
 
 
 class NLPCore:
@@ -19,8 +17,43 @@ class NLPCore:
     """
 
     # -----------------------------------------------------------------------------
+    # Global type aliases.
+    # -----------------------------------------------------------------------------
+    LineLine = dict[str, int | str]
+    LineLines = list[LineLine]
+
+    LinePage = dict[str, int | LineLines]
+    LinePages = list[LinePage]
+
+    PagePara = dict[str, int | str]
+    PageParas = list[PagePara]
+
+    PagePage = dict[str, int | PageParas]
+    PagePages = list[PagePage]
+
+    PageDocument = dict[str, int | PagePages | str]
+
+    WordWord = dict[str, int | str]
+    WordWords = list[WordWord]
+
+    WordLine = dict[str, int | WordWords]
+    WordLines = list[WordLine]
+
+    WordPara = dict[str, int | WordLines]
+    WordParas = list[WordPara]
+
+    WordPage = dict[str, int | str | WordParas]
+    WordPages = list[WordPage]
+
+    WordDocument = dict[str, int | str | WordPages]
+
+    # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
+    ENVIRONMENT_TYPE_DEV: ClassVar[str] = "dev"
+    ENVIRONMENT_TYPE_PROD: ClassVar[str] = "prod"
+    ENVIRONMENT_TYPE_TEST: ClassVar[str] = "test"
+
     JSON_NAME_BULLET: ClassVar[str] = "bullet"
 
     JSON_NAME_COLUMNS: ClassVar[str] = "columns"
@@ -319,7 +352,7 @@ class NLPCore:
             list[tuple[str, str]]:
                 The bulleted list line type anti-patterns.
         """
-        if environment_variant == cfg.cls_setup.Setup.ENVIRONMENT_TYPE_TEST:
+        if environment_variant == NLPCore.ENVIRONMENT_TYPE_TEST:
             return [
                 ("n/a", r"^_n/a_$"),
             ]
@@ -345,7 +378,7 @@ class NLPCore:
             list[tuple[str, str]]:
                 The numbered list line type anti-patterns.
         """
-        if environment_variant == cfg.cls_setup.Setup.ENVIRONMENT_TYPE_TEST:
+        if environment_variant == NLPCore.ENVIRONMENT_TYPE_TEST:
             return [
                 ("n/a", r"^_n/a_$"),
             ]
@@ -622,18 +655,21 @@ class NLPCore:
     # Export the default heading line type rules.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def export_rule_file_heading(file_name: str = "") -> None:
+    def export_rule_file_heading(is_verbose: bool, file_name: str, file_encoding: str, json_indent: str, is_json_sort_keys: bool) -> None:
         """Export the default heading line type rules.
 
         Args:
-            file_name (str, optional):
-                    File name of the output file. Defaults to cfg.glob.setup.lt_export_rule_file_heading.
+            is_verbose (bool):
+                    If true, processing results are reported.
+            file_name (str):
+                    File name of the output file.
+            file_encoding (str):
+                    The encoding of the output file.
+            json_indent (str):
+                    Indent level for pretty-printing the JSON output.
+            is_json_sort_keys (bool):
+                    If true, the output of the JSON dictionaries will be sorted by key.
         """
-        if file_name == "":
-            file_name_extern = cfg.glob.setup.lt_export_rule_file_heading
-        else:
-            file_name_extern = file_name
-
         anti_patterns = []
 
         for name, regexp in NLPCore.get_lt_anti_patterns_default_heading():
@@ -657,7 +693,7 @@ class NLPCore:
                 }
             )
 
-        with open(file_name_extern, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        with open(file_name, "w", encoding=file_encoding) as file_handle:
             # {
             #     "lineTypeListAntiPatterns": [
             #       (name, regexp),
@@ -678,34 +714,38 @@ class NLPCore:
                     NLPCore.JSON_NAME_LINE_TYPE_RULES: rules,
                 },
                 file_handle,
-                indent=cfg.glob.setup.json_indent,
-                sort_keys=cfg.glob.setup.is_json_sort_keys,
+                indent=json_indent,
+                sort_keys=is_json_sort_keys,
             )
 
         if len(anti_patterns) > 0:
-            utils.progress_msg(f"{len(anti_patterns):3d} heading       line type anti-pattern(s) exported")
+            dcr_core.utils.progress_msg(is_verbose, f"{len(anti_patterns):3d} heading       line type anti-pattern(s) exported")
         if len(rules) > 0:
-            utils.progress_msg(f"{len(rules):3d} heading       line type rule(s)         exported")
+            dcr_core.utils.progress_msg(is_verbose, f"{len(rules):3d} heading       line type rule(s)         exported")
 
     # -----------------------------------------------------------------------------
     # Export the default bulleted list line type rules.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def export_rule_file_list_bullet(file_name: str, environment_variant: str) -> None:
+    def export_rule_file_list_bullet(
+        is_verbose: bool, file_name: str, file_encoding: str, json_indent: str, is_json_sort_keys: bool, environment_variant: str
+    ) -> None:
         """Export the default bulleted list line type rules.
 
         Args:
-            file_name (str, optional):
-                    File name of the output file. Defaults to cfg.glob.setup.lt_export_rule_file_list_bullet.
-
+            is_verbose (bool):
+                    If true, processing results are reported.
+            file_name (st):
+                    File name of the output file.
+            file_encoding (str):
+                    The encoding of the output file.
+            json_indent (str):
+                    Indent level for pretty-printing the JSON output.
+            is_json_sort_keys (bool):
+                    If true, the output of the JSON dictionaries will be sorted by key.
             environment_variant (str):
                     Environment variant: dev, prod or test.
         """
-        if file_name == "":
-            file_name_extern = cfg.glob.setup.lt_export_rule_file_list_bullet
-        else:
-            file_name_extern = file_name
-
         anti_patterns = []
 
         for name, regexp in NLPCore.get_lt_anti_patterns_default_list_bullet(environment_variant):
@@ -721,7 +761,7 @@ class NLPCore:
         for rule in NLPCore.get_lt_rules_default_list_bullet():
             rules.append(rule)
 
-        with open(file_name_extern, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        with open(file_name, "w", encoding=file_encoding) as file_handle:
             #     "lineTypeListAntiPatterns": [
             #       (name, regexp),
             #     ]
@@ -736,34 +776,38 @@ class NLPCore:
                     NLPCore.JSON_NAME_LINE_TYPE_RULES: rules,
                 },
                 file_handle,
-                indent=cfg.glob.setup.json_indent,
-                sort_keys=cfg.glob.setup.is_json_sort_keys,
+                indent=json_indent,
+                sort_keys=is_json_sort_keys,
             )
 
         if len(anti_patterns) > 0:
-            utils.progress_msg(f"{len(anti_patterns):3d} bulleted list line type anti-pattern(s) exported")
+            dcr_core.utils.progress_msg(is_verbose, f"{len(anti_patterns):3d} bulleted list line type anti-pattern(s) exported")
         if len(rules) > 0:
-            utils.progress_msg(f"{len(rules):3d} bulleted list line type rule(s)         exported")
+            dcr_core.utils.progress_msg(is_verbose, f"{len(rules):3d} bulleted list line type rule(s)         exported")
 
     # -----------------------------------------------------------------------------
     # Export the default numbered list line type rules.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def export_rule_file_list_number(file_name: str, environment_variant: str) -> None:
+    def export_rule_file_list_number(
+        is_verbose: bool, file_name: str, file_encoding: str, json_indent: str, is_json_sort_keys: bool, environment_variant: str
+    ) -> None:
         """Export the default numbered list line type rules.
 
         Args:
+            is_verbose (bool):
+                    If true, processing results are reported.
             file_name (str, optional):
-                    File name of the output file. Defaults to cfg.glob.setup.lt_export_rule_file_list_number.
-
+                    File name of the output file.
+            file_encoding (str):
+                    The encoding of the output file.
+            json_indent (str):
+                    Indent level for pretty-printing the JSON output.
+            is_json_sort_keys (bool):
+                    If true, the output of the JSON dictionaries will be sorted by key.
             environment_variant (str):
                     Environment variant: dev, prod or test.
         """
-        if file_name == "":
-            file_name_extern = cfg.glob.setup.lt_export_rule_file_list_number
-        else:
-            file_name_extern = file_name
-
         anti_patterns = []
 
         for name, regexp in NLPCore.get_lt_anti_patterns_default_list_number(environment_variant):
@@ -786,7 +830,7 @@ class NLPCore:
                 }
             )
 
-        with open(file_name_extern, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        with open(file_name, "w", encoding=file_encoding) as file_handle:
             # {
             #     "lineTypeListAntiPatterns": [
             #       (name, regexp),
@@ -806,14 +850,14 @@ class NLPCore:
                     NLPCore.JSON_NAME_LINE_TYPE_RULES: rules,
                 },
                 file_handle,
-                indent=cfg.glob.setup.json_indent,
-                sort_keys=cfg.glob.setup.is_json_sort_keys,
+                indent=json_indent,
+                sort_keys=is_json_sort_keys,
             )
 
         if len(anti_patterns) > 0:
-            utils.progress_msg(f"{len(anti_patterns):3d} numbered list line type anti-pattern(s) exported")
+            dcr_core.utils.progress_msg(is_verbose, f"{len(anti_patterns):3d} numbered list line type anti-pattern(s) exported")
         if len(rules) > 0:
-            utils.progress_msg(f"{len(rules):3d} numbered list line type rule(s)         exported")
+            dcr_core.utils.progress_msg(is_verbose, f"{len(rules):3d} numbered list line type rule(s)         exported")
 
     # -----------------------------------------------------------------------------
     # Get the default heading line type anti-patterns.

@@ -11,10 +11,11 @@ import re
 
 import cfg.glob
 import db.cls_document
-import nlp.cls_text_parser
 import utils
 
+import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Global type aliases.
@@ -40,6 +41,9 @@ class LineTypeHeading:
             is_action_curr=True,
             is_document=True,
             is_setup=True,
+        )
+
+        dcr_core.utils.check_exists_object(
             is_text_parser=True,
         )
 
@@ -234,7 +238,7 @@ class LineTypeHeading:
 
         if cfg.glob.setup.lt_heading_file_incl_no_ctx > 0:
             page_idx = self._page_idx
-            line_lines: nlp.cls_text_parser.LineLines = cfg.glob.text_parser.parse_result_line_lines
+            line_lines: dcr_core.nlp.cls_nlp_core.NLPCore.LineLines = dcr_core.cfg.glob.text_parser.parse_result_line_lines
             line_lines_idx = self._line_lines_idx + 1
 
             for idx in range(cfg.glob.setup.lt_heading_file_incl_no_ctx):
@@ -256,8 +260,8 @@ class LineTypeHeading:
     # Get the next body line.
     # -----------------------------------------------------------------------------
     def _get_next_body_line(
-        self, page_idx: int, line_lines: nlp.cls_text_parser.LineLines, line_lines_idx: int
-    ) -> tuple[str, int, nlp.cls_text_parser.LineLines, int]:
+        self, page_idx: int, line_lines: dcr_core.nlp.cls_nlp_core.NLPCore.LineLines, line_lines_idx: int
+    ) -> tuple[str, int, dcr_core.nlp.cls_nlp_core.NLPCore.LineLines, int]:
         """Get the next body line.
 
         Args:
@@ -273,7 +277,7 @@ class LineTypeHeading:
                     found line or empty, last page searched, lines of this page, last checked line.
         """
         for idx in range(line_lines_idx + 1, len(line_lines)):
-            line_line: nlp.cls_text_parser.LineLine = line_lines[idx]
+            line_line: dcr_core.nlp.cls_nlp_core.NLPCore.LineLine = line_lines[idx]
 
             if line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 continue
@@ -283,7 +287,7 @@ class LineTypeHeading:
         if (page_idx + 1) < self._max_page:
             page_idx_local = page_idx + 1
 
-            line_lines_local: nlp.cls_text_parser.LineLines = cfg.glob.text_parser.parse_result_line_pages[page_idx_local][
+            line_lines_local: dcr_core.nlp.cls_nlp_core.NLPCore.LineLines = dcr_core.cfg.glob.text_parser.parse_result_line_pages[page_idx_local][
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
             ]
 
@@ -319,7 +323,7 @@ class LineTypeHeading:
             if os.path.isfile(lt_heading_rule_file_path):
                 return self._load_anti_patterns_from_json(pathlib.Path(lt_heading_rule_file_path))
 
-            utils.terminate_fatal(f"File with heading anti-patterns is missing - " f"file name '{cfg.glob.setup.lt_heading_rule_file}'")
+            dcr_core.utils.terminate_fatal(f"File with heading anti-patterns is missing - " f"file name '{cfg.glob.setup.lt_heading_rule_file}'")
 
         anti_patterns = []
 
@@ -354,7 +358,7 @@ class LineTypeHeading:
             if os.path.isfile(lt_heading_rule_file_path):
                 return self._load_rules_from_json(pathlib.Path(lt_heading_rule_file_path))
 
-            utils.terminate_fatal(f"File with heading rules is missing - " f"file name '{cfg.glob.setup.lt_heading_rule_file}'")
+            dcr_core.utils.terminate_fatal(f"File with heading rules is missing - " f"file name '{cfg.glob.setup.lt_heading_rule_file}'")
 
         return dcr_core.nlp.cls_nlp_core.NLPCore.get_lt_rules_default_heading()
 
@@ -563,11 +567,11 @@ class LineTypeHeading:
         utils.progress_msg_line_type_heading("LineTypeHeading")
         utils.progress_msg_line_type_heading(f"LineTypeHeading: Start page (lines)                   ={self._page_idx+1}")
 
-        self._max_line_line = len(cfg.glob.text_parser.parse_result_line_lines)
+        self._max_line_line = len(dcr_core.cfg.glob.text_parser.parse_result_line_lines)
 
         # wwe max_line_line_idx = self._max_line_line - 1
 
-        for line_lines_idx, line_line in enumerate(cfg.glob.text_parser.parse_result_line_lines):
+        for line_lines_idx, line_line in enumerate(dcr_core.cfg.glob.text_parser.parse_result_line_lines):
             self._line_lines_idx = line_lines_idx
             if line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
                 continue
@@ -581,7 +585,7 @@ class LineTypeHeading:
 
             # wwe
             # if not (
-            #     cfg.glob.text_parser.parse_result_titles
+            #     dcr_core.cfg.glob.text_parser.parse_result_titles
             #     and line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT] in cfg.glob.text_parser.parse_result_titles
             # ):
             #     # Headings are limited to single-line paragraphs.
@@ -606,7 +610,7 @@ class LineTypeHeading:
                 line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = (
                     db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADER + "_" + str(level)
                 )
-                cfg.glob.text_parser.parse_result_line_lines[self._line_lines_idx] = line_line
+                dcr_core.cfg.glob.text_parser.parse_result_line_lines[self._line_lines_idx] = line_line
 
         utils.progress_msg_line_type_heading(f"LineTypeHeading: End   page (lines)                   ={self._page_idx+1}")
 
@@ -628,7 +632,10 @@ class LineTypeHeading:
     # -----------------------------------------------------------------------------
     def process_document(self) -> None:
         """Process the document related data."""
-        if cfg.glob.setup.lt_heading_max_level == 0 or len(cfg.glob.text_parser.parse_result_line_pages) < cfg.glob.setup.lt_heading_min_pages:
+        if (
+            cfg.glob.setup.lt_heading_max_level == 0
+            or len(dcr_core.cfg.glob.text_parser.parse_result_line_pages) < cfg.glob.setup.lt_heading_min_pages
+        ):
             return
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -636,11 +643,11 @@ class LineTypeHeading:
         utils.progress_msg_line_type_heading("LineTypeHeading")
         utils.progress_msg_line_type_heading(f"LineTypeHeading: Start document                       ={cfg.glob.action_curr.action_file_name}")
 
-        self._max_page = cfg.glob.text_parser.parse_result_no_pages_in_doc
+        self._max_page = dcr_core.cfg.glob.text_parser.parse_result_no_pages_in_doc
 
-        for page_idx, page in enumerate(cfg.glob.text_parser.parse_result_line_pages):
+        for page_idx, page in enumerate(dcr_core.cfg.glob.text_parser.parse_result_line_pages):
             self._page_idx = page_idx
-            cfg.glob.text_parser.parse_result_line_lines = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
+            dcr_core.cfg.glob.text_parser.parse_result_line_lines = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
         if cfg.glob.setup.is_create_extra_file_toc and self._toc:

@@ -8,10 +8,11 @@ import re
 
 import cfg.glob
 import db.cls_document
-import nlp.cls_text_parser
 import utils
 
+import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Global type aliases.
@@ -42,6 +43,9 @@ class LineTypeListBullet:
             is_action_curr=True,
             is_document=True,
             is_setup=True,
+        )
+
+        dcr_core.utils.check_exists_object(
             is_text_parser=True,
         )
 
@@ -107,7 +111,7 @@ class LineTypeListBullet:
         entries: Entries = []
 
         for [page_idx, para_no, line_lines_idx_from, line_lines_idx_till] in self._entries:
-            line_lines: nlp.cls_text_parser.LineLines = cfg.glob.text_parser.parse_result_line_pages[page_idx][
+            line_lines: dcr_core.nlp.cls_nlp_core.NLPCore.LineLines = dcr_core.cfg.glob.text_parser.parse_result_line_pages[page_idx][
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
             ]
 
@@ -139,7 +143,7 @@ class LineTypeListBullet:
                     }
                 )
 
-            cfg.glob.text_parser.parse_result_line_pages[page_idx][dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES] = line_lines
+            dcr_core.cfg.glob.text_parser.parse_result_line_pages[page_idx][dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES] = line_lines
 
         if cfg.glob.setup.is_create_extra_file_list_bullet:
             # {
@@ -183,7 +187,9 @@ class LineTypeListBullet:
             if os.path.isfile(lt_list_bullet_rule_file_path):
                 return self._load_anti_patterns_from_json(pathlib.Path(lt_list_bullet_rule_file_path))
 
-            utils.terminate_fatal(f"File with bulleted list anti-patterns is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'")
+            dcr_core.utils.terminate_fatal(
+                f"File with bulleted list anti-patterns is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'"
+            )
 
         anti_patterns = []
 
@@ -212,7 +218,7 @@ class LineTypeListBullet:
             if os.path.isfile(lt_list_bullet_rule_file_path):
                 return self._load_rules_from_json(pathlib.Path(lt_list_bullet_rule_file_path))
 
-            utils.terminate_fatal(f"File with valid bullets is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'")
+            dcr_core.utils.terminate_fatal(f"File with valid bullets is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'")
 
         return dcr_core.nlp.cls_nlp_core.NLPCore.get_lt_rules_default_list_bullet()
 
@@ -349,9 +355,9 @@ class LineTypeListBullet:
 
         utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: Start page                           ={self._page_idx + 1}")
 
-        self._max_line_line = len(cfg.glob.text_parser.parse_result_line_lines)
+        self._max_line_line = len(dcr_core.cfg.glob.text_parser.parse_result_line_lines)
 
-        for line_lines_idx, line_line in enumerate(cfg.glob.text_parser.parse_result_line_lines):
+        for line_lines_idx, line_line in enumerate(dcr_core.cfg.glob.text_parser.parse_result_line_lines):
             self._line_lines_idx = line_lines_idx
 
             if line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
@@ -418,9 +424,9 @@ class LineTypeListBullet:
 
         self._reset_document()
 
-        for page_idx, page in enumerate(cfg.glob.text_parser.parse_result_line_pages):
+        for page_idx, page in enumerate(dcr_core.cfg.glob.text_parser.parse_result_line_pages):
             self._page_idx = page_idx
-            cfg.glob.text_parser.parse_result_line_lines = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
+            dcr_core.cfg.glob.text_parser.parse_result_line_lines = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
         self._finish_list()

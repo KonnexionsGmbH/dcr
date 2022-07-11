@@ -3,9 +3,6 @@ from __future__ import annotations
 
 import datetime
 
-import nlp.cls_text_parser
-import utils
-
 import dcr_core.nlp.cls_nlp_core
 
 
@@ -28,12 +25,6 @@ class LineTypeToc:
         is_verbose_lt_toc: bool = False,
     ) -> None:
         """Initialise the instance."""
-        utils.check_exists_object(
-            is_action_curr=True,
-            is_setup=True,
-            is_text_parser=True,
-        )
-
         self._action_file_name = action_file_name
         self._is_verbose_lt_toc = is_verbose_lt_toc
         self._lt_toc_last_page = lt_toc_last_page
@@ -46,7 +37,7 @@ class LineTypeToc:
 
         self._page_no = 0
 
-        self._parse_result_line_lines: nlp.cls_text_parser.LineLines = []
+        self._parse_result_line_lines: dcr_core.nlp.cls_nlp_core.NLPCore.LineLines = []
 
         self._strategy = ""
 
@@ -55,7 +46,7 @@ class LineTypeToc:
 
         self.no_lines_toc = 0
 
-        self.parse_result_line_pages: nlp.cls_text_parser.LinePages = []
+        self.parse_result_line_pages: dcr_core.nlp.cls_nlp_core.NLPCore.LinePages = []
         self._parse_result_no_pages_in_doc = 0
 
         self._exist = True
@@ -158,11 +149,11 @@ class LineTypeToc:
     # -----------------------------------------------------------------------------
     # Add a TOC line candidate element.
     # -----------------------------------------------------------------------------
-    def _process_toc_candidate_line_line(self, line_line: nlp.cls_text_parser.TextParser.LineLine, page_no_toc: int) -> None:
+    def _process_toc_candidate_line_line(self, line_line: dcr_core.nlp.cls_nlp_core.NLPCore.LineLine, page_no_toc: int) -> None:
         """Add a TOC line candidate element.
 
         Args:
-            line_line (nlp.cls_text_parser.TextParser.LineLine):
+            line_line (dcr_core.nlp.cls_nlp_core.NLPCore.LineLine):
                     Document line.
             page_no_toc (int):
                     Page number in the table of contents.
@@ -176,11 +167,11 @@ class LineTypeToc:
     # -----------------------------------------------------------------------------
     # Add a TOC table candidate element.
     # -----------------------------------------------------------------------------
-    def _process_toc_candidate_table_line(self, line_line: nlp.cls_text_parser.TextParser.LineLine) -> None:
+    def _process_toc_candidate_table_line(self, line_line: dcr_core.nlp.cls_nlp_core.NLPCore.LineLine) -> None:
         """Add a TOC table candidate element.
 
         Args:
-            line_line (nlp.cls_text_parser.TextParser.LineLine):
+            line_line (dcr_core.nlp.cls_nlp_core.NLPCore.LineLine):
                     Document line.
         """
         row_no = line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO]
@@ -215,17 +206,14 @@ class LineTypeToc:
     # -----------------------------------------------------------------------------
     def _store_results(self) -> None:  # noqa: C901
         """Store the found TOC entries in parser result."""
-        utils.check_exists_object(
-            is_document=True,
-        )
-
         self._progress_msg("LineTypeToc: Start store result")
 
-        if len(self._toc_candidates) < self._lt_toc_min_entries:
-            self._progress_msg(f"LineTypeToc: End   store result (min. entries)    ={len(self._toc_candidates)}")
-            return
+        self.no_lines_toc = len(self._toc_candidates)
 
-        self.no_lines_toc = 0
+        if len(self._toc_candidates) < self._lt_toc_min_entries:
+            self._progress_msg(f"LineTypeToc: End   store result (min. entries)    ={self.no_lines_toc}")
+            self.no_lines_toc = 0
+            return
 
         page_no_from = self._toc_candidates[0][1]
         page_no_till = self._toc_candidates[-1][1]
@@ -256,12 +244,10 @@ class LineTypeToc:
                             and line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO] == cand_line_no
                         ):
                             line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_TOC
-                            self.no_lines_toc += 1
                 elif self._strategy == dcr_core.nlp.cls_nlp_core.NLPCore.SEARCH_STRATEGY_TABLE:
                     if dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO in line_line:
                         if line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_BODY:
                             line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_TOC
-                            self.no_lines_toc += 1
 
         self._progress_msg(f"LineTypeToc: End   store result                   ={self.no_lines_toc}")
 
@@ -281,7 +267,7 @@ class LineTypeToc:
     # -----------------------------------------------------------------------------
     def process_document(
         self,
-        parse_result_line_pages: nlp.cls_text_parser.LinePages,
+        parse_result_line_pages: dcr_core.nlp.cls_nlp_core.NLPCore.LinePages,
     ) -> None:
         """Process the document related data."""
         if self._lt_toc_last_page == 0:
