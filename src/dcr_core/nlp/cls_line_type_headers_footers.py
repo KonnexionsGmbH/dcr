@@ -16,6 +16,22 @@ class LineTypeHeaderFooters:
         _type_: LineTypeHeaderFooters instance.
     """
 
+    Candidates = list[tuple[int, int]]
+
+    # line index, line text
+    LineDataCell = tuple[int, str]
+    LineDataRow = tuple[LineDataCell, LineDataCell]
+    LineData = list[LineDataRow]
+
+    # line index current page, line index previous page, Levenshtein distance
+    LSDDataCell = tuple[int, int, int]
+    LSDDataRow = list[LSDDataCell]
+    LSDData = list[LSDDataRow]
+
+    # page_index, line index
+    ResultKey = tuple[int, int]
+    ResultData = dict[ResultKey, str]
+
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
@@ -33,7 +49,6 @@ class LineTypeHeaderFooters:
                     If true, processing results are reported. Defaults to False.
         """
         self._action_file_name = action_file_name
-        self._action_no_pdf_pages = 0
         self._is_verbose_lt = is_verbose_lt
         self._lt_footer_max_distance = 0
         self._lt_footer_max_lines = 0
@@ -44,29 +59,20 @@ class LineTypeHeaderFooters:
         dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeHeaderFooters: Start create instance                ={self._action_file_name}")
 
         self._irregular_footer_cand: tuple[int, int] = ()  # type: ignore
-        Candidates = list[tuple[int, int]]
-        self._irregular_footer_cand_fp: Candidates = []
-        self._irregular_footer_cands: Candidates = []
+        self._irregular_footer_cand_fp: LineTypeHeaderFooters.Candidates = []
+        self._irregular_footer_cands: LineTypeHeaderFooters.Candidates = []
 
         self._irregular_header_cand: tuple[int, int] = ()  # type: ignore
-        self._irregular_header_cand_fp: Candidates = []
-        self._irregular_header_cands: Candidates = []
+        self._irregular_header_cand_fp: LineTypeHeaderFooters.Candidates = []
+        self._irregular_header_cands: LineTypeHeaderFooters.Candidates = []
 
         self._is_irregular_footer = True
         self._is_irregular_header = True
 
-        # line index, line text
-        LineDataCell = tuple[int, str]
-        LineDataRow = tuple[LineDataCell, LineDataCell]
-        LineData = list[LineDataRow]
-        self._line_data: LineData = []
+        self._line_data: LineTypeHeaderFooters.LineData = []
         self._line_data_max = 0
 
-        # line index current page, line index previous page, Levenshtein distance
-        LSDDataCell = tuple[int, int, int]
-        LSDDataRow = list[LSDDataCell]
-        LSDData = list[LSDDataRow]
-        self._lsd_data: LSDData = []
+        self._lsd_data: LineTypeHeaderFooters.LSDData = []
 
         self._no_irregular_footer = 0
         self._no_irregular_header = 0
@@ -76,10 +82,7 @@ class LineTypeHeaderFooters:
 
         self._parser_line_lines_json: dcr_core.nlp.cls_nlp_core.NLPCore.ParserLineLines = []
 
-        # page_index, line index
-        ResultKey = tuple[int, int]
-        ResultData = dict[ResultKey, str]
-        self._result_data: ResultData = {}
+        self._result_data: LineTypeHeaderFooters.ResultData = {}
 
         self.no_lines_footer = 0
         self.no_lines_header = 0
@@ -501,7 +504,6 @@ class LineTypeHeaderFooters:
             return
 
         self._action_file_name = action_file_name
-        self._action_no_pdf_pages = action_no_pdf_pages
         self._lt_footer_max_distance = lt_footer_max_distance
         self._lt_footer_max_lines = lt_footer_max_lines
         self._lt_header_max_distance = lt_header_max_distance
@@ -513,7 +515,7 @@ class LineTypeHeaderFooters:
         dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeHeaderFooters: Value of lsd_data                    ={self._lsd_data}")
 
         self._line_data_max = self._lt_header_max_lines + self._lt_footer_max_lines
-        self._page_max = self._action_no_pdf_pages
+        self._page_max = action_no_pdf_pages
 
         self._line_data = [((-1, ""), (-1, "")) for _ in range(self._line_data_max)]
         dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeHeaderFooters: Value of line_data                   ={self._line_data}")

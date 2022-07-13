@@ -111,7 +111,7 @@ def check_existing_document():
     expected_values[12] = 0
     expected_values[13] = 0
     expected_values[14] = 0
-    expected_values[15] = 0
+    expected_values[15] = 2
     expected_values[16] = 0
     expected_values[17] = 3
     expected_values[18] = db.cls_document.Document.DOCUMENT_STATUS_END

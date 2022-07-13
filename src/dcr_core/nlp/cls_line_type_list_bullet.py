@@ -6,21 +6,9 @@ import os
 import pathlib
 import re
 
-import cfg.glob
-import utils
-
 import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
 import dcr_core.utils
-
-# -----------------------------------------------------------------------------
-# Global type aliases.
-# -----------------------------------------------------------------------------
-Entry = dict[str, int | str]
-Entries = list[Entry]
-
-List = dict[str, Entries | float | int | str]
-Lists = list[List]
 
 
 # pylint: disable=too-many-instance-attributes
@@ -31,27 +19,45 @@ class LineTypeListBullet:
         _type_: LineTypeListBullet instance.
     """
 
+    Entry = dict[str, int | str]
+    Entries = list[Entry]
+
+    List = dict[str, Entries | float | int | str]
+    Lists = list[List]
+
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
-    def __init__(self) -> None:
-        """Initialise the instance."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    def __init__(
+        self,
+        action_file_name: str,
+        is_verbose_lt: bool = False,
+    ) -> None:
+        """Initialise the instance.
 
-        utils.check_exists_object(
-            is_action_curr=True,
-            is_document=True,
-            is_setup=True,
-        )
+        Args:
+            action_file_name (str):
+                    File name of the file to be processed.
+            is_verbose_lt (bool, optional):
+                    If true, processing results are reported. Defaults to False.
+        """
+        self._action_file_name = action_file_name
+        self._environment_variant = ""
+        self._file_encoding = ""
+        self._is_create_extra_file_list_bullet = False
+        self._is_verbose_lt = is_verbose_lt
+        self._lt_list_bullet_min_entries = 0
+        self._lt_list_bullet_rule_file = ""
+        self._lt_list_bullet_tolerance_llx = 0.0
 
         dcr_core.utils.check_exists_object(
             is_text_parser=True,
         )
 
-        dcr_core.utils.progress_msg(cfg.glob.setup.is_verbose_lt_list_bullet, "LineTypeListBullet")
+        dcr_core.utils.progress_msg(self._is_verbose_lt, "LineTypeListBullet")
         dcr_core.utils.progress_msg(
-            cfg.glob.setup.is_verbose_lt_list_bullet,
-            f"LineTypeListBullet: Start create instance                ={cfg.glob.action_curr.action_file_name}",
+            self._is_verbose_lt,
+            f"LineTypeListBullet: Start create instance                ={self._action_file_name}",
         )
 
         self._anti_patterns: list[tuple[str, re.Pattern[str]]] = self._init_anti_patterns()
@@ -63,7 +69,7 @@ class LineTypeListBullet:
 
         self._line_lines_idx = -1
 
-        self._lists: Lists = []
+        self._lists: LineTypeListBullet.Lists = []
 
         self._llx_lower_limit = 0.0
         self._llx_upper_limit = 0.0
@@ -76,6 +82,8 @@ class LineTypeListBullet:
         self._para_no = 0
         self._para_no_prev = 0
 
+        self._parser_line_lines_json: dcr_core.nlp.cls_nlp_core.NLPCore.ParserLineLines = []
+
         self._rules = self._init_rules()
         for key in self._rules:
             self._rules[key] = len(key)
@@ -85,11 +93,9 @@ class LineTypeListBullet:
         self._exist = True
 
         dcr_core.utils.progress_msg(
-            cfg.glob.setup.is_verbose_lt_list_bullet,
-            f"LineTypeListBullet: End   create instance                ={cfg.glob.action_curr.action_file_name}",
+            self._is_verbose_lt,
+            f"LineTypeListBullet: End   create instance                ={self._action_file_name}",
         )
-
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Finish a list.
@@ -99,9 +105,9 @@ class LineTypeListBullet:
         if self._no_entries == 0:
             return
 
-        if self._no_entries < cfg.glob.setup.lt_list_bullet_min_entries:
+        if self._no_entries < self._lt_list_bullet_min_entries:
             dcr_core.utils.progress_msg(
-                cfg.glob.setup.is_verbose_lt_list_bullet,
+                self._is_verbose_lt,
                 f"LineTypeListBullet: Not enough list entries    found only={self._no_entries} - "
                 + f"bullet='{self._bullet}' - entries={self._entries}",
             )
@@ -109,13 +115,13 @@ class LineTypeListBullet:
             return
 
         dcr_core.utils.progress_msg(
-            cfg.glob.setup.is_verbose_lt_list_bullet,
+            self._is_verbose_lt,
             f"LineTypeListBullet: List entries                    found={self._no_entries} - " + f"bullet='{self._bullet}' - entries={self._entries}",
         )
 
         self.no_lists += 1
 
-        entries: Entries = []
+        entries: LineTypeListBullet.Entries = []
 
         for [page_idx, para_no, line_lines_idx_from, line_lines_idx_till] in self._entries:
             line_lines: dcr_core.nlp.cls_nlp_core.NLPCore.ParserLineLines = dcr_core.cfg.glob.text_parser.parse_result_line_pages[page_idx][
@@ -127,10 +133,10 @@ class LineTypeListBullet:
             for idx in range(line_lines_idx_from, line_lines_idx_till + 1):
                 line_lines[idx][dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_LIST_BULLET
 
-                if cfg.glob.setup.is_create_extra_file_list_bullet:
+                if self._is_create_extra_file_list_bullet:
                     text.append(line_lines[idx][dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
 
-            if cfg.glob.setup.is_create_extra_file_list_bullet:
+            if self._is_create_extra_file_list_bullet:
                 # {
                 #     "entryNo": 99,
                 #     "lineNoPageFrom": 99,
@@ -152,7 +158,7 @@ class LineTypeListBullet:
 
             dcr_core.cfg.glob.text_parser.parse_result_line_pages[page_idx][dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES] = line_lines
 
-        if cfg.glob.setup.is_create_extra_file_list_bullet:
+        if self._is_create_extra_file_list_bullet:
             # {
             #     "bullet": "xxx",
             #     "listNo": 99,
@@ -174,9 +180,7 @@ class LineTypeListBullet:
 
         self._reset_list()
 
-        dcr_core.utils.progress_msg(
-            cfg.glob.setup.is_verbose_lt_list_bullet, f"LineTypeListBullet: End   list                    on page={self._page_idx+1}"
-        )
+        dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeListBullet: End   list                    on page={self._page_idx+1}")
 
     # -----------------------------------------------------------------------------
     # Initialise the bulleted list anti-patterns.
@@ -191,20 +195,16 @@ class LineTypeListBullet:
             list[tuple[str, re.Pattern[str]]]:
                 The valid bulleted list anti-patterns.
         """
-        if cfg.glob.setup.lt_list_bullet_rule_file and cfg.glob.setup.lt_list_bullet_rule_file.lower() != "none":
-            lt_list_bullet_rule_file_path = dcr_core.utils.get_os_independent_name(cfg.glob.setup.lt_list_bullet_rule_file)
+        if self._lt_list_bullet_rule_file and self._lt_list_bullet_rule_file.lower() != "none":
+            lt_list_bullet_rule_file_path = dcr_core.utils.get_os_independent_name(self._lt_list_bullet_rule_file)
             if os.path.isfile(lt_list_bullet_rule_file_path):
                 return self._load_anti_patterns_from_json(pathlib.Path(lt_list_bullet_rule_file_path))
 
-            dcr_core.utils.terminate_fatal(
-                f"File with bulleted list anti-patterns is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'"
-            )
+            dcr_core.utils.terminate_fatal(f"File with bulleted list anti-patterns is missing - " f"file name '{self._lt_list_bullet_rule_file}'")
 
         anti_patterns = []
 
-        for name, regexp in dcr_core.nlp.cls_nlp_core.NLPCore.get_lt_anti_patterns_default_list_bullet(
-            environment_variant=cfg.glob.setup.environment_variant
-        ):
+        for name, regexp in dcr_core.nlp.cls_nlp_core.NLPCore.get_lt_anti_patterns_default_list_bullet(environment_variant=self._environment_variant):
             anti_patterns.append((name, re.compile(regexp)))
 
         return anti_patterns
@@ -221,21 +221,21 @@ class LineTypeListBullet:
             dict[str, int]:
                     All valid bullets.
         """
-        if cfg.glob.setup.lt_list_bullet_rule_file and cfg.glob.setup.lt_list_bullet_rule_file.lower() != "none":
-            lt_list_bullet_rule_file_path = dcr_core.utils.get_os_independent_name(cfg.glob.setup.lt_list_bullet_rule_file)
+        if self._lt_list_bullet_rule_file and self._lt_list_bullet_rule_file.lower() != "none":
+            lt_list_bullet_rule_file_path = dcr_core.utils.get_os_independent_name(self._lt_list_bullet_rule_file)
 
             if os.path.isfile(lt_list_bullet_rule_file_path):
                 return self._load_rules_from_json(pathlib.Path(lt_list_bullet_rule_file_path))
 
-            dcr_core.utils.terminate_fatal(f"File with valid bullets is missing - " f"file name '{cfg.glob.setup.lt_list_bullet_rule_file}'")
+            dcr_core.utils.terminate_fatal(f"File with valid bullets is missing - " f"file name '{self._lt_list_bullet_rule_file}'")
 
         return dcr_core.nlp.cls_nlp_core.NLPCore.get_lt_rules_default_list_bullet()
 
     # -----------------------------------------------------------------------------
     # Load the valid bulleted list anti-patterns from a JSON file.
     # -----------------------------------------------------------------------------
-    @staticmethod
     def _load_anti_patterns_from_json(
+        self,
         lt_list_bullet_rule_file: pathlib.Path,
     ) -> list[tuple[str, re.Pattern[str]]]:
         """Load the valid bulleted list anti-patterns from a JSON file.
@@ -250,7 +250,7 @@ class LineTypeListBullet:
         """
         anti_patterns = []
 
-        with open(lt_list_bullet_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        with open(lt_list_bullet_rule_file, "r", encoding=self._file_encoding) as file_handle:
             json_data = json.load(file_handle)
 
             for rule in json_data[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_ANTI_PATTERNS]:
@@ -261,15 +261,18 @@ class LineTypeListBullet:
                     )
                 )
 
-        utils.progress_msg("The bulleted list anti-patterns were successfully loaded " + f"from the file {cfg.glob.setup.lt_list_bullet_rule_file}")
+        dcr_core.utils.progress_msg(
+            self._is_verbose_lt,
+            "The bulleted list anti-patterns were successfully loaded " + f"from the file {self._lt_list_bullet_rule_file}",
+        )
 
         return anti_patterns
 
     # -----------------------------------------------------------------------------
     # Load the valid bullets from a JSON file.
     # -----------------------------------------------------------------------------
-    @staticmethod
     def _load_rules_from_json(
+        self,
         lt_list_bullet_rule_file: pathlib.Path,
     ) -> dict[str, int]:
         """Load the valid bullets from a JSON file.
@@ -284,13 +287,15 @@ class LineTypeListBullet:
         """
         list_bullet_rules = {}
 
-        with open(lt_list_bullet_rule_file, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        with open(lt_list_bullet_rule_file, "r", encoding=self._file_encoding) as file_handle:
             json_data = json.load(file_handle)
 
             for bullet in json_data[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE_RULES]:
                 list_bullet_rules[bullet] = 0
 
-        utils.progress_msg(f"The list_bullet rules were successfully loaded from the file {cfg.glob.setup.lt_list_bullet_rule_file}")
+        dcr_core.utils.progress_msg(
+            self._is_verbose_lt, f"The list_bullet rules were successfully loaded from the file {self._lt_list_bullet_rule_file}"
+        )
 
         return list_bullet_rules
 
@@ -309,7 +314,7 @@ class LineTypeListBullet:
         for (rule_name, pattern) in self._anti_patterns:
             if pattern.match(text):
                 dcr_core.utils.progress_msg(
-                    cfg.glob.setup.is_verbose_lt_list_bullet, f"LineTypeListBullet: Anti pattern                         ={rule_name} - text={text}"
+                    self._is_verbose_lt, f"LineTypeListBullet: Anti pattern                         ={rule_name} - text={text}"
                 )
                 return
 
@@ -345,11 +350,11 @@ class LineTypeListBullet:
             self._line_lines_idx_till = self._line_lines_idx
             self._llx_lower_limit = round(
                 (coord_llx := float(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]))
-                * (100 - cfg.glob.setup.lt_list_bullet_tolerance_llx)
+                * (100 - self._lt_list_bullet_tolerance_llx)
                 / 100,
                 2,
             )
-            self._llx_upper_limit = round(coord_llx * (100 + cfg.glob.setup.lt_list_bullet_tolerance_llx) / 100, 2)
+            self._llx_upper_limit = round(coord_llx * (100 + self._lt_list_bullet_tolerance_llx) / 100, 2)
 
         self._entries.append([self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx])
 
@@ -362,37 +367,29 @@ class LineTypeListBullet:
     # -----------------------------------------------------------------------------
     def _process_page(self) -> None:
         """Process the page-related data."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeListBullet: Start page                           ={self._page_idx + 1}")
 
-        dcr_core.utils.progress_msg(
-            cfg.glob.setup.is_verbose_lt_list_bullet, f"LineTypeListBullet: Start page                           ={self._page_idx + 1}"
-        )
+        self._max_line_line = len(self._parser_line_lines_json)
 
-        self._max_line_line = len(dcr_core.cfg.glob.text_parser.parse_result_line_lines)
-
-        for line_lines_idx, line_line in enumerate(dcr_core.cfg.glob.text_parser.parse_result_line_lines):
+        for line_lines_idx, line_line in enumerate(self._parser_line_lines_json):
             self._line_lines_idx = line_lines_idx
 
             if line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_BODY:
                 self._process_line(line_line)
                 self._page_idx_prev = self._page_idx
 
-        dcr_core.utils.progress_msg(
-            cfg.glob.setup.is_verbose_lt_list_bullet, f"LineTypeListBullet: End   page                           ={self._page_idx + 1}"
-        )
-
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeListBullet: End   page                           ={self._page_idx + 1}")
 
     # -----------------------------------------------------------------------------
     # Reset the document memory.
     # -----------------------------------------------------------------------------
     def _reset_document(self) -> None:
         """Reset the document memory."""
-        dcr_core.utils.progress_msg(cfg.glob.setup.is_verbose_lt_list_bullet, "LineTypeListBullet: Reset the document memory")
+        dcr_core.utils.progress_msg(self._is_verbose_lt, "LineTypeListBullet: Reset the document memory")
 
         self.no_lists = 0
 
-        if cfg.glob.setup.is_create_extra_file_list_bullet:
+        if self._is_create_extra_file_list_bullet:
             self._lists = []
 
         self._reset_list()
@@ -414,7 +411,7 @@ class LineTypeListBullet:
         self._page_idx_prev = -1
         self._para_no_prev = 0
 
-        dcr_core.utils.progress_msg(cfg.glob.setup.is_verbose_lt_list_bullet, "LineTypeListBullet: Reset the list memory")
+        dcr_core.utils.progress_msg(self._is_verbose_lt, "LineTypeListBullet: Reset the list memory")
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -430,31 +427,85 @@ class LineTypeListBullet:
     # -----------------------------------------------------------------------------
     # Process the document related data.
     # -----------------------------------------------------------------------------
-    def process_document(self) -> None:
-        """Process the document related data."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    def process_document(  # pylint: disable=too-many-arguments
+        self,
+        action_file_name: str,
+        directory_name: str,
+        document_document_id: int,
+        document_file_name: str,
+        environment_variant: str,
+        file_encoding: str,
+        file_name: str,
+        is_create_extra_file_list_bullet: bool,
+        is_json_sort_keys: bool,
+        json_indent: str,
+        lt_list_bullet_min_entries: int,
+        lt_list_bullet_rule_file: str,
+        lt_list_bullet_tolerance_llx: float,
+        parser_line_pages_json: dcr_core.nlp.cls_nlp_core.NLPCore.ParserLinePages,
+    ) -> None:
+        """Process the document related data.
 
-        dcr_core.utils.progress_msg(cfg.glob.setup.is_verbose_lt_list_bullet, "LineTypeListBullet")
+        Args:
+            action_file_name (str):
+                    File name of the file to be processed.
+            directory_name (str):
+                    Directory name of the output file.
+            document_document_id (int):
+                    Identification of the document.
+            document_file_name (in):
+                    File name of the document file.
+            environment_variant (str):
+                    Environment variant: dev, prod or test.
+            file_encoding (str):
+                    The encoding of the output file.
+            file_name (str):
+                    File name of the output file.
+            is_create_extra_file_list_bullet (bool):
+                    Create a separate JSON file with the bulleted lists.
+            is_json_sort_keys (bool):
+                    If true, the output of the JSON dictionaries will be sorted by key.
+            json_indent (str):
+                    Indent level for pretty-printing the JSON output.
+            lt_list_bullet_min_entries (int):
+                    Minimum number of entries to determine a bulleted list.
+            lt_list_bullet_rule_file (str):
+                    File with rules to determine the bulleted lists.
+            lt_list_bullet_tolerance_llx (float):
+                    Tolerance of vertical indentation in percent.
+            parser_line_pages_json (dcr_core.nlp.cls_nlp_core.NLPCore.LinePages):
+                    The document pages formatted in the parser.
+        """
+        self._action_file_name = action_file_name
+        self._environment_variant = environment_variant
+        self._file_encoding = file_encoding
+        self._is_create_extra_file_list_bullet = is_create_extra_file_list_bullet
+        self._lt_list_bullet_min_entries = lt_list_bullet_min_entries
+        self._lt_list_bullet_rule_file = lt_list_bullet_rule_file
+        self._lt_list_bullet_tolerance_llx = lt_list_bullet_tolerance_llx
+        self._parser_line_pages_json = parser_line_pages_json
+
+        dcr_core.utils.progress_msg(self._is_verbose_lt, "LineTypeListBullet")
         dcr_core.utils.progress_msg(
-            cfg.glob.setup.is_verbose_lt_list_bullet,
-            f"LineTypeListBullet: Start document                       ={cfg.glob.action_curr.action_file_name}",
+            self._is_verbose_lt,
+            f"LineTypeListBullet: Start document                       ={self._action_file_name}",
         )
 
         self._reset_document()
 
-        for page_idx, page in enumerate(dcr_core.cfg.glob.text_parser.parse_result_line_pages):
+        for page_idx, page_json in enumerate(parser_line_pages_json):
             self._page_idx = page_idx
-            dcr_core.cfg.glob.text_parser.parse_result_line_lines = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
+            self._parser_line_lines_json = page_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
         self._finish_list()
 
-        if cfg.glob.setup.is_create_extra_file_list_bullet and self._lists:
-            full_name_toc = dcr_core.utils.get_full_name(
-                cfg.glob.action_curr.action_directory_name,
-                cfg.glob.action_curr.get_stem_name() + "_list_bullet." + dcr_core.cfg.glob.FILE_TYPE_JSON,  # type: ignore
+        if self._is_create_extra_file_list_bullet and self._lists:
+            full_name = dcr_core.utils.get_full_name(
+                directory_name,
+                dcr_core.utils.get_stem_name(str(file_name)) + "_list_bullet." + dcr_core.cfg.glob.FILE_TYPE_JSON,
             )
-            with open(full_name_toc, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+            with open(full_name, "w", encoding=self._file_encoding) as file_handle:
                 # {
                 #     "documentId": 99,
                 #     "documentFileName": "xxx",
@@ -464,19 +515,20 @@ class LineTypeListBullet:
                 # }
                 json.dump(
                     {
-                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
-                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: document_document_id,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: document_file_name,
                         dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: self.no_lists,
                         dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LISTS_BULLET: self._lists,
                     },
                     file_handle,
-                    indent=cfg.glob.setup.json_indent,
-                    sort_keys=cfg.glob.setup.is_json_sort_keys,
+                    indent=json_indent,
+                    sort_keys=is_json_sort_keys,
                 )
 
-        dcr_core.utils.progress_msg(
-            cfg.glob.setup.is_verbose_lt_list_bullet,
-            f"LineTypeListBullet: End   document                       ={cfg.glob.action_curr.action_file_name}",
-        )
+        if self.no_lists > 0:
+            dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeListBullet:                 number bulleted lists={self.no_lists}")
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr_core.utils.progress_msg(
+            self._is_verbose_lt,
+            f"LineTypeListBullet: End   document                       ={self._action_file_name}",
+        )

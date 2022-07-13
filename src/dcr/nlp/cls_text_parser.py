@@ -7,12 +7,12 @@ import json
 
 import cfg.glob
 import nlp.cls_line_type_heading
-import nlp.cls_line_type_list_bullet
-import nlp.cls_line_type_list_number
 import utils
 
 import dcr_core.cfg.glob
 import dcr_core.nlp.cls_line_type_headers_footers
+import dcr_core.nlp.cls_line_type_list_bullet
+import dcr_core.nlp.cls_line_type_list_number
 import dcr_core.nlp.cls_line_type_table
 import dcr_core.nlp.cls_line_type_toc
 import dcr_core.nlp.cls_nlp_core
@@ -780,8 +780,14 @@ class TextParser:
                 action_file_name=cfg.glob.action_curr.action_file_name,
                 is_verbose_lt=cfg.glob.setup.is_verbose_lt_table,
             )
-            dcr_core.cfg.glob.line_type_list_bullet = nlp.cls_line_type_list_bullet.LineTypeListBullet()
-            dcr_core.cfg.glob.line_type_list_number = nlp.cls_line_type_list_number.LineTypeListNumber()
+            dcr_core.cfg.glob.line_type_list_bullet = dcr_core.nlp.cls_line_type_list_bullet.LineTypeListBullet(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                is_verbose_lt=cfg.glob.setup.is_verbose_lt_list_bullet,
+            )
+            dcr_core.cfg.glob.line_type_list_number = dcr_core.nlp.cls_line_type_list_number.LineTypeListNumber(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                is_verbose_lt=cfg.glob.setup.is_verbose_lt_list_bullet,
+            )
             dcr_core.cfg.glob.line_type_heading = nlp.cls_line_type_heading.LineTypeHeading()
         elif cfg.glob.setup.is_parsing_page:
             self._parse_result_page_pages = []
@@ -828,8 +834,39 @@ class TextParser:
                 json_indent=cfg.glob.setup.json_indent,
                 parser_line_pages_json=self.parse_result_line_pages,
             )
-            dcr_core.cfg.glob.line_type_list_bullet.process_document()
-            dcr_core.cfg.glob.line_type_list_number.process_document()
+            dcr_core.cfg.glob.line_type_list_bullet.process_document(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                directory_name=cfg.glob.action_curr.action_directory_name,
+                document_document_id=cfg.glob.document.document_id,
+                document_file_name=cfg.glob.document.document_file_name,
+                environment_variant=cfg.glob.setup.environment_variant,
+                file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+                file_name=cfg.glob.action_curr.action_file_name,
+                is_create_extra_file_list_bullet=cfg.glob.setup.is_create_extra_file_list_bullet,
+                is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
+                json_indent=cfg.glob.setup.json_indent,
+                lt_list_bullet_min_entries=cfg.glob.setup.lt_list_bullet_min_entries,
+                lt_list_bullet_rule_file=cfg.glob.setup.lt_list_bullet_rule_file,
+                lt_list_bullet_tolerance_llx=cfg.glob.setup.lt_list_bullet_tolerance_llx,
+                parser_line_pages_json=self.parse_result_line_pages,
+            )
+            dcr_core.cfg.glob.line_type_list_number.process_document(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                directory_name=cfg.glob.action_curr.action_directory_name,
+                document_document_id=cfg.glob.document.document_id,
+                document_file_name=cfg.glob.document.document_file_name,
+                environment_variant=cfg.glob.setup.environment_variant,
+                file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+                file_name=cfg.glob.action_curr.action_file_name,
+                is_create_extra_file_list_number=cfg.glob.setup.is_create_extra_file_list_number,
+                is_lt_list_number_file_incl_regexp=cfg.glob.setup.is_lt_list_number_file_incl_regexp,
+                is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
+                json_indent=cfg.glob.setup.json_indent,
+                lt_list_number_min_entries=cfg.glob.setup.lt_list_number_min_entries,
+                lt_list_number_rule_file=cfg.glob.setup.lt_list_number_rule_file,
+                lt_list_number_tolerance_llx=cfg.glob.setup.lt_list_number_tolerance_llx,
+                parser_line_pages_json=self.parse_result_line_pages,
+            )
             dcr_core.cfg.glob.line_type_heading.process_document()
             self._create_line_document()
         elif cfg.glob.setup.is_parsing_page:

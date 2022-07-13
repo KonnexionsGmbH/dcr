@@ -16,6 +16,15 @@ class LineTypeTable:
         _type_: LineTypeTable instance.
     """
 
+    Column = dict[str, float | int | object | str]
+    Columns = list[Column]
+
+    Row = dict[str, Columns | float | int | str]
+    Rows = list[Row]
+
+    Table = dict[str, float | int | Rows]
+    Tables = list[Table]
+
     # -----------------------------------------------------------------------------
     # Initialise the instance.
     # -----------------------------------------------------------------------------
@@ -37,25 +46,15 @@ class LineTypeTable:
         )
 
         self._action_file_name = action_file_name
-        self._directory_name = ""
-        self._document_document_id = 0
-        self._document_file_name = ""
-        self._file_encoding = ""
-        self._file_name = ""
-        self._is_create_extra_file_table = False
-        self._is_json_sort_keys = False
         self._is_lt_table_file_incl_empty_columns = False
         self._is_verbose_lt = is_verbose_lt
-        self._json_indent = ""
 
         dcr_core.utils.progress_msg(self._is_verbose_lt, "LineTypeTable")
         dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeTable: Start create instance                ={self._action_file_name}")
 
         self._column_no = 0
         self._column_no_prev = 0
-        Column = dict[str, float | int | object | str]
-        Columns = list[Column]
-        self._columns: Columns = []
+        self._columns: LineTypeTable.Columns = []
 
         self._first_column_llx = 0.0
         self._first_row_llx = 0.0
@@ -76,17 +75,11 @@ class LineTypeTable:
 
         self._row_no = 0
         self._row_no_prev = 0
-        Row = dict[str, Columns | float | int | str]
-        Rows = list[Row]
-        self._rows: Rows = []
+        self._rows: LineTypeTable.Rows = []
 
-        Table = dict[str, float | int | Rows]
-        Tables = list[Table]
-        self._tables: Tables = []
+        self._tables: LineTypeTable.Tables = []
 
         self.no_tables = 0
-
-        self.parser_line_pages_json: dcr_core.nlp.cls_nlp_core.NLPCore.ParserLinePages = []
 
         self._exist = True
 
@@ -364,31 +357,22 @@ class LineTypeTable:
                     The document pages formatted in the parser.
         """
         self._action_file_name = action_file_name
-        self._directory_name = directory_name
-        self._document_document_id = document_document_id
-        self._document_file_name = document_file_name
-        self._file_encoding = file_encoding
-        self._file_name = file_name
-        self._is_create_extra_file_table = is_create_extra_file_table
-        self._is_json_sort_keys = is_json_sort_keys
         self._is_lt_table_file_incl_empty_columns = is_lt_table_file_incl_empty_columns
-        self._json_indent = json_indent
-        self.parser_line_pages_json = parser_line_pages_json
 
         dcr_core.utils.progress_msg(self._is_verbose_lt, "LineTypeTable")
         dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeTable: Start document                       ={self._action_file_name}")
 
         self._reset_document()
 
-        for page_idx, page_json in enumerate(self.parser_line_pages_json):
+        for page_idx, page_json in enumerate(parser_line_pages_json):
             self._page_idx = page_idx
             self._parser_line_lines_json = page_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
-        if self._is_create_extra_file_table and self._tables:
+        if is_create_extra_file_table and self._tables:
             full_name = dcr_core.utils.get_full_name(
                 directory_name,
-                dcr_core.utils.get_stem_name(str(self._file_name)) + "_table." + dcr_core.cfg.glob.FILE_TYPE_JSON,
+                dcr_core.utils.get_stem_name(str(file_name)) + "_table." + dcr_core.cfg.glob.FILE_TYPE_JSON,
             )
             with open(full_name, "w", encoding=file_encoding) as file_handle:
                 # {

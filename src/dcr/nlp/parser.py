@@ -156,12 +156,16 @@ def parse_tetml_file() -> None:
         if (
             dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer != 0
             or dcr_core.cfg.glob.line_type_headers_footers.no_lines_header != 0
-            or dcr_core.cfg.glob.line_type_toc.no_lines_toc != 0
+            or dcr_core.cfg.glob.line_type_list_bullet.no_lists != 0
+            or dcr_core.cfg.glob.line_type_list_number.no_lists != 0
             or dcr_core.cfg.glob.line_type_table.no_tables != 0
+            or dcr_core.cfg.glob.line_type_toc.no_lines_toc != 0
         ):
             cfg.glob.document.document_no_lines_footer = dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer
             cfg.glob.document.document_no_lines_header = dcr_core.cfg.glob.line_type_headers_footers.no_lines_header
             cfg.glob.document.document_no_lines_toc = dcr_core.cfg.glob.line_type_toc.no_lines_toc
+            cfg.glob.document.document_no_lists_bullet = dcr_core.cfg.glob.line_type_list_bullet.no_lists
+            cfg.glob.document.document_no_lists_number = dcr_core.cfg.glob.line_type_list_number.no_lists
             cfg.glob.document.document_no_tables = dcr_core.cfg.glob.line_type_table.no_tables
             cfg.glob.document.persist_2_db()  # type: ignore
 

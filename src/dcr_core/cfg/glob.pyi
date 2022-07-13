@@ -1,8 +1,6 @@
 """Library Stub."""
 
 import nlp.cls_line_type_heading
-import nlp.cls_line_type_list_bullet
-import nlp.cls_line_type_list_number
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 
