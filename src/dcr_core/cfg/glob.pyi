@@ -1,10 +1,13 @@
 """Library Stub."""
 
-import nlp.cls_line_type_heading
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 
 import dcr_core.nlp.cls_line_type_headers_footers
+import dcr_core.nlp.cls_line_type_heading
+import dcr_core.nlp.cls_line_type_list_bullet
+import dcr_core.nlp.cls_line_type_list_number
+import dcr_core.nlp.cls_line_type_table
 import dcr_core.nlp.cls_line_type_toc
 
 # -----------------------------------------------------------------------------
@@ -33,10 +36,10 @@ RETURN_OK: tuple[str, str]
 # Global Variables.
 # -----------------------------------------------------------------------------
 line_type_headers_footers: type[dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters]
-line_type_heading: type[nlp.cls_line_type_heading.LineTypeHeading]
-line_type_list_bullet: type[nlp.cls_line_type_list_bullet.LineTypeListBullet]
-line_type_list_number: type[nlp.cls_line_type_list_number.LineTypeListNumber]
-line_type_table: type[nlp.cls_line_type_table.LineTypeTable]
+line_type_heading: type[dcr_core.nlp.cls_line_type_heading.LineTypeHeading]
+line_type_list_bullet: type[dcr_core.nlp.cls_line_type_list_bullet.LineTypeListBullet]
+line_type_list_number: type[dcr_core.nlp.cls_line_type_list_number.LineTypeListNumber]
+line_type_table: type[dcr_core.nlp.cls_line_type_table.LineTypeTable]
 line_type_toc: type[dcr_core.nlp.cls_line_type_toc.LineTypeToc]
 
 text_parser: type[nlp.cls_text_parser.TextParser]

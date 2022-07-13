@@ -746,10 +746,10 @@ def fxtr_before_any_test():
     CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
 
     for (config_param, config_value) in (
+        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PORT, "5434"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PREFIX, "postgresql+psycopg2://"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_CONTAINER_PORT, "5432"),

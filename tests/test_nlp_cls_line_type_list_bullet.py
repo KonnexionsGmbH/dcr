@@ -8,13 +8,12 @@ import db.cls_db_core
 import db.cls_document
 import db.cls_run
 import nlp.cls_text_parser
-import dcr_core.nlp.cls_line_type_list_bullet
 import pytest
 
 import dcr
 import dcr_core.cfg.glob
+import dcr_core.nlp.cls_line_type_list_bullet
 import dcr_core.utils
-import nlp.cls_text_parser
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -41,8 +40,8 @@ def test_line_type_list_bullet_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
@@ -149,8 +148,8 @@ def test_line_type_list_bullet_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
@@ -228,8 +227,6 @@ def test_line_type_list_bullet_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 
-
-
 # -----------------------------------------------------------------------------
 # Test LineType Bulleted List - minimum version - 2.
 # -----------------------------------------------------------------------------
@@ -249,8 +246,8 @@ def test_line_type_list_bullet_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
@@ -407,8 +404,8 @@ def test_line_type_list_bullet_missing_dependencies_text_parser(fxtr_setup_empty
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
         dcr_core.nlp.cls_line_type_list_bullet.LineTypeListBullet(
-        action_file_name=cfg.glob.action_curr.action_file_name,
-        is_verbose_lt=cfg.glob.setup.is_verbose_lt_list_bullet,
+            action_file_name=cfg.glob.action_curr.action_file_name,
+            is_verbose_lt=cfg.glob.setup.is_verbose_lt_list_bullet,
         )
 
     assert expt.type == SystemExit, "Instance of class 'TextParser' is missing"

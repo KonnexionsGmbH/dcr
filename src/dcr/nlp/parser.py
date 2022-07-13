@@ -154,7 +154,7 @@ def parse_tetml_file() -> None:
 
     if cfg.glob.setup.is_parsing_line:
         if (
-            dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer != 0
+            dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer != 0  # pylint: disable=too-many-boolean-expressions
             or dcr_core.cfg.glob.line_type_headers_footers.no_lines_header != 0
             or dcr_core.cfg.glob.line_type_list_bullet.no_lists != 0
             or dcr_core.cfg.glob.line_type_list_number.no_lists != 0

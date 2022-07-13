@@ -24,10 +24,10 @@ class Setup:
     # -----------------------------------------------------------------------------
     _CONFIG_PARAM_NO = 129
 
+    _DCR_CFG_CREATE_EXTRA_FILE_HEADING: ClassVar[str] = "create_extra_file_heading"
     _DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET: ClassVar[str] = "create_extra_file_list_bullet"
     _DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER: ClassVar[str] = "create_extra_file_list_number"
     _DCR_CFG_CREATE_EXTRA_FILE_TABLE: ClassVar[str] = "create_extra_file_table"
-    _DCR_CFG_CREATE_EXTRA_FILE_TOC: ClassVar[str] = "create_extra_file_toc"
     _DCR_CFG_DB_CONNECTION_PORT: ClassVar[str] = "db_connection_port"
     _DCR_CFG_DB_CONNECTION_PREFIX: ClassVar[str] = "db_connection_prefix"
     _DCR_CFG_DB_CONTAINER_PORT: ClassVar[str] = "db_container_port"
@@ -187,10 +187,10 @@ class Setup:
         # -----------------------------------------------------------------------------
         # DCR configuration.
         # -----------------------------------------------------------------------------
+        self.is_create_extra_file_heading = True
         self.is_create_extra_file_list_bullet = True
         self.is_create_extra_file_list_number = True
         self.is_create_extra_file_table = True
-        self.is_create_extra_file_toc = True
 
         self.db_connection_port = 5432
         self.db_connection_prefix = "postgresql+psycopg2://"
@@ -355,6 +355,9 @@ class Setup:
     # -----------------------------------------------------------------------------
     def _check_config(self) -> None:
         """Check the configuration parameters."""
+        self.is_create_extra_file_heading = self._determine_config_param_boolean(
+            Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, self.is_create_extra_file_heading
+        )
         self.is_create_extra_file_list_bullet = self._determine_config_param_boolean(
             Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, self.is_create_extra_file_list_bullet
         )
@@ -364,7 +367,6 @@ class Setup:
         self.is_create_extra_file_table = self._determine_config_param_boolean(
             Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, self.is_create_extra_file_table
         )
-        self.is_create_extra_file_toc = self._determine_config_param_boolean(Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC, self.is_create_extra_file_toc)
         self.db_connection_port = self._determine_config_param_integer(Setup._DCR_CFG_DB_CONNECTION_PORT, self.db_connection_port)
         self.db_container_port = self._determine_config_param_integer(Setup._DCR_CFG_DB_CONTAINER_PORT, self.db_container_port)
 
@@ -750,10 +752,10 @@ class Setup:
         for key, item in self._config.items():
             match key:
                 case (
-                    Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET
+                    Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING
+                    | Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET
                     | Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER
                     | Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE
-                    | Setup._DCR_CFG_CREATE_EXTRA_FILE_TOC
                     | Setup._DCR_CFG_DB_CONNECTION_PORT
                     | Setup._DCR_CFG_DB_CONTAINER_PORT
                     | Setup._DCR_CFG_DELETE_AUXILIARY_FILES

@@ -6,11 +6,11 @@ import datetime
 import json
 
 import cfg.glob
-import nlp.cls_line_type_heading
 import utils
 
 import dcr_core.cfg.glob
 import dcr_core.nlp.cls_line_type_headers_footers
+import dcr_core.nlp.cls_line_type_heading
 import dcr_core.nlp.cls_line_type_list_bullet
 import dcr_core.nlp.cls_line_type_list_number
 import dcr_core.nlp.cls_line_type_table
@@ -788,7 +788,10 @@ class TextParser:
                 action_file_name=cfg.glob.action_curr.action_file_name,
                 is_verbose_lt=cfg.glob.setup.is_verbose_lt_list_bullet,
             )
-            dcr_core.cfg.glob.line_type_heading = nlp.cls_line_type_heading.LineTypeHeading()
+            dcr_core.cfg.glob.line_type_heading = dcr_core.nlp.cls_line_type_heading.LineTypeHeading(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                is_verbose_lt=cfg.glob.setup.is_verbose_lt_list_bullet,
+            )
         elif cfg.glob.setup.is_parsing_page:
             self._parse_result_page_pages = []
         elif cfg.glob.setup.is_parsing_word:
@@ -867,7 +870,24 @@ class TextParser:
                 lt_list_number_tolerance_llx=cfg.glob.setup.lt_list_number_tolerance_llx,
                 parser_line_pages_json=self.parse_result_line_pages,
             )
-            dcr_core.cfg.glob.line_type_heading.process_document()
+            dcr_core.cfg.glob.line_type_heading.process_document(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                directory_name=cfg.glob.action_curr.action_directory_name,
+                document_document_id=cfg.glob.document.document_id,
+                document_file_name=cfg.glob.document.document_file_name,
+                file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+                file_name=cfg.glob.action_curr.action_file_name,
+                is_create_extra_file_heading=cfg.glob.setup.is_create_extra_file_heading,
+                is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
+                is_lt_heading_file_incl_regexp=cfg.glob.setup.is_lt_heading_file_incl_regexp,
+                json_indent=cfg.glob.setup.json_indent,
+                lt_heading_file_incl_no_ctx=cfg.glob.setup.lt_heading_file_incl_no_ctx,
+                lt_heading_max_level=cfg.glob.setup.lt_heading_max_level,
+                lt_heading_min_pages=cfg.glob.setup.lt_heading_min_pages,
+                lt_heading_rule_file=cfg.glob.setup.lt_heading_rule_file,
+                lt_heading_tolerance_llx=cfg.glob.setup.lt_heading_tolerance_llx,
+                parser_line_pages_json=self.parse_result_line_pages,
+            )
             self._create_line_document()
         elif cfg.glob.setup.is_parsing_page:
             self._create_page_document()

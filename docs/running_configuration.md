@@ -122,10 +122,10 @@ This file controls the behaviour of the **DCR** application.
 The customisable entries are:
 
     [dcr]
+    create_extra_file_heading = true
     create_extra_file_list_bullet = true
     create_extra_file_list_number = true
     create_extra_file_table = true
-    create_extra_file_toc = true
     db_connection_port = 5432
     db_connection_prefix = postgresql+psycopg2://
     db_container_port = 5432
@@ -187,10 +187,10 @@ The customisable entries are:
 
 | Parameter                        | Default value                               | Description                                                                                                             |
 |----------------------------------|---------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
+| create_extra_file_heading        | **`true`**                                  | Create a separate **`JSON`** file with the table of contents.                                                           |
 | create_extra_file_list_bullet    | **`true`**                                  | Create a separate **`JSON`** file with the bulleted lists.                                                              |
 | create_extra_file_list_number    | **`true`**                                  | Create a separate **`JSON`** file with the numbered lists.                                                              |
 | create_extra_file_table          | **`true`**                                  | Create a separate **`JSON`** file with the tables.                                                                      |
-| create_extra_file_toc            | **`true`**                                  | Create a separate **`JSON`** file with the table of contents.                                                           |
 | db_connection_port               | environment specific                        | Port number the DBMS server is listening on.                                                                            |
 | db_connection_prefix             | **`postgresql+psycopg2://`**                | Front part of the database URL.                                                                                         |
 | db_database                      | environment specific                        | **DCR** database name.                                                                                                  |

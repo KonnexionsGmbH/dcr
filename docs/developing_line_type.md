@@ -245,9 +245,9 @@ TBD
 
 The following parameters control the classification of the headings:
 
-- **`create_extra_file_toc`**
+- **`create_extra_file_heading`**
 
-Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_toc.json` is created in the file directory `data_accepted` with the identified headings.
+Default value: **`true`** - if true, a **`JSON`** file named `<document_name>_heading.json` is created in the file directory `data_accepted` with the identified headings.
 
 - **`lt_heading_file_incl_no_ctx`**
 
