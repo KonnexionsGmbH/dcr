@@ -1,5 +1,7 @@
 """Module utils: Helper functions."""
 import datetime
+import os
+import pathlib
 import sys
 import traceback
 
@@ -36,6 +38,73 @@ def check_exists_object(  # noqa: C901
             terminate_fatal(
                 "The required instance of the class 'TextParser' does not yet exist.",
             )
+
+
+# -----------------------------------------------------------------------------
+# Get the full name from a directory name or path and a file name or path.
+# -----------------------------------------------------------------------------
+def get_full_name(directory_name: pathlib.Path | str | None, file_name: pathlib.Path | str | None) -> str:
+    """Get the full name from a directory name or path and a file name or path.
+
+    Args:
+        directory_name (pathlib.Path | str | None): Directory name or directory path.
+        file_name (pathlib.Path | str | None): File name or file path.
+
+    Returns:
+        str: Full file name.
+    """
+    if directory_name is None and file_name is None:
+        return ""
+
+    if isinstance(directory_name, pathlib.Path):
+        directory_name = str(directory_name)
+
+    if isinstance(file_name, pathlib.Path):
+        file_name = str(file_name)
+
+    return get_os_independent_name(str(os.path.join(directory_name, file_name)))
+
+
+# -----------------------------------------------------------------------------
+# Get the platform-independent name.
+# -----------------------------------------------------------------------------
+def get_os_independent_name(name: pathlib.Path | str | None) -> str:
+    """Get the platform-independent name..
+
+    Args:
+        name (pathlib.Path | str | None): File name or file path.
+
+    Returns:
+        str: Platform-independent name.
+    """
+    if name is None:
+        return ""
+
+    if isinstance(name, str):
+        return name.replace(("\\" if os.sep == "/" else "/"), os.sep)
+
+    return str(name)
+
+
+# -----------------------------------------------------------------------------
+# Get the stem name from a file name.
+# -----------------------------------------------------------------------------
+def get_stem_name(file_name: pathlib.Path | str | None) -> str:
+    """Get the stem name from a file name.
+
+    Args:
+        file_name (pathlib.Path | str | None): File name or file path.
+
+    Returns:
+        str: Stem name.
+    """
+    if file_name is None:
+        return ""
+
+    if isinstance(file_name, str):
+        file_name = pathlib.Path(file_name)
+
+    return file_name.stem
 
 
 # -----------------------------------------------------------------------------
@@ -76,7 +145,8 @@ def terminate_fatal(error_msg: str) -> None:
     """Terminate the application immediately.
 
     Args:
-        error_msg (str): Error message.
+        error_msg (str):
+                Error message.
     """
     print("")
     print(dcr_core.cfg.glob.LOGGER_FATAL_HEAD)

@@ -10,6 +10,9 @@ import db.cls_run
 import pypandoc
 import utils
 
+import dcr_core.cfg.glob
+import dcr_core.utils
+
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
@@ -69,8 +72,8 @@ def convert_non_pdf_2_pdf_file() -> None:
 
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF
-    full_name_next = utils.get_full_name(
+    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + dcr_core.cfg.glob.FILE_TYPE_PDF
+    full_name_next = dcr_core.utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )
@@ -93,7 +96,7 @@ def convert_non_pdf_2_pdf_file() -> None:
     try:
         pypandoc.convert_file(
             full_name_curr,
-            db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF,
+            dcr_core.cfg.glob.FILE_TYPE_PDF,
             extra_args=extra_args,
             outputfile=full_name_next,
         )

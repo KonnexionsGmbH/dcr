@@ -12,10 +12,10 @@ import db.cls_run
 import db.cls_token
 import db.cls_version
 import pytest
-import utils
 
 import dcr
 import dcr_core.cfg.glob
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -101,6 +101,8 @@ def check_existing_document():
     """Check existing document object."""
     expected_values = pytest.helpers.get_values_document()
 
+    print(f"wwe expected_values={expected_values}")
+
     expected_values[0] = 1
     expected_values[1] = "tkn"
     expected_values[2] = "tokenize      (nlp)"
@@ -108,8 +110,11 @@ def check_existing_document():
     expected_values[11] = 0
     expected_values[12] = 0
     expected_values[13] = 0
-    expected_values[14] = 3
-    expected_values[15] = db.cls_document.Document.DOCUMENT_STATUS_END
+    expected_values[14] = 0
+    expected_values[15] = 0
+    expected_values[16] = 0
+    expected_values[17] = 3
+    expected_values[18] = db.cls_document.Document.DOCUMENT_STATUS_END
 
     cfg.glob.document = db.cls_document.Document.from_id(expected_values[0])
 
@@ -128,7 +133,7 @@ def check_existing_document():
     # -----------------------------------------------------------------------------
     # Get the duplicate file name based on the hash key.
     # -----------------------------------------------------------------------------
-    db.cls_document.Document.select_duplicate_file_name_by_sha256(MISSING_ID, expected_values[15])
+    db.cls_document.Document.select_duplicate_file_name_by_sha256(MISSING_ID, expected_values[18])
 
     # -----------------------------------------------------------------------------
     # Finalise the current row with error.
@@ -180,7 +185,7 @@ def check_existing_language():
         "en",
         "en_core_web_trf",
         "eng",
-        utils.get_os_independent_name("data/inbox_test"),
+        dcr_core.utils.get_os_independent_name("data/inbox_test"),
         "English",
     ]
 
@@ -549,9 +554,9 @@ def check_new_document():
     # -----------------------------------------------------------------------------
     # Update object.
     # -----------------------------------------------------------------------------
-    expected_values[15] = db.cls_document.Document.DOCUMENT_STATUS_END
+    expected_values[18] = db.cls_document.Document.DOCUMENT_STATUS_END
 
-    cfg.glob.document.document_status = expected_values[15]
+    cfg.glob.document.document_status = expected_values[18]
 
     cfg.glob.document.finalise()
 

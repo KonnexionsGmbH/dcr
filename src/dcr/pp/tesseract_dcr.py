@@ -11,6 +11,9 @@ import PyPDF2
 import pytesseract
 import utils
 
+import dcr_core.cfg.glob
+import dcr_core.utils
+
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
@@ -67,8 +70,8 @@ def convert_image_2_pdf_file() -> None:
 
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF
-    full_name_next = utils.get_full_name(
+    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + dcr_core.cfg.glob.FILE_TYPE_PDF
+    full_name_next = dcr_core.utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )
@@ -166,9 +169,7 @@ def reunite_pdfs() -> None:
                 continue
 
             cfg.glob.action_curr.action_action_code = db.cls_run.Run.ACTION_CODE_PYPDF2
-            cfg.glob.action_curr.action_file_name = (
-                cfg.glob.action_curr.get_stem_name()[0:-2] + "_0." + db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF
-            )
+            cfg.glob.action_curr.action_file_name = cfg.glob.action_curr.get_stem_name()[0:-2] + "_0." + dcr_core.cfg.glob.FILE_TYPE_PDF
             cfg.glob.action_curr.action_file_size_bytes = 0
             cfg.glob.action_curr.action_id = 0
             cfg.glob.action_curr.action_no_pdf_pages = 0
@@ -201,9 +202,9 @@ def reunite_pdfs_file() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     stem_name_next = cfg.glob.action_curr.get_stem_name()[0:-2] + "_0"
-    file_name_next = stem_name_next + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF
+    file_name_next = stem_name_next + "." + dcr_core.cfg.glob.FILE_TYPE_PDF
 
-    full_name_next = utils.get_full_name(
+    full_name_next = dcr_core.utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )

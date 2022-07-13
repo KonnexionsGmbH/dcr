@@ -10,10 +10,10 @@ import db.cls_db_core
 import db.cls_run
 import pytest
 import sqlalchemy
-import utils
 
 import dcr
 import dcr_core.cfg.glob
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -273,8 +273,8 @@ def test_load_db_data_from_json_content(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
-        utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
+        dcr_core.utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
+        dcr_core.utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
     with pytest.raises(SystemExit) as expt:
@@ -310,7 +310,7 @@ def test_load_db_data_from_json_missing(fxtr_setup_logger_environment):
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name),
+        dcr_core.utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name),
         db_initial_data_file_path_directory,
     )
 
@@ -337,8 +337,8 @@ def test_load_db_data_from_json_unknown(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
-        utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
+        dcr_core.utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
+        dcr_core.utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
     with pytest.raises(SystemExit) as expt:
@@ -368,8 +368,8 @@ def test_load_db_data_from_json_version(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
-        utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
+        dcr_core.utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
+        dcr_core.utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
     with pytest.raises(SystemExit) as expt:

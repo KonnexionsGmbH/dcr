@@ -80,7 +80,7 @@ class Language:
         if self.language_active and (directory_name_inbox is None or directory_name_inbox == ""):
             self.language_directory_name_inbox = str(os.path.join(cfg.glob.setup.directory_inbox, iso_language_name.lower()))
         else:
-            self.language_directory_name_inbox = utils.get_os_independent_name(directory_name_inbox)
+            self.language_directory_name_inbox = dcr_core.utils.get_os_independent_name(directory_name_inbox)
 
         self.language_id = _row_id
         self.language_iso_language_name = iso_language_name

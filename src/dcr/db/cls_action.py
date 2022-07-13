@@ -13,6 +13,7 @@ import sqlalchemy
 import utils
 from sqlalchemy.engine import Connection
 
+import dcr_core.cfg.glob
 import dcr_core.utils
 
 
@@ -100,7 +101,7 @@ class Action:
 
         self.action_action_code = action_code
         self.action_action_text = action_text
-        self.action_directory_name = utils.get_os_independent_name(directory_name)
+        self.action_directory_name = dcr_core.utils.get_os_independent_name(directory_name)
         self.action_directory_type = directory_type
         self.action_duration_ns = duration_ns
         self.action_error_code_last = error_code_last
@@ -117,7 +118,7 @@ class Action:
         self.action_status = status
 
         if Action.PDF2IMAGE_FILE_TYPE == "":
-            Action.PDF2IMAGE_FILE_TYPE = db.cls_document.Document.DOCUMENT_FILE_TYPE_JPEG
+            Action.PDF2IMAGE_FILE_TYPE = dcr_core.cfg.glob.FILE_TYPE_JPEG
 
         if self.action_id == 0:
             self.persist_2_db()
@@ -467,7 +468,7 @@ class Action:
         if self.action_file_name == "":
             return self.action_file_name
 
-        return utils.get_file_type(utils.get_os_independent_name(self.action_file_name))
+        return utils.get_file_type(dcr_core.utils.get_os_independent_name(self.action_file_name))
 
     # -----------------------------------------------------------------------------
     # Get the full file from a directory name or path and a file name or path.
@@ -479,7 +480,7 @@ class Action:
         Returns:
             str:    Full file name.
         """
-        return utils.get_full_name(
+        return dcr_core.utils.get_full_name(
             directory_name=self.action_directory_name,
             file_name=self.action_file_name,
         )
@@ -496,7 +497,7 @@ class Action:
         if self.action_file_name == "":
             return self.action_file_name
 
-        return utils.get_stem_name(str(self.action_file_name))
+        return dcr_core.utils.get_stem_name(str(self.action_file_name))
 
     # -----------------------------------------------------------------------------
     # Persist the object in the database.
@@ -505,7 +506,7 @@ class Action:
         """Persist the object in the database."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        full_name = utils.get_full_name(self.action_directory_name, self.action_file_name)
+        full_name = dcr_core.utils.get_full_name(self.action_directory_name, self.action_file_name)
         if os.path.exists(full_name):
             if self.action_file_size_bytes == 0:
                 self.action_file_size_bytes = os.path.getsize(full_name)

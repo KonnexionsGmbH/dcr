@@ -6,9 +6,9 @@ import cfg.cls_setup
 import cfg.glob
 import db.cls_run
 import pytest
-import utils
 
 import dcr
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -182,7 +182,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
-        utils.get_full_name(
+        dcr_core.utils.get_full_name(
             cfg.glob.setup.directory_inbox_accepted,
             "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
         )
@@ -242,7 +242,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
-        utils.get_full_name(
+        dcr_core.utils.get_full_name(
             cfg.glob.setup.directory_inbox_accepted,
             "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_1.pdf",
         )

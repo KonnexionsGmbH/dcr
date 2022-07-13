@@ -78,8 +78,8 @@ def tokenize_file() -> None:
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
     if cfg.glob.setup.is_tokenize_2_jsonfile:
-        file_name_next = cfg.glob.action_curr.get_stem_name() + "_token." + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON
-        full_name_next = utils.get_full_name(
+        file_name_next = cfg.glob.action_curr.get_stem_name() + "_token." + dcr_core.cfg.glob.FILE_TYPE_JSON
+        full_name_next = dcr_core.utils.get_full_name(
             cfg.glob.action_curr.action_directory_name,
             file_name_next,
         )

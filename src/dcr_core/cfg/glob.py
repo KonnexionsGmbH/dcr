@@ -3,16 +3,46 @@
 import nlp.cls_line_type_heading
 import nlp.cls_line_type_list_bullet
 import nlp.cls_line_type_list_number
-import nlp.cls_line_type_table
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 
 import dcr_core.nlp.cls_line_type_headers_footers
+import dcr_core.nlp.cls_line_type_table
 import dcr_core.nlp.cls_line_type_toc
 
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
+FILE_TYPE_JPEG = "jpeg"
+FILE_TYPE_JPG = "jpg"
+FILE_TYPE_JSON = "json"
+FILE_TYPE_PANDOC: list[str] = [
+    "csv",
+    "docx",
+    "epub",
+    "html",
+    "odt",
+    "rst",
+    "rtf",
+]
+FILE_TYPE_PDF = "pdf"
+FILE_TYPE_PNG = "png"
+FILE_TYPE_TESSERACT: list[str] = [
+    "bmp",
+    "gif",
+    "jp2",
+    "jpeg",
+    "jpg",
+    "png",
+    "pnm",
+    "tif",
+    "tiff",
+    "webp",
+]
+FILE_TYPE_TIF = "tif"
+FILE_TYPE_TIFF = "tiff"
+FILE_TYPE_XML = "xml"
+
 INFORMATION_NOT_YET_AVAILABLE = "n/a"
 
 LOGGER_FATAL_HEAD = "FATAL ERROR: program abort =====> "
@@ -28,7 +58,7 @@ line_type_headers_footers: type[dcr_core.nlp.cls_line_type_headers_footers.LineT
 line_type_heading: type[nlp.cls_line_type_heading.LineTypeHeading]
 line_type_list_bullet: type[nlp.cls_line_type_list_bullet.LineTypeListBullet]
 line_type_list_number: type[nlp.cls_line_type_list_number.LineTypeListNumber]
-line_type_table: type[nlp.cls_line_type_table.LineTypeTable]
+line_type_table: type[dcr_core.nlp.cls_line_type_table.LineTypeTable]
 line_type_toc: type[dcr_core.nlp.cls_line_type_toc.LineTypeToc]
 
 text_parser: type[nlp.cls_text_parser.TextParser]

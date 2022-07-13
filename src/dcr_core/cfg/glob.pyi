@@ -3,7 +3,6 @@
 import nlp.cls_line_type_heading
 import nlp.cls_line_type_list_bullet
 import nlp.cls_line_type_list_number
-import nlp.cls_line_type_table
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 
@@ -13,6 +12,17 @@ import dcr_core.nlp.cls_line_type_toc
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
+FILE_TYPE_JPEG: str
+FILE_TYPE_JPG: str
+FILE_TYPE_JSON: str
+FILE_TYPE_PANDOC: list[str]
+FILE_TYPE_PDF: str
+FILE_TYPE_PNG: str
+FILE_TYPE_TESSERACT: list[str]
+FILE_TYPE_TIF: str
+FILE_TYPE_TIFF: str
+FILE_TYPE_XML: str
+
 INFORMATION_NOT_YET_AVAILABLE: str
 
 LOGGER_FATAL_HEAD: str

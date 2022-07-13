@@ -9,9 +9,9 @@ import cfg.glob
 import db.cls_db_core
 import db.cls_run
 import pytest
-import utils
 
 import dcr
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -42,8 +42,8 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
     pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox_accepted)
 
     os.rename(
-        utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext),
-        utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext),
+        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext),
+        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext),
     )
 
     # -------------------------------------------------------------------------
@@ -87,8 +87,8 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
-        utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
+        dcr_core.utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
+        dcr_core.utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
     cfg.glob.db_core = db.cls_db_core.DBCore(is_admin=True)
@@ -136,11 +136,11 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
 
     # -------------------------------------------------------------------------
     base_directory = str(cfg.glob.setup.directory_inbox)
-    language_directory_name = str(utils.get_full_name(base_directory, pathlib.Path("french")))
+    language_directory_name = str(dcr_core.utils.get_full_name(base_directory, pathlib.Path("french")))
 
-    assert os.path.isdir(utils.get_os_independent_name(base_directory)), "base directory '" + base_directory + "' after processing missing"
+    assert os.path.isdir(dcr_core.utils.get_os_independent_name(base_directory)), "base directory '" + base_directory + "' after processing missing"
 
-    assert os.path.isdir(utils.get_os_independent_name(language_directory_name)), (
+    assert os.path.isdir(dcr_core.utils.get_os_independent_name(language_directory_name)), (
         "language directory '" + language_directory_name + "' after processing missing"
     )
 
@@ -291,8 +291,8 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox_rejected)
 
     os.rename(
-        utils.get_full_name(cfg.glob.setup.directory_inbox_rejected, stem_name_1 + "." + file_ext),
-        utils.get_full_name(cfg.glob.setup.directory_inbox_rejected, stem_name_2 + "." + file_ext),
+        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_rejected, stem_name_1 + "." + file_ext),
+        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_rejected, stem_name_2 + "." + file_ext),
     )
 
     # -------------------------------------------------------------------------

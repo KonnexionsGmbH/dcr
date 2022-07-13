@@ -92,7 +92,10 @@ class DBCore:
     DBC_NO_LINES_FOOTER: ClassVar[str] = "no_lines_footer"
     DBC_NO_LINES_HEADER: ClassVar[str] = "no_lines_header"
     DBC_NO_LINES_TOC: ClassVar[str] = "no_lines_toc"
+    DBC_NO_LISTS_BULLET: ClassVar[str] = "no_lists_bullet"
+    DBC_NO_LISTS_NUMBER: ClassVar[str] = "no_lists_number"
     DBC_NO_PDF_PAGES: ClassVar[str] = "no_pdf_pages"
+    DBC_NO_TABLES: ClassVar[str] = "no_tables"
     DBC_NO_TOKENS_IN_SENT: ClassVar[str] = "no_tokens_in_sent"
     DBC_PAGE_DATA: ClassVar[str] = "page_data"
     DBC_PAGE_NO: ClassVar[str] = "page_no"
@@ -463,7 +466,7 @@ class DBCore:
         )
 
         if cfg.glob.setup.db_initial_data_file:
-            db_initial_data_file_path = utils.get_os_independent_name(cfg.glob.setup.db_initial_data_file)
+            db_initial_data_file_path = dcr_core.utils.get_os_independent_name(cfg.glob.setup.db_initial_data_file)
             if os.path.isfile(db_initial_data_file_path):
                 self.load_db_data_from_json(pathlib.Path(db_initial_data_file_path))
                 utils.progress_msg(f"Initial database data was successfully loaded from the file {cfg.glob.setup.db_initial_data_file}")

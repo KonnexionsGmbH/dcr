@@ -102,8 +102,8 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
 
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + xml_variation + db.cls_document.Document.DOCUMENT_FILE_TYPE_XML
-    full_name_next = utils.get_full_name(
+    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + xml_variation + dcr_core.cfg.glob.FILE_TYPE_XML
+    full_name_next = dcr_core.utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )

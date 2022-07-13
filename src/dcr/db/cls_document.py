@@ -10,6 +10,7 @@ import db.cls_run
 import sqlalchemy
 import utils
 
+import dcr_core.cfg.glob
 import dcr_core.utils
 
 
@@ -39,45 +40,6 @@ class Document:
     DOCUMENT_ERROR_CODE_REJ_TESSERACT: ClassVar[str] = "Issue with Tesseract OCR"
     DOCUMENT_ERROR_CODE_REJ_TOKENIZE: ClassVar[str] = "Issue with tokenizing"
 
-    DOCUMENT_FILE_TYPE_JPEG: ClassVar[str] = "jpeg"
-    DOCUMENT_FILE_TYPE_JPG: ClassVar[str] = "jpg"
-    DOCUMENT_FILE_TYPE_JSON: ClassVar[str] = "json"
-    DOCUMENT_FILE_TYPE_PANDOC: ClassVar[list[str]] = [
-        "csv",
-        "docx",
-        "epub",
-        "html",
-        "odt",
-        "rst",
-        "rtf",
-    ]
-    DOCUMENT_FILE_TYPE_PDF: ClassVar[str] = "pdf"
-    DOCUMENT_FILE_TYPE_PNG: ClassVar[str] = "png"
-    DOCUMENT_FILE_TYPE_TESSERACT: ClassVar[list[str]] = [
-        "bmp",
-        "gif",
-        "jp2",
-        "jpeg",
-        "jpg",
-        "png",
-        "pnm",
-        "tif",
-        "tiff",
-        "webp",
-    ]
-    DOCUMENT_FILE_TYPE_TIF: ClassVar[str] = "tif"
-    DOCUMENT_FILE_TYPE_TIFF: ClassVar[str] = "tiff"
-    DOCUMENT_FILE_TYPE_XML: ClassVar[str] = "xml"
-
-    DOCUMENT_LINE_TYPE_BODY: ClassVar[str] = "b"
-    DOCUMENT_LINE_TYPE_FOOTER: ClassVar[str] = "f"
-    DOCUMENT_LINE_TYPE_HEADER: ClassVar[str] = "h"
-    DOCUMENT_LINE_TYPE_HEADING: ClassVar[str] = "h_"
-    DOCUMENT_LINE_TYPE_LIST_BULLET: ClassVar[str] = "lb"
-    DOCUMENT_LINE_TYPE_LIST_NUMBER: ClassVar[str] = "ln"
-    DOCUMENT_LINE_TYPE_TABLE: ClassVar[str] = "tab"
-    DOCUMENT_LINE_TYPE_TOC: ClassVar[str] = "toc"
-
     DOCUMENT_STATUS_END: ClassVar[str] = "end"
     DOCUMENT_STATUS_ERROR: ClassVar[str] = "error"
     DOCUMENT_STATUS_START: ClassVar[str] = "start"
@@ -101,6 +63,9 @@ class Document:
         no_lines_footer: int = 0,
         no_lines_header: int = 0,
         no_lines_toc: int = 0,
+        no_lists_bullet: int = 0,
+        no_lists_number: int = 0,
+        no_tables: int = 0,
         no_pdf_pages: int = 0,
         sha256: str = "",
         status: str = "",
@@ -136,6 +101,12 @@ class Document:
                     The number of header lines. Defaults to 0.
             no_lines_toc (int, optional):
                     The number of toc lines. Defaults to 0.
+            no_lists_bullet (int, optional):
+                    The number of bulleted lists. Defaults to 0.
+            no_lists_number (int, optional):
+                    The number of numbered lists. Defaults to 0.
+            no_tables (int, optional):
+                    The number of tables. Defaults to 0.
             no_pdf_pages (int, optional):
                     For a document of the type 'pdf' the number of pages. Defaults to 0.
             sha256 (str, optional):
@@ -163,6 +134,9 @@ class Document:
         self.document_no_lines_footer = no_lines_footer
         self.document_no_lines_header = no_lines_header
         self.document_no_lines_toc = no_lines_toc
+        self.document_no_lists_bullet = no_lists_bullet
+        self.document_no_lists_number = no_lists_number
+        self.document_no_tables = no_tables
         self.document_no_pdf_pages = no_pdf_pages
         self.document_sha256 = sha256
         self.document_status = status
@@ -203,6 +177,9 @@ class Document:
             db.cls_db_core.DBCore.DBC_NO_LINES_FOOTER: self.document_no_lines_footer,
             db.cls_db_core.DBCore.DBC_NO_LINES_HEADER: self.document_no_lines_header,
             db.cls_db_core.DBCore.DBC_NO_LINES_TOC: self.document_no_lines_toc,
+            db.cls_db_core.DBCore.DBC_NO_LISTS_BULLET: self.document_no_lists_bullet,
+            db.cls_db_core.DBCore.DBC_NO_LISTS_NUMBER: self.document_no_lists_number,
+            db.cls_db_core.DBCore.DBC_NO_TABLES: self.document_no_tables,
             db.cls_db_core.DBCore.DBC_NO_PDF_PAGES: self.document_no_pdf_pages,
             db.cls_db_core.DBCore.DBC_SHA256: self.document_sha256,
             db.cls_db_core.DBCore.DBC_STATUS: self.document_status,
@@ -257,6 +234,9 @@ class Document:
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LINES_FOOTER, sqlalchemy.Integer, nullable=False),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LINES_HEADER, sqlalchemy.Integer, nullable=False),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LINES_TOC, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LISTS_BULLET, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LISTS_NUMBER, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_TABLES, sqlalchemy.Integer, nullable=False),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_PDF_PAGES, sqlalchemy.Integer, nullable=False),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_SHA256, sqlalchemy.String, nullable=True),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_STATUS, sqlalchemy.String, nullable=False),
@@ -375,7 +355,7 @@ class Document:
             _row_id=row[db.cls_db_core.DBCore.DBC_ID],
             action_code_last=row[db.cls_db_core.DBCore.DBC_ACTION_CODE_LAST],
             action_text_last=row[db.cls_db_core.DBCore.DBC_ACTION_TEXT_LAST],
-            directory_name=utils.get_os_independent_name(row[db.cls_db_core.DBCore.DBC_DIRECTORY_NAME]),
+            directory_name=dcr_core.utils.get_os_independent_name(row[db.cls_db_core.DBCore.DBC_DIRECTORY_NAME]),
             error_code_last=row[db.cls_db_core.DBCore.DBC_ERROR_CODE_LAST],
             error_msg_last=row[db.cls_db_core.DBCore.DBC_ERROR_MSG_LAST],
             error_no=row[db.cls_db_core.DBCore.DBC_ERROR_NO],
@@ -386,6 +366,9 @@ class Document:
             no_lines_footer=row[db.cls_db_core.DBCore.DBC_NO_LINES_FOOTER],
             no_lines_header=row[db.cls_db_core.DBCore.DBC_NO_LINES_HEADER],
             no_lines_toc=row[db.cls_db_core.DBCore.DBC_NO_LINES_TOC],
+            no_lists_bullet=row[db.cls_db_core.DBCore.DBC_NO_LISTS_BULLET],
+            no_lists_number=row[db.cls_db_core.DBCore.DBC_NO_LISTS_NUMBER],
+            no_tables=row[db.cls_db_core.DBCore.DBC_NO_TABLES],
             no_pdf_pages=row[db.cls_db_core.DBCore.DBC_NO_PDF_PAGES],
             sha256=row[db.cls_db_core.DBCore.DBC_SHA256],
             status=row[db.cls_db_core.DBCore.DBC_STATUS],
@@ -429,6 +412,9 @@ class Document:
             self.document_no_lines_footer,
             self.document_no_lines_header,
             self.document_no_lines_toc,
+            self.document_no_lists_bullet,
+            self.document_no_lists_number,
+            self.document_no_tables,
             self.document_no_pdf_pages,
         ]
 
@@ -453,7 +439,7 @@ class Document:
         return (
             self.get_stem_name_next()
             + "."
-            + (self.get_file_type() if self.get_file_type() != Document.DOCUMENT_FILE_TYPE_TIF else Document.DOCUMENT_FILE_TYPE_TIFF)
+            + (self.get_file_type() if self.get_file_type() != dcr_core.cfg.glob.FILE_TYPE_TIF else dcr_core.cfg.glob.FILE_TYPE_TIFF)
         )
 
     # -----------------------------------------------------------------------------
@@ -468,7 +454,7 @@ class Document:
         if self.document_file_name == "":
             return self.document_file_name
 
-        return utils.get_file_type(utils.get_os_independent_name(self.document_file_name))
+        return utils.get_file_type(dcr_core.utils.get_os_independent_name(self.document_file_name))
 
     # -----------------------------------------------------------------------------
     # Get the full name from a directory name / path and a file name / path.
@@ -480,7 +466,7 @@ class Document:
         Returns:
             str:    Full file name.
         """
-        return utils.get_full_name(
+        return dcr_core.utils.get_full_name(
             directory_name=self.document_directory_name,
             file_name=self.document_file_name,
         )
@@ -497,7 +483,7 @@ class Document:
         if self.document_file_name == "":
             return self.document_file_name
 
-        return utils.get_stem_name(str(self.document_file_name))
+        return dcr_core.utils.get_stem_name(str(self.document_file_name))
 
     # -----------------------------------------------------------------------------
     # Get the stem name from the first processed document.
@@ -516,12 +502,12 @@ class Document:
         )
 
         if cfg.glob.setup.doc_id_in_file_name == "none":
-            return utils.get_stem_name(str(self.document_file_name))
+            return dcr_core.utils.get_stem_name(str(self.document_file_name))
 
         if cfg.glob.setup.doc_id_in_file_name == "after":
-            return utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
+            return dcr_core.utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
 
-        return str(self.document_id) + "_" + utils.get_stem_name(str(self.document_file_name))
+        return str(self.document_id) + "_" + dcr_core.utils.get_stem_name(str(self.document_file_name))
 
     # -----------------------------------------------------------------------------
     # Persist the object in the database.
@@ -531,10 +517,10 @@ class Document:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         if self.document_file_size_bytes == 0:
-            self.document_file_size_bytes = os.path.getsize(utils.get_full_name(self.document_directory_name, self.document_file_name))
+            self.document_file_size_bytes = os.path.getsize(dcr_core.utils.get_full_name(self.document_directory_name, self.document_file_name))
 
         if self.document_no_pdf_pages == 0:
-            self.document_no_pdf_pages = utils.get_pdf_pages_no(utils.get_full_name(self.document_directory_name, self.document_file_name))
+            self.document_no_pdf_pages = utils.get_pdf_pages_no(dcr_core.utils.get_full_name(self.document_directory_name, self.document_file_name))
 
         if self.document_id == 0:
             self.document_status = self.document_status if self.document_status != "" else Document.DOCUMENT_STATUS_START

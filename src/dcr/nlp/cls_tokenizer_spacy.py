@@ -265,8 +265,8 @@ class TokenizerSpacy:
 
         self._sent_no += 1
 
-        if self._line_type[:2] == db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADING and self._sent_no > 1:
-            line_type = db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY
+        if self._line_type[:2] == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_HEADING and self._sent_no > 1:
+            line_type = dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_BODY
         else:
             line_type = self._line_type
 
@@ -703,19 +703,19 @@ class TokenizerSpacy:
             line_type = dcr_core.cfg.glob.text_parser.parse_result_line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
 
             if (
-                line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_FOOTER  # pylint: disable=too-many-boolean-expressions
+                line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_FOOTER  # pylint: disable=too-many-boolean-expressions
                 and cfg.glob.setup.is_spacy_ignore_line_type_footer
-                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_HEADER
+                or line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_HEADER
                 and cfg.glob.setup.is_spacy_ignore_line_type_header
-                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_HEADING
+                or line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_HEADING
                 and cfg.glob.setup.is_spacy_ignore_line_type_heading
-                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_LIST_BULLET
+                or line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_LIST_BULLET
                 and cfg.glob.setup.is_spacy_ignore_line_type_list_bullet
-                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_LIST_NUMBER
+                or line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_LIST_NUMBER
                 and cfg.glob.setup.is_spacy_ignore_line_type_list_number
-                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_TABLE
+                or line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_TABLE
                 and cfg.glob.setup.is_spacy_ignore_line_type_table
-                or line_type == cfg.glob.document.DOCUMENT_LINE_TYPE_TOC
+                or line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_TOC
                 and cfg.glob.setup.is_spacy_ignore_line_type_toc
             ):
                 continue

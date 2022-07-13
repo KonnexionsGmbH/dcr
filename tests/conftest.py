@@ -7,6 +7,7 @@ Returns:
     [type]: None.
 """
 import configparser
+import json
 import os
 import pathlib
 import shutil
@@ -21,13 +22,14 @@ import db.cls_run
 import db.cls_token
 import db.cls_version
 import nlp.cls_text_parser
+import nlp.cls_tokenizer_spacy
 import pytest
 import sqlalchemy
-import utils
 
 import dcr
 import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -78,6 +80,62 @@ def backup_setup_cfg() -> None:
     """Backup the 'setup.cfg' file."""
     if not os.path.isfile(FILE_NAME_SETUP_CFG_BACKUP):
         shutil.copy2(FILE_NAME_SETUP_CFG, FILE_NAME_SETUP_CFG_BACKUP)
+
+
+# -----------------------------------------------------------------------------
+# Test LineType.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def check_cls_line_type(
+    json_file: str,
+    target_footer: list[tuple[int, list[int]]],
+    target_header: list[tuple[int, list[int]]],
+    target_toc: int = 0,
+) -> None:
+    """Test LineType.
+
+    Args:
+        json_file (str): JSON file from text parser.
+        target_footer (list[tuple[int, list[int]]]):
+                Target footer lines.
+        target_header (list[tuple[int, list[int]]]):
+                Target header lines.
+        target_toc (int):
+                Target toc lines.
+    """
+    instance = nlp.cls_text_parser.TextParser.from_files(full_name_line=json_file)
+
+    actual_footer = []
+    actual_header = []
+
+    pages = instance.parse_result_line_document[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES]
+
+    actual_toc = 0
+
+    for page in pages:
+        page_no = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
+
+        actual_page_footer = []
+        actual_page_header = []
+
+        for line in page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]:
+            line_type = line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+            if line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_FOOTER:
+                actual_page_footer.append(int(line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
+            elif line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_HEADER:
+                actual_page_header.append(int(line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
+            elif line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_TOC:
+                actual_toc += 1
+
+        if actual_page_footer:
+            actual_footer.append((page_no, actual_page_footer))
+
+        if actual_page_header:
+            actual_header.append((page_no, actual_page_header))
+
+    assert actual_header == target_header, f"file={json_file} header difference: \ntarget={target_header} \nactual={actual_header}"
+    assert actual_footer == target_footer, f"file={json_file} footer difference: \ntarget={target_footer} \nactual={actual_footer}"
+    assert actual_toc == target_toc, f"file={json_file} toc difference: \ntarget={target_toc} \nactual={actual_toc}"
 
 
 # -----------------------------------------------------------------------------
@@ -225,59 +283,54 @@ def check_dbt_version(param: tuple[int, tuple[int, str]]) -> None:
 
 
 # -----------------------------------------------------------------------------
-# Test LineType.
+# Check data of a the JSON file: line version.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def check_cls_line_type(
-    json_file: str,
-    target_footer: list[tuple[int, list[int]]],
-    target_header: list[tuple[int, list[int]]],
-    target_toc: int = 0,
+def check_json_line(
+    file_name: str,
+    no_lines_footer: int = 0,
+    no_lines_header: int = 0,
+    no_lines_toc: int = 0,
+    no_lists_bullet_in_document: int = 0,
+    no_lists_number_in_document: int = 0,
+    no_tables_in_document: int = 0,
 ) -> None:
-    """Test LineType.
+    full_name = dcr_core.utils.get_full_name(directory_name=cfg.glob.setup.directory_inbox_accepted, file_name=file_name)
 
-    Args:
-        json_file (str): JSON file from text parser.
-        target_footer (list[tuple[int, list[int]]]):
-                Target footer lines.
-        target_header (list[tuple[int, list[int]]]):
-                Target header lines.
-        target_toc (int):
-                Target toc lines.
-    """
-    instance = nlp.cls_text_parser.TextParser.from_files(full_name_line=json_file)
+    try:
+        with open(full_name, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+            document_json = json.load(file_handle)
 
-    actual_footer = []
-    actual_header = []
+            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER] == no_lines_footer, (
+                f"file={file_name} number line footer: expected={no_lines_footer} - "
+                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER]}"
+            )
+            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER] == no_lines_header, (
+                f"file={file_name} number line header: expected={no_lines_header} - "
+                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER]}"
+            )
 
-    pages = instance.parse_result_line_document[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES]
+            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC] == no_lines_toc, (
+                f"file={file_name} number lines toc: expected={no_lines_toc} - "
+                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC]}"
+            )
 
-    actual_toc = 0
+            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC] == no_lists_bullet_in_document, (
+                f"file={file_name} number bulleted lists in document: expected={no_lists_bullet_in_document} - "
+                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC]}"
+            )
+            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC] == no_lists_number_in_document, (
+                f"file={file_name} number numbered lists in document: expected={no_lists_number_in_document} - "
+                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC]}"
+            )
 
-    for page in pages:
-        page_no = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
+            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC] == no_tables_in_document, (
+                f"file={file_name} number tables in document: expected={no_tables_in_document} - "
+                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC]}"
+            )
 
-        actual_page_footer = []
-        actual_page_header = []
-
-        for line in page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]:
-            line_type = line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
-            if line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_FOOTER:
-                actual_page_footer.append(int(line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
-            elif line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_HEADER:
-                actual_page_header.append(int(line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
-            elif line_type == db.cls_document.Document.DOCUMENT_LINE_TYPE_TOC:
-                actual_toc += 1
-
-        if actual_page_footer:
-            actual_footer.append((page_no, actual_page_footer))
-
-        if actual_page_header:
-            actual_header.append((page_no, actual_page_header))
-
-    assert actual_header == target_header, f"file={json_file} header difference: \ntarget={target_header} \nactual={actual_header}"
-    assert actual_footer == target_footer, f"file={json_file} footer difference: \ntarget={target_footer} \nactual={actual_footer}"
-    assert actual_toc == target_toc, f"file={json_file} toc difference: \ntarget={target_toc} \nactual={actual_toc}"
+    except OSError as err:
+        assert False, f"file={full_name} problem opening the file: error={err.errno} - {err.strerror}"
 
 
 # -----------------------------------------------------------------------------
@@ -294,15 +347,15 @@ def copy_directories_4_pytest_2_dir(
         source_directories: list[str]: Source directory names.
         target_dir: str: Target directory.
     """
-    assert os.path.isdir(utils.get_os_independent_name(get_test_inbox_directory_name())), (
+    assert os.path.isdir(dcr_core.utils.get_os_independent_name(get_test_inbox_directory_name())), (
         "source base directory '" + get_test_inbox_directory_name() + "' missing"
     )
 
     for source in source_directories:
         source_dir = get_test_inbox_directory_name() + "/" + source
-        source_path = utils.get_full_name(get_test_inbox_directory_name(), pathlib.Path(source))
-        assert os.path.isdir(utils.get_os_independent_name(source_path)), "source language directory '" + str(source_path) + "' missing"
-        target_path = utils.get_full_name(target_dir, pathlib.Path(source))
+        source_path = dcr_core.utils.get_full_name(get_test_inbox_directory_name(), pathlib.Path(source))
+        assert os.path.isdir(dcr_core.utils.get_os_independent_name(source_path)), "source language directory '" + str(source_path) + "' missing"
+        target_path = dcr_core.utils.get_full_name(target_dir, pathlib.Path(source))
         shutil.copytree(source_dir, target_path)
 
 
@@ -321,18 +374,18 @@ def copy_files_4_pytest(file_list: list[tuple[tuple[str, str | None], tuple[path
             ]
         ]): list of files to be copied.
     """
-    assert os.path.isdir(utils.get_os_independent_name(get_test_inbox_directory_name())), (
+    assert os.path.isdir(dcr_core.utils.get_os_independent_name(get_test_inbox_directory_name())), (
         "source directory '" + get_test_inbox_directory_name() + "' missing"
     )
 
     for ((source_stem, source_ext), (target_dir, target_file_comp, target_ext)) in file_list:
         source_file_name = source_stem if source_ext is None else source_stem + "." + source_ext
-        source_file = utils.get_full_name(get_test_inbox_directory_name(), source_file_name)
+        source_file = dcr_core.utils.get_full_name(get_test_inbox_directory_name(), source_file_name)
         assert os.path.isfile(source_file), "source file '" + str(source_file) + "' missing"
 
-        assert os.path.isdir(utils.get_os_independent_name(target_dir)), "target directory '" + target_dir + "' missing"
+        assert os.path.isdir(dcr_core.utils.get_os_independent_name(target_dir)), "target directory '" + target_dir + "' missing"
         target_file_name = "_".join(target_file_comp) if target_ext is None else "_".join(target_file_comp) + "." + target_ext
-        target_file = utils.get_full_name(target_dir, target_file_name)
+        target_file = dcr_core.utils.get_full_name(target_dir, target_file_name)
         assert os.path.isfile(target_file) is False, "target file '" + str(target_file) + "' already existing"
 
         shutil.copy(source_file, target_file)
@@ -412,8 +465,11 @@ def create_document():
         no_lines_footer=values[11],
         no_lines_header=values[12],
         no_lines_toc=values[13],
-        no_pdf_pages=values[14],
-        status=values[15],
+        no_lists_bullet=values[14],
+        no_lists_number=values[15],
+        no_tables=values[16],
+        no_pdf_pages=values[17],
+        status=values[18],
     )
 
     values[0] = instance.document_id
@@ -829,7 +885,7 @@ def fxtr_setup_empty_db_and_inbox(
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
+        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
         os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
     )
 
@@ -873,7 +929,7 @@ def fxtr_setup_empty_inbox(
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
+        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
         os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
     )
 
@@ -916,7 +972,7 @@ def fxtr_setup_logger_environment():
 
     # restore original file
     shutil.copy(
-        utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
+        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
         os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
     )
 
@@ -984,6 +1040,9 @@ def get_values_document():
         53651,
         1,
         1,
+        0,
+        0,
+        0,
         0,
         0,
         0,
@@ -1106,8 +1165,8 @@ def help_run_action_all_complete_duplicate_file(
     pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext_1)], target_path=cfg.glob.setup.directory_inbox_accepted)
 
     os.rename(
-        utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
-        utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
+        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
+        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
     )
 
     # -------------------------------------------------------------------------
@@ -1380,7 +1439,7 @@ def verify_content_of_directory(
 
     # check directory content against expectations
     for elem in directory_content:
-        elem_path = utils.get_full_name(directory_name, elem)
+        elem_path = dcr_core.utils.get_full_name(directory_name, elem)
         if os.path.isdir(elem_path):
             assert elem in expected_directories, f"directory {elem} was not expected"
         else:
@@ -1389,13 +1448,13 @@ def verify_content_of_directory(
     # check expected directories against directory content
     for elem in expected_directories:
         assert elem in directory_content, f"expected directory {elem} is missing"
-        elem_path = utils.get_full_name(directory_name, elem)
-        assert os.path.isdir(utils.get_os_independent_name(elem_path)), f"expected directory {elem} is a file"
+        elem_path = dcr_core.utils.get_full_name(directory_name, elem)
+        assert os.path.isdir(dcr_core.utils.get_os_independent_name(elem_path)), f"expected directory {elem} is a file"
 
     # check expected files against directory content
     for elem in expected_files:
         assert elem in directory_content, f"expected file {elem} is missing"
-        elem_path = utils.get_full_name(directory_name, elem)
+        elem_path = dcr_core.utils.get_full_name(directory_name, elem)
         assert os.path.isfile(elem_path), f"expected file {elem} is a directory"
 
 

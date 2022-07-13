@@ -29,11 +29,11 @@ def test_get_file_type():
 # -----------------------------------------------------------------------------
 def test_get_full_name():
     """Test: get_full_name()."""
-    assert utils.get_full_name(None, None) == ""
+    assert dcr_core.utils.get_full_name(None, None) == ""
 
     directory_name = pathlib.Path("D:/SoftDevelopment")
 
-    utils.get_full_name(directory_name, "docx_ok.docx")
+    dcr_core.utils.get_full_name(directory_name, "docx_ok.docx")
 
 
 # -----------------------------------------------------------------------------
@@ -43,7 +43,7 @@ def test_get_os_independent_name():
     """Test: get_os_independent_name()."""
     file_name = pathlib.Path("D:/SoftDevelopment")
 
-    utils.get_os_independent_name(file_name)
+    dcr_core.utils.get_os_independent_name(file_name)
 
 
 # -----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ def test_get_path_name():
 # -----------------------------------------------------------------------------
 def test_get_stem_name():
     """Test: get_stem_name()."""
-    assert utils.get_stem_name(None) == ""
+    assert dcr_core.utils.get_stem_name(None) == ""
 
 
 # -----------------------------------------------------------------------------

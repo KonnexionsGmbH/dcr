@@ -8,9 +8,9 @@ import db.cls_run
 import jellyfish
 import pytest
 import roman
-import utils
 
 import dcr
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -288,7 +288,7 @@ def test_run_action_store_parse_result_in_json_missing_input_file(fxtr_setup_emp
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    os.remove(utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.xml"))
+    os.remove(dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.xml"))
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 

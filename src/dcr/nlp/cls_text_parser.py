@@ -6,14 +6,14 @@ import datetime
 import json
 
 import cfg.glob
-import db.cls_document
 import nlp.cls_line_type_heading
 import nlp.cls_line_type_list_bullet
 import nlp.cls_line_type_list_number
-import nlp.cls_line_type_table
 import utils
 
+import dcr_core.cfg.glob
 import dcr_core.nlp.cls_line_type_headers_footers
+import dcr_core.nlp.cls_line_type_table
 import dcr_core.nlp.cls_line_type_toc
 import dcr_core.nlp.cls_nlp_core
 import dcr_core.utils
@@ -59,8 +59,8 @@ class TextParser:
         self._parse_result_no_words_in_page = 0
         self._parse_result_no_words_in_para = 0
 
-        self._parse_result_page_pages: dcr_core.nlp.cls_nlp_core.NLPCore.PagePages = []
-        self._parse_result_page_paras: dcr_core.nlp.cls_nlp_core.NLPCore.PageParas = []
+        self._parse_result_page_pages: dcr_core.nlp.cls_nlp_core.NLPCore.ParserPagePages = []
+        self._parse_result_page_paras: dcr_core.nlp.cls_nlp_core.NLPCore.ParserPageParas = []
 
         self._parse_result_table = False
         self._parse_result_table_cell = 0
@@ -73,13 +73,13 @@ class TextParser:
         self._parse_result_word_index_line = 0
         self._parse_result_word_index_page = 0
         self._parse_result_word_index_para = 0
-        self._parse_result_word_lines: dcr_core.nlp.cls_nlp_core.NLPCore.WordLines = []
-        self._parse_result_word_pages: dcr_core.nlp.cls_nlp_core.NLPCore.WordPages = []
-        self._parse_result_word_paras: dcr_core.nlp.cls_nlp_core.NLPCore.WordParas = []
-        self._parse_result_word_words: dcr_core.nlp.cls_nlp_core.NLPCore.WordWords = []
+        self._parse_result_word_lines: dcr_core.nlp.cls_nlp_core.NLPCore.ParserWordLines = []
+        self._parse_result_word_pages: dcr_core.nlp.cls_nlp_core.NLPCore.ParserWordPages = []
+        self._parse_result_word_paras: dcr_core.nlp.cls_nlp_core.NLPCore.ParserWordParas = []
+        self._parse_result_word_words: dcr_core.nlp.cls_nlp_core.NLPCore.ParserWordWords = []
 
-        self.parse_result_line_lines: dcr_core.nlp.cls_nlp_core.NLPCore.LineLines = []
-        self.parse_result_line_pages: dcr_core.nlp.cls_nlp_core.NLPCore.LinePages = []
+        self.parse_result_line_lines: dcr_core.nlp.cls_nlp_core.NLPCore.ParserLineLines = []
+        self.parse_result_line_pages: dcr_core.nlp.cls_nlp_core.NLPCore.ParserLinePages = []
 
         self.parse_result_no_pages_in_doc = 0
 
@@ -123,10 +123,10 @@ class TextParser:
                 {
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: cfg.glob.document.document_id,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: cfg.glob.document.document_file_name,
-                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER: cfg.glob.document.document_no_lines_footer,
-                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER: cfg.glob.document.document_no_lines_header,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER: dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER: dcr_core.cfg.glob.line_type_headers_footers.no_lines_header,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
-                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: cfg.glob.document.document_no_lines_toc,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC: dcr_core.cfg.glob.line_type_toc.no_lines_toc,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC: dcr_core.cfg.glob.line_type_list_bullet.no_lists,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC: dcr_core.cfg.glob.line_type_list_number.no_lists,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
@@ -162,7 +162,7 @@ class TextParser:
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: self._parse_result_line_index_page + 1,
-            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
+            dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_BODY,
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
             dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: self._parse_result_text,
         }
@@ -568,7 +568,7 @@ class TextParser:
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: self._parse_result_line_urx,
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: self._parse_result_line_index_page + 1,
-                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY,
+                dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE: dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_BODY,
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO: self._parse_result_table_row,
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT: "",
@@ -770,20 +770,16 @@ class TextParser:
             self.parse_result_line_pages = []
             dcr_core.cfg.glob.line_type_headers_footers = dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(
                 action_file_name=cfg.glob.action_curr.action_file_name,
-                action_no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
-                is_verbose_lt_headers_footers=cfg.glob.setup.is_verbose_lt_headers_footers,
-                lt_footer_max_distance=cfg.glob.setup.lt_footer_max_distance,
-                lt_footer_max_lines=cfg.glob.setup.lt_footer_max_lines,
-                lt_header_max_distance=cfg.glob.setup.lt_header_max_distance,
-                lt_header_max_lines=cfg.glob.setup.lt_header_max_lines,
+                is_verbose_lt=cfg.glob.setup.is_verbose_lt_headers_footers,
             )
             dcr_core.cfg.glob.line_type_toc = dcr_core.nlp.cls_line_type_toc.LineTypeToc(
                 action_file_name=cfg.glob.action_curr.action_file_name,
-                is_verbose_lt_toc=cfg.glob.setup.is_verbose_lt_toc,
-                lt_toc_last_page=cfg.glob.setup.lt_toc_last_page,
-                lt_toc_min_entries=cfg.glob.setup.lt_toc_min_entries,
+                is_verbose_lt=cfg.glob.setup.is_verbose_lt_toc,
             )
-            dcr_core.cfg.glob.line_type_table = nlp.cls_line_type_table.LineTypeTable()
+            dcr_core.cfg.glob.line_type_table = dcr_core.nlp.cls_line_type_table.LineTypeTable(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                is_verbose_lt=cfg.glob.setup.is_verbose_lt_table,
+            )
             dcr_core.cfg.glob.line_type_list_bullet = nlp.cls_line_type_list_bullet.LineTypeListBullet()
             dcr_core.cfg.glob.line_type_list_number = nlp.cls_line_type_list_number.LineTypeListNumber()
             dcr_core.cfg.glob.line_type_heading = nlp.cls_line_type_heading.LineTypeHeading()
@@ -804,11 +800,34 @@ class TextParser:
                     self._parse_tag_page(child_tag, child)
 
         if cfg.glob.setup.is_parsing_line:
-            dcr_core.cfg.glob.line_type_headers_footers.process_document(parse_result_line_pages=self.parse_result_line_pages)
-            dcr_core.cfg.glob.line_type_toc.process_document(
-                parse_result_line_pages=self.parse_result_line_pages,
+            dcr_core.cfg.glob.line_type_headers_footers.process_document(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                action_no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
+                lt_footer_max_distance=cfg.glob.setup.lt_footer_max_distance,
+                lt_footer_max_lines=cfg.glob.setup.lt_footer_max_lines,
+                lt_header_max_distance=cfg.glob.setup.lt_header_max_distance,
+                lt_header_max_lines=cfg.glob.setup.lt_header_max_lines,
+                parser_line_pages_json=self.parse_result_line_pages,
             )
-            dcr_core.cfg.glob.line_type_table.process_document()
+            dcr_core.cfg.glob.line_type_toc.process_document(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                lt_toc_last_page=cfg.glob.setup.lt_toc_last_page,
+                lt_toc_min_entries=cfg.glob.setup.lt_toc_min_entries,
+                parser_line_pages_json=self.parse_result_line_pages,
+            )
+            dcr_core.cfg.glob.line_type_table.process_document(
+                action_file_name=cfg.glob.action_curr.action_file_name,
+                directory_name=cfg.glob.action_curr.action_directory_name,
+                document_document_id=cfg.glob.document.document_id,
+                document_file_name=cfg.glob.document.document_file_name,
+                file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+                file_name=cfg.glob.action_curr.action_file_name,
+                is_create_extra_file_table=cfg.glob.setup.is_create_extra_file_table,
+                is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
+                is_lt_table_file_incl_empty_columns=cfg.glob.setup.is_lt_table_file_incl_empty_columns,
+                json_indent=cfg.glob.setup.json_indent,
+                parser_line_pages_json=self.parse_result_line_pages,
+            )
             dcr_core.cfg.glob.line_type_list_bullet.process_document()
             dcr_core.cfg.glob.line_type_list_number.process_document()
             dcr_core.cfg.glob.line_type_heading.process_document()

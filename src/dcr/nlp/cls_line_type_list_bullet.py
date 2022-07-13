@@ -7,7 +7,6 @@ import pathlib
 import re
 
 import cfg.glob
-import db.cls_document
 import utils
 
 import dcr_core.cfg.glob
@@ -49,8 +48,11 @@ class LineTypeListBullet:
             is_text_parser=True,
         )
 
-        utils.progress_msg_line_type_list_bullet("LineTypeListBullet")
-        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: Start create instance                ={cfg.glob.action_curr.action_file_name}")
+        dcr_core.utils.progress_msg(cfg.glob.setup.is_verbose_lt_list_bullet, "LineTypeListBullet")
+        dcr_core.utils.progress_msg(
+            cfg.glob.setup.is_verbose_lt_list_bullet,
+            f"LineTypeListBullet: Start create instance                ={cfg.glob.action_curr.action_file_name}",
+        )
 
         self._anti_patterns: list[tuple[str, re.Pattern[str]]] = self._init_anti_patterns()
 
@@ -82,7 +84,10 @@ class LineTypeListBullet:
 
         self._exist = True
 
-        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: End   create instance                ={cfg.glob.action_curr.action_file_name}")
+        dcr_core.utils.progress_msg(
+            cfg.glob.setup.is_verbose_lt_list_bullet,
+            f"LineTypeListBullet: End   create instance                ={cfg.glob.action_curr.action_file_name}",
+        )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -95,15 +100,17 @@ class LineTypeListBullet:
             return
 
         if self._no_entries < cfg.glob.setup.lt_list_bullet_min_entries:
-            utils.progress_msg_line_type_list_bullet(
+            dcr_core.utils.progress_msg(
+                cfg.glob.setup.is_verbose_lt_list_bullet,
                 f"LineTypeListBullet: Not enough list entries    found only={self._no_entries} - "
-                + f"bullet='{self._bullet}' - entries={self._entries}"
+                + f"bullet='{self._bullet}' - entries={self._entries}",
             )
             self._reset_list()
             return
 
-        utils.progress_msg_line_type_list_bullet(
-            f"LineTypeListBullet: List entries                    found={self._no_entries} - " + f"bullet='{self._bullet}' - entries={self._entries}"
+        dcr_core.utils.progress_msg(
+            cfg.glob.setup.is_verbose_lt_list_bullet,
+            f"LineTypeListBullet: List entries                    found={self._no_entries} - " + f"bullet='{self._bullet}' - entries={self._entries}",
         )
 
         self.no_lists += 1
@@ -111,14 +118,14 @@ class LineTypeListBullet:
         entries: Entries = []
 
         for [page_idx, para_no, line_lines_idx_from, line_lines_idx_till] in self._entries:
-            line_lines: dcr_core.nlp.cls_nlp_core.NLPCore.LineLines = dcr_core.cfg.glob.text_parser.parse_result_line_pages[page_idx][
+            line_lines: dcr_core.nlp.cls_nlp_core.NLPCore.ParserLineLines = dcr_core.cfg.glob.text_parser.parse_result_line_pages[page_idx][
                 dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES
             ]
 
             text = []
 
             for idx in range(line_lines_idx_from, line_lines_idx_till + 1):
-                line_lines[idx][dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = db.cls_document.Document.DOCUMENT_LINE_TYPE_LIST_BULLET
+                line_lines[idx][dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_LIST_BULLET
 
                 if cfg.glob.setup.is_create_extra_file_list_bullet:
                     text.append(line_lines[idx][dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
@@ -167,7 +174,9 @@ class LineTypeListBullet:
 
         self._reset_list()
 
-        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: End   list                    on page={self._page_idx+1}")
+        dcr_core.utils.progress_msg(
+            cfg.glob.setup.is_verbose_lt_list_bullet, f"LineTypeListBullet: End   list                    on page={self._page_idx+1}"
+        )
 
     # -----------------------------------------------------------------------------
     # Initialise the bulleted list anti-patterns.
@@ -183,7 +192,7 @@ class LineTypeListBullet:
                 The valid bulleted list anti-patterns.
         """
         if cfg.glob.setup.lt_list_bullet_rule_file and cfg.glob.setup.lt_list_bullet_rule_file.lower() != "none":
-            lt_list_bullet_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.lt_list_bullet_rule_file)
+            lt_list_bullet_rule_file_path = dcr_core.utils.get_os_independent_name(cfg.glob.setup.lt_list_bullet_rule_file)
             if os.path.isfile(lt_list_bullet_rule_file_path):
                 return self._load_anti_patterns_from_json(pathlib.Path(lt_list_bullet_rule_file_path))
 
@@ -213,7 +222,7 @@ class LineTypeListBullet:
                     All valid bullets.
         """
         if cfg.glob.setup.lt_list_bullet_rule_file and cfg.glob.setup.lt_list_bullet_rule_file.lower() != "none":
-            lt_list_bullet_rule_file_path = utils.get_os_independent_name(cfg.glob.setup.lt_list_bullet_rule_file)
+            lt_list_bullet_rule_file_path = dcr_core.utils.get_os_independent_name(cfg.glob.setup.lt_list_bullet_rule_file)
 
             if os.path.isfile(lt_list_bullet_rule_file_path):
                 return self._load_rules_from_json(pathlib.Path(lt_list_bullet_rule_file_path))
@@ -299,7 +308,9 @@ class LineTypeListBullet:
 
         for (rule_name, pattern) in self._anti_patterns:
             if pattern.match(text):
-                utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: Anti pattern                         ={rule_name} - text={text}")
+                dcr_core.utils.progress_msg(
+                    cfg.glob.setup.is_verbose_lt_list_bullet, f"LineTypeListBullet: Anti pattern                         ={rule_name} - text={text}"
+                )
                 return
 
         para_no = int(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO])
@@ -353,18 +364,22 @@ class LineTypeListBullet:
         """Process the page-related data."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: Start page                           ={self._page_idx + 1}")
+        dcr_core.utils.progress_msg(
+            cfg.glob.setup.is_verbose_lt_list_bullet, f"LineTypeListBullet: Start page                           ={self._page_idx + 1}"
+        )
 
         self._max_line_line = len(dcr_core.cfg.glob.text_parser.parse_result_line_lines)
 
         for line_lines_idx, line_line in enumerate(dcr_core.cfg.glob.text_parser.parse_result_line_lines):
             self._line_lines_idx = line_lines_idx
 
-            if line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == db.cls_document.Document.DOCUMENT_LINE_TYPE_BODY:
+            if line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_BODY:
                 self._process_line(line_line)
                 self._page_idx_prev = self._page_idx
 
-        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: End   page                           ={self._page_idx + 1}")
+        dcr_core.utils.progress_msg(
+            cfg.glob.setup.is_verbose_lt_list_bullet, f"LineTypeListBullet: End   page                           ={self._page_idx + 1}"
+        )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -373,7 +388,7 @@ class LineTypeListBullet:
     # -----------------------------------------------------------------------------
     def _reset_document(self) -> None:
         """Reset the document memory."""
-        utils.progress_msg_line_type_list_bullet("LineTypeListBullet: Reset the document memory")
+        dcr_core.utils.progress_msg(cfg.glob.setup.is_verbose_lt_list_bullet, "LineTypeListBullet: Reset the document memory")
 
         self.no_lists = 0
 
@@ -399,7 +414,7 @@ class LineTypeListBullet:
         self._page_idx_prev = -1
         self._para_no_prev = 0
 
-        utils.progress_msg_line_type_list_bullet("LineTypeListBullet: Reset the list memory")
+        dcr_core.utils.progress_msg(cfg.glob.setup.is_verbose_lt_list_bullet, "LineTypeListBullet: Reset the list memory")
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -419,8 +434,11 @@ class LineTypeListBullet:
         """Process the document related data."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        utils.progress_msg_line_type_list_bullet("LineTypeListBullet")
-        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: Start document                       ={cfg.glob.action_curr.action_file_name}")
+        dcr_core.utils.progress_msg(cfg.glob.setup.is_verbose_lt_list_bullet, "LineTypeListBullet")
+        dcr_core.utils.progress_msg(
+            cfg.glob.setup.is_verbose_lt_list_bullet,
+            f"LineTypeListBullet: Start document                       ={cfg.glob.action_curr.action_file_name}",
+        )
 
         self._reset_document()
 
@@ -432,9 +450,9 @@ class LineTypeListBullet:
         self._finish_list()
 
         if cfg.glob.setup.is_create_extra_file_list_bullet and self._lists:
-            full_name_toc = utils.get_full_name(
+            full_name_toc = dcr_core.utils.get_full_name(
                 cfg.glob.action_curr.action_directory_name,
-                cfg.glob.action_curr.get_stem_name() + "_list_bullet." + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON,  # type: ignore
+                cfg.glob.action_curr.get_stem_name() + "_list_bullet." + dcr_core.cfg.glob.FILE_TYPE_JSON,  # type: ignore
             )
             with open(full_name_toc, "w", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
                 # {
@@ -456,6 +474,9 @@ class LineTypeListBullet:
                     sort_keys=cfg.glob.setup.is_json_sort_keys,
                 )
 
-        utils.progress_msg_line_type_list_bullet(f"LineTypeListBullet: End   document                       ={cfg.glob.action_curr.action_file_name}")
+        dcr_core.utils.progress_msg(
+            cfg.glob.setup.is_verbose_lt_list_bullet,
+            f"LineTypeListBullet: End   document                       ={cfg.glob.action_curr.action_file_name}",
+        )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)

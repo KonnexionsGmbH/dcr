@@ -21,6 +21,8 @@ import sqlalchemy
 import sqlalchemy.orm
 import utils
 
+import dcr_core.utils
+
 # -----------------------------------------------------------------------------
 # Class variables.
 # -----------------------------------------------------------------------------
@@ -94,7 +96,7 @@ def initialise_action(
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    full_name = utils.get_full_name(directory_name, file_name)
+    full_name = dcr_core.utils.get_full_name(directory_name, file_name)
 
     action = db.cls_action.Action(
         action_code=action_code,
@@ -223,7 +225,7 @@ def process_inbox_accepted(action_code: str) -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     full_name_curr = cfg.glob.document.get_full_name()
-    full_name_next = utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, cfg.glob.document.get_file_name_next())
+    full_name_next = dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, cfg.glob.document.get_file_name_next())
 
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,
@@ -281,13 +283,13 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
             db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             ERROR_01_905.replace("{file_name}", file_name),
         )
-    elif cfg.glob.document.get_file_type() == db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF:
+    elif cfg.glob.document.get_file_type() == dcr_core.cfg.glob.FILE_TYPE_PDF:
         prepare_pdf(file_path)
-    elif cfg.glob.document.get_file_type() in db.cls_document.Document.DOCUMENT_FILE_TYPE_PANDOC:
+    elif cfg.glob.document.get_file_type() in dcr_core.cfg.glob.FILE_TYPE_PANDOC:
         process_inbox_accepted(db.cls_run.Run.ACTION_CODE_PANDOC)
         cfg.glob.language.total_processed_pandoc += 1
         cfg.glob.run.total_processed_pandoc += 1
-    elif cfg.glob.document.get_file_type() in db.cls_document.Document.DOCUMENT_FILE_TYPE_TESSERACT:
+    elif cfg.glob.document.get_file_type() in dcr_core.cfg.glob.FILE_TYPE_TESSERACT:
         process_inbox_accepted(db.cls_run.Run.ACTION_CODE_TESSERACT)
         cfg.glob.language.total_processed_tesseract += 1
         cfg.glob.run.total_processed_tesseract += 1
@@ -352,7 +354,7 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     full_name_curr = cfg.glob.document.get_full_name()
-    full_name_next = utils.get_full_name(
+    full_name_next = dcr_core.utils.get_full_name(
         cfg.glob.setup.directory_inbox_rejected,
         cfg.glob.document.get_file_name_next(),
     )

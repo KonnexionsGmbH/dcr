@@ -12,6 +12,7 @@ import utils
 
 import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Global variables.
@@ -103,8 +104,8 @@ def parse_tetml_file() -> None:
     """
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON
-    full_name_next = utils.get_full_name(
+    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + dcr_core.cfg.glob.FILE_TYPE_JSON
+    full_name_next = dcr_core.utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )
@@ -156,10 +157,12 @@ def parse_tetml_file() -> None:
             dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer != 0
             or dcr_core.cfg.glob.line_type_headers_footers.no_lines_header != 0
             or dcr_core.cfg.glob.line_type_toc.no_lines_toc != 0
+            or dcr_core.cfg.glob.line_type_table.no_tables != 0
         ):
             cfg.glob.document.document_no_lines_footer = dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer
             cfg.glob.document.document_no_lines_header = dcr_core.cfg.glob.line_type_headers_footers.no_lines_header
             cfg.glob.document.document_no_lines_toc = dcr_core.cfg.glob.line_type_toc.no_lines_toc
+            cfg.glob.document.document_no_tables = dcr_core.cfg.glob.line_type_table.no_tables
             cfg.glob.document.persist_2_db()  # type: ignore
 
     cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(full_name_next),)

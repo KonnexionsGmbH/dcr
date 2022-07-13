@@ -19,33 +19,35 @@ class NLPCore:
     # -----------------------------------------------------------------------------
     # Global type aliases.
     # -----------------------------------------------------------------------------
-    LineLine = dict[str, int | str]
-    LineLines = list[LineLine]
+    ParserLineLine = dict[str, int | str]
+    ParserLineLines = list[ParserLineLine]
 
-    LinePage = dict[str, int | LineLines]
-    LinePages = list[LinePage]
+    ParserLinePage = dict[str, int | ParserLineLines]
+    ParserLinePages = list[ParserLinePage]
 
-    PagePara = dict[str, int | str]
-    PageParas = list[PagePara]
+    ParserLineDocument = dict[str, int | ParserLinePages | str]
 
-    PagePage = dict[str, int | PageParas]
-    PagePages = list[PagePage]
+    ParserPagePara = dict[str, int | str]
+    ParserPageParas = list[ParserPagePara]
 
-    PageDocument = dict[str, int | PagePages | str]
+    ParserPagePage = dict[str, int | ParserPageParas]
+    ParserPagePages = list[ParserPagePage]
 
-    WordWord = dict[str, int | str]
-    WordWords = list[WordWord]
+    ParserPageDocument = dict[str, int | ParserPagePages | str]
 
-    WordLine = dict[str, int | WordWords]
-    WordLines = list[WordLine]
+    ParserWordWord = dict[str, int | str]
+    ParserWordWords = list[ParserWordWord]
 
-    WordPara = dict[str, int | WordLines]
-    WordParas = list[WordPara]
+    ParserWordLine = dict[str, int | ParserWordWords]
+    ParserWordLines = list[ParserWordLine]
 
-    WordPage = dict[str, int | str | WordParas]
-    WordPages = list[WordPage]
+    ParserWordPara = dict[str, int | ParserWordLines]
+    ParserWordParas = list[ParserWordPara]
 
-    WordDocument = dict[str, int | str | WordPages]
+    ParserWordPage = dict[str, int | str | ParserWordParas]
+    ParserWordPages = list[ParserWordPage]
+
+    ParserWordDocument = dict[str, int | str | ParserWordPages]
 
     # -----------------------------------------------------------------------------
     # Class variables.
@@ -735,7 +737,7 @@ class NLPCore:
         Args:
             is_verbose (bool):
                     If true, processing results are reported.
-            file_name (st):
+            file_name (str):
                     File name of the output file.
             file_encoding (str):
                     The encoding of the output file.

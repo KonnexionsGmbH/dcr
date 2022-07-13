@@ -73,8 +73,8 @@ def test_cls_line_type_heading_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         inbox_accepted=(
             [],
             [
+                "docx_heading.line_heading.json",
                 "docx_heading.line.json",
-                "docx_heading.line_toc.json",
                 "docx_heading.page.json",
                 "docx_heading.pdf",
                 "docx_heading.word.json",
@@ -332,6 +332,15 @@ def test_missing_dependencies_line_type_heading_document(fxtr_setup_logger_envir
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.run = db.cls_run.Run(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+    )
+
+    # -------------------------------------------------------------------------
     cfg.glob.action_curr = db.cls_action.Action(
         _row_id=1,
         action_code=db.cls_run.Run.ACTION_CODE_INBOX,
@@ -358,6 +367,15 @@ def test_missing_dependencies_line_type_heading_document(fxtr_setup_logger_envir
 def test_missing_dependencies_line_type_heading_setup(fxtr_setup_logger_environment):
     """Test Function - missing dependencies - line_type_heading - Setup."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    cfg.glob.db_core = db.cls_db_core.DBCore()
+
+    # -------------------------------------------------------------------------
+    cfg.glob.run = db.cls_run.Run(
+        _row_id=1,
+        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+    )
 
     # -------------------------------------------------------------------------
     cfg.glob.action_curr = db.cls_action.Action(

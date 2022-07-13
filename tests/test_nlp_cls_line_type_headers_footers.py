@@ -17,6 +17,7 @@ import dcr_core.cfg.glob
 import dcr_core.nlp.cls_line_type_headers_footers
 import dcr_core.nlp.cls_line_type_toc
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -26,10 +27,10 @@ import dcr_core.nlp.cls_nlp_core
 
 
 # -----------------------------------------------------------------------------
-# Test LineType Header & Footers.
+# Test LineType Header & Footers - basic test.
 # -----------------------------------------------------------------------------
-def test_cls_line_type_headers_footers(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
-    """Test LineType Header & Footers."""
+def test_cls_line_type_headers_footers_basic(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType Header & Footers - basic test."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
@@ -210,6 +211,579 @@ def test_cls_line_type_headers_footers(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
 
 
 # -----------------------------------------------------------------------------
+# Test LineType Header & Footers - maximum version.
+# -----------------------------------------------------------------------------
+def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType Header & Footers - maximum version."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("p_5_h_0_f_0", "pdf"),
+            ("p_5_h_0_f_2", "pdf"),
+            ("p_5_h_2_f_0", "pdf"),
+            ("p_5_h_2_f_2", "pdf"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "true"),
+        ],
+    )
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    pytest.helpers.check_json_line("p_5_h_0_f_0.line.json", no_lines_footer=0, no_lines_header=0)
+    pytest.helpers.check_json_line("p_5_h_0_f_2.line.json", no_lines_footer=2, no_lines_header=0)
+    pytest.helpers.check_json_line("p_5_h_2_f_0.line.json", no_lines_footer=0, no_lines_header=2)
+    pytest.helpers.check_json_line("p_5_h_2_f_2.line.json", no_lines_footer=2, no_lines_header=2)
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+
+    pytest.helpers.check_json_line("p_5_h_0_f_0.line_token.json", no_lines_footer=0, no_lines_header=0)
+    pytest.helpers.check_json_line("p_5_h_0_f_2.line_token.json", no_lines_footer=2, no_lines_header=0)
+    pytest.helpers.check_json_line("p_5_h_2_f_0.line_token.json", no_lines_footer=0, no_lines_header=2)
+    pytest.helpers.check_json_line("p_5_h_2_f_2.line_token.json", no_lines_footer=2, no_lines_header=2)
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_2 <=========")
+
+    pytest.helpers.check_dbt_document(
+        (
+            1,
+            (
+                1,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_0_f_0.pdf",
+                1,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    pytest.helpers.check_dbt_document(
+        (
+            2,
+            (
+                2,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_0_f_2.pdf",
+                1,
+                4,
+                2,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    pytest.helpers.check_dbt_document(
+        (
+            3,
+            (
+                3,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_2_f_0.pdf",
+                1,
+                4,
+                0,
+                2,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    pytest.helpers.check_dbt_document(
+        (
+            4,
+            (
+                4,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_2_f_2.pdf",
+                1,
+                4,
+                2,
+                2,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_3 <=========")
+
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "p_5_h_0_f_0.line.json",
+                "p_5_h_0_f_0.line.xml",
+                "p_5_h_0_f_0.line_token.json",
+                "p_5_h_0_f_0.page.json",
+                "p_5_h_0_f_0.page.xml",
+                "p_5_h_0_f_0.pdf",
+                "p_5_h_0_f_0.word.json",
+                "p_5_h_0_f_0.word.xml",
+                "p_5_h_0_f_2.line.json",
+                "p_5_h_0_f_2.line.xml",
+                "p_5_h_0_f_2.line_token.json",
+                "p_5_h_0_f_2.page.json",
+                "p_5_h_0_f_2.page.xml",
+                "p_5_h_0_f_2.pdf",
+                "p_5_h_0_f_2.word.json",
+                "p_5_h_0_f_2.word.xml",
+                "p_5_h_2_f_0.line.json",
+                "p_5_h_2_f_0.line.xml",
+                "p_5_h_2_f_0.line_token.json",
+                "p_5_h_2_f_0.page.json",
+                "p_5_h_2_f_0.page.xml",
+                "p_5_h_2_f_0.pdf",
+                "p_5_h_2_f_0.word.json",
+                "p_5_h_2_f_0.word.xml",
+                "p_5_h_2_f_2.line.json",
+                "p_5_h_2_f_2.line.xml",
+                "p_5_h_2_f_2.line_token.json",
+                "p_5_h_2_f_2.page.json",
+                "p_5_h_2_f_2.page.xml",
+                "p_5_h_2_f_2.pdf",
+                "p_5_h_2_f_2.word.json",
+                "p_5_h_2_f_2.word.xml",
+            ],
+        ),
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test LineType Header & Footers - minimum version - distance.
+# -----------------------------------------------------------------------------
+def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType Header & Footers - minimum version - distance."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("p_5_h_0_f_0", "pdf"),
+            ("p_5_h_0_f_2", "pdf"),
+            ("p_5_h_2_f_0", "pdf"),
+            ("p_5_h_2_f_2", "pdf"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "0"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "0"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "false"),
+        ],
+    )
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    pytest.helpers.check_json_line("p_5_h_0_f_0.line.json", no_lines_footer=0, no_lines_header=0)
+    pytest.helpers.check_json_line("p_5_h_0_f_2.line.json", no_lines_footer=2, no_lines_header=0)
+    pytest.helpers.check_json_line("p_5_h_2_f_0.line.json", no_lines_footer=0, no_lines_header=2)
+    pytest.helpers.check_json_line("p_5_h_2_f_2.line.json", no_lines_footer=1, no_lines_header=2)
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_minimum_version_distance_2 <=========")
+
+    pytest.helpers.check_dbt_document(
+        (
+            1,
+            (
+                1,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_0_f_0.pdf",
+                1,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    pytest.helpers.check_dbt_document(
+        (
+            2,
+            (
+                2,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_0_f_2.pdf",
+                1,
+                4,
+                2,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    pytest.helpers.check_dbt_document(
+        (
+            3,
+            (
+                3,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_2_f_0.pdf",
+                1,
+                4,
+                0,
+                2,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    pytest.helpers.check_dbt_document(
+        (
+            4,
+            (
+                4,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_2_f_2.pdf",
+                1,
+                4,
+                1,
+                2,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_distance_3 <=========")
+
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "p_5_h_0_f_0.pdf",
+                "p_5_h_0_f_2.pdf",
+                "p_5_h_2_f_0.pdf",
+                "p_5_h_2_f_2.pdf",
+            ],
+        ),
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
+# Test LineType Header & Footers - minimum version - lines.
+# -----------------------------------------------------------------------------
+def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType Header & Footers - minimum version - lines."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("p_5_h_0_f_0", "pdf"),
+            ("p_5_h_0_f_2", "pdf"),
+            ("p_5_h_2_f_0", "pdf"),
+            ("p_5_h_2_f_2", "pdf"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "0"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "0"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "false"),
+        ],
+    )
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    pytest.helpers.check_json_line("p_5_h_0_f_0.line.json", no_lines_footer=0, no_lines_header=0)
+    pytest.helpers.check_json_line("p_5_h_0_f_2.line.json", no_lines_footer=0, no_lines_header=0)
+    pytest.helpers.check_json_line("p_5_h_2_f_0.line.json", no_lines_footer=0, no_lines_header=0)
+    pytest.helpers.check_json_line("p_5_h_2_f_2.line.json", no_lines_footer=0, no_lines_header=0)
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_minimum_version_distance_2 <=========")
+
+    pytest.helpers.check_dbt_document(
+        (
+            1,
+            (
+                1,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_0_f_0.pdf",
+                1,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    pytest.helpers.check_dbt_document(
+        (
+            2,
+            (
+                2,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_0_f_2.pdf",
+                1,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    pytest.helpers.check_dbt_document(
+        (
+            3,
+            (
+                3,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_2_f_0.pdf",
+                1,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    pytest.helpers.check_dbt_document(
+        (
+            4,
+            (
+                4,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_2_f_2.pdf",
+                1,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_distance_3 <=========")
+
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "p_5_h_0_f_0.pdf",
+                "p_5_h_0_f_2.pdf",
+                "p_5_h_2_f_0.pdf",
+                "p_5_h_2_f_2.pdf",
+            ],
+        ),
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test Function - missing dependencies - line_type_headers_footers - coverage - exists.
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_line_type_headers_footers_coverage_exists(fxtr_setup_empty_db_and_inbox):
@@ -240,12 +814,7 @@ def test_missing_dependencies_line_type_headers_footers_coverage_exists(fxtr_set
     # -------------------------------------------------------------------------
     instance = dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(
         action_file_name=cfg.glob.action_curr.action_file_name,
-        action_no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
-        is_verbose_lt_headers_footers=cfg.glob.setup.is_verbose_lt_headers_footers,
-        lt_footer_max_distance=cfg.glob.setup.lt_footer_max_distance,
-        lt_footer_max_lines=cfg.glob.setup.lt_footer_max_lines,
-        lt_header_max_distance=cfg.glob.setup.lt_header_max_distance,
-        lt_header_max_lines=cfg.glob.setup.lt_header_max_lines,
+        is_verbose_lt=cfg.glob.setup.is_verbose_lt_headers_footers,
     )
 
     instance.exists()

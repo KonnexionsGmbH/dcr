@@ -120,10 +120,10 @@ def delete_auxiliary_file(full_name: pathlib.Path | str) -> None:
     if not cfg.glob.setup.is_delete_auxiliary_files:
         return
 
-    full_name = get_os_independent_name(full_name)
+    full_name = dcr_core.utils.get_os_independent_name(full_name)
 
     # Don't remove the base document !!!
-    if full_name == get_full_name(cfg.glob.action_curr.action_directory_name, cfg.glob.document.get_file_name_next()):
+    if full_name == dcr_core.utils.get_full_name(cfg.glob.action_curr.action_directory_name, cfg.glob.document.get_file_name_next()):
         return
 
     if os.path.isfile(full_name):
@@ -150,52 +150,6 @@ def get_file_type(file_name: pathlib.Path | str | None) -> str:
         file_name = pathlib.Path(file_name)
 
     return file_name.suffix[1:].lower()
-
-
-# -----------------------------------------------------------------------------
-# Get the full name from a directory name or path and a file name or path.
-# -----------------------------------------------------------------------------
-def get_full_name(directory_name: pathlib.Path | str | None, file_name: pathlib.Path | str | None) -> str:
-    """Get the full name from a directory name or path and a file name or path.
-
-    Args:
-        directory_name (pathlib.Path | str | None): Directory name or directory path.
-        file_name (pathlib.Path | str | None): File name or file path.
-
-    Returns:
-        str: Full file name.
-    """
-    if directory_name is None and file_name is None:
-        return ""
-
-    if isinstance(directory_name, pathlib.Path):
-        directory_name = str(directory_name)
-
-    if isinstance(file_name, pathlib.Path):
-        file_name = str(file_name)
-
-    return get_os_independent_name(str(os.path.join(directory_name, file_name)))
-
-
-# -----------------------------------------------------------------------------
-# Get the platform-independent name.
-# -----------------------------------------------------------------------------
-def get_os_independent_name(name: pathlib.Path | str | None) -> str:
-    """Get the platform-independent name..
-
-    Args:
-        name (pathlib.Path | str | None): File name or file path.
-
-    Returns:
-        str: Platform-independent name.
-    """
-    if name is None:
-        return ""
-
-    if isinstance(name, str):
-        return name.replace(("\\" if os.sep == "/" else "/"), os.sep)
-
-    return str(name)
 
 
 # -----------------------------------------------------------------------------
@@ -230,34 +184,13 @@ def get_pdf_pages_no(
     Returns:
         int: The number of pages found.
     """
-    if get_file_type(file_name) != db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF:
+    if get_file_type(file_name) != dcr_core.cfg.glob.FILE_TYPE_PDF:
         return -1
 
     try:
         return len(PyPDF2.PdfReader(file_name).pages)
     except PyPDF2.errors.PdfReadError:
         return -1
-
-
-# -----------------------------------------------------------------------------
-# Get the stem name from a file name.
-# -----------------------------------------------------------------------------
-def get_stem_name(file_name: pathlib.Path | str | None) -> str:
-    """Get the stem name from a file name.
-
-    Args:
-        file_name (pathlib.Path | str | None): File name or file path.
-
-    Returns:
-        str: Stem name.
-    """
-    if file_name is None:
-        return ""
-
-    if isinstance(file_name, str):
-        file_name = pathlib.Path(file_name)
-
-    return file_name.stem
 
 
 # -----------------------------------------------------------------------------
@@ -354,84 +287,6 @@ def progress_msg_empty_before(msg: str) -> None:
     except AttributeError:
         print("")
         progress_msg(msg)
-
-
-# -----------------------------------------------------------------------------
-# Create a headers & footers line_type progress message.
-# -----------------------------------------------------------------------------
-def progress_msg_line_type_headers_footers(msg: str) -> None:
-    """Create a headers & footers line_type progress message.
-
-    Args:
-        msg (str): Progress message.
-    """
-    if cfg.glob.setup.is_verbose_lt_headers_footers:
-        progress_msg_core(msg)
-
-
-# -----------------------------------------------------------------------------
-# Create a heading line_type progress message.
-# -----------------------------------------------------------------------------
-def progress_msg_line_type_heading(msg: str) -> None:
-    """Create a heading line_type progress message.
-
-    Args:
-        msg (str): Progress message.
-    """
-    if cfg.glob.setup.is_verbose_lt_heading:
-        progress_msg_core(msg)
-
-
-# -----------------------------------------------------------------------------
-# Create a bulleted list line_type progress message.
-# -----------------------------------------------------------------------------
-def progress_msg_line_type_list_bullet(msg: str) -> None:
-    """Create a bulleted list line_type progress message.
-
-    Args:
-        msg (str): Progress message.
-    """
-    if cfg.glob.setup.is_verbose_lt_list_bullet:
-        progress_msg_core(msg)
-
-
-# -----------------------------------------------------------------------------
-# Create a numbered list line_type progress message.
-# -----------------------------------------------------------------------------
-def progress_msg_line_type_list_number(msg: str) -> None:
-    """Create a numbered list line_type progress message.
-
-    Args:
-        msg (str): Progress message.
-    """
-    if cfg.glob.setup.is_verbose_lt_list_number:
-        progress_msg_core(msg)
-
-
-# -----------------------------------------------------------------------------
-# Create a table line_type progress message.
-# -----------------------------------------------------------------------------
-def progress_msg_line_type_table(msg: str) -> None:
-    """Create a table line_type progress message.
-
-    Args:
-        msg (str): Progress message.
-    """
-    if cfg.glob.setup.is_verbose_lt_table:
-        progress_msg_core(msg)
-
-
-# -----------------------------------------------------------------------------
-# Create a TOC line_type progress message.
-# -----------------------------------------------------------------------------
-def progress_msg_line_type_toc(msg: str) -> None:
-    """Create a TOC line_type progress message.
-
-    Args:
-        msg (str): Progress message.
-    """
-    if cfg.glob.setup.is_verbose_lt_toc:
-        progress_msg_core(msg)
 
 
 # -----------------------------------------------------------------------------

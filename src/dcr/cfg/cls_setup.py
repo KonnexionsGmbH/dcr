@@ -199,7 +199,7 @@ class Setup:
         self.db_database_admin = "dcr_db_prod_admin"
         self.db_dialect = "postgresql"
         self.db_host = "localhost"
-        self.db_initial_data_file = utils.get_os_independent_name("data/db_initial_data_file.json")
+        self.db_initial_data_file = dcr_core.utils.get_os_independent_name("data/db_initial_data_file.json")
         self.db_password = "postgresql"  # nosec
         self.db_password_admin = "postgresql"  # nosec
         self.db_schema = "dcr_schema"
@@ -208,9 +208,9 @@ class Setup:
 
         self.is_delete_auxiliary_files = True
 
-        self.directory_inbox = utils.get_os_independent_name("data/inbox")
-        self.directory_inbox_accepted = utils.get_os_independent_name("data/inbox_accepted")
-        self.directory_inbox_rejected = utils.get_os_independent_name("data/inbox_rejected")
+        self.directory_inbox = dcr_core.utils.get_os_independent_name("data/inbox")
+        self.directory_inbox_accepted = dcr_core.utils.get_os_independent_name("data/inbox_accepted")
+        self.directory_inbox_rejected = dcr_core.utils.get_os_independent_name("data/inbox_rejected")
         self.doc_id_in_file_name = "none"
 
         self.is_ignore_duplicates = False
@@ -452,7 +452,7 @@ class Setup:
         if Setup._DCR_CFG_DIRECTORY_INBOX in self._config:
             self._config[Setup._DCR_CFG_DIRECTORY_INBOX] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX])
 
-            self.directory_inbox = utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX]))
+            self.directory_inbox = dcr_core.utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX]))
         else:
             dcr_core.utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
 
@@ -464,7 +464,7 @@ class Setup:
         if Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED in self._config:
             self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
 
-            self.directory_inbox_accepted = utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED]))
+            self.directory_inbox_accepted = dcr_core.utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED]))
         else:
             dcr_core.utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'")
 
@@ -476,7 +476,7 @@ class Setup:
         if Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED in self._config:
             self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED])
 
-            self.directory_inbox_rejected = utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED]))
+            self.directory_inbox_rejected = dcr_core.utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED]))
         else:
             dcr_core.utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'")
 
@@ -875,7 +875,7 @@ class Setup:
                 case Setup._DCR_CFG_DB_HOST:
                     self.db_host = str(item)
                 case Setup._DCR_CFG_DB_INITIAL_DATA_FILE:
-                    self.db_initial_data_file = utils.get_os_independent_name(item)
+                    self.db_initial_data_file = dcr_core.utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_DB_PASSWORD:
                     self.db_password = str(item)
                 case Setup._DCR_CFG_DB_PASSWORD_ADMIN:
@@ -887,17 +887,17 @@ class Setup:
                 case Setup._DCR_CFG_DB_USER_ADMIN:
                     self.db_user_admin = str(item)
                 case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_HEADING:
-                    self.lt_export_rule_file_heading = utils.get_os_independent_name(item)
+                    self.lt_export_rule_file_heading = dcr_core.utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET:
-                    self.lt_export_rule_file_list_bullet = utils.get_os_independent_name(item)
+                    self.lt_export_rule_file_list_bullet = dcr_core.utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER:
-                    self.lt_export_rule_file_list_number = utils.get_os_independent_name(item)
+                    self.lt_export_rule_file_list_number = dcr_core.utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_LT_HEADING_RULE_FILE:
-                    self.lt_heading_rule_file = utils.get_os_independent_name(item)
+                    self.lt_heading_rule_file = dcr_core.utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE:
-                    self.lt_list_bullet_rule_file = utils.get_os_independent_name(item)
+                    self.lt_list_bullet_rule_file = dcr_core.utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE:
-                    self.lt_list_number_rule_file = utils.get_os_independent_name(item)
+                    self.lt_list_number_rule_file = dcr_core.utils.get_os_independent_name(item)
                 case _:
                     dcr_core.utils.terminate_fatal(f"Unknown configuration parameter '{key}'")
 

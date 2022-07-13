@@ -9,9 +9,9 @@ import cfg.glob
 import db.cls_db_core
 import db.cls_run
 import pytest
-import utils
 
 import dcr
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -265,8 +265,8 @@ def test_run_action_tokenize_french(fxtr_setup_empty_inbox):
 
     # copy test file
     shutil.copy(
-        utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), "db_initial_data_file_french.json"),
-        utils.get_full_name(os.path.dirname(db_initial_data_file_path), os.path.basename(db_initial_data_file_path)),
+        dcr_core.utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), "db_initial_data_file_french.json"),
+        dcr_core.utils.get_full_name(os.path.dirname(db_initial_data_file_path), os.path.basename(db_initial_data_file_path)),
     )
 
     cfg.glob.db_core = db.cls_db_core.DBCore(is_admin=True)
@@ -338,7 +338,7 @@ def test_run_action_tokenize_missing_input_file(spacy_ignore: str, fxtr_setup_em
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
-    os.remove(utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.json"))
+    os.remove(dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.json"))
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 

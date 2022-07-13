@@ -11,10 +11,10 @@ import defusedxml.ElementTree
 import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 import pytest
-import utils
 
 import dcr
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -161,9 +161,9 @@ def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     nlp.cls_text_parser.TextParser.from_files(
-        full_name_line=utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.line.json"),
-        full_name_page=utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.page.json"),
-        full_name_word=utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.word.json"),
+        full_name_line=dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.line.json"),
+        full_name_page=dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.page.json"),
+        full_name_word=dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.word.json"),
     )
 
     # -------------------------------------------------------------------------

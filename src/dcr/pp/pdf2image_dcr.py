@@ -12,6 +12,9 @@ import pdf2image
 import utils
 from pdf2image.exceptions import PDFPageCountError
 
+import dcr_core.cfg.glob
+import dcr_core.utils
+
 # -----------------------------------------------------------------------------
 # Class variables.
 # -----------------------------------------------------------------------------
@@ -63,7 +66,7 @@ def convert_pdf_2_image_file() -> None:
     """Convert a scanned image pdf document to an image file."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    full_name_curr = utils.get_full_name(
+    full_name_curr = dcr_core.utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         cfg.glob.action_curr.action_file_name,
     )
@@ -85,13 +88,13 @@ def convert_pdf_2_image_file() -> None:
                 stem_name_next
                 + "."
                 + (
-                    db.cls_document.Document.DOCUMENT_FILE_TYPE_PNG
+                    dcr_core.cfg.glob.FILE_TYPE_PNG
                     if cfg.glob.setup.pdf2image_type == cfg.cls_setup.Setup.PDF2IMAGE_TYPE_PNG
-                    else db.cls_document.Document.DOCUMENT_FILE_TYPE_JPEG
+                    else dcr_core.cfg.glob.FILE_TYPE_JPEG
                 )
             )
 
-            full_name_next = utils.get_full_name(
+            full_name_next = dcr_core.utils.get_full_name(
                 cfg.glob.action_curr.action_directory_name,
                 file_name_next,
             )
