@@ -52,6 +52,8 @@ class NLPCore:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
+    CODE_SPACY_DEFAULT: ClassVar[str] = "en_core_web_trf"
+
     ENVIRONMENT_TYPE_DEV: ClassVar[str] = "dev"
     ENVIRONMENT_TYPE_PROD: ClassVar[str] = "prod"
     ENVIRONMENT_TYPE_TEST: ClassVar[str] = "test"

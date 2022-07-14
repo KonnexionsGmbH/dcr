@@ -1118,7 +1118,7 @@ def test_missing_dependencies_token_0(fxtr_setup_logger):
             row_no=0,
             sent_no=0,
             text="",
-            tokens=[],
+            tokens="",
         )
 
     assert expt.type == SystemExit, "Instance of class 'DBCore' is missing"

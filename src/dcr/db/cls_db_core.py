@@ -27,6 +27,7 @@ import utils
 from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine
 
+import dcr_core.nlp.cls_nlp_core
 import dcr_core.utils
 
 # -----------------------------------------------------------------------------
@@ -59,7 +60,6 @@ class DBCore:
     DBC_CODE_PANDOC: ClassVar[str] = "code_pandoc"
     DBC_CODE_PANDOC_DEFAULT: ClassVar[str] = "en"
     DBC_CODE_SPACY: ClassVar[str] = "code_spacy"
-    DBC_CODE_SPACY_DEFAULT: ClassVar[str] = "en_core_web_trf"
     DBC_CODE_TESSERACT: ClassVar[str] = "code_tesseract"
     DBC_CODE_TESSERACT_DEFAULT: ClassVar[str] = "eng"
     DBC_COLUMN_NO: ClassVar[str] = "column_no"
@@ -451,7 +451,7 @@ class DBCore:
             {
                 DBCore.DBC_CODE_ISO_639_3: DBCore.DBC_CODE_ISO_639_3_DEFAULT,
                 DBCore.DBC_CODE_PANDOC: DBCore.DBC_CODE_PANDOC_DEFAULT,
-                DBCore.DBC_CODE_SPACY: DBCore.DBC_CODE_SPACY_DEFAULT,
+                DBCore.DBC_CODE_SPACY: dcr_core.nlp.cls_nlp_core.NLPCore.CODE_SPACY_DEFAULT,
                 DBCore.DBC_CODE_TESSERACT: DBCore.DBC_CODE_TESSERACT_DEFAULT,
                 DBCore.DBC_DIRECTORY_NAME_INBOX: cfg.glob.setup.directory_inbox,
                 DBCore.DBC_ISO_LANGUAGE_NAME: DBCore.DBC_ISO_LANGUAGE_NAME_DEFAULT,
