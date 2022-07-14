@@ -9,11 +9,12 @@ import db.cls_db_core
 import db.cls_document
 import db.cls_language
 import db.cls_run
-import nlp.cls_text_parser
-import nlp.cls_tokenizer_spacy
 import utils
 
 import dcr_core.cfg.glob
+import dcr_core.nlp.cls_text_parser
+import dcr_core.nlp.cls_tokenizer_spacy
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Global constants.
@@ -31,7 +32,7 @@ def tokenize() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    cfg.glob.tokenizer_spacy = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+    cfg.glob.tokenizer_spacy = dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy()
 
     with cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE)
@@ -87,7 +88,7 @@ def tokenize_file() -> None:
         full_name_next = ""
 
     try:
-        dcr_core.cfg.glob.text_parser = nlp.cls_text_parser.TextParser.from_files(full_name_line=full_name_curr)
+        dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser.from_files(full_name_line=full_name_curr)
 
         cfg.glob.tokenizer_spacy.process_document(full_name=full_name_next, pipeline_name=pipeline_name)
 

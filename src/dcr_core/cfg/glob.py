@@ -1,14 +1,13 @@
 """Module cfg.glob: DCR Global Data."""
 
-import nlp.cls_text_parser
-import nlp.cls_tokenizer_spacy
-
 import dcr_core.nlp.cls_line_type_headers_footers
 import dcr_core.nlp.cls_line_type_heading
 import dcr_core.nlp.cls_line_type_list_bullet
 import dcr_core.nlp.cls_line_type_list_number
 import dcr_core.nlp.cls_line_type_table
 import dcr_core.nlp.cls_line_type_toc
+import dcr_core.nlp.cls_text_parser
+import dcr_core.nlp.cls_tokenizer_spacy
 
 # -----------------------------------------------------------------------------
 # Global Constants.
@@ -61,6 +60,6 @@ line_type_list_number: type[dcr_core.nlp.cls_line_type_list_number.LineTypeListN
 line_type_table: type[dcr_core.nlp.cls_line_type_table.LineTypeTable]
 line_type_toc: type[dcr_core.nlp.cls_line_type_toc.LineTypeToc]
 
-text_parser: type[nlp.cls_text_parser.TextParser]
+text_parser: type[dcr_core.nlp.cls_text_parser.TextParser]
 
-tokenizer_spacy: type[nlp.cls_tokenizer_spacy.TokenizerSpacy]
+tokenizer_spacy: type[dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy]

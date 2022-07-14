@@ -21,14 +21,14 @@ import db.cls_language
 import db.cls_run
 import db.cls_token
 import db.cls_version
-import nlp.cls_text_parser
-import nlp.cls_tokenizer_spacy
 import pytest
 import sqlalchemy
 
 import dcr
 import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.nlp.cls_text_parser
+import dcr_core.nlp.cls_tokenizer_spacy
 import dcr_core.utils
 
 # -----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ def check_cls_line_type(
         target_toc (int):
                 Target toc lines.
     """
-    instance = nlp.cls_text_parser.TextParser.from_files(full_name_line=json_file)
+    instance = dcr_core.nlp.cls_text_parser.TextParser.from_files(full_name_line=json_file)
 
     actual_footer = []
     actual_header = []

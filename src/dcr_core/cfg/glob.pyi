@@ -1,6 +1,5 @@
 """Library Stub."""
 
-import nlp.cls_text_parser
 import nlp.cls_tokenizer_spacy
 
 import dcr_core.nlp.cls_line_type_headers_footers

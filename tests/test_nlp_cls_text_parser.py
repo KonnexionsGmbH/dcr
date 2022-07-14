@@ -8,12 +8,12 @@ import db.cls_db_core
 import db.cls_document
 import db.cls_run
 import defusedxml.ElementTree
-import nlp.cls_text_parser
-import nlp.cls_tokenizer_spacy
 import pytest
 
 import dcr
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.nlp.cls_text_parser
+import dcr_core.nlp.cls_tokenizer_spacy
 import dcr_core.utils
 
 # -----------------------------------------------------------------------------
@@ -160,7 +160,7 @@ def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    nlp.cls_text_parser.TextParser.from_files(
+    dcr_core.nlp.cls_text_parser.TextParser.from_files(
         full_name_line=dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.line.json"),
         full_name_page=dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.page.json"),
         full_name_word=dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, "pdf_mini_1.word.json"),
@@ -178,7 +178,7 @@ def test_missing_dependencies_text_parser_action_next(fxtr_setup_logger_environm
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_text_parser.TextParser()
+    instance = dcr_core.nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_action_next=True)
@@ -210,7 +210,7 @@ def test_missing_dependencies_text_parser_document(fxtr_setup_empty_db_and_inbox
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_text_parser.TextParser()
+    instance = dcr_core.nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_document=True)
@@ -258,7 +258,7 @@ def test_missing_dependencies_text_parser_line_document_case_1(fxtr_setup_logger
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_text_parser.TextParser()
+    instance = dcr_core.nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_action_next=True)
@@ -282,7 +282,7 @@ def test_missing_dependencies_text_parser_line_document_case_2(fxtr_setup_empty_
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_text_parser.TextParser()
+    instance = dcr_core.nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()
@@ -322,7 +322,7 @@ def test_missing_dependencies_text_parser_page_document_case_1(fxtr_setup_logger
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_text_parser.TextParser()
+    instance = dcr_core.nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_action_next=True)
@@ -346,7 +346,7 @@ def test_missing_dependencies_text_parser_page_document_case_2(fxtr_setup_empty_
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_text_parser.TextParser()
+    instance = dcr_core.nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()
@@ -390,7 +390,7 @@ def test_missing_dependencies_text_parser_setup(fxtr_setup_logger):
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_text_parser.TextParser()
+        dcr_core.nlp.cls_text_parser.TextParser()
 
     assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
     assert expt.value.code == 1, "Instance of class 'Setup' is missing"
@@ -407,7 +407,7 @@ def test_missing_dependencies_text_parser_word_document_case_1(fxtr_setup_logger
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_text_parser.TextParser()
+    instance = dcr_core.nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_action_next=True)
@@ -431,7 +431,7 @@ def test_missing_dependencies_text_parser_word_document_case_2(fxtr_setup_empty_
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_text_parser.TextParser()
+    instance = dcr_core.nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()

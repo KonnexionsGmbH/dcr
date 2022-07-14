@@ -7,9 +7,10 @@ import db.cls_action
 import db.cls_db_core
 import db.cls_document
 import db.cls_run
-import nlp.cls_text_parser
-import nlp.cls_tokenizer_spacy
 import pytest
+
+import dcr_core.nlp.cls_text_parser
+import dcr_core.nlp.cls_tokenizer_spacy
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -28,7 +29,7 @@ def test_cls_tokenizer_spacy(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+    instance = dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy()
     instance.exists()
 
     # -------------------------------------------------------------------------
@@ -52,7 +53,7 @@ def test_missing_dependencies_tokenizer_spacy_document(fxtr_setup_empty_db_and_i
     pytest.helpers.delete_existing_object(is_document=True)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+    instance = dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy()
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
@@ -80,14 +81,14 @@ def test_missing_dependencies_tokenizer_spacy_setup(fxtr_setup_empty_db_and_inbo
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+    instance = dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy()
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_setup=True)
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        nlp.cls_tokenizer_spacy.TokenizerSpacy()
+        dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy()
 
     assert expt.type == SystemExit, "Instance of class 'Setup' is missing: __init__()"
     assert expt.value.code == 1, "Instance of class 'Setup' is missing: __init__()"
@@ -120,7 +121,7 @@ def test_missing_dependencies_tokenizer_spacy_text_parser(fxtr_setup_empty_db_an
     pytest.helpers.delete_existing_object(is_text_parser=True)
 
     # -------------------------------------------------------------------------
-    instance = nlp.cls_tokenizer_spacy.TokenizerSpacy()
+    instance = dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy()
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:

@@ -7,11 +7,11 @@ import db.cls_action
 import db.cls_document
 import db.cls_run
 import defusedxml.ElementTree
-import nlp.cls_text_parser
 import utils
 
 import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
+import dcr_core.nlp.cls_text_parser
 import dcr_core.utils
 
 # -----------------------------------------------------------------------------
@@ -134,7 +134,7 @@ def parse_tetml_file() -> None:
         # Get the root Element
         root = tree.getroot()
 
-        dcr_core.cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+        dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser()
 
         for child in root:
             child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]

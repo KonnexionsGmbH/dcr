@@ -7,13 +7,13 @@ import db.cls_action
 import db.cls_db_core
 import db.cls_document
 import db.cls_run
-import nlp.cls_text_parser
-import nlp.cls_tokenizer_spacy
 import pytest
 
 import dcr
 import dcr_core.cfg.glob
 import dcr_core.nlp.cls_line_type_heading
+import dcr_core.nlp.cls_text_parser
+import dcr_core.nlp.cls_tokenizer_spacy
 import dcr_core.utils
 
 # -----------------------------------------------------------------------------
@@ -264,7 +264,7 @@ def test_missing_dependencies_line_type_heading_coverage_exists(fxtr_setup_empty
     cfg.glob.setup = cfg.cls_setup.Setup()
 
     # -------------------------------------------------------------------------
-    dcr_core.cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+    dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
     instance = dcr_core.nlp.cls_line_type_heading.LineTypeHeading(
