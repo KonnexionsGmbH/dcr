@@ -132,7 +132,6 @@ def test_line_type_list_number_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
 # -----------------------------------------------------------------------------
 # Test LineType Numbered List - minimum version - 1.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_line_type_list_number_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType Numbered List - minimum version - 1."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

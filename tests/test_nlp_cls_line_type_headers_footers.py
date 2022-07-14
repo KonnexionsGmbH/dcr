@@ -424,6 +424,108 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
 
 
 # -----------------------------------------------------------------------------
+# Test LineType Header & Footers - maximum version - by hand.
+# -----------------------------------------------------------------------------
+def test_cls_line_type_headers_footers_maximum_version_by_hand(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
+    """Test LineType Header & Footers - maximum version - by hand."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[
+            ("p_5_h_X_f_X", "pdf"),
+        ],
+        target_path=cfg.glob.setup.directory_inbox,
+    )
+
+    # -------------------------------------------------------------------------
+    values_original = pytest.helpers.backup_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "true"),
+        ],
+    )
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+
+    pytest.helpers.check_json_line("p_5_h_X_f_X.line.json", no_lines_footer=1, no_lines_header=0)
+
+    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+
+    pytest.helpers.check_json_line("p_5_h_X_f_X.line_token.json", no_lines_footer=1, no_lines_header=0)
+
+    pytest.helpers.restore_config_params(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original,
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_by_hand_2 <=========")
+
+    pytest.helpers.check_dbt_document(
+        (
+            1,
+            (
+                1,
+                "tkn",
+                "tokenize      (nlp)",
+                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                "",
+                "",
+                0,
+                "p_5_h_X_f_X.pdf",
+                1,
+                4,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5,
+                "end",
+            ),
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_by_hand_3 <=========")
+
+    pytest.helpers.verify_content_of_inboxes(
+        inbox_accepted=(
+            [],
+            [
+                "p_5_h_X_f_X.line.json",
+                "p_5_h_X_f_X.line.xml",
+                "p_5_h_X_f_X.line_token.json",
+                "p_5_h_X_f_X.page.json",
+                "p_5_h_X_f_X.page.xml",
+                "p_5_h_X_f_X.pdf",
+                "p_5_h_X_f_X.word.json",
+                "p_5_h_X_f_X.word.xml",
+            ],
+        ),
+    )
+
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+# -----------------------------------------------------------------------------
 # Test LineType Header & Footers - minimum version - distance.
 # -----------------------------------------------------------------------------
 def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):

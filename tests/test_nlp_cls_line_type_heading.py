@@ -136,7 +136,6 @@ def test_cls_line_type_heading_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
 # -----------------------------------------------------------------------------
 # Test LineType Heading - minimum version - 1.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_cls_line_type_heading_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType Heading - minimum version_1."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
