@@ -979,8 +979,8 @@ class TokenizerSpacy:
         self._document_no_lines_footer = document_no_lines_footer
         self._document_no_lines_header = document_no_lines_header
         self._document_no_lines_toc = document_no_lines_toc
-        self._full_name = full_name
         self._file_encoding = file_encoding
+        self._full_name = full_name
         self._is_json_sort_keys = is_json_sort_keys
         self._is_spacy_ignore_bracket = is_spacy_ignore_bracket
         self._is_spacy_ignore_left_punct = is_spacy_ignore_left_punct

@@ -140,7 +140,52 @@ def parse_tetml_file() -> None:
             child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
             match child_tag:
                 case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
-                    dcr_core.cfg.glob.text_parser.parse_tag_document(child_tag, child)
+                    dcr_core.cfg.glob.text_parser.parse_tag_document(
+                        action_directory_name=cfg.glob.action_curr.action_directory_name,
+                        action_file_name=cfg.glob.action_curr.action_file_name,
+                        action_no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
+                        document_file_name=cfg.glob.document.document_file_name,
+                        document_id=cfg.glob.document.document_id,
+                        environment_variant=cfg.glob.setup.environment_variant,
+                        file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+                        full_name=cfg.glob.action_next.get_full_name(),
+                        is_create_extra_file_heading=cfg.glob.setup.is_create_extra_file_heading,
+                        is_create_extra_file_list_bullet=cfg.glob.setup.is_create_extra_file_list_bullet,
+                        is_create_extra_file_list_number=cfg.glob.setup.is_create_extra_file_list_number,
+                        is_create_extra_file_table=cfg.glob.setup.is_create_extra_file_table,
+                        is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
+                        is_lt_heading_file_incl_regexp=cfg.glob.setup.is_lt_heading_file_incl_regexp,
+                        is_lt_list_number_file_incl_regexp=cfg.glob.setup.is_lt_list_number_file_incl_regexp,
+                        is_lt_table_file_incl_empty_columns=cfg.glob.setup.is_lt_table_file_incl_empty_columns,
+                        is_parsing_line=cfg.glob.setup.is_parsing_line,
+                        is_parsing_page=cfg.glob.setup.is_parsing_page,
+                        is_parsing_word=cfg.glob.setup.is_parsing_word,
+                        is_verbose_lt_headers_footers=cfg.glob.setup.is_verbose_lt_headers_footers,
+                        is_verbose_lt_list_bullet=cfg.glob.setup.is_verbose_lt_list_bullet,
+                        is_verbose_lt_table=cfg.glob.setup.is_verbose_lt_table,
+                        is_verbose_lt_toc=cfg.glob.setup.is_verbose_lt_toc,
+                        json_indent=cfg.glob.setup.json_indent,
+                        lt_footer_max_distance=cfg.glob.setup.lt_footer_max_distance,
+                        lt_footer_max_lines=cfg.glob.setup.lt_footer_max_lines,
+                        lt_header_max_distance=cfg.glob.setup.lt_header_max_distance,
+                        lt_header_max_lines=cfg.glob.setup.lt_header_max_lines,
+                        lt_heading_file_incl_no_ctx=cfg.glob.setup.lt_heading_file_incl_no_ctx,
+                        lt_heading_max_level=cfg.glob.setup.lt_heading_max_level,
+                        lt_heading_min_pages=cfg.glob.setup.lt_heading_min_pages,
+                        lt_heading_rule_file=cfg.glob.setup.lt_heading_rule_file,
+                        lt_heading_tolerance_llx=cfg.glob.setup.lt_heading_tolerance_llx,
+                        lt_list_bullet_min_entries=cfg.glob.setup.lt_list_bullet_min_entries,
+                        lt_list_bullet_rule_file=cfg.glob.setup.lt_list_bullet_rule_file,
+                        lt_list_bullet_tolerance_llx=cfg.glob.setup.lt_list_bullet_tolerance_llx,
+                        lt_list_number_min_entries=cfg.glob.setup.lt_list_number_min_entries,
+                        lt_list_number_rule_file=cfg.glob.setup.lt_list_number_rule_file,
+                        lt_list_number_tolerance_llx=cfg.glob.setup.lt_list_number_tolerance_llx,
+                        lt_toc_last_page=cfg.glob.setup.lt_toc_last_page,
+                        lt_toc_min_entries=cfg.glob.setup.lt_toc_min_entries,
+                        parent=child,
+                        parent_tag=child_tag,
+                        verbose_parser=cfg.glob.setup.verbose_parser,
+                    )
                 case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
                     pass
 

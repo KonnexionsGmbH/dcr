@@ -32,7 +32,7 @@ def store_tokens_in_database() -> None:
     if not cfg.glob.setup.is_tokenize_2_database:
         return
 
-    for page in cfg.glob.tokenizer_spacy.token_pages:
+    for page in dcr_core.cfg.glob.tokenizer_spacy.token_pages:
         page_no = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
         paras = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PARAS]
         for para in paras:
@@ -78,7 +78,7 @@ def tokenize() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    cfg.glob.tokenizer_spacy = dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy()
+    dcr_core.cfg.glob.tokenizer_spacy = dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy()
 
     with cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE)
@@ -134,16 +134,18 @@ def tokenize_file() -> None:
         full_name_next = ""
 
     try:
-        dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser.from_files(full_name_line=full_name_curr)
+        dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser.from_files(
+            file_encoding=cfg.glob.FILE_ENCODING_DEFAULT, full_name_line=full_name_curr
+        )
 
-        cfg.glob.tokenizer_spacy.process_document(
+        dcr_core.cfg.glob.tokenizer_spacy.process_document(
             document_file_name=cfg.glob.document.document_file_name,
             document_id=cfg.glob.document.document_id,
             document_no_lines_footer=cfg.glob.document.document_no_lines_footer,
             document_no_lines_header=cfg.glob.document.document_no_lines_header,
             document_no_lines_toc=cfg.glob.document.document_no_lines_toc,
-            full_name=full_name_next,
             file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+            full_name=full_name_next,
             is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
             is_spacy_ignore_bracket=cfg.glob.setup.is_spacy_ignore_bracket,
             is_spacy_ignore_left_punct=cfg.glob.setup.is_spacy_ignore_left_punct,
@@ -217,7 +219,7 @@ def tokenize_file() -> None:
             pipeline_name=pipeline_name,
         )
 
-        if cfg.glob.tokenizer_spacy.processing_ok():
+        if dcr_core.cfg.glob.tokenizer_spacy.processing_ok():
             store_tokens_in_database()
             utils.delete_auxiliary_file(full_name_curr)
             cfg.glob.action_curr.finalise()

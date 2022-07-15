@@ -103,7 +103,7 @@ def check_cls_line_type(
         target_toc (int):
                 Target toc lines.
     """
-    instance = dcr_core.nlp.cls_text_parser.TextParser.from_files(full_name_line=json_file)
+    instance = dcr_core.nlp.cls_text_parser.TextParser.from_files(file_encoding=cfg.glob.FILE_ENCODING_DEFAULT, full_name_line=json_file)
 
     actual_footer = []
     actual_header = []
