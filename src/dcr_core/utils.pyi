@@ -2,7 +2,12 @@
 import pathlib
 
 def check_exists_object(
+    is_line_type_headers_footers=False,
+    is_line_type_list_bullet: bool = False,
+    is_line_type_list_number: bool = False,
     is_line_type_table: bool = False,
+    is_line_type_toc: bool = False,
+    is_setup: bool = False,
     is_text_parser: bool = False,
 ) -> None: ...
 def get_full_name(directory_name: pathlib.Path | str | None, file_name: pathlib.Path | str | None) -> str: ...

@@ -12,23 +12,78 @@ import dcr_core.cfg.glob
 # Check the existence of objects.
 # -----------------------------------------------------------------------------
 def check_exists_object(  # noqa: C901
+    is_line_type_headers_footers=False,
+    is_line_type_list_bullet: bool = False,
+    is_line_type_list_number: bool = False,
     is_line_type_table: bool = False,
+    is_line_type_toc: bool = False,
+    is_setup: bool = False,
     is_text_parser: bool = False,
 ) -> None:
     """Check the existence of objects.
 
     Args:
+        is_line_type_headers_footers (bool, optional):
+                Check an object of class LineTypeHeadersFooters. Defaults to False.
+        is_line_type_list_bullet (bool, optional):
+                Check an object of class LineTypeListBullet. Defaults to False.
+        is_line_type_list_number (bool, optional):
+                Check an object of class LineTypeListNumber. Defaults to False.
         is_line_type_table (bool, optional):
                 Check an object of class LineTypeTable. Defaults to False.
+        is_line_type_toc (bool, optional):
+                Check an object of class LineTypeToc. Defaults to False.
+        is_setup (bool, optional):
+                Check an object of class Setup. Defaults to False.
         is_text_parser (bool, optional):
                 Check an object of class TextParser. Defaults to False.
     """
+    if is_line_type_headers_footers:
+        try:
+            dcr_core.cfg.glob.line_type_headers_footers.exists()  # type: ignore
+        except AttributeError:
+            terminate_fatal(
+                "The required instance of the class 'LineTypeHeadersFotters' does not yet exist.",
+            )
+
+    if is_line_type_list_bullet:
+        try:
+            dcr_core.cfg.glob.line_type_list_bullet.exists()  # type: ignore
+        except AttributeError:
+            terminate_fatal(
+                "The required instance of the class 'LineTypeListBullet' does not yet exist.",
+            )
+
+    if is_line_type_list_number:
+        try:
+            dcr_core.cfg.glob.line_type_list_number.exists()  # type: ignore
+        except AttributeError:
+            terminate_fatal(
+                "The required instance of the class 'LineTypeListNumber' does not yet exist.",
+            )
+
     if is_line_type_table:
         try:
             dcr_core.cfg.glob.line_type_table.exists()  # type: ignore
         except AttributeError:
             terminate_fatal(
                 "The required instance of the class 'LineTypeTable' does not yet exist.",
+            )
+
+    if is_line_type_toc:
+        try:
+            dcr_core.cfg.glob.line_type_toc.exists()  # type: ignore
+        except AttributeError:
+            terminate_fatal(
+                "The required instance of the class 'LineTypeToc' does not yet exist.",
+            )
+
+    if is_setup:
+        try:
+            dcr_core.cfg.glob.setup.exists()  # type: ignore
+        except AttributeError:
+            terminate_fatal(
+                "The required instance of the class 'Setup' does not yet exist.",
             )
 
     if is_text_parser:

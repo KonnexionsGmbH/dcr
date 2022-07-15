@@ -1,5 +1,6 @@
 """Module cfg.glob: DCR Global Data."""
 
+import dcr_core.cfg.cls_setup
 import dcr_core.nlp.cls_line_type_headers_footers
 import dcr_core.nlp.cls_line_type_heading
 import dcr_core.nlp.cls_line_type_list_bullet
@@ -12,6 +13,8 @@ import dcr_core.nlp.cls_tokenizer_spacy
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
+FILE_ENCODING_DEFAULT = "utf-8"
+
 FILE_TYPE_JPEG = "jpeg"
 FILE_TYPE_JPG = "jpg"
 FILE_TYPE_JSON = "json"
@@ -59,6 +62,8 @@ line_type_list_bullet: type[dcr_core.nlp.cls_line_type_list_bullet.LineTypeListB
 line_type_list_number: type[dcr_core.nlp.cls_line_type_list_number.LineTypeListNumber]
 line_type_table: type[dcr_core.nlp.cls_line_type_table.LineTypeTable]
 line_type_toc: type[dcr_core.nlp.cls_line_type_toc.LineTypeToc]
+
+setup: type[dcr_core.cfg.cls_setup.Setup]
 
 text_parser: type[dcr_core.nlp.cls_text_parser.TextParser]
 

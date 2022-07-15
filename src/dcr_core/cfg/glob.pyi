@@ -1,17 +1,18 @@
 """Library Stub."""
 
-import nlp.cls_tokenizer_spacy
-
 import dcr_core.nlp.cls_line_type_headers_footers
 import dcr_core.nlp.cls_line_type_heading
 import dcr_core.nlp.cls_line_type_list_bullet
 import dcr_core.nlp.cls_line_type_list_number
 import dcr_core.nlp.cls_line_type_table
 import dcr_core.nlp.cls_line_type_toc
+import dcr_core.nlp.cls_tokenizer_spacy
 
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
+FILE_ENCODING_DEFAULT: str
+
 FILE_TYPE_JPEG: str
 FILE_TYPE_JPG: str
 FILE_TYPE_JSON: str

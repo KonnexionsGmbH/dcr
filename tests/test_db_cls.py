@@ -14,6 +14,7 @@ import db.cls_version
 import pytest
 
 import dcr
+import dcr_core.cfg.cls_setup
 import dcr_core.cfg.glob
 import dcr_core.utils
 
@@ -742,22 +743,22 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
     values_original = pytest.helpers.backup_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
         ],
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         values_original,
     )
 

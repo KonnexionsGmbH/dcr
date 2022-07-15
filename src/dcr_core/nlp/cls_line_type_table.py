@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 
+import dcr_core.cfg.cls_setup
 import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
 import dcr_core.utils
@@ -30,27 +31,27 @@ class LineTypeTable:
     # -----------------------------------------------------------------------------
     def __init__(
         self,
-        action_file_name: str,
-        is_verbose_lt: bool,
+        file_name_curr: str,
     ) -> None:
         """Initialise the instance.
 
         Args:
-            action_file_name (str):
+            file_name_curr (str):
                     File name of the file to be processed.
-            is_verbose_lt (bool):
-                    If true, processing results are reported. Defaults to False.
         """
         dcr_core.utils.check_exists_object(
+            is_line_type_headers_footers=True,
+            is_line_type_toc=True,
+            is_setup=True,
             is_text_parser=True,
         )
 
-        self._action_file_name = action_file_name
-        self._is_lt_table_file_incl_empty_columns = False
-        self._is_verbose_lt = is_verbose_lt
+        self._file_name_curr = file_name_curr
 
-        dcr_core.utils.progress_msg(self._is_verbose_lt, "LineTypeTable")
-        dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeTable: Start create instance                ={self._action_file_name}")
+        dcr_core.utils.progress_msg(dcr_core.cfg.glob.setup.is_verbose_lt_table, "LineTypeTable")
+        dcr_core.utils.progress_msg(
+            dcr_core.cfg.glob.setup.is_verbose_lt_table, f"LineTypeTable: Start create instance                ={self._file_name_curr}"
+        )
 
         self._column_no = 0
         self._column_no_prev = 0
@@ -60,7 +61,7 @@ class LineTypeTable:
         self._first_row_llx = 0.0
         self._first_row_urx = 0.0
 
-        self._is_table_open = False
+        dcr_core.cfg.glob.setup.is_table_open = False
 
         self._last_column_urx = 0.0
 
@@ -83,7 +84,9 @@ class LineTypeTable:
 
         self._exist = True
 
-        dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeTable: End   create instance                ={self._action_file_name}")
+        dcr_core.utils.progress_msg(
+            dcr_core.cfg.glob.setup.is_verbose_lt_table, f"LineTypeTable: End   create instance                ={self._file_name_curr}"
+        )
 
     # -----------------------------------------------------------------------------
     # Finish a row.
@@ -115,14 +118,14 @@ class LineTypeTable:
 
         self._reset_row()
 
-        dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeTable: End   row                            ={row_no}")
+        dcr_core.utils.progress_msg(dcr_core.cfg.glob.setup.is_verbose_lt_table, f"LineTypeTable: End   row                            ={row_no}")
 
     # -----------------------------------------------------------------------------
     # Finish a table.
     # -----------------------------------------------------------------------------
     def _finish_table(self) -> None:
         """Finish a table."""
-        if not self._is_table_open:
+        if not dcr_core.cfg.glob.setup.is_table_open:
             return
 
         self._finish_row()
@@ -155,7 +158,9 @@ class LineTypeTable:
 
         self._reset_table()
 
-        dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeTable: End   table                   on page={self._page_idx+1}")
+        dcr_core.utils.progress_msg(
+            dcr_core.cfg.glob.setup.is_verbose_lt_table, f"LineTypeTable: End   table                   on page={self._page_idx+1}"
+        )
 
     # -----------------------------------------------------------------------------
     # Process the line-related data.
@@ -176,7 +181,7 @@ class LineTypeTable:
         self._column_no = int(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO])
         self._row_no = int(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO])
 
-        if not self._is_table_open:
+        if not dcr_core.cfg.glob.setup.is_table_open:
             self._reset_table()
         elif self._row_no < self._row_no_prev:
             self._finish_table()
@@ -185,7 +190,7 @@ class LineTypeTable:
 
         text = line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT]
 
-        if text == "" and not self._is_lt_table_file_incl_empty_columns:
+        if text == "" and not dcr_core.cfg.glob.setup.is_lt_table_file_incl_empty_columns:
             return dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_TABLE
 
         coord_llx = float(line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX])
@@ -227,7 +232,7 @@ class LineTypeTable:
 
         self._columns.append(new_entry)
 
-        self._is_table_open = True
+        dcr_core.cfg.glob.setup.is_table_open = True
         self._column_no_prev = self._column_no
         self._row_no_prev = self._row_no
 
@@ -261,7 +266,7 @@ class LineTypeTable:
 
         self.table_no = 0
 
-        dcr_core.utils.progress_msg(self._is_verbose_lt, "LineTypeTable: Reset the document memory")
+        dcr_core.utils.progress_msg(dcr_core.cfg.glob.setup.is_verbose_lt_table, "LineTypeTable: Reset the document memory")
 
         self._reset_table()
 
@@ -276,7 +281,7 @@ class LineTypeTable:
         self._first_column_llx = 0.0
         self._last_column_urx = 0.0
 
-        dcr_core.utils.progress_msg(self._is_verbose_lt, "LineTypeTable: Reset the row memory")
+        dcr_core.utils.progress_msg(dcr_core.cfg.glob.setup.is_verbose_lt_table, "LineTypeTable: Reset the row memory")
 
     # -----------------------------------------------------------------------------
     # Reset the table memory.
@@ -286,7 +291,7 @@ class LineTypeTable:
         self._first_row_llx = 0.0
         self._first_row_urx = 0.0
 
-        self._is_table_open = False
+        dcr_core.cfg.glob.setup.is_table_open = False
 
         self._no_columns_table = 0
 
@@ -298,7 +303,7 @@ class LineTypeTable:
 
         self.table_no = 0
 
-        dcr_core.utils.progress_msg(self._is_verbose_lt, "LineTypeTable: Reset the table memory")
+        dcr_core.utils.progress_msg(dcr_core.cfg.glob.setup.is_verbose_lt_table, "LineTypeTable: Reset the table memory")
 
         self._reset_row()
 
@@ -316,51 +321,41 @@ class LineTypeTable:
     # -----------------------------------------------------------------------------
     # Process the document related data.
     # -----------------------------------------------------------------------------
-    def process_document(  # pylint: disable=too-many-arguments
+    def process_document(
         self,
-        action_file_name: str,
         directory_name: str,
-        document_document_id: int,
-        document_file_name: str,
-        file_encoding: str,
-        file_name: str,
-        is_create_extra_file_table: bool,
-        is_json_sort_keys: bool,
-        is_lt_table_file_incl_empty_columns: bool,
-        json_indent: str,
+        document_id: int,
+        file_name_curr: str,
+        file_name_orig: str,
         parser_line_pages_json: dcr_core.nlp.cls_nlp_core.NLPCore.ParserLinePages,
     ) -> None:
         """Process the document related data.
 
         Args:
-            action_file_name (str):
-                    File name of the file to be processed.
             directory_name (str):
                     Directory name of the output file.
-            document_document_id (int):
+            document_id (int):
                     Identification of the document.
-            document_file_name (in):
-                    File name of the document file.
-            file_encoding (str):
-                    The encoding of the output file.
-            file_name (str):
-                    File name of the output file.
-            is_create_extra_file_table (bool):
-                    Create a separate JSON file with the tables.
-            is_json_sort_keys (bool):
-                    If true, the output of the JSON dictionaries will be sorted by key.
-            is_lt_table_file_incl_empty_columns (bool):
-                    If true, the empty cells are included in the separate JSON file with the tables.
-            json_indent (str):
-                    Indent level for pretty-printing the JSON output.
+            file_name_curr (str):
+                    File name of the file to be processed.
+            file_name_orig (in):
+                    File name of the original document file.
             parser_line_pages_json (dcr_core.nlp.cls_nlp_core.NLPCore.LinePages):
                     The document pages formatted in the parser.
         """
-        self._action_file_name = action_file_name
-        self._is_lt_table_file_incl_empty_columns = is_lt_table_file_incl_empty_columns
+        dcr_core.utils.check_exists_object(
+            is_line_type_headers_footers=True,
+            is_line_type_toc=True,
+            is_setup=True,
+            is_text_parser=True,
+        )
 
-        dcr_core.utils.progress_msg(self._is_verbose_lt, "LineTypeTable")
-        dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeTable: Start document                       ={self._action_file_name}")
+        self._file_name_curr = file_name_curr
+
+        dcr_core.utils.progress_msg(dcr_core.cfg.glob.setup.is_verbose_lt_table, "LineTypeTable")
+        dcr_core.utils.progress_msg(
+            dcr_core.cfg.glob.setup.is_verbose_lt_table, f"LineTypeTable: Start document                       ={self._file_name_curr}"
+        )
 
         self._reset_document()
 
@@ -369,12 +364,12 @@ class LineTypeTable:
             self._parser_line_lines_json = page_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page()
 
-        if is_create_extra_file_table and self._tables:
+        if dcr_core.cfg.glob.setup.is_create_extra_file_table and self._tables:
             full_name = dcr_core.utils.get_full_name(
                 directory_name,
-                dcr_core.utils.get_stem_name(str(file_name)) + "_table." + dcr_core.cfg.glob.FILE_TYPE_JSON,
+                dcr_core.utils.get_stem_name(str(file_name_curr)) + "_table." + dcr_core.cfg.glob.FILE_TYPE_JSON,
             )
-            with open(full_name, "w", encoding=file_encoding) as file_handle:
+            with open(full_name, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
                 # {
                 #     "documentId": 99,
                 #     "documentFileName": "xxx",
@@ -384,17 +379,21 @@ class LineTypeTable:
                 # }
                 json.dump(
                     {
-                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: document_document_id,
-                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: document_file_name,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: document_id,
+                        dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: file_name_orig,
                         dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC: self.no_tables,
                         dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_TABLES: self._tables,
                     },
                     file_handle,
-                    indent=json_indent,
-                    sort_keys=is_json_sort_keys,
+                    indent=dcr_core.cfg.glob.setup.json_indent,
+                    sort_keys=dcr_core.cfg.glob.setup.is_json_sort_keys,
                 )
 
         if self.no_tables > 0:
-            dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeTable:                         number tables={self.no_tables}")
+            dcr_core.utils.progress_msg(
+                dcr_core.cfg.glob.setup.is_verbose_lt_table, f"LineTypeTable:                         number tables={self.no_tables}"
+            )
 
-        dcr_core.utils.progress_msg(self._is_verbose_lt, f"LineTypeTable: End   document                       ={self._action_file_name}")
+        dcr_core.utils.progress_msg(
+            dcr_core.cfg.glob.setup.is_verbose_lt_table, f"LineTypeTable: End   document                       ={self._file_name_curr}"
+        )

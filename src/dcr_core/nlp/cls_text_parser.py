@@ -29,48 +29,17 @@ class TextParser:
     # -----------------------------------------------------------------------------
     def __init__(self) -> None:
         """Initialise the instance."""
-        self._action_directory_name: str = ""
-        self._action_file_name: str = ""
-        self._action_no_pdf_pages: int = 0
-        self._document_file_name: str = ""
+        dcr_core.utils.check_exists_object(
+            is_setup=True,
+        )
+
+        self._directory_name: str = ""
         self._document_id: int = 0
         self._environment_variant: str = ""
-        self._file_encoding: str = ""
+        self._file_name_curr: str = ""
+        self._file_name_orig: str = ""
         self._full_name: str = ""
-        self._is_create_extra_file_heading: bool = False
-        self._is_create_extra_file_list_bullet: bool = False
-        self._is_create_extra_file_list_number: bool = False
-        self._is_create_extra_file_table: bool = False
-        self._is_json_sort_keys: bool = False
-        self._is_lt_heading_file_incl_regexp: bool = False
-        self._is_lt_list_number_file_incl_regexp: bool = False
-        self._is_lt_table_file_incl_empty_columns: bool = False
-        self._is_parsing_line: bool = False
-        self._is_parsing_page: bool = False
-        self._is_parsing_word: bool = False
-        self._is_verbose_lt_headers_footers: bool = False
-        self._is_verbose_lt_list_bullet: bool = False
-        self._is_verbose_lt_table: bool = False
-        self._is_verbose_lt_toc: bool = False
-        self._json_indent: str = ""
-        self._lt_footer_max_distance: int = 0
-        self._lt_footer_max_lines: int = 0
-        self._lt_header_max_distance: int = 0
-        self._lt_header_max_lines: int = 0
-        self._lt_heading_file_incl_no_ctx: int = 0
-        self._lt_heading_max_level: int = 0
-        self._lt_heading_min_pages: int = 0
-        self._lt_heading_rule_file: str = ""
-        self._lt_heading_tolerance_llx: int = 0
-        self._lt_list_bullet_min_entries: int = 0
-        self._lt_list_bullet_rule_file: str = ""
-        self._lt_list_bullet_tolerance_llx: int = 0
-        self._lt_list_number_min_entries: int = 0
-        self._lt_list_number_rule_file: str = ""
-        self._lt_list_number_tolerance_llx: int = 0
-        self._lt_toc_last_page: int = 0
-        self._lt_toc_min_entries: int = 0
-        self._verbose_parser: str = ""
+        self._no_pdf_pages: int = 0
 
         self._parse_result_author = ""
 
@@ -141,15 +110,11 @@ class TextParser:
     # }
     # -----------------------------------------------------------------------------
     def _create_line_document(self):
-        dcr_core.utils.check_exists_object(
-            is_text_parser=True,
-        )
-
-        with open(self._full_name, "w", encoding=self._file_encoding) as file_handle:
+        with open(self._full_name, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: self._document_id,
-                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: self._document_file_name,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: self._file_name_orig,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER: dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER: dcr_core.cfg.glob.line_type_headers_footers.no_lines_header,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
@@ -164,8 +129,8 @@ class TextParser:
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self.parse_result_line_pages,
                 },
                 file_handle,
-                indent=self._json_indent,
-                sort_keys=self._is_json_sort_keys,
+                indent=dcr_core.cfg.glob.setup.json_indent,
+                sort_keys=dcr_core.cfg.glob.setup.is_json_sort_keys,
             )
 
     # -----------------------------------------------------------------------------
@@ -236,18 +201,18 @@ class TextParser:
     # }
     # -----------------------------------------------------------------------------
     def _create_page_document(self):
-        with open(self._full_name, "w", encoding=self._file_encoding) as file_handle:
+        with open(self._full_name, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: self._document_id,
-                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: self._document_file_name,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: self._file_name_orig,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self._parse_result_page_pages,
                 },
                 file_handle,
-                indent=self._json_indent,
-                sort_keys=self._is_json_sort_keys,
+                indent=dcr_core.cfg.glob.setup.json_indent,
+                sort_keys=dcr_core.cfg.glob.setup.is_json_sort_keys,
             )
 
     # -----------------------------------------------------------------------------
@@ -302,11 +267,11 @@ class TextParser:
     # }
     # -----------------------------------------------------------------------------
     def _create_word_document(self):
-        with open(self._full_name, "w", encoding=self._file_encoding) as file_handle:
+        with open(self._full_name, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_ID: self._document_id,
-                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: self._document_file_name,
+                    dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_DOC_FILE_NAME: self._file_name_orig,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_IN_DOC: self._parse_result_no_lines_in_doc,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PAGES_IN_DOC: self.parse_result_no_pages_in_doc,
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_PARAS_IN_DOC: self._parse_result_no_paras_in_doc,
@@ -314,8 +279,8 @@ class TextParser:
                     dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES: self._parse_result_word_pages,
                 },
                 file_handle,
-                indent=self._json_indent,
-                sort_keys=self._is_json_sort_keys,
+                indent=dcr_core.cfg.glob.setup.json_indent,
+                sort_keys=dcr_core.cfg.glob.setup.is_json_sort_keys,
             )
 
     # -----------------------------------------------------------------------------
@@ -402,7 +367,8 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Debug an XML element detailed.
     # -----------------------------------------------------------------------------
-    def _debug_xml_element_all(self, event: str, parent_tag: str, attrib: dict[str, str], text: collections.abc.Iterable[str | None]) -> None:
+    @staticmethod
+    def _debug_xml_element_all(event: str, parent_tag: str, attrib: dict[str, str], text: collections.abc.Iterable[str | None]) -> None:
         """Debug an XML element detailed.
 
         Args:
@@ -415,7 +381,7 @@ class TextParser:
             text (collections.abc.Iterable[str|None]):
                     XML element.
         """
-        if self._verbose_parser == "all":
+        if dcr_core.cfg.glob.setup.verbose_parser == "all":
             print(f"{event} tag   ={parent_tag}")
 
             if attrib != {}:
@@ -429,7 +395,7 @@ class TextParser:
     # -----------------------------------------------------------------------------
     def _debug_xml_element_text_line(self) -> None:
         """Debug an XML element only 'text - variant line."""
-        if self._verbose_parser == "text":
+        if dcr_core.cfg.glob.setup.verbose_parser == "text":
             print(
                 f"pages_i_doc={self.parse_result_no_pages_in_doc:2d} "
                 f"paras_i_page={self._parse_result_no_paras_in_page:2d} "
@@ -443,7 +409,7 @@ class TextParser:
     # -----------------------------------------------------------------------------
     def _debug_xml_element_text_page(self) -> None:
         """Debug an XML element only 'text - variant page."""
-        if self._verbose_parser == "text":
+        if dcr_core.cfg.glob.setup.verbose_parser == "text":
             print(
                 f"pages_i_doc={self.parse_result_no_pages_in_doc:2d} "
                 f"paras_i_page={self._parse_result_no_paras_in_page:2d} "
@@ -457,7 +423,7 @@ class TextParser:
     # -----------------------------------------------------------------------------
     def _debug_xml_element_text_word(self) -> None:
         """Debug an XML element only 'text - variant word."""
-        if self._verbose_parser == "text":
+        if dcr_core.cfg.glob.setup.verbose_parser == "text":
             print(
                 f"pages_i_doc={self.parse_result_no_pages_in_doc:2d} "
                 f"paras_i_page={self._parse_result_no_paras_in_page:2d} "
@@ -678,7 +644,7 @@ class TextParser:
         self._parse_result_no_lines_in_para += 1
         self._parse_result_no_words_in_line = 0
 
-        if self._is_parsing_word:
+        if dcr_core.cfg.glob.setup.is_parsing_word:
             self._parse_result_word_words = []
 
         for child in parent:
@@ -689,11 +655,11 @@ class TextParser:
                 case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_WORD:
                     self._parse_tag_word(child_tag, child)
 
-        if self._is_parsing_line:
+        if dcr_core.cfg.glob.setup.is_parsing_line:
             self._create_line_lines()
             self._parse_result_line_index_page += 1
             self._parse_result_line_index_para += 1
-        elif self._is_parsing_word:
+        elif dcr_core.cfg.glob.setup.is_parsing_word:
             self._create_word_lines()
 
         self._parse_result_no_words_in_para += self._parse_result_no_words_in_line
@@ -721,12 +687,12 @@ class TextParser:
         self._parse_result_no_lines_in_page = 0
         self._parse_result_no_words_in_page = 0
 
-        if self._is_parsing_line:
+        if dcr_core.cfg.glob.setup.is_parsing_line:
             self._parse_result_line_index_page = 0
             self.parse_result_line_lines = []
-        elif self._is_parsing_page:
+        elif dcr_core.cfg.glob.setup.is_parsing_page:
             self._parse_result_page_paras = []
-        elif self._is_parsing_word:
+        elif dcr_core.cfg.glob.setup.is_parsing_word:
             self._parse_result_word_paras = []
 
         # Process the page related tags.
@@ -745,11 +711,11 @@ class TextParser:
                 case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CONTENT:
                     self._parse_tag_content(child_tag, child)
 
-        if self._is_parsing_line:
+        if dcr_core.cfg.glob.setup.is_parsing_line:
             self._create_line_pages()
-        elif self._is_parsing_page:
+        elif dcr_core.cfg.glob.setup.is_parsing_page:
             self._create_page_pages()
-        elif self._is_parsing_word:
+        elif dcr_core.cfg.glob.setup.is_parsing_word:
             self._create_word_pages()
 
         self._parse_result_no_words_in_doc += self._parse_result_no_words_in_page
@@ -776,36 +742,30 @@ class TextParser:
         self._parse_result_no_paras_in_doc = 0
         self.parse_result_no_pages_in_doc = 0
 
-        if self._is_parsing_line:
+        if dcr_core.cfg.glob.setup.is_parsing_line:
             self._parse_result_no_lines_in_doc = 0
             self.parse_result_line_pages = []
             dcr_core.cfg.glob.line_type_headers_footers = dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(
-                action_file_name=self._action_file_name,
-                is_verbose_lt=self._is_verbose_lt_headers_footers,
+                file_name_curr=self._file_name_curr,
             )
             dcr_core.cfg.glob.line_type_toc = dcr_core.nlp.cls_line_type_toc.LineTypeToc(
-                action_file_name=self._action_file_name,
-                is_verbose_lt=self._is_verbose_lt_toc,
+                file_name_curr=self._file_name_curr,
             )
             dcr_core.cfg.glob.line_type_table = dcr_core.nlp.cls_line_type_table.LineTypeTable(
-                action_file_name=self._action_file_name,
-                is_verbose_lt=self._is_verbose_lt_table,
+                file_name_curr=self._file_name_curr,
             )
             dcr_core.cfg.glob.line_type_list_bullet = dcr_core.nlp.cls_line_type_list_bullet.LineTypeListBullet(
-                action_file_name=self._action_file_name,
-                is_verbose_lt=self._is_verbose_lt_list_bullet,
+                file_name_curr=self._file_name_curr,
             )
             dcr_core.cfg.glob.line_type_list_number = dcr_core.nlp.cls_line_type_list_number.LineTypeListNumber(
-                action_file_name=self._action_file_name,
-                is_verbose_lt=self._is_verbose_lt_list_bullet,
+                file_name_curr=self._file_name_curr,
             )
             dcr_core.cfg.glob.line_type_heading = dcr_core.nlp.cls_line_type_heading.LineTypeHeading(
-                action_file_name=self._action_file_name,
-                is_verbose_lt=self._is_verbose_lt_list_bullet,
+                file_name_curr=self._file_name_curr,
             )
-        elif self._is_parsing_page:
+        elif dcr_core.cfg.glob.setup.is_parsing_page:
             self._parse_result_page_pages = []
-        elif self._is_parsing_word:
+        elif dcr_core.cfg.glob.setup.is_parsing_word:
             self._parse_result_no_words_in_doc = 0
             self._parse_result_no_lines_in_doc = 0
             self._parse_result_word_pages = []
@@ -819,90 +779,50 @@ class TextParser:
                 case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_PAGE:
                     self._parse_tag_page(child_tag, child)
 
-        if self._is_parsing_line:
+        if dcr_core.cfg.glob.setup.is_parsing_line:
             dcr_core.cfg.glob.line_type_headers_footers.process_document(
-                action_file_name=self._action_file_name,
-                action_no_pdf_pages=self._action_no_pdf_pages,
-                lt_footer_max_distance=self._lt_footer_max_distance,
-                lt_footer_max_lines=self._lt_footer_max_lines,
-                lt_header_max_distance=self._lt_header_max_distance,
-                lt_header_max_lines=self._lt_header_max_lines,
+                file_name_curr=self._file_name_curr,
+                no_pdf_pages=self._no_pdf_pages,
                 parser_line_pages_json=self.parse_result_line_pages,
             )
             dcr_core.cfg.glob.line_type_toc.process_document(
-                action_file_name=self._action_file_name,
-                lt_toc_last_page=self._lt_toc_last_page,
-                lt_toc_min_entries=self._lt_toc_min_entries,
+                file_name_curr=self._file_name_curr,
                 parser_line_pages_json=self.parse_result_line_pages,
             )
             dcr_core.cfg.glob.line_type_table.process_document(
-                action_file_name=self._action_file_name,
-                directory_name=self._action_directory_name,
-                document_document_id=self._document_id,
-                document_file_name=self._document_file_name,
-                file_encoding=self._file_encoding,
-                file_name=self._action_file_name,
-                is_create_extra_file_table=self._is_create_extra_file_table,
-                is_json_sort_keys=self._is_json_sort_keys,
-                is_lt_table_file_incl_empty_columns=self._is_lt_table_file_incl_empty_columns,
-                json_indent=self._json_indent,
+                file_name_curr=self._file_name_curr,
+                directory_name=self._directory_name,
+                document_id=self._document_id,
+                file_name_orig=self._file_name_orig,
                 parser_line_pages_json=self.parse_result_line_pages,
             )
             dcr_core.cfg.glob.line_type_list_bullet.process_document(
-                action_file_name=self._action_file_name,
-                directory_name=self._action_directory_name,
-                document_document_id=self._document_id,
-                document_file_name=self._document_file_name,
+                directory_name=self._directory_name,
+                document_id=self._document_id,
                 environment_variant=self._environment_variant,
-                file_encoding=self._file_encoding,
-                file_name=self._action_file_name,
-                is_create_extra_file_list_bullet=self._is_create_extra_file_list_bullet,
-                is_json_sort_keys=self._is_json_sort_keys,
-                json_indent=self._json_indent,
-                lt_list_bullet_min_entries=self._lt_list_bullet_min_entries,
-                lt_list_bullet_rule_file=self._lt_list_bullet_rule_file,
-                lt_list_bullet_tolerance_llx=self._lt_list_bullet_tolerance_llx,
+                file_name_curr=self._file_name_curr,
+                file_name_orig=self._file_name_orig,
                 parser_line_pages_json=self.parse_result_line_pages,
             )
             dcr_core.cfg.glob.line_type_list_number.process_document(
-                action_file_name=self._action_file_name,
-                directory_name=self._action_directory_name,
-                document_document_id=self._document_id,
-                document_file_name=self._document_file_name,
+                directory_name=self._directory_name,
+                document_id=self._document_id,
                 environment_variant=self._environment_variant,
-                file_encoding=self._file_encoding,
-                file_name=self._action_file_name,
-                is_create_extra_file_list_number=self._is_create_extra_file_list_number,
-                is_lt_list_number_file_incl_regexp=self._is_lt_list_number_file_incl_regexp,
-                is_json_sort_keys=self._is_json_sort_keys,
-                json_indent=self._json_indent,
-                lt_list_number_min_entries=self._lt_list_number_min_entries,
-                lt_list_number_rule_file=self._lt_list_number_rule_file,
-                lt_list_number_tolerance_llx=self._lt_list_number_tolerance_llx,
+                file_name_curr=self._file_name_curr,
+                file_name_orig=self._file_name_orig,
                 parser_line_pages_json=self.parse_result_line_pages,
             )
             dcr_core.cfg.glob.line_type_heading.process_document(
-                action_file_name=self._action_file_name,
-                directory_name=self._action_directory_name,
-                document_document_id=self._document_id,
-                document_file_name=self._document_file_name,
-                file_encoding=self._file_encoding,
-                file_name=self._action_file_name,
-                is_create_extra_file_heading=self._is_create_extra_file_heading,
-                is_json_sort_keys=self._is_json_sort_keys,
-                is_lt_heading_file_incl_regexp=self._is_lt_heading_file_incl_regexp,
-                json_indent=self._json_indent,
-                lt_heading_file_incl_no_ctx=self._lt_heading_file_incl_no_ctx,
-                lt_heading_max_level=self._lt_heading_max_level,
-                lt_heading_min_pages=self._lt_heading_min_pages,
-                lt_heading_rule_file=self._lt_heading_rule_file,
-                lt_heading_tolerance_llx=self._lt_heading_tolerance_llx,
+                directory_name=self._directory_name,
+                document_id=self._document_id,
+                file_name_curr=self._file_name_curr,
+                file_name_orig=self._file_name_orig,
                 parser_line_pages_json=self.parse_result_line_pages,
             )
             self._create_line_document()
-        elif self._is_parsing_page:
+        elif dcr_core.cfg.glob.setup.is_parsing_page:
             self._create_page_document()
-        elif self._is_parsing_word:
+        elif dcr_core.cfg.glob.setup.is_parsing_word:
             self._create_word_document()
 
         self._debug_xml_element_all("End  ", parent_tag, parent.attrib, parent.text)
@@ -926,9 +846,9 @@ class TextParser:
         self._parse_result_no_lines_in_para = 0
         self._parse_result_no_words_in_para = 0
 
-        if self._is_parsing_line:
+        if dcr_core.cfg.glob.setup.is_parsing_line:
             self._parse_result_line_index_para = 0
-        elif self._is_parsing_word:
+        elif dcr_core.cfg.glob.setup.is_parsing_word:
             self._parse_result_word_lines = []
 
         for child in parent:
@@ -937,9 +857,9 @@ class TextParser:
                 case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_BOX:
                     self._parse_tag_box(child_tag, child)
 
-        if self._is_parsing_page:
+        if dcr_core.cfg.glob.setup.is_parsing_page:
             self._create_page_paras()
-        elif self._is_parsing_word:
+        elif dcr_core.cfg.glob.setup.is_parsing_word:
             self._create_word_paras()
 
         self._parse_result_no_lines_in_page += self._parse_result_no_lines_in_para
@@ -1115,145 +1035,51 @@ class TextParser:
     # -----------------------------------------------------------------------------
     # Processing tag 'Document'.
     # -----------------------------------------------------------------------------
-    def parse_tag_document(  # pylint: disable=too-many-arguments, too-many-locals
+    def parse_tag_document(
         self,
-        action_directory_name: str,
-        action_file_name: str,
-        action_no_pdf_pages: int,
-        document_file_name: str,
+        directory_name: str,
         document_id: int,
         environment_variant: str,
-        file_encoding: str,
-        full_name: str,
-        is_create_extra_file_heading: bool,
-        is_create_extra_file_list_bullet: bool,
-        is_create_extra_file_list_number: bool,
-        is_create_extra_file_table: bool,
-        is_json_sort_keys: bool,
-        is_lt_heading_file_incl_regexp: bool,
-        is_lt_list_number_file_incl_regexp: bool,
-        is_lt_table_file_incl_empty_columns: bool,
-        is_parsing_line: bool,
-        is_parsing_page: bool,
-        is_parsing_word: bool,
-        is_verbose_lt_headers_footers: bool,
-        is_verbose_lt_list_bullet: bool,
-        is_verbose_lt_table: bool,
-        is_verbose_lt_toc: bool,
-        json_indent: str,
-        lt_footer_max_distance: int,
-        lt_footer_max_lines: int,
-        lt_header_max_distance: int,
-        lt_header_max_lines: int,
-        lt_heading_file_incl_no_ctx: int,
-        lt_heading_max_level: int,
-        lt_heading_min_pages: int,
-        lt_heading_rule_file: int,
-        lt_heading_tolerance_llx: int,
-        lt_list_bullet_min_entries: int,
-        lt_list_bullet_rule_file: int,
-        lt_list_bullet_tolerance_llx: int,
-        lt_list_number_min_entries: int,
-        lt_list_number_rule_file: str,
-        lt_list_number_tolerance_llx: int,
-        lt_toc_last_page: int,
-        lt_toc_min_entries: int,
+        file_name_curr: str,
+        file_name_next: str,
+        file_name_orig: str,
+        no_pdf_pages: int,
         parent: collections.abc.Iterable[str],
         parent_tag: str,
-        verbose_parser: str,
     ) -> None:
         """Processing tag 'Document'.
 
         Args:
-            action_directory_name (str): _description_
-            action_file_name (str): _description_
-            action_no_pdf_pages (int): _description_
-            document_file_name (str): _description_
-            document_id (int): _description_
-            environment_variant (str): _description_
-            file_encoding (str): _description_
-            full_name (str): _description_
-            is_create_extra_file_heading (bool): _description_
-            is_create_extra_file_list_bullet (bool): _description_
-            is_create_extra_file_list_number (bool): _description_
-            is_create_extra_file_table (bool): _description_
-            is_json_sort_keys (bool): _description_
-            is_lt_heading_file_incl_regexp (bool): _description_
-            is_lt_list_number_file_incl_regexp (bool): _description_
-            is_lt_table_file_incl_empty_columns (bool): _description_
-            is_parsing_line (bool): _description_
-            is_parsing_page (bool): _description_
-            is_parsing_word (bool): _description_
-            is_verbose_lt_headers_footers (bool): _description_
-            is_verbose_lt_list_bullet (bool): _description_
-            is_verbose_lt_table (bool): _description_
-            is_verbose_lt_toc (bool): _description_
-            json_indent (str): _description_
-            lt_footer_max_distance (int): _description_
-            lt_footer_max_lines (int): _description_
-            lt_header_max_distance (int): _description_
-            lt_header_max_lines (int): _description_
-            lt_heading_file_incl_no_ctx (int): _description_
-            lt_heading_max_level (int): _description_
-            lt_heading_min_pages (int): _description_
-            lt_heading_rule_file (int): _description_
-            lt_heading_tolerance_llx (int): _description_
-            lt_list_bullet_min_entries (int): _description_
-            lt_list_bullet_rule_file (int): _description_
-            lt_list_bullet_tolerance_llx (int): _description_
-            lt_list_number_min_entries (int): _description_
-            lt_list_number_rule_file (str): _description_
-            lt_list_number_tolerance_llx (int): _description_
-            lt_toc_last_page (int): _description_
-            lt_toc_min_entries (int): _description_
+            directory_name (str):
+                    Directory name of the output file.
+            document_id (int):
+                    Identification of the document.
+            environment_variant (str):
+                    Environment variant: dev, prod or test.
+            file_name_curr (str):
+                    File name of the current file.
+            file_name_next (str):
+                    File name of the output file.
+            file_name_orig (in):
+                    File name of the document file.
+            no_pdf_pages (int):
+                    Number ODF pages.
             parent (collections.abc.Iterable[str]):
                     Parent data structure.
             parent_tag (str):
                     Parent tag.
-            verbose_parser (str): _description_
         """
-        self._action_directory_name = action_directory_name
-        self._action_file_name = action_file_name
-        self._action_no_pdf_pages = action_no_pdf_pages
-        self._document_file_name = document_file_name
+        dcr_core.utils.check_exists_object(
+            is_setup=True,
+        )
+
+        self._directory_name = directory_name
         self._document_id = document_id
         self._environment_variant = environment_variant
-        self._file_encoding = file_encoding
-        self._full_name = full_name
-        self._is_create_extra_file_heading = is_create_extra_file_heading
-        self._is_create_extra_file_list_bullet = is_create_extra_file_list_bullet
-        self._is_create_extra_file_list_number = is_create_extra_file_list_number
-        self._is_create_extra_file_table = is_create_extra_file_table
-        self._is_json_sort_keys = is_json_sort_keys
-        self._is_lt_heading_file_incl_regexp = is_lt_heading_file_incl_regexp
-        self._is_lt_list_number_file_incl_regexp = is_lt_list_number_file_incl_regexp
-        self._is_lt_table_file_incl_empty_columns = is_lt_table_file_incl_empty_columns
-        self._is_parsing_line = is_parsing_line
-        self._is_parsing_page = is_parsing_page
-        self._is_parsing_word = is_parsing_word
-        self._is_verbose_lt_headers_footers = is_verbose_lt_headers_footers
-        self._is_verbose_lt_list_bullet = is_verbose_lt_list_bullet
-        self._is_verbose_lt_table = is_verbose_lt_table
-        self._is_verbose_lt_toc = is_verbose_lt_toc
-        self._json_indent = json_indent
-        self._lt_footer_max_distance = lt_footer_max_distance
-        self._lt_footer_max_lines = lt_footer_max_lines
-        self._lt_header_max_distance = lt_header_max_distance
-        self._lt_header_max_lines = lt_header_max_lines
-        self._lt_heading_file_incl_no_ctx = lt_heading_file_incl_no_ctx
-        self._lt_heading_max_level = lt_heading_max_level
-        self._lt_heading_min_pages = lt_heading_min_pages
-        self._lt_heading_rule_file = lt_heading_rule_file
-        self._lt_heading_tolerance_llx = lt_heading_tolerance_llx
-        self._lt_list_bullet_min_entries = lt_list_bullet_min_entries
-        self._lt_list_bullet_rule_file = lt_list_bullet_rule_file
-        self._lt_list_bullet_tolerance_llx = lt_list_bullet_tolerance_llx
-        self._lt_list_number_min_entries = lt_list_number_min_entries
-        self._lt_list_number_rule_file = lt_list_number_rule_file
-        self._lt_list_number_tolerance_llx = lt_list_number_tolerance_llx
-        self._lt_toc_last_page = lt_toc_last_page
-        self._lt_toc_min_entries = lt_toc_min_entries
-        self._verbose_parser = verbose_parser
+        self._file_name_curr = file_name_curr
+        self._file_name_orig = file_name_orig
+        self._full_name = file_name_next
+        self._no_pdf_pages = no_pdf_pages
 
         self._debug_xml_element_all("Start", parent_tag, parent.attrib, parent.text)
 

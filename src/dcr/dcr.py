@@ -25,6 +25,7 @@ import sqlalchemy
 import utils
 import yaml
 
+import dcr_core.cfg.cls_setup
 import dcr_core.nlp.cls_nlp_core
 import dcr_core.utils
 
@@ -170,7 +171,7 @@ def get_args(argv: list[str]) -> dict[str, bool]:
 # -----------------------------------------------------------------------------
 def initialise_logger() -> None:
     """Initialise the root logging functionality."""
-    with open(LOGGER_CFG_FILE, "r", encoding=cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+    with open(LOGGER_CFG_FILE, "r", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
         log_config = yaml.safe_load(file_handle.read())
 
     logging.config.dictConfig(log_config)
@@ -203,6 +204,7 @@ def main(argv: list[str]) -> None:
 
     # Load the configuration parameters.
     cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.cfg.glob.setup = dcr_core.cfg.cls_setup.Setup()
 
     # Load the command line arguments.
     args = get_args(argv)
@@ -375,7 +377,7 @@ def process_export_lt_rules() -> None:
     dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_heading(
         is_verbose=cfg.glob.setup.is_verbose,
         file_name=cfg.glob.setup.lt_export_rule_file_heading,
-        file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+        file_encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT,
         json_indent=cfg.glob.setup.json_indent,
         is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
     )
@@ -383,7 +385,7 @@ def process_export_lt_rules() -> None:
     dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_bullet(
         is_verbose=cfg.glob.setup.is_verbose,
         file_name=cfg.glob.setup.lt_export_rule_file_list_bullet,
-        file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+        file_encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT,
         json_indent=cfg.glob.setup.json_indent,
         is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
         environment_variant=cfg.glob.setup.environment_variant,
@@ -392,7 +394,7 @@ def process_export_lt_rules() -> None:
     dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_number(
         is_verbose=cfg.glob.setup.is_verbose,
         file_name=cfg.glob.setup.lt_export_rule_file_list_number,
-        file_encoding=cfg.glob.FILE_ENCODING_DEFAULT,
+        file_encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT,
         json_indent=cfg.glob.setup.json_indent,
         is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
         environment_variant=cfg.glob.setup.environment_variant,
