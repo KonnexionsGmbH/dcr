@@ -8,6 +8,7 @@ import db.cls_run
 import pytest
 
 import dcr
+import dcr_core.cfg.cls_setup
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -32,7 +33,7 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
         source_files=[
             (stem_name_1, file_ext_1),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     stem_name_2 = "tiff_pdf_text_ok_1"
@@ -67,7 +68,12 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "1"),
+        ],
+    )
+    values_original_core = pytest.helpers.backup_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "1"),
         ],
     )
 
@@ -81,6 +87,10 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
+    pytest.helpers.restore_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original_core,
+    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 2/2 <=========")
@@ -90,7 +100,7 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
             [],
             [
                 stem_name + "_" + str(document_id) + "." + file_ext,
-                stem_name + "_" + str(document_id) + "_1." + cfg.glob.setup.pdf2image_type,
+                stem_name + "_" + str(document_id) + "_1." + dcr_core.cfg.glob.setup.pdf2image_type,
             ],
         ),
     )
@@ -116,7 +126,7 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
         source_files=[
             (stem_name_1, file_ext_1),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -124,9 +134,14 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+        ],
+    )
+    values_original_core = pytest.helpers.backup_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
         ],
     )
 
@@ -137,7 +152,7 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2, is_ocr=True)
 
     # -------------------------------------------------------------------------
-    os.remove(os.path.join(cfg.glob.setup.directory_inbox_accepted, "translating_sql_into_relational_algebra_p01_02_1_0.pdf"))
+    os.remove(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "translating_sql_into_relational_algebra_p01_02_1_0.pdf"))
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
@@ -145,6 +160,10 @@ def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox)
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
+    )
+    pytest.helpers.restore_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original_core,
     )
 
     # -------------------------------------------------------------------------

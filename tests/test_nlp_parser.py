@@ -97,7 +97,7 @@ def test_run_action_store_parse_result_in_json_coverage(verbose_parser: str, fxt
         source_files=[
             ("pdf_mini", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -105,12 +105,12 @@ def test_run_action_store_parse_result_in_json_coverage(verbose_parser: str, fxt
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
     values_original_core = pytest.helpers.backup_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "0"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "0"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "true"),
@@ -163,7 +163,7 @@ def test_run_action_store_parse_result_in_json_coverage_page(fxtr_rmdir_opt, fxt
         source_files=[
             ("pdf_mini", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -171,13 +171,13 @@ def test_run_action_store_parse_result_in_json_coverage_page(fxtr_rmdir_opt, fxt
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
     values_original_core = pytest.helpers.backup_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "0"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "0"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "true"),
@@ -221,7 +221,7 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
             ("p_3_h_0_f_4", "pdf"),
             ("p_3_h_4_f_4", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -308,7 +308,7 @@ def test_run_action_store_parse_result_in_json_missing_input_file(fxtr_setup_emp
         source_files=[
             (stem_name_1, file_ext_1),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -316,7 +316,7 @@ def test_run_action_store_parse_result_in_json_missing_input_file(fxtr_setup_emp
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    os.remove(dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.xml"))
+    os.remove(dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.xml"))
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
@@ -343,7 +343,7 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
             ("pdf_scanned_ok", "pdf"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -351,13 +351,13 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
     values_original_core = pytest.helpers.backup_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
@@ -378,7 +378,7 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
     pytest.helpers.restore_config_params(
@@ -424,7 +424,7 @@ def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_
             ("pdf_scanned_ok", "pdf"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -432,13 +432,13 @@ def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
     values_original_core = pytest.helpers.backup_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),

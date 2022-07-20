@@ -38,7 +38,7 @@ def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_em
             ("pdf_toc_line_bullet_list", "pdf"),
             ("pdf_toc_table_bullet_list", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -46,13 +46,13 @@ def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_em
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
         ],
     )
     values_original_core = pytest.helpers.backup_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, lt_toc_last_page),
@@ -86,13 +86,13 @@ def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_em
         target_toc_exp_table = 15
 
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "pdf_toc_line_bullet_list_1.line.json")),
+        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "pdf_toc_line_bullet_list_1.line.json")),
         target_footer=[(1, [2, 3]), (2, [8, 9]), (3, [12, 13]), (4, [10, 11]), (5, [6, 7]), (6, [6, 7]), (7, [6, 7])],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1]), (6, [0, 1]), (7, [0, 1])],
         target_toc=target_toc_exp_line,
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(cfg.glob.setup.directory_inbox_accepted, "pdf_toc_table_bullet_list_2.line.json")),
+        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "pdf_toc_table_bullet_list_2.line.json")),
         target_footer=[(1, [11, 12]), (2, [8, 9]), (3, [10, 11]), (4, [10, 11]), (5, [6, 7]), (6, [6, 7]), (7, [6, 7])],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1]), (6, [0, 1]), (7, [0, 1])],
         target_toc=target_toc_exp_table,
@@ -115,7 +115,7 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             ("pdf_toc_line_bullet_list", "pdf"),
             ("pdf_toc_table_bullet_list", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -124,15 +124,15 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
         ],
     )
     values_original_core = pytest.helpers.backup_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
@@ -299,7 +299,7 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             ("pdf_toc_line_bullet_list", "pdf"),
             ("pdf_toc_table_bullet_list", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -308,15 +308,15 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
         ],
     )
     values_original_core = pytest.helpers.backup_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
@@ -477,7 +477,7 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             ("pdf_toc_line_bullet_list", "pdf"),
             ("pdf_toc_table_bullet_list", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -486,16 +486,16 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
         ],
     )
 
     values_original_core = pytest.helpers.backup_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),

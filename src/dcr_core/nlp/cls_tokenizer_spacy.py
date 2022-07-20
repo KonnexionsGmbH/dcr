@@ -769,6 +769,7 @@ class TokenizerSpacy:
         """
         dcr_core.utils.check_exists_object(
             is_setup=True,
+            is_text_parser=True,
         )
 
         self._document_id = document_id

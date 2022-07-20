@@ -1,4 +1,7 @@
-"""Module cfg.cls_setup: Managing the application configuration parameters."""
+"""Module dcr_core.cfg.cls_setup.
+
+Managing the application configuration parameters.
+"""
 from __future__ import annotations
 
 import configparser
@@ -21,7 +24,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 44
+    _CONFIG_PARAM_NO = 110
 
     _DCR_CFG_CREATE_EXTRA_FILE_HEADING: ClassVar[str] = "create_extra_file_heading"
     _DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET: ClassVar[str] = "create_extra_file_list_bullet"
@@ -162,6 +165,9 @@ class Setup:
 
         self._config: dict[str, str] = {}
 
+        self._config_parser = configparser.ConfigParser()
+        self._config_parser.read(Setup._DCR_CFG_FILE)
+
         # -----------------------------------------------------------------------------
         # DCR configuration.
         # -----------------------------------------------------------------------------
@@ -301,16 +307,16 @@ class Setup:
         self.is_spacy_tkn_attr_vocab = False
         self.is_spacy_tkn_attr_whitespace_ = True
 
-        self._load_config()
+        self._load_config_core()
 
-        utils.progress_msg_core("The configuration parameters are checked and loaded")
+        utils.progress_msg_core("The configuration parameters (dcr_core) are checked and loaded")
 
         self._exist = True
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameters.
     # -----------------------------------------------------------------------------
-    def _check_config(self) -> None:
+    def _check_config_core(self) -> None:
         """Check the configuration parameters."""
         self.is_create_extra_file_heading = self._determine_config_param_boolean(
             Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, self.is_create_extra_file_heading
@@ -636,145 +642,142 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Load and check the configuration parameters.
     # -----------------------------------------------------------------------------
-    def _load_config(self) -> None:
+    def _load_config_core(self) -> None:
         """Load and check the configuration parameters."""
-        config_parser = configparser.ConfigParser()
-        config_parser.read(Setup._DCR_CFG_FILE)
-
-        for section in config_parser.sections():
+        for section in self._config_parser.sections():
             if section in (
                 Setup._DCR_CFG_SECTION,
                 Setup._DCR_CFG_SECTION + ".env." + self.environment_variant,
                 Setup._DCR_CFG_SECTION_SPACY,
             ):
-                for (key, value) in config_parser.items(section):
+                for (key, value) in self._config_parser.items(section):
                     self._config[key] = value
 
-        for key, item in self._config.items():
-            match key:
-                case (
-                    Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING
-                    | Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET
-                    | Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER
-                    | Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE
-                    | Setup._DCR_CFG_JSON_INDENT
-                    | Setup._DCR_CFG_JSON_SORT_KEYS
-                    | Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE
-                    | Setup._DCR_CFG_LT_FOOTER_MAX_LINES
-                    | Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE
-                    | Setup._DCR_CFG_LT_HEADER_MAX_LINES
-                    | Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX
-                    | Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP
-                    | Setup._DCR_CFG_LT_HEADING_MAX_LEVEL
-                    | Setup._DCR_CFG_LT_HEADING_MIN_PAGES
-                    | Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX
-                    | Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES
-                    | Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX
-                    | Setup._DCR_CFG_LT_LIST_NUMBER_FILE_INCL_REGEXP
-                    | Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES
-                    | Setup._DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX
-                    | Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS
-                    | Setup._DCR_CFG_LT_TOC_LAST_PAGE
-                    | Setup._DCR_CFG_LT_TOC_MIN_ENTRIES
-                    | Setup._DCR_CFG_PDF2IMAGE_TYPE
-                    | Setup._DCR_CFG_SPACY_IGNORE_BRACKET
-                    | Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT
-                    | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_FOOTER
-                    | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_HEADER
-                    | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_HEADING
-                    | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_BULLET
-                    | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_NUMBER
-                    | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_TABLE
-                    | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_TOC
-                    | Setup._DCR_CFG_SPACY_IGNORE_PUNCT
-                    | Setup._DCR_CFG_SPACY_IGNORE_QUOTE
-                    | Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT
-                    | Setup._DCR_CFG_SPACY_IGNORE_SPACE
-                    | Setup._DCR_CFG_SPACY_IGNORE_STOP
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_DOC
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_HEAD
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_I
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IDX
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ASCII
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_BRACKET
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_CURRENCY
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_DIGIT
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LEFT_PUNCT
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LOWER
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_OOV
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_QUOTE
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_RIGHT_PUNCT
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_END
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_START
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SPACE
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_UPPER
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_LANG_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_LEMMA_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_LEX
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_LEX_ID
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_EMAIL
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_LOWER_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_MORPH
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_NORM_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_ORTH_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_POS_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_PREFIX_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_PROB
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_RANK
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_SENT
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_SENTIMENT
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_SUFFIX_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_TAG_
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_TENSOR
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB
-                    | Setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_
-                    | Setup._DCR_CFG_TESSERACT_TIMEOUT
-                    | Setup._DCR_CFG_TETML_PAGE
-                    | Setup._DCR_CFG_TETML_WORD
-                    | Setup._DCR_CFG_TOKENIZE_2_DATABASE
-                    | Setup._DCR_CFG_TOKENIZE_2_JSONFILE
-                    | Setup._DCR_CFG_VERBOSE
-                    | Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS
-                    | Setup._DCR_CFG_VERBOSE_LT_HEADING
-                    | Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET
-                    | Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER
-                    | Setup._DCR_CFG_VERBOSE_LT_TABLE
-                    | Setup._DCR_CFG_VERBOSE_LT_TOC
-                    | Setup._DCR_CFG_VERBOSE_PARSER
-                ):
-                    continue
-                case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_HEADING:
-                    self.lt_export_rule_file_heading = dcr_core.utils.get_os_independent_name(item)
-                case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET:
-                    self.lt_export_rule_file_list_bullet = dcr_core.utils.get_os_independent_name(item)
-                case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER:
-                    self.lt_export_rule_file_list_number = dcr_core.utils.get_os_independent_name(item)
-                case Setup._DCR_CFG_LT_HEADING_RULE_FILE:
-                    self.lt_heading_rule_file = dcr_core.utils.get_os_independent_name(item)
-                case Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE:
-                    self.lt_list_bullet_rule_file = dcr_core.utils.get_os_independent_name(item)
-                case Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE:
-                    self.lt_list_number_rule_file = dcr_core.utils.get_os_independent_name(item)
-                case _:
-                    dcr_core.utils.terminate_fatal(f"dcr_core: unknown configuration parameter '{key}'")
+                for key, item in self._config.items():
+                    match key:
+                        case (
+                            Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING
+                            | Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET
+                            | Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER
+                            | Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE
+                            | Setup._DCR_CFG_JSON_INDENT
+                            | Setup._DCR_CFG_JSON_SORT_KEYS
+                            | Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE
+                            | Setup._DCR_CFG_LT_FOOTER_MAX_LINES
+                            | Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE
+                            | Setup._DCR_CFG_LT_HEADER_MAX_LINES
+                            | Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX
+                            | Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP
+                            | Setup._DCR_CFG_LT_HEADING_MAX_LEVEL
+                            | Setup._DCR_CFG_LT_HEADING_MIN_PAGES
+                            | Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX
+                            | Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES
+                            | Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX
+                            | Setup._DCR_CFG_LT_LIST_NUMBER_FILE_INCL_REGEXP
+                            | Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES
+                            | Setup._DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX
+                            | Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS
+                            | Setup._DCR_CFG_LT_TOC_LAST_PAGE
+                            | Setup._DCR_CFG_LT_TOC_MIN_ENTRIES
+                            | Setup._DCR_CFG_PDF2IMAGE_TYPE
+                            | Setup._DCR_CFG_SPACY_IGNORE_BRACKET
+                            | Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT
+                            | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_FOOTER
+                            | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_HEADER
+                            | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_HEADING
+                            | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_BULLET
+                            | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_LIST_NUMBER
+                            | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_TABLE
+                            | Setup._DCR_CFG_SPACY_IGNORE_LINE_TYPE_TOC
+                            | Setup._DCR_CFG_SPACY_IGNORE_PUNCT
+                            | Setup._DCR_CFG_SPACY_IGNORE_QUOTE
+                            | Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT
+                            | Setup._DCR_CFG_SPACY_IGNORE_SPACE
+                            | Setup._DCR_CFG_SPACY_IGNORE_STOP
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_DOC
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_HEAD
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_I
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IDX
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ASCII
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_BRACKET
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_CURRENCY
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_DIGIT
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LEFT_PUNCT
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LOWER
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_OOV
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_QUOTE
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_RIGHT_PUNCT
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_END
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_START
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SPACE
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_IS_UPPER
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_LANG_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_LEMMA_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_LEX
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_LEX_ID
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_EMAIL
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_LOWER_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_MORPH
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_NORM_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_ORTH_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_POS_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_PREFIX_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_PROB
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_RANK
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_SENT
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_SENTIMENT
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_SUFFIX_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_TAG_
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_TENSOR
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB
+                            | Setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_
+                            | Setup._DCR_CFG_TESSERACT_TIMEOUT
+                            | Setup._DCR_CFG_TETML_PAGE
+                            | Setup._DCR_CFG_TETML_WORD
+                            | Setup._DCR_CFG_TOKENIZE_2_DATABASE
+                            | Setup._DCR_CFG_TOKENIZE_2_JSONFILE
+                            | Setup._DCR_CFG_VERBOSE
+                            | Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS
+                            | Setup._DCR_CFG_VERBOSE_LT_HEADING
+                            | Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET
+                            | Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER
+                            | Setup._DCR_CFG_VERBOSE_LT_TABLE
+                            | Setup._DCR_CFG_VERBOSE_LT_TOC
+                            | Setup._DCR_CFG_VERBOSE_PARSER
+                        ):
+                            continue
+                        case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_HEADING:
+                            self.lt_export_rule_file_heading = dcr_core.utils.get_os_independent_name(item)
+                        case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET:
+                            self.lt_export_rule_file_list_bullet = dcr_core.utils.get_os_independent_name(item)
+                        case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER:
+                            self.lt_export_rule_file_list_number = dcr_core.utils.get_os_independent_name(item)
+                        case Setup._DCR_CFG_LT_HEADING_RULE_FILE:
+                            self.lt_heading_rule_file = dcr_core.utils.get_os_independent_name(item)
+                        case Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE:
+                            self.lt_list_bullet_rule_file = dcr_core.utils.get_os_independent_name(item)
+                        case Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE:
+                            self.lt_list_number_rule_file = dcr_core.utils.get_os_independent_name(item)
+                        case _:
+                            pass
 
-        self._check_config()
+        self._check_config_core()
 
     # -----------------------------------------------------------------------------
     # Check the object existence.

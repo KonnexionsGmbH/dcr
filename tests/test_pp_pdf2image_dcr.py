@@ -41,13 +41,13 @@ def test_run_action_pdf_2_image_missing_input_file(fxtr_setup_empty_db_and_inbox
         source_files=[
             (stem_name_1, file_ext_1),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    os.remove(dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1." + file_ext_1))
+    os.remove(dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1." + file_ext_1))
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
@@ -85,7 +85,7 @@ def test_run_action_pdf_2_image_normal_jpeg_duplicate(fxtr_setup_empty_db_and_in
         source_files=[
             (stem_name_1, file_ext_1),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     stem_name_2 = "pdf_scanned_ok_1_1"
@@ -121,7 +121,12 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, cfg.cls_setup.Setup.PDF2IMAGE_TYPE_PNG),
+        ],
+    )
+    values_original_core = pytest.helpers.backup_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, dcr_core.cfg.cls_setup.Setup.PDF2IMAGE_TYPE_PNG),
         ],
     )
 
@@ -133,7 +138,7 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
         source_files=[
             (stem_name, file_ext),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -145,6 +150,10 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
+    pytest.helpers.restore_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original_core,
+    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_pdf_2_image_normal_png 2/2 <=========")
@@ -154,7 +163,7 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
             [],
             [
                 stem_name + "_1.pdf",
-                stem_name + "_1_1." + cfg.glob.setup.PDF2IMAGE_TYPE_PNG,
+                stem_name + "_1_1." + dcr_core.cfg.glob.setup.PDF2IMAGE_TYPE_PNG,
             ],
         ),
     )

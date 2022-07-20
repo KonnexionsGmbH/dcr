@@ -143,7 +143,7 @@ def parse_tetml_file() -> None:
                     dcr_core.cfg.glob.text_parser.parse_tag_document(
                         directory_name=cfg.glob.action_curr.action_directory_name,
                         document_id=cfg.glob.document.document_id,
-                        environment_variant=cfg.glob.setup.environment_variant,
+                        environment_variant=dcr_core.cfg.glob.setup.environment_variant,
                         file_name_curr=cfg.glob.action_curr.action_file_name,
                         file_name_next=cfg.glob.action_next.get_full_name(),
                         file_name_orig=cfg.glob.document.document_file_name,

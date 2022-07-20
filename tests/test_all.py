@@ -90,7 +90,7 @@ def check_db_content() -> None:
     # -----------------------------------------------------------------------------
     # Database table version.
     # -----------------------------------------------------------------------------
-    pytest.helpers.check_dbt_version((1, (1, cfg.cls_setup.Setup.DCR_VERSION)))
+    pytest.helpers.check_dbt_version((1, (1, dcr_core.cfg.cls_setup.Setup.DCR_VERSION)))
 
 
 # -----------------------------------------------------------------------------
@@ -1000,7 +1000,7 @@ def check_db_content_run() -> None:  #
 # -----------------------------------------------------------------------------
 def check_db_content_version() -> None:
     """Check the database content - database table version."""
-    pytest.helpers.check_dbt_version((1, (1, cfg.cls_setup.Setup.DCR_VERSION)))
+    pytest.helpers.check_dbt_version((1, (1, dcr_core.cfg.cls_setup.Setup.DCR_VERSION)))
 
 
 # -----------------------------------------------------------------------------
@@ -1032,7 +1032,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
             ("README", "md"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -1087,7 +1087,7 @@ def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and
             ("empty_pdf_scanned", "pdf"),
             ("empty_pdf_text", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -1130,7 +1130,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
             ("pdf_text_ok", "pdf"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -1196,13 +1196,13 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
         ],
     )
     values_original_core = pytest.helpers.backup_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
@@ -1218,7 +1218,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
             ("pdf_scanned_ok", "pdf"),
             ("pdf_text_ok", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------

@@ -67,13 +67,13 @@ def test_get_stem_name():
 # -----------------------------------------------------------------------------
 def test_progress_msg_disconnected_1(fxtr_setup_logger_environment):
     """Test: get_file_type()- case 1."""
-    cfg.glob.setup.is_verbose = True
+    dcr_core.cfg.glob.setup.is_verbose = True
 
     # -------------------------------------------------------------------------
     utils.progress_msg_disconnected()
 
     # -------------------------------------------------------------------------
-    del cfg.glob.setup
+    del dcr_core.cfg.glob.setup
 
     utils.progress_msg_connected(database=dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE, user=dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE)
 
@@ -95,7 +95,7 @@ def test_progress_msg_disconnected_1(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_progress_msg_disconnected_2(fxtr_setup_empty_db_and_inbox):
     """Test: get_file_type()."""
-    cfg.glob.setup.is_verbose = True
+    dcr_core.cfg.glob.setup.is_verbose = True
 
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()

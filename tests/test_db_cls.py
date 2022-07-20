@@ -34,7 +34,7 @@ def check_existing_action():
         1,
         db.cls_run.Run.ACTION_CODE_INBOX,
         db.cls_run.Run.get_action_text(db.cls_run.Run.ACTION_CODE_INBOX),
-        cfg.glob.setup.directory_inbox,
+        dcr_core.cfg.glob.setup.directory_inbox,
         "inbox",
         "",
         "",
@@ -289,7 +289,7 @@ def check_existing_token():
 # -----------------------------------------------------------------------------
 def check_existing_version():
     """Check existing version object."""
-    expected_values = [1, cfg.cls_setup.Setup.DCR_VERSION]
+    expected_values = [1, dcr_core.cfg.cls_setup.Setup.DCR_VERSION]
 
     cfg.glob.version = db.cls_version.Version.from_id(expected_values[0])
 
@@ -448,7 +448,7 @@ def check_new_action():
         source_files=[
             ("pdf_text_ok", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -----------------------------------------------------------------------------
@@ -736,7 +736,7 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
         source_files=[
             ("pdf_text_ok", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -817,7 +817,7 @@ def test_missing_dependencies_action_1(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    directory_name = cfg.glob.setup.directory_inbox
+    directory_name = dcr_core.cfg.glob.setup.directory_inbox
     file_name = "pdf_text_ok.pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -864,7 +864,7 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     cfg.glob.start_time_document = time.perf_counter_ns()
 
-    directory_name = cfg.glob.setup.directory_inbox
+    directory_name = dcr_core.cfg.glob.setup.directory_inbox
     file_name = "pdf_text_ok.pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(

@@ -29,7 +29,7 @@ ERROR_71_901 = "71.901 Issue (tkn): Tokenizing the file '{full_name_curr}' faile
 # -----------------------------------------------------------------------------
 def store_tokens_in_database() -> None:
     """Save the tokens sentence by sentence in the database."""
-    if not cfg.glob.setup.is_tokenize_2_database:
+    if not dcr_core.cfg.glob.setup.is_tokenize_2_database:
         return
 
     for page in dcr_core.cfg.glob.tokenizer_spacy.token_pages:
@@ -124,7 +124,7 @@ def tokenize_file() -> None:
 
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    if cfg.glob.setup.is_tokenize_2_jsonfile:
+    if dcr_core.cfg.glob.setup.is_tokenize_2_jsonfile:
         file_name_next = cfg.glob.action_curr.get_stem_name() + "_token." + dcr_core.cfg.glob.FILE_TYPE_JSON
         full_name_next = dcr_core.utils.get_full_name(
             cfg.glob.action_curr.action_directory_name,

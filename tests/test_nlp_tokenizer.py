@@ -33,7 +33,7 @@ def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, 
         source_files=[
             ("tokenizer_coverage", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -41,8 +41,13 @@ def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, 
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+        ],
+    )
+    values_original_core = pytest.helpers.backup_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
         ],
     )
     values_original_spacy = pytest.helpers.backup_config_params(
@@ -74,6 +79,10 @@ def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, 
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
+    )
+    pytest.helpers.restore_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original_core,
     )
     pytest.helpers.restore_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
@@ -111,7 +120,7 @@ def test_run_action_tokenize_attributes_false_true_coverage(spacy_ignore: str, f
         source_files=[
             ("tokenizer_coverage", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -119,9 +128,14 @@ def test_run_action_tokenize_attributes_false_true_coverage(spacy_ignore: str, f
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
+        ],
+    )
+    values_original_core = pytest.helpers.backup_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
         ],
     )
     values_original_spacy = pytest.helpers.set_complete_cfg_spacy(spacy_ignore)
@@ -137,6 +151,10 @@ def test_run_action_tokenize_attributes_false_true_coverage(spacy_ignore: str, f
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
+    )
+    pytest.helpers.restore_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original_core,
     )
     pytest.helpers.restore_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
@@ -161,7 +179,7 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
             ("pdf_table", "pdf"),
             ("tokenizer_coverage", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -170,15 +188,15 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "none"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
         ],
     )
     values_original_core = pytest.helpers.backup_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
         ],
@@ -265,7 +283,7 @@ def test_run_action_tokenize_french(fxtr_setup_empty_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db_initial_data_file_path = pathlib.Path(cfg.glob.setup.db_initial_data_file)
+    db_initial_data_file_path = pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)
 
     # copy test file
     shutil.copy(
@@ -279,7 +297,7 @@ def test_run_action_tokenize_french(fxtr_setup_empty_inbox):
 
     # -------------------------------------------------------------------------
     # Copy language subdirectory
-    pytest.helpers.copy_directories_4_pytest_2_dir(source_directories=["french"], target_dir=str(cfg.glob.setup.directory_inbox))
+    pytest.helpers.copy_directories_4_pytest_2_dir(source_directories=["french"], target_dir=str(dcr_core.cfg.glob.setup.directory_inbox))
 
     # -------------------------------------------------------------------------
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
@@ -312,7 +330,7 @@ def test_run_action_tokenize_missing_input_file(spacy_ignore: str, fxtr_setup_em
         source_files=[
             (stem_name_1, file_ext_1),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -342,7 +360,7 @@ def test_run_action_tokenize_missing_input_file(spacy_ignore: str, fxtr_setup_em
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
-    os.remove(dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.json"))
+    os.remove(dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.json"))
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 

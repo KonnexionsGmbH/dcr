@@ -34,16 +34,16 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
         source_files=[
             (stem_name_1, file_ext),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     stem_name_2 = "pdf_text_ok_1"
 
-    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox_accepted)
+    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext)], target_path=dcr_core.cfg.glob.setup.directory_inbox_accepted)
 
     os.rename(
-        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext),
-        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext),
+        dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext),
+        dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext),
     )
 
     # -------------------------------------------------------------------------
@@ -79,7 +79,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db_initial_data_file_path = pathlib.Path(cfg.glob.setup.db_initial_data_file)
+    db_initial_data_file_path = pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)
     db_initial_data_file_path_directory = os.path.dirname(db_initial_data_file_path)
     db_initial_data_file_path_file_name = os.path.basename(db_initial_data_file_path)
 
@@ -97,14 +97,19 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
 
     # -------------------------------------------------------------------------
     # Copy language subdirectory
-    pytest.helpers.copy_directories_4_pytest_2_dir(source_directories=["french"], target_dir=str(cfg.glob.setup.directory_inbox))
+    pytest.helpers.copy_directories_4_pytest_2_dir(source_directories=["french"], target_dir=str(dcr_core.cfg.glob.setup.directory_inbox))
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "before"),
-            (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "false"),
+        ],
+    )
+    values_original_core = pytest.helpers.backup_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "false"),
         ],
     )
 
@@ -113,6 +118,10 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
     pytest.helpers.restore_config_params(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
+    )
+    pytest.helpers.restore_config_params(
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        values_original_core,
     )
 
     # -------------------------------------------------------------------------
@@ -135,7 +144,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
     )
 
     # -------------------------------------------------------------------------
-    base_directory = str(cfg.glob.setup.directory_inbox)
+    base_directory = str(dcr_core.cfg.glob.setup.directory_inbox)
     language_directory_name = str(dcr_core.utils.get_full_name(base_directory, pathlib.Path("french")))
 
     assert os.path.isdir(dcr_core.utils.get_os_independent_name(base_directory)), "base directory '" + base_directory + "' after processing missing"
@@ -171,7 +180,7 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
             ("pdf_text_ok", "pdf"),
             ("pdf_text_ok_protected", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -215,9 +224,9 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_accepted)
 
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_rejected)
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
@@ -225,7 +234,7 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
             ("pdf_text_ok_protected", "pdf"),
             ("pdf_wrong_format", "pdf"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -284,15 +293,15 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     stem_name_1 = "pdf_wrong_format"
     file_ext = "pdf"
 
-    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext)], target_path=dcr_core.cfg.glob.setup.directory_inbox)
 
     stem_name_2 = "pdf_wrong_format_1"
 
-    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext)], target_path=cfg.glob.setup.directory_inbox_rejected)
+    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext)], target_path=dcr_core.cfg.glob.setup.directory_inbox_rejected)
 
     os.rename(
-        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_rejected, stem_name_1 + "." + file_ext),
-        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_rejected, stem_name_2 + "." + file_ext),
+        dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_rejected, stem_name_1 + "." + file_ext),
+        dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_rejected, stem_name_2 + "." + file_ext),
     )
 
     # -------------------------------------------------------------------------
@@ -328,16 +337,16 @@ def test_run_action_process_inbox_rejected_901(fxtr_rmdir_opt, fxtr_setup_empty_
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_accepted)
 
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_rejected)
 
     pytest.helpers.copy_files_4_pytest_2_dir(
         source_files=[
             ("unknown_file_extension", "xxx"),
             ("unknown_file_extension_protected", "xxx"),
         ],
-        target_path=cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------

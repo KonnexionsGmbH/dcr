@@ -40,9 +40,9 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1
 
     # -------------------------------------------------------------------------
-    current_version = cfg.cls_setup.Setup.DCR_VERSION
+    current_version = dcr_core.cfg.cls_setup.Setup.DCR_VERSION
 
-    cfg.cls_setup.Setup.DCR_VERSION = "0.0.0"
+    dcr_core.cfg.cls_setup.Setup.DCR_VERSION = "0.0.0"
 
     with pytest.raises(SystemExit) as expt:
         cfg.glob.db_core = db.cls_db_core.DBCore()
@@ -51,7 +51,7 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     assert expt.type == SystemExit
     assert expt.value.code == 1
 
-    cfg.cls_setup.Setup.DCR_VERSION = current_version
+    dcr_core.cfg.cls_setup.Setup.DCR_VERSION = current_version
 
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()
@@ -82,7 +82,7 @@ def test_connect_db(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    config_section = cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST
+    config_section = dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST
 
     values_original = pytest.helpers.backup_config_params(
         config_section,
@@ -91,7 +91,7 @@ def test_connect_db(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
     with pytest.raises(SystemExit) as expt:
         cfg.glob.db_core = db.cls_db_core.DBCore()
@@ -116,7 +116,7 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    config_section = cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST
+    config_section = dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST
 
     values_original = pytest.helpers.backup_config_params(
         config_section,
@@ -125,7 +125,7 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
         ],
     )
 
-    cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
     with pytest.raises(SystemExit) as expt:
         cfg.glob.db_core = db.cls_db_core.DBCore(is_admin=True)
@@ -153,7 +153,9 @@ def test_create_database(fxtr_setup_logger_environment):
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT)
+    values_original = pytest.helpers.delete_config_param(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT
+    )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
@@ -164,7 +166,7 @@ def test_create_database(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT, dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
@@ -183,7 +185,7 @@ def test_create_database(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     values_original = pytest.helpers.backup_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DB_INITIAL_DATA_FILE, "unknown_file"),
         ],
@@ -196,7 +198,7 @@ def test_create_database(fxtr_setup_logger_environment):
     assert expt.value.code == 1, "DCR_CFG_DB_INITIAL_DATA_FILE: unknown file"
 
     pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         values_original,
     )
 
@@ -219,7 +221,9 @@ def test_drop_database(fxtr_setup_empty_db_and_inbox):
     cfg.glob.db_core._drop_database()
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT)
+    values_original = pytest.helpers.delete_config_param(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT
+    )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
@@ -240,7 +244,7 @@ def test_drop_database(fxtr_setup_empty_db_and_inbox):
         ],
     )
 
-    cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
     with pytest.raises(SystemExit) as expt:
         cfg.glob.db_core._drop_database()
@@ -265,7 +269,7 @@ def test_load_db_data_from_json_content(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db_initial_data_file_path = pathlib.Path(cfg.glob.setup.db_initial_data_file)
+    db_initial_data_file_path = pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)
     db_initial_data_file_path_directory = os.path.dirname(db_initial_data_file_path)
     db_initial_data_file_path_file_name = os.path.basename(db_initial_data_file_path)
 
@@ -295,7 +299,7 @@ def test_load_db_data_from_json_missing(fxtr_setup_logger_environment):
     """Test Load Database Data - initial database data is missing."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    db_initial_data_file_path = pathlib.Path(cfg.glob.setup.db_initial_data_file)
+    db_initial_data_file_path = pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)
     db_initial_data_file_path_directory = os.path.dirname(db_initial_data_file_path)
     db_initial_data_file_path_file_name = os.path.basename(db_initial_data_file_path)
 
@@ -329,7 +333,7 @@ def test_load_db_data_from_json_unknown(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db_initial_data_file_path = pathlib.Path(cfg.glob.setup.db_initial_data_file)
+    db_initial_data_file_path = pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)
     db_initial_data_file_path_directory = os.path.dirname(db_initial_data_file_path)
     db_initial_data_file_path_file_name = os.path.basename(db_initial_data_file_path)
 
@@ -360,7 +364,7 @@ def test_load_db_data_from_json_version(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    db_initial_data_file_path = pathlib.Path(cfg.glob.setup.db_initial_data_file)
+    db_initial_data_file_path = pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)
     db_initial_data_file_path_directory = os.path.dirname(db_initial_data_file_path)
     db_initial_data_file_path_file_name = os.path.basename(db_initial_data_file_path)
 

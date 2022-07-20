@@ -44,9 +44,9 @@ def check_and_create_directories() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    create_directory("the accepted documents", str(cfg.glob.setup.directory_inbox_accepted))
+    create_directory("the accepted documents", str(dcr_core.cfg.glob.setup.directory_inbox_accepted))
 
-    create_directory("the rejected documents", str(cfg.glob.setup.directory_inbox_rejected))
+    create_directory("the rejected documents", str(dcr_core.cfg.glob.setup.directory_inbox_rejected))
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -134,7 +134,7 @@ def initialise_base(file_path: pathlib.Path) -> None:
         id_run_last=cfg.glob.run.run_id,
     )
 
-    if not cfg.glob.setup.is_ignore_duplicates:
+    if not dcr_core.cfg.glob.setup.is_ignore_duplicates:
         cfg.glob.document.document_sha256 = utils.compute_sha256(file_path)
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -189,7 +189,7 @@ def process_inbox() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    if cfg.glob.setup.is_ignore_duplicates:
+    if dcr_core.cfg.glob.setup.is_ignore_duplicates:
         utils.progress_msg("Configuration: File duplicates are allowed!")
     else:
         utils.progress_msg("Configuration: File duplicates are not allowed!")
@@ -225,7 +225,7 @@ def process_inbox_accepted(action_code: str) -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     full_name_curr = cfg.glob.document.get_full_name()
-    full_name_next = dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, cfg.glob.document.get_file_name_next())
+    full_name_next = dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_accepted, cfg.glob.document.get_file_name_next())
 
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,
@@ -244,7 +244,7 @@ def process_inbox_accepted(action_code: str) -> None:
 
         cfg.glob.action_next = initialise_action(
             action_code=action_code,
-            directory_name=cfg.glob.setup.directory_inbox_accepted,
+            directory_name=dcr_core.cfg.glob.setup.directory_inbox_accepted,
             directory_type=db.cls_document.Document.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED,
             file_name=cfg.glob.document.get_file_name_next(),
             id_parent=cfg.glob.action_curr.action_id,
@@ -273,7 +273,7 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
 
     initialise_base(file_path)
 
-    if not cfg.glob.setup.is_ignore_duplicates:
+    if not dcr_core.cfg.glob.setup.is_ignore_duplicates:
         file_name = db.cls_document.Document.select_duplicate_file_name_by_sha256(cfg.glob.document.document_id, cfg.glob.document.document_sha256)
     else:
         file_name = None
@@ -355,7 +355,7 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
 
     full_name_curr = cfg.glob.document.get_full_name()
     full_name_next = dcr_core.utils.get_full_name(
-        cfg.glob.setup.directory_inbox_rejected,
+        dcr_core.cfg.glob.setup.directory_inbox_rejected,
         cfg.glob.document.get_file_name_next(),
     )
 

@@ -89,7 +89,7 @@ def convert_pdf_2_image_file() -> None:
                 + "."
                 + (
                     dcr_core.cfg.glob.FILE_TYPE_PNG
-                    if cfg.glob.setup.pdf2image_type == cfg.cls_setup.Setup.PDF2IMAGE_TYPE_PNG
+                    if dcr_core.cfg.glob.setup.pdf2image_type == dcr_core.cfg.cls_setup.Setup.PDF2IMAGE_TYPE_PNG
                     else dcr_core.cfg.glob.FILE_TYPE_JPEG
                 )
             )
@@ -109,7 +109,7 @@ def convert_pdf_2_image_file() -> None:
             else:
                 img.save(
                     full_name_next,
-                    cfg.glob.setup.pdf2image_type,
+                    dcr_core.cfg.glob.setup.pdf2image_type,
                 )
 
                 cfg.glob.action_next = db.cls_action.Action(

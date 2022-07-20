@@ -497,14 +497,14 @@ class Document:
         if self.document_file_name == "":
             return self.document_file_name
 
-        utils.check_exists_object(
+        dcr_core.utils.check_exists_object(
             is_setup=True,
         )
 
-        if cfg.glob.setup.doc_id_in_file_name == "none":
+        if dcr_core.cfg.glob.setup.doc_id_in_file_name == "none":
             return dcr_core.utils.get_stem_name(str(self.document_file_name))
 
-        if cfg.glob.setup.doc_id_in_file_name == "after":
+        if dcr_core.cfg.glob.setup.doc_id_in_file_name == "after":
             return dcr_core.utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
 
         return str(self.document_id) + "_" + dcr_core.utils.get_stem_name(str(self.document_file_name))

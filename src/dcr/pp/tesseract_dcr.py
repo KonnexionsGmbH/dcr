@@ -89,7 +89,7 @@ def convert_image_2_pdf_file() -> None:
             extension="pdf",
             image=full_name_curr,
             lang=db.cls_language.Language.LANGUAGES_TESSERACT[cfg.glob.document.document_id_language],
-            timeout=cfg.glob.setup.tesseract_timeout,
+            timeout=dcr_core.cfg.glob.setup.tesseract_timeout,
         )
 
         with open(full_name_next, "w+b") as file_handle:

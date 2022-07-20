@@ -62,7 +62,7 @@ def extract_text_from_pdf() -> None:
                 xml_variation=LINE_XML_VARIATION,
             )
 
-            if cfg.glob.setup.is_tetml_page:
+            if dcr_core.cfg.glob.setup.is_tetml_page:
                 if is_no_error:
                     is_no_error = extract_text_from_pdf_file(
                         document_opt_list=PAGE_TET_DOCUMENT_OPT_LIST,
@@ -70,7 +70,7 @@ def extract_text_from_pdf() -> None:
                         xml_variation=PAGE_XML_VARIATION,
                     )
 
-            if cfg.glob.setup.is_tetml_word:
+            if dcr_core.cfg.glob.setup.is_tetml_word:
                 if is_no_error:
                     is_no_error = extract_text_from_pdf_file(
                         document_opt_list=WORD_TET_DOCUMENT_OPT_LIST,

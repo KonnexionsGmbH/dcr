@@ -296,7 +296,7 @@ def check_json_line(
     no_lists_number_in_document: int = 0,
     no_tables_in_document: int = 0,
 ) -> None:
-    full_name = dcr_core.utils.get_full_name(directory_name=cfg.glob.setup.directory_inbox_accepted, file_name=file_name)
+    full_name = dcr_core.utils.get_full_name(directory_name=dcr_core.cfg.glob.setup.directory_inbox_accepted, file_name=file_name)
 
     try:
         with open(full_name, "r", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
@@ -700,11 +700,11 @@ def delete_existing_object(  # noqa: C901
 
     if is_setup:
         try:
-            cfg.glob.setup.exists()  # type: ignore
+            dcr_core.cfg.glob.setup.exists()  # type: ignore
 
-            del cfg.glob.setup
+            del dcr_core.cfg.glob.setup
 
-            cfg.glob.logger.debug("The existing object 'cfg.glob.setup' of the class Setup was deleted.")
+            cfg.glob.logger.debug("The existing object 'dcr_core.cfg.glob.setup' of the class Setup was deleted.")
         except AttributeError:
             pass
 
@@ -769,15 +769,6 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED, "data/inbox_test_rejected"),
         (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         (cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_JSON_INDENT, "4"),
-        (cfg.cls_setup.Setup._DCR_CFG_JSON_SORT_KEYS, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, "jpeg"),
-        (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
-        (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
     ):
         CONFIG_PARSER[cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
 
@@ -788,50 +779,50 @@ def fxtr_before_any_test():
     # Configuration: dcr_core.
     # -----------------------------------------------------------------------------
     for (config_param, config_value) in (
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "true"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "true"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "true"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "true"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_JSON_INDENT, "4"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_JSON_SORT_KEYS, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, "3"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "3"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MIN_PAGES, "2"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "data/lt_export_rule_heading_test.json"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX, "5"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, "2"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE, "data/lt_export_rule_list_bullet_test.json"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, "5"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_FILE_INCL_REGEXP, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES, "2"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE, "data/lt_export_rule_list_number_test.json"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX, "5"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, "5"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_TOC_MIN_ENTRIES, "5"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, "jpeg"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TABLE, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "false"),
-        (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
+        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_JSON_INDENT, "4"),
+        (cfg.cls_setup.Setup._DCR_CFG_JSON_SORT_KEYS, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "3"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MIN_PAGES, "2"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "data/lt_export_rule_heading_test.json"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX, "5"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, "2"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE, "data/lt_export_rule_list_bullet_test.json"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, "5"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_FILE_INCL_REGEXP, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES, "2"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE, "data/lt_export_rule_list_number_test.json"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX, "5"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, "5"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_MIN_ENTRIES, "5"),
+        (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, "jpeg"),
+        (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+        (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TABLE, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
     ):
         CONFIG_PARSER[dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
 
-    with open(dcr_core.cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
+    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
 
@@ -904,31 +895,31 @@ def fxtr_setup_empty_db_and_inbox(
     """Fixture: Setup empty database and empty inboxes."""
     backup_setup_cfg()
 
-    cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
     # restore original file
     shutil.copy(
-        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
-        os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
+        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file))),
+        os.path.dirname(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)),
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
-    fxtr_mkdir(cfg.glob.setup.directory_inbox)
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
-    fxtr_mkdir(cfg.glob.setup.directory_inbox_accepted)
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
-    fxtr_mkdir(cfg.glob.setup.directory_inbox_rejected)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox)
+    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_accepted)
+    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox_accepted)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_rejected)
+    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox_rejected)
 
     yield
 
     try:
-        cfg.glob.setup.exists()  # type: ignore
+        dcr_core.cfg.glob.setup.exists()  # type: ignore
 
-        fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
-        fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
-        fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
+        fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_rejected)
+        fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_accepted)
+        fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox)
 
         cfg.glob.db_core._drop_database()
     except AttributeError:
@@ -948,26 +939,26 @@ def fxtr_setup_empty_inbox(
     """Fixture: Setup empty database and empty inboxes."""
     backup_setup_cfg()
 
-    cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
     # restore original file
     shutil.copy(
-        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
-        os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
+        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file))),
+        os.path.dirname(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)),
     )
 
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
-    fxtr_mkdir(cfg.glob.setup.directory_inbox)
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
-    fxtr_mkdir(cfg.glob.setup.directory_inbox_accepted)
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
-    fxtr_mkdir(cfg.glob.setup.directory_inbox_rejected)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox)
+    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_accepted)
+    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox_accepted)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_rejected)
+    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox_rejected)
 
     yield
 
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_rejected)
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox_accepted)
-    fxtr_rmdir_opt(cfg.glob.setup.directory_inbox)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_rejected)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_accepted)
+    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox)
 
     cfg.glob.db_core._drop_database()
 
@@ -991,15 +982,15 @@ def fxtr_setup_logger():
 @pytest.fixture()
 def fxtr_setup_logger_environment():
     """Fixture: Setup logger & environment."""
-    cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
     # restore original file
     shutil.copy(
-        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(cfg.glob.setup.db_initial_data_file))),
-        os.path.dirname(pathlib.Path(cfg.glob.setup.db_initial_data_file)),
+        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file))),
+        os.path.dirname(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)),
     )
 
-    cfg.glob.setup.environment_type = cfg.glob.setup.ENVIRONMENT_TYPE_TEST
+    dcr_core.cfg.glob.setup.environment_type = dcr_core.cfg.glob.setup.ENVIRONMENT_TYPE_TEST
 
     backup_setup_cfg()
 
@@ -1029,7 +1020,7 @@ def get_values_action():
         None,
         "p_i",
         "inbox         (preprocessor)",
-        cfg.glob.setup.directory_inbox,
+        dcr_core.cfg.glob.setup.directory_inbox,
         "inbox",
         "",
         "",
@@ -1055,7 +1046,7 @@ def get_values_document():
         None,
         "s_p_j_line",
         "parser_line   (nlp)",
-        cfg.glob.setup.directory_inbox,
+        dcr_core.cfg.glob.setup.directory_inbox,
         "",
         "",
         0,
@@ -1185,11 +1176,11 @@ def help_run_action_all_complete_duplicate_file(
     is_ocr: bool = False,
 ) -> None:
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
-    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext_1)], target_path=cfg.glob.setup.directory_inbox_accepted)
+    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext_1)], target_path=dcr_core.cfg.glob.setup.directory_inbox_accepted)
 
     os.rename(
-        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
-        dcr_core.utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
+        dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
+        dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
     )
 
     # -------------------------------------------------------------------------
@@ -1202,19 +1193,19 @@ def help_run_action_all_complete_duplicate_file(
         dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
         verify_content_of_directory(
-            cfg.glob.setup.directory_inbox,
+            dcr_core.cfg.glob.setup.directory_inbox,
             [],
             [],
         )
 
         verify_content_of_directory(
-            cfg.glob.setup.directory_inbox_accepted,
+            dcr_core.cfg.glob.setup.directory_inbox_accepted,
             [],
             [stem_name_1 + "_1." + file_ext_1, stem_name_2 + "." + file_ext_2],
         )
 
         verify_content_of_directory(
-            cfg.glob.setup.directory_inbox_rejected,
+            dcr_core.cfg.glob.setup.directory_inbox_rejected,
             [],
             [],
         )
@@ -1229,7 +1220,7 @@ def help_run_action_process_inbox_normal(
     file_ext,
 ):
     """Help RUN_ACTION_PROCESS_INBOX - normal."""
-    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name, file_ext)], target_path=cfg.glob.setup.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name, file_ext)], target_path=dcr_core.cfg.glob.setup.directory_inbox)
 
     # -------------------------------------------------------------------------
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
@@ -1237,25 +1228,25 @@ def help_run_action_process_inbox_normal(
     document_id = 1
 
     file_p_i = (
-        cfg.glob.setup.directory_inbox_accepted,
+        dcr_core.cfg.glob.setup.directory_inbox_accepted,
         [stem_name, str(document_id)],
         file_ext,
     )
 
     verify_content_of_directory(
-        cfg.glob.setup.directory_inbox,
+        dcr_core.cfg.glob.setup.directory_inbox,
         [],
         [],
     )
 
     verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_accepted,
+        dcr_core.cfg.glob.setup.directory_inbox_accepted,
         [],
         [stem_name + "_" + str(document_id) + "." + file_ext],
     )
 
     verify_content_of_directory(
-        cfg.glob.setup.directory_inbox_rejected,
+        dcr_core.cfg.glob.setup.directory_inbox_rejected,
         [],
         [],
     )
@@ -1307,7 +1298,7 @@ def restore_config_params(
     with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
-    cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
 
 # -----------------------------------------------------------------------------
@@ -1316,10 +1307,9 @@ def restore_config_params(
 @pytest.helpers.register
 def restore_setup_cfg():
     """Restore the 'setup.cfg' file."""
-    shutil.copy2(FILE_NAME_SETUP_CFG_BACKUP, FILE_NAME_SETUP_CFG)
-
-    os.remove(FILE_NAME_SETUP_CFG_BACKUP)
-
+    if os.path.isfile(FILE_NAME_SETUP_CFG_BACKUP):
+        shutil.copy2(FILE_NAME_SETUP_CFG_BACKUP, FILE_NAME_SETUP_CFG)
+        os.remove(FILE_NAME_SETUP_CFG_BACKUP)
 
 # -----------------------------------------------------------------------------
 # Set all spaCy configuration parameters to the same logical value.
@@ -1330,66 +1320,66 @@ def set_complete_cfg_spacy(false_or_true: str):
     return pytest.helpers.backup_config_params(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_STOP, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DOC, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_HEAD, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_I, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IDX, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ASCII, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_BRACKET, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_CURRENCY, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_DIGIT, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LEFT_PUNCT, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LOWER, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_OOV, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_QUOTE, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_RIGHT_PUNCT, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_END, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_START, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SPACE, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_UPPER, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEMMA_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEX, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEX_ID, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_EMAIL, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LOWER_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_MORPH, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_NORM_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ORTH_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_POS_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_PREFIX_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_PROB, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RANK, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SENT, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SENTIMENT, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SUFFIX_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TAG_, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TENSOR, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB, false_or_true),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_STOP, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DOC, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_HEAD, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_I, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IDX, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ASCII, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_BRACKET, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_CURRENCY, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_DIGIT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LEFT_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LOWER, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_OOV, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_QUOTE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_RIGHT_PUNCT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_END, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_START, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SPACE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_UPPER, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEMMA_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEX, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEX_ID, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_EMAIL, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LOWER_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_MORPH, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_NORM_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ORTH_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_POS_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_PREFIX_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_PROB, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RANK, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SENT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SENTIMENT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SUFFIX_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TAG_, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TENSOR, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB, false_or_true),
+            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_, false_or_true),
         ],
     )
 
@@ -1504,18 +1494,18 @@ def verify_content_of_inboxes(
                    an optional list of expected files in the inbox_rejected directory.
     """
     verify_content_of_directory(
-        directory_name=cfg.glob.setup.directory_inbox,
+        directory_name=dcr_core.cfg.glob.setup.directory_inbox,
         expected_directories=inbox[0],
         expected_files=inbox[1],
     )
 
     verify_content_of_directory(
-        directory_name=cfg.glob.setup.directory_inbox_accepted,
+        directory_name=dcr_core.cfg.glob.setup.directory_inbox_accepted,
         expected_directories=inbox_accepted[0],
         expected_files=inbox_accepted[1],
     )
     verify_content_of_directory(
-        directory_name=cfg.glob.setup.directory_inbox_rejected,
+        directory_name=dcr_core.cfg.glob.setup.directory_inbox_rejected,
         expected_directories=inbox_rejected[0],
         expected_files=inbox_rejected[1],
     )

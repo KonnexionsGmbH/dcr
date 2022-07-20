@@ -43,7 +43,7 @@ def check_exists_object(  # noqa: C901
             dcr_core.cfg.glob.line_type_headers_footers.exists()  # type: ignore
         except AttributeError:
             terminate_fatal(
-                "The required instance of the class 'LineTypeHeadersFotters' does not yet exist.",
+                "The required instance of the class 'LineTypeHeadersFooters' does not yet exist.",
             )
 
     if is_line_type_list_bullet:

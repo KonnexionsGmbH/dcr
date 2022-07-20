@@ -68,6 +68,8 @@ class Language:
 
         utils.check_exists_object(
             is_db_core=True,
+        )
+        dcr_core.utils.check_exists_object(
             is_setup=True,
         )
 
@@ -78,7 +80,7 @@ class Language:
         self.language_code_tesseract = code_tesseract
 
         if self.language_active and (directory_name_inbox is None or directory_name_inbox == ""):
-            self.language_directory_name_inbox = str(os.path.join(cfg.glob.setup.directory_inbox, iso_language_name.lower()))
+            self.language_directory_name_inbox = str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox, iso_language_name.lower()))
         else:
             self.language_directory_name_inbox = dcr_core.utils.get_os_independent_name(directory_name_inbox)
 

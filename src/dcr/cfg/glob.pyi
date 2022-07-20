@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 import os
 
-import cfg.cls_setup
 import db.cls_action
 import db.cls_db_core
 import db.cls_document
@@ -38,7 +37,5 @@ language: type[db.cls_language.Language]
 logger: logging.Logger
 
 run: type[db.cls_run.Run]
-
-setup: type[cfg.cls_setup.Setup]
 
 start_time_document: int

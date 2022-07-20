@@ -58,9 +58,9 @@ def check_db_up_to_date() -> None:
 
     current_version = db.cls_version.Version.select_version_version_unique()
 
-    if cfg.cls_setup.Setup.DCR_VERSION != current_version:
+    if dcr_core.cfg.cls_setup.Setup.DCR_VERSION != current_version:
         dcr_core.utils.terminate_fatal(
-            f"Current database version is '{current_version}' - but expected version is '" f"{cfg.cls_setup.Setup.DCR_VERSION}''"
+            f"Current database version is '{current_version}' - but expected version is '" f"{dcr_core.cfg.cls_setup.Setup.DCR_VERSION}''"
         )
 
     utils.progress_msg(f"The current version of database is '{current_version}'")
@@ -203,8 +203,7 @@ def main(argv: list[str]) -> None:
     locale.setlocale(locale.LC_ALL, LOCALE)
 
     # Load the configuration parameters.
-    cfg.glob.setup = cfg.cls_setup.Setup()
-    dcr_core.cfg.glob.setup = dcr_core.cfg.cls_setup.Setup()
+    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
     # Load the command line arguments.
     args = get_args(argv)
@@ -375,29 +374,29 @@ def process_export_lt_rules() -> None:
     utils.progress_msg_empty_before("Start: Export the line type rules ...")
 
     dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_heading(
-        is_verbose=cfg.glob.setup.is_verbose,
-        file_name=cfg.glob.setup.lt_export_rule_file_heading,
+        is_verbose=dcr_core.cfg.glob.setup.is_verbose,
+        file_name=dcr_core.cfg.glob.setup.lt_export_rule_file_heading,
         file_encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT,
-        json_indent=cfg.glob.setup.json_indent,
-        is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
+        json_indent=dcr_core.cfg.glob.setup.json_indent,
+        is_json_sort_keys=dcr_core.cfg.glob.setup.is_json_sort_keys,
     )
 
     dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_bullet(
-        is_verbose=cfg.glob.setup.is_verbose,
-        file_name=cfg.glob.setup.lt_export_rule_file_list_bullet,
+        is_verbose=dcr_core.cfg.glob.setup.is_verbose,
+        file_name=dcr_core.cfg.glob.setup.lt_export_rule_file_list_bullet,
         file_encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT,
-        json_indent=cfg.glob.setup.json_indent,
-        is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
-        environment_variant=cfg.glob.setup.environment_variant,
+        json_indent=dcr_core.cfg.glob.setup.json_indent,
+        is_json_sort_keys=dcr_core.cfg.glob.setup.is_json_sort_keys,
+        environment_variant=dcr_core.cfg.glob.setup.environment_variant,
     )
 
     dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_number(
-        is_verbose=cfg.glob.setup.is_verbose,
-        file_name=cfg.glob.setup.lt_export_rule_file_list_number,
+        is_verbose=dcr_core.cfg.glob.setup.is_verbose,
+        file_name=dcr_core.cfg.glob.setup.lt_export_rule_file_list_number,
         file_encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT,
-        json_indent=cfg.glob.setup.json_indent,
-        is_json_sort_keys=cfg.glob.setup.is_json_sort_keys,
-        environment_variant=cfg.glob.setup.environment_variant,
+        json_indent=dcr_core.cfg.glob.setup.json_indent,
+        is_json_sort_keys=dcr_core.cfg.glob.setup.is_json_sort_keys,
+        environment_variant=dcr_core.cfg.glob.setup.environment_variant,
     )
 
     utils.progress_msg("End  : Export the line type rules ...")

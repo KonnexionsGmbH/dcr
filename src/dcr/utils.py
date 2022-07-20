@@ -23,7 +23,6 @@ def check_exists_object(  # noqa: C901
     is_db_core: bool = False,
     is_document: bool = False,
     is_run: bool = False,
-    is_setup: bool = False,
 ) -> None:
     """Check the existence of objects.
 
@@ -38,8 +37,6 @@ def check_exists_object(  # noqa: C901
                 Check an object of class Document. Defaults to False.
         is_run (bool, optional):
                 Check an object of class Run. Defaults to False.
-        is_setup (bool, optional):
-                Check an object of class Setup. Defaults to False.
     """
     if is_action_curr:
         try:
@@ -81,14 +78,6 @@ def check_exists_object(  # noqa: C901
                 "The required instance of the class 'Run' does not yet exist.",
             )
 
-    if is_setup:
-        try:
-            cfg.glob.setup.exists()  # type: ignore
-        except AttributeError:
-            dcr_core.utils.terminate_fatal(
-                "The required instance of the class 'Setup' does not yet exist.",
-            )
-
 
 # -----------------------------------------------------------------------------
 # Compute the SHA256 hash string of a file.
@@ -117,7 +106,7 @@ def delete_auxiliary_file(full_name: pathlib.Path | str) -> None:
     Args:
         full_name (pathlib.Path | str): File name.
     """
-    if not cfg.glob.setup.is_delete_auxiliary_files:
+    if not dcr_core.cfg.glob.setup.is_delete_auxiliary_files:
         return
 
     full_name = dcr_core.utils.get_os_independent_name(full_name)
@@ -203,9 +192,9 @@ def progress_msg(msg: str) -> None:
         msg (str): Progress message.
     """
     try:
-        cfg.glob.setup.exists()
+        dcr_core.cfg.glob.setup.exists()
 
-        if cfg.glob.setup.is_verbose:
+        if dcr_core.cfg.glob.setup.is_verbose:
             progress_msg_core(msg)
     except AttributeError:
         progress_msg_core(msg)
@@ -217,9 +206,9 @@ def progress_msg(msg: str) -> None:
 def progress_msg_connected(database: str | None, user: str | None) -> None:
     """Create a progress message: connected to database."""
     try:
-        cfg.glob.setup.exists()
+        dcr_core.cfg.glob.setup.exists()
 
-        if cfg.glob.setup.is_verbose:
+        if dcr_core.cfg.glob.setup.is_verbose:
             print("")
             progress_msg(f"User '{user}' is now connected " f"to database '{database}'")
     except AttributeError:
@@ -249,9 +238,9 @@ def progress_msg_core(msg: str) -> None:
 def progress_msg_disconnected() -> None:
     """Create a progress message: disconnected from database."""
     try:
-        cfg.glob.setup.exists()
+        dcr_core.cfg.glob.setup.exists()
 
-        if cfg.glob.setup.is_verbose:
+        if dcr_core.cfg.glob.setup.is_verbose:
             if cfg.glob.db_core.db_current_database == "" and cfg.glob.db_core.db_current_user == "":
                 print("")
                 progress_msg("Database is now disconnected")
@@ -280,8 +269,8 @@ def progress_msg_empty_before(msg: str) -> None:
         msg (str): Progress message.
     """
     try:
-        cfg.glob.setup.exists()
-        if cfg.glob.setup.is_verbose:
+        dcr_core.cfg.glob.setup.exists()
+        if dcr_core.cfg.glob.setup.is_verbose:
             print("")
             progress_msg(msg)
     except AttributeError:
