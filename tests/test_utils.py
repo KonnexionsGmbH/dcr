@@ -7,8 +7,8 @@ import db.cls_db_core
 import pytest
 import utils
 
-import dcr_core.cfg.glob
-import dcr_core.utils
+import dcr_core.cfg.glob  # pylint: disable=cyclic-import
+import dcr_core.utils  # pylint: disable=cyclic-import
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

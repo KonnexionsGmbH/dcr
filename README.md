@@ -46,7 +46,7 @@ Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for mor
 | data              | Inbox directories and database setup data                                   |
 | docs              | **DCR** documentation files                                                 |
 | resources         | DBeaver configuration, Gammadyne utility and various external documentation |
-| scripts           | Ubuntu and Windows Script for running the application  |
+| scripts           | Ubuntu and Windows Script for running the application                       |
 | src               | Python scripts and [PDFlib TET](https://www.pdflib.com/products/tet/) files |
 | tests             | Scripts and data for pytest                                                 |
 

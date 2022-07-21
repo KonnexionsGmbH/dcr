@@ -124,7 +124,7 @@ mypy:               ## Find typing issues with Mypy.
 	@echo MYPYPATH=${MYPYPATH}
 	pipenv run pip freeze | grep mypy
 	pipenv run mypy --version
-	pipenv run mypy --exclude src/dcr/nlp/cls_text_parser.py --exclude src/dcr_core/PDFlib/TET.py src
+	pipenv run mypy --exclude src/dcr_core/PDFlib/TET.py src
 	@echo "Info **********  End:   Mypy ****************************************"
 
 # pip is the package installer for Python.

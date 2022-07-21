@@ -12,7 +12,7 @@ import dcr_core.cfg.glob
 # Check the existence of objects.
 # -----------------------------------------------------------------------------
 def check_exists_object(  # noqa: C901
-    is_line_type_headers_footers=False,
+    is_line_type_headers_footers: bool = False,
     is_line_type_list_bullet: bool = False,
     is_line_type_list_number: bool = False,
     is_line_type_table: bool = False,

@@ -255,7 +255,7 @@ class Action:
         cfg.glob.document.document_id_run_last = cfg.glob.run.run_id
         cfg.glob.document.document_status = db.cls_document.Document.DOCUMENT_STATUS_END
 
-        cfg.glob.document.persist_2_db()  # type: ignore
+        cfg.glob.document.persist_2_db()
 
         if self.action_action_code == db.cls_run.Run.ACTION_CODE_INBOX:
             utils.progress_msg(
@@ -303,7 +303,7 @@ class Action:
         cfg.glob.document.document_id_run_last = cfg.glob.run.run_id
         cfg.glob.document.document_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
 
-        cfg.glob.document.persist_2_db()  # type: ignore
+        cfg.glob.document.persist_2_db()
 
         if self.action_action_code == db.cls_run.Run.ACTION_CODE_INBOX:
             utils.progress_msg(
@@ -517,7 +517,7 @@ class Action:
         if self.action_id == 0:
             self.action_status = self.action_status if self.action_status != "" else db.cls_document.Document.DOCUMENT_STATUS_START
 
-            self.action_id = cfg.glob.db_core.insert_dbt_row(  # type: ignore
+            self.action_id = cfg.glob.db_core.insert_dbt_row(
                 table_name=db.cls_db_core.DBCore.DBT_ACTION,
                 columns=self._get_columns(),
             )
@@ -526,7 +526,7 @@ class Action:
                 if self.action_id_parent != self.action_id:
                     self.action_id_parent = self.action_id
 
-            cfg.glob.db_core.update_dbt_id(  # type: ignore
+            cfg.glob.db_core.update_dbt_id(
                 table_name=db.cls_db_core.DBCore.DBT_ACTION,
                 id_where=self.action_id,
                 columns=self._get_columns(),
