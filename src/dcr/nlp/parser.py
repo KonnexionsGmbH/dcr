@@ -6,13 +6,13 @@ import cfg.glob
 import db.cls_action
 import db.cls_document
 import db.cls_run
-import defusedxml.ElementTree
 import utils
 
 import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
 import dcr_core.nlp.cls_text_parser
 import dcr_core.utils
+import dcr_core.nlp.parser
 
 # -----------------------------------------------------------------------------
 # Global variables.
@@ -127,40 +127,18 @@ def parse_tetml_file() -> None:
         status=status,
     )
 
-    try:
-        # Create the Element tree object
-        tree = defusedxml.ElementTree.parse(full_name_curr)
-
-        # Get the root Element
-        root = tree.getroot()
-
-        dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser()
-
-        for child in root:
-            child_tag = child.tag[dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
-            match child_tag:
-                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
-                    dcr_core.cfg.glob.text_parser.parse_tag_document(
-                        directory_name=cfg.glob.action_curr.action_directory_name,
-                        document_id=cfg.glob.document.document_id,
-                        environment_variant=dcr_core.cfg.glob.setup.environment_variant,
-                        file_name_curr=cfg.glob.action_curr.action_file_name,
-                        file_name_next=cfg.glob.action_next.get_full_name(),
-                        file_name_orig=cfg.glob.document.document_file_name,
-                        no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
-                        parent=child,
-                        parent_tag=child_tag,
-                    )
-                case dcr_core.nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
-                    pass
-
-        cfg.glob.run.run_total_processed_ok += 1
-    except FileNotFoundError as err:
-        cfg.glob.action_curr.finalise_error(
-            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PARSER,
-            error_msg=ERROR_61_901.replace("{full_name_curr}", full_name_curr).replace("{error_type}", str(type(err))).replace("{error}", str(err)),
-        )
+    (error_code, error_msg) = dcr_core.nlp.parser.process(
+        full_name_in=cfg.glob.action_curr.get_full_name(),
+        full_name_out=cfg.glob.action_next.get_full_name(),
+        file_name_orig=cfg.glob.document.document_file_name,
+        document_id=cfg.glob.action_curr.action_id_document,
+        no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages
+    )
+    if (error_code, error_msg) != dcr_core.cfg.glob.RETURN_OK:
+        cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return
+
+    cfg.glob.run.run_total_processed_ok += 1
 
     if dcr_core.cfg.glob.setup.is_parsing_line:
         if (

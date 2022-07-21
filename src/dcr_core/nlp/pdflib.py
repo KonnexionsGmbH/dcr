@@ -10,7 +10,7 @@ ERROR_51_901 = "51.901 Issue (tet): Opening document '{full_name}' - " + "error 
 # -----------------------------------------------------------------------------
 # Processing a file with PDFlib TET.
 # -----------------------------------------------------------------------------
-def process(file_name_in: str, file_name_out: str, document_opt_list: str, page_opt_list: str) -> tuple[str, str]:
+def process(full_name_in: str, full_name_out: str, document_opt_list: str, page_opt_list: str) -> tuple[str, str]:
     """Processing a PDF file with PDFlib TET.
 
     The data from a PDF file is made available in XML files
@@ -19,9 +19,9 @@ def process(file_name_in: str, file_name_out: str, document_opt_list: str, page_
     document and page options selected.
 
     Args:
-        file_name_in (str):
+        full_name_in (str):
                 Directory name and file name of the input file.
-        file_name_out (str):
+        full_name_out (str):
                 Directory name and file name of the output file.
         document_opt_list (str):
                 Document level options:
@@ -41,11 +41,11 @@ def process(file_name_in: str, file_name_out: str, document_opt_list: str, page_
     """
     tet = dcr_core.PDFlib.TET.TET()
 
-    doc_opt_list = f"tetml={{filename={{{file_name_out}}}}} {document_opt_list}"
+    doc_opt_list = f"tetml={{filename={{{full_name_out}}}}} {document_opt_list}"
 
-    if (file_curr := tet.open_document(file_name_in, doc_opt_list)) == -1:
+    if (file_curr := tet.open_document(full_name_in, doc_opt_list)) == -1:
         error_msg = (
-            ERROR_51_901.replace("{full_name}", file_name_in)
+            ERROR_51_901.replace("{full_name}", full_name_in)
             .replace("{error_no}", str(tet.get_errnum()))
             .replace("{api_name}", tet.get_apiname() + "()")
             .replace("{error}", tet.get_errmsg())

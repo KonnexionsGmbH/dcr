@@ -118,8 +118,8 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
         return False
 
     (error_code, error_msg) = dcr_core.nlp.pdflib.process(
-        file_name_in=full_name_curr,
-        file_name_out=full_name_next,
+        full_name_in=full_name_curr,
+        full_name_out=full_name_next,
         document_opt_list=document_opt_list,
         page_opt_list=page_opt_list,
     )
