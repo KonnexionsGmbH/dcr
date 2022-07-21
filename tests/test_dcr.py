@@ -102,22 +102,8 @@ def test_dcr_process_export_lt_rules(fxtr_setup_empty_db_and_inbox):
     except OSError:
         pass
 
-    values_original = pytest.helpers.backup_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_HEADING, "tmp/lt_export_rule_heading.json"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET, "tmp/lt_export_rule_list_bullet.json"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER, "tmp/lt_export_rule_list_number.json"),
-        ],
-    )
-
     # -------------------------------------------------------------------------
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_EXPORT_LT_RULES])
-
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

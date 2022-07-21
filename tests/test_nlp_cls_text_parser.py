@@ -10,6 +10,7 @@ import db.cls_run
 import pytest
 
 import dcr
+import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
 import dcr_core.nlp.cls_text_parser
 import dcr_core.nlp.cls_tokenizer_spacy
@@ -37,24 +38,19 @@ def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+    pytest.helpers.config_params_modify(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
 
+    # -------------------------------------------------------------------------
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
-
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
 
     # -------------------------------------------------------------------------
     dcr_core.nlp.cls_text_parser.TextParser.from_files(

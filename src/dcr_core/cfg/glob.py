@@ -56,15 +56,15 @@ RETURN_OK = ("ok", "")
 # -----------------------------------------------------------------------------
 # Global Variables.
 # -----------------------------------------------------------------------------
-line_type_headers_footers: type[dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters]
-line_type_heading: type[dcr_core.nlp.cls_line_type_heading.LineTypeHeading]
-line_type_list_bullet: type[dcr_core.nlp.cls_line_type_list_bullet.LineTypeListBullet]
-line_type_list_number: type[dcr_core.nlp.cls_line_type_list_number.LineTypeListNumber]
-line_type_table: type[dcr_core.nlp.cls_line_type_table.LineTypeTable]
-line_type_toc: type[dcr_core.nlp.cls_line_type_toc.LineTypeToc]
+line_type_headers_footers: dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters
+line_type_heading: dcr_core.nlp.cls_line_type_heading.LineTypeHeading
+line_type_list_bullet: dcr_core.nlp.cls_line_type_list_bullet.LineTypeListBullet
+line_type_list_number: dcr_core.nlp.cls_line_type_list_number.LineTypeListNumber
+line_type_table: dcr_core.nlp.cls_line_type_table.LineTypeTable
+line_type_toc: dcr_core.nlp.cls_line_type_toc.LineTypeToc
 
-setup: type[dcr_core.cfg.cls_setup.Setup]
+setup: dcr_core.cfg.cls_setup.Setup
 
-text_parser: type[dcr_core.nlp.cls_text_parser.TextParser]
+text_parser: dcr_core.nlp.cls_text_parser.TextParser
 
-tokenizer_spacy: type[dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy]
+tokenizer_spacy: dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy

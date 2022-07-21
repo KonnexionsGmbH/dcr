@@ -11,15 +11,15 @@ import pytest
 
 import dcr
 import dcr_core.cfg.glob
+import dcr_core.nlp.cls_line_type_headers_footers
 import dcr_core.nlp.cls_line_type_heading
+import dcr_core.nlp.cls_line_type_list_bullet
+import dcr_core.nlp.cls_line_type_list_number
+import dcr_core.nlp.cls_line_type_table
+import dcr_core.nlp.cls_line_type_toc
 import dcr_core.nlp.cls_text_parser
 import dcr_core.nlp.cls_tokenizer_spacy
 import dcr_core.utils
-import dcr_core.nlp.cls_line_type_headers_footers
-import dcr_core.nlp.cls_line_type_toc
-import dcr_core.nlp.cls_line_type_table
-import dcr_core.nlp.cls_line_type_list_bullet
-import dcr_core.nlp.cls_line_type_list_number
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -43,32 +43,19 @@ def test_cls_line_type_heading_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
         ],
     )
-    values_original_core = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, "3"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MIN_PAGES, "2"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "data/lt_export_rule_heading_test.json"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX, "5"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "true"),
         ],
     )
@@ -84,15 +71,6 @@ def test_cls_line_type_heading_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.check_json_line("docx_heading.line_token.json", no_lines_footer=1, no_lists_number_in_document=7, no_tables_in_document=1)
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_cls_line_type_heading_maximum_2 <=========")
@@ -163,33 +141,17 @@ def test_cls_line_type_heading_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
-        ],
-    )
-    values_original_core = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, "3"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MIN_PAGES, "2"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "data/lt_export_rule_heading_test.json"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX, "5"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
         ],
     )
 
@@ -202,15 +164,6 @@ def test_cls_line_type_heading_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     pytest.helpers.check_json_line("docx_heading.line.json", no_lines_footer=1, no_lists_number_in_document=7, no_tables_in_document=1)
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_cls_line_type_heading_minimum_1_2 <=========")
@@ -287,17 +240,13 @@ def test_missing_dependencies_line_type_heading_coverage_exists(fxtr_setup_empty
     dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
     # -------------------------------------------------------------------------
+    dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser()
+
     dcr_core.cfg.glob.line_type_headers_footers = dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(file_name_curr="")
     dcr_core.cfg.glob.line_type_toc = dcr_core.nlp.cls_line_type_toc.LineTypeToc(file_name_curr="")
     dcr_core.cfg.glob.line_type_table = dcr_core.nlp.cls_line_type_table.LineTypeTable(file_name_curr="")
     dcr_core.cfg.glob.line_type_list_bullet = dcr_core.nlp.cls_line_type_list_bullet.LineTypeListBullet(file_name_curr="")
     dcr_core.cfg.glob.line_type_list_number = dcr_core.nlp.cls_line_type_list_number.LineTypeListNumber(file_name_curr="")
-
-    # -------------------------------------------------------------------------
-    dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser()
-
-    # -------------------------------------------------------------------------
-    dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser()
 
     # -------------------------------------------------------------------------
     instance = dcr_core.nlp.cls_line_type_heading.LineTypeHeading(

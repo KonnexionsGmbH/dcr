@@ -39,20 +39,15 @@ def test_line_type_table_maximum(create_extra_file_table, fxtr_rmdir_opt, fxtr_s
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
         ],
     )
-    values_original_core = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, create_extra_file_table),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "0"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "0"),
@@ -72,15 +67,6 @@ def test_line_type_table_maximum(create_extra_file_table, fxtr_rmdir_opt, fxtr_s
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.check_json_line("docx_table.line_token.json", no_tables_in_document=4)
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_line_type_table_maximum_2 <=========")
@@ -157,25 +143,16 @@ def test_line_type_table_minimum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
-        ],
-    )
-    values_original_core = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "0"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "0"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "0"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TABLE, "false"),
         ],
     )
 
@@ -188,15 +165,6 @@ def test_line_type_table_minimum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     pytest.helpers.check_json_line("docx_table.line.json", no_tables_in_document=4)
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_line_type_table_2_2 <=========")

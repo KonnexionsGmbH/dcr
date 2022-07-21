@@ -42,48 +42,6 @@ FILE_NAME_SETUP_CFG_BACKUP = "setup.cfg_backup"
 
 
 # -----------------------------------------------------------------------------
-# Backup and modify configuration parameter values.
-# -----------------------------------------------------------------------------
-# noinspection PyProtectedMember
-@pytest.helpers.register
-def backup_config_params(
-    config_section: str,
-    config_params: list[tuple[str, str]],
-) -> list[tuple[str, str]]:
-    """Backup and modify configuration parameter values.
-
-    Args:
-        config_section (str): Configuration section.
-        config_params (list[tuple[str, str]]): Configuration parameter modifications.
-
-    Returns:
-        list[tuple[str, str]]: Original configuration parameter.
-    """
-    config_params_backup: list[tuple[str, str]] = []
-
-    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
-
-    for (config_param, config_value) in config_params:
-        config_params_backup.append((config_param, CONFIG_PARSER[config_section][config_param]))
-        CONFIG_PARSER[config_section][config_param] = config_value
-
-    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
-        CONFIG_PARSER.write(configfile)
-
-    return config_params_backup
-
-
-# -----------------------------------------------------------------------------
-# Backup the 'setup.cfg' file.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def backup_setup_cfg() -> None:
-    """Backup the 'setup.cfg' file."""
-    if not os.path.isfile(FILE_NAME_SETUP_CFG_BACKUP):
-        shutil.copy2(FILE_NAME_SETUP_CFG, FILE_NAME_SETUP_CFG_BACKUP)
-
-
-# -----------------------------------------------------------------------------
 # Test LineType.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
@@ -332,6 +290,49 @@ def check_json_line(
 
     except OSError as err:
         assert False, f"file={full_name} problem opening the file: error={err.errno} - {err.strerror}"
+
+
+# -----------------------------------------------------------------------------
+# Delete the original configuration parameter value.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def config_param_delete(config_section: str, config_param: str) -> None:
+    """Delete the original configuration parameter value.
+
+    Args:
+        config_section (str): Configuration section.
+        config_param (str): Configuration parameter.
+    """
+    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
+
+    del CONFIG_PARSER[config_section][config_param]
+
+    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
+        CONFIG_PARSER.write(configfile)
+
+
+# -----------------------------------------------------------------------------
+# modify configuration parameter values.
+# -----------------------------------------------------------------------------
+# noinspection PyProtectedMember
+@pytest.helpers.register
+def config_params_modify(
+    config_section: str,
+    config_params: list[tuple[str, str]],
+) -> None:
+    """Backup and modify configuration parameter values.
+
+    Args:
+        config_section (str): Configuration section.
+        config_params (list[tuple[str, str]]): Configuration parameter modifications.
+    """
+    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
+
+    for (config_param, config_value) in config_params:
+        CONFIG_PARSER[config_section][config_param] = config_value
+
+    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
+        CONFIG_PARSER.write(configfile)
 
 
 # -----------------------------------------------------------------------------
@@ -592,32 +593,6 @@ def create_version():
 
 
 # -----------------------------------------------------------------------------
-# Delete the original configuration parameter value.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def delete_config_param(config_section: str, config_param: str) -> list[tuple[str, str]]:
-    """Delete the original configuration parameter value.
-
-    Args:
-        config_section (str): Configuration section.
-        config_param (str): Configuration parameter.
-
-    Returns:
-        list[tuple[str,str]]: Original configuration parameter.
-    """
-    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
-
-    config_value_orig = CONFIG_PARSER[config_section][config_param]
-
-    del CONFIG_PARSER[config_section][config_param]
-
-    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
-        CONFIG_PARSER.write(configfile)
-
-    return [(config_param, config_value_orig)]
-
-
-# -----------------------------------------------------------------------------
 # Delete existing objects.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
@@ -763,17 +738,14 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_DB_SCHEMA, "dcr_schema"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_USER, "dcr_user"),
         (cfg.cls_setup.Setup._DCR_CFG_DB_USER_ADMIN, "dcr_user_admin"),
-        (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX, "data/inbox_test"),
         (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED, "data/inbox_test_accepted"),
         (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED, "data/inbox_test_rejected"),
-        (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+        (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "none"),
         (cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "false"),
     ):
         CONFIG_PARSER[cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
-
-    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
-        CONFIG_PARSER.write(configfile)
 
     # -----------------------------------------------------------------------------
     # Configuration: dcr_core.
@@ -785,6 +757,9 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_JSON_INDENT, "4"),
         (cfg.cls_setup.Setup._DCR_CFG_JSON_SORT_KEYS, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_HEADING, "tmp/lt_export_rule_heading.json"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET, "tmp/lt_export_rule_list_bullet.json"),
+        (cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER, "tmp/lt_export_rule_list_number.json"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
@@ -805,12 +780,12 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, "5"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_MIN_ENTRIES, "5"),
-        (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, "jpeg"),
+        (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, dcr_core.cfg.cls_setup.Setup.PDF2IMAGE_TYPE_JPEG),
         (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
-        (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+        (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
@@ -821,9 +796,6 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
     ):
         CONFIG_PARSER[dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
-
-    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
-        CONFIG_PARSER.write(configfile)
 
 
 # -----------------------------------------------------------------------------
@@ -893,7 +865,7 @@ def fxtr_setup_empty_db_and_inbox(
     fxtr_rmdir_opt,
 ):
     """Fixture: Setup empty database and empty inboxes."""
-    backup_setup_cfg()
+    setup_cfg_backup()
 
     dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
@@ -925,7 +897,7 @@ def fxtr_setup_empty_db_and_inbox(
     except AttributeError:
         pass
 
-    restore_setup_cfg()
+    setup_cfg_restore()
 
 
 # -----------------------------------------------------------------------------
@@ -937,7 +909,7 @@ def fxtr_setup_empty_inbox(
     fxtr_rmdir_opt,
 ):
     """Fixture: Setup empty database and empty inboxes."""
-    backup_setup_cfg()
+    setup_cfg_backup()
 
     dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
@@ -962,7 +934,7 @@ def fxtr_setup_empty_inbox(
 
     cfg.glob.db_core._drop_database()
 
-    restore_setup_cfg()
+    setup_cfg_restore()
 
 
 # -----------------------------------------------------------------------------
@@ -992,13 +964,13 @@ def fxtr_setup_logger_environment():
 
     dcr_core.cfg.glob.setup.environment_type = dcr_core.cfg.glob.setup.ENVIRONMENT_TYPE_TEST
 
-    backup_setup_cfg()
+    setup_cfg_backup()
 
     dcr.initialise_logger()
 
     yield
 
-    restore_setup_cfg()
+    setup_cfg_restore()
 
 
 # -----------------------------------------------------------------------------
@@ -1255,69 +1227,12 @@ def help_run_action_process_inbox_normal(
 
 
 # -----------------------------------------------------------------------------
-# Insert a new configuration parameter.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def insert_config_param(
-    config_section: str,
-    config_param: str,
-    config_value_new: str,
-) -> None:
-    """Insert a new configuration parameter.
-
-    Args:
-        config_section (str): Configuration section.
-        config_param (str): Configuration parameter.
-        config_value_new (str): New configuration parameter value.
-    """
-    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
-
-    CONFIG_PARSER[config_section][config_param] = config_value_new
-
-    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
-        CONFIG_PARSER.write(configfile)
-
-
-# -----------------------------------------------------------------------------
-# Restore the original configuration parameter.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def restore_config_params(
-    config_section: str,
-    config_params: list[tuple[str, str]],
-) -> None:
-    """Restore the original configuration parameter.
-
-    Args:
-        config_section (str): Configuration section.
-        config_params (list[tuple[str, str]]): Configuration parameter modifications.
-    """
-    for (config_param, config_value) in config_params:
-        CONFIG_PARSER[config_section][config_param] = config_value
-
-    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
-        CONFIG_PARSER.write(configfile)
-
-    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
-
-
-# -----------------------------------------------------------------------------
-# Restore the 'setup.cfg' file.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def restore_setup_cfg():
-    """Restore the 'setup.cfg' file."""
-    if os.path.isfile(FILE_NAME_SETUP_CFG_BACKUP):
-        shutil.copy2(FILE_NAME_SETUP_CFG_BACKUP, FILE_NAME_SETUP_CFG)
-        os.remove(FILE_NAME_SETUP_CFG_BACKUP)
-
-# -----------------------------------------------------------------------------
 # Set all spaCy configuration parameters to the same logical value.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
 def set_complete_cfg_spacy(false_or_true: str):
     """Set all spaCy configuration parameters to the same logical value."""
-    return pytest.helpers.backup_config_params(
+    return pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, false_or_true),
@@ -1385,43 +1300,37 @@ def set_complete_cfg_spacy(false_or_true: str):
 
 
 # -----------------------------------------------------------------------------
+# Backup the 'setup.cfg' file.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def setup_cfg_backup() -> None:
+    """Backup the 'setup.cfg' file."""
+    if os.path.isfile(FILE_NAME_SETUP_CFG_BACKUP):
+        shutil.copy2(FILE_NAME_SETUP_CFG_BACKUP, FILE_NAME_SETUP_CFG)
+    else:
+        shutil.copy2(FILE_NAME_SETUP_CFG, FILE_NAME_SETUP_CFG_BACKUP)
+
+
+# -----------------------------------------------------------------------------
+# Restore the 'setup.cfg' file.
+# -----------------------------------------------------------------------------
+@pytest.helpers.register
+def setup_cfg_restore():
+    """Restore the 'setup.cfg' file."""
+    if os.path.isfile(FILE_NAME_SETUP_CFG_BACKUP):
+        shutil.copy2(FILE_NAME_SETUP_CFG_BACKUP, FILE_NAME_SETUP_CFG)
+        os.remove(FILE_NAME_SETUP_CFG_BACKUP)
+    else:
+        assert False, f"The backup copy {FILE_NAME_SETUP_CFG_BACKUP} is missing"
+
+
+# -----------------------------------------------------------------------------
 # Run before all tests.
 # -----------------------------------------------------------------------------
 @pytest.fixture(scope="session", autouse=True)
 def setup_dcr():
     """Run before all tests."""
     dcr.initialise_logger()
-
-
-# -----------------------------------------------------------------------------
-# Store and modify the original configuration parameter value.
-# -----------------------------------------------------------------------------
-@pytest.helpers.register
-def store_config_param(
-    config_section: str,
-    config_param: str,
-    config_value_new: str,
-) -> str:
-    """Store and modify the original configuration parameter value.
-
-    Args:
-        config_section (str): Configuration section.
-        config_param (str): Configuration parameter.
-        config_value_new (str): New configuration parameter value.
-
-    Returns:
-        str: Original configuration parameter value.
-    """
-    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
-
-    config_value_orig = CONFIG_PARSER[config_section][config_param]
-
-    CONFIG_PARSER[config_section][config_param] = config_value_new
-
-    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
-        CONFIG_PARSER.write(configfile)
-
-    return config_value_orig
 
 
 # -----------------------------------------------------------------------------

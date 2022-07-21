@@ -27,6 +27,7 @@ import utils
 from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine
 
+import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
 import dcr_core.utils
 
@@ -510,7 +511,7 @@ class DBCore:
         except AttributeError:
             pass
             # not testable
-        except psycopg2.errors.InterfaceError as err:  # pylint: disable=no-member
+        except psycopg2.errors.InterfaceError:  # pylint: disable=no-member
             pass
         except psycopg2.errors.ObjectInUse as err:  # pylint: disable=no-member
             dcr_core.utils.terminate_fatal(
@@ -520,7 +521,7 @@ class DBCore:
         try:
             self._db_driver_conn.cursor().execute("DROP USER IF EXISTS " + user)
             utils.progress_msg(f"If existing, the user '{user}' has now been dropped")
-        except psycopg2.errors.InterfaceError as err:  # pylint: disable=no-member
+        except psycopg2.errors.InterfaceError:  # pylint: disable=no-member
             pass
         except AttributeError:
             pass

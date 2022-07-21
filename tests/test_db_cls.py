@@ -102,8 +102,6 @@ def check_existing_document():
     """Check existing document object."""
     expected_values = pytest.helpers.get_values_document()
 
-    print(f"wwe expected_values={expected_values}")
-
     expected_values[0] = 1
     expected_values[1] = "tkn"
     expected_values[2] = "tokenize      (nlp)"
@@ -742,7 +740,7 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
@@ -756,11 +754,6 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
-
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
-        values_original,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()

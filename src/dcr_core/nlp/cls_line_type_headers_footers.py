@@ -18,7 +18,8 @@ class LineTypeHeaderFooters:
         _type_: LineTypeHeaderFooters instance.
     """
 
-    Candidates = list[tuple[int, int]]
+    Candidate = tuple[int, int]
+    Candidates = list[Candidate]
 
     # line index, line text
     LineDataCell = tuple[int, str]
@@ -60,11 +61,11 @@ class LineTypeHeaderFooters:
             f"LineTypeHeaderFooters: Start create instance                ={self._file_name_curr}",
         )
 
-        self._irregular_footer_cand: tuple[int, int] = ()  # type: ignore
+        self._irregular_footer_cand: LineTypeHeaderFooters.Candidate
         self._irregular_footer_cand_fp: LineTypeHeaderFooters.Candidates = []
         self._irregular_footer_cands: LineTypeHeaderFooters.Candidates = []
 
-        self._irregular_header_cand: tuple[int, int] = ()  # type: ignore
+        self._irregular_header_cand: LineTypeHeaderFooters.Candidate
         self._irregular_header_cand_fp: LineTypeHeaderFooters.Candidates = []
         self._irregular_header_cands: LineTypeHeaderFooters.Candidates = []
 
@@ -260,10 +261,10 @@ class LineTypeHeaderFooters:
         )
 
         if dcr_core.cfg.glob.setup.is_irregular_footer:
-            self._irregular_footer_cand = ()  # type: ignore
+            self._irregular_footer_cand = LineTypeHeaderFooters.Candidate()
 
         if dcr_core.cfg.glob.setup.is_irregular_header:
-            self._irregular_header_cand = ()  # type: ignore
+            self._irregular_header_cand = LineTypeHeaderFooters.Candidate()
 
         if dcr_core.cfg.glob.setup.lt_header_max_lines > 0:
             self._store_line_data_header()

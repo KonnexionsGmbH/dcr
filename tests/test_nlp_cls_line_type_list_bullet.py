@@ -37,29 +37,16 @@ def test_line_type_list_bullet_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
         ],
     )
-    values_original_core = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, "2"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE, "data/lt_export_rule_list_bullet_test.json"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, "5"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET, "true"),
         ],
     )
@@ -75,15 +62,6 @@ def test_line_type_list_bullet_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.check_json_line("docx_list_bullet.line_token.json", no_lines_footer=1, no_lines_header=1, no_lists_bullet_in_document=8)
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_2 <=========")
@@ -154,30 +132,14 @@ def test_line_type_list_bullet_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
-        ],
-    )
-    values_original_core = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, "2"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE, "data/lt_export_rule_list_bullet_test.json"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, "5"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET, "false"),
         ],
     )
 
@@ -190,15 +152,6 @@ def test_line_type_list_bullet_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     pytest.helpers.check_json_line("docx_list_bullet.line.json", no_lines_footer=1, no_lines_header=1, no_lists_bullet_in_document=8)
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_minimum_version_1_2 <=========")
@@ -261,30 +214,14 @@ def test_line_type_list_bullet_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "false"),
-        ],
-    )
-    values_original_core = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, "99"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, "99"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE, "data/lt_export_rule_list_bullet_test.json"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, "5"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET, "false"),
         ],
     )
 
@@ -297,15 +234,6 @@ def test_line_type_list_bullet_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     pytest.helpers.check_json_line("docx_list_bullet.line.json", no_lines_footer=1, no_lines_header=1)
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_minimum_version_1_2 <=========")

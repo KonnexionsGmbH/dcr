@@ -8,6 +8,7 @@ import db.cls_run
 import pytest
 
 import dcr
+import dcr_core.cfg.glob
 import dcr_core.utils
 
 # -----------------------------------------------------------------------------
@@ -22,6 +23,14 @@ import dcr_core.utils
 def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - normal - duplicate."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    pytest.helpers.config_params_modify(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+        ],
+    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_duplicate <=========")
@@ -61,10 +70,16 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+        ],
+    )
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
@@ -72,11 +87,6 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
-
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep <=========")
@@ -116,31 +126,23 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
-    values_original_core = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
         ],
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep_only_page <=========")
@@ -176,13 +178,14 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
-    values_original_core = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
@@ -203,15 +206,6 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_line <=========")
@@ -245,16 +239,11 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
     )
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-        ],
-    )
-    values_original_core = pytest.helpers.backup_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
 
@@ -272,15 +261,6 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_page <=========")

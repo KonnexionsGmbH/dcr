@@ -13,6 +13,7 @@ import pytest
 
 import dcr
 import dcr_core.cfg.cls_setup
+import dcr_core.cfg.glob
 import dcr_core.utils
 
 # -----------------------------------------------------------------------------
@@ -1011,13 +1012,22 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+        ],
+    )
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
 
@@ -1039,11 +1049,6 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
     db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
-
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_deleted <=========")
@@ -1105,19 +1110,23 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
-    values_original_core = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
 
@@ -1135,15 +1144,6 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
 
     # -------------------------------------------------------------------------
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_kept <=========")
@@ -1192,13 +1192,13 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
-    values_original_core = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
@@ -1207,6 +1207,9 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
 
@@ -1270,15 +1273,6 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     cfg.glob.action_curr.persist_2_db()
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
-
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_core,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_status_error <=========")

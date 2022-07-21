@@ -1,5 +1,6 @@
 # pylint: disable=unused-argument
 """Testing Module pp.pandoc_dcr."""
+import cfg.cls_setup
 import cfg.glob
 import db.cls_run
 import pytest
@@ -57,6 +58,15 @@ def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox
         target_path=dcr_core.cfg.glob.setup.directory_inbox,
     )
 
+    # -------------------------------------------------------------------------
+    pytest.helpers.config_params_modify(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        [
+            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+        ],
+    )
+
+    # -------------------------------------------------------------------------
     stem_name_2 = "docx_ok_1"
     file_ext_2 = "pdf"
 

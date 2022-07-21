@@ -10,6 +10,7 @@ import utils
 
 import dcr_core.cfg.glob
 import dcr_core.nlp.pdflib
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Global variables.

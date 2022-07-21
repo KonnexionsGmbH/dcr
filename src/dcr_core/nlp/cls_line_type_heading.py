@@ -589,8 +589,6 @@ class LineTypeHeading:
 
         self._max_line_line = len(dcr_core.cfg.glob.text_parser.parse_result_line_lines)
 
-        # wwe max_line_line_idx = self._max_line_line - 1
-
         for line_lines_idx, line_line in enumerate(dcr_core.cfg.glob.text_parser.parse_result_line_lines):
             self._line_lines_idx = line_lines_idx
             if line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_BODY:
@@ -602,29 +600,6 @@ class LineTypeHeading:
 
             if (first_token := text.split()[0]) == text:
                 continue
-
-            # wwe
-            # if not (
-            #     dcr_core.cfg.glob.text_parser.parse_result_titles
-            #     and line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_TEXT] in cfg.glob.text_parser.parse_result_titles
-            # ):
-            #     # Headings are limited to single-line paragraphs.
-            #     if self._line_lines_idx > 0:
-            #         if (
-            #             line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO]
-            #             == cfg.glob.text_parser.parse_result_line_lines[self._line_lines_idx - 1][
-            #                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO
-            #             ]
-            #         ):
-            #             continue
-            #     if self._line_lines_idx < max_line_line_idx:
-            #         if (
-            #             line_line[nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO]
-            #             == cfg.glob.text_parser.parse_result_line_lines[self._line_lines_idx + 1][
-            #                 nlp.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO
-            #             ]
-            #         ):
-            #             continue
 
             if (level := self._process_line(line_line, text, first_token)) > 0:
                 line_line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = (

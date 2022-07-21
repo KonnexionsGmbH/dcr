@@ -35,7 +35,7 @@ def check_param_complete():
 def check_param_tokenize_2_():
     """Check parameter TOKENIZE_2_."""
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "fALSE"),
@@ -49,11 +49,6 @@ def check_param_tokenize_2_():
     assert expt.type == SystemExit, "both DCR_CFG_TOKENIZE_2_DATABASE and DCR_CFG_TOKENIZE_2_JSONFILE false"
     assert expt.value.code == 1, "both DCR_CFG_TOKENIZE_2_DATABASE and DCR_CFG_TOKENIZE_2_JSONFILE false"
 
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-
 
 # -----------------------------------------------------------------------------
 # Test Function - get_config() - 1.
@@ -63,7 +58,7 @@ def test_get_config_1(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
@@ -75,11 +70,6 @@ def test_get_config_1(fxtr_setup_logger_environment):
 
     assert expt.type == SystemExit, "DCR_CFG_PDF2IMAGE_TYPE: invalid"
     assert expt.value.code == 1, "DCR_CFG_PDF2IMAGE_TYPE: invalid"
-
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -107,14 +97,9 @@ def test_get_config_coverage_false(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.set_complete_cfg_spacy("false")
+    pytest.helpers.set_complete_cfg_spacy("false")
 
     dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
-
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
-        values_original,
-    )
 
     # -------------------------------------------------------------------------
     dcr_core.cfg.glob.setup._determine_config_param_integer(dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE, 4711)
@@ -131,14 +116,9 @@ def test_get_config_coverage_true(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.set_complete_cfg_spacy("true")
+    pytest.helpers.set_complete_cfg_spacy("true")
 
     dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
-
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
-        values_original,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -152,7 +132,7 @@ def test_get_config_doc_id_in_file_name(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "aFTER"),
@@ -163,13 +143,8 @@ def test_get_config_doc_id_in_file_name(fxtr_setup_logger_environment):
 
     assert dcr_core.cfg.glob.setup.doc_id_in_file_name == "after", "DCR_CFG_DOC_ID_IN_FILE_NAME: after"
 
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "bEFORE"),
@@ -180,13 +155,8 @@ def test_get_config_doc_id_in_file_name(fxtr_setup_logger_environment):
 
     assert dcr_core.cfg.glob.setup.doc_id_in_file_name == "before", "DCR_CFG_DOC_ID_IN_FILE_NAME: before"
 
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
@@ -197,11 +167,6 @@ def test_get_config_doc_id_in_file_name(fxtr_setup_logger_environment):
 
     assert dcr_core.cfg.glob.setup.doc_id_in_file_name == "none", "DCR_CFG_DOC_ID_IN_FILE_NAME: none (not after or before)"
 
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -209,15 +174,13 @@ def test_get_config_doc_id_in_file_name(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 # Test Function - get_config() - missing.
 # -----------------------------------------------------------------------------
-def test_get_config_missing(fxtr_setup_logger_environment):
+def test_get_config_missing_01(fxtr_setup_logger_environment):
     """Test: get_config() - missing."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX)
-    values_original_test = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX
-    )
+    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX)
+    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX)
 
     with pytest.raises(SystemExit) as expt:
         dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
@@ -225,22 +188,17 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_DIRECTORY_INBOX: missing"
     assert expt.value.code == 1, "DCR_CFG_DIRECTORY_INBOX: missing"
 
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_test,
-    )
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+def test_get_config_missing_02(fxtr_setup_logger_environment):
+    """Test: get_config() - missing."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
-    )
-    values_original_test = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
-    )
+    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED)
+    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED)
 
     with pytest.raises(SystemExit) as expt:
         dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
@@ -248,22 +206,17 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_DIRECTORY_INBOX_ACCEPTED: missing"
     assert expt.value.code == 1, "DCR_CFG_DIRECTORY_INBOX_ACCEPTED: missing"
 
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_test,
-    )
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+def test_get_config_missing_03(fxtr_setup_logger_environment):
+    """Test: get_config() - missing."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
-    )
-    values_original_test = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
-    )
+    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED)
+    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED)
 
     with pytest.raises(SystemExit) as expt:
         dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
@@ -271,19 +224,16 @@ def test_get_config_missing(fxtr_setup_logger_environment):
     assert expt.type == SystemExit, "DCR_CFG_DIRECTORY_INBOX_REJECTED: missing"
     assert expt.value.code == 1, "DCR_CFG_DIRECTORY_INBOX_REJECTED: missing"
 
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_test,
-    )
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+def test_get_config_missing_04(fxtr_setup_logger_environment):
+    """Test: get_config() - missing."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES
-    )
+    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES)
 
     dcr_core.cfg.glob.setup.is_ignore_duplicates = False
 
@@ -291,15 +241,16 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     assert not dcr_core.cfg.glob.setup.is_ignore_duplicates, "DCR_CFG_IGNORE_DUPLICATES: false (missing)"
 
-    pytest.helpers.restore_config_params(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+def test_get_config_missing_05(fxtr_setup_logger_environment):
+    """Test: get_config() - missing."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE
-    )
+    pytest.helpers.config_param_delete(dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE)
 
     dcr_core.cfg.glob.setup.pdf2image_type = dcr_core.cfg.glob.setup.PDF2IMAGE_TYPE_JPEG
 
@@ -309,16 +260,17 @@ def test_get_config_missing(fxtr_setup_logger_environment):
         "DCR_CFG_PDF2IMAGE_TYPE: default should not be '" + dcr_core.cfg.glob.setup.pdf2image_type + "'"
     )
 
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+def test_get_config_missing_06(fxtr_setup_logger_environment):
+    """Test: get_config() - missing."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION, dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE)
-    values_original_test = pytest.helpers.delete_config_param(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE
-    )
+    pytest.helpers.config_param_delete(dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION, dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE)
+    pytest.helpers.config_param_delete(dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE)
 
     dcr_core.cfg.glob.setup.is_verbose = True
 
@@ -326,35 +278,21 @@ def test_get_config_missing(fxtr_setup_logger_environment):
 
     assert dcr_core.cfg.glob.setup.is_verbose, "DCR_CFG_VERBOSE: true (missing)"
 
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_test,
-    )
+    # -------------------------------------------------------------------------
+    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+
+
+def test_get_config_missing_07(fxtr_setup_logger_environment):
+    """Test: get_config() - missing."""
+    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.delete_config_param(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION, dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER
-    )
-    values_original_test = pytest.helpers.delete_config_param(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER
-    )
+    pytest.helpers.config_param_delete(dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION, dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER)
+    pytest.helpers.config_param_delete(dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER)
 
     dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert dcr_core.cfg.glob.setup.verbose_parser == "none", "DCR_CFG_VERBOSE_PARSER: none (missing)"
-
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original_test,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -368,7 +306,7 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "aLL"),
@@ -379,13 +317,8 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
 
     assert dcr_core.cfg.glob.setup.verbose_parser == "all", "DCR_CFG_VERBOSE_PARSER: all"
 
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE),
@@ -396,13 +329,8 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
 
     assert dcr_core.cfg.glob.setup.verbose_parser == "none", "DCR_CFG_VERBOSE_PARSER: none (not all or text)"
 
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
-
     # -------------------------------------------------------------------------
-    values_original = pytest.helpers.backup_config_params(
+    pytest.helpers.config_params_modify(
         dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
             (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "tEXT"),
@@ -412,11 +340,6 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
     dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
 
     assert dcr_core.cfg.glob.setup.verbose_parser == "text", "DCR_CFG_VERBOSE_PARSER: all"
-
-    pytest.helpers.restore_config_params(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        values_original,
-    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
