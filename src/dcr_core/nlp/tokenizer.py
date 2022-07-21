@@ -10,41 +10,45 @@ ERROR_71_901 = "71.901 Issue (tkn): Tokenizing the file '{full_name}' failed - "
 
 
 # -----------------------------------------------------------------------------
-# Extracting the text from the PDF document.
+# Tokenizing the text from the PDF document.
 # -----------------------------------------------------------------------------
 def process(
     full_name_in: str,
     full_name_out: str,
-    document_id: int,
-    file_name_orig: str,
-    no_lines_footer: int,
-    no_lines_header: int,
-    no_lines_toc: int,
     pipeline_name: str,
+    document_id: int = -1,
+    file_name_orig: str = dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE,
+    no_lines_footer: int = -1,
+    no_lines_header: int = -1,
+    no_lines_toc: int = -1,
 ) -> tuple[str, str]:
-    """Processing a PDF file with PDFlib TET.
+    """Tokenizing the text from the PDF document.
 
-    From the line-oriented XML output file of PDFlib TET,
-    the text and relevant metadata are extracted with the
-    help of an XML parser and stored in a JSON file.
+    The line-oriented text is broken down into qualified
+    tokens with the means of SpaCy.
 
     Args:
         full_name_in (str):
                 The directory name and file name of the input file.
         full_name_out (str):
                 The directory name and file name of the output file.
-        document_id (int):
-                The identification number of the document.
-        file_name_orig (str):
-                The file name of the originating document.
-        no_lines_footer (int):
-                Total number of PDF pages.
-        no_lines_header (int):
-                Total number of PDF pages.
-        no_lines_toc (int):
-                Total number of PDF pages.
         pipeline_name (str):
-                The SpaCy pipeline to load.
+                The loaded SpaCy pipeline.
+        document_id (int, optional):
+                The identification number of the document.
+                Defaults to -1.
+        file_name_orig (str, optional):
+                The file name of the originating document.
+                Defaults to dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE.
+        no_lines_footer (int, optional):
+                Total number of footer lines.
+                Defaults to -1.
+        no_lines_header (int, optional):
+                Total number of header lines.
+                Defaults to -1.
+        no_lines_toc (int, optional):
+                Total number of TOC lines.
+                Defaults to -1.
 
     Returns:
         tuple[str, str]:

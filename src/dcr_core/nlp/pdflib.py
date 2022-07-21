@@ -8,7 +8,7 @@ ERROR_51_901 = "51.901 Issue (tet): Opening document '{full_name}' - " + "error 
 
 
 # -----------------------------------------------------------------------------
-# Processing a file with PDFlib TET.
+# Processing a PDF file with PDFlib TET.
 # -----------------------------------------------------------------------------
 def process(
     full_name_in: str,

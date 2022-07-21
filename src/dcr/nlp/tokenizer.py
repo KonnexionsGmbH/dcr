@@ -19,6 +19,7 @@ import dcr_core.nlp.cls_tokenizer_spacy
 import dcr_core.nlp.tokenizer
 import dcr_core.utils
 
+
 # -----------------------------------------------------------------------------
 # Save the tokens sentence by sentence in the database.
 # -----------------------------------------------------------------------------

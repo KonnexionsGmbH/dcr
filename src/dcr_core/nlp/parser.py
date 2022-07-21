@@ -20,9 +20,9 @@ ERROR_61_901 = "61.901 Issue (s_p_j): Parsing the file '{full_name}' failed - " 
 def process(
     full_name_in: str,
     full_name_out: str,
-    document_id: int,
-    file_name_orig: str,
     no_pdf_pages: int,
+    document_id: int = -1,
+    file_name_orig: str = dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE,
 ) -> tuple[str, str]:
     """Extracting the text from the PDF document.
 
@@ -35,12 +35,14 @@ def process(
                 The directory name and file name of the input file.
         full_name_out (str):
                 The directory name and file name of the output file.
-        document_id (int):
-                The identification number of the document.
-        file_name_orig (str):
-                The file name of the originating document.
         no_pdf_pages (int):
                 Total number of PDF pages.
+        document_id (int, optional):
+                The identification number of the document.
+                Defaults to -1.
+        file_name_orig (str, optional):
+                The file name of the originating document.
+                Defaults to dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE.
 
     Returns:
         tuple[str, str]:
