@@ -10,7 +10,12 @@ ERROR_51_901 = "51.901 Issue (tet): Opening document '{full_name}' - " + "error 
 # -----------------------------------------------------------------------------
 # Processing a file with PDFlib TET.
 # -----------------------------------------------------------------------------
-def process(full_name_in: str, full_name_out: str, document_opt_list: str, page_opt_list: str) -> tuple[str, str]:
+def process(
+    full_name_in: str,
+    full_name_out: str,
+    document_opt_list: str,
+    page_opt_list: str,
+) -> tuple[str, str]:
     """Processing a PDF file with PDFlib TET.
 
     The data from a PDF file is made available in XML files

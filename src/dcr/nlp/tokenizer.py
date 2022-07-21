@@ -16,13 +16,8 @@ import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
 import dcr_core.nlp.cls_text_parser
 import dcr_core.nlp.cls_tokenizer_spacy
+import dcr_core.nlp.tokenizer
 import dcr_core.utils
-
-# -----------------------------------------------------------------------------
-# Global constants.
-# -----------------------------------------------------------------------------
-ERROR_71_901 = "71.901 Issue (tkn): Tokenizing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
-
 
 # -----------------------------------------------------------------------------
 # Save the tokens sentence by sentence in the database.
@@ -133,31 +128,26 @@ def tokenize_file() -> None:
     else:
         full_name_next = ""
 
-    try:
-        dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser.from_files(
-            file_encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT, full_name_line=full_name_curr
-        )
+    (error_code, error_msg) = dcr_core.nlp.tokenizer.process(
+        full_name_in=full_name_curr,
+        full_name_out=full_name_next,
+        document_id=cfg.glob.document.document_id,
+        file_name_orig=cfg.glob.document.document_file_name,
+        no_lines_footer=cfg.glob.document.document_no_lines_footer,
+        no_lines_header=cfg.glob.document.document_no_lines_header,
+        no_lines_toc=cfg.glob.document.document_no_lines_toc,
+        pipeline_name=pipeline_name,
+    )
+    if (error_code, error_msg) != dcr_core.cfg.glob.RETURN_OK:
+        cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        return
 
-        dcr_core.cfg.glob.tokenizer_spacy.process_document(
-            document_id=cfg.glob.document.document_id,
-            file_name_next=full_name_next,
-            file_name_orig=cfg.glob.document.document_file_name,
-            no_lines_footer=cfg.glob.document.document_no_lines_footer,
-            no_lines_header=cfg.glob.document.document_no_lines_header,
-            no_lines_toc=cfg.glob.document.document_no_lines_toc,
-            pipeline_name=pipeline_name,
-        )
+    store_tokens_in_database()
 
-        if dcr_core.cfg.glob.tokenizer_spacy.processing_ok():
-            store_tokens_in_database()
-            utils.delete_auxiliary_file(full_name_curr)
-            cfg.glob.action_curr.finalise()
-            cfg.glob.run.run_total_processed_ok += 1
+    utils.delete_auxiliary_file(full_name_curr)
 
-    except FileNotFoundError as err:
-        cfg.glob.action_curr.finalise_error(
-            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_TOKENIZE,
-            error_msg=ERROR_71_901.replace("{full_name_curr}", full_name_curr).replace("{error_type}", str(type(err))).replace("{error}", str(err)),
-        )
+    cfg.glob.action_curr.finalise()
+
+    cfg.glob.run.run_total_processed_ok += 1
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

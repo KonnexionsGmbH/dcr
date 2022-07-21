@@ -11,14 +11,12 @@ import utils
 import dcr_core.cfg.glob
 import dcr_core.nlp.cls_nlp_core
 import dcr_core.nlp.cls_text_parser
-import dcr_core.utils
 import dcr_core.nlp.parser
+import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_61_901 = "61.901 Issue (s_p_j): Parsing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
-
 TETML_TYPE_LINE = "line"
 TETML_TYPE_PAGE = "page"
 TETML_TYPE_WORD = "word"
@@ -130,9 +128,9 @@ def parse_tetml_file() -> None:
     (error_code, error_msg) = dcr_core.nlp.parser.process(
         full_name_in=cfg.glob.action_curr.get_full_name(),
         full_name_out=cfg.glob.action_next.get_full_name(),
-        file_name_orig=cfg.glob.document.document_file_name,
         document_id=cfg.glob.action_curr.action_id_document,
-        no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages
+        file_name_orig=cfg.glob.document.document_file_name,
+        no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
     )
     if (error_code, error_msg) != dcr_core.cfg.glob.RETURN_OK:
         cfg.glob.action_curr.finalise_error(error_code, error_msg)

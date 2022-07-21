@@ -17,8 +17,14 @@ ERROR_61_901 = "61.901 Issue (s_p_j): Parsing the file '{full_name}' failed - " 
 # -----------------------------------------------------------------------------
 # Extracting the text from the PDF document.
 # -----------------------------------------------------------------------------
-def process(full_name_in: str, full_name_out: str, file_name_orig: str, document_id: int, no_pdf_pages: int) -> tuple[str, str]:
-    """Processing a PDF file with PDFlib TET.
+def process(
+    full_name_in: str,
+    full_name_out: str,
+    document_id: int,
+    file_name_orig: str,
+    no_pdf_pages: int,
+) -> tuple[str, str]:
+    """Extracting the text from the PDF document.
 
     From the line-oriented XML output file of PDFlib TET,
     the text and relevant metadata are extracted with the
@@ -29,10 +35,10 @@ def process(full_name_in: str, full_name_out: str, file_name_orig: str, document
                 The directory name and file name of the input file.
         full_name_out (str):
                 The directory name and file name of the output file.
-        file_name_orig (str):
-                The file name of the originating document.
         document_id (int):
                 The identification number of the document.
+        file_name_orig (str):
+                The file name of the originating document.
         no_pdf_pages (int):
                 Total number of PDF pages.
 
