@@ -64,8 +64,6 @@ def convert_pdf_2_image() -> None:
 # noinspection PyArgumentList
 def convert_pdf_2_image_file() -> None:
     """Convert a scanned image pdf document to an image file."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
     full_name_curr = dcr_core.utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         cfg.glob.action_curr.action_file_name,
@@ -74,18 +72,19 @@ def convert_pdf_2_image_file() -> None:
     try:
         images = pdf2image.convert_from_path(full_name_curr)
 
-        cfg.glob.action_curr.action_no_children = 0
+        children: list[tuple[str, str]] = []
+        no_children = 0
 
-        is_no_error = True
+        stem_name = os.path.splitext(cfg.glob.action_curr.action_file_name)[0]
 
         # Store the image pages
         for img in images:
-            cfg.glob.action_curr.action_no_children += 1
-
-            stem_name_next = cfg.glob.action_curr.get_stem_name() + "_" + str(cfg.glob.action_curr.action_no_children)
+            no_children += 1
 
             file_name_next = (
-                stem_name_next
+                stem_name
+                + "_"
+                + str(no_children)
                 + "."
                 + (
                     dcr_core.cfg.glob.FILE_TYPE_PNG
@@ -104,38 +103,40 @@ def convert_pdf_2_image_file() -> None:
                     error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
                     error_msg=ERROR_21_903.replace("{full_name}", full_name_next),
                 )
+                return
 
-                is_no_error = False
-            else:
-                img.save(
-                    full_name_next,
-                    dcr_core.cfg.glob.setup.pdf2image_type,
-                )
+            img.save(
+                full_name_next,
+                dcr_core.cfg.glob.setup.pdf2image_type,
+            )
 
-                cfg.glob.action_next = db.cls_action.Action(
-                    action_code=db.cls_run.Run.ACTION_CODE_TESSERACT,
-                    id_run_last=cfg.glob.run.run_id,
-                    directory_name=cfg.glob.action_curr.action_directory_name,
-                    directory_type=cfg.glob.action_curr.action_directory_type,
-                    file_name=file_name_next,
-                    file_size_bytes=os.path.getsize(full_name_next),
-                    id_document=cfg.glob.action_curr.action_id_document,
-                    id_parent=cfg.glob.action_curr.action_id,
-                    no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
-                )
-
-                cfg.glob.run.total_generated += 1
-
-        if is_no_error:
-            utils.delete_auxiliary_file(full_name_curr)
-
-            cfg.glob.action_curr.finalise()
-
-            cfg.glob.run.run_total_processed_ok += 1
+            children.append((file_name_next, full_name_next))
     except PDFPageCountError as err:
         cfg.glob.action_curr.finalise_error(
             error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
             error_msg=ERROR_21_901.replace("{full_name_curr}", full_name_curr).replace("{error_type}", str(type(err))).replace("{error}", str(err)),
         )
+        return
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    for no_children, (file_name_next, full_name_next) in enumerate(children):
+        cfg.glob.action_curr.action_no_children = no_children + 1
+
+        cfg.glob.action_next = db.cls_action.Action(
+            action_code=db.cls_run.Run.ACTION_CODE_TESSERACT,
+            id_run_last=cfg.glob.run.run_id,
+            directory_name=cfg.glob.action_curr.action_directory_name,
+            directory_type=cfg.glob.action_curr.action_directory_type,
+            file_name=file_name_next,
+            file_size_bytes=os.path.getsize(full_name_next),
+            id_document=cfg.glob.action_curr.action_id_document,
+            id_parent=cfg.glob.action_curr.action_id,
+            no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
+        )
+
+    cfg.glob.run.total_generated += no_children
+
+    utils.delete_auxiliary_file(full_name_curr)
+
+    cfg.glob.action_curr.finalise()
+
+    cfg.glob.run.run_total_processed_ok += 1

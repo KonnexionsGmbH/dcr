@@ -18,7 +18,7 @@ import nlp.parser
 import nlp.pdflib
 import nlp.tokenizer
 import pp.inbox
-import pp.pandoc_dcr
+import pp.pandoc
 import pp.pdf2image_dcr
 import pp.tesseract_dcr
 import sqlalchemy
@@ -267,7 +267,7 @@ def process_convert_non_pdf_2_pdf() -> None:
 
     cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PANDOC)
 
-    pp.pandoc_dcr.convert_non_pdf_2_pdf()
+    pp.pandoc.convert_non_pdf_2_pdf()
 
     cfg.glob.run.finalise()
 
