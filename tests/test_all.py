@@ -1080,6 +1080,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_ALL_COMPLETE - empty.
 # -----------------------------------------------------------------------------
+@pytest.mark.issue
 def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - empty."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)

@@ -99,8 +99,6 @@ def extract_text_from_pdf() -> None:
 # noinspection PyArgumentList
 def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_variation: str) -> bool:
     """Extract text from a pdf document (step: tet) - method line."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
     file_name_next = cfg.glob.action_curr.get_stem_name() + "." + xml_variation + dcr_core.cfg.glob.FILE_TYPE_XML
@@ -146,7 +144,5 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
         no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
         status=db.cls_document.Document.DOCUMENT_STATUS_START,
     )
-
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
     return True

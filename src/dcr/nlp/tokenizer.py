@@ -112,8 +112,6 @@ def tokenize_file() -> None:
 
     TBD
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
     cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
 
     pipeline_name = db.cls_language.Language.LANGUAGES_SPACY[cfg.glob.document.document_id_language]
@@ -150,5 +148,3 @@ def tokenize_file() -> None:
     cfg.glob.action_curr.finalise()
 
     cfg.glob.run.run_total_processed_ok += 1
-
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)

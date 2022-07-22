@@ -32,12 +32,14 @@ export DCR_ENVIRONMENT_TYPE=test
 
 ifeq ($(OS),Windows_NT)
 	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
-    export MYPYPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\nlp;src\\dcr\\PDFlib;src\\dcr\\pp;src\\dcr\\setup;src\\dcr_core
-    export PYTHONPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\nlp;src\\dcr\\PDFlib;src\\dcr\\pp;src\\dcr\\setup;src\\dcr_core
+#	export MYPYPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\nlp;src\\dcr\\PDFlib;src\\dcr\\pp;src\\dcr\\setup;src\\dcr_core
+#	export PYTHONPATH=src\\dcr;src\\dcr\\db;src\\dcr\\db\\orm;src\\dcr\\libs;src\\dcr\\nlp;src\\dcr\\PDFlib;src\\dcr\\pp;src\\dcr\\setup;src\\dcr_core
+	export MYPYPATH=src\\dcr;src\\dcr_core
+	export PYTHONPATH=src\\dcr;src\\dcr_core
 else
 	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
-    export MYPYPATH=src/dcr:src/dcr/db:src/dcr/db/orm:src/dcr/libs:src/dcr/nlp:src/dcr/PDFlib:src/dcr/pp:src/dcr/setup:src/dcr_core
-    export PYTHONPATH=src/dcr:src/dcr/db:src/dcr/db/orm:src/dcr/libs:src/dcr/nlp:src/dcr/PDFlib:src/dcr/pp:src/dcr/setup:src/dcr_core
+	export MYPYPATH=src/dcr:src/dcr_core
+	export PYTHONPATH=src/dcr:src/dcr_core
 endif
 
 # Bandit is a tool designed to find common security issues in Python code.
