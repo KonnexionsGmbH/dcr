@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module pp.tesseract_dcr."""
+"""Testing Module pp.tesseract."""
 import os
 
 import cfg.cls_setup

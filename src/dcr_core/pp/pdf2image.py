@@ -21,10 +21,12 @@ def process(
 ) -> tuple[str, str, list[tuple[str, str]]]:
     """Converting a scanned PDF file to a set of image files.
 
-    The following file formats are converted into
-    PDF format here with the help of Pandoc:
-
-    - tokens with the means of SpaCy.
+    To extract the text from a scanned PDF document, it must
+    first be converted into one or more image files, depending
+    on the number of pages. Then these image files are converted
+    into a normal PDF document with the help of an OCR programme.
+    The input file for this method must be a scanned PDF document,
+    which is then converted into image files with the help of PDF2Image.
 
     Args:
         full_name_in (str):

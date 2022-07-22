@@ -20,7 +20,7 @@ import nlp.tokenizer
 import pp.inbox
 import pp.pandoc
 import pp.pdf2image
-import pp.tesseract_dcr
+import pp.tesseract
 import sqlalchemy
 import utils
 import yaml
@@ -240,7 +240,7 @@ def process_convert_image_2_pdf() -> None:
 
     cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_TESSERACT)
 
-    pp.tesseract_dcr.convert_image_2_pdf()
+    pp.tesseract.convert_image_2_pdf()
 
     cfg.glob.run.finalise()
 
@@ -250,7 +250,7 @@ def process_convert_image_2_pdf() -> None:
 
     cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PYPDF2)
 
-    pp.tesseract_dcr.reunite_pdfs()
+    pp.tesseract.reunite_pdfs()
 
     cfg.glob.run.finalise()
 
