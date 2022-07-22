@@ -28,7 +28,13 @@ def process(
     The following file formats are converted into
     PDF format here with the help of Pandoc:
 
-    - tokens with the means of SpaCy.
+    - csv  comma-separated values
+    - docx Office Open XML
+    - epub e-book file format
+    - html HyperText Markup Language
+    - odt  Open Document Format for Office Applications
+    - rst  reStructuredText (RST
+    - rtf  Rich Text Format
 
     Args:
         full_name_in (str):

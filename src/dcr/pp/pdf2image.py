@@ -7,18 +7,11 @@ import cfg.glob
 import db.cls_action
 import db.cls_document
 import db.cls_run
-import pdf2image
 import utils
-from pdf2image.exceptions import PDFPageCountError
 
 import dcr_core.cfg.glob
+import dcr_core.pp.pdf2image
 import dcr_core.utils
-
-# -----------------------------------------------------------------------------
-# Class variables.
-# -----------------------------------------------------------------------------
-ERROR_21_901 = "21.901 Issue (p_2_i): Processing file '{full_name_curr}' with pdf2image failed - " + "error type: '{error_type}' - error: '{error}'."
-ERROR_21_903 = "21.903 Issue (p_2_i): The target file '{full_name}' already exists."
 
 
 # -----------------------------------------------------------------------------
@@ -68,53 +61,11 @@ def convert_pdf_2_image_file() -> None:
         cfg.glob.action_curr.action_file_name,
     )
 
-    try:
-        images = pdf2image.convert_from_path(full_name_curr)
-
-        children: list[tuple[str, str]] = []
-        no_children = 0
-
-        stem_name = os.path.splitext(cfg.glob.action_curr.action_file_name)[0]
-
-        # Store the image pages
-        for img in images:
-            no_children += 1
-
-            file_name_next = (
-                stem_name
-                + "_"
-                + str(no_children)
-                + "."
-                + (
-                    dcr_core.cfg.glob.FILE_TYPE_PNG
-                    if dcr_core.cfg.glob.setup.pdf2image_type == dcr_core.cfg.cls_setup.Setup.PDF2IMAGE_TYPE_PNG
-                    else dcr_core.cfg.glob.FILE_TYPE_JPEG
-                )
-            )
-
-            full_name_next = dcr_core.utils.get_full_name(
-                cfg.glob.action_curr.action_directory_name,
-                file_name_next,
-            )
-
-            if os.path.exists(full_name_next):
-                cfg.glob.action_curr.finalise_error(
-                    error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
-                    error_msg=ERROR_21_903.replace("{full_name}", full_name_next),
-                )
-                return
-
-            img.save(
-                full_name_next,
-                dcr_core.cfg.glob.setup.pdf2image_type,
-            )
-
-            children.append((file_name_next, full_name_next))
-    except PDFPageCountError as err:
-        cfg.glob.action_curr.finalise_error(
-            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PDF2IMAGE,
-            error_msg=ERROR_21_901.replace("{full_name_curr}", full_name_curr).replace("{error_type}", str(type(err))).replace("{error}", str(err)),
-        )
+    (error_code, error_msg, children) = dcr_core.pp.pdf2image.process(
+        full_name_in=full_name_curr,
+    )
+    if error_code != dcr_core.cfg.glob.RETURN_OK[0]:
+        cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return
 
     for no_children, (file_name_next, full_name_next) in enumerate(children):
@@ -132,7 +83,7 @@ def convert_pdf_2_image_file() -> None:
             no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
         )
 
-    cfg.glob.run.total_generated += no_children
+    cfg.glob.run.total_generated += len(children)
 
     utils.delete_auxiliary_file(full_name_curr)
 
