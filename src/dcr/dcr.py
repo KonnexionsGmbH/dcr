@@ -19,7 +19,7 @@ import nlp.pdflib
 import nlp.tokenizer
 import pp.inbox
 import pp.pandoc
-import pp.pdf2image_dcr
+import pp.pdf2image
 import pp.tesseract_dcr
 import sqlalchemy
 import utils
@@ -284,7 +284,7 @@ def process_convert_pdf_2_image() -> None:
 
     cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PDF2IMAGE)
 
-    pp.pdf2image_dcr.convert_pdf_2_image()
+    pp.pdf2image.convert_pdf_2_image()
 
     cfg.glob.run.finalise()
 

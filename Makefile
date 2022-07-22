@@ -245,8 +245,8 @@ pytest-module:      ## Run tests of specific module(s) with pytest - test_all & 
 #																	      tests/test_nlp_pdflib.py \
 #																	      tests/test_nlp_tokenize.py \
 #																	      tests/test_pp_inbox.py \
-#																	      tests/test_pp_pandoc_dcr.py \
-#																	      tests/test_pp_pdf2image_dcr.py \
+#																	      tests/test_pp_pandoc.py \
+#																	      tests/test_pp_pdf2image.py \
 #																		  tests/test_pp_tesseract_dcr.py \
 #																		  tests/test_utils.py
 	@echo "Info **********  End:   pytest **************************************"

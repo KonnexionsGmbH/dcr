@@ -1,5 +1,5 @@
 # pylint: disable=unused-argument
-"""Testing Module pp.pdf2image_dcr."""
+"""Testing Module pp.pdf2image."""
 import os
 
 import cfg.cls_setup
