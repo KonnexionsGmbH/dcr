@@ -130,31 +130,6 @@ def reunite_pdfs() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    error_documents = []
-
-    with cfg.glob.db_core.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PYPDF2)
-
-        for row in rows:
-            cfg.glob.start_time_document = time.perf_counter_ns()
-
-            cfg.glob.run.run_total_processed_to_be += 1
-
-            cfg.glob.action_curr = db.cls_action.Action.from_id(row[0])
-
-            if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
-                cfg.glob.run.total_status_error += 1
-                error_documents.append(cfg.glob.action_curr.action_id_document)
-            else:
-                # not testable
-                cfg.glob.run.total_status_ready += 1
-
-            cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
-
-            reunite_pdfs_file()
-
-        conn.close()
-
     with cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = db.cls_action.Action.select_id_document_by_action_code_pypdf2(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDFLIB)
 
@@ -164,9 +139,6 @@ def reunite_pdfs() -> None:
             cfg.glob.run.run_total_processed_to_be += 1
 
             cfg.glob.action_curr = db.cls_action.Action.from_id(row[0])
-
-            if cfg.glob.action_curr.action_id_document in error_documents:
-                continue
 
             cfg.glob.action_curr.action_action_code = db.cls_run.Run.ACTION_CODE_PYPDF2
             cfg.glob.action_curr.action_file_name = cfg.glob.action_curr.get_stem_name()[0:-2] + "_0." + dcr_core.cfg.glob.FILE_TYPE_PDF

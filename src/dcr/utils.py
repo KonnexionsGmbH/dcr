@@ -332,7 +332,7 @@ def show_statistics_total() -> None:
             progress_msg(f"Number documents accepted - " f"pdf2image:     {cfg.glob.run.total_processed_pdf2image:6d}")
             progress_msg(f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.run.total_processed_pdflib:6d}")
             progress_msg(f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.run.total_processed_tesseract:6d}")
-            progress_msg("Number documents accepted - " + f"Total:         {cfg.glob.run.run_total_processed_ok:6d}")
+            progress_msg(f"Number documents accepted - " f"Total:         {cfg.glob.run.run_total_processed_ok:6d}")
         elif cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_PDFLIB:
             progress_msg(f"Number documents extracted:                {cfg.glob.run.run_total_processed_ok:6d}")
         else:
