@@ -1,6 +1,5 @@
 # pylint: disable=unused-argument
 """Testing Module pp.tesseract."""
-import os
 
 import cfg.cls_setup
 import cfg.glob
@@ -105,50 +104,6 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
             ],
         ),
     )
-
-    # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test RUN_ACTION_IMAGE_2_PDF - reunite - duplicate.
-# -----------------------------------------------------------------------------
-def test_run_action_image_2_pdf_reunite_duplicate(fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_IMAGE_2_PDF - reunite - duplicate."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_duplicate <=========")
-
-    stem_name_1 = "translating_sql_into_relational_algebra_p01_02"
-    file_ext_1 = "pdf"
-
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        source_files=[
-            (stem_name_1, file_ext_1),
-        ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
-    )
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
-        [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-        ],
-    )
-
-    # -------------------------------------------------------------------------
-    stem_name_2 = "translating_sql_into_relational_algebra_p01_02_1_0"
-    file_ext_2 = "pdf"
-
-    pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2, is_ocr=True)
-
-    # -------------------------------------------------------------------------
-    os.remove(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "translating_sql_into_relational_algebra_p01_02_1_0.pdf"))
-
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

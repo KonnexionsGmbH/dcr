@@ -41,7 +41,7 @@ class Run:
     _ACTION_TEXT_PDFLIB: ClassVar[str] = "pdflib        (nlp)"
     _ACTION_TEXT_PYPDF2: ClassVar[str] = "pypdf2        (preprocessor)"
     _ACTION_TEXT_TESSERACT: ClassVar[str] = "tesseract     (preprocessor)"
-    _ACTION_TEXT_TOKENIZE: ClassVar[str] = "tokenize      (nlp)"
+    _ACTION_TEXT_TOKENIZE: ClassVar[str] = "tokenizer     (nlp)"
     _ACTION_TEXT_TOKENIZE_LINE: ClassVar[str] = "tokenize_line (nlp)"
     _ACTION_TEXT_UPGRADE_DB: ClassVar[str] = "Upgrade Database"
 

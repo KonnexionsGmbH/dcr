@@ -246,16 +246,6 @@ def process_convert_image_2_pdf() -> None:
 
     utils.progress_msg("End  : Convert image files to pdf documents ...")
 
-    utils.progress_msg_empty_before("Start: Reunite the related pdf documents ... PyPDF2")
-
-    cfg.glob.run = db.cls_run.Run(action_code=db.cls_run.Run.ACTION_CODE_PYPDF2)
-
-    pp.tesseract.reunite_pdfs()
-
-    cfg.glob.run.finalise()
-
-    utils.progress_msg("End  : Reunite the related pdf documents ...")
-
 
 # -----------------------------------------------------------------------------
 # Convert non-pdf documents to pdf documents.

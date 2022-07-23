@@ -77,7 +77,7 @@ def test_line_type_table_maximum(create_extra_file_table, fxtr_rmdir_opt, fxtr_s
             (
                 1,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
@@ -175,7 +175,7 @@ def test_line_type_table_minimum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (
                 1,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",

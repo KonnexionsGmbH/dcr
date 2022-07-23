@@ -81,12 +81,11 @@ def check_db_content() -> None:
     # -----------------------------------------------------------------------------
     pytest.helpers.check_dbt_run((1, (1, "p_i", "inbox         (preprocessor)", 1, "end", 1, 5, 6)))
     pytest.helpers.check_dbt_run((2, (2, "p_2_i", "pdf2image     (preprocessor)", 1, "end", 0, 2, 2)))
-    pytest.helpers.check_dbt_run((3, (3, "ocr", "tesseract     (preprocessor)", 1, "end", 0, 0, 4)))
-    pytest.helpers.check_dbt_run((4, (4, "pypdf2", "pypdf2        (preprocessor)", 1, "end", 0, 1, 1)))
-    pytest.helpers.check_dbt_run((5, (5, "n_2_p", "pandoc        (preprocessor)", 1, "end", 0, 1, 1)))
-    pytest.helpers.check_dbt_run((6, (6, "tet", "pdflib        (nlp)", 1, "end", 0, 5, 5)))
-    pytest.helpers.check_dbt_run((7, (7, "s_p_j", "parser        (nlp)", 1, "end", 0, 5, 5)))
-    pytest.helpers.check_dbt_run((8, (8, "tkn", "tokenize      (nlp)", 1, "end", 0, 5, 5)))
+    pytest.helpers.check_dbt_run((3, (3, "ocr", "tesseract     (preprocessor)", 1, "end", 0, 4, 3)))
+    pytest.helpers.check_dbt_run((4, (4, "n_2_p", "pandoc        (preprocessor)", 1, "end", 0, 1, 1)))
+    pytest.helpers.check_dbt_run((5, (5, "tet", "pdflib        (nlp)", 1, "end", 0, 5, 5)))
+    pytest.helpers.check_dbt_run((6, (6, "s_p_j", "parser        (nlp)", 1, "end", 0, 5, 5)))
+    pytest.helpers.check_dbt_run((7, (7, "tkn", "tokenizer     (nlp)", 1, "end", 0, 5, 5)))
 
     # -----------------------------------------------------------------------------
     # Database table version.
@@ -354,12 +353,12 @@ def check_db_content_action() -> None:
                 "",
                 "",
                 0,
-                "pdf_scanned_ok_3_1.jpeg",
+                "pdf_scanned_ok_3_[0-9]*.jpeg",
                 3,
                 6,
                 2,
-                0,
-                -1,
+                1,
+                1,
                 "end",
             ),
         )
@@ -376,12 +375,12 @@ def check_db_content_action() -> None:
                 "",
                 "",
                 0,
-                "translating_sql_into_relational_algebra_p01_02_6_1.jpeg",
+                "translating_sql_into_relational_algebra_p01_02_6_[0-9]*.jpeg",
                 6,
                 11,
                 2,
-                0,
-                -1,
+                2,
+                2,
                 "end",
             ),
         )
@@ -391,28 +390,6 @@ def check_db_content_action() -> None:
             14,
             (
                 14,
-                "ocr",
-                "tesseract     (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
-                "inbox_accepted",
-                "",
-                "",
-                0,
-                "translating_sql_into_relational_algebra_p01_02_6_2.jpeg",
-                6,
-                11,
-                2,
-                0,
-                -1,
-                "end",
-            ),
-        )
-    )
-    pytest.helpers.check_dbt_action(
-        (
-            15,
-            (
-                15,
                 "tet",
                 "pdflib        (nlp)",
                 dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
@@ -432,6 +409,28 @@ def check_db_content_action() -> None:
     )
     pytest.helpers.check_dbt_action(
         (
+            15,
+            (
+                15,
+                "tet",
+                "pdflib        (nlp)",
+                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                "inbox_accepted",
+                "",
+                "",
+                0,
+                "pdf_scanned_ok_3_0.pdf",
+                3,
+                12,
+                3,
+                0,
+                1,
+                "end",
+            ),
+        )
+    )
+    pytest.helpers.check_dbt_action(
+        (
             16,
             (
                 16,
@@ -442,12 +441,12 @@ def check_db_content_action() -> None:
                 "",
                 "",
                 0,
-                "pdf_scanned_ok_3_1.pdf",
-                3,
-                12,
+                "translating_sql_into_relational_algebra_p01_02_6_0.pdf",
+                6,
+                13,
                 3,
                 0,
-                1,
+                2,
                 "end",
             ),
         )
@@ -464,75 +463,9 @@ def check_db_content_action() -> None:
                 "",
                 "",
                 0,
-                "translating_sql_into_relational_algebra_p01_02_6_1.pdf",
-                6,
-                13,
-                3,
-                0,
+                "docx_ok_1.pdf",
                 1,
-                "end",
-            ),
-        )
-    )
-    pytest.helpers.check_dbt_action(
-        (
-            18,
-            (
-                18,
-                "tet",
-                "pdflib        (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
-                "inbox_accepted",
-                "",
-                "",
-                0,
-                "translating_sql_into_relational_algebra_p01_02_6_2.pdf",
-                6,
-                14,
-                3,
-                0,
-                1,
-                "end",
-            ),
-        )
-    )
-    pytest.helpers.check_dbt_action(
-        (
-            19,
-            (
-                19,
-                "pypdf2",
-                "pypdf2        (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
-                "inbox_accepted",
-                "",
-                "",
-                0,
-                "translating_sql_into_relational_algebra_p01_02_6_0.pdf",
-                6,
-                13,
-                3,
-                0,
                 2,
-                "end",
-            ),
-        )
-    )
-    pytest.helpers.check_dbt_action(
-        (
-            20,
-            (
-                20,
-                "tet",
-                "pdflib        (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
-                "inbox_accepted",
-                "",
-                "",
-                0,
-                "translating_sql_into_relational_algebra_p01_02_6_0.pdf",
-                6,
-                19,
                 4,
                 0,
                 2,
@@ -542,19 +475,85 @@ def check_db_content_action() -> None:
     )
     pytest.helpers.check_dbt_action(
         (
-            21,
+            18,
             (
-                21,
-                "tet",
-                "pdflib        (nlp)",
+                18,
+                "s_p_j_line",
+                "parser_line   (nlp)",
                 dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
                 0,
-                "docx_ok_1.pdf",
-                1,
+                "pdf_text_ok_4.line.xml",
+                4,
+                8,
+                5,
+                0,
+                3,
+                "end",
+            ),
+        )
+    )
+    pytest.helpers.check_dbt_action(
+        (
+            19,
+            (
+                19,
+                "s_p_j_line",
+                "parser_line   (nlp)",
+                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                "inbox_accepted",
+                "",
+                "",
+                0,
+                "jpeg_pdf_text_ok_2.line.xml",
                 2,
+                14,
+                5,
+                0,
+                1,
+                "end",
+            ),
+        )
+    )
+    pytest.helpers.check_dbt_action(
+        (
+            20,
+            (
+                20,
+                "s_p_j_line",
+                "parser_line   (nlp)",
+                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                "inbox_accepted",
+                "",
+                "",
+                0,
+                "pdf_scanned_ok_3_0.line.xml",
+                3,
+                15,
+                5,
+                0,
+                1,
+                "end",
+            ),
+        )
+    )
+    pytest.helpers.check_dbt_action(
+        (
+            21,
+            (
+                21,
+                "s_p_j_line",
+                "parser_line   (nlp)",
+                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                "inbox_accepted",
+                "",
+                "",
+                0,
+                "translating_sql_into_relational_algebra_p01_02_6_0.line.xml",
+                6,
+                16,
                 5,
                 0,
                 2,
@@ -574,12 +573,12 @@ def check_db_content_action() -> None:
                 "",
                 "",
                 0,
-                "pdf_text_ok_4.line.xml",
-                4,
-                8,
-                6,
+                "docx_ok_1.line.xml",
+                1,
+                17,
+                5,
                 0,
-                3,
+                2,
                 "end",
             ),
         )
@@ -589,19 +588,19 @@ def check_db_content_action() -> None:
             23,
             (
                 23,
-                "s_p_j_line",
-                "parser_line   (nlp)",
+                "tkn",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
                 0,
-                "jpeg_pdf_text_ok_2.line.xml",
-                2,
-                15,
+                "pdf_text_ok_4.line.json",
+                4,
+                18,
                 6,
                 0,
-                1,
+                3,
                 "end",
             ),
         )
@@ -611,16 +610,16 @@ def check_db_content_action() -> None:
             24,
             (
                 24,
-                "s_p_j_line",
-                "parser_line   (nlp)",
+                "tkn",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
                 0,
-                "pdf_scanned_ok_3_1.line.xml",
-                3,
-                16,
+                "jpeg_pdf_text_ok_2.line.json",
+                2,
+                19,
                 6,
                 0,
                 1,
@@ -633,19 +632,19 @@ def check_db_content_action() -> None:
             25,
             (
                 25,
-                "s_p_j_line",
-                "parser_line   (nlp)",
+                "tkn",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
                 0,
-                "translating_sql_into_relational_algebra_p01_02_6_0.line.xml",
-                6,
+                "pdf_scanned_ok_3_0.line.json",
+                3,
                 20,
                 6,
                 0,
-                2,
+                1,
                 "end",
             ),
         )
@@ -655,15 +654,15 @@ def check_db_content_action() -> None:
             26,
             (
                 26,
-                "s_p_j_line",
-                "parser_line   (nlp)",
+                "tkn",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
                 0,
-                "docx_ok_1.line.xml",
-                1,
+                "translating_sql_into_relational_algebra_p01_02_6_0.line.json",
+                6,
                 21,
                 6,
                 0,
@@ -678,95 +677,7 @@ def check_db_content_action() -> None:
             (
                 27,
                 "tkn",
-                "tokenize      (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
-                "inbox_accepted",
-                "",
-                "",
-                0,
-                "pdf_text_ok_4.line.json",
-                4,
-                22,
-                7,
-                0,
-                3,
-                "end",
-            ),
-        )
-    )
-    pytest.helpers.check_dbt_action(
-        (
-            28,
-            (
-                28,
-                "tkn",
-                "tokenize      (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
-                "inbox_accepted",
-                "",
-                "",
-                0,
-                "jpeg_pdf_text_ok_2.line.json",
-                2,
-                23,
-                7,
-                0,
-                1,
-                "end",
-            ),
-        )
-    )
-    pytest.helpers.check_dbt_action(
-        (
-            29,
-            (
-                29,
-                "tkn",
-                "tokenize      (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
-                "inbox_accepted",
-                "",
-                "",
-                0,
-                "pdf_scanned_ok_3_1.line.json",
-                3,
-                24,
-                7,
-                0,
-                1,
-                "end",
-            ),
-        )
-    )
-    pytest.helpers.check_dbt_action(
-        (
-            30,
-            (
-                30,
-                "tkn",
-                "tokenize      (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
-                "inbox_accepted",
-                "",
-                "",
-                0,
-                "translating_sql_into_relational_algebra_p01_02_6_0.line.json",
-                6,
-                25,
-                7,
-                0,
-                2,
-                "end",
-            ),
-        )
-    )
-    pytest.helpers.check_dbt_action(
-        (
-            31,
-            (
-                31,
-                "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
@@ -774,8 +685,8 @@ def check_db_content_action() -> None:
                 0,
                 "docx_ok_1.line.json",
                 1,
-                26,
-                7,
+                22,
+                6,
                 0,
                 2,
                 "end",
@@ -795,14 +706,14 @@ def check_db_content_document() -> None:
             (
                 1,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
                 "docx_ok.docx",
                 1,
-                8,
+                7,
                 1,
                 0,
                 0,
@@ -820,14 +731,14 @@ def check_db_content_document() -> None:
             (
                 2,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
                 "jpeg_pdf_text_ok.jpeg",
                 1,
-                8,
+                7,
                 0,
                 1,
                 0,
@@ -845,14 +756,14 @@ def check_db_content_document() -> None:
             (
                 3,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
                 "pdf_scanned_ok.pdf",
                 1,
-                8,
+                7,
                 1,
                 0,
                 0,
@@ -870,14 +781,14 @@ def check_db_content_document() -> None:
             (
                 4,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
                 "pdf_text_ok.pdf",
                 1,
-                8,
+                7,
                 0,
                 0,
                 0,
@@ -921,14 +832,14 @@ def check_db_content_document() -> None:
             (
                 6,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
                 "translating_sql_into_relational_algebra_p01_02.pdf",
                 1,
-                8,
+                7,
                 0,
                 1,
                 0,
@@ -988,12 +899,11 @@ def check_db_content_run() -> None:  #
     """Check the database content- database table run."""
     pytest.helpers.check_dbt_run((1, (1, "p_i", "inbox         (preprocessor)", 1, "end", 1, 5, 6)))
     pytest.helpers.check_dbt_run((2, (2, "p_2_i", "pdf2image     (preprocessor)", 1, "end", 0, 2, 2)))
-    pytest.helpers.check_dbt_run((3, (3, "ocr", "tesseract     (preprocessor)", 1, "end", 0, 0, 4)))
-    pytest.helpers.check_dbt_run((4, (4, "pypdf2", "pypdf2        (preprocessor)", 1, "end", 0, 1, 1)))
-    pytest.helpers.check_dbt_run((5, (5, "n_2_p", "pandoc        (preprocessor)", 1, "end", 0, 1, 1)))
-    pytest.helpers.check_dbt_run((6, (6, "tet", "pdflib        (nlp)", 1, "end", 0, 5, 5)))
-    pytest.helpers.check_dbt_run((7, (7, "s_p_j", "parser        (nlp)", 1, "end", 0, 5, 5)))
-    pytest.helpers.check_dbt_run((8, (8, "tkn", "tokenize      (nlp)", 1, "end", 0, 5, 5)))
+    pytest.helpers.check_dbt_run((3, (3, "ocr", "tesseract     (preprocessor)", 1, "end", 0, 4, 3)))
+    pytest.helpers.check_dbt_run((4, (4, "n_2_p", "pandoc        (preprocessor)", 1, "end", 0, 1, 1)))
+    pytest.helpers.check_dbt_run((5, (5, "tet", "pdflib        (nlp)", 1, "end", 0, 5, 5)))
+    pytest.helpers.check_dbt_run((6, (6, "s_p_j", "parser        (nlp)", 1, "end", 0, 5, 5)))
+    pytest.helpers.check_dbt_run((7, (7, "tkn", "tokenizer     (nlp)", 1, "end", 0, 5, 5)))
 
 
 # -----------------------------------------------------------------------------
@@ -1080,7 +990,6 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
 # -----------------------------------------------------------------------------
 # Test RUN_ACTION_PROCESS_ALL_COMPLETE - empty.
 # -----------------------------------------------------------------------------
-@pytest.mark.issue
 def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - empty."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
@@ -1163,9 +1072,9 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
                 "jpeg_pdf_text_ok_2.pdf",
                 "pdf_scanned_ok_3.pdf",
                 "pdf_scanned_ok_3_1.jpeg",
-                "pdf_scanned_ok_3_1.line.json",
-                "pdf_scanned_ok_3_1.line.xml",
-                "pdf_scanned_ok_3_1.pdf",
+                "pdf_scanned_ok_3_0.line.json",
+                "pdf_scanned_ok_3_0.line.xml",
+                "pdf_scanned_ok_3_0.pdf",
                 "pdf_text_ok_4.line.json",
                 "pdf_text_ok_4.line.xml",
                 "pdf_text_ok_4.pdf",
@@ -1174,9 +1083,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
                 "translating_sql_into_relational_algebra_p01_02_5_0.line.xml",
                 "translating_sql_into_relational_algebra_p01_02_5_0.pdf",
                 "translating_sql_into_relational_algebra_p01_02_5_1.jpeg",
-                "translating_sql_into_relational_algebra_p01_02_5_1.pdf",
                 "translating_sql_into_relational_algebra_p01_02_5_2.jpeg",
-                "translating_sql_into_relational_algebra_p01_02_5_2.pdf",
             ],
         ),
     )

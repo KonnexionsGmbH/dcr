@@ -72,7 +72,7 @@ def test_line_type_list_bullet_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
             (
                 1,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
@@ -162,7 +162,7 @@ def test_line_type_list_bullet_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
             (
                 1,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
@@ -244,7 +244,7 @@ def test_line_type_list_bullet_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and
             (
                 1,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",

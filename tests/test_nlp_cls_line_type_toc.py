@@ -174,7 +174,7 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (
                 1,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
@@ -200,7 +200,7 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (
                 2,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
@@ -335,7 +335,7 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (
                 1,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
@@ -361,7 +361,7 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (
                 2,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
@@ -488,7 +488,7 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (
                 1,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
@@ -514,7 +514,7 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             (
                 2,
                 "tkn",
-                "tokenize      (nlp)",
+                "tokenizer     (nlp)",
                 dcr_core.utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",

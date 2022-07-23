@@ -61,6 +61,16 @@ def convert_pdf_2_image_file() -> None:
         cfg.glob.action_curr.action_file_name,
     )
 
+    file_name_next = (
+        cfg.glob.action_curr.get_stem_name()
+        + "_[0-9]*."
+        + (
+            dcr_core.cfg.glob.FILE_TYPE_PNG
+            if dcr_core.cfg.glob.setup.pdf2image_type == dcr_core.cfg.cls_setup.Setup.PDF2IMAGE_TYPE_PNG
+            else dcr_core.cfg.glob.FILE_TYPE_JPEG
+        )
+    )
+
     (error_code, error_msg, children) = dcr_core.pp.pdf2image.process(
         full_name_in=full_name_curr,
     )
@@ -68,20 +78,25 @@ def convert_pdf_2_image_file() -> None:
         cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return
 
-    for no_children, (file_name_next, full_name_next) in enumerate(children):
-        cfg.glob.action_curr.action_no_children = no_children + 1
+    file_size_bytes = 0
 
-        cfg.glob.action_next = db.cls_action.Action(
-            action_code=db.cls_run.Run.ACTION_CODE_TESSERACT,
-            id_run_last=cfg.glob.run.run_id,
-            directory_name=cfg.glob.action_curr.action_directory_name,
-            directory_type=cfg.glob.action_curr.action_directory_type,
-            file_name=file_name_next,
-            file_size_bytes=os.path.getsize(full_name_next),
-            id_document=cfg.glob.action_curr.action_id_document,
-            id_parent=cfg.glob.action_curr.action_id,
-            no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
-        )
+    for (_, full_name_next) in children:
+        file_size_bytes += os.path.getsize(full_name_next)
+
+    cfg.glob.action_curr.action_no_children = len(children)
+
+    cfg.glob.action_next = db.cls_action.Action(
+        action_code=db.cls_run.Run.ACTION_CODE_TESSERACT,
+        id_run_last=cfg.glob.run.run_id,
+        directory_name=cfg.glob.action_curr.action_directory_name,
+        directory_type=cfg.glob.action_curr.action_directory_type,
+        file_name=file_name_next,
+        file_size_bytes=file_size_bytes,
+        id_document=cfg.glob.action_curr.action_id_document,
+        id_parent=cfg.glob.action_curr.action_id,
+        no_children=cfg.glob.action_curr.action_no_children,
+        no_pdf_pages=cfg.glob.action_curr.action_no_children,
+    )
 
     cfg.glob.run.total_generated += len(children)
 

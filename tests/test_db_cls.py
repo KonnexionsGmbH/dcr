@@ -104,8 +104,8 @@ def check_existing_document():
 
     expected_values[0] = 1
     expected_values[1] = "tkn"
-    expected_values[2] = "tokenize      (nlp)"
-    expected_values[10] = 8
+    expected_values[2] = "tokenizer     (nlp)"
+    expected_values[10] = 7
     expected_values[11] = 0
     expected_values[12] = 0
     expected_values[13] = 0
