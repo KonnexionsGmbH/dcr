@@ -8,10 +8,10 @@ import cfg.cls_setup
 import cfg.glob
 import db.cls_db_core
 import db.cls_run
+import launcher
 import pytest
 import sqlalchemy
 
-import dcr
 import dcr_core.core_glob
 import dcr_core.core_utils
 
@@ -34,7 +34,7 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     cfg.glob.db_core.db_orm_engine = None
 
     with pytest.raises(SystemExit) as expt:
-        dcr.check_db_up_to_date()
+        launcher.check_db_up_to_date()
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
@@ -46,7 +46,7 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
 
     with pytest.raises(SystemExit) as expt:
         cfg.glob.db_core = db.cls_db_core.DBCore()
-        dcr.check_db_up_to_date()
+        launcher.check_db_up_to_date()
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
@@ -65,7 +65,7 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     dbt.drop()
 
     with pytest.raises(SystemExit) as expt:
-        dcr.check_db_up_to_date()
+        launcher.check_db_up_to_date()
 
     assert expt.type == SystemExit
     assert expt.value.code == 1
@@ -140,12 +140,12 @@ def test_create_database(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT)
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
@@ -156,7 +156,7 @@ def test_create_database(fxtr_setup_logger_environment):
     )
 
     with pytest.raises(SystemExit) as expt:
-        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
+        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     assert expt.type == SystemExit, "DCR_CFG_DB_DIALECT: unknown DB dialect"
     assert expt.value.code == 1, "DCR_CFG_DB_DIALECT: unknown DB dialect"
@@ -170,7 +170,7 @@ def test_create_database(fxtr_setup_logger_environment):
     )
 
     with pytest.raises(SystemExit) as expt:
-        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
+        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     assert expt.type == SystemExit, "DCR_CFG_DB_INITIAL_DATA_FILE: unknown file"
     assert expt.value.code == 1, "DCR_CFG_DB_INITIAL_DATA_FILE: unknown file"
@@ -187,7 +187,7 @@ def test_drop_database_01(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     cfg.glob.db_core = db.cls_db_core.DBCore(is_admin=True)
 
@@ -204,7 +204,7 @@ def test_drop_database_02(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT)
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     cfg.glob.db_core = db.cls_db_core.DBCore(is_admin=True)
 
@@ -385,7 +385,7 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_UPGRADE_DB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_UPGRADE_DB])
 
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()
@@ -395,7 +395,7 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     cfg.glob.db_core.disconnect_db()
 
     with pytest.raises(SystemExit) as expt:
-        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_UPGRADE_DB])
+        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_UPGRADE_DB])
 
     assert expt.type == SystemExit, "Version < '1.0.0' not supported"
     assert expt.value.code == 1, "Version < '1.0.0' not supported"

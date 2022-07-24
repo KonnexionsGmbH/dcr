@@ -33,7 +33,7 @@ import dcr_core.core_utils
 # -----------------------------------------------------------------------------
 # Class variables.
 # -----------------------------------------------------------------------------
-DCR_ARGV_0 = "src/dcr/dcr.py"
+DCR_ARGV_0 = "src/dcr/launcher.py"
 
 LOCALE = "en_US.UTF-8"
 
@@ -176,7 +176,7 @@ def initialise_logger() -> None:
         log_config = yaml.safe_load(file_handle.read())
 
     logging.config.dictConfig(log_config)
-    cfg.glob.logger = logging.getLogger("dcr.py")
+    cfg.glob.logger = logging.getLogger("launcher.py")
     cfg.glob.logger.setLevel(logging.DEBUG)
 
     utils.progress_msg_core("The logger is configured and ready")
@@ -197,9 +197,9 @@ def main(argv: list[str]) -> None:
     initialise_logger()
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-    cfg.glob.logger.info("Start dcr.py")
+    cfg.glob.logger.info("Start launcher.py")
 
-    print("Start dcr.py")
+    print("Start launcher.py")
 
     locale.setlocale(locale.LC_ALL, LOCALE)
 
@@ -225,9 +225,9 @@ def main(argv: list[str]) -> None:
         # Process the documents.
         process_documents(args)
 
-    print("End   dcr.py")
+    print("End   launcher.py")
 
-    cfg.glob.logger.info("End   dcr.py")
+    cfg.glob.logger.info("End   launcher.py")
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
 

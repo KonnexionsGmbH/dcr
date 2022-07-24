@@ -11,9 +11,9 @@ import db.cls_language
 import db.cls_run
 import db.cls_token
 import db.cls_version
+import launcher
 import pytest
 
-import dcr
 import dcr_core.cls_setup
 import dcr_core.core_glob
 import dcr_core.core_utils
@@ -753,7 +753,7 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
         ],
     )
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()

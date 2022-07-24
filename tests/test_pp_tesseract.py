@@ -4,9 +4,9 @@
 import cfg.cls_setup
 import cfg.glob
 import db.cls_run
+import launcher
 import pytest
 
-import dcr
 import dcr_core.cls_setup
 import dcr_core.core_glob
 
@@ -87,11 +87,11 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 2/2 <=========")

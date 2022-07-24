@@ -110,7 +110,7 @@ This file controls the logging behaviour of the application.
         formatter: extended
     
     loggers:
-      dcr.py:
+      launcher.py:
         handlers: [ console ]
     root:
       handlers: [ file_handler ]

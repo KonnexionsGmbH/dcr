@@ -7,9 +7,9 @@ import db.cls_action
 import db.cls_db_core
 import db.cls_document
 import db.cls_run
+import launcher
 import pytest
 
-import dcr
 import dcr_core.cls_nlp_core
 import dcr_core.cls_text_parser
 import dcr_core.cls_tokenizer_spacy
@@ -46,11 +46,11 @@ def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
     dcr_core.cls_text_parser.TextParser.from_files(

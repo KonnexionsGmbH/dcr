@@ -14,8 +14,6 @@ export PYTHONPATH=${PYTHONPATH}:src
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
-    echo "aui   - Run the administration user interface."
-    echo "------------------------------------------------------------------------------"
     echo "all   - Run the complete processing of all new documents."
     echo "------------------------------------------------------------------------------"
     echo "p_i   - 1. Process the inbox directory."
@@ -67,11 +65,6 @@ date +"DATE TIME : %d.%m.%Y %H:%M:%S"
 echo "=============================================================================="
 
 case "${DCR_CHOICE_ACTION}" in
-  aui)
-    if ! ( pipenv run python src/dcr/admin.py ); then
-        exit 255
-    fi
-    ;;
   m_p)
     # Production install packages
     if ! ( make pipenv-prod ); then
@@ -108,7 +101,7 @@ case "${DCR_CHOICE_ACTION}" in
       *)
         ;;
     esac
-    if ! ( pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}" ); then
+    if ! ( pipenv run python src/dcr/launcher.py "${DCR_CHOICE_ACTION}" ); then
         exit 255
     fi
     ;;

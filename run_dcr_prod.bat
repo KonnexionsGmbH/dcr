@@ -8,14 +8,12 @@ rem ----------------------------------------------------------------------------
 
 setlocal EnableDelayedExpansion
 
-set DCR_CHOICE_ACTION_DEFAULT=aui
+set DCR_CHOICE_ACTION_DEFAULT=db_u
 set DCR_ENVIRONMENT_TYPE=prod
 set PYTHONPATH=%PYTHONPATH%;src
 
 if ["%1"] EQU [""] (
     echo =========================================================
-    echo aui   - Run the administration user interface.
-    echo ---------------------------------------------------------
     echo all   - Run the complete core processing of all new documents.
     echo ---------------------------------------------------------
     echo p_i   - 1. Process the inbox directory.
@@ -84,15 +82,6 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["all"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
-if ["%DCR_CHOICE_ACTION%"] EQU ["aui"] (
-    pipenv run python src\dcr\admin.py
-    if ERRORLEVEL 1 (
-        echo Processing of the script: %0 - step: 'python src\dcr\admin.py' was aborted
-        exit -1073741510
-    )
-    goto normal_exit
-)
-
 if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
@@ -154,9 +143,9 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_p_j tkn %DCR_CHOICE_ACTION%
     )
-    pipenv run python src\dcr\dcr.py !DCR_CHOICE_ACTION!
+    pipenv run python src\dcr\launcher.py !DCR_CHOICE_ACTION!
     if ERRORLEVEL 1 (
-        echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
+        echo Processing of the script: %0 - step: 'python src\dcr\launcher.py %DCR_CHOICE_ACTION%' was aborted
         exit -1073741510
     )
     goto normal_exit

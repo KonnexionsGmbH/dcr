@@ -8,9 +8,9 @@ import db.cls_action
 import db.cls_db_core
 import db.cls_document
 import db.cls_run
+import launcher
 import pytest
 
-import dcr
 import dcr_core.cls_line_type_headers_footers
 import dcr_core.cls_line_type_toc
 import dcr_core.cls_nlp_core
@@ -79,11 +79,11 @@ def test_cls_line_type_headers_footers_basic(fxtr_rmdir_opt, fxtr_setup_empty_db
         ],
     )
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
     pytest.helpers.check_cls_line_type(
@@ -238,18 +238,18 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
         ],
     )
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line("p_5_h_0_f_0.line.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_0_f_2.line.json", no_lines_footer=2, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_2_f_0.line.json", no_lines_footer=0, no_lines_header=2)
     pytest.helpers.check_json_line("p_5_h_2_f_2.line.json", no_lines_footer=2, no_lines_header=2)
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.check_json_line("p_5_h_0_f_0.line_token.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_0_f_2.line_token.json", no_lines_footer=2, no_lines_header=0)
@@ -439,15 +439,15 @@ def test_cls_line_type_headers_footers_maximum_version_by_hand(fxtr_rmdir_opt, f
         ],
     )
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line("p_5_h_X_f_X.line.json", no_lines_footer=1, no_lines_header=0)
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.check_json_line("p_5_h_X_f_X.line_token.json", no_lines_footer=1, no_lines_header=0)
 
@@ -533,18 +533,18 @@ def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, 
         ],
     )
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line("p_5_h_0_f_0.line.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_0_f_2.line.json", no_lines_footer=2, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_2_f_0.line.json", no_lines_footer=0, no_lines_header=2)
     pytest.helpers.check_json_line("p_5_h_2_f_2.line.json", no_lines_footer=1, no_lines_header=2)
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_minimum_version_distance_2 <=========")
@@ -702,18 +702,18 @@ def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxt
         ],
     )
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line("p_5_h_0_f_0.line.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_0_f_2.line.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_2_f_0.line.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_2_f_2.line.json", no_lines_footer=0, no_lines_header=0)
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_minimum_version_distance_2 <=========")

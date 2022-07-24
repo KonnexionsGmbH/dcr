@@ -3,9 +3,9 @@
 import cfg.cls_setup
 import cfg.glob
 import db.cls_run
+import launcher
 import pytest
 
-import dcr
 import dcr_core.core_glob
 
 # -----------------------------------------------------------------------------
@@ -30,9 +30,9 @@ def test_run_action_non_pdf_2_pdf_coverage(fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

@@ -8,9 +8,9 @@ import cfg.cls_setup
 import cfg.glob
 import db.cls_db_core
 import db.cls_run
+import launcher
 import pytest
 
-import dcr
 import dcr_core.core_glob
 import dcr_core.core_utils
 
@@ -56,7 +56,7 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_inbox_accepted_duplicate <=========")
@@ -116,7 +116,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
         ],
     )
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_inbox_french <=========")
@@ -187,7 +187,7 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
         ],
     )
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_inbox_ignore_duplicates <=========")
@@ -236,7 +236,7 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected <=========")
@@ -299,7 +299,7 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected_duplicate <=========")
@@ -352,7 +352,7 @@ def test_run_action_process_inbox_rejected_901(fxtr_rmdir_opt, fxtr_setup_empty_
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected <=========")

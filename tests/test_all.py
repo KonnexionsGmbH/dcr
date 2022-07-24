@@ -9,9 +9,9 @@ import db.cls_language
 import db.cls_run
 import db.cls_token
 import db.cls_version
+import launcher
 import pytest
 
-import dcr
 import dcr_core.cls_setup
 import dcr_core.core_glob
 import dcr_core.core_utils
@@ -958,7 +958,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
     # -------------------------------------------------------------------------
     db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_deleted <=========")
@@ -1006,7 +1006,7 @@ def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -1053,7 +1053,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
     )
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_kept <=========")
@@ -1135,7 +1135,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     # -------------------------------------------------------------------------
     db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
     cfg.glob.db_core = db.cls_db_core.DBCore()
@@ -1145,42 +1145,42 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
     # -------------------------------------------------------------------------
     cfg.glob.action_curr = db.cls_action.Action.from_id(4)
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     # -------------------------------------------------------------------------
     cfg.glob.action_curr = db.cls_action.Action.from_id(2)
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
 
     # -------------------------------------------------------------------------
     cfg.glob.action_curr = db.cls_action.Action.from_id(8)
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     # -------------------------------------------------------------------------
     cfg.glob.action_curr = db.cls_action.Action.from_id(13)
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
     cfg.glob.action_curr = db.cls_action.Action.from_id(17)
     cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
     cfg.glob.action_curr.persist_2_db()
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_status_error <=========")

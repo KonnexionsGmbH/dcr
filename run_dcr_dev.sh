@@ -8,14 +8,12 @@ set -e
 #
 # ----------------------------------------------------------------------------------
 
-export DCR_CHOICE_ACTION_DEFAULT=aui
+export DCR_CHOICE_ACTION_DEFAULT=db_u
 export DCR_ENVIRONMENT_TYPE=dev
 export PYTHONPATH=${PYTHONPATH}:src
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
-    echo "aui          - Run the administration user interface."
-    echo "------------------------------------------------------------------------------"
     echo "all          - Run the complete processing of all new documents."
     echo "------------------------------------------------------------------------------"
     echo "p_i          - 1. Process the inbox directory."
@@ -44,8 +42,8 @@ echo ""
 echo "Script $0 is now running"
 
 rm -f run_dcr_debug.log
-export LOG_FILE=run_dcr_dev.log
-rm -f run_dcr_dev.log
+export LOG_FILE=run_dcr_dev_${DCR_CHOICE_ACTION}.log
+rm -f run_dcr_dev_${DCR_CHOICE_ACTION}.log
 
 echo ""
 echo "You can find the run log in the file $LOG_FILE"
@@ -67,15 +65,12 @@ date +"DATE TIME : %d.%m.%Y %H:%M:%S"
 echo "=============================================================================="
 
 case "${DCR_CHOICE_ACTION}" in
-  aui)
-    pipenv run python src/dcr/admin.py
-    ;;
   m_d)
     # Development install packages
     make pipenv-dev
     ;;
   db_c)
-    pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
+    pipenv run python src/dcr/launcher.py "${DCR_CHOICE_ACTION}"
     ;;
   db_u|e_lt|n_2_p|ocr|p_2_i|s_p_j|tet|tkn)
     case "${DCR_CHOICE_ACTION}" in
@@ -121,14 +116,14 @@ case "${DCR_CHOICE_ACTION}" in
       *)
         ;;
     esac
-    pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
+    pipenv run python src/dcr/launcher.py "${DCR_CHOICE_ACTION}"
     ;;
   all|p_i)
     rm -rf data/inbox_${DCR_ENVIRONMENT_TYPE}
     mkdir data/inbox_${DCR_ENVIRONMENT_TYPE}
     cp -r tests/inbox/* data/inbox_${DCR_ENVIRONMENT_TYPE}
     ls -ll data/inbox_${DCR_ENVIRONMENT_TYPE}
-    pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}"
+    pipenv run python src/dcr/launcher.py "${DCR_CHOICE_ACTION}"
     ;;
   *)
     echo "Usage: ./run_dcr_dev.sh all | db_c | db_u | e_lt | m_d | n_i_p[_only] | ocr[_only] | p_i | p_2_i[_only] | s_p_j[_only] | tet[_only] | tkn[_only]"

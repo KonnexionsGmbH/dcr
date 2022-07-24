@@ -21,10 +21,10 @@ import db.cls_language
 import db.cls_run
 import db.cls_token
 import db.cls_version
+import launcher
 import pytest
 import sqlalchemy
 
-import dcr
 import dcr_core.cls_nlp_core
 import dcr_core.cls_setup
 import dcr_core.cls_text_parser
@@ -877,7 +877,7 @@ def fxtr_setup_empty_db_and_inbox(
         os.path.dirname(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
     )
 
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox)
     fxtr_mkdir(dcr_core.core_glob.setup.directory_inbox)
@@ -947,7 +947,7 @@ def fxtr_setup_empty_inbox(
 @pytest.fixture()
 def fxtr_setup_logger():
     """Fixture: Setup logger & environment."""
-    dcr.initialise_logger()
+    launcher.initialise_logger()
 
     yield
 
@@ -972,7 +972,7 @@ def fxtr_setup_logger_environment():
 
     setup_cfg_backup()
 
-    dcr.initialise_logger()
+    launcher.initialise_logger()
 
     yield
 
@@ -1163,12 +1163,12 @@ def help_run_action_all_complete_duplicate_file(
 
     # -------------------------------------------------------------------------
     if is_ocr:
-        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
-        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
-        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
-        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
     else:
-        dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
         verify_content_of_directory(
             dcr_core.core_glob.setup.directory_inbox,
@@ -1201,7 +1201,7 @@ def help_run_action_process_inbox_normal(
     pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name, file_ext)], target_path=dcr_core.core_glob.setup.directory_inbox)
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
     # -------------------------------------------------------------------------
     document_id = 1
 
@@ -1336,7 +1336,7 @@ def setup_cfg_restore():
 @pytest.fixture(scope="session", autouse=True)
 def setup_dcr():
     """Run before all tests."""
-    dcr.initialise_logger()
+    launcher.initialise_logger()
 
 
 # -----------------------------------------------------------------------------

@@ -5,9 +5,9 @@ import os
 import cfg.cls_setup
 import cfg.glob
 import db.cls_run
+import launcher
 import pytest
 
-import dcr
 import dcr_core.cls_setup
 import dcr_core.core_glob
 
@@ -25,7 +25,7 @@ def test_dcr_get_args(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    args = dcr.get_args([dcr.DCR_ARGV_0, "AlL"])
+    args = launcher.get_args([launcher.DCR_ARGV_0, "AlL"])
 
     assert len(args) == 10, "arg: all"
     assert args[db.cls_run.Run.ACTION_CODE_TESSERACT], "arg: all"
@@ -39,7 +39,7 @@ def test_dcr_get_args(fxtr_setup_logger_environment):
     assert not args[db.cls_run.Run.ACTION_CODE_UPGRADE_DB], "arg: all"
 
     # -------------------------------------------------------------------------
-    args = dcr.get_args([dcr.DCR_ARGV_0, "Db_C"])
+    args = launcher.get_args([launcher.DCR_ARGV_0, "Db_C"])
 
     assert args[db.cls_run.Run.ACTION_CODE_CREATE_DB], "arg: db_c"
     assert not args[db.cls_run.Run.ACTION_CODE_TESSERACT], "arg: all"
@@ -52,7 +52,7 @@ def test_dcr_get_args(fxtr_setup_logger_environment):
     assert not args[db.cls_run.Run.ACTION_CODE_UPGRADE_DB], "arg: db_c"
 
     # -------------------------------------------------------------------------
-    args = dcr.get_args([dcr.DCR_ARGV_0, "Db_U"])
+    args = launcher.get_args([launcher.DCR_ARGV_0, "Db_U"])
 
     assert args[db.cls_run.Run.ACTION_CODE_UPGRADE_DB], "arg: db_u"
     assert not args[db.cls_run.Run.ACTION_CODE_CREATE_DB], "arg: db_u"
@@ -66,21 +66,21 @@ def test_dcr_get_args(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        dcr.get_args([])
+        launcher.get_args([])
 
     assert expt.type == SystemExit, "no args"
     assert expt.value.code == 1, "no args"
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        dcr.get_args([""])
+        launcher.get_args([""])
 
     assert expt.type == SystemExit, "one arg"
     assert expt.value.code == 1, "one arg"
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        dcr.get_args([dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE, "second"])
+        launcher.get_args([dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE, "second"])
 
     assert expt.type == SystemExit, "invalid arg"
     assert expt.value.code == 1, "invalid arg"
@@ -103,7 +103,7 @@ def test_dcr_process_export_lt_rules(fxtr_setup_empty_db_and_inbox):
         pass
 
     # -------------------------------------------------------------------------
-    dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_EXPORT_LT_RULES])
+    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_EXPORT_LT_RULES])
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
