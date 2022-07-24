@@ -14,9 +14,9 @@ import db.cls_version
 import pytest
 
 import dcr
-import dcr_core.cfg.cls_setup
-import dcr_core.cfg.glob
-import dcr_core.utils
+import dcr_core.cls_setup
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -34,7 +34,7 @@ def check_existing_action():
         1,
         db.cls_run.Run.ACTION_CODE_INBOX,
         db.cls_run.Run.get_action_text(db.cls_run.Run.ACTION_CODE_INBOX),
-        dcr_core.cfg.glob.setup.directory_inbox,
+        dcr_core.core_glob.setup.directory_inbox,
         "inbox",
         "",
         "",
@@ -184,7 +184,7 @@ def check_existing_language():
         "en",
         "en_core_web_trf",
         "eng",
-        dcr_core.utils.get_os_independent_name("data/inbox_test"),
+        dcr_core.core_utils.get_os_independent_name("data/inbox_test"),
         "English",
     ]
 
@@ -287,7 +287,7 @@ def check_existing_token():
 # -----------------------------------------------------------------------------
 def check_existing_version():
     """Check existing version object."""
-    expected_values = [1, dcr_core.cfg.cls_setup.Setup.DCR_VERSION]
+    expected_values = [1, dcr_core.cls_setup.Setup.DCR_VERSION]
 
     cfg.glob.version = db.cls_version.Version.from_id(expected_values[0])
 
@@ -353,12 +353,12 @@ def check_missing_run():
     with pytest.raises(SystemExit) as expt:
         db.cls_run.Run(
             _row_id=0,
-            action_code=dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE,
+            action_code=dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE,
             total_erroneous=1,
         )
 
-    assert expt.type == SystemExit, f"invalid action code={dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE}"
-    assert expt.value.code == 1, f"invalid action code={dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE}"
+    assert expt.type == SystemExit, f"invalid action code={dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE}"
+    assert expt.value.code == 1, f"invalid action code={dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE}"
 
     # -----------------------------------------------------------------------------
     # Untested action codes.
@@ -446,7 +446,7 @@ def check_new_action():
         source_files=[
             ("pdf_text_ok", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -----------------------------------------------------------------------------
@@ -734,22 +734,22 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
         source_files=[
             ("pdf_text_ok", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, "true"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
         ],
     )
 
@@ -810,7 +810,7 @@ def test_missing_dependencies_action_1(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    directory_name = dcr_core.cfg.glob.setup.directory_inbox
+    directory_name = dcr_core.core_glob.setup.directory_inbox
     file_name = "pdf_text_ok.pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -857,7 +857,7 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     cfg.glob.start_time_document = time.perf_counter_ns()
 
-    directory_name = dcr_core.cfg.glob.setup.directory_inbox
+    directory_name = dcr_core.core_glob.setup.directory_inbox
     file_name = "pdf_text_ok.pdf"
 
     pytest.helpers.copy_files_4_pytest_2_dir(

@@ -12,9 +12,9 @@ import db.cls_version
 import pytest
 
 import dcr
-import dcr_core.cfg.cls_setup
-import dcr_core.cfg.glob
-import dcr_core.utils
+import dcr_core.cls_setup
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -53,7 +53,7 @@ def check_db_content() -> None:
                 "en",
                 "en_core_web_trf",
                 "eng",
-                dcr_core.utils.get_os_independent_name("data/inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test"),
                 "English",
             ),
         )
@@ -68,7 +68,7 @@ def check_db_content() -> None:
                 "de",
                 "de_dep_news_trf",
                 "deu",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test\\deutsch"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test\\deutsch"),
                 "Deutsch",
             ),
         )
@@ -90,7 +90,7 @@ def check_db_content() -> None:
     # -----------------------------------------------------------------------------
     # Database table version.
     # -----------------------------------------------------------------------------
-    pytest.helpers.check_dbt_version((1, (1, dcr_core.cfg.cls_setup.Setup.DCR_VERSION)))
+    pytest.helpers.check_dbt_version((1, (1, dcr_core.cls_setup.Setup.DCR_VERSION)))
 
 
 # -----------------------------------------------------------------------------
@@ -105,7 +105,7 @@ def check_db_content_action() -> None:
                 1,
                 "p_i",
                 "inbox         (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "",
                 "",
@@ -127,7 +127,7 @@ def check_db_content_action() -> None:
                 2,
                 "n_2_p",
                 "pandoc        (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -149,7 +149,7 @@ def check_db_content_action() -> None:
                 3,
                 "p_i",
                 "inbox         (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "",
                 "",
@@ -171,7 +171,7 @@ def check_db_content_action() -> None:
                 4,
                 "ocr",
                 "tesseract     (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -193,7 +193,7 @@ def check_db_content_action() -> None:
                 5,
                 "p_i",
                 "inbox         (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "",
                 "",
@@ -215,7 +215,7 @@ def check_db_content_action() -> None:
                 6,
                 "p_2_i",
                 "pdf2image     (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -237,7 +237,7 @@ def check_db_content_action() -> None:
                 7,
                 "p_i",
                 "inbox         (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "",
                 "",
@@ -259,7 +259,7 @@ def check_db_content_action() -> None:
                 8,
                 "tet",
                 "pdflib        (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -281,7 +281,7 @@ def check_db_content_action() -> None:
                 9,
                 "p_i",
                 "inbox         (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "No 'pdf' format",
                 "01.903 Issue (p_i): Runtime error with fitz.open() processing of "
@@ -304,7 +304,7 @@ def check_db_content_action() -> None:
                 10,
                 "p_i",
                 "inbox         (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test"),
                 "inbox",
                 "",
                 "",
@@ -326,7 +326,7 @@ def check_db_content_action() -> None:
                 11,
                 "p_2_i",
                 "pdf2image     (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -348,7 +348,7 @@ def check_db_content_action() -> None:
                 12,
                 "ocr",
                 "tesseract     (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -370,7 +370,7 @@ def check_db_content_action() -> None:
                 13,
                 "ocr",
                 "tesseract     (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -392,7 +392,7 @@ def check_db_content_action() -> None:
                 14,
                 "tet",
                 "pdflib        (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -414,7 +414,7 @@ def check_db_content_action() -> None:
                 15,
                 "tet",
                 "pdflib        (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -436,7 +436,7 @@ def check_db_content_action() -> None:
                 16,
                 "tet",
                 "pdflib        (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -458,7 +458,7 @@ def check_db_content_action() -> None:
                 17,
                 "tet",
                 "pdflib        (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -480,7 +480,7 @@ def check_db_content_action() -> None:
                 18,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -502,7 +502,7 @@ def check_db_content_action() -> None:
                 19,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -524,7 +524,7 @@ def check_db_content_action() -> None:
                 20,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -546,7 +546,7 @@ def check_db_content_action() -> None:
                 21,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -568,7 +568,7 @@ def check_db_content_action() -> None:
                 22,
                 "s_p_j_line",
                 "parser_line   (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -590,7 +590,7 @@ def check_db_content_action() -> None:
                 23,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -612,7 +612,7 @@ def check_db_content_action() -> None:
                 24,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -634,7 +634,7 @@ def check_db_content_action() -> None:
                 25,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -656,7 +656,7 @@ def check_db_content_action() -> None:
                 26,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -678,7 +678,7 @@ def check_db_content_action() -> None:
                 27,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data/inbox_test_accepted"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test_accepted"),
                 "inbox_accepted",
                 "",
                 "",
@@ -707,7 +707,7 @@ def check_db_content_document() -> None:
                 1,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -732,7 +732,7 @@ def check_db_content_document() -> None:
                 2,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -757,7 +757,7 @@ def check_db_content_document() -> None:
                 3,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -782,7 +782,7 @@ def check_db_content_document() -> None:
                 4,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -807,7 +807,7 @@ def check_db_content_document() -> None:
                 5,
                 "p_i",
                 "inbox         (preprocessor)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "No 'pdf' format",
                 "01.903 Issue (p_i): Runtime error with fitz.open() processing of "
                 + "file 'pdf_wrong_format.pdf' - error: 'cannot open broken document'.",
@@ -833,7 +833,7 @@ def check_db_content_document() -> None:
                 6,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -868,7 +868,7 @@ def check_db_content_language() -> None:
                 "en",
                 "en_core_web_trf",
                 "eng",
-                dcr_core.utils.get_os_independent_name("data/inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data/inbox_test"),
                 "English",
             ),
         )
@@ -883,7 +883,7 @@ def check_db_content_language() -> None:
                 "de",
                 "de_dep_news_trf",
                 "deu",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test\\deutsch"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test\\deutsch"),
                 "Deutsch",
             ),
         )
@@ -911,7 +911,7 @@ def check_db_content_run() -> None:  #
 # -----------------------------------------------------------------------------
 def check_db_content_version() -> None:
     """Check the database content - database table version."""
-    pytest.helpers.check_dbt_version((1, (1, dcr_core.cfg.cls_setup.Setup.DCR_VERSION)))
+    pytest.helpers.check_dbt_version((1, (1, dcr_core.cls_setup.Setup.DCR_VERSION)))
 
 
 # -----------------------------------------------------------------------------
@@ -929,15 +929,15 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
 
@@ -952,7 +952,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
             ("README", "md"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -1002,7 +1002,7 @@ def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and
             ("empty_pdf_scanned", "pdf"),
             ("empty_pdf_text", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -1028,15 +1028,15 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
 
@@ -1049,7 +1049,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
             ("pdf_text_ok", "pdf"),
             ("translating_sql_into_relational_algebra_p01_02", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -1107,17 +1107,17 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
 
@@ -1129,7 +1129,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
             ("pdf_scanned_ok", "pdf"),
             ("pdf_text_ok", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------

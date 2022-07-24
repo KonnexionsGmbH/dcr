@@ -8,11 +8,11 @@ import db.cls_document
 import db.cls_run
 import utils
 
-import dcr_core.cfg.glob
-import dcr_core.nlp.cls_nlp_core
-import dcr_core.nlp.cls_text_parser
-import dcr_core.nlp.parser
-import dcr_core.utils
+import dcr_core.cls_nlp_core
+import dcr_core.cls_text_parser
+import dcr_core.core_glob
+import dcr_core.core_utils
+import dcr_core.processing
 
 # -----------------------------------------------------------------------------
 # Global variables.
@@ -57,9 +57,9 @@ def parse_tetml() -> None:
     ):
         utils.progress_msg(f"Start of processing for tetml type '{tetml_type}'")
 
-        dcr_core.cfg.glob.setup.is_parsing_line = is_parsing_line
-        dcr_core.cfg.glob.setup.is_parsing_page = is_parsing_page
-        dcr_core.cfg.glob.setup.is_parsing_word = is_parsing_word
+        dcr_core.core_glob.setup.is_parsing_line = is_parsing_line
+        dcr_core.core_glob.setup.is_parsing_page = is_parsing_page
+        dcr_core.core_glob.setup.is_parsing_word = is_parsing_word
 
         with cfg.glob.db_core.db_orm_engine.begin() as conn:
             rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=action_code)
@@ -102,13 +102,13 @@ def parse_tetml_file() -> None:
     """
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + dcr_core.cfg.glob.FILE_TYPE_JSON
-    full_name_next = dcr_core.utils.get_full_name(
+    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + dcr_core.core_glob.FILE_TYPE_JSON
+    full_name_next = dcr_core.core_utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )
 
-    if dcr_core.cfg.glob.setup.is_parsing_line:
+    if dcr_core.core_glob.setup.is_parsing_line:
         status = db.cls_document.Document.DOCUMENT_STATUS_START
     else:
         status = db.cls_document.Document.DOCUMENT_STATUS_END
@@ -125,34 +125,34 @@ def parse_tetml_file() -> None:
         status=status,
     )
 
-    (error_code, error_msg) = dcr_core.nlp.parser.process(
+    (error_code, error_msg) = dcr_core.processing.parser_process(
         full_name_in=cfg.glob.action_curr.get_full_name(),
         full_name_out=cfg.glob.action_next.get_full_name(),
         document_id=cfg.glob.action_curr.action_id_document,
         file_name_orig=cfg.glob.document.document_file_name,
         no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
     )
-    if (error_code, error_msg) != dcr_core.cfg.glob.RETURN_OK:
+    if (error_code, error_msg) != dcr_core.core_glob.RETURN_OK:
         cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return
 
     cfg.glob.run.run_total_processed_ok += 1
 
-    if dcr_core.cfg.glob.setup.is_parsing_line:
+    if dcr_core.core_glob.setup.is_parsing_line:
         if (
-            dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer != 0  # pylint: disable=too-many-boolean-expressions
-            or dcr_core.cfg.glob.line_type_headers_footers.no_lines_header != 0
-            or dcr_core.cfg.glob.line_type_list_bullet.no_lists != 0
-            or dcr_core.cfg.glob.line_type_list_number.no_lists != 0
-            or dcr_core.cfg.glob.line_type_table.no_tables != 0
-            or dcr_core.cfg.glob.line_type_toc.no_lines_toc != 0
+            dcr_core.core_glob.line_type_headers_footers.no_lines_footer != 0  # pylint: disable=too-many-boolean-expressions
+            or dcr_core.core_glob.line_type_headers_footers.no_lines_header != 0
+            or dcr_core.core_glob.line_type_list_bullet.no_lists != 0
+            or dcr_core.core_glob.line_type_list_number.no_lists != 0
+            or dcr_core.core_glob.line_type_table.no_tables != 0
+            or dcr_core.core_glob.line_type_toc.no_lines_toc != 0
         ):
-            cfg.glob.document.document_no_lines_footer = dcr_core.cfg.glob.line_type_headers_footers.no_lines_footer
-            cfg.glob.document.document_no_lines_header = dcr_core.cfg.glob.line_type_headers_footers.no_lines_header
-            cfg.glob.document.document_no_lines_toc = dcr_core.cfg.glob.line_type_toc.no_lines_toc
-            cfg.glob.document.document_no_lists_bullet = dcr_core.cfg.glob.line_type_list_bullet.no_lists
-            cfg.glob.document.document_no_lists_number = dcr_core.cfg.glob.line_type_list_number.no_lists
-            cfg.glob.document.document_no_tables = dcr_core.cfg.glob.line_type_table.no_tables
+            cfg.glob.document.document_no_lines_footer = dcr_core.core_glob.line_type_headers_footers.no_lines_footer
+            cfg.glob.document.document_no_lines_header = dcr_core.core_glob.line_type_headers_footers.no_lines_header
+            cfg.glob.document.document_no_lines_toc = dcr_core.core_glob.line_type_toc.no_lines_toc
+            cfg.glob.document.document_no_lists_bullet = dcr_core.core_glob.line_type_list_bullet.no_lists
+            cfg.glob.document.document_no_lists_number = dcr_core.core_glob.line_type_list_number.no_lists
+            cfg.glob.document.document_no_tables = dcr_core.core_glob.line_type_table.no_tables
             cfg.glob.document.persist_2_db()  # type: ignore
 
     cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(full_name_next),)

@@ -5,7 +5,7 @@ import pathlib
 import sys
 import traceback
 
-import dcr_core.cfg.glob
+import dcr_core.core_glob
 
 
 # -----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ def check_exists_object(  # noqa: C901
     """
     if is_line_type_headers_footers:
         try:
-            dcr_core.cfg.glob.line_type_headers_footers.exists()  # type: ignore
+            dcr_core.core_glob.line_type_headers_footers.exists()  # type: ignore
         except AttributeError:
             terminate_fatal(
                 "The required instance of the class 'LineTypeHeadersFooters' does not yet exist.",
@@ -48,7 +48,7 @@ def check_exists_object(  # noqa: C901
 
     if is_line_type_list_bullet:
         try:
-            dcr_core.cfg.glob.line_type_list_bullet.exists()  # type: ignore
+            dcr_core.core_glob.line_type_list_bullet.exists()  # type: ignore
         except AttributeError:
             terminate_fatal(
                 "The required instance of the class 'LineTypeListBullet' does not yet exist.",
@@ -56,7 +56,7 @@ def check_exists_object(  # noqa: C901
 
     if is_line_type_list_number:
         try:
-            dcr_core.cfg.glob.line_type_list_number.exists()  # type: ignore
+            dcr_core.core_glob.line_type_list_number.exists()  # type: ignore
         except AttributeError:
             terminate_fatal(
                 "The required instance of the class 'LineTypeListNumber' does not yet exist.",
@@ -64,7 +64,7 @@ def check_exists_object(  # noqa: C901
 
     if is_line_type_table:
         try:
-            dcr_core.cfg.glob.line_type_table.exists()  # type: ignore
+            dcr_core.core_glob.line_type_table.exists()  # type: ignore
         except AttributeError:
             terminate_fatal(
                 "The required instance of the class 'LineTypeTable' does not yet exist.",
@@ -72,7 +72,7 @@ def check_exists_object(  # noqa: C901
 
     if is_line_type_toc:
         try:
-            dcr_core.cfg.glob.line_type_toc.exists()  # type: ignore
+            dcr_core.core_glob.line_type_toc.exists()  # type: ignore
         except AttributeError:
             terminate_fatal(
                 "The required instance of the class 'LineTypeToc' does not yet exist.",
@@ -80,7 +80,7 @@ def check_exists_object(  # noqa: C901
 
     if is_setup:
         try:
-            dcr_core.cfg.glob.setup.exists()  # type: ignore
+            dcr_core.core_glob.setup.exists()  # type: ignore
         except AttributeError:
             terminate_fatal(
                 "The required instance of the class 'Setup' does not yet exist.",
@@ -88,7 +88,7 @@ def check_exists_object(  # noqa: C901
 
     if is_text_parser:
         try:
-            dcr_core.cfg.glob.text_parser.exists()
+            dcr_core.core_glob.text_parser.exists()
         except AttributeError:
             terminate_fatal(
                 "The required instance of the class 'TextParser' does not yet exist.",
@@ -188,7 +188,7 @@ def progress_msg_core(msg: str) -> None:
         msg (str):
                 Progress message.
     """
-    final_msg = dcr_core.cfg.glob.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
+    final_msg = dcr_core.core_glob.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
 
     print(final_msg)
 
@@ -204,9 +204,9 @@ def terminate_fatal(error_msg: str) -> None:
                 Error message.
     """
     print("")
-    print(dcr_core.cfg.glob.LOGGER_FATAL_HEAD)
-    print(dcr_core.cfg.glob.LOGGER_FATAL_HEAD, error_msg, dcr_core.cfg.glob.LOGGER_FATAL_TAIL, sep="")
-    print(dcr_core.cfg.glob.LOGGER_FATAL_HEAD)
+    print(dcr_core.core_glob.LOGGER_FATAL_HEAD)
+    print(dcr_core.core_glob.LOGGER_FATAL_HEAD, error_msg, dcr_core.core_glob.LOGGER_FATAL_TAIL, sep="")
+    print(dcr_core.core_glob.LOGGER_FATAL_HEAD)
 
     traceback.print_exc(chain=True)
 

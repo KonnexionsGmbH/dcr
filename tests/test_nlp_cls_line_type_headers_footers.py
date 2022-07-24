@@ -11,14 +11,14 @@ import db.cls_run
 import pytest
 
 import dcr
-import dcr_core.cfg.cls_setup
-import dcr_core.cfg.glob
-import dcr_core.nlp.cls_line_type_headers_footers
-import dcr_core.nlp.cls_line_type_toc
-import dcr_core.nlp.cls_nlp_core
-import dcr_core.nlp.cls_text_parser
-import dcr_core.nlp.cls_tokenizer_spacy
-import dcr_core.utils
+import dcr_core.cls_line_type_headers_footers
+import dcr_core.cls_line_type_toc
+import dcr_core.cls_nlp_core
+import dcr_core.cls_setup
+import dcr_core.cls_text_parser
+import dcr_core.cls_tokenizer_spacy
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -61,7 +61,7 @@ def test_cls_line_type_headers_footers_basic(fxtr_rmdir_opt, fxtr_setup_empty_db
             ("p_5_h_4_f_4_empty_both", "pdf"),
             ("p_5_h_4_f_4_empty_center", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -72,10 +72,10 @@ def test_cls_line_type_headers_footers_basic(fxtr_rmdir_opt, fxtr_setup_empty_db
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
         ],
     )
 
@@ -87,117 +87,117 @@ def test_cls_line_type_headers_footers_basic(fxtr_rmdir_opt, fxtr_setup_empty_db
 
     # -------------------------------------------------------------------------
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_1_h_0_f_0_1.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_1_h_0_f_0_1.line.json")),
         target_footer=[],
         target_header=[],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_2_h_0_f_0_2.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_2_h_0_f_0_2.line.json")),
         target_footer=[],
         target_header=[],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_2_h_0_f_2_3.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_2_h_0_f_2_3.line.json")),
         target_footer=[(1, [0, 1]), (2, [0, 1])],
         target_header=[],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_2_h_1_f_0_4.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_2_h_1_f_0_4.line.json")),
         target_footer=[],
         target_header=[(1, [0]), (2, [0])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_2_h_1_f_1_5.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_2_h_1_f_1_5.line.json")),
         target_footer=[(1, [4]), (2, [4])],
         target_header=[(1, [0]), (2, [0])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_2_h_2_f_0_6.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_2_h_2_f_0_6.line.json")),
         target_footer=[(1, [0, 1]), (2, [0, 1])],
         target_header=[],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_2_h_2_f_2_7.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_2_h_2_f_2_7.line.json")),
         target_footer=[(1, [1, 2, 3]), (2, [1, 2, 3])],
         target_header=[(1, [0]), (2, [0])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_3_h_0_f_4_8.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_3_h_0_f_4_8.line.json")),
         target_footer=[(1, [4, 5, 6]), (2, [4, 5, 6]), (3, [4, 5, 6])],
         target_header=[],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_3_h_2_f_2_9.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_3_h_2_f_2_9.line.json")),
         target_footer=[(1, [5, 6]), (2, [5, 6]), (3, [5, 6])],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_3_h_3_f_3_10.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_3_h_3_f_3_10.line.json")),
         target_footer=[(1, [6, 7, 8]), (2, [6, 7, 8]), (3, [6, 7, 8])],
         target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_3_h_4_f_0_11.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_3_h_4_f_0_11.line.json")),
         target_footer=[],
         target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_3_h_4_f_4_12.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_3_h_4_f_4_12.line.json")),
         target_footer=[(1, [8, 9, 10]), (2, [8, 9, 10]), (3, [8, 9, 10])],
         target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_different_first_13.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_different_first_13.line.json")),
         target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
         target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_different_last_14.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_different_last_14.line.json")),
         target_footer=[(1, [8, 9, 10]), (2, [8, 9, 10]), (3, [8, 9, 10])],
         target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_empty_first_15.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_empty_first_15.line.json")),
         target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
         target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_empty_last_16.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_4_h_4_f_4_empty_last_16.line.json")),
         target_footer=[(1, [8, 9, 10]), (2, [8, 9, 10]), (3, [8, 9, 10])],
         target_header=[(1, [0, 1, 2]), (2, [0, 1, 2]), (3, [0, 1, 2])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_5_h_0_f_0_17.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_5_h_0_f_0_17.line.json")),
         target_footer=[],
         target_header=[],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_5_h_0_f_2_18.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_5_h_0_f_2_18.line.json")),
         target_footer=[(1, [5, 6]), (2, [5, 6]), (3, [5, 6]), (4, [3, 4]), (5, [5, 6])],
         target_header=[],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_5_h_2_f_0_19.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_5_h_2_f_0_19.line.json")),
         target_footer=[],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_5_h_2_f_2_20.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_5_h_2_f_2_20.line.json")),
         target_footer=[(1, [5, 6]), (2, [5, 6]), (3, [5, 6]), (4, [5, 6]), (5, [5, 6])],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_5_h_4_f_4_different_both_21.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_5_h_4_f_4_different_both_21.line.json")),
         target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
         target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_5_h_4_f_4_empty_both_22.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_5_h_4_f_4_empty_both_22.line.json")),
         target_footer=[(2, [8, 9, 10]), (3, [8, 9, 10]), (4, [8, 9, 10])],
         target_header=[(2, [0, 1, 2]), (3, [0, 1, 2]), (4, [0, 1, 2])],
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "p_5_h_4_f_4_empty_center_23.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "p_5_h_4_f_4_empty_center_23.line.json")),
         target_footer=[],
         target_header=[],
     )
@@ -221,7 +221,7 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
             ("p_5_h_2_f_0", "pdf"),
             ("p_5_h_2_f_2", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -232,9 +232,9 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "true"),
         ],
     )
 
@@ -266,7 +266,7 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
                 1,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -292,7 +292,7 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
                 2,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -318,7 +318,7 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
                 3,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -344,7 +344,7 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
                 4,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -422,7 +422,7 @@ def test_cls_line_type_headers_footers_maximum_version_by_hand(fxtr_rmdir_opt, f
         source_files=[
             ("p_5_h_X_f_X", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -433,9 +433,9 @@ def test_cls_line_type_headers_footers_maximum_version_by_hand(fxtr_rmdir_opt, f
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "true"),
         ],
     )
 
@@ -461,7 +461,7 @@ def test_cls_line_type_headers_footers_maximum_version_by_hand(fxtr_rmdir_opt, f
                 1,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -518,18 +518,18 @@ def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, 
             ("p_5_h_2_f_0", "pdf"),
             ("p_5_h_2_f_2", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "0"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "0"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "0"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "0"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
 
@@ -556,7 +556,7 @@ def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, 
                 1,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -582,7 +582,7 @@ def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, 
                 2,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -608,7 +608,7 @@ def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, 
                 3,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -634,7 +634,7 @@ def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, 
                 4,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -687,18 +687,18 @@ def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxt
             ("p_5_h_2_f_0", "pdf"),
             ("p_5_h_2_f_2", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "0"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "0"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "0"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "0"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
 
@@ -725,7 +725,7 @@ def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxt
                 1,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -751,7 +751,7 @@ def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxt
                 2,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -777,7 +777,7 @@ def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxt
                 3,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -803,7 +803,7 @@ def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxt
                 4,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -865,12 +865,12 @@ def test_missing_dependencies_line_type_headers_footers_coverage_exists(fxtr_set
     )
 
     # -------------------------------------------------------------------------
-    dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser()
+    dcr_core.core_glob.text_parser = dcr_core.cls_text_parser.TextParser()
 
-    dcr_core.cfg.glob.text_parser.exists()
+    dcr_core.core_glob.text_parser.exists()
 
     # -------------------------------------------------------------------------
-    instance = dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(
+    instance = dcr_core.cls_line_type_headers_footers.LineTypeHeaderFooters(
         file_name_curr=cfg.glob.action_curr.action_file_name,
     )
 

@@ -25,9 +25,10 @@ import sqlalchemy
 import utils
 import yaml
 
-import dcr_core.cfg.cls_setup
-import dcr_core.nlp.cls_nlp_core
-import dcr_core.utils
+import dcr_core.cls_nlp_core
+import dcr_core.cls_setup
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Class variables.
@@ -47,20 +48,20 @@ def check_db_up_to_date() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     if cfg.glob.db_core.db_orm_engine is None:
-        dcr_core.utils.terminate_fatal(
+        dcr_core.core_utils.terminate_fatal(
             "The database does not yet exist.",
         )
 
     if not sqlalchemy.inspect(cfg.glob.db_core.db_orm_engine).has_table(db.cls_db_core.DBCore.DBT_VERSION):
-        dcr_core.utils.terminate_fatal(
+        dcr_core.core_utils.terminate_fatal(
             "The database table 'version' does not yet exist.",
         )
 
     current_version = db.cls_version.Version.select_version_version_unique()
 
-    if dcr_core.cfg.cls_setup.Setup.DCR_VERSION != current_version:
-        dcr_core.utils.terminate_fatal(
-            f"Current database version is '{current_version}' - but expected version is '" f"{dcr_core.cfg.cls_setup.Setup.DCR_VERSION}''"
+    if dcr_core.cls_setup.Setup.DCR_VERSION != current_version:
+        dcr_core.core_utils.terminate_fatal(
+            f"Current database version is '{current_version}' - but expected version is '" f"{dcr_core.cls_setup.Setup.DCR_VERSION}''"
         )
 
     utils.progress_msg(f"The current version of database is '{current_version}'")
@@ -115,10 +116,10 @@ def get_args(argv: list[str]) -> dict[str, bool]:
     num = len(argv)
 
     if num == 0:
-        dcr_core.utils.terminate_fatal("No command line arguments found")
+        dcr_core.core_utils.terminate_fatal("No command line arguments found")
 
     if num == 1:
-        dcr_core.utils.terminate_fatal("The specific command line arguments are missing")
+        dcr_core.core_utils.terminate_fatal("The specific command line arguments are missing")
 
     args = {
         db.cls_run.Run.ACTION_CODE_CREATE_DB: False,
@@ -157,7 +158,7 @@ def get_args(argv: list[str]) -> dict[str, bool]:
         ):
             args[arg] = True
         else:
-            dcr_core.utils.terminate_fatal(f"Unknown command line argument='{argv[i]}'")
+            dcr_core.core_utils.terminate_fatal(f"Unknown command line argument='{argv[i]}'")
 
     utils.progress_msg("The command line arguments are validated and loaded")
 
@@ -171,7 +172,7 @@ def get_args(argv: list[str]) -> dict[str, bool]:
 # -----------------------------------------------------------------------------
 def initialise_logger() -> None:
     """Initialise the root logging functionality."""
-    with open(LOGGER_CFG_FILE, "r", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+    with open(LOGGER_CFG_FILE, "r", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as file_handle:
         log_config = yaml.safe_load(file_handle.read())
 
     logging.config.dictConfig(log_config)
@@ -203,7 +204,7 @@ def main(argv: list[str]) -> None:
     locale.setlocale(locale.LC_ALL, LOCALE)
 
     # Load the configuration parameters.
-    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.core_glob.setup = cfg.cls_setup.Setup()
 
     # Load the command line arguments.
     args = get_args(argv)
@@ -363,30 +364,30 @@ def process_export_lt_rules() -> None:
     """Export the line type rules."""
     utils.progress_msg_empty_before("Start: Export the line type rules ...")
 
-    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_heading(
-        is_verbose=dcr_core.cfg.glob.setup.is_verbose,
-        file_name=dcr_core.cfg.glob.setup.lt_export_rule_file_heading,
-        file_encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT,
-        json_indent=dcr_core.cfg.glob.setup.json_indent,
-        is_json_sort_keys=dcr_core.cfg.glob.setup.is_json_sort_keys,
+    dcr_core.cls_nlp_core.NLPCore.export_rule_file_heading(
+        is_verbose=dcr_core.core_glob.setup.is_verbose,
+        file_name=dcr_core.core_glob.setup.lt_export_rule_file_heading,
+        file_encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT,
+        json_indent=dcr_core.core_glob.setup.json_indent,
+        is_json_sort_keys=dcr_core.core_glob.setup.is_json_sort_keys,
     )
 
-    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_bullet(
-        is_verbose=dcr_core.cfg.glob.setup.is_verbose,
-        file_name=dcr_core.cfg.glob.setup.lt_export_rule_file_list_bullet,
-        file_encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT,
-        json_indent=dcr_core.cfg.glob.setup.json_indent,
-        is_json_sort_keys=dcr_core.cfg.glob.setup.is_json_sort_keys,
-        environment_variant=dcr_core.cfg.glob.setup.environment_variant,
+    dcr_core.cls_nlp_core.NLPCore.export_rule_file_list_bullet(
+        is_verbose=dcr_core.core_glob.setup.is_verbose,
+        file_name=dcr_core.core_glob.setup.lt_export_rule_file_list_bullet,
+        file_encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT,
+        json_indent=dcr_core.core_glob.setup.json_indent,
+        is_json_sort_keys=dcr_core.core_glob.setup.is_json_sort_keys,
+        environment_variant=dcr_core.core_glob.setup.environment_variant,
     )
 
-    dcr_core.nlp.cls_nlp_core.NLPCore.export_rule_file_list_number(
-        is_verbose=dcr_core.cfg.glob.setup.is_verbose,
-        file_name=dcr_core.cfg.glob.setup.lt_export_rule_file_list_number,
-        file_encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT,
-        json_indent=dcr_core.cfg.glob.setup.json_indent,
-        is_json_sort_keys=dcr_core.cfg.glob.setup.is_json_sort_keys,
-        environment_variant=dcr_core.cfg.glob.setup.environment_variant,
+    dcr_core.cls_nlp_core.NLPCore.export_rule_file_list_number(
+        is_verbose=dcr_core.core_glob.setup.is_verbose,
+        file_name=dcr_core.core_glob.setup.lt_export_rule_file_list_number,
+        file_encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT,
+        json_indent=dcr_core.core_glob.setup.json_indent,
+        is_json_sort_keys=dcr_core.core_glob.setup.is_json_sort_keys,
+        environment_variant=dcr_core.core_glob.setup.environment_variant,
     )
 
     utils.progress_msg("End  : Export the line type rules ...")

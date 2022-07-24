@@ -8,8 +8,8 @@ import db.cls_run
 import pytest
 
 import dcr
-import dcr_core.cfg.glob
-import dcr_core.utils
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -42,7 +42,7 @@ def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_a
         source_files=[
             (stem_name_1, file_ext_1),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     stem_name_2 = "pdf_text_ok_protected_1.line"
@@ -66,7 +66,7 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
         source_files=[
             ("pdf_text_ok_protected", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -77,10 +77,10 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
 
@@ -122,7 +122,7 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
         source_files=[
             ("pdf_text_ok_protected", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -134,9 +134,9 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
         ],
     )
 
@@ -174,7 +174,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
         source_files=[
             ("case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -186,9 +186,9 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
         ],
     )
 
@@ -199,8 +199,8 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
-        dcr_core.utils.get_full_name(
-            dcr_core.cfg.glob.setup.directory_inbox_accepted,
+        dcr_core.core_utils.get_full_name(
+            dcr_core.core_glob.setup.directory_inbox_accepted,
             "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_0.pdf",
         )
     )
@@ -235,7 +235,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
         source_files=[
             ("case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -254,8 +254,8 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
-        dcr_core.utils.get_full_name(
-            dcr_core.cfg.glob.setup.directory_inbox_accepted,
+        dcr_core.core_utils.get_full_name(
+            dcr_core.core_glob.setup.directory_inbox_accepted,
             "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_0.pdf",
         )
     )

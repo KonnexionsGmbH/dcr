@@ -7,7 +7,8 @@ import db.cls_run
 import pytest
 
 import dcr
-import dcr_core.cfg.cls_setup
+import dcr_core.cls_setup
+import dcr_core.core_glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -32,7 +33,7 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
         source_files=[
             (stem_name_1, file_ext_1),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -68,9 +69,9 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "1"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "1"),
         ],
     )
 
@@ -100,7 +101,7 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
             [],
             [
                 stem_name + "_" + str(document_id) + "." + file_ext,
-                stem_name + "_" + str(document_id) + "_1." + dcr_core.cfg.glob.setup.pdf2image_type,
+                stem_name + "_" + str(document_id) + "_1." + dcr_core.core_glob.setup.pdf2image_type,
             ],
         ),
     )

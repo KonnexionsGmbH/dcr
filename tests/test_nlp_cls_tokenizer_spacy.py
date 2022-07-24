@@ -9,8 +9,8 @@ import db.cls_document
 import db.cls_run
 import pytest
 
-import dcr_core.nlp.cls_text_parser
-import dcr_core.nlp.cls_tokenizer_spacy
+import dcr_core.cls_text_parser
+import dcr_core.cls_tokenizer_spacy
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -29,7 +29,7 @@ def test_cls_tokenizer_spacy(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    instance = dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy()
+    instance = dcr_core.cls_tokenizer_spacy.TokenizerSpacy()
     instance.exists()
 
     # -------------------------------------------------------------------------
@@ -53,7 +53,7 @@ def test_missing_dependencies_tokenizer_spacy_text_parser(fxtr_setup_empty_db_an
     pytest.helpers.delete_existing_object(is_text_parser=True)
 
     # -------------------------------------------------------------------------
-    instance = dcr_core.nlp.cls_tokenizer_spacy.TokenizerSpacy()
+    instance = dcr_core.cls_tokenizer_spacy.TokenizerSpacy()
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:

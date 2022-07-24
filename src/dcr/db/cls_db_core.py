@@ -27,9 +27,10 @@ import utils
 from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine
 
-import dcr_core.cfg.glob
-import dcr_core.nlp.cls_nlp_core
-import dcr_core.utils
+import dcr_core.cls_nlp_core
+import dcr_core.cls_setup
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Type declaration.
@@ -143,7 +144,7 @@ class DBCore:
         """
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        dcr_core.utils.check_exists_object(
+        dcr_core.core_utils.check_exists_object(
             is_setup=True,
         )
 
@@ -173,22 +174,22 @@ class DBCore:
         """
         cfg.glob.logger.debug("Attempting to connect to a administration  database")
 
-        self._db_current_database = dcr_core.cfg.glob.setup.db_database_admin
-        self._db_current_password = dcr_core.cfg.glob.setup.db_password_admin
-        self._db_current_user = dcr_core.cfg.glob.setup.db_user_admin
+        self._db_current_database = dcr_core.core_glob.setup.db_database_admin
+        self._db_current_password = dcr_core.core_glob.setup.db_password_admin
+        self._db_current_user = dcr_core.core_glob.setup.db_user_admin
 
         self._show_connection_details()
 
         try:
             self._db_driver_conn = psycopg2.connect(
                 dbname=self._db_current_database,
-                host=dcr_core.cfg.glob.setup.db_host,
+                host=dcr_core.core_glob.setup.db_host,
                 password=self._db_current_password,
-                port=dcr_core.cfg.glob.setup.db_connection_port,
+                port=dcr_core.core_glob.setup.db_connection_port,
                 user=self._db_current_user,
             )
         except psycopg2.OperationalError as err:
-            dcr_core.utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 f"There is no database connection for the administrator possible - error={str(err)}",
             )
 
@@ -209,17 +210,17 @@ class DBCore:
         """
         cfg.glob.logger.debug("Attempting to connect to a user database")
 
-        self._db_current_database = dcr_core.cfg.glob.setup.db_database
-        self._db_current_password = dcr_core.cfg.glob.setup.db_password
-        self._db_current_user = dcr_core.cfg.glob.setup.db_user
+        self._db_current_database = dcr_core.core_glob.setup.db_database
+        self._db_current_password = dcr_core.core_glob.setup.db_password
+        self._db_current_user = dcr_core.core_glob.setup.db_user
 
         self._show_connection_details()
 
         self.db_orm_engine = sqlalchemy.create_engine(
-            dcr_core.cfg.glob.setup.db_connection_prefix
-            + dcr_core.cfg.glob.setup.db_host
+            dcr_core.core_glob.setup.db_connection_prefix
+            + dcr_core.core_glob.setup.db_host
             + ":"
-            + str(dcr_core.cfg.glob.setup.db_connection_port)
+            + str(dcr_core.core_glob.setup.db_connection_port)
             + "/"
             + self._db_current_database
             + "?user="
@@ -233,7 +234,7 @@ class DBCore:
             conn = self.db_orm_engine.connect()
             conn.close()
         except sqlalchemy.exc.OperationalError as err:
-            dcr_core.utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 f"No database connection possible - error={str(err)}",
             )
 
@@ -255,9 +256,9 @@ class DBCore:
 
         self._drop_database_postgresql()
 
-        database = dcr_core.cfg.glob.setup.db_database
-        password = dcr_core.cfg.glob.setup.db_password
-        user = dcr_core.cfg.glob.setup.db_user
+        database = dcr_core.core_glob.setup.db_database
+        password = dcr_core.core_glob.setup.db_password
+        user = dcr_core.core_glob.setup.db_user
 
         self._db_driver_conn.cursor().execute("CREATE USER " + user + " WITH ENCRYPTED PASSWORD '" + password + "'")
         utils.progress_msg(f"The user '{user}' has now been created")
@@ -272,7 +273,7 @@ class DBCore:
 
         self._create_schema()
 
-        utils.progress_msg(f"The database has been successfully created, " f"version number='{dcr_core.cfg.cls_setup.Setup.DCR_VERSION}'")
+        utils.progress_msg(f"The database has been successfully created, " f"version number='{dcr_core.cls_setup.Setup.DCR_VERSION}'")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -406,7 +407,7 @@ class DBCore:
 
         self._connect_db_user()
 
-        schema = dcr_core.cfg.glob.setup.db_schema
+        schema = dcr_core.core_glob.setup.db_schema
 
         self.db_orm_engine.execute(sqlalchemy.schema.CreateSchema(schema))
 
@@ -452,9 +453,9 @@ class DBCore:
             {
                 DBCore.DBC_CODE_ISO_639_3: DBCore.DBC_CODE_ISO_639_3_DEFAULT,
                 DBCore.DBC_CODE_PANDOC: DBCore.DBC_CODE_PANDOC_DEFAULT,
-                DBCore.DBC_CODE_SPACY: dcr_core.nlp.cls_nlp_core.NLPCore.CODE_SPACY_DEFAULT,
+                DBCore.DBC_CODE_SPACY: dcr_core.cls_nlp_core.NLPCore.CODE_SPACY_DEFAULT,
                 DBCore.DBC_CODE_TESSERACT: DBCore.DBC_CODE_TESSERACT_DEFAULT,
-                DBCore.DBC_DIRECTORY_NAME_INBOX: dcr_core.cfg.glob.setup.directory_inbox,
+                DBCore.DBC_DIRECTORY_NAME_INBOX: dcr_core.core_glob.setup.directory_inbox,
                 DBCore.DBC_ISO_LANGUAGE_NAME: DBCore.DBC_ISO_LANGUAGE_NAME_DEFAULT,
             },
         )
@@ -462,18 +463,18 @@ class DBCore:
         self.insert_dbt_row(
             DBCore.DBT_VERSION,
             {
-                DBCore.DBC_VERSION: dcr_core.cfg.cls_setup.Setup.DCR_VERSION,
+                DBCore.DBC_VERSION: dcr_core.cls_setup.Setup.DCR_VERSION,
             },
         )
 
-        if dcr_core.cfg.glob.setup.db_initial_data_file:
-            db_initial_data_file_path = dcr_core.utils.get_os_independent_name(dcr_core.cfg.glob.setup.db_initial_data_file)
+        if dcr_core.core_glob.setup.db_initial_data_file:
+            db_initial_data_file_path = dcr_core.core_utils.get_os_independent_name(dcr_core.core_glob.setup.db_initial_data_file)
             if os.path.isfile(db_initial_data_file_path):
                 self.load_db_data_from_json(pathlib.Path(db_initial_data_file_path))
-                utils.progress_msg(f"Initial database data was successfully loaded from the file {dcr_core.cfg.glob.setup.db_initial_data_file}")
+                utils.progress_msg(f"Initial database data was successfully loaded from the file {dcr_core.core_glob.setup.db_initial_data_file}")
             else:
-                dcr_core.utils.terminate_fatal(
-                    f"File with initial database data is missing - " f"file name '{dcr_core.cfg.glob.setup.db_initial_data_file}'"
+                dcr_core.core_utils.terminate_fatal(
+                    f"File with initial database data is missing - " f"file name '{dcr_core.core_glob.setup.db_initial_data_file}'"
                 )
 
         # Disconnect from the database.
@@ -488,10 +489,10 @@ class DBCore:
         """Drop the database."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        if dcr_core.cfg.glob.setup.db_dialect == DBCore.DB_DIALECT_POSTGRESQL:
+        if dcr_core.core_glob.setup.db_dialect == DBCore.DB_DIALECT_POSTGRESQL:
             self._drop_database_postgresql()
         else:
-            dcr_core.utils.terminate_fatal(f"A database dialect '{dcr_core.cfg.glob.setup.db_dialect}' " f"is not supported in DCR")
+            dcr_core.core_utils.terminate_fatal(f"A database dialect '{dcr_core.core_glob.setup.db_dialect}' " f"is not supported in DCR")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -502,8 +503,8 @@ class DBCore:
         """Drop the PostgreSQL database."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        database = dcr_core.cfg.glob.setup.db_database
-        user = dcr_core.cfg.glob.setup.db_user
+        database = dcr_core.core_glob.setup.db_database
+        user = dcr_core.core_glob.setup.db_user
 
         try:
             self._db_driver_conn.cursor().execute("DROP DATABASE IF EXISTS " + database)
@@ -514,7 +515,7 @@ class DBCore:
         except psycopg2.errors.InterfaceError:  # pylint: disable=no-member
             pass
         except psycopg2.errors.ObjectInUse as err:  # pylint: disable=no-member
-            dcr_core.utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 f"The database can currently not be dropped - error={str(err)}",
             )
 
@@ -533,14 +534,14 @@ class DBCore:
     # -----------------------------------------------------------------------------
     def _show_connection_details(self) -> None:
         """Show the details of the projected database connection."""
-        cfg.glob.logger.debug("Database connection parameter: host:    '%s'", dcr_core.cfg.glob.setup.db_host)
-        cfg.glob.logger.debug("Database connection parameter: port:    '%s'", dcr_core.cfg.glob.setup.db_connection_port)
+        cfg.glob.logger.debug("Database connection parameter: host:    '%s'", dcr_core.core_glob.setup.db_host)
+        cfg.glob.logger.debug("Database connection parameter: port:    '%s'", dcr_core.core_glob.setup.db_connection_port)
         cfg.glob.logger.debug("Database connection parameter: database '%s'", self._db_current_database)
         cfg.glob.logger.debug("Database connection parameter: user     '%s'", self._db_current_user)
 
-        if dcr_core.cfg.glob.setup.environment_variant in [
-            dcr_core.cfg.cls_setup.Setup.ENVIRONMENT_TYPE_DEV,
-            dcr_core.cfg.cls_setup.Setup.ENVIRONMENT_TYPE_TEST,
+        if dcr_core.core_glob.setup.environment_variant in [
+            dcr_core.cls_setup.Setup.ENVIRONMENT_TYPE_DEV,
+            dcr_core.cls_setup.Setup.ENVIRONMENT_TYPE_TEST,
         ]:
             cfg.glob.logger.debug("Database connection parameter: password '%s'", self._db_current_password)
 
@@ -552,7 +553,7 @@ class DBCore:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         if (current_version := db.cls_version.Version.select_version_version_unique()) < "1.0.0":
-            dcr_core.utils.terminate_fatal("An automatic upgrade of the database version is only " + "supported from version 1.0.0.")
+            dcr_core.core_utils.terminate_fatal("An automatic upgrade of the database version is only " + "supported from version 1.0.0.")
 
         # not testable
         self._connect_db_admin()
@@ -562,7 +563,7 @@ class DBCore:
         #     _upgrade_database_version_0_5_0()
         #     return
 
-        dcr_core.utils.terminate_fatal(
+        dcr_core.core_utils.terminate_fatal(
             "Database file has the wrong version, version number=" + current_version,
         )
 
@@ -573,10 +574,10 @@ class DBCore:
         """Create the database."""
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-        if dcr_core.cfg.glob.setup.db_dialect == DBCore.DB_DIALECT_POSTGRESQL:
+        if dcr_core.core_glob.setup.db_dialect == DBCore.DB_DIALECT_POSTGRESQL:
             self._create_database_postgresql()
         else:
-            dcr_core.utils.terminate_fatal(f"A database dialect '{dcr_core.cfg.glob.setup.db_dialect}' " f"is not supported in DCR")
+            dcr_core.core_utils.terminate_fatal(f"A database dialect '{dcr_core.core_glob.setup.db_dialect}' " f"is not supported in DCR")
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -674,12 +675,12 @@ class DBCore:
         Args:
             db_initial_data_file (Path): JSON file.
         """
-        with open(db_initial_data_file, "r", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        with open(db_initial_data_file, "r", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
             api_version = json_data[DBCore.JSON_NAME_API_VERSION]
-            if api_version != dcr_core.cfg.cls_setup.Setup.DCR_VERSION:
-                dcr_core.utils.terminate_fatal(f"Expected api version is' {dcr_core.cfg.cls_setup.Setup.DCR_VERSION}' " f"- got '{api_version}'")
+            if api_version != dcr_core.cls_setup.Setup.DCR_VERSION:
+                dcr_core.core_utils.terminate_fatal(f"Expected api version is' {dcr_core.cls_setup.Setup.DCR_VERSION}' " f"- got '{api_version}'")
 
             data = json_data[DBCore.JSON_NAME_DATA]
             for json_table in data[DBCore.JSON_NAME_TABLES]:
@@ -693,9 +694,9 @@ class DBCore:
                         "token",
                         "version",
                     }:
-                        dcr_core.utils.terminate_fatal(f"The database table '{table_name}' must not be changed via the JSON file.")
+                        dcr_core.core_utils.terminate_fatal(f"The database table '{table_name}' must not be changed via the JSON file.")
                     else:
-                        dcr_core.utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
+                        dcr_core.core_utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
 
                 for json_row in json_table[DBCore.JSON_NAME_ROWS]:
                     db_columns = {}
@@ -748,10 +749,10 @@ class DBCore:
 
         self._db_driver_conn = self._connect_db_admin()
 
-        if current_version == dcr_core.cfg.cls_setup.Setup.DCR_VERSION:
+        if current_version == dcr_core.cls_setup.Setup.DCR_VERSION:
             utils.progress_msg(f"The database is already up to date, version number='{current_version}'")
         else:
-            while db.cls_version.Version.select_version_version_unique() != dcr_core.cfg.cls_setup.Setup.DCR_VERSION:
+            while db.cls_version.Version.select_version_version_unique() != dcr_core.cls_setup.Setup.DCR_VERSION:
                 self._upgrade_database_version()
 
         self.disconnect_db()

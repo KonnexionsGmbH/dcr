@@ -1,4 +1,4 @@
-"""Module dcr_core.cfg.cls_setup.
+"""Module dcr_core.cls_setup.
 
 Managing the application configuration parameters.
 """
@@ -8,12 +8,12 @@ from typing import ClassVar
 
 import utils
 
-import dcr_core.cfg.cls_setup
-import dcr_core.utils
+import dcr_core.cls_setup
+import dcr_core.core_utils
 
 
 # pylint: disable=too-many-instance-attributes
-class Setup(dcr_core.cfg.cls_setup.Setup):
+class Setup(dcr_core.cls_setup.Setup):
     """Managing the application configuration parameters.
 
     Returns:
@@ -64,7 +64,7 @@ class Setup(dcr_core.cfg.cls_setup.Setup):
         self.db_database_admin = "dcr_db_prod_admin"
         self.db_dialect = "postgresql"
         self.db_host = "localhost"
-        self.db_initial_data_file = dcr_core.utils.get_os_independent_name("data/db_initial_data_file.json")
+        self.db_initial_data_file = dcr_core.core_utils.get_os_independent_name("data/db_initial_data_file.json")
         self.db_password = "postgresql"  # nosec
         self.db_password_admin = "postgresql"  # nosec
         self.db_schema = "dcr_schema"
@@ -73,9 +73,9 @@ class Setup(dcr_core.cfg.cls_setup.Setup):
 
         self.is_delete_auxiliary_files = True
 
-        self.directory_inbox = dcr_core.utils.get_os_independent_name("data/inbox")
-        self.directory_inbox_accepted = dcr_core.utils.get_os_independent_name("data/inbox_accepted")
-        self.directory_inbox_rejected = dcr_core.utils.get_os_independent_name("data/inbox_rejected")
+        self.directory_inbox = dcr_core.core_utils.get_os_independent_name("data/inbox")
+        self.directory_inbox_accepted = dcr_core.core_utils.get_os_independent_name("data/inbox_accepted")
+        self.directory_inbox_rejected = dcr_core.core_utils.get_os_independent_name("data/inbox_rejected")
         self.doc_id_in_file_name = "none"
 
         self.is_ignore_duplicates = False
@@ -111,9 +111,9 @@ class Setup(dcr_core.cfg.cls_setup.Setup):
         if Setup._DCR_CFG_DIRECTORY_INBOX in self._config:
             self._config[Setup._DCR_CFG_DIRECTORY_INBOX] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX])
 
-            self.directory_inbox = dcr_core.utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX]))
+            self.directory_inbox = dcr_core.core_utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX]))
         else:
-            dcr_core.utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
+            dcr_core.core_utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_accepted.
@@ -123,9 +123,9 @@ class Setup(dcr_core.cfg.cls_setup.Setup):
         if Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED in self._config:
             self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
 
-            self.directory_inbox_accepted = dcr_core.utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED]))
+            self.directory_inbox_accepted = dcr_core.core_utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED]))
         else:
-            dcr_core.utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'")
+            dcr_core.core_utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_rejected.
@@ -135,9 +135,9 @@ class Setup(dcr_core.cfg.cls_setup.Setup):
         if Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED in self._config:
             self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED])
 
-            self.directory_inbox_rejected = dcr_core.utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED]))
+            self.directory_inbox_rejected = dcr_core.core_utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED]))
         else:
-            dcr_core.utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'")
+            dcr_core.core_utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - doc_id_in_file_name.
@@ -185,7 +185,7 @@ class Setup(dcr_core.cfg.cls_setup.Setup):
                 case Setup._DCR_CFG_DB_HOST:
                     self.db_host = str(item)
                 case Setup._DCR_CFG_DB_INITIAL_DATA_FILE:
-                    self.db_initial_data_file = dcr_core.utils.get_os_independent_name(item)
+                    self.db_initial_data_file = dcr_core.core_utils.get_os_independent_name(item)
                 case Setup._DCR_CFG_DB_PASSWORD:
                     self.db_password = str(item)
                 case Setup._DCR_CFG_DB_PASSWORD_ADMIN:

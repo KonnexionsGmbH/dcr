@@ -6,7 +6,7 @@ import db.cls_run
 import pytest
 
 import dcr
-import dcr_core.cfg.glob
+import dcr_core.core_glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -26,7 +26,7 @@ def test_run_action_non_pdf_2_pdf_coverage(fxtr_setup_empty_db_and_inbox):
         source_files=[
             ("p_2_h_0_f_2", "docx"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -55,7 +55,7 @@ def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox
         source_files=[
             (stem_name_1, file_ext_1),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------

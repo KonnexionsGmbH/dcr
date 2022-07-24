@@ -10,8 +10,8 @@ import db.cls_run
 import sqlalchemy
 import utils
 
-import dcr_core.cfg.glob
-import dcr_core.utils
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 
 # pylint: disable=duplicate-code
@@ -325,7 +325,7 @@ class Document:
             conn.close()
 
         if row is None:
-            dcr_core.utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 f"The document with id={id_document} does not exist in the database table 'document'",
             )
 
@@ -355,7 +355,7 @@ class Document:
             _row_id=row[db.cls_db_core.DBCore.DBC_ID],
             action_code_last=row[db.cls_db_core.DBCore.DBC_ACTION_CODE_LAST],
             action_text_last=row[db.cls_db_core.DBCore.DBC_ACTION_TEXT_LAST],
-            directory_name=dcr_core.utils.get_os_independent_name(row[db.cls_db_core.DBCore.DBC_DIRECTORY_NAME]),
+            directory_name=dcr_core.core_utils.get_os_independent_name(row[db.cls_db_core.DBCore.DBC_DIRECTORY_NAME]),
             error_code_last=row[db.cls_db_core.DBCore.DBC_ERROR_CODE_LAST],
             error_msg_last=row[db.cls_db_core.DBCore.DBC_ERROR_MSG_LAST],
             error_no=row[db.cls_db_core.DBCore.DBC_ERROR_NO],
@@ -439,7 +439,7 @@ class Document:
         return (
             self.get_stem_name_next()
             + "."
-            + (self.get_file_type() if self.get_file_type() != dcr_core.cfg.glob.FILE_TYPE_TIF else dcr_core.cfg.glob.FILE_TYPE_TIFF)
+            + (self.get_file_type() if self.get_file_type() != dcr_core.core_glob.FILE_TYPE_TIF else dcr_core.core_glob.FILE_TYPE_TIFF)
         )
 
     # -----------------------------------------------------------------------------
@@ -454,7 +454,7 @@ class Document:
         if self.document_file_name == "":
             return self.document_file_name
 
-        return utils.get_file_type(dcr_core.utils.get_os_independent_name(self.document_file_name))
+        return utils.get_file_type(dcr_core.core_utils.get_os_independent_name(self.document_file_name))
 
     # -----------------------------------------------------------------------------
     # Get the full name from a directory name / path and a file name / path.
@@ -466,7 +466,7 @@ class Document:
         Returns:
             str:    Full file name.
         """
-        return dcr_core.utils.get_full_name(
+        return dcr_core.core_utils.get_full_name(
             directory_name=self.document_directory_name,
             file_name=self.document_file_name,
         )
@@ -483,7 +483,7 @@ class Document:
         if self.document_file_name == "":
             return self.document_file_name
 
-        return dcr_core.utils.get_stem_name(str(self.document_file_name))
+        return dcr_core.core_utils.get_stem_name(str(self.document_file_name))
 
     # -----------------------------------------------------------------------------
     # Get the stem name from the first processed document.
@@ -497,17 +497,17 @@ class Document:
         if self.document_file_name == "":
             return self.document_file_name
 
-        dcr_core.utils.check_exists_object(
+        dcr_core.core_utils.check_exists_object(
             is_setup=True,
         )
 
-        if dcr_core.cfg.glob.setup.doc_id_in_file_name == "none":
-            return dcr_core.utils.get_stem_name(str(self.document_file_name))
+        if dcr_core.core_glob.setup.doc_id_in_file_name == "none":
+            return dcr_core.core_utils.get_stem_name(str(self.document_file_name))
 
-        if dcr_core.cfg.glob.setup.doc_id_in_file_name == "after":
-            return dcr_core.utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
+        if dcr_core.core_glob.setup.doc_id_in_file_name == "after":
+            return dcr_core.core_utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
 
-        return str(self.document_id) + "_" + dcr_core.utils.get_stem_name(str(self.document_file_name))
+        return str(self.document_id) + "_" + dcr_core.core_utils.get_stem_name(str(self.document_file_name))
 
     # -----------------------------------------------------------------------------
     # Persist the object in the database.
@@ -517,10 +517,12 @@ class Document:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         if self.document_file_size_bytes == 0:
-            self.document_file_size_bytes = os.path.getsize(dcr_core.utils.get_full_name(self.document_directory_name, self.document_file_name))
+            self.document_file_size_bytes = os.path.getsize(dcr_core.core_utils.get_full_name(self.document_directory_name, self.document_file_name))
 
         if self.document_no_pdf_pages == 0:
-            self.document_no_pdf_pages = utils.get_pdf_pages_no(dcr_core.utils.get_full_name(self.document_directory_name, self.document_file_name))
+            self.document_no_pdf_pages = utils.get_pdf_pages_no(
+                dcr_core.core_utils.get_full_name(self.document_directory_name, self.document_file_name)
+            )
 
         if self.document_id == 0:
             self.document_status = self.document_status if self.document_status != "" else Document.DOCUMENT_STATUS_START

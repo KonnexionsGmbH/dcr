@@ -8,9 +8,9 @@ import db.cls_document
 import db.cls_run
 import utils
 
-import dcr_core.cfg.glob
-import dcr_core.nlp.pdflib
-import dcr_core.utils
+import dcr_core.core_glob
+import dcr_core.core_utils
+import dcr_core.processing
 
 # -----------------------------------------------------------------------------
 # Global variables.
@@ -63,7 +63,7 @@ def extract_text_from_pdf() -> None:
                 xml_variation=LINE_XML_VARIATION,
             )
 
-            if dcr_core.cfg.glob.setup.is_tetml_page:
+            if dcr_core.core_glob.setup.is_tetml_page:
                 if is_no_error:
                     is_no_error = extract_text_from_pdf_file(
                         document_opt_list=PAGE_TET_DOCUMENT_OPT_LIST,
@@ -71,7 +71,7 @@ def extract_text_from_pdf() -> None:
                         xml_variation=PAGE_XML_VARIATION,
                     )
 
-            if dcr_core.cfg.glob.setup.is_tetml_word:
+            if dcr_core.core_glob.setup.is_tetml_word:
                 if is_no_error:
                     is_no_error = extract_text_from_pdf_file(
                         document_opt_list=WORD_TET_DOCUMENT_OPT_LIST,
@@ -101,8 +101,8 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
     """Extract text from a pdf document (step: tet) - method line."""
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + xml_variation + dcr_core.cfg.glob.FILE_TYPE_XML
-    full_name_next = dcr_core.utils.get_full_name(
+    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + xml_variation + dcr_core.core_glob.FILE_TYPE_XML
+    full_name_next = dcr_core.core_utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )
@@ -115,13 +115,13 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
 
         return False
 
-    (error_code, error_msg) = dcr_core.nlp.pdflib.process(
+    (error_code, error_msg) = dcr_core.processing.pdflib_process(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         document_opt_list=document_opt_list,
         page_opt_list=page_opt_list,
     )
-    if (error_code, error_msg) != dcr_core.cfg.glob.RETURN_OK:
+    if (error_code, error_msg) != dcr_core.core_glob.RETURN_OK:
         cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return False
 

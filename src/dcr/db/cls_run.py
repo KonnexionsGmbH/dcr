@@ -13,8 +13,8 @@ import utils
 from sqlalchemy import Integer
 from sqlalchemy import String
 
-import dcr_core.cfg.glob
-import dcr_core.utils
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 
 # pylint: disable=duplicate-code
@@ -267,7 +267,7 @@ class Run:
             conn.close()
 
         if row is None:
-            dcr_core.utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 f"The run with id={id_run} does not exist in the database table 'run'",
             )
 
@@ -317,7 +317,7 @@ class Run:
         Returns:
             str:    Action text.
         """
-        action_text = dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+        action_text = dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE
 
         match action_code:
             case Run.ACTION_CODE_INBOX:
@@ -345,7 +345,7 @@ class Run:
             case Run.ACTION_CODE_TOKENIZE_LINE:
                 action_text = Run._ACTION_TEXT_TOKENIZE_LINE
             case _:
-                dcr_core.utils.terminate_fatal(
+                dcr_core.core_utils.terminate_fatal(
                     f"Action code {action_code} is not supported in function get_action_text()",
                 )
 

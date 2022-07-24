@@ -25,12 +25,12 @@ import pytest
 import sqlalchemy
 
 import dcr
-import dcr_core.cfg.cls_setup
-import dcr_core.cfg.glob
-import dcr_core.nlp.cls_nlp_core
-import dcr_core.nlp.cls_text_parser
-import dcr_core.nlp.cls_tokenizer_spacy
-import dcr_core.utils
+import dcr_core.cls_nlp_core
+import dcr_core.cls_setup
+import dcr_core.cls_text_parser
+import dcr_core.cls_tokenizer_spacy
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -62,28 +62,28 @@ def check_cls_line_type(
         target_toc (int):
                 Target toc lines.
     """
-    instance = dcr_core.nlp.cls_text_parser.TextParser.from_files(file_encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT, full_name_line=json_file)
+    instance = dcr_core.cls_text_parser.TextParser.from_files(file_encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT, full_name_line=json_file)
 
     actual_footer = []
     actual_header = []
 
-    pages = instance.parse_result_line_document[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGES]
+    pages = instance.parse_result_line_document[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PAGES]
 
     actual_toc = 0
 
     for page in pages:
-        page_no = page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
+        page_no = page[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
 
         actual_page_footer = []
         actual_page_header = []
 
-        for line in page[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINES]:
-            line_type = line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
-            if line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_FOOTER:
-                actual_page_footer.append(int(line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
-            elif line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_HEADER:
-                actual_page_header.append(int(line[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
-            elif line_type == dcr_core.nlp.cls_nlp_core.NLPCore.LINE_TYPE_TOC:
+        for line in page[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINES]:
+            line_type = line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+            if line_type == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_FOOTER:
+                actual_page_footer.append(int(line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
+            elif line_type == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_HEADER:
+                actual_page_header.append(int(line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE]) - 1)
+            elif line_type == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_TOC:
                 actual_toc += 1
 
         if actual_page_footer:
@@ -254,38 +254,38 @@ def check_json_line(
     no_lists_number_in_document: int = 0,
     no_tables_in_document: int = 0,
 ) -> None:
-    full_name = dcr_core.utils.get_full_name(directory_name=dcr_core.cfg.glob.setup.directory_inbox_accepted, file_name=file_name)
+    full_name = dcr_core.core_utils.get_full_name(directory_name=dcr_core.core_glob.setup.directory_inbox_accepted, file_name=file_name)
 
     try:
-        with open(full_name, "r", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as file_handle:
+        with open(full_name, "r", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as file_handle:
             document_json = json.load(file_handle)
 
-            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER] == no_lines_footer, (
+            assert document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER] == no_lines_footer, (
                 f"file={file_name} number line footer: expected={no_lines_footer} - "
-                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER]}"
+                + f"actual={document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_FOOTER]}"
             )
-            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER] == no_lines_header, (
+            assert document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER] == no_lines_header, (
                 f"file={file_name} number line header: expected={no_lines_header} - "
-                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER]}"
+                + f"actual={document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_HEADER]}"
             )
 
-            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC] == no_lines_toc, (
+            assert document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC] == no_lines_toc, (
                 f"file={file_name} number lines toc: expected={no_lines_toc} - "
-                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC]}"
+                + f"actual={document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC]}"
             )
 
-            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC] == no_lists_bullet_in_document, (
+            assert document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC] == no_lists_bullet_in_document, (
                 f"file={file_name} number bulleted lists in document: expected={no_lists_bullet_in_document} - "
-                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC]}"
+                + f"actual={document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC]}"
             )
-            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC] == no_lists_number_in_document, (
+            assert document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC] == no_lists_number_in_document, (
                 f"file={file_name} number numbered lists in document: expected={no_lists_number_in_document} - "
-                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC]}"
+                + f"actual={document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC]}"
             )
 
-            assert document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC] == no_tables_in_document, (
+            assert document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC] == no_tables_in_document, (
                 f"file={file_name} number tables in document: expected={no_tables_in_document} - "
-                + f"actual={document_json[dcr_core.nlp.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC]}"
+                + f"actual={document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_TABLES_IN_DOC]}"
             )
 
     except OSError as err:
@@ -307,7 +307,7 @@ def config_param_delete(config_section: str, config_param: str) -> None:
 
     del CONFIG_PARSER[config_section][config_param]
 
-    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
+    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
 
@@ -331,7 +331,7 @@ def config_params_modify(
     for (config_param, config_value) in config_params:
         CONFIG_PARSER[config_section][config_param] = config_value
 
-    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.cfg.glob.FILE_ENCODING_DEFAULT) as configfile:
+    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
 
@@ -349,15 +349,15 @@ def copy_directories_4_pytest_2_dir(
         source_directories: list[str]: Source directory names.
         target_dir: str: Target directory.
     """
-    assert os.path.isdir(dcr_core.utils.get_os_independent_name(get_test_inbox_directory_name())), (
+    assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(get_test_inbox_directory_name())), (
         "source base directory '" + get_test_inbox_directory_name() + "' missing"
     )
 
     for source in source_directories:
         source_dir = get_test_inbox_directory_name() + "/" + source
-        source_path = dcr_core.utils.get_full_name(get_test_inbox_directory_name(), pathlib.Path(source))
-        assert os.path.isdir(dcr_core.utils.get_os_independent_name(source_path)), "source language directory '" + str(source_path) + "' missing"
-        target_path = dcr_core.utils.get_full_name(target_dir, pathlib.Path(source))
+        source_path = dcr_core.core_utils.get_full_name(get_test_inbox_directory_name(), pathlib.Path(source))
+        assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(source_path)), "source language directory '" + str(source_path) + "' missing"
+        target_path = dcr_core.core_utils.get_full_name(target_dir, pathlib.Path(source))
         shutil.copytree(source_dir, target_path)
 
 
@@ -376,18 +376,18 @@ def copy_files_4_pytest(file_list: list[tuple[tuple[str, str | None], tuple[path
             ]
         ]): list of files to be copied.
     """
-    assert os.path.isdir(dcr_core.utils.get_os_independent_name(get_test_inbox_directory_name())), (
+    assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(get_test_inbox_directory_name())), (
         "source directory '" + get_test_inbox_directory_name() + "' missing"
     )
 
     for ((source_stem, source_ext), (target_dir, target_file_comp, target_ext)) in file_list:
         source_file_name = source_stem if source_ext is None else source_stem + "." + source_ext
-        source_file = dcr_core.utils.get_full_name(get_test_inbox_directory_name(), source_file_name)
+        source_file = dcr_core.core_utils.get_full_name(get_test_inbox_directory_name(), source_file_name)
         assert os.path.isfile(source_file), "source file '" + str(source_file) + "' missing"
 
-        assert os.path.isdir(dcr_core.utils.get_os_independent_name(target_dir)), "target directory '" + target_dir + "' missing"
+        assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(target_dir)), "target directory '" + target_dir + "' missing"
         target_file_name = "_".join(target_file_comp) if target_ext is None else "_".join(target_file_comp) + "." + target_ext
-        target_file = dcr_core.utils.get_full_name(target_dir, target_file_name)
+        target_file = dcr_core.core_utils.get_full_name(target_dir, target_file_name)
         assert os.path.isfile(target_file) is False, "target file '" + str(target_file) + "' already existing"
 
         shutil.copy(source_file, target_file)
@@ -675,19 +675,19 @@ def delete_existing_object(  # noqa: C901
 
     if is_setup:
         try:
-            dcr_core.cfg.glob.setup.exists()  # type: ignore
+            dcr_core.core_glob.setup.exists()  # type: ignore
 
-            del dcr_core.cfg.glob.setup
+            del dcr_core.core_glob.setup
 
-            cfg.glob.logger.debug("The existing object 'dcr_core.cfg.glob.setup' of the class Setup was deleted.")
+            cfg.glob.logger.debug("The existing object 'dcr_core.base.setup' of the class Setup was deleted.")
         except AttributeError:
             pass
 
     if is_text_parser:
         try:
-            dcr_core.cfg.glob.text_parser.exists()  # type: ignore
+            dcr_core.core_glob.text_parser.exists()  # type: ignore
 
-            del dcr_core.cfg.glob.text_parser
+            del dcr_core.core_glob.text_parser
 
             cfg.glob.logger.debug("The existing object 'cfg.glob.text_parser' of the class TextParser was deleted.")
         except AttributeError:
@@ -780,7 +780,7 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, "5"),
         (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_MIN_ENTRIES, "5"),
-        (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, dcr_core.cfg.cls_setup.Setup.PDF2IMAGE_TYPE_JPEG),
+        (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, dcr_core.cls_setup.Setup.PDF2IMAGE_TYPE_JPEG),
         (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
         (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
         (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
@@ -795,7 +795,7 @@ def fxtr_before_any_test():
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "false"),
         (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
     ):
-        CONFIG_PARSER[dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
+        CONFIG_PARSER[dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
 
 
 # -----------------------------------------------------------------------------
@@ -867,31 +867,33 @@ def fxtr_setup_empty_db_and_inbox(
     """Fixture: Setup empty database and empty inboxes."""
     setup_cfg_backup()
 
-    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.core_glob.setup = cfg.cls_setup.Setup()
 
     # restore original file
     shutil.copy(
-        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file))),
-        os.path.dirname(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)),
+        dcr_core.core_utils.get_full_name(
+            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file))
+        ),
+        os.path.dirname(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
     )
 
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
-    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox)
-    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox)
-    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_accepted)
-    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox_accepted)
-    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_rejected)
-    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox_rejected)
+    fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox)
+    fxtr_mkdir(dcr_core.core_glob.setup.directory_inbox)
+    fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_accepted)
+    fxtr_mkdir(dcr_core.core_glob.setup.directory_inbox_accepted)
+    fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_rejected)
+    fxtr_mkdir(dcr_core.core_glob.setup.directory_inbox_rejected)
 
     yield
 
     try:
-        dcr_core.cfg.glob.setup.exists()  # type: ignore
+        dcr_core.core_glob.setup.exists()  # type: ignore
 
-        fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_rejected)
-        fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_accepted)
-        fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox)
+        fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_rejected)
+        fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_accepted)
+        fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox)
 
         cfg.glob.db_core._drop_database()
     except AttributeError:
@@ -911,26 +913,28 @@ def fxtr_setup_empty_inbox(
     """Fixture: Setup empty database and empty inboxes."""
     setup_cfg_backup()
 
-    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.core_glob.setup = cfg.cls_setup.Setup()
 
     # restore original file
     shutil.copy(
-        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file))),
-        os.path.dirname(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)),
+        dcr_core.core_utils.get_full_name(
+            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file))
+        ),
+        os.path.dirname(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
     )
 
-    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox)
-    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox)
-    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_accepted)
-    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox_accepted)
-    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_rejected)
-    fxtr_mkdir(dcr_core.cfg.glob.setup.directory_inbox_rejected)
+    fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox)
+    fxtr_mkdir(dcr_core.core_glob.setup.directory_inbox)
+    fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_accepted)
+    fxtr_mkdir(dcr_core.core_glob.setup.directory_inbox_accepted)
+    fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_rejected)
+    fxtr_mkdir(dcr_core.core_glob.setup.directory_inbox_rejected)
 
     yield
 
-    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_rejected)
-    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox_accepted)
-    fxtr_rmdir_opt(dcr_core.cfg.glob.setup.directory_inbox)
+    fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_rejected)
+    fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_accepted)
+    fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox)
 
     cfg.glob.db_core._drop_database()
 
@@ -954,15 +958,17 @@ def fxtr_setup_logger():
 @pytest.fixture()
 def fxtr_setup_logger_environment():
     """Fixture: Setup logger & environment."""
-    dcr_core.cfg.glob.setup = cfg.cls_setup.Setup()
+    dcr_core.core_glob.setup = cfg.cls_setup.Setup()
 
     # restore original file
     shutil.copy(
-        dcr_core.utils.get_full_name(get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file))),
-        os.path.dirname(pathlib.Path(dcr_core.cfg.glob.setup.db_initial_data_file)),
+        dcr_core.core_utils.get_full_name(
+            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file))
+        ),
+        os.path.dirname(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
     )
 
-    dcr_core.cfg.glob.setup.environment_type = dcr_core.cfg.glob.setup.ENVIRONMENT_TYPE_TEST
+    dcr_core.core_glob.setup.environment_type = dcr_core.core_glob.setup.ENVIRONMENT_TYPE_TEST
 
     setup_cfg_backup()
 
@@ -992,7 +998,7 @@ def get_values_action():
         None,
         "p_i",
         "inbox         (preprocessor)",
-        dcr_core.cfg.glob.setup.directory_inbox,
+        dcr_core.core_glob.setup.directory_inbox,
         "inbox",
         "",
         "",
@@ -1018,7 +1024,7 @@ def get_values_document():
         None,
         "s_p_j_line",
         "parser_line   (nlp)",
-        dcr_core.cfg.glob.setup.directory_inbox,
+        dcr_core.core_glob.setup.directory_inbox,
         "",
         "",
         0,
@@ -1148,11 +1154,11 @@ def help_run_action_all_complete_duplicate_file(
     is_ocr: bool = False,
 ) -> None:
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
-    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext_1)], target_path=dcr_core.cfg.glob.setup.directory_inbox_accepted)
+    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext_1)], target_path=dcr_core.core_glob.setup.directory_inbox_accepted)
 
     os.rename(
-        dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
-        dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
+        dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
+        dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
     )
 
     # -------------------------------------------------------------------------
@@ -1165,19 +1171,19 @@ def help_run_action_all_complete_duplicate_file(
         dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
         verify_content_of_directory(
-            dcr_core.cfg.glob.setup.directory_inbox,
+            dcr_core.core_glob.setup.directory_inbox,
             [],
             [],
         )
 
         verify_content_of_directory(
-            dcr_core.cfg.glob.setup.directory_inbox_accepted,
+            dcr_core.core_glob.setup.directory_inbox_accepted,
             [],
             [stem_name_1 + "_1." + file_ext_1, stem_name_2 + "." + file_ext_2],
         )
 
         verify_content_of_directory(
-            dcr_core.cfg.glob.setup.directory_inbox_rejected,
+            dcr_core.core_glob.setup.directory_inbox_rejected,
             [],
             [],
         )
@@ -1192,7 +1198,7 @@ def help_run_action_process_inbox_normal(
     file_ext,
 ):
     """Help RUN_ACTION_PROCESS_INBOX - normal."""
-    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name, file_ext)], target_path=dcr_core.cfg.glob.setup.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name, file_ext)], target_path=dcr_core.core_glob.setup.directory_inbox)
 
     # -------------------------------------------------------------------------
     dcr.main([dcr.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
@@ -1200,25 +1206,25 @@ def help_run_action_process_inbox_normal(
     document_id = 1
 
     file_p_i = (
-        dcr_core.cfg.glob.setup.directory_inbox_accepted,
+        dcr_core.core_glob.setup.directory_inbox_accepted,
         [stem_name, str(document_id)],
         file_ext,
     )
 
     verify_content_of_directory(
-        dcr_core.cfg.glob.setup.directory_inbox,
+        dcr_core.core_glob.setup.directory_inbox,
         [],
         [],
     )
 
     verify_content_of_directory(
-        dcr_core.cfg.glob.setup.directory_inbox_accepted,
+        dcr_core.core_glob.setup.directory_inbox_accepted,
         [],
         [stem_name + "_" + str(document_id) + "." + file_ext],
     )
 
     verify_content_of_directory(
-        dcr_core.cfg.glob.setup.directory_inbox_rejected,
+        dcr_core.core_glob.setup.directory_inbox_rejected,
         [],
         [],
     )
@@ -1233,7 +1239,7 @@ def help_run_action_process_inbox_normal(
 def set_complete_cfg_spacy(false_or_true: str):
     """Set all spaCy configuration parameters to the same logical value."""
     return pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, false_or_true),
             (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, false_or_true),
@@ -1361,7 +1367,7 @@ def verify_content_of_directory(
 
     # check directory content against expectations
     for elem in directory_content:
-        elem_path = dcr_core.utils.get_full_name(directory_name, elem)
+        elem_path = dcr_core.core_utils.get_full_name(directory_name, elem)
         if os.path.isdir(elem_path):
             assert elem in expected_directories, f"directory {elem} was not expected"
         else:
@@ -1370,13 +1376,13 @@ def verify_content_of_directory(
     # check expected directories against directory content
     for elem in expected_directories:
         assert elem in directory_content, f"expected directory {elem} is missing"
-        elem_path = dcr_core.utils.get_full_name(directory_name, elem)
-        assert os.path.isdir(dcr_core.utils.get_os_independent_name(elem_path)), f"expected directory {elem} is a file"
+        elem_path = dcr_core.core_utils.get_full_name(directory_name, elem)
+        assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(elem_path)), f"expected directory {elem} is a file"
 
     # check expected files against directory content
     for elem in expected_files:
         assert elem in directory_content, f"expected file {elem} is missing"
-        elem_path = dcr_core.utils.get_full_name(directory_name, elem)
+        elem_path = dcr_core.core_utils.get_full_name(directory_name, elem)
         assert os.path.isfile(elem_path), f"expected file {elem} is a directory"
 
 
@@ -1403,18 +1409,18 @@ def verify_content_of_inboxes(
                    an optional list of expected files in the inbox_rejected directory.
     """
     verify_content_of_directory(
-        directory_name=dcr_core.cfg.glob.setup.directory_inbox,
+        directory_name=dcr_core.core_glob.setup.directory_inbox,
         expected_directories=inbox[0],
         expected_files=inbox[1],
     )
 
     verify_content_of_directory(
-        directory_name=dcr_core.cfg.glob.setup.directory_inbox_accepted,
+        directory_name=dcr_core.core_glob.setup.directory_inbox_accepted,
         expected_directories=inbox_accepted[0],
         expected_files=inbox_accepted[1],
     )
     verify_content_of_directory(
-        directory_name=dcr_core.cfg.glob.setup.directory_inbox_rejected,
+        directory_name=dcr_core.core_glob.setup.directory_inbox_rejected,
         expected_directories=inbox_rejected[0],
         expected_files=inbox_rejected[1],
     )

@@ -11,8 +11,8 @@ import sqlalchemy.engine
 import sqlalchemy.orm
 import utils
 
-import dcr_core.cfg.glob
-import dcr_core.utils
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 
 # pylint: disable=duplicate-code
@@ -70,7 +70,7 @@ class Language:
         utils.check_exists_object(
             is_db_core=True,
         )
-        dcr_core.utils.check_exists_object(
+        dcr_core.core_utils.check_exists_object(
             is_setup=True,
         )
 
@@ -81,9 +81,9 @@ class Language:
         self.language_code_tesseract = code_tesseract
 
         if self.language_active and (directory_name_inbox is None or directory_name_inbox == ""):
-            self.language_directory_name_inbox = str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox, iso_language_name.lower()))
+            self.language_directory_name_inbox = str(os.path.join(dcr_core.core_glob.setup.directory_inbox, iso_language_name.lower()))
         else:
-            self.language_directory_name_inbox = dcr_core.utils.get_os_independent_name(directory_name_inbox)
+            self.language_directory_name_inbox = dcr_core.core_utils.get_os_independent_name(directory_name_inbox)
 
         self.language_id = _row_id
         self.language_iso_language_name = iso_language_name
@@ -205,7 +205,7 @@ class Language:
             conn.close()
 
         if row is None:
-            dcr_core.utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 f"The language with id={id_language} does not exist in the database table 'language'",
             )
 

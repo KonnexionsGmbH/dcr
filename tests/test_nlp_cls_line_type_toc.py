@@ -11,12 +11,12 @@ import db.cls_run
 import pytest
 
 import dcr
-import dcr_core.cfg.glob
-import dcr_core.nlp.cls_line_type_headers_footers
-import dcr_core.nlp.cls_line_type_toc
-import dcr_core.nlp.cls_text_parser
-import dcr_core.nlp.cls_tokenizer_spacy
-import dcr_core.utils
+import dcr_core.cls_line_type_headers_footers
+import dcr_core.cls_line_type_toc
+import dcr_core.cls_text_parser
+import dcr_core.cls_tokenizer_spacy
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -39,7 +39,7 @@ def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_em
             ("pdf_toc_line_bullet_list", "pdf"),
             ("pdf_toc_table_bullet_list", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -50,11 +50,11 @@ def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_em
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, lt_toc_last_page),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, lt_toc_last_page),
         ],
     )
 
@@ -73,13 +73,13 @@ def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_em
         target_toc_exp_table = 15
 
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "pdf_toc_line_bullet_list_1.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_toc_line_bullet_list_1.line.json")),
         target_footer=[(1, [2, 3]), (2, [8, 9]), (3, [12, 13]), (4, [10, 11]), (5, [6, 7]), (6, [6, 7]), (7, [6, 7])],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1]), (6, [0, 1]), (7, [0, 1])],
         target_toc=target_toc_exp_line,
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.cfg.glob.setup.directory_inbox_accepted, "pdf_toc_table_bullet_list_2.line.json")),
+        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_toc_table_bullet_list_2.line.json")),
         target_footer=[(1, [11, 12]), (2, [8, 9]), (3, [10, 11]), (4, [10, 11]), (5, [6, 7]), (6, [6, 7]), (7, [6, 7])],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1]), (6, [0, 1]), (7, [0, 1])],
         target_toc=target_toc_exp_table,
@@ -102,7 +102,7 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             ("pdf_toc_line_bullet_list", "pdf"),
             ("pdf_toc_table_bullet_list", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
@@ -113,13 +113,13 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "true"),
         ],
     )
 
@@ -175,7 +175,7 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
                 1,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -201,7 +201,7 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
                 2,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -266,19 +266,19 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             ("pdf_toc_line_bullet_list", "pdf"),
             ("pdf_toc_table_bullet_list", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, "0"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, "0"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "true"),
         ],
     )
 
@@ -336,7 +336,7 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
                 1,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -362,7 +362,7 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
                 2,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -419,19 +419,19 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
             ("pdf_toc_line_bullet_list", "pdf"),
             ("pdf_toc_table_bullet_list", "pdf"),
         ],
-        target_path=dcr_core.cfg.glob.setup.directory_inbox,
+        target_path=dcr_core.core_glob.setup.directory_inbox,
     )
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        dcr_core.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_LT_TOC_MIN_ENTRIES, "99"),
-            (dcr_core.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_LT_TOC_MIN_ENTRIES, "99"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "true"),
         ],
     )
 
@@ -489,7 +489,7 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
                 1,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -515,7 +515,7 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
                 2,
                 "tkn",
                 "tokenizer     (nlp)",
-                dcr_core.utils.get_os_independent_name("data\\inbox_test"),
+                dcr_core.core_utils.get_os_independent_name("data\\inbox_test"),
                 "",
                 "",
                 0,
@@ -583,13 +583,13 @@ def test_line_type_toc_missing_dependencies_coverage_exists(fxtr_setup_empty_db_
     )
 
     # -------------------------------------------------------------------------
-    dcr_core.cfg.glob.text_parser = dcr_core.nlp.cls_text_parser.TextParser()
-    dcr_core.cfg.glob.line_type_headers_footers = dcr_core.nlp.cls_line_type_headers_footers.LineTypeHeaderFooters(file_name_curr="")
+    dcr_core.core_glob.text_parser = dcr_core.cls_text_parser.TextParser()
+    dcr_core.core_glob.line_type_headers_footers = dcr_core.cls_line_type_headers_footers.LineTypeHeaderFooters(file_name_curr="")
 
-    dcr_core.cfg.glob.text_parser.exists()
+    dcr_core.core_glob.text_parser.exists()
 
     # -------------------------------------------------------------------------
-    instance = dcr_core.nlp.cls_line_type_toc.LineTypeToc(
+    instance = dcr_core.cls_line_type_toc.LineTypeToc(
         file_name_curr=cfg.glob.action_curr.action_file_name,
     )
 

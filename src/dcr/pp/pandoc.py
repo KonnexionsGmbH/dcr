@@ -9,9 +9,9 @@ import db.cls_language
 import db.cls_run
 import utils
 
-import dcr_core.cfg.glob
-import dcr_core.pp.pandoc
-import dcr_core.utils
+import dcr_core.core_glob
+import dcr_core.core_utils
+import dcr_core.processing
 
 # -----------------------------------------------------------------------------
 # Global variables.
@@ -62,8 +62,8 @@ def convert_non_pdf_2_pdf_file() -> None:
     """Convert a non-pdf document to a pdf document."""
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + dcr_core.cfg.glob.FILE_TYPE_PDF
-    full_name_next = dcr_core.utils.get_full_name(
+    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + dcr_core.core_glob.FILE_TYPE_PDF
+    full_name_next = dcr_core.core_utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )
@@ -76,12 +76,12 @@ def convert_non_pdf_2_pdf_file() -> None:
 
         return
 
-    (error_code, error_msg) = dcr_core.pp.pandoc.process(
+    (error_code, error_msg) = dcr_core.processing.pandoc_process(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         language_pandoc=db.cls_language.Language.LANGUAGES_PANDOC[cfg.glob.document.document_id_language],
     )
-    if (error_code, error_msg) != dcr_core.cfg.glob.RETURN_OK:
+    if (error_code, error_msg) != dcr_core.core_glob.RETURN_OK:
         cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return
 

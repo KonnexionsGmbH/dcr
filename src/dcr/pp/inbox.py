@@ -21,7 +21,8 @@ import sqlalchemy
 import sqlalchemy.orm
 import utils
 
-import dcr_core.utils
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Class variables.
@@ -44,9 +45,9 @@ def check_and_create_directories() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    create_directory("the accepted documents", str(dcr_core.cfg.glob.setup.directory_inbox_accepted))
+    create_directory("the accepted documents", str(dcr_core.core_glob.setup.directory_inbox_accepted))
 
-    create_directory("the rejected documents", str(dcr_core.cfg.glob.setup.directory_inbox_rejected))
+    create_directory("the rejected documents", str(dcr_core.core_glob.setup.directory_inbox_rejected))
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -96,7 +97,7 @@ def initialise_action(
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    full_name = dcr_core.utils.get_full_name(directory_name, file_name)
+    full_name = dcr_core.core_utils.get_full_name(directory_name, file_name)
 
     action = db.cls_action.Action(
         action_code=action_code,
@@ -134,7 +135,7 @@ def initialise_base(file_path: pathlib.Path) -> None:
         id_run_last=cfg.glob.run.run_id,
     )
 
-    if not dcr_core.cfg.glob.setup.is_ignore_duplicates:
+    if not dcr_core.core_glob.setup.is_ignore_duplicates:
         cfg.glob.document.document_sha256 = utils.compute_sha256(file_path)
 
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -189,7 +190,7 @@ def process_inbox() -> None:
     """
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
-    if dcr_core.cfg.glob.setup.is_ignore_duplicates:
+    if dcr_core.core_glob.setup.is_ignore_duplicates:
         utils.progress_msg("Configuration: File duplicates are allowed!")
     else:
         utils.progress_msg("Configuration: File duplicates are not allowed!")
@@ -225,7 +226,7 @@ def process_inbox_accepted(action_code: str) -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     full_name_curr = cfg.glob.document.get_full_name()
-    full_name_next = dcr_core.utils.get_full_name(dcr_core.cfg.glob.setup.directory_inbox_accepted, cfg.glob.document.get_file_name_next())
+    full_name_next = dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, cfg.glob.document.get_file_name_next())
 
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,
@@ -244,7 +245,7 @@ def process_inbox_accepted(action_code: str) -> None:
 
         cfg.glob.action_next = initialise_action(
             action_code=action_code,
-            directory_name=dcr_core.cfg.glob.setup.directory_inbox_accepted,
+            directory_name=dcr_core.core_glob.setup.directory_inbox_accepted,
             directory_type=db.cls_document.Document.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED,
             file_name=cfg.glob.document.get_file_name_next(),
             id_parent=cfg.glob.action_curr.action_id,
@@ -273,7 +274,7 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
 
     initialise_base(file_path)
 
-    if not dcr_core.cfg.glob.setup.is_ignore_duplicates:
+    if not dcr_core.core_glob.setup.is_ignore_duplicates:
         file_name = db.cls_document.Document.select_duplicate_file_name_by_sha256(cfg.glob.document.document_id, cfg.glob.document.document_sha256)
     else:
         file_name = None
@@ -283,13 +284,13 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
             db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             ERROR_01_905.replace("{file_name}", file_name),
         )
-    elif cfg.glob.document.get_file_type() == dcr_core.cfg.glob.FILE_TYPE_PDF:
+    elif cfg.glob.document.get_file_type() == dcr_core.core_glob.FILE_TYPE_PDF:
         prepare_pdf(file_path)
-    elif cfg.glob.document.get_file_type() in dcr_core.cfg.glob.FILE_TYPE_PANDOC:
+    elif cfg.glob.document.get_file_type() in dcr_core.core_glob.FILE_TYPE_PANDOC:
         process_inbox_accepted(db.cls_run.Run.ACTION_CODE_PANDOC)
         cfg.glob.language.total_processed_pandoc += 1
         cfg.glob.run.total_processed_pandoc += 1
-    elif cfg.glob.document.get_file_type() in dcr_core.cfg.glob.FILE_TYPE_TESSERACT:
+    elif cfg.glob.document.get_file_type() in dcr_core.core_glob.FILE_TYPE_TESSERACT:
         process_inbox_accepted(db.cls_run.Run.ACTION_CODE_TESSERACT)
         cfg.glob.language.total_processed_tesseract += 1
         cfg.glob.run.total_processed_tesseract += 1
@@ -354,8 +355,8 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     full_name_curr = cfg.glob.document.get_full_name()
-    full_name_next = dcr_core.utils.get_full_name(
-        dcr_core.cfg.glob.setup.directory_inbox_rejected,
+    full_name_next = dcr_core.core_utils.get_full_name(
+        dcr_core.core_glob.setup.directory_inbox_rejected,
         cfg.glob.document.get_file_name_next(),
     )
 

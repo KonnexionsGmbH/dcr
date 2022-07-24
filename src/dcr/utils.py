@@ -10,8 +10,8 @@ import db.cls_run
 import PyPDF2
 import PyPDF2.errors
 
-import dcr_core.cfg.glob
-import dcr_core.utils
+import dcr_core.core_glob
+import dcr_core.core_utils
 
 
 # -----------------------------------------------------------------------------
@@ -42,7 +42,7 @@ def check_exists_object(  # noqa: C901
         try:
             cfg.glob.action_curr.exists()  # type: ignore
         except AttributeError:
-            dcr_core.utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 "The required instance of the class 'Action (action_curr)' does not yet exist.",
             )
 
@@ -50,7 +50,7 @@ def check_exists_object(  # noqa: C901
         try:
             cfg.glob.action_next.exists()  # type: ignore
         except AttributeError:
-            dcr_core.utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 "The required instance of the class 'Action (action_next)' does not yet exist.",
             )
 
@@ -58,7 +58,7 @@ def check_exists_object(  # noqa: C901
         try:
             cfg.glob.db_core.exists()  # type: ignore
         except AttributeError:
-            dcr_core.utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 "The required instance of the class 'DBCore' does not yet exist.",
             )
 
@@ -66,7 +66,7 @@ def check_exists_object(  # noqa: C901
         try:
             cfg.glob.document.exists()  # type: ignore
         except AttributeError:
-            dcr_core.utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 "The required instance of the class 'Document' does not yet exist.",
             )
 
@@ -74,7 +74,7 @@ def check_exists_object(  # noqa: C901
         try:
             cfg.glob.run.exists()  # type: ignore
         except AttributeError:
-            dcr_core.utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 "The required instance of the class 'Run' does not yet exist.",
             )
 
@@ -106,13 +106,13 @@ def delete_auxiliary_file(full_name: pathlib.Path | str) -> None:
     Args:
         full_name (pathlib.Path | str): File name.
     """
-    if not dcr_core.cfg.glob.setup.is_delete_auxiliary_files:
+    if not dcr_core.core_glob.setup.is_delete_auxiliary_files:
         return
 
-    full_name = dcr_core.utils.get_os_independent_name(full_name)
+    full_name = dcr_core.core_utils.get_os_independent_name(full_name)
 
     # Don't remove the base document !!!
-    if full_name == dcr_core.utils.get_full_name(cfg.glob.action_curr.action_directory_name, cfg.glob.document.get_file_name_next()):
+    if full_name == dcr_core.core_utils.get_full_name(cfg.glob.action_curr.action_directory_name, cfg.glob.document.get_file_name_next()):
         return
 
     if os.path.isfile(full_name):
@@ -173,7 +173,7 @@ def get_pdf_pages_no(
     Returns:
         int: The number of pages found.
     """
-    if get_file_type(file_name) != dcr_core.cfg.glob.FILE_TYPE_PDF:
+    if get_file_type(file_name) != dcr_core.core_glob.FILE_TYPE_PDF:
         return -1
 
     try:
@@ -192,9 +192,9 @@ def progress_msg(msg: str) -> None:
         msg (str): Progress message.
     """
     try:
-        dcr_core.cfg.glob.setup.exists()
+        dcr_core.core_glob.setup.exists()
 
-        if dcr_core.cfg.glob.setup.is_verbose:
+        if dcr_core.core_glob.setup.is_verbose:
             progress_msg_core(msg)
     except AttributeError:
         progress_msg_core(msg)
@@ -206,9 +206,9 @@ def progress_msg(msg: str) -> None:
 def progress_msg_connected(database: str | None, user: str | None) -> None:
     """Create a progress message: connected to database."""
     try:
-        dcr_core.cfg.glob.setup.exists()
+        dcr_core.core_glob.setup.exists()
 
-        if dcr_core.cfg.glob.setup.is_verbose:
+        if dcr_core.core_glob.setup.is_verbose:
             print("")
             progress_msg(f"User '{user}' is now connected " f"to database '{database}'")
     except AttributeError:
@@ -225,7 +225,7 @@ def progress_msg_core(msg: str) -> None:
     Args:
         msg (str): Progress message.
     """
-    final_msg = dcr_core.cfg.glob.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
+    final_msg = dcr_core.core_glob.LOGGER_PROGRESS_UPDATE + str(datetime.datetime.now()) + " : " + msg + "."
 
     print(final_msg)
 
@@ -238,9 +238,9 @@ def progress_msg_core(msg: str) -> None:
 def progress_msg_disconnected() -> None:
     """Create a progress message: disconnected from database."""
     try:
-        dcr_core.cfg.glob.setup.exists()
+        dcr_core.core_glob.setup.exists()
 
-        if dcr_core.cfg.glob.setup.is_verbose:
+        if dcr_core.core_glob.setup.is_verbose:
             if cfg.glob.db_core.db_current_database == "" and cfg.glob.db_core.db_current_user == "":
                 print("")
                 progress_msg("Database is now disconnected")
@@ -269,8 +269,8 @@ def progress_msg_empty_before(msg: str) -> None:
         msg (str): Progress message.
     """
     try:
-        dcr_core.cfg.glob.setup.exists()
-        if dcr_core.cfg.glob.setup.is_verbose:
+        dcr_core.core_glob.setup.exists()
+        if dcr_core.core_glob.setup.is_verbose:
             print("")
             progress_msg(msg)
     except AttributeError:

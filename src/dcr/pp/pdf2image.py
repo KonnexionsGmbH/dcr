@@ -9,9 +9,10 @@ import db.cls_document
 import db.cls_run
 import utils
 
-import dcr_core.cfg.glob
-import dcr_core.pp.pdf2image
-import dcr_core.utils
+import dcr_core.cls_setup
+import dcr_core.core_glob
+import dcr_core.core_utils
+import dcr_core.processing
 
 
 # -----------------------------------------------------------------------------
@@ -56,7 +57,7 @@ def convert_pdf_2_image() -> None:
 # noinspection PyArgumentList
 def convert_pdf_2_image_file() -> None:
     """Convert a scanned image pdf document to an image file."""
-    full_name_curr = dcr_core.utils.get_full_name(
+    full_name_curr = dcr_core.core_utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         cfg.glob.action_curr.action_file_name,
     )
@@ -65,16 +66,16 @@ def convert_pdf_2_image_file() -> None:
         cfg.glob.action_curr.get_stem_name()
         + "_[0-9]*."
         + (
-            dcr_core.cfg.glob.FILE_TYPE_PNG
-            if dcr_core.cfg.glob.setup.pdf2image_type == dcr_core.cfg.cls_setup.Setup.PDF2IMAGE_TYPE_PNG
-            else dcr_core.cfg.glob.FILE_TYPE_JPEG
+            dcr_core.core_glob.FILE_TYPE_PNG
+            if dcr_core.core_glob.setup.pdf2image_type == dcr_core.cls_setup.Setup.PDF2IMAGE_TYPE_PNG
+            else dcr_core.core_glob.FILE_TYPE_JPEG
         )
     )
 
-    (error_code, error_msg, children) = dcr_core.pp.pdf2image.process(
+    (error_code, error_msg, children) = dcr_core.processing.pdf2image_process(
         full_name_in=full_name_curr,
     )
-    if error_code != dcr_core.cfg.glob.RETURN_OK[0]:
+    if error_code != dcr_core.core_glob.RETURN_OK[0]:
         cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return
 

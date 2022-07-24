@@ -8,8 +8,8 @@ import db.cls_run
 import pytest
 
 import dcr
-import dcr_core.cfg.cls_setup
-import dcr_core.cfg.glob
+import dcr_core.cls_setup
+import dcr_core.core_glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -80,7 +80,7 @@ def test_dcr_get_args(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        dcr.get_args([dcr_core.cfg.glob.INFORMATION_NOT_YET_AVAILABLE, "second"])
+        dcr.get_args([dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE, "second"])
 
     assert expt.type == SystemExit, "invalid arg"
     assert expt.value.code == 1, "invalid arg"

@@ -1,4 +1,4 @@
-"""Module nlp.cls_nlp_core: Managing the NLP processing."""
+"""Module nlp.dcr_core.cls_nlp_core: Managing the NLP processing."""
 from __future__ import annotations
 
 import collections
@@ -6,7 +6,7 @@ import json
 import re
 from typing import ClassVar
 
-import dcr_core.utils
+import dcr_core.core_utils
 
 
 class NLPCore:
@@ -723,9 +723,9 @@ class NLPCore:
             )
 
         if len(anti_patterns) > 0:
-            dcr_core.utils.progress_msg(is_verbose, f"{len(anti_patterns):3d} heading       line type anti-pattern(s) exported")
+            dcr_core.core_utils.progress_msg(is_verbose, f"{len(anti_patterns):3d} heading       line type anti-pattern(s) exported")
         if len(rules) > 0:
-            dcr_core.utils.progress_msg(is_verbose, f"{len(rules):3d} heading       line type rule(s)         exported")
+            dcr_core.core_utils.progress_msg(is_verbose, f"{len(rules):3d} heading       line type rule(s)         exported")
 
     # -----------------------------------------------------------------------------
     # Export the default bulleted list line type rules.
@@ -785,9 +785,9 @@ class NLPCore:
             )
 
         if len(anti_patterns) > 0:
-            dcr_core.utils.progress_msg(is_verbose, f"{len(anti_patterns):3d} bulleted list line type anti-pattern(s) exported")
+            dcr_core.core_utils.progress_msg(is_verbose, f"{len(anti_patterns):3d} bulleted list line type anti-pattern(s) exported")
         if len(rules) > 0:
-            dcr_core.utils.progress_msg(is_verbose, f"{len(rules):3d} bulleted list line type rule(s)         exported")
+            dcr_core.core_utils.progress_msg(is_verbose, f"{len(rules):3d} bulleted list line type rule(s)         exported")
 
     # -----------------------------------------------------------------------------
     # Export the default numbered list line type rules.
@@ -859,9 +859,9 @@ class NLPCore:
             )
 
         if len(anti_patterns) > 0:
-            dcr_core.utils.progress_msg(is_verbose, f"{len(anti_patterns):3d} numbered list line type anti-pattern(s) exported")
+            dcr_core.core_utils.progress_msg(is_verbose, f"{len(anti_patterns):3d} numbered list line type anti-pattern(s) exported")
         if len(rules) > 0:
-            dcr_core.utils.progress_msg(is_verbose, f"{len(rules):3d} numbered list line type rule(s)         exported")
+            dcr_core.core_utils.progress_msg(is_verbose, f"{len(rules):3d} numbered list line type rule(s)         exported")
 
     # -----------------------------------------------------------------------------
     # Get the default heading line type anti-patterns.

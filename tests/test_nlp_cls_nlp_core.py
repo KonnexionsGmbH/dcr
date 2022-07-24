@@ -4,7 +4,7 @@
 import cfg.cls_setup
 import cfg.glob
 
-import dcr_core.nlp.cls_nlp_core
+import dcr_core.cls_nlp_core
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -20,7 +20,7 @@ def test_cls_nlp_core_exists(fxtr_rmdir_opt, fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    instance = dcr_core.nlp.cls_nlp_core.NLPCore()
+    instance = dcr_core.cls_nlp_core.NLPCore()
     instance.exists()
 
     # -------------------------------------------------------------------------

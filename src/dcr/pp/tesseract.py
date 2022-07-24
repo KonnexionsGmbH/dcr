@@ -9,9 +9,9 @@ import db.cls_language
 import db.cls_run
 import utils
 
-import dcr_core.cfg.glob
-import dcr_core.pp.tesseract
-import dcr_core.utils
+import dcr_core.core_glob
+import dcr_core.core_utils
+import dcr_core.processing
 
 # -----------------------------------------------------------------------------
 # Global variables.
@@ -64,8 +64,8 @@ def convert_image_2_pdf_file() -> None:
     """Convert scanned image pdf documents to image files."""
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name().replace("[0-9]*", "0") + "." + dcr_core.cfg.glob.FILE_TYPE_PDF
-    full_name_next = dcr_core.utils.get_full_name(
+    file_name_next = cfg.glob.action_curr.get_stem_name().replace("[0-9]*", "0") + "." + dcr_core.core_glob.FILE_TYPE_PDF
+    full_name_next = dcr_core.core_utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )
@@ -77,12 +77,12 @@ def convert_image_2_pdf_file() -> None:
         )
         return
 
-    (error_code, error_msg, children) = dcr_core.pp.tesseract.process(
+    (error_code, error_msg, children) = dcr_core.processing.tesseract_process(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         language_tesseract=db.cls_language.Language.LANGUAGES_TESSERACT[cfg.glob.document.document_id_language],
     )
-    if error_code != dcr_core.cfg.glob.RETURN_OK[0]:
+    if error_code != dcr_core.core_glob.RETURN_OK[0]:
         cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return
 
