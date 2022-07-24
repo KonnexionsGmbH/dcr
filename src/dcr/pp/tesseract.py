@@ -1,5 +1,4 @@
 """Module pp.tesseract: Convert image files to pdf documents."""
-import glob
 import os
 import time
 
@@ -8,19 +7,15 @@ import db.cls_action
 import db.cls_document
 import db.cls_language
 import db.cls_run
-import PyPDF2
-import pytesseract
 import utils
 
 import dcr_core.cfg.glob
+import dcr_core.pp.tesseract
 import dcr_core.utils
 
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_41_901 = (
-    "41.901 Issue (ocr): Converting the file '{full_name_curr}' with Tesseract OCR failed - " + "error type: '{error_type}' - error: '{error}'."
-)
 ERROR_41_903 = "41.903 Issue (ocr): The target file '{full_name}' already exists."
 ERROR_41_904 = "41.904 Issue (pypdf2): The target file '{full_name}' already exists."
 
@@ -82,42 +77,17 @@ def convert_image_2_pdf_file() -> None:
         )
         return
 
-    pdf_writer = PyPDF2.PdfWriter()
+    (error_code, error_msg, children) = dcr_core.pp.tesseract.process(
+        full_name_in=full_name_curr,
+        full_name_out=full_name_next,
+        language_tesseract=db.cls_language.Language.LANGUAGES_TESSERACT[cfg.glob.document.document_id_language],
+    )
+    if error_code != dcr_core.cfg.glob.RETURN_OK[0]:
+        cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        return
 
-    for full_name in sorted(glob.glob(full_name_curr)):
-        try:
-            pdf = pytesseract.image_to_pdf_or_hocr(
-                extension="pdf",
-                image=full_name,
-                lang=db.cls_language.Language.LANGUAGES_TESSERACT[cfg.glob.document.document_id_language],
-                timeout=dcr_core.cfg.glob.setup.tesseract_timeout,
-            )
-
-            with open(full_name_next, "w+b") as file_handle:
-                # pdf type is bytes by default
-                file_handle.write(pdf)
-
-            pdf_reader = PyPDF2.PdfReader(full_name_next)
-
-            for page in pdf_reader.pages:
-                # Add each page to the writer object
-                pdf_writer.add_page(page)
-
-            utils.delete_auxiliary_file(full_name)
-
-            cfg.glob.run.run_total_processed_ok += 1
-        except RuntimeError as err:
-            cfg.glob.action_curr.finalise_error(
-                error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_TESSERACT,
-                error_msg=ERROR_41_901.replace("{full_name_curr}", full_name_curr)
-                .replace("{error_type}", str(type(err)))
-                .replace("{error}", str(err)),
-            )
-            return
-
-    # Write out the merged PDF
-    with open(full_name_next, "wb") as file_handle:
-        pdf_writer.write(file_handle)
+    for full_name in children:
+        utils.delete_auxiliary_file(full_name)
 
     cfg.glob.action_curr.finalise()
 
@@ -132,3 +102,5 @@ def convert_image_2_pdf_file() -> None:
         id_parent=cfg.glob.action_curr.action_id,
         no_pdf_pages=utils.get_pdf_pages_no(full_name_next),
     )
+
+    cfg.glob.run.run_total_processed_ok += len(children)

@@ -1,8 +1,6 @@
 """Library Stub."""
 import dcr_core.cfg.glob
 
-ERROR_61_901: str
-
 def process(
     full_name_in: str,
     full_name_out: str,
