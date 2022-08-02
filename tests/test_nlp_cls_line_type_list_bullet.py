@@ -57,11 +57,15 @@ def test_line_type_list_bullet_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
-    pytest.helpers.check_json_line("docx_list_bullet.line.json", no_lines_footer=1, no_lines_header=1, no_lists_bullet_in_document=8)
+    pytest.helpers.check_json_line(
+        "docx_list_bullet.line.json", no_lines_footer=1, no_lines_header=1, no_lists_bullet_in_document=8
+    )
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
-    pytest.helpers.check_json_line("docx_list_bullet.line_token.json", no_lines_footer=1, no_lines_header=1, no_lists_bullet_in_document=8)
+    pytest.helpers.check_json_line(
+        "docx_list_bullet.line_token.json", no_lines_footer=1, no_lines_header=1, no_lists_bullet_in_document=8
+    )
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_2 <=========")
@@ -149,7 +153,9 @@ def test_line_type_list_bullet_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
-    pytest.helpers.check_json_line("docx_list_bullet.line.json", no_lines_footer=1, no_lines_header=1, no_lists_bullet_in_document=8)
+    pytest.helpers.check_json_line(
+        "docx_list_bullet.line.json", no_lines_footer=1, no_lines_header=1, no_lists_bullet_in_document=8
+    )
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
@@ -304,7 +310,9 @@ def test_line_type_list_bullet_missing_dependencies_coverage_exists(fxtr_setup_e
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.document = db.cls_document.Document(action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711)
+    cfg.glob.document = db.cls_document.Document(
+        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
+    )
 
     # -------------------------------------------------------------------------
     dcr_core.core_glob.setup = cfg.cls_setup.Setup()
@@ -347,7 +355,9 @@ def test_line_type_list_bullet_missing_dependencies_text_parser(fxtr_setup_empty
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.document = db.cls_document.Document(action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711)
+    cfg.glob.document = db.cls_document.Document(
+        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
+    )
 
     # -------------------------------------------------------------------------
     dcr_core.core_glob.setup = cfg.cls_setup.Setup()

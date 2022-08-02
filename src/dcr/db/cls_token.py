@@ -178,7 +178,9 @@ class Token:
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID_DOCUMENT,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(db.cls_db_core.DBCore.DBT_DOCUMENT + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"),
+                sqlalchemy.ForeignKey(
+                    db.cls_db_core.DBCore.DBT_DOCUMENT + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"
+                ),
                 nullable=False,
             ),
             sqlalchemy.Column(

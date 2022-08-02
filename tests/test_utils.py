@@ -75,7 +75,9 @@ def test_progress_msg_disconnected_1(fxtr_setup_logger_environment):
     # -------------------------------------------------------------------------
     del dcr_core.core_glob.setup
 
-    utils.progress_msg_connected(database=dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE, user=dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE)
+    utils.progress_msg_connected(
+        database=dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE, user=dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE
+    )
 
     # -------------------------------------------------------------------------
     utils.progress_msg_disconnected()

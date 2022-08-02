@@ -91,17 +91,25 @@ class Setup(dcr_core.cls_setup.Setup):
     # -----------------------------------------------------------------------------
     def _check_config(self) -> None:
         """Check the configuration parameters."""
-        self.db_connection_port = self._determine_config_param_integer(Setup._DCR_CFG_DB_CONNECTION_PORT, self.db_connection_port)
-        self.db_container_port = self._determine_config_param_integer(Setup._DCR_CFG_DB_CONTAINER_PORT, self.db_container_port)
+        self.db_connection_port = self._determine_config_param_integer(
+            Setup._DCR_CFG_DB_CONNECTION_PORT, self.db_connection_port
+        )
+        self.db_container_port = self._determine_config_param_integer(
+            Setup._DCR_CFG_DB_CONTAINER_PORT, self.db_container_port
+        )
 
-        self.is_delete_auxiliary_files = self._determine_config_param_boolean(Setup._DCR_CFG_DELETE_AUXILIARY_FILES, self.is_delete_auxiliary_files)
+        self.is_delete_auxiliary_files = self._determine_config_param_boolean(
+            Setup._DCR_CFG_DELETE_AUXILIARY_FILES, self.is_delete_auxiliary_files
+        )
 
         self._check_config_directory_inbox()
         self._check_config_directory_inbox_accepted()
         self._check_config_directory_inbox_rejected()
         self._check_config_doc_id_in_file_name()
 
-        self.is_ignore_duplicates = self._determine_config_param_boolean(Setup._DCR_CFG_IGNORE_DUPLICATES, self.is_ignore_duplicates)
+        self.is_ignore_duplicates = self._determine_config_param_boolean(
+            Setup._DCR_CFG_IGNORE_DUPLICATES, self.is_ignore_duplicates
+        )
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox.
@@ -111,7 +119,9 @@ class Setup(dcr_core.cls_setup.Setup):
         if Setup._DCR_CFG_DIRECTORY_INBOX in self._config:
             self._config[Setup._DCR_CFG_DIRECTORY_INBOX] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX])
 
-            self.directory_inbox = dcr_core.core_utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX]))
+            self.directory_inbox = dcr_core.core_utils.get_os_independent_name(
+                str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX])
+            )
         else:
             dcr_core.core_utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
 
@@ -121,11 +131,17 @@ class Setup(dcr_core.cls_setup.Setup):
     def _check_config_directory_inbox_accepted(self) -> None:
         """Check the configuration parameter - directory_inbox_accepted."""
         if Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED in self._config:
-            self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
+            self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED] = str(
+                self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED]
+            )
 
-            self.directory_inbox_accepted = dcr_core.core_utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED]))
+            self.directory_inbox_accepted = dcr_core.core_utils.get_os_independent_name(
+                str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED])
+            )
         else:
-            dcr_core.core_utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'")
+            dcr_core.core_utils.terminate_fatal(
+                f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED}'"
+            )
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_rejected.
@@ -133,11 +149,17 @@ class Setup(dcr_core.cls_setup.Setup):
     def _check_config_directory_inbox_rejected(self) -> None:
         """Check the configuration parameter - directory_inbox_rejected."""
         if Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED in self._config:
-            self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED])
+            self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED] = str(
+                self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED]
+            )
 
-            self.directory_inbox_rejected = dcr_core.core_utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED]))
+            self.directory_inbox_rejected = dcr_core.core_utils.get_os_independent_name(
+                str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED])
+            )
         else:
-            dcr_core.core_utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'")
+            dcr_core.core_utils.terminate_fatal(
+                f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED}'"
+            )
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - doc_id_in_file_name.

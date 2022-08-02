@@ -32,10 +32,12 @@ export DCR_ENVIRONMENT_TYPE=test
 
 ifeq ($(OS),Windows_NT)
 	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
+	PYTHON=python
 	export MYPYPATH=src\\dcr;src\\dcr_core
 	export PYTHONPATH=src\\dcr;src\\dcr_core
 else
 	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
+	PYTHON=python3
 	export MYPYPATH=src/dcr:src/dcr_core
 	export PYTHONPATH=src/dcr:src/dcr_core
 endif
@@ -63,8 +65,8 @@ black:              ## Format the code with Black.
 # Configuration file: none
 compileall:         ## Byte-compile the Python libraries.
 	@echo "Info **********  Start: Compile All Python Scripts ******************"
-	python --version
-	python -m compileall
+	${PYTHON} --version
+	${PYTHON} -m compileall
 	@echo "Info **********  End:   Compile All Python Scripts ******************"
 
 # Python interface to coveralls.io API
@@ -135,35 +137,35 @@ mypy:               ## Find typing issues with Mypy.
 # Configuration file: Pipfile
 pipenv-dev:         ## Install the package dependencies for development.
 	@echo "Info **********  Start: Installation of Development Packages ********"
-	python -m pip install --upgrade pip
-	python -m pip install --upgrade pipenv
-	python -m pipenv install --dev
-	python -m pipenv --rm
+	${PYTHON} -m pip install --upgrade pip
+	${PYTHON} -m pip install --upgrade pipenv
+	${PYTHON} -m pipenv install --dev
+	${PYTHON} -m pipenv --rm
 	exit
-	python -m pipenv update --dev
+	${PYTHON} -m pipenv update --dev
 	pipenv run spacy download de_dep_news_trf
 	pipenv run spacy download en_core_web_trf
 	pipenv run spacy download fr_dep_news_trf
 	pipenv run spacy download it_core_news_lg
 	pipenv run pip freeze
-	python --version
-	python -m pip --version
+	${PYTHON} --version
+	${PYTHON} -m pip --version
 	@echo "Info **********  End:   Installation of Development Packages ********"
 pipenv-prod:        ## Install the package dependencies for production.
 	@echo "Info **********  Start: Installation of Production Packages *********"
-	python -m pip install --upgrade pip
-	python -m pip install --upgrade pipenv
-	python -m pipenv install
-	python -m pipenv --rm
+	${PYTHON} -m pip install --upgrade pip
+	${PYTHON} -m pip install --upgrade pipenv
+	${PYTHON} -m pipenv install
+	${PYTHON} -m pipenv --rm
 	exit
-	python -m pipenv update
+	${PYTHON} -m pipenv update
 	pipenv run spacy download de_dep_news_trf
 	pipenv run spacy download en_core_web_trf
 	pipenv run spacy download fr_dep_news_trf
 	pipenv run spacy download it_core_news_lg
 	pipenv run pip freeze
-	python --version
-	python -m pip --version
+	${PYTHON} --version
+	${PYTHON} -m pip --version
 	@echo "Info **********  End:   Installation of Production Packages *********"
 
 # Pydoc-Markdown - create Python API documentation in Markdown format.

@@ -395,7 +395,11 @@ class Run:
         Returns:
             int:    Latest id.
         """
-        dbt = sqlalchemy.Table(db.cls_db_core.DBCore.DBT_RUN, cfg.glob.db_core.db_orm_metadata, autoload_with=cfg.glob.db_core.db_orm_engine)
+        dbt = sqlalchemy.Table(
+            db.cls_db_core.DBCore.DBT_RUN,
+            cfg.glob.db_core.db_orm_metadata,
+            autoload_with=cfg.glob.db_core.db_orm_engine,
+        )
 
         with cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(sqlalchemy.select(sqlalchemy.func.max(dbt.c.id_run))).fetchone()

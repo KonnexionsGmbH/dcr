@@ -143,7 +143,9 @@ def test_create_database(fxtr_setup_logger_environment):
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT)
+    pytest.helpers.config_param_delete(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT
+    )
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
@@ -202,7 +204,9 @@ def test_drop_database_02(fxtr_setup_empty_db_and_inbox):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT)
+    pytest.helpers.config_param_delete(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT
+    )
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
@@ -267,7 +271,9 @@ def test_load_db_data_from_json_content(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
+        dcr_core.core_utils.get_full_name(
+            pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test
+        ),
         dcr_core.core_utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
@@ -304,7 +310,9 @@ def test_load_db_data_from_json_missing(fxtr_setup_logger_environment):
 
     # restore original file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name),
+        dcr_core.core_utils.get_full_name(
+            pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name
+        ),
         db_initial_data_file_path_directory,
     )
 
@@ -331,7 +339,9 @@ def test_load_db_data_from_json_unknown(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
+        dcr_core.core_utils.get_full_name(
+            pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test
+        ),
         dcr_core.core_utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
@@ -362,7 +372,9 @@ def test_load_db_data_from_json_version(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
+        dcr_core.core_utils.get_full_name(
+            pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test
+        ),
         dcr_core.core_utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 

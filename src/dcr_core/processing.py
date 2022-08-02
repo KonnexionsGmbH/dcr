@@ -19,16 +19,29 @@ import dcr_core.TET
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_21_901 = "21.901 Issue (p_2_i): Processing file '{full_name}' with pdf2image failed - " + "error type: '{error_type}' - error: '{error}'."
+ERROR_21_901 = (
+    "21.901 Issue (p_2_i): Processing file '{full_name}' with pdf2image failed - "
+    + "error type: '{error_type}' - error: '{error}'."
+)
 ERROR_31_902 = (
     "31.902 Issue (n_2_p): The file '{full_name}' cannot be converted to an "
     + "'pdf' document - "
     + "error type: '{error_type}' - error: '{error_msg}'."
 )
-ERROR_41_901 = "41.901 Issue (ocr): Converting the file '{full_name}' with Tesseract OCR failed - " + "error type: '{error_type}' - error: '{error}'."
-ERROR_51_901 = "51.901 Issue (tet): Opening document '{full_name}' - " + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
-ERROR_61_901 = "61.901 Issue (s_p_j): Parsing the file '{full_name}' failed - " + "error type: '{error_type}' - error: '{error}'."
-ERROR_71_901 = "71.901 Issue (tkn): Tokenizing the file '{full_name}' failed - " + "error type: '{error_type}' - error: '{error}'."
+ERROR_41_901 = (
+    "41.901 Issue (ocr): Converting the file '{full_name}' with Tesseract OCR failed - "
+    + "error type: '{error_type}' - error: '{error}'."
+)
+ERROR_51_901 = (
+    "51.901 Issue (tet): Opening document '{full_name}' - "
+    + "error no: '{error_no}' - api: '{api_name}' - error: '{error}'."
+)
+ERROR_61_901 = (
+    "61.901 Issue (s_p_j): Parsing the file '{full_name}' failed - " + "error type: '{error_type}' - error: '{error}'."
+)
+ERROR_71_901 = (
+    "71.901 Issue (tkn): Tokenizing the file '{full_name}' failed - " + "error type: '{error_type}' - error: '{error}'."
+)
 
 PANDOC_PDF_ENGINE_LULATEX = "lulatex"
 PANDOC_PDF_ENGINE_XELATEX = "xelatex"
@@ -84,7 +97,11 @@ def pandoc_process(
         )
 
     except (FileNotFoundError, RuntimeError) as err:
-        error_msg = ERROR_31_902.replace("{full_name}", full_name_in).replace("{error_type}", str(type(err))).replace("{error}", str(err))
+        error_msg = (
+            ERROR_31_902.replace("{full_name}", full_name_in)
+            .replace("{error_type}", str(type(err)))
+            .replace("{error}", str(err))
+        )
         return error_msg[:6], error_msg
 
     return dcr_core.core_glob.RETURN_OK
@@ -152,7 +169,11 @@ def parser_process(
                 case dcr_core.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
                     pass
     except FileNotFoundError as err:
-        error_msg = ERROR_61_901.replace("{full_name}", full_name_in).replace("{error_type}", str(type(err))).replace("{error}", str(err))
+        error_msg = (
+            ERROR_61_901.replace("{full_name}", full_name_in)
+            .replace("{error_type}", str(type(err)))
+            .replace("{error}", str(err))
+        )
         return error_msg[:6], error_msg
 
     return dcr_core.core_glob.RETURN_OK
@@ -235,7 +256,11 @@ def pdf2image_process(
 
             children.append((file_name_next, full_name_next))
     except PDFPageCountError as err:
-        error_msg = ERROR_21_901.replace("{full_name}", full_name_in).replace("{error_type}", str(type(err))).replace("{error}", str(err))
+        error_msg = (
+            ERROR_21_901.replace("{full_name}", full_name_in)
+            .replace("{error_type}", str(type(err)))
+            .replace("{error}", str(err))
+        )
         return error_msg[:6], error_msg, []
 
     return dcr_core.core_glob.RETURN_OK[0], dcr_core.core_glob.RETURN_OK[1], children
@@ -373,7 +398,11 @@ def tesseract_process(
             children.append(full_name)
 
         except RuntimeError as err:
-            error_msg = ERROR_41_901.replace("{full_name}", full_name_in).replace("{error_type}", str(type(err))).replace("{error}", str(err))
+            error_msg = (
+                ERROR_41_901.replace("{full_name}", full_name_in)
+                .replace("{error_type}", str(type(err)))
+                .replace("{error}", str(err))
+            )
             return error_msg[:6], error_msg, []
 
     # Write out the merged PDF
@@ -445,7 +474,11 @@ def tokenizer_process(
         )
 
     except FileNotFoundError as err:
-        error_msg = ERROR_71_901.replace("{full_name}", full_name_in).replace("{error_type}", str(type(err))).replace("{error}", str(err))
+        error_msg = (
+            ERROR_71_901.replace("{full_name}", full_name_in)
+            .replace("{error_type}", str(type(err)))
+            .replace("{error}", str(err))
+        )
         return error_msg[:6], error_msg
 
     return dcr_core.core_glob.RETURN_OK

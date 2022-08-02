@@ -55,9 +55,15 @@ def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     # -------------------------------------------------------------------------
     dcr_core.cls_text_parser.TextParser.from_files(
         file_encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT,
-        full_name_line=dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_mini_1.line.json"),
-        full_name_page=dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_mini_1.page.json"),
-        full_name_word=dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_mini_1.word.json"),
+        full_name_line=dcr_core.core_utils.get_full_name(
+            dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_mini_1.line.json"
+        ),
+        full_name_page=dcr_core.core_utils.get_full_name(
+            dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_mini_1.page.json"
+        ),
+        full_name_word=dcr_core.core_utils.get_full_name(
+            dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_mini_1.word.json"
+        ),
     )
 
     # -------------------------------------------------------------------------

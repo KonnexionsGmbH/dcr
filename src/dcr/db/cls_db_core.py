@@ -273,7 +273,9 @@ class DBCore:
 
         self._create_schema()
 
-        utils.progress_msg(f"The database has been successfully created, " f"version number='{dcr_core.cls_setup.Setup.DCR_VERSION}'")
+        utils.progress_msg(
+            f"The database has been successfully created, " f"version number='{dcr_core.cls_setup.Setup.DCR_VERSION}'"
+        )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -468,13 +470,19 @@ class DBCore:
         )
 
         if dcr_core.core_glob.setup.db_initial_data_file:
-            db_initial_data_file_path = dcr_core.core_utils.get_os_independent_name(dcr_core.core_glob.setup.db_initial_data_file)
+            db_initial_data_file_path = dcr_core.core_utils.get_os_independent_name(
+                dcr_core.core_glob.setup.db_initial_data_file
+            )
             if os.path.isfile(db_initial_data_file_path):
                 self.load_db_data_from_json(pathlib.Path(db_initial_data_file_path))
-                utils.progress_msg(f"Initial database data was successfully loaded from the file {dcr_core.core_glob.setup.db_initial_data_file}")
+                utils.progress_msg(
+                    f"Initial database data was successfully loaded from the "
+                    + f"file {dcr_core.core_glob.setup.db_initial_data_file}"
+                )
             else:
                 dcr_core.core_utils.terminate_fatal(
-                    f"File with initial database data is missing - " f"file name '{dcr_core.core_glob.setup.db_initial_data_file}'"
+                    f"File with initial database data is missing - "
+                    f"file name '{dcr_core.core_glob.setup.db_initial_data_file}'"
                 )
 
         # Disconnect from the database.
@@ -492,7 +500,9 @@ class DBCore:
         if dcr_core.core_glob.setup.db_dialect == DBCore.DB_DIALECT_POSTGRESQL:
             self._drop_database_postgresql()
         else:
-            dcr_core.core_utils.terminate_fatal(f"A database dialect '{dcr_core.core_glob.setup.db_dialect}' " f"is not supported in DCR")
+            dcr_core.core_utils.terminate_fatal(
+                f"A database dialect '{dcr_core.core_glob.setup.db_dialect}' " f"is not supported in DCR"
+            )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -535,7 +545,9 @@ class DBCore:
     def _show_connection_details(self) -> None:
         """Show the details of the projected database connection."""
         cfg.glob.logger.debug("Database connection parameter: host:    '%s'", dcr_core.core_glob.setup.db_host)
-        cfg.glob.logger.debug("Database connection parameter: port:    '%s'", dcr_core.core_glob.setup.db_connection_port)
+        cfg.glob.logger.debug(
+            "Database connection parameter: port:    '%s'", dcr_core.core_glob.setup.db_connection_port
+        )
         cfg.glob.logger.debug("Database connection parameter: database '%s'", self._db_current_database)
         cfg.glob.logger.debug("Database connection parameter: user     '%s'", self._db_current_user)
 
@@ -553,7 +565,9 @@ class DBCore:
         cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
         if (current_version := db.cls_version.Version.select_version_version_unique()) < "1.0.0":
-            dcr_core.core_utils.terminate_fatal("An automatic upgrade of the database version is only " + "supported from version 1.0.0.")
+            dcr_core.core_utils.terminate_fatal(
+                "An automatic upgrade of the database version is only " + "supported from version 1.0.0."
+            )
 
         # not testable
         self._connect_db_admin()
@@ -577,7 +591,9 @@ class DBCore:
         if dcr_core.core_glob.setup.db_dialect == DBCore.DB_DIALECT_POSTGRESQL:
             self._create_database_postgresql()
         else:
-            dcr_core.core_utils.terminate_fatal(f"A database dialect '{dcr_core.core_glob.setup.db_dialect}' " f"is not supported in DCR")
+            dcr_core.core_utils.terminate_fatal(
+                f"A database dialect '{dcr_core.core_glob.setup.db_dialect}' " f"is not supported in DCR"
+            )
 
         cfg.glob.logger.debug(cfg.glob.LOGGER_END)
 
@@ -680,7 +696,9 @@ class DBCore:
 
             api_version = json_data[DBCore.JSON_NAME_API_VERSION]
             if api_version != dcr_core.cls_setup.Setup.DCR_VERSION:
-                dcr_core.core_utils.terminate_fatal(f"Expected api version is' {dcr_core.cls_setup.Setup.DCR_VERSION}' " f"- got '{api_version}'")
+                dcr_core.core_utils.terminate_fatal(
+                    f"Expected api version is' {dcr_core.cls_setup.Setup.DCR_VERSION}' " f"- got '{api_version}'"
+                )
 
             data = json_data[DBCore.JSON_NAME_DATA]
             for json_table in data[DBCore.JSON_NAME_TABLES]:
@@ -694,15 +712,21 @@ class DBCore:
                         "token",
                         "version",
                     }:
-                        dcr_core.core_utils.terminate_fatal(f"The database table '{table_name}' must not be changed via the JSON file.")
+                        dcr_core.core_utils.terminate_fatal(
+                            f"The database table '{table_name}' must not be changed via the JSON file."
+                        )
                     else:
-                        dcr_core.core_utils.terminate_fatal(f"The database table '{table_name}' does not exist in the database.")
+                        dcr_core.core_utils.terminate_fatal(
+                            f"The database table '{table_name}' does not exist in the database."
+                        )
 
                 for json_row in json_table[DBCore.JSON_NAME_ROWS]:
                     db_columns = {}
 
                     for json_column in json_row[DBCore.JSON_NAME_ROW]:
-                        db_columns[json_column[DBCore.JSON_NAME_COLUMN_NAME]] = json_column[DBCore.JSON_NAME_COLUMN_VALUE]
+                        db_columns[json_column[DBCore.JSON_NAME_COLUMN_NAME]] = json_column[
+                            DBCore.JSON_NAME_COLUMN_VALUE
+                        ]
 
                     self.insert_dbt_row(
                         table_name,

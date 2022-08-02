@@ -49,7 +49,8 @@ class LineTypeTable:
 
         dcr_core.core_utils.progress_msg(dcr_core.core_glob.setup.is_verbose_lt_table, "LineTypeTable")
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_table, f"LineTypeTable: Start create instance                ={self._file_name_curr}"
+            dcr_core.core_glob.setup.is_verbose_lt_table,
+            f"LineTypeTable: Start create instance                ={self._file_name_curr}",
         )
 
         self._column_no = 0
@@ -84,7 +85,8 @@ class LineTypeTable:
         self._exist = True
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_table, f"LineTypeTable: End   create instance                ={self._file_name_curr}"
+            dcr_core.core_glob.setup.is_verbose_lt_table,
+            f"LineTypeTable: End   create instance                ={self._file_name_curr}",
         )
 
     # -----------------------------------------------------------------------------
@@ -118,7 +120,8 @@ class LineTypeTable:
         self._reset_row()
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_table, f"LineTypeTable: End   row                            ={row_no}"
+            dcr_core.core_glob.setup.is_verbose_lt_table,
+            f"LineTypeTable: End   row                            ={row_no}",
         )
 
     # -----------------------------------------------------------------------------
@@ -160,7 +163,8 @@ class LineTypeTable:
         self._reset_table()
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_table, f"LineTypeTable: End   table                   on page={self._page_idx+1}"
+            dcr_core.core_glob.setup.is_verbose_lt_table,
+            f"LineTypeTable: End   table                   on page={self._page_idx+1}",
         )
 
     # -----------------------------------------------------------------------------
@@ -219,17 +223,23 @@ class LineTypeTable:
         #     "text": "xxx"
         # }
         new_entry = {
-            dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO],
+            dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO: line_line[
+                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO
+            ],
             dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX: coord_llx,
             dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX: coord_urx,
             dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO],
-            dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE],
+            dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE: line_line[
+                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO_PAGE
+            ],
             dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO],
             dcr_core.cls_nlp_core.NLPCore.JSON_NAME_TEXT: text,
         }
 
         if dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN in line_line:
-            new_entry[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN] = line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN]
+            new_entry[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN] = line_line[
+                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN
+            ]
 
         self._columns.append(new_entry)
 
@@ -247,11 +257,16 @@ class LineTypeTable:
         self._max_line_line = len(self._parser_line_lines_json)
 
         for line_lines_idx, line_line in enumerate(self._parser_line_lines_json):
-            if line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] != dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY:
+            if (
+                line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+                != dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY
+            ):
                 continue
 
             if self._process_line(line_line) == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_TABLE:
-                line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_TABLE
+                line_line[
+                    dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
+                ] = dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_TABLE
                 self._parser_line_lines_json[line_lines_idx] = line_line
             else:
                 self._finish_table()
@@ -267,7 +282,9 @@ class LineTypeTable:
 
         self.table_no = 0
 
-        dcr_core.core_utils.progress_msg(dcr_core.core_glob.setup.is_verbose_lt_table, "LineTypeTable: Reset the document memory")
+        dcr_core.core_utils.progress_msg(
+            dcr_core.core_glob.setup.is_verbose_lt_table, "LineTypeTable: Reset the document memory"
+        )
 
         self._reset_table()
 
@@ -282,7 +299,9 @@ class LineTypeTable:
         self._first_column_llx = 0.0
         self._last_column_urx = 0.0
 
-        dcr_core.core_utils.progress_msg(dcr_core.core_glob.setup.is_verbose_lt_table, "LineTypeTable: Reset the row memory")
+        dcr_core.core_utils.progress_msg(
+            dcr_core.core_glob.setup.is_verbose_lt_table, "LineTypeTable: Reset the row memory"
+        )
 
     # -----------------------------------------------------------------------------
     # Reset the table memory.
@@ -304,7 +323,9 @@ class LineTypeTable:
 
         self.table_no = 0
 
-        dcr_core.core_utils.progress_msg(dcr_core.core_glob.setup.is_verbose_lt_table, "LineTypeTable: Reset the table memory")
+        dcr_core.core_utils.progress_msg(
+            dcr_core.core_glob.setup.is_verbose_lt_table, "LineTypeTable: Reset the table memory"
+        )
 
         self._reset_row()
 
@@ -355,7 +376,8 @@ class LineTypeTable:
 
         dcr_core.core_utils.progress_msg(dcr_core.core_glob.setup.is_verbose_lt_table, "LineTypeTable")
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_table, f"LineTypeTable: Start document                       ={self._file_name_curr}"
+            dcr_core.core_glob.setup.is_verbose_lt_table,
+            f"LineTypeTable: Start document                       ={self._file_name_curr}",
         )
 
         self._reset_document()
@@ -392,9 +414,11 @@ class LineTypeTable:
 
         if self.no_tables > 0:
             dcr_core.core_utils.progress_msg(
-                dcr_core.core_glob.setup.is_verbose_lt_table, f"LineTypeTable:                         number tables={self.no_tables}"
+                dcr_core.core_glob.setup.is_verbose_lt_table,
+                f"LineTypeTable:                         number tables={self.no_tables}",
             )
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_table, f"LineTypeTable: End   document                       ={self._file_name_curr}"
+            dcr_core.core_glob.setup.is_verbose_lt_table,
+            f"LineTypeTable: End   document                       ={self._file_name_curr}",
         )

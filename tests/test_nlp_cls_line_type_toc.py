@@ -73,13 +73,17 @@ def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_em
         target_toc_exp_table = 15
 
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_toc_line_bullet_list_1.line.json")),
+        json_file=str(
+            os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_toc_line_bullet_list_1.line.json")
+        ),
         target_footer=[(1, [2, 3]), (2, [8, 9]), (3, [12, 13]), (4, [10, 11]), (5, [6, 7]), (6, [6, 7]), (7, [6, 7])],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1]), (6, [0, 1]), (7, [0, 1])],
         target_toc=target_toc_exp_line,
     )
     pytest.helpers.check_cls_line_type(
-        json_file=str(os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_toc_table_bullet_list_2.line.json")),
+        json_file=str(
+            os.path.join(dcr_core.core_glob.setup.directory_inbox_accepted, "pdf_toc_table_bullet_list_2.line.json")
+        ),
         target_footer=[(1, [11, 12]), (2, [8, 9]), (3, [10, 11]), (4, [10, 11]), (5, [6, 7]), (6, [6, 7]), (7, [6, 7])],
         target_header=[(1, [0, 1]), (2, [0, 1]), (3, [0, 1]), (4, [0, 1]), (5, [0, 1]), (6, [0, 1]), (7, [0, 1])],
         target_toc=target_toc_exp_table,
@@ -584,7 +588,9 @@ def test_line_type_toc_missing_dependencies_coverage_exists(fxtr_setup_empty_db_
 
     # -------------------------------------------------------------------------
     dcr_core.core_glob.text_parser = dcr_core.cls_text_parser.TextParser()
-    dcr_core.core_glob.line_type_headers_footers = dcr_core.cls_line_type_headers_footers.LineTypeHeaderFooters(file_name_curr="")
+    dcr_core.core_glob.line_type_headers_footers = dcr_core.cls_line_type_headers_footers.LineTypeHeaderFooters(
+        file_name_curr=""
+    )
 
     dcr_core.core_glob.text_parser.exists()
 

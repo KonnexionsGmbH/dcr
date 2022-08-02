@@ -36,7 +36,8 @@ class LineTypeToc:
 
         dcr_core.core_utils.progress_msg(dcr_core.core_glob.setup.is_verbose_lt_toc, "LineTypeToc")
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: Start create instance                ={self._file_name_curr}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: Start create instance                ={self._file_name_curr}",
         )
 
         dcr_core.core_glob.setup.is_toc_existing = False
@@ -58,7 +59,8 @@ class LineTypeToc:
         self._exist = True
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: End   create instance                ={self._file_name_curr}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: End   create instance                ={self._file_name_curr}",
         )
 
     # -----------------------------------------------------------------------------
@@ -69,7 +71,8 @@ class LineTypeToc:
             return
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: Start check TOC candidate            ={len(self._toc_candidates)}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: Start check TOC candidate            ={len(self._toc_candidates)}",
         )
 
         row_no = 0
@@ -125,11 +128,15 @@ class LineTypeToc:
 
         dcr_core.core_utils.progress_msg(dcr_core.core_glob.setup.is_verbose_lt_toc, "LineTypeToc")
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: Start page (lines)                   ={self._page_no}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: Start page (lines)                   ={self._page_no}",
         )
 
         for line_line in self._parser_line_lines_json:
-            if line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY:
+            if (
+                line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+                == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY
+            ):
                 if (text := line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_TEXT]) != "":
                     line_tokens = text.split()
                     try:
@@ -140,7 +147,8 @@ class LineTypeToc:
                             break
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: End   page (lines)                   ={self._page_no}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: End   page (lines)                   ={self._page_no}",
         )
 
     # -----------------------------------------------------------------------------
@@ -155,11 +163,15 @@ class LineTypeToc:
 
         dcr_core.core_utils.progress_msg(dcr_core.core_glob.setup.is_verbose_lt_toc, "LineTypeToc")
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: Start page (table)                   ={self._page_no}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: Start page (table)                   ={self._page_no}",
         )
 
         for line_line in self._parser_line_lines_json:
-            if line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY:
+            if (
+                line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+                == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY
+            ):
                 if dcr_core.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO in line_line:
                     self._process_toc_candidate_table_line(line_line)
                 else:
@@ -168,13 +180,16 @@ class LineTypeToc:
                         break
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: End   page (table)                   ={self._page_no}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: End   page (table)                   ={self._page_no}",
         )
 
     # -----------------------------------------------------------------------------
     # Add a TOC line candidate element.
     # -----------------------------------------------------------------------------
-    def _process_toc_candidate_line_line(self, line_line: dcr_core.cls_nlp_core.NLPCore.ParserLineLine, page_no_toc: int) -> None:
+    def _process_toc_candidate_line_line(
+        self, line_line: dcr_core.cls_nlp_core.NLPCore.ParserLineLine, page_no_toc: int
+    ) -> None:
         """Add a TOC line candidate element.
 
         Args:
@@ -203,7 +218,11 @@ class LineTypeToc:
 
         para_no = line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO]
 
-        if not self._toc_candidates or self._page_no != self._toc_candidates[-1][1] or row_no != self._toc_candidates[-1][3]:
+        if (
+            not self._toc_candidates
+            or self._page_no != self._toc_candidates[-1][1]
+            or row_no != self._toc_candidates[-1][3]
+        ):
             self._toc_candidates.append([-1, self._page_no, para_no, row_no])
 
         try:
@@ -220,12 +239,14 @@ class LineTypeToc:
         self.no_lines_toc = len(self._toc_candidates)
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: Start store result                   ={self.no_lines_toc}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: Start store result                   ={self.no_lines_toc}",
         )
 
         if len(self._toc_candidates) < dcr_core.core_glob.setup.lt_toc_min_entries:
             dcr_core.core_utils.progress_msg(
-                dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: End   store result (min. entries)    ={self.no_lines_toc}"
+                dcr_core.core_glob.setup.is_verbose_lt_toc,
+                f"LineTypeToc: End   store result (min. entries)    ={self.no_lines_toc}",
             )
             self.no_lines_toc = 0
             return
@@ -258,14 +279,22 @@ class LineTypeToc:
                             and para_no == cand_para_no
                             and line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO] == cand_line_no
                         ):
-                            line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_TOC
+                            line_line[
+                                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
+                            ] = dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_TOC
                 elif self._strategy == dcr_core.cls_nlp_core.NLPCore.SEARCH_STRATEGY_TABLE:
                     if dcr_core.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO in line_line:
-                        if line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY:
-                            line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_TOC
+                        if (
+                            line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+                            == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY
+                        ):
+                            line_line[
+                                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
+                            ] = dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_TOC
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: End   store result                   ={self.no_lines_toc}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: End   store result                   ={self.no_lines_toc}",
         )
 
     # -----------------------------------------------------------------------------
@@ -302,7 +331,8 @@ class LineTypeToc:
         )
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: lt_toc_last_page={dcr_core.core_glob.setup.lt_toc_last_page}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: lt_toc_last_page={dcr_core.core_glob.setup.lt_toc_last_page}",
         )
 
         if dcr_core.core_glob.setup.lt_toc_last_page == 0:
@@ -315,7 +345,8 @@ class LineTypeToc:
 
         dcr_core.core_utils.progress_msg(dcr_core.core_glob.setup.is_verbose_lt_toc, "LineTypeToc")
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: Start document                       ={self._file_name_curr}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: Start document                       ={self._file_name_curr}",
         )
 
         # -------------------------------------------------------------------------
@@ -351,5 +382,6 @@ class LineTypeToc:
             self._store_results()
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_toc, f"LineTypeToc: End   document                       ={self._file_name_curr}"
+            dcr_core.core_glob.setup.is_verbose_lt_toc,
+            f"LineTypeToc: End   document                       ={self._file_name_curr}",
         )

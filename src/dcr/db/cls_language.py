@@ -81,7 +81,9 @@ class Language:
         self.language_code_tesseract = code_tesseract
 
         if self.language_active and (directory_name_inbox is None or directory_name_inbox == ""):
-            self.language_directory_name_inbox = str(os.path.join(dcr_core.core_glob.setup.directory_inbox, iso_language_name.lower()))
+            self.language_directory_name_inbox = str(
+                os.path.join(dcr_core.core_glob.setup.directory_inbox, iso_language_name.lower())
+            )
         else:
             self.language_directory_name_inbox = dcr_core.core_utils.get_os_independent_name(directory_name_inbox)
 
@@ -154,8 +156,12 @@ class Language:
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_CODE_PANDOC, sqlalchemy.String, nullable=False, unique=True),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_CODE_SPACY, sqlalchemy.String, nullable=False, unique=True),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True
+            ),
+            sqlalchemy.Column(
+                db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True
+            ),
         )
 
         utils.progress_msg(f"The database table '{db.cls_db_core.DBCore.DBT_LANGUAGE}' has now been created")

@@ -28,8 +28,12 @@ import dcr_core.core_utils
 # Class variables.
 # -----------------------------------------------------------------------------
 ERROR_01_901 = "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
-ERROR_01_903 = "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{file_name}' " + "- error: '{error_msg}'."
-ERROR_01_905 = "01.905 Issue (p_i): The same file has probably already been processed " + "once under the file name '{file_name}'."
+ERROR_01_903 = (
+    "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{file_name}' " + "- error: '{error_msg}'."
+)
+ERROR_01_905 = (
+    "01.905 Issue (p_i): The same file has probably already been processed " + "once under the file name '{file_name}'."
+)
 ERROR_01_906 = "01.906 Issue (p_i): The target file '{full_name}' already exists."
 
 
@@ -226,7 +230,9 @@ def process_inbox_accepted(action_code: str) -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     full_name_curr = cfg.glob.document.get_full_name()
-    full_name_next = dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, cfg.glob.document.get_file_name_next())
+    full_name_next = dcr_core.core_utils.get_full_name(
+        dcr_core.core_glob.setup.directory_inbox_accepted, cfg.glob.document.get_file_name_next()
+    )
 
     cfg.glob.action_curr = initialise_action(
         action_code=cfg.glob.run.run_action_code,
@@ -275,7 +281,9 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
     initialise_base(file_path)
 
     if not dcr_core.core_glob.setup.is_ignore_duplicates:
-        file_name = db.cls_document.Document.select_duplicate_file_name_by_sha256(cfg.glob.document.document_id, cfg.glob.document.document_sha256)
+        file_name = db.cls_document.Document.select_duplicate_file_name_by_sha256(
+            cfg.glob.document.document_id, cfg.glob.document.document_sha256
+        )
     else:
         file_name = None
 

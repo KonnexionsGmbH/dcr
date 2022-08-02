@@ -368,7 +368,9 @@ class TextParser:
     # Debug an XML element detailed.
     # -----------------------------------------------------------------------------
     @staticmethod
-    def _debug_xml_element_all(event: str, parent_tag: str, attrib: dict[str, str], text: collections.abc.Iterable[str | None]) -> None:
+    def _debug_xml_element_all(
+        event: str, parent_tag: str, attrib: dict[str, str], text: collections.abc.Iterable[str | None]
+    ) -> None:
         """Debug an XML element detailed.
 
         Args:

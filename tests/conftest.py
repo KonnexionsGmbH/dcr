@@ -62,7 +62,9 @@ def check_cls_line_type(
         target_toc (int):
                 Target toc lines.
     """
-    instance = dcr_core.cls_text_parser.TextParser.from_files(file_encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT, full_name_line=json_file)
+    instance = dcr_core.cls_text_parser.TextParser.from_files(
+        file_encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT, full_name_line=json_file
+    )
 
     actual_footer = []
     actual_header = []
@@ -92,8 +94,12 @@ def check_cls_line_type(
         if actual_page_header:
             actual_header.append((page_no, actual_page_header))
 
-    assert actual_header == target_header, f"file={json_file} header difference: \ntarget={target_header} \nactual={actual_header}"
-    assert actual_footer == target_footer, f"file={json_file} footer difference: \ntarget={target_footer} \nactual={actual_footer}"
+    assert (
+        actual_header == target_header
+    ), f"file={json_file} header difference: \ntarget={target_header} \nactual={actual_header}"
+    assert (
+        actual_footer == target_footer
+    ), f"file={json_file} footer difference: \ntarget={target_footer} \nactual={actual_footer}"
     assert actual_toc == target_toc, f"file={json_file} toc difference: \ntarget={target_toc} \nactual={actual_toc}"
 
 
@@ -254,7 +260,9 @@ def check_json_line(
     no_lists_number_in_document: int = 0,
     no_tables_in_document: int = 0,
 ) -> None:
-    full_name = dcr_core.core_utils.get_full_name(directory_name=dcr_core.core_glob.setup.directory_inbox_accepted, file_name=file_name)
+    full_name = dcr_core.core_utils.get_full_name(
+        directory_name=dcr_core.core_glob.setup.directory_inbox_accepted, file_name=file_name
+    )
 
     try:
         with open(full_name, "r", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as file_handle:
@@ -274,11 +282,17 @@ def check_json_line(
                 + f"actual={document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LINES_TOC]}"
             )
 
-            assert document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC] == no_lists_bullet_in_document, (
+            assert (
+                document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC]
+                == no_lists_bullet_in_document
+            ), (
                 f"file={file_name} number bulleted lists in document: expected={no_lists_bullet_in_document} - "
                 + f"actual={document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_BULLET_IN_DOC]}"
             )
-            assert document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC] == no_lists_number_in_document, (
+            assert (
+                document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC]
+                == no_lists_number_in_document
+            ), (
                 f"file={file_name} number numbered lists in document: expected={no_lists_number_in_document} - "
                 + f"actual={document_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_NO_LISTS_NUMBER_IN_DOC]}"
             )
@@ -356,7 +370,9 @@ def copy_directories_4_pytest_2_dir(
     for source in source_directories:
         source_dir = get_test_inbox_directory_name() + "/" + source
         source_path = dcr_core.core_utils.get_full_name(get_test_inbox_directory_name(), pathlib.Path(source))
-        assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(source_path)), "source language directory '" + str(source_path) + "' missing"
+        assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(source_path)), (
+            "source language directory '" + str(source_path) + "' missing"
+        )
         target_path = dcr_core.core_utils.get_full_name(target_dir, pathlib.Path(source))
         shutil.copytree(source_dir, target_path)
 
@@ -365,7 +381,9 @@ def copy_directories_4_pytest_2_dir(
 # Copy files from the sample test file directory.
 # -----------------------------------------------------------------------------
 @pytest.helpers.register
-def copy_files_4_pytest(file_list: list[tuple[tuple[str, str | None], tuple[pathlib.Path, list[str], str | None]]]) -> None:
+def copy_files_4_pytest(
+    file_list: list[tuple[tuple[str, str | None], tuple[pathlib.Path, list[str], str | None]]]
+) -> None:
     """Copy files from the sample test file directory.
 
     Args:
@@ -385,8 +403,12 @@ def copy_files_4_pytest(file_list: list[tuple[tuple[str, str | None], tuple[path
         source_file = dcr_core.core_utils.get_full_name(get_test_inbox_directory_name(), source_file_name)
         assert os.path.isfile(source_file), "source file '" + str(source_file) + "' missing"
 
-        assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(target_dir)), "target directory '" + target_dir + "' missing"
-        target_file_name = "_".join(target_file_comp) if target_ext is None else "_".join(target_file_comp) + "." + target_ext
+        assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(target_dir)), (
+            "target directory '" + target_dir + "' missing"
+        )
+        target_file_name = (
+            "_".join(target_file_comp) if target_ext is None else "_".join(target_file_comp) + "." + target_ext
+        )
         target_file = dcr_core.core_utils.get_full_name(target_dir, target_file_name)
         assert os.path.isfile(target_file) is False, "target file '" + str(target_file) + "' already existing"
 
@@ -872,7 +894,8 @@ def fxtr_setup_empty_db_and_inbox(
     # restore original file
     shutil.copy(
         dcr_core.core_utils.get_full_name(
-            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file))
+            get_test_inbox_directory_name(),
+            os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
         ),
         os.path.dirname(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
     )
@@ -918,7 +941,8 @@ def fxtr_setup_empty_inbox(
     # restore original file
     shutil.copy(
         dcr_core.core_utils.get_full_name(
-            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file))
+            get_test_inbox_directory_name(),
+            os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
         ),
         os.path.dirname(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
     )
@@ -963,7 +987,8 @@ def fxtr_setup_logger_environment():
     # restore original file
     shutil.copy(
         dcr_core.core_utils.get_full_name(
-            get_test_inbox_directory_name(), os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file))
+            get_test_inbox_directory_name(),
+            os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
         ),
         os.path.dirname(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
     )
@@ -1154,11 +1179,17 @@ def help_run_action_all_complete_duplicate_file(
     is_ocr: bool = False,
 ) -> None:
     """Help RUN_ACTION_ALL_COMPLETE - duplicate file."""
-    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext_1)], target_path=dcr_core.core_glob.setup.directory_inbox_accepted)
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[(stem_name_1, file_ext_1)], target_path=dcr_core.core_glob.setup.directory_inbox_accepted
+    )
 
     os.rename(
-        dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
-        dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
+        dcr_core.core_utils.get_full_name(
+            dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1
+        ),
+        dcr_core.core_utils.get_full_name(
+            dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -1198,7 +1229,9 @@ def help_run_action_process_inbox_normal(
     file_ext,
 ):
     """Help RUN_ACTION_PROCESS_INBOX - normal."""
-    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name, file_ext)], target_path=dcr_core.core_glob.setup.directory_inbox)
+    pytest.helpers.copy_files_4_pytest_2_dir(
+        source_files=[(stem_name, file_ext)], target_path=dcr_core.core_glob.setup.directory_inbox
+    )
 
     # -------------------------------------------------------------------------
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
@@ -1377,7 +1410,9 @@ def verify_content_of_directory(
     for elem in expected_directories:
         assert elem in directory_content, f"expected directory {elem} is missing"
         elem_path = dcr_core.core_utils.get_full_name(directory_name, elem)
-        assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(elem_path)), f"expected directory {elem} is a file"
+        assert os.path.isdir(
+            dcr_core.core_utils.get_os_independent_name(elem_path)
+        ), f"expected directory {elem} is a file"
 
     # check expected files against directory content
     for elem in expected_files:

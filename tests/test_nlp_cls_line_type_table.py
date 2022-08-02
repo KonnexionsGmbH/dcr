@@ -235,7 +235,9 @@ def test_line_type_table_missing_dependencies_coverage_exists(fxtr_setup_empty_d
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.document = db.cls_document.Document(action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711)
+    cfg.glob.document = db.cls_document.Document(
+        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
+    )
 
     # -------------------------------------------------------------------------
     dcr_core.core_glob.setup = cfg.cls_setup.Setup()
@@ -278,7 +280,9 @@ def test_line_type_table_missing_dependencies_text_parser(fxtr_setup_empty_db_an
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.document = db.cls_document.Document(action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711)
+    cfg.glob.document = db.cls_document.Document(
+        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
+    )
 
     # -------------------------------------------------------------------------
     dcr_core.core_glob.setup = cfg.cls_setup.Setup()

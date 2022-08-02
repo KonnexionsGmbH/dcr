@@ -569,10 +569,19 @@ class TokenizerSpacy:
         )
 
         if dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO in dcr_core.core_glob.text_parser.parse_result_line_line:
-            self._column_no = dcr_core.core_glob.text_parser.parse_result_line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO]
-            self._row_no = dcr_core.core_glob.text_parser.parse_result_line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO]
-            if dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN in dcr_core.core_glob.text_parser.parse_result_line_line:
-                self._column_span = dcr_core.core_glob.text_parser.parse_result_line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN]
+            self._column_no = dcr_core.core_glob.text_parser.parse_result_line_line[
+                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO
+            ]
+            self._row_no = dcr_core.core_glob.text_parser.parse_result_line_line[
+                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO
+            ]
+            if (
+                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN
+                in dcr_core.core_glob.text_parser.parse_result_line_line
+            ):
+                self._column_span = dcr_core.core_glob.text_parser.parse_result_line_line[
+                    dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_SPAN
+                ]
             else:
                 self._column_span = 0
         else:
@@ -580,8 +589,12 @@ class TokenizerSpacy:
             self._column_span = 0
             self._row_no = 0
 
-        self._coord_llx = dcr_core.core_glob.text_parser.parse_result_line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]
-        self._coord_urx = dcr_core.core_glob.text_parser.parse_result_line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX]
+        self._coord_llx = dcr_core.core_glob.text_parser.parse_result_line_line[
+            dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX
+        ]
+        self._coord_urx = dcr_core.core_glob.text_parser.parse_result_line_line[
+            dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COORD_URX
+        ]
 
         self._no_lines_in_para = 0
         self._no_tokens_in_para = 0
@@ -624,13 +637,16 @@ class TokenizerSpacy:
         #    "rowNo": 99,
         #    "text": "..."
         # },
-        for dcr_core.core_glob.text_parser.parse_result_line_line in dcr_core.core_glob.text_parser.parse_result_line_page[
-            dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINES
-        ]:
-            line_type = dcr_core.core_glob.text_parser.parse_result_line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+        for (
+            dcr_core.core_glob.text_parser.parse_result_line_line
+        ) in dcr_core.core_glob.text_parser.parse_result_line_page[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINES]:
+            line_type = dcr_core.core_glob.text_parser.parse_result_line_line[
+                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
+            ]
 
             if (
-                line_type == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_FOOTER  # pylint: disable=too-many-boolean-expressions
+                line_type
+                == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_FOOTER  # pylint: disable=too-many-boolean-expressions
                 and dcr_core.core_glob.setup.is_spacy_ignore_line_type_footer
                 or line_type == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_HEADER
                 and dcr_core.core_glob.setup.is_spacy_ignore_line_type_header
@@ -647,7 +663,9 @@ class TokenizerSpacy:
             ):
                 continue
 
-            self._para_no = dcr_core.core_glob.text_parser.parse_result_line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO]
+            self._para_no = dcr_core.core_glob.text_parser.parse_result_line_line[
+                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO
+            ]
 
             if self._para_no_prev == 0:
                 self._init_para()
@@ -674,9 +692,13 @@ class TokenizerSpacy:
         self._no_lines_in_para += 1
 
         if not self._para_lines:
-            self._line_type = dcr_core.core_glob.text_parser.parse_result_line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+            self._line_type = dcr_core.core_glob.text_parser.parse_result_line_line[
+                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
+            ]
 
-        self._para_lines.append(dcr_core.core_glob.text_parser.parse_result_line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
+        self._para_lines.append(
+            dcr_core.core_glob.text_parser.parse_result_line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_TEXT]
+        )
 
     # -----------------------------------------------------------------------------
     # Process all sentences of a paragraph.
@@ -793,10 +815,12 @@ class TokenizerSpacy:
         #   "noLinesInPage": 99,
         #   "lines": [...]
         # }
-        for dcr_core.core_glob.text_parser.parse_result_line_page in dcr_core.core_glob.text_parser.parse_result_line_document[
-            dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PAGES
-        ]:
-            self._page_no = dcr_core.core_glob.text_parser.parse_result_line_page[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO]
+        for (
+            dcr_core.core_glob.text_parser.parse_result_line_page
+        ) in dcr_core.core_glob.text_parser.parse_result_line_document[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PAGES]:
+            self._page_no = dcr_core.core_glob.text_parser.parse_result_line_page[
+                dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO
+            ]
 
             self._init_page()
             self._process_page()

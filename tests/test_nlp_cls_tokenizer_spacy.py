@@ -47,7 +47,9 @@ def test_missing_dependencies_tokenizer_spacy_text_parser(fxtr_setup_empty_db_an
     cfg.glob.db_core = db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_document = db.cls_document.Document(action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711)
+    cfg.glob.db_document = db.cls_document.Document(
+        action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
+    )
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_text_parser=True)

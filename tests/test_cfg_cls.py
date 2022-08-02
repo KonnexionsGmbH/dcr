@@ -165,7 +165,9 @@ def test_get_config_doc_id_in_file_name(fxtr_setup_logger_environment):
 
     dcr_core.core_glob.setup = cfg.cls_setup.Setup()
 
-    assert dcr_core.core_glob.setup.doc_id_in_file_name == "none", "DCR_CFG_DOC_ID_IN_FILE_NAME: none (not after or before)"
+    assert (
+        dcr_core.core_glob.setup.doc_id_in_file_name == "none"
+    ), "DCR_CFG_DOC_ID_IN_FILE_NAME: none (not after or before)"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)
@@ -179,8 +181,12 @@ def test_get_config_missing_01(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX)
-    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX)
+    pytest.helpers.config_param_delete(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX
+    )
+    pytest.helpers.config_param_delete(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX
+    )
 
     with pytest.raises(SystemExit) as expt:
         dcr_core.core_glob.setup = cfg.cls_setup.Setup()
@@ -197,8 +203,12 @@ def test_get_config_missing_02(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED)
-    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED)
+    pytest.helpers.config_param_delete(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
+    )
+    pytest.helpers.config_param_delete(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
+    )
 
     with pytest.raises(SystemExit) as expt:
         dcr_core.core_glob.setup = cfg.cls_setup.Setup()
@@ -215,8 +225,12 @@ def test_get_config_missing_03(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED)
-    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED)
+    pytest.helpers.config_param_delete(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
+    )
+    pytest.helpers.config_param_delete(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
+    )
 
     with pytest.raises(SystemExit) as expt:
         dcr_core.core_glob.setup = cfg.cls_setup.Setup()
@@ -233,7 +247,9 @@ def test_get_config_missing_04(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES)
+    pytest.helpers.config_param_delete(
+        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES
+    )
 
     dcr_core.core_glob.setup.is_ignore_duplicates = False
 
@@ -250,7 +266,9 @@ def test_get_config_missing_05(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE)
+    pytest.helpers.config_param_delete(
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE
+    )
 
     dcr_core.core_glob.setup.pdf2image_type = dcr_core.core_glob.setup.PDF2IMAGE_TYPE_JPEG
 
@@ -269,8 +287,12 @@ def test_get_config_missing_06(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE)
-    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE)
+    pytest.helpers.config_param_delete(
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE
+    )
+    pytest.helpers.config_param_delete(
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE
+    )
 
     dcr_core.core_glob.setup.is_verbose = True
 
@@ -287,8 +309,12 @@ def test_get_config_missing_07(fxtr_setup_logger_environment):
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER)
-    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER)
+    pytest.helpers.config_param_delete(
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER
+    )
+    pytest.helpers.config_param_delete(
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER
+    )
 
     dcr_core.core_glob.setup = cfg.cls_setup.Setup()
 
@@ -379,7 +405,9 @@ def test_get_environment(fxtr_setup_logger):
     # -------------------------------------------------------------------------
     dcr_core.core_glob.setup._get_environment_variant()
 
-    assert dcr_core.core_glob.setup.environment_variant == dcr_core.core_glob.setup.ENVIRONMENT_TYPE_TEST, "_DCR_ENVIRONMENT_TYPE: ok"
+    assert (
+        dcr_core.core_glob.setup.environment_variant == dcr_core.core_glob.setup.ENVIRONMENT_TYPE_TEST
+    ), "_DCR_ENVIRONMENT_TYPE: ok"
 
     # -------------------------------------------------------------------------
     cfg.glob.logger.debug(cfg.glob.LOGGER_END)

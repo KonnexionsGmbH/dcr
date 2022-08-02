@@ -77,7 +77,9 @@ def tokenize() -> None:
     dcr_core.core_glob.tokenizer_spacy = dcr_core.cls_tokenizer_spacy.TokenizerSpacy()
 
     with cfg.glob.db_core.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE)
+        rows = db.cls_action.Action.select_action_by_action_code(
+            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE
+        )
 
         for row in rows:
             # ------------------------------------------------------------------

@@ -31,7 +31,9 @@ def convert_image_2_pdf() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     with cfg.glob.db_core.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TESSERACT)
+        rows = db.cls_action.Action.select_action_by_action_code(
+            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TESSERACT
+        )
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()
@@ -64,7 +66,9 @@ def convert_image_2_pdf_file() -> None:
     """Convert scanned image pdf documents to image files."""
     full_name_curr = cfg.glob.action_curr.get_full_name()
 
-    file_name_next = cfg.glob.action_curr.get_stem_name().replace("[0-9]*", "0") + "." + dcr_core.core_glob.FILE_TYPE_PDF
+    file_name_next = (
+        cfg.glob.action_curr.get_stem_name().replace("[0-9]*", "0") + "." + dcr_core.core_glob.FILE_TYPE_PDF
+    )
     full_name_next = dcr_core.core_utils.get_full_name(
         cfg.glob.action_curr.action_directory_name,
         file_name_next,

@@ -163,7 +163,9 @@ class LineTypeListNumber:
             text = []
 
             for idx in range(int(line_lines_idx_from), int(line_lines_idx_till) + 1):
-                line_lines[idx][dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] = dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_LIST_NUMBER
+                line_lines[idx][
+                    dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE
+                ] = dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_LIST_NUMBER
 
                 if dcr_core.core_glob.setup.is_create_extra_file_list_number:
                     text.append(line_lines[idx][dcr_core.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
@@ -218,7 +220,8 @@ class LineTypeListNumber:
         self._reset_list()
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_list_number, f"LineTypeListNumber: End   list                    on page={self._page_idx+1}"
+            dcr_core.core_glob.setup.is_verbose_lt_list_number,
+            f"LineTypeListNumber: End   list                    on page={self._page_idx+1}",
         )
 
     # -----------------------------------------------------------------------------
@@ -234,18 +237,26 @@ class LineTypeListNumber:
             list[tuple[str, re.Pattern[str]]]:
                 The valid numbered list anti-patterns.
         """
-        if dcr_core.core_glob.setup.lt_list_number_rule_file and dcr_core.core_glob.setup.lt_list_number_rule_file.lower() != "none":
-            lt_list_number_rule_file_path = dcr_core.core_utils.get_os_independent_name(dcr_core.core_glob.setup.lt_list_number_rule_file)
+        if (
+            dcr_core.core_glob.setup.lt_list_number_rule_file
+            and dcr_core.core_glob.setup.lt_list_number_rule_file.lower() != "none"
+        ):
+            lt_list_number_rule_file_path = dcr_core.core_utils.get_os_independent_name(
+                dcr_core.core_glob.setup.lt_list_number_rule_file
+            )
             if os.path.isfile(lt_list_number_rule_file_path):
                 return self._load_anti_patterns_from_json(pathlib.Path(lt_list_number_rule_file_path))
 
             dcr_core.core_utils.terminate_fatal(
-                f"File with numbered list anti-patterns is missing - " f"file name '{dcr_core.core_glob.setup.lt_list_number_rule_file}'"
+                f"File with numbered list anti-patterns is missing - "
+                f"file name '{dcr_core.core_glob.setup.lt_list_number_rule_file}'"
             )
 
         anti_patterns = []
 
-        for name, regexp in dcr_core.cls_nlp_core.NLPCore.get_lt_anti_patterns_default_list_number(environment_variant=self._environment_variant):
+        for name, regexp in dcr_core.cls_nlp_core.NLPCore.get_lt_anti_patterns_default_list_number(
+            environment_variant=self._environment_variant
+        ):
             anti_patterns.append((name, re.compile(regexp)))
 
         return anti_patterns
@@ -268,13 +279,19 @@ class LineTypeListNumber:
             list[tuple[str, str, collections.abc.Callable[[str, str], bool], list[str]]]:
                     The valid numbered list rules.
         """
-        if dcr_core.core_glob.setup.lt_list_number_rule_file and dcr_core.core_glob.setup.lt_list_number_rule_file.lower() != "none":
-            lt_list_number_rule_file_path = dcr_core.core_utils.get_os_independent_name(dcr_core.core_glob.setup.lt_list_number_rule_file)
+        if (
+            dcr_core.core_glob.setup.lt_list_number_rule_file
+            and dcr_core.core_glob.setup.lt_list_number_rule_file.lower() != "none"
+        ):
+            lt_list_number_rule_file_path = dcr_core.core_utils.get_os_independent_name(
+                dcr_core.core_glob.setup.lt_list_number_rule_file
+            )
             if os.path.isfile(lt_list_number_rule_file_path):
                 return self._load_rules_from_json(pathlib.Path(lt_list_number_rule_file_path))
 
             dcr_core.core_utils.terminate_fatal(
-                f"File with numbered list rules is missing - " f"file name '{dcr_core.core_glob.setup.lt_list_number_rule_file}'"
+                f"File with numbered list rules is missing - "
+                f"file name '{dcr_core.core_glob.setup.lt_list_number_rule_file}'"
             )
 
         return dcr_core.cls_nlp_core.NLPCore.get_lt_rules_default_list_number()
@@ -311,7 +328,8 @@ class LineTypeListNumber:
 
         dcr_core.core_utils.progress_msg(
             dcr_core.core_glob.setup.is_verbose_lt_list_number,
-            "The numbered list anti-patterns were successfully loaded " + f"from the file {dcr_core.core_glob.setup.lt_list_number_rule_file}",
+            "The numbered list anti-patterns were successfully loaded "
+            + f"from the file {dcr_core.core_glob.setup.lt_list_number_rule_file}",
         )
 
         return anti_patterns
@@ -386,7 +404,9 @@ class LineTypeListNumber:
                 if self._llx_lower_limit <= float(
                     line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX]
                 ) <= self._llx_upper_limit and self._rule[2](str(self._entries[-1][4]), target_value):
-                    self._entries.append([self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx, target_value])
+                    self._entries.append(
+                        [self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx, target_value]
+                    )
                     self._no_entries += 1
                     self._para_no_prev = para_no
                     return
@@ -433,7 +453,9 @@ class LineTypeListNumber:
                 / 100,
                 2,
             )
-            self._llx_upper_limit = round(coord_llx * (100 + dcr_core.core_glob.setup.lt_list_number_tolerance_llx) / 100, 2)
+            self._llx_upper_limit = round(
+                coord_llx * (100 + dcr_core.core_glob.setup.lt_list_number_tolerance_llx) / 100, 2
+            )
 
         self._entries.append([self._page_idx, para_no, self._line_lines_idx, self._line_lines_idx, target_value])
 
@@ -447,7 +469,8 @@ class LineTypeListNumber:
     def _process_page(self) -> None:
         """Process the page-related data."""
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_list_number, f"LineTypeListNumber: Start page                           ={self._page_idx + 1}"
+            dcr_core.core_glob.setup.is_verbose_lt_list_number,
+            f"LineTypeListNumber: Start page                           ={self._page_idx + 1}",
         )
 
         self._max_line_line = len(self._parser_line_lines_json)
@@ -455,12 +478,16 @@ class LineTypeListNumber:
         for line_lines_idx, line_line in enumerate(self._parser_line_lines_json):
             self._line_lines_idx = line_lines_idx
 
-            if line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE] == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY:
+            if (
+                line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
+                == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY
+            ):
                 self._process_line(line_line)
                 self._page_idx_prev = self._page_idx
 
         dcr_core.core_utils.progress_msg(
-            dcr_core.core_glob.setup.is_verbose_lt_list_number, f"LineTypeListNumber: End   page                           ={self._page_idx + 1}"
+            dcr_core.core_glob.setup.is_verbose_lt_list_number,
+            f"LineTypeListNumber: End   page                           ={self._page_idx + 1}",
         )
 
     # -----------------------------------------------------------------------------
@@ -472,7 +499,9 @@ class LineTypeListNumber:
 
         self._lists = []
 
-        dcr_core.core_utils.progress_msg(dcr_core.core_glob.setup.is_verbose_lt_list_number, "LineTypeListNumber: Reset the document memory")
+        dcr_core.core_utils.progress_msg(
+            dcr_core.core_glob.setup.is_verbose_lt_list_number, "LineTypeListNumber: Reset the document memory"
+        )
 
         self._reset_list()
 
@@ -497,7 +526,9 @@ class LineTypeListNumber:
 
         self._rule = ()  # type: ignore
 
-        dcr_core.core_utils.progress_msg(dcr_core.core_glob.setup.is_verbose_lt_list_number, "LineTypeListNumber: Reset the list memory")
+        dcr_core.core_utils.progress_msg(
+            dcr_core.core_glob.setup.is_verbose_lt_list_number, "LineTypeListNumber: Reset the list memory"
+        )
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -569,7 +600,9 @@ class LineTypeListNumber:
         if dcr_core.core_glob.setup.is_create_extra_file_list_number and self._lists:
             full_name = dcr_core.core_utils.get_full_name(
                 directory_name,
-                dcr_core.core_utils.get_stem_name(str(file_name_curr)) + "_list_number." + dcr_core.core_glob.FILE_TYPE_JSON,
+                dcr_core.core_utils.get_stem_name(str(file_name_curr))
+                + "_list_number."
+                + dcr_core.core_glob.FILE_TYPE_JSON,
             )
             with open(full_name, "w", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as file_handle:
                 json.dump(
@@ -586,7 +619,8 @@ class LineTypeListNumber:
 
         if self.no_lists > 0:
             dcr_core.core_utils.progress_msg(
-                dcr_core.core_glob.setup.is_verbose_lt_list_number, f"LineTypeListNumber:                 number numbered lists={self.no_lists}"
+                dcr_core.core_glob.setup.is_verbose_lt_list_number,
+                f"LineTypeListNumber:                 number numbered lists={self.no_lists}",
             )
 
         dcr_core.core_utils.progress_msg(
