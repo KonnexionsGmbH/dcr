@@ -1,15 +1,15 @@
 # pylint: disable=unused-argument
 """Testing Module nlp.cls_line_type_heading."""
 
-import cfg.cls_setup
-import cfg.glob
-import db.cls_action
-import db.cls_db_core
-import db.cls_document
-import db.cls_run
-import launcher
 import pytest
 
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
+import dcr.db.cls_action
+import dcr.db.cls_db_core
+import dcr.db.cls_document
+import dcr.db.cls_run
+import dcr.launcher
 import dcr_core.cls_line_type_headers_footers
 import dcr_core.cls_line_type_heading
 import dcr_core.cls_line_type_list_bullet
@@ -32,7 +32,7 @@ import dcr_core.core_utils
 # -----------------------------------------------------------------------------
 def test_cls_line_type_heading_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType Heading - maximum version."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -44,9 +44,9 @@ def test_cls_line_type_heading_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -60,22 +60,22 @@ def test_cls_line_type_heading_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line("docx_heading.line.json", no_lines_footer=1, no_lists_number_in_document=7, no_tables_in_document=1)
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.check_json_line(
         "docx_heading.line_token.json", no_lines_footer=1, no_lists_number_in_document=7, no_tables_in_document=1
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_heading_maximum_2 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_heading_maximum_2 <=========")
 
     pytest.helpers.check_dbt_document(
         (
@@ -104,7 +104,7 @@ def test_cls_line_type_heading_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_heading_maximum_3 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_heading_maximum_3 <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -124,7 +124,7 @@ def test_cls_line_type_heading_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -132,7 +132,7 @@ def test_cls_line_type_heading_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
 # -----------------------------------------------------------------------------
 def test_cls_line_type_heading_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType Heading - minimum version_1."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -157,18 +157,18 @@ def test_cls_line_type_heading_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line("docx_heading.line.json", no_lines_footer=1, no_lists_number_in_document=7, no_tables_in_document=1)
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_heading_minimum_1_2 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_heading_minimum_1_2 <=========")
 
     pytest.helpers.check_dbt_document(
         (
@@ -197,7 +197,7 @@ def test_cls_line_type_heading_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_heading_minimum_1_3 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_heading_minimum_1_3 <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -209,7 +209,7 @@ def test_cls_line_type_heading_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -217,31 +217,31 @@ def test_cls_line_type_heading_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_line_type_heading_coverage_exists(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing dependencies - line_type_heading - coverage - exists."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    cfg.glob.run = db.cls_run.Run(
+    dcr.cfg.glob.run = dcr.db.cls_run.Run(
         _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        action_code=dcr.db.cls_run.Run.ACTION_CODE_INBOX,
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action(
+    dcr.cfg.glob.action_curr = dcr.db.cls_action.Action(
         _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        action_code=dcr.db.cls_run.Run.ACTION_CODE_INBOX,
         id_run_last=1,
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.document = db.cls_document.Document(
+    dcr.cfg.glob.document = dcr.db.cls_document.Document(
         action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
     )
 
     # -------------------------------------------------------------------------
-    dcr_core.core_glob.setup = cfg.cls_setup.Setup()
+    dcr_core.core_glob.setup = dcr.cfg.cls_setup.Setup()
 
     # -------------------------------------------------------------------------
     dcr_core.core_glob.text_parser = dcr_core.cls_text_parser.TextParser()
@@ -260,7 +260,7 @@ def test_missing_dependencies_line_type_heading_coverage_exists(fxtr_setup_empty
     instance.exists()
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -268,31 +268,31 @@ def test_missing_dependencies_line_type_heading_coverage_exists(fxtr_setup_empty
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_line_type_heading_text_parser(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing dependencies - line_type_heading - TextParser."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    cfg.glob.run = db.cls_run.Run(
+    dcr.cfg.glob.run = dcr.db.cls_run.Run(
         _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        action_code=dcr.db.cls_run.Run.ACTION_CODE_INBOX,
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action(
+    dcr.cfg.glob.action_curr = dcr.db.cls_action.Action(
         _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        action_code=dcr.db.cls_run.Run.ACTION_CODE_INBOX,
         id_run_last=1,
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.document = db.cls_document.Document(
+    dcr.cfg.glob.document = dcr.db.cls_document.Document(
         action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
     )
 
     # -------------------------------------------------------------------------
-    dcr_core.core_glob.setup = cfg.cls_setup.Setup()
+    dcr_core.core_glob.setup = dcr.cfg.cls_setup.Setup()
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_text_parser=True)
@@ -307,4 +307,4 @@ def test_missing_dependencies_line_type_heading_text_parser(fxtr_setup_empty_db_
     assert expt.value.code == 1, "Instance of class 'TextParser' is missing"
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

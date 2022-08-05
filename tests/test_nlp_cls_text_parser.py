@@ -1,15 +1,15 @@
 # pylint: disable=unused-argument
 """Testing Module nlp.cls_text_parser."""
 
-import cfg.cls_setup
-import cfg.glob
-import db.cls_action
-import db.cls_db_core
-import db.cls_document
-import db.cls_run
-import launcher
 import pytest
 
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
+import dcr.db.cls_action
+import dcr.db.cls_db_core
+import dcr.db.cls_document
+import dcr.db.cls_run
+import dcr.launcher
 import dcr_core.cls_nlp_core
 import dcr_core.cls_text_parser
 import dcr_core.cls_tokenizer_spacy
@@ -27,7 +27,7 @@ import dcr_core.core_utils
 # -----------------------------------------------------------------------------
 def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test TextParser."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -39,18 +39,18 @@ def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
 
     # -------------------------------------------------------------------------
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
     dcr_core.cls_text_parser.TextParser.from_files(
@@ -61,4 +61,4 @@ def test_cls_text_parser(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

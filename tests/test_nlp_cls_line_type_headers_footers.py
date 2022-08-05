@@ -2,15 +2,15 @@
 """Testing Module nlp.cls_line_type_headers_footers."""
 import os.path
 
-import cfg.cls_setup
-import cfg.glob
-import db.cls_action
-import db.cls_db_core
-import db.cls_document
-import db.cls_run
-import launcher
 import pytest
 
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
+import dcr.db.cls_action
+import dcr.db.cls_db_core
+import dcr.db.cls_document
+import dcr.db.cls_run
+import dcr.launcher
 import dcr_core.cls_line_type_headers_footers
 import dcr_core.cls_line_type_toc
 import dcr_core.cls_nlp_core
@@ -32,7 +32,7 @@ import dcr_core.core_utils
 # -----------------------------------------------------------------------------
 def test_cls_line_type_headers_footers_basic(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType Header & Footers - basic test."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -66,9 +66,9 @@ def test_cls_line_type_headers_footers_basic(fxtr_rmdir_opt, fxtr_setup_empty_db
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -79,11 +79,11 @@ def test_cls_line_type_headers_footers_basic(fxtr_rmdir_opt, fxtr_setup_empty_db
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
     pytest.helpers.check_cls_line_type(
@@ -203,7 +203,7 @@ def test_cls_line_type_headers_footers_basic(fxtr_rmdir_opt, fxtr_setup_empty_db
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -211,7 +211,7 @@ def test_cls_line_type_headers_footers_basic(fxtr_rmdir_opt, fxtr_setup_empty_db
 # -----------------------------------------------------------------------------
 def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType Header & Footers - maximum version."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -226,9 +226,9 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -238,18 +238,18 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line("p_5_h_0_f_0.line.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_0_f_2.line.json", no_lines_footer=2, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_2_f_0.line.json", no_lines_footer=0, no_lines_header=2)
     pytest.helpers.check_json_line("p_5_h_2_f_2.line.json", no_lines_footer=2, no_lines_header=2)
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.check_json_line("p_5_h_0_f_0.line_token.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_0_f_2.line_token.json", no_lines_footer=2, no_lines_header=0)
@@ -257,7 +257,7 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
     pytest.helpers.check_json_line("p_5_h_2_f_2.line_token.json", no_lines_footer=2, no_lines_header=2)
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_2 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_2 <=========")
 
     pytest.helpers.check_dbt_document(
         (
@@ -364,7 +364,7 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_3 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_3 <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -407,7 +407,7 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -415,7 +415,7 @@ def test_cls_line_type_headers_footers_maximum_version(fxtr_rmdir_opt, fxtr_setu
 # -----------------------------------------------------------------------------
 def test_cls_line_type_headers_footers_maximum_version_by_hand(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType Header & Footers - maximum version - by hand."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -427,9 +427,9 @@ def test_cls_line_type_headers_footers_maximum_version_by_hand(fxtr_rmdir_opt, f
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -439,20 +439,20 @@ def test_cls_line_type_headers_footers_maximum_version_by_hand(fxtr_rmdir_opt, f
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line("p_5_h_X_f_X.line.json", no_lines_footer=1, no_lines_header=0)
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.check_json_line("p_5_h_X_f_X.line_token.json", no_lines_footer=1, no_lines_header=0)
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_by_hand_2 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_by_hand_2 <=========")
 
     pytest.helpers.check_dbt_document(
         (
@@ -481,7 +481,7 @@ def test_cls_line_type_headers_footers_maximum_version_by_hand(fxtr_rmdir_opt, f
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_by_hand_3 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_by_hand_3 <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -500,7 +500,7 @@ def test_cls_line_type_headers_footers_maximum_version_by_hand(fxtr_rmdir_opt, f
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -508,7 +508,7 @@ def test_cls_line_type_headers_footers_maximum_version_by_hand(fxtr_rmdir_opt, f
 # -----------------------------------------------------------------------------
 def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType Header & Footers - minimum version - distance."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -533,21 +533,21 @@ def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, 
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line("p_5_h_0_f_0.line.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_0_f_2.line.json", no_lines_footer=2, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_2_f_0.line.json", no_lines_footer=0, no_lines_header=2)
     pytest.helpers.check_json_line("p_5_h_2_f_2.line.json", no_lines_footer=1, no_lines_header=2)
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_minimum_version_distance_2 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_minimum_version_distance_2 <=========")
 
     pytest.helpers.check_dbt_document(
         (
@@ -654,7 +654,7 @@ def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, 
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_distance_3 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_distance_3 <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -669,7 +669,7 @@ def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, 
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -677,7 +677,7 @@ def test_cls_line_type_headers_footers_minimum_version_distance(fxtr_rmdir_opt, 
 # -----------------------------------------------------------------------------
 def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType Header & Footers - minimum version - lines."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -702,21 +702,21 @@ def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxt
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line("p_5_h_0_f_0.line.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_0_f_2.line.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_2_f_0.line.json", no_lines_footer=0, no_lines_header=0)
     pytest.helpers.check_json_line("p_5_h_2_f_2.line.json", no_lines_footer=0, no_lines_header=0)
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_minimum_version_distance_2 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_minimum_version_distance_2 <=========")
 
     pytest.helpers.check_dbt_document(
         (
@@ -823,7 +823,7 @@ def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxt
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_distance_3 <=========")
+    dcr.cfg.glob.logger.info("=========> test_cls_line_type_headers_footers_maximum_version_distance_3 <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -838,7 +838,7 @@ def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxt
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -846,21 +846,21 @@ def test_cls_line_type_headers_footers_minimum_version_lines(fxtr_rmdir_opt, fxt
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_line_type_headers_footers_coverage_exists(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing dependencies - line_type_headers_footers - coverage - exists."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    cfg.glob.run = db.cls_run.Run(
+    dcr.cfg.glob.run = dcr.db.cls_run.Run(
         _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        action_code=dcr.db.cls_run.Run.ACTION_CODE_INBOX,
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action(
+    dcr.cfg.glob.action_curr = dcr.db.cls_action.Action(
         _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        action_code=dcr.db.cls_run.Run.ACTION_CODE_INBOX,
         id_run_last=1,
     )
 
@@ -871,10 +871,10 @@ def test_missing_dependencies_line_type_headers_footers_coverage_exists(fxtr_set
 
     # -------------------------------------------------------------------------
     instance = dcr_core.cls_line_type_headers_footers.LineTypeHeaderFooters(
-        file_name_curr=cfg.glob.action_curr.action_file_name,
+        file_name_curr=dcr.cfg.glob.action_curr.action_file_name,
     )
 
     instance.exists()
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

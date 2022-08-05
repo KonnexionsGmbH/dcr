@@ -2,14 +2,14 @@
 """Testing Module nlp.parser."""
 import os
 
-import cfg.cls_setup
-import cfg.glob
-import db.cls_run
 import jellyfish
-import launcher
 import pytest
 import roman
 
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
+import dcr.db.cls_run
+import dcr.launcher
 import dcr_core.cls_setup
 import dcr_core.core_glob
 import dcr_core.core_utils
@@ -25,7 +25,7 @@ import dcr_core.core_utils
 # -----------------------------------------------------------------------------
 def test_levenshtein_arabic():
     """Test Levenshtein - arabic."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     upper_limit = 1200
@@ -52,7 +52,7 @@ def test_levenshtein_arabic():
                 assert False, "distance=" + str(distance) + " prev=" + text_prev + " - curr=" + text_curr
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -60,7 +60,7 @@ def test_levenshtein_arabic():
 # -----------------------------------------------------------------------------
 def test_levenshtein_roman():
     """Test Levenshtein - roman."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     upper_limit = 1200
@@ -82,7 +82,7 @@ def test_levenshtein_roman():
                 assert False, "distance=" + str(distance) + " prev=" + text_prev + " - curr=" + text_curr
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ def test_levenshtein_roman():
 @pytest.mark.parametrize("verbose_parser", ["all", "none", "text"])
 def test_run_action_store_parse_result_in_json_coverage(verbose_parser: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - coverage."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -103,9 +103,9 @@ def test_run_action_store_parse_result_in_json_coverage(verbose_parser: str, fxt
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -120,14 +120,14 @@ def test_run_action_store_parse_result_in_json_coverage(verbose_parser: str, fxt
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_coverage <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_coverage <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -140,7 +140,7 @@ def test_run_action_store_parse_result_in_json_coverage(verbose_parser: str, fxt
         ),
     )
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -148,7 +148,7 @@ def test_run_action_store_parse_result_in_json_coverage(verbose_parser: str, fxt
 # -----------------------------------------------------------------------------
 def test_run_action_store_parse_result_in_json_coverage_page(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - coverage."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -170,14 +170,14 @@ def test_run_action_store_parse_result_in_json_coverage_page(fxtr_rmdir_opt, fxt
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -185,7 +185,7 @@ def test_run_action_store_parse_result_in_json_coverage_page(fxtr_rmdir_opt, fxt
 # -----------------------------------------------------------------------------
 def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - coverage - LineType."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -201,10 +201,10 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -216,14 +216,14 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_coverage <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_coverage <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -249,7 +249,7 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -257,19 +257,19 @@ def test_run_action_store_parse_result_in_json_coverage_line_type(fxtr_rmdir_opt
 # -----------------------------------------------------------------------------
 def test_run_action_store_parse_result_in_json_missing_input_file(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - missing input file."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_missing_input_file <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_missing_input_file <=========")
 
     stem_name_1 = "case_3_pdf_text_route_inbox_pdflib"
     file_ext_1 = "pdf"
@@ -282,16 +282,16 @@ def test_run_action_store_parse_result_in_json_missing_input_file(fxtr_setup_emp
     )
 
     # -------------------------------------------------------------------------
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     os.remove(dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.xml"))
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -299,7 +299,7 @@ def test_run_action_store_parse_result_in_json_missing_input_file(fxtr_setup_emp
 # -----------------------------------------------------------------------------
 def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - normal."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -313,9 +313,9 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -329,20 +329,20 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TESSERACT])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PANDOC])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_normal <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_normal <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -362,7 +362,7 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -370,7 +370,7 @@ def test_run_action_store_parse_result_in_json_normal(fxtr_rmdir_opt, fxtr_setup
 # -----------------------------------------------------------------------------
 def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - normal - keep."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -384,10 +384,10 @@ def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -401,20 +401,20 @@ def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TESSERACT])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PANDOC])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_normal_keep <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_store_parse_result_in_json_normal_keep <=========")
 
     # TBD
     # if platform.system() != "Windows":
@@ -449,4 +449,4 @@ def test_run_action_store_parse_result_in_json_normal_keep(fxtr_rmdir_opt, fxtr_
         ),
     )
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

@@ -4,12 +4,12 @@ import hashlib
 import os
 import pathlib
 
-import cfg.glob
-import db.cls_document
-import db.cls_run
 import PyPDF2
 import PyPDF2.errors
 
+import dcr.cfg.glob
+import dcr.db.cls_document
+import dcr.db.cls_run
 import dcr_core.core_glob
 import dcr_core.core_utils
 
@@ -40,7 +40,7 @@ def check_exists_object(  # noqa: C901
     """
     if is_action_curr:
         try:
-            cfg.glob.action_curr.exists()  # type: ignore
+            dcr.cfg.glob.action_curr.exists()  # type: ignore
         except AttributeError:
             dcr_core.core_utils.terminate_fatal(
                 "The required instance of the class 'Action (action_curr)' does not yet exist.",
@@ -48,7 +48,7 @@ def check_exists_object(  # noqa: C901
 
     if is_action_next:
         try:
-            cfg.glob.action_next.exists()  # type: ignore
+            dcr.cfg.glob.action_next.exists()  # type: ignore
         except AttributeError:
             dcr_core.core_utils.terminate_fatal(
                 "The required instance of the class 'Action (action_next)' does not yet exist.",
@@ -56,7 +56,7 @@ def check_exists_object(  # noqa: C901
 
     if is_db_core:
         try:
-            cfg.glob.db_core.exists()  # type: ignore
+            dcr.cfg.glob.db_core.exists()  # type: ignore
         except AttributeError:
             dcr_core.core_utils.terminate_fatal(
                 "The required instance of the class 'DBCore' does not yet exist.",
@@ -64,7 +64,7 @@ def check_exists_object(  # noqa: C901
 
     if is_document:
         try:
-            cfg.glob.document.exists()  # type: ignore
+            dcr.cfg.glob.document.exists()  # type: ignore
         except AttributeError:
             dcr_core.core_utils.terminate_fatal(
                 "The required instance of the class 'Document' does not yet exist.",
@@ -72,7 +72,7 @@ def check_exists_object(  # noqa: C901
 
     if is_run:
         try:
-            cfg.glob.run.exists()  # type: ignore
+            dcr.cfg.glob.run.exists()  # type: ignore
         except AttributeError:
             dcr_core.core_utils.terminate_fatal(
                 "The required instance of the class 'Run' does not yet exist.",
@@ -112,7 +112,9 @@ def delete_auxiliary_file(full_name: pathlib.Path | str) -> None:
     full_name = dcr_core.core_utils.get_os_independent_name(full_name)
 
     # Don't remove the base document !!!
-    if full_name == dcr_core.core_utils.get_full_name(cfg.glob.action_curr.action_directory_name, cfg.glob.document.get_file_name_next()):
+    if full_name == dcr_core.core_utils.get_full_name(
+        dcr.cfg.glob.action_curr.action_directory_name, dcr.cfg.glob.document.get_file_name_next()
+    ):
         return
 
     if os.path.isfile(full_name):
@@ -229,7 +231,7 @@ def progress_msg_core(msg: str) -> None:
 
     print(final_msg)
 
-    cfg.glob.logger.debug(final_msg)
+    dcr.cfg.glob.logger.debug(final_msg)
 
 
 # -----------------------------------------------------------------------------
@@ -241,24 +243,28 @@ def progress_msg_disconnected() -> None:
         dcr_core.core_glob.setup.exists()
 
         if dcr_core.core_glob.setup.is_verbose:
-            if cfg.glob.db_core.db_current_database == "" and cfg.glob.db_core.db_current_user == "":
+            if dcr.cfg.glob.db_core.db_current_database == "" and dcr.cfg.glob.db_core.db_current_user == "":
                 print("")
                 progress_msg("Database is now disconnected")
                 return
 
             database = (
-                cfg.glob.INFORMATION_NOT_YET_AVAILABLE
-                if cfg.glob.db_core.db_current_database == ""
-                else cfg.glob.db_core.db_current_database
+                dcr.cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+                if dcr.cfg.glob.db_core.db_current_database == ""
+                else dcr.cfg.glob.db_core.db_current_database
             )
 
-            user = cfg.glob.INFORMATION_NOT_YET_AVAILABLE if cfg.glob.db_core.db_current_user == "" else cfg.glob.db_core.db_current_user
+            user = (
+                dcr.cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+                if dcr.cfg.glob.db_core.db_current_user == ""
+                else dcr.cfg.glob.db_core.db_current_user
+            )
 
             print("")
             progress_msg(f"User '{user}' is now disconnected from database '{database}'")
 
-            cfg.glob.db_core.db_current_database = ""
-            cfg.glob.db_core.db_current_user = ""
+            dcr.cfg.glob.db_core.db_current_database = ""
+            dcr.cfg.glob.db_core.db_current_user = ""
     except AttributeError:
         pass
 
@@ -287,17 +293,17 @@ def progress_msg_empty_before(msg: str) -> None:
 # -----------------------------------------------------------------------------
 def reset_statistics_total() -> None:
     """Reset the total statistic counters."""
-    cfg.glob.run.run_total_erroneous = 0
-    cfg.glob.run.run_total_processed_ok = 0
-    cfg.glob.run.run_total_processed_to_be = 0
+    dcr.cfg.glob.run.run_total_erroneous = 0
+    dcr.cfg.glob.run.run_total_processed_ok = 0
+    dcr.cfg.glob.run.run_total_processed_to_be = 0
 
-    cfg.glob.run.total_generated = 0
-    cfg.glob.run.total_processed_pandoc = 0
-    cfg.glob.run.total_processed_pdf2image = 0
-    cfg.glob.run.total_processed_pdflib = 0
-    cfg.glob.run.total_processed_tesseract = 0
-    cfg.glob.run.total_status_error = 0
-    cfg.glob.run.total_status_ready = 0
+    dcr.cfg.glob.run.total_generated = 0
+    dcr.cfg.glob.run.total_processed_pandoc = 0
+    dcr.cfg.glob.run.total_processed_pdf2image = 0
+    dcr.cfg.glob.run.total_processed_pdflib = 0
+    dcr.cfg.glob.run.total_processed_tesseract = 0
+    dcr.cfg.glob.run.total_status_error = 0
+    dcr.cfg.glob.run.total_status_ready = 0
 
 
 # -----------------------------------------------------------------------------
@@ -306,15 +312,15 @@ def reset_statistics_total() -> None:
 def show_statistics_language() -> None:
     """Show the language related statistics of the run."""
     progress_msg("===============================> Summary Language")
-    progress_msg(f"Number documents to be processed:          {cfg.glob.language.total_processed_to_be:6d}")
+    progress_msg(f"Number documents to be processed:          {dcr.cfg.glob.language.total_processed_to_be:6d}")
 
-    if cfg.glob.language.total_processed_to_be > 0:
-        progress_msg(f"Number documents accepted - " f"Pandoc:        {cfg.glob.language.total_processed_pandoc:6d}")
-        progress_msg(f"Number documents accepted - " f"pdf2image:     {cfg.glob.language.total_processed_pdf2image:6d}")
-        progress_msg(f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.language.total_processed_pdflib:6d}")
-        progress_msg(f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.language.total_processed_tesseract:6d}")
-        progress_msg(f"Number documents accepted - " f"Total:         {cfg.glob.language.total_processed:6d}")
-        progress_msg(f"Number documents rejected:                 {cfg.glob.language.total_erroneous:6d}")
+    if dcr.cfg.glob.language.total_processed_to_be > 0:
+        progress_msg(f"Number documents accepted - " f"Pandoc:        {dcr.cfg.glob.language.total_processed_pandoc:6d}")
+        progress_msg(f"Number documents accepted - " f"pdf2image:     {dcr.cfg.glob.language.total_processed_pdf2image:6d}")
+        progress_msg(f"Number documents accepted - " f"PDFlib TET:    {dcr.cfg.glob.language.total_processed_pdflib:6d}")
+        progress_msg(f"Number documents accepted - " f"Tesseract OCR: {dcr.cfg.glob.language.total_processed_tesseract:6d}")
+        progress_msg(f"Number documents accepted - " f"Total:         {dcr.cfg.glob.language.total_processed:6d}")
+        progress_msg(f"Number documents rejected:                 {dcr.cfg.glob.language.total_erroneous:6d}")
 
 
 # -----------------------------------------------------------------------------
@@ -323,33 +329,33 @@ def show_statistics_language() -> None:
 def show_statistics_total() -> None:
     """Show the total statistics of the run."""
     progress_msg("==================================> Summary Total")
-    progress_msg(f"Number documents to be processed:          {cfg.glob.run.run_total_processed_to_be:6d}")
+    progress_msg(f"Number documents to be processed:          {dcr.cfg.glob.run.run_total_processed_to_be:6d}")
 
-    if cfg.glob.run.run_total_processed_to_be > 0:
-        if cfg.glob.run.total_status_ready > 0 or cfg.glob.run.total_status_error > 0:
-            progress_msg(f"Number with document status ready:         {cfg.glob.run.total_status_ready:6d}")
-            progress_msg(f"Number with document status error:         {cfg.glob.run.total_status_error:6d}")
+    if dcr.cfg.glob.run.run_total_processed_to_be > 0:
+        if dcr.cfg.glob.run.total_status_ready > 0 or dcr.cfg.glob.run.total_status_error > 0:
+            progress_msg(f"Number with document status ready:         {dcr.cfg.glob.run.total_status_ready:6d}")
+            progress_msg(f"Number with document status error:         {dcr.cfg.glob.run.total_status_error:6d}")
 
         # noinspection PyUnresolvedReferences
-        if cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_INBOX:
-            progress_msg(f"Number documents accepted - " f"Pandoc:        {cfg.glob.run.total_processed_pandoc:6d}")
-            progress_msg(f"Number documents accepted - " f"pdf2image:     {cfg.glob.run.total_processed_pdf2image:6d}")
-            progress_msg(f"Number documents accepted - " f"PDFlib TET:    {cfg.glob.run.total_processed_pdflib:6d}")
-            progress_msg(f"Number documents accepted - " f"Tesseract OCR: {cfg.glob.run.total_processed_tesseract:6d}")
-            progress_msg(f"Number documents accepted - " f"Total:         {cfg.glob.run.run_total_processed_ok:6d}")
-        elif cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_PDFLIB:
-            progress_msg(f"Number documents extracted:                {cfg.glob.run.run_total_processed_ok:6d}")
+        if dcr.cfg.glob.run.run_action_code == dcr.db.cls_run.Run.ACTION_CODE_INBOX:
+            progress_msg(f"Number documents accepted - " f"Pandoc:        {dcr.cfg.glob.run.total_processed_pandoc:6d}")
+            progress_msg(f"Number documents accepted - " f"pdf2image:     {dcr.cfg.glob.run.total_processed_pdf2image:6d}")
+            progress_msg(f"Number documents accepted - " f"PDFlib TET:    {dcr.cfg.glob.run.total_processed_pdflib:6d}")
+            progress_msg(f"Number documents accepted - " f"Tesseract OCR: {dcr.cfg.glob.run.total_processed_tesseract:6d}")
+            progress_msg(f"Number documents accepted - " f"Total:         {dcr.cfg.glob.run.run_total_processed_ok:6d}")
+        elif dcr.cfg.glob.run.run_action_code == dcr.db.cls_run.Run.ACTION_CODE_PDFLIB:
+            progress_msg(f"Number documents extracted:                {dcr.cfg.glob.run.run_total_processed_ok:6d}")
         else:
-            progress_msg(f"Number documents converted:                {cfg.glob.run.run_total_processed_ok:6d}")
+            progress_msg(f"Number documents converted:                {dcr.cfg.glob.run.run_total_processed_ok:6d}")
 
-        if cfg.glob.run.total_generated > 0:
-            if cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_PYPDF2:
-                progress_msg(f"Number generated pdf documents:            {cfg.glob.run.total_generated:6d}")
+        if dcr.cfg.glob.run.total_generated > 0:
+            if dcr.cfg.glob.run.run_action_code == dcr.db.cls_run.Run.ACTION_CODE_PYPDF2:
+                progress_msg(f"Number generated pdf documents:            {dcr.cfg.glob.run.total_generated:6d}")
             else:
-                progress_msg(f"Number pdf documents generated:            {cfg.glob.run.total_generated:6d}")
+                progress_msg(f"Number pdf documents generated:            {dcr.cfg.glob.run.total_generated:6d}")
 
         # noinspection PyUnresolvedReferences
-        if cfg.glob.run.run_action_code == db.cls_run.Run.ACTION_CODE_INBOX:
-            progress_msg(f"Number documents rejected:                 {cfg.glob.run.run_total_erroneous:6d}")
+        if dcr.cfg.glob.run.run_action_code == dcr.db.cls_run.Run.ACTION_CODE_INBOX:
+            progress_msg(f"Number documents rejected:                 {dcr.cfg.glob.run.run_total_erroneous:6d}")
         else:
-            progress_msg(f"Number documents erroneous:                {cfg.glob.run.run_total_erroneous:6d}")
+            progress_msg(f"Number documents erroneous:                {dcr.cfg.glob.run.run_total_erroneous:6d}")

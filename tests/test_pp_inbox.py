@@ -4,13 +4,13 @@ import os.path
 import pathlib
 import shutil
 
-import cfg.cls_setup
-import cfg.glob
-import db.cls_db_core
-import db.cls_run
-import launcher
 import pytest
 
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
+import dcr.db.cls_db_core
+import dcr.db.cls_run
+import dcr.launcher
 import dcr_core.core_glob
 import dcr_core.core_utils
 
@@ -25,7 +25,7 @@ import dcr_core.core_utils
 # -----------------------------------------------------------------------------
 def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_INBOX - accepted duplicate."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     stem_name_1 = "pdf_text_ok"
@@ -51,17 +51,17 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
 
     # -------------------------------------------------------------------------
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_process_inbox_accepted_duplicate <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_process_inbox_accepted_duplicate <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox=(
@@ -79,7 +79,7 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -87,7 +87,7 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
 # -----------------------------------------------------------------------------
 def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
     """Test RUN_ACTION_PROCESS_INBOX - French."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     db_initial_data_file_path = pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)
@@ -102,9 +102,9 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
         dcr_core.core_utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
-    cfg.glob.db_core = db.cls_db_core.DBCore(is_admin=True)
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore(is_admin=True)
 
-    cfg.glob.db_core.create_database()
+    dcr.cfg.glob.db_core.create_database()
 
     # -------------------------------------------------------------------------
     # Copy language subdirectory
@@ -112,16 +112,16 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "before"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "before"),
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_process_inbox_french <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_process_inbox_french <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox=(
@@ -164,7 +164,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
     # TBD
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -172,7 +172,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
 # -----------------------------------------------------------------------------
 def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_INBOX - ignore duplicates."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -185,16 +185,16 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "true"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "true"),
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_process_inbox_ignore_duplicates <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_process_inbox_ignore_duplicates <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -207,7 +207,7 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -215,7 +215,7 @@ def test_run_action_process_inbox_ignore_duplicates(fxtr_setup_empty_db_and_inbo
 # -----------------------------------------------------------------------------
 def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_INBOX - rejected."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_accepted)
@@ -233,17 +233,17 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
 
     # -------------------------------------------------------------------------
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox=(
@@ -266,10 +266,10 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -277,7 +277,7 @@ def test_run_action_process_inbox_rejected(fxtr_rmdir_opt, fxtr_setup_empty_db_a
 # -----------------------------------------------------------------------------
 def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_INBOX - rejected duplicate."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     stem_name_1 = "pdf_wrong_format"
@@ -298,17 +298,17 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
 
     # -------------------------------------------------------------------------
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected_duplicate <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected_duplicate <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox=(
@@ -326,7 +326,7 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -334,7 +334,7 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
 # -----------------------------------------------------------------------------
 def test_run_action_process_inbox_rejected_901(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_INBOX - rejected - 901."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_accepted)
@@ -351,17 +351,17 @@ def test_run_action_process_inbox_rejected_901(fxtr_rmdir_opt, fxtr_setup_empty_
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
 
     # -------------------------------------------------------------------------
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_process_inbox_rejected <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox=(

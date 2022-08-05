@@ -2,12 +2,12 @@
 """Testing Module nlp.pdflib."""
 import os
 
-import cfg.cls_setup
-import cfg.glob
-import db.cls_run
-import launcher
 import pytest
 
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
+import dcr.db.cls_run
+import dcr.launcher
 import dcr_core.core_glob
 import dcr_core.core_utils
 
@@ -22,18 +22,18 @@ import dcr_core.core_utils
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - normal - duplicate."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_duplicate <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_duplicate <=========")
 
     stem_name_1 = "pdf_text_ok_protected"
     file_ext_1 = "pdf"
@@ -51,7 +51,7 @@ def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_a
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_a
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - normal - keep."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -71,9 +71,9 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -84,12 +84,12 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -107,7 +107,7 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -115,7 +115,7 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - normal - keep - only page."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -127,10 +127,10 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -140,12 +140,12 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep_only_page <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep_only_page <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -159,7 +159,7 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -167,7 +167,7 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - rej_file_open - line."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -179,10 +179,10 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -192,11 +192,11 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
         dcr_core.core_utils.get_full_name(
@@ -205,10 +205,10 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
         )
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_line <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_line <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -220,7 +220,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
         ),
     )
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -228,7 +228,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - rej_file_open - page."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -240,18 +240,18 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
         dcr_core.core_utils.get_full_name(
@@ -260,10 +260,10 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
         )
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_page <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_page <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -276,4 +276,4 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

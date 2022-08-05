@@ -1,9 +1,8 @@
 # pylint: disable=unused-argument
 """Testing Module nlp.cls_nlp_core."""
 
-import cfg.cls_setup
-import cfg.glob
-
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
 import dcr_core.cls_nlp_core
 
 # -----------------------------------------------------------------------------
@@ -17,11 +16,11 @@ import dcr_core.cls_nlp_core
 # -----------------------------------------------------------------------------
 def test_cls_nlp_core_exists(fxtr_rmdir_opt, fxtr_setup_logger_environment):
     """Test NLPCore - Existence."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     instance = dcr_core.cls_nlp_core.NLPCore()
     instance.exists()
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

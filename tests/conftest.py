@@ -1,7 +1,7 @@
 # pylint: disable=redefined-outer-name
 """Test Configuration and Fixtures.
 
-Setup test config_setup.cfg.configurations and store fixtures.
+Setup test config_setup.dcr.cfg.configurations and store fixtures.
 
 Returns:
     [type]: None.
@@ -12,19 +12,19 @@ import os
 import pathlib
 import shutil
 
-import cfg.cls_setup
-import cfg.glob
-import db.cls_action
-import db.cls_db_core
-import db.cls_document
-import db.cls_language
-import db.cls_run
-import db.cls_token
-import db.cls_version
-import launcher
 import pytest
 import sqlalchemy
 
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
+import dcr.db.cls_action
+import dcr.db.cls_db_core
+import dcr.db.cls_document
+import dcr.db.cls_language
+import dcr.db.cls_run
+import dcr.db.cls_token
+import dcr.db.cls_version
+import dcr.launcher
 import dcr_core.cls_nlp_core
 import dcr_core.cls_setup
 import dcr_core.cls_text_parser
@@ -112,7 +112,7 @@ def check_dbt_action(param: tuple[int, tuple[int, str, str, int, str, int, int, 
     """
     (id_row, expected_values) = param
 
-    dbt = db.cls_action.Action.from_id(id_row)
+    dbt = dcr.db.cls_action.Action.from_id(id_row)
 
     actual_values = dbt.get_columns_in_tuple(is_duration_ns=False, is_file_size_bytes=False)
 
@@ -136,7 +136,7 @@ def check_dbt_document(param: tuple[int, tuple[int, str, str, int, str, int, int
     """
     (id_row, expected_values) = param
 
-    dbt = db.cls_document.Document.from_id(id_row)
+    dbt = dcr.db.cls_document.Document.from_id(id_row)
 
     actual_values = dbt.get_columns_in_tuple(is_file_size_bytes=False, is_sha256=False)
 
@@ -160,7 +160,7 @@ def check_dbt_language(param: tuple[int, tuple[int, bool, str, str, str, str, st
     """
     (id_row, expected_values) = param
 
-    dbt = db.cls_language.Language.from_id(id_row)
+    dbt = dcr.db.cls_language.Language.from_id(id_row)
 
     actual_values = dbt.get_columns_in_tuple()
 
@@ -184,7 +184,7 @@ def check_dbt_run(param: tuple[int, tuple[int, str, str, int, str, int, int, int
     """
     (id_row, expected_values) = param
 
-    dbt = db.cls_run.Run.from_id(id_row)
+    dbt = dcr.db.cls_run.Run.from_id(id_row)
 
     actual_values = dbt.get_columns_in_tuple()
 
@@ -208,7 +208,7 @@ def check_dbt_token(param: tuple[int, tuple[int, str, str, int, str, int, int, i
     """
     (id_row, expected_values) = param
 
-    dbt = db.cls_token.Token.from_id(id_row)
+    dbt = dcr.db.cls_token.Token.from_id(id_row)
 
     actual_values = dbt.get_columns_in_tuple()
 
@@ -232,7 +232,7 @@ def check_dbt_version(param: tuple[int, tuple[int, str]]) -> None:
     """
     (id_row, expected_values) = param
 
-    dbt = db.cls_version.Version.from_id(id_row)
+    dbt = dcr.db.cls_version.Version.from_id(id_row)
 
     actual_values = dbt.get_columns_in_tuple()
 
@@ -305,11 +305,11 @@ def config_param_delete(config_section: str, config_param: str) -> None:
         config_section (str): Configuration section.
         config_param (str): Configuration parameter.
     """
-    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
+    CONFIG_PARSER.read(dcr.cfg.cls_setup.Setup._DCR_CFG_FILE)
 
     del CONFIG_PARSER[config_section][config_param]
 
-    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as configfile:
+    with open(dcr.cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
 
@@ -328,12 +328,12 @@ def config_params_modify(
         config_section (str): Configuration section.
         config_params (list[tuple[str, str]]): Configuration parameter modifications.
     """
-    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
+    CONFIG_PARSER.read(dcr.cfg.cls_setup.Setup._DCR_CFG_FILE)
 
     for (config_param, config_value) in config_params:
         CONFIG_PARSER[config_section][config_param] = config_value
 
-    with open(cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as configfile:
+    with open(dcr.cfg.cls_setup.Setup._DCR_CFG_FILE, "w", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as configfile:
         CONFIG_PARSER.write(configfile)
 
 
@@ -429,7 +429,7 @@ def create_action():
     """
     values = get_values_action()
 
-    instance = db.cls_action.Action(
+    instance = dcr.db.cls_action.Action(
         action_code=values[1],
         action_text=values[2],
         directory_name=values[3],
@@ -461,7 +461,7 @@ def create_document():
     """
     values = get_values_document()
 
-    instance = db.cls_document.Document(
+    instance = dcr.db.cls_document.Document(
         action_code_last=values[1],
         directory_name=values[3],
         file_name=values[7],
@@ -495,7 +495,7 @@ def create_language():
     """
     values = get_values_language()
 
-    instance = db.cls_language.Language(
+    instance = dcr.db.cls_language.Language(
         active=values[1],
         code_iso_639_3=values[2],
         code_pandoc=values[3],
@@ -525,7 +525,7 @@ def create_run():
     """
     values = get_values_run()
 
-    instance = db.cls_run.Run(
+    instance = dcr.db.cls_run.Run(
         _row_id=0,
         action_code=values[1],
         status=values[4],
@@ -552,7 +552,7 @@ def create_token():
 
     values = get_values_token()
 
-    instance = db.cls_token.Token(
+    instance = dcr.db.cls_token.Token(
         id_document=values[1],
         column_no=values[2],
         column_span=values[3],
@@ -585,7 +585,7 @@ def create_version():
     """
     values = get_values_version()
 
-    instance = db.cls_version.Version(
+    instance = dcr.db.cls_version.Version(
         version=values[1],
     )
 
@@ -629,51 +629,51 @@ def delete_existing_object(  # noqa: C901
     """
     if is_action_curr:
         try:
-            cfg.glob.action_curr.exists()  # type: ignore
+            dcr.cfg.glob.action_curr.exists()  # type: ignore
 
-            del cfg.glob.action_curr
+            del dcr.cfg.glob.action_curr
 
-            cfg.glob.logger.debug("The existing object 'cfg.glob.action_curr' of the class Action was deleted.")
+            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.action_curr' of the class Action was deleted.")
         except AttributeError:
             pass
 
     if is_action_next:
         try:
-            cfg.glob.action_next.exists()  # type: ignore
+            dcr.cfg.glob.action_next.exists()  # type: ignore
 
-            del cfg.glob.action_next
+            del dcr.cfg.glob.action_next
 
-            cfg.glob.logger.debug("The existing object 'cfg.glob.action_next' of the class Action was deleted.")
+            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.action_next' of the class Action was deleted.")
         except AttributeError:
             pass
 
     if is_db_core:
         try:
-            cfg.glob.db_core.exists()  # type: ignore
+            dcr.cfg.glob.db_core.exists()  # type: ignore
 
-            del cfg.glob.db_core
+            del dcr.cfg.glob.db_core
 
-            cfg.glob.logger.debug("The existing object 'cfg.glob.db_core' of the class DBCore was deleted.")
+            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.db_core' of the class DBCore was deleted.")
         except AttributeError:
             pass
 
     if is_document:
         try:
-            cfg.glob.document.exists()  # type: ignore
+            dcr.cfg.glob.document.exists()  # type: ignore
 
-            del cfg.glob.document
+            del dcr.cfg.glob.document
 
-            cfg.glob.logger.debug("The existing object 'cfg.glob.document' of the class Document was deleted.")
+            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.document' of the class Document was deleted.")
         except AttributeError:
             pass
 
     if is_run:
         try:
-            cfg.glob.run.exists()  # type: ignore
+            dcr.cfg.glob.run.exists()  # type: ignore
 
-            del cfg.glob.run
+            del dcr.cfg.glob.run
 
-            cfg.glob.logger.debug("The existing object 'cfg.glob.run' of the class Run was deleted.")
+            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.run' of the class Run was deleted.")
         except AttributeError:
             pass
 
@@ -683,7 +683,7 @@ def delete_existing_object(  # noqa: C901
 
             del dcr_core.core_glob.setup
 
-            cfg.glob.logger.debug("The existing object 'dcr_core.base.setup' of the class Setup was deleted.")
+            dcr.cfg.glob.logger.debug("The existing object 'dcr_core.base.setup' of the class Setup was deleted.")
         except AttributeError:
             pass
 
@@ -693,7 +693,7 @@ def delete_existing_object(  # noqa: C901
 
             del dcr_core.core_glob.text_parser
 
-            cfg.glob.logger.debug("The existing object 'cfg.glob.text_parser' of the class TextParser was deleted.")
+            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.text_parser' of the class TextParser was deleted.")
         except AttributeError:
             pass
 
@@ -704,13 +704,13 @@ def delete_existing_object(  # noqa: C901
 @pytest.helpers.register
 def delete_version_version():
     """Delete all entries in the database table 'version'."""
-    db_core = db.cls_db_core.DBCore()
+    db_core = dcr.db.cls_db_core.DBCore()
 
-    with cfg.glob.db_core.db_orm_engine.begin() as conn:
+    with dcr.cfg.glob.db_core.db_orm_engine.begin() as conn:
         version = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_VERSION,
-            cfg.glob.db_core.db_orm_metadata,
-            autoload_with=cfg.glob.db_core.db_orm_engine,
+            dcr.db.cls_db_core.DBCore.DBT_VERSION,
+            dcr.cfg.glob.db_core.db_orm_metadata,
+            autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
         )
         conn.execute(sqlalchemy.delete(version))
 
@@ -723,81 +723,81 @@ def delete_version_version():
 @pytest.fixture(scope="session", autouse=True)
 def fxtr_before_any_test():
     """Fixture Factory: Before any test."""
-    CONFIG_PARSER.read(cfg.cls_setup.Setup._DCR_CFG_FILE)
+    CONFIG_PARSER.read(dcr.cfg.cls_setup.Setup._DCR_CFG_FILE)
 
     # -----------------------------------------------------------------------------
     # Configuration: dcr.
     # -----------------------------------------------------------------------------
     for (config_param, config_value) in (
-        (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PORT, "5434"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PREFIX, "postgresql+psycopg2://"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_CONTAINER_PORT, "5432"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_DATABASE, "dcr_db_test"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_DATABASE_ADMIN, "dcr_db_test_admin"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT, "postgresql"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_HOST, "localhost"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_INITIAL_DATA_FILE, "data/db_initial_data_file_test.json"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_PASSWORD, "postgresql"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_PASSWORD_ADMIN, "postgresql"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_SCHEMA, "dcr_schema"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_USER, "dcr_user"),
-        (cfg.cls_setup.Setup._DCR_CFG_DB_USER_ADMIN, "dcr_user_admin"),
-        (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX, "data/inbox_test"),
-        (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED, "data/inbox_test_accepted"),
-        (cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED, "data/inbox_test_rejected"),
-        (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "none"),
-        (cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PORT, "5434"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_CONNECTION_PREFIX, "postgresql+psycopg2://"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_CONTAINER_PORT, "5432"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_DATABASE, "dcr_db_test"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_DATABASE_ADMIN, "dcr_db_test_admin"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT, "postgresql"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_HOST, "localhost"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_INITIAL_DATA_FILE, "data/db_initial_data_file_test.json"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_PASSWORD, "postgresql"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_PASSWORD_ADMIN, "postgresql"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_SCHEMA, "dcr_schema"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_USER, "dcr_user"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_USER_ADMIN, "dcr_user_admin"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX, "data/inbox_test"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED, "data/inbox_test_accepted"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED, "data/inbox_test_rejected"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "none"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_IGNORE_DUPLICATES, "false"),
     ):
-        CONFIG_PARSER[cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
+        CONFIG_PARSER[dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
 
     # -----------------------------------------------------------------------------
     # Configuration: dcr_core.
     # -----------------------------------------------------------------------------
     for (config_param, config_value) in (
-        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_JSON_INDENT, "4"),
-        (cfg.cls_setup.Setup._DCR_CFG_JSON_SORT_KEYS, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_HEADING, "tmp/lt_export_rule_heading.json"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET, "tmp/lt_export_rule_list_bullet.json"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER, "tmp/lt_export_rule_list_number.json"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, "3"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "3"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MIN_PAGES, "2"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "data/lt_export_rule_heading_test.json"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX, "5"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, "2"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE, "data/lt_export_rule_list_bullet_test.json"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, "5"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_FILE_INCL_REGEXP, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES, "2"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE, "data/lt_export_rule_list_number_test.json"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX, "5"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, "5"),
-        (cfg.cls_setup.Setup._DCR_CFG_LT_TOC_MIN_ENTRIES, "5"),
-        (cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, dcr_core.cls_setup.Setup.PDF2IMAGE_TYPE_JPEG),
-        (cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
-        (cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TABLE, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "false"),
-        (cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "true"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "true"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "true"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "true"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_JSON_INDENT, "4"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_JSON_SORT_KEYS, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_HEADING, "tmp/lt_export_rule_heading.json"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET, "tmp/lt_export_rule_list_bullet.json"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER, "tmp/lt_export_rule_list_number.json"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_LINES, "3"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_NO_CTX, "3"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_FILE_INCL_REGEXP, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MAX_LEVEL, "3"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_MIN_PAGES, "2"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_RULE_FILE, "data/lt_export_rule_heading_test.json"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_HEADING_TOLERANCE_LLX, "5"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_MIN_ENTRIES, "2"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_RULE_FILE, "data/lt_export_rule_list_bullet_test.json"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_BULLET_TOLERANCE_LLX, "5"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_FILE_INCL_REGEXP, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_MIN_ENTRIES, "2"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_RULE_FILE, "data/lt_export_rule_list_number_test.json"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_LIST_NUMBER_TOLERANCE_LLX, "5"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_TABLE_FILE_INCL_EMPTY_COLUMNS, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_TOC_LAST_PAGE, "5"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_TOC_MIN_ENTRIES, "5"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, dcr_core.cls_setup.Setup.PDF2IMAGE_TYPE_JPEG),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "30"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_TETML_PAGE, "true"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_TETML_WORD, "true"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TABLE, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
     ):
         CONFIG_PARSER[dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
 
@@ -871,7 +871,7 @@ def fxtr_setup_empty_db_and_inbox(
     """Fixture: Setup empty database and empty inboxes."""
     setup_cfg_backup()
 
-    dcr_core.core_glob.setup = cfg.cls_setup.Setup()
+    dcr_core.core_glob.setup = dcr.cfg.cls_setup.Setup()
 
     # restore original file
     shutil.copy(
@@ -882,7 +882,7 @@ def fxtr_setup_empty_db_and_inbox(
         os.path.dirname(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_CREATE_DB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox)
     fxtr_mkdir(dcr_core.core_glob.setup.directory_inbox)
@@ -900,7 +900,7 @@ def fxtr_setup_empty_db_and_inbox(
         fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_accepted)
         fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox)
 
-        cfg.glob.db_core._drop_database()
+        dcr.cfg.glob.db_core._drop_database()
     except AttributeError:
         pass
 
@@ -918,7 +918,7 @@ def fxtr_setup_empty_inbox(
     """Fixture: Setup empty database and empty inboxes."""
     setup_cfg_backup()
 
-    dcr_core.core_glob.setup = cfg.cls_setup.Setup()
+    dcr_core.core_glob.setup = dcr.cfg.cls_setup.Setup()
 
     # restore original file
     shutil.copy(
@@ -942,7 +942,7 @@ def fxtr_setup_empty_inbox(
     fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox_accepted)
     fxtr_rmdir_opt(dcr_core.core_glob.setup.directory_inbox)
 
-    cfg.glob.db_core._drop_database()
+    dcr.cfg.glob.db_core._drop_database()
 
     setup_cfg_restore()
 
@@ -953,7 +953,7 @@ def fxtr_setup_empty_inbox(
 @pytest.fixture()
 def fxtr_setup_logger():
     """Fixture: Setup logger & environment."""
-    launcher.initialise_logger()
+    dcr.launcher.initialise_logger()
 
     yield
 
@@ -964,7 +964,7 @@ def fxtr_setup_logger():
 @pytest.fixture()
 def fxtr_setup_logger_environment():
     """Fixture: Setup logger & environment."""
-    dcr_core.core_glob.setup = cfg.cls_setup.Setup()
+    dcr_core.core_glob.setup = dcr.cfg.cls_setup.Setup()
 
     # restore original file
     shutil.copy(
@@ -979,7 +979,7 @@ def fxtr_setup_logger_environment():
 
     setup_cfg_backup()
 
-    launcher.initialise_logger()
+    dcr.launcher.initialise_logger()
 
     yield
 
@@ -1017,7 +1017,7 @@ def get_values_action():
         1,
         0,
         3,
-        db.cls_document.Document.DOCUMENT_STATUS_START,
+        dcr.db.cls_document.Document.DOCUMENT_STATUS_START,
     ]
 
 
@@ -1046,7 +1046,7 @@ def get_values_document():
         0,
         0,
         3,
-        db.cls_document.Document.DOCUMENT_STATUS_START,
+        dcr.db.cls_document.Document.DOCUMENT_STATUS_START,
     ]
 
 
@@ -1079,7 +1079,7 @@ def get_values_run() -> list[bool | int | str | None]:
         "p_i",
         "inbox         (preprocessor)",
         1,
-        db.cls_document.Document.DOCUMENT_STATUS_START,
+        dcr.db.cls_document.Document.DOCUMENT_STATUS_START,
         1,
         0,
         0,
@@ -1095,7 +1095,7 @@ def get_values_token() -> list[int | list[dict] | str | None]:
     """Provide expected values - database table token."""
     return [
         None,
-        cfg.glob.document.document_id,
+        dcr.cfg.glob.document.document_id,
         0,
         2,
         71,
@@ -1172,12 +1172,12 @@ def help_run_action_all_complete_duplicate_file(
 
     # -------------------------------------------------------------------------
     if is_ocr:
-        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
-        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
-        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
-        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
+        dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
+        dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+        dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TESSERACT])
+        dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TESSERACT])
     else:
-        launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+        dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
         verify_content_of_directory(
             dcr_core.core_glob.setup.directory_inbox,
@@ -1210,7 +1210,7 @@ def help_run_action_process_inbox_normal(
     pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name, file_ext)], target_path=dcr_core.core_glob.setup.directory_inbox)
 
     # -------------------------------------------------------------------------
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
     # -------------------------------------------------------------------------
     document_id = 1
 
@@ -1250,66 +1250,66 @@ def set_complete_cfg_spacy(false_or_true: str):
     return pytest.helpers.config_params_modify(
         dcr_core.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_STOP, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DOC, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_HEAD, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_I, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IDX, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ASCII, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_BRACKET, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_CURRENCY, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_DIGIT, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LEFT_PUNCT, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LOWER, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_OOV, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_QUOTE, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_RIGHT_PUNCT, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_END, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_START, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SPACE, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_UPPER, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEMMA_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEX, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEX_ID, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_EMAIL, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LOWER_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_MORPH, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_NORM_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ORTH_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_POS_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_PREFIX_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_PROB, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RANK, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SENT, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SENTIMENT, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SUFFIX_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TAG_, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TENSOR, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB, false_or_true),
-            (cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_PUNCT, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_QUOTE, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_STOP, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_CLUSTER, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DEP_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_DOC, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_IOB_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_KB_ID_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ENT_TYPE_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_HEAD, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_I, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IDX, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ALPHA, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_ASCII, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_BRACKET, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_CURRENCY, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_DIGIT, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LEFT_PUNCT, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_LOWER, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_OOV, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_PUNCT, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_QUOTE, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_RIGHT_PUNCT, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_END, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SENT_START, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_SPACE, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_STOP, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_TITLE, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_IS_UPPER, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LANG_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEFT_EDGE, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEMMA_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEX, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LEX_ID, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_EMAIL, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_NUM, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LIKE_URL, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_LOWER_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_MORPH, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_NORM_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_ORTH_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_POS_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_PREFIX_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_PROB, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RANK, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RIGHT_EDGE, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SENT, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SENTIMENT, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SHAPE_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_SUFFIX_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TAG_, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TENSOR, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_TEXT_WITH_WS, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB, false_or_true),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_WHITESPACE_, false_or_true),
         ],
     )
 
@@ -1345,7 +1345,7 @@ def setup_cfg_restore():
 @pytest.fixture(scope="session", autouse=True)
 def setup_dcr():
     """Run before all tests."""
-    launcher.initialise_logger()
+    dcr.launcher.initialise_logger()
 
 
 # -----------------------------------------------------------------------------
@@ -1367,12 +1367,12 @@ def verify_content_of_directory(
         expected_files: list[str]:
                    list of the expected file names.
     """
-    cfg.glob.logger.info("directory name   =%s", directory_name)
+    dcr.cfg.glob.logger.info("directory name   =%s", directory_name)
 
     directory_content = os.listdir(directory_name)
-    cfg.glob.logger.info("existing directory content=%s", str(directory_content))
-    cfg.glob.logger.info("expected directory content=%s", str(expected_directories))
-    cfg.glob.logger.info("expected file      content=%s", str(expected_files))
+    dcr.cfg.glob.logger.info("existing directory content=%s", str(directory_content))
+    dcr.cfg.glob.logger.info("expected directory content=%s", str(expected_directories))
+    dcr.cfg.glob.logger.info("expected file      content=%s", str(expected_files))
 
     # check directory content against expectations
     for elem in directory_content:

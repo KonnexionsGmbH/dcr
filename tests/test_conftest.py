@@ -2,7 +2,7 @@
 import os
 import pathlib
 
-import cfg.glob
+import dcr.cfg.glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -17,7 +17,7 @@ import cfg.glob
 # -----------------------------------------------------------------------------
 def test_mkdir_rmdir_rmdir_opt(fxtr_mkdir, fxtr_rmdir, fxtr_rmdir_opt):
     """Test: Pure functionality."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     directory_path: os.PathLike = pathlib.Path("tmp")
@@ -32,7 +32,7 @@ def test_mkdir_rmdir_rmdir_opt(fxtr_mkdir, fxtr_rmdir, fxtr_rmdir_opt):
     fxtr_rmdir_opt(directory_path)
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -41,16 +41,16 @@ def test_mkdir_rmdir_rmdir_opt(fxtr_mkdir, fxtr_rmdir, fxtr_rmdir_opt):
 # pylint: disable=unused-argument
 def test_setup_logger(fxtr_setup_logger):
     """Test: Pure functionality."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("")
-    cfg.glob.logger.info("===============================================")
-    cfg.glob.logger.info("=============> test_setup_logger <=============")
-    cfg.glob.logger.info("===============================================")
+    dcr.cfg.glob.logger.info("")
+    dcr.cfg.glob.logger.info("===============================================")
+    dcr.cfg.glob.logger.info("=============> test_setup_logger <=============")
+    dcr.cfg.glob.logger.info("===============================================")
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -59,13 +59,13 @@ def test_setup_logger(fxtr_setup_logger):
 # pylint: disable=unused-argument
 def test_setup_logger_environment(fxtr_setup_logger_environment):
     """Test: Pure functionality."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("")
-    cfg.glob.logger.info("===============================================")
-    cfg.glob.logger.info("=======> test_setup_logger_environment <=======")
-    cfg.glob.logger.info("===============================================")
+    dcr.cfg.glob.logger.info("")
+    dcr.cfg.glob.logger.info("===============================================")
+    dcr.cfg.glob.logger.info("=======> test_setup_logger_environment <=======")
+    dcr.cfg.glob.logger.info("===============================================")
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

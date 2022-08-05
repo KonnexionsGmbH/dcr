@@ -1,16 +1,16 @@
-"""Module db.cls_language: Managing the database table language."""
+"""Module dcr.db.cls_language: Managing the database table language."""
 from __future__ import annotations
 
 import os.path
 from typing import ClassVar
 
-import cfg.glob
-import db.cls_db_core
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
-import utils
 
+import dcr.cfg.glob
+import dcr.db.cls_db_core
+import dcr.utils
 import dcr_core.core_glob
 import dcr_core.core_utils
 
@@ -65,9 +65,9 @@ class Language:
             directory_name_inbox (str, optional):
                     Name of the language-specific input file directory. Defaults to "".
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-        utils.check_exists_object(
+        dcr.utils.check_exists_object(
             is_db_core=True,
         )
         dcr_core.core_utils.check_exists_object(
@@ -98,29 +98,29 @@ class Language:
 
         self._exist = True
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.cls_db_core.Columns:
+    def _get_columns(self) -> dcr.db.cls_db_core.Columns:
         """Get the database columns.
 
         Returns:
-            db.cls_db_core.Columns:
+            dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return {
-            db.cls_db_core.DBCore.DBC_ACTIVE: self.language_active,
-            db.cls_db_core.DBCore.DBC_CODE_ISO_639_3: self.language_code_iso_639_3,
-            db.cls_db_core.DBCore.DBC_CODE_PANDOC: self.language_code_pandoc,
-            db.cls_db_core.DBCore.DBC_CODE_SPACY: self.language_code_spacy,
-            db.cls_db_core.DBCore.DBC_CODE_TESSERACT: self.language_code_tesseract,
-            db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX: self.language_directory_name_inbox,
-            db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME: self.language_iso_language_name,
+            dcr.db.cls_db_core.DBCore.DBC_ACTIVE: self.language_active,
+            dcr.db.cls_db_core.DBCore.DBC_CODE_ISO_639_3: self.language_code_iso_639_3,
+            dcr.db.cls_db_core.DBCore.DBC_CODE_PANDOC: self.language_code_pandoc,
+            dcr.db.cls_db_core.DBCore.DBC_CODE_SPACY: self.language_code_spacy,
+            dcr.db.cls_db_core.DBCore.DBC_CODE_TESSERACT: self.language_code_tesseract,
+            dcr.db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX: self.language_directory_name_inbox,
+            dcr.db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME: self.language_iso_language_name,
         }
 
     # -----------------------------------------------------------------------------
@@ -129,38 +129,38 @@ class Language:
     @classmethod
     def create_dbt(cls) -> None:
         """Create the database table."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_LANGUAGE,
-            cfg.glob.db_core.db_orm_metadata,
+            dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,
+            dcr.cfg.glob.db_core.db_orm_metadata,
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_ID,
+                dcr.db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
                 autoincrement=True,
                 nullable=False,
                 primary_key=True,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_CREATED_AT,
+                dcr.db.cls_db_core.DBCore.DBC_CREATED_AT,
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_MODIFIED_AT,
+                dcr.db.cls_db_core.DBCore.DBC_MODIFIED_AT,
                 sqlalchemy.DateTime,
             ),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ACTIVE, sqlalchemy.Boolean, default=True, nullable=False),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False, unique=True),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_CODE_PANDOC, sqlalchemy.String, nullable=False, unique=True),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_CODE_SPACY, sqlalchemy.String, nullable=False, unique=True),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_ACTIVE, sqlalchemy.Boolean, default=True, nullable=False),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_CODE_ISO_639_3, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_CODE_PANDOC, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_CODE_SPACY, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_CODE_TESSERACT, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX, sqlalchemy.String, nullable=True, unique=True),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME, sqlalchemy.String, nullable=False, unique=True),
         )
 
-        utils.progress_msg(f"The database table '{db.cls_db_core.DBCore.DBT_LANGUAGE}' has now been created")
+        dcr.utils.progress_msg(f"The database table '{dcr.db.cls_db_core.DBCore.DBT_LANGUAGE}' has now been created")
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -188,15 +188,15 @@ class Language:
             Language:
                     The object instance found.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_LANGUAGE,
-            cfg.glob.db_core.db_orm_metadata,
-            autoload_with=cfg.glob.db_core.db_orm_engine,
+            dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,
+            dcr.cfg.glob.db_core.db_orm_metadata,
+            autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
         )
 
-        with cfg.glob.db_core.db_orm_engine.connect() as conn:
+        with dcr.cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(
                 sqlalchemy.select(dbt).where(
                     dbt.c.id == id_language,
@@ -209,7 +209,7 @@ class Language:
                 f"The language with id={id_language} does not exist in the database table 'language'",
             )
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return Language.from_row(row)  # type: ignore
 
@@ -228,18 +228,18 @@ class Language:
             Language:
                     The object instance matching the specified database row.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return cls(
-            _row_id=row[db.cls_db_core.DBCore.DBC_ID],
-            active=row[db.cls_db_core.DBCore.DBC_ACTIVE],
-            code_iso_639_3=row[db.cls_db_core.DBCore.DBC_CODE_ISO_639_3],
-            code_pandoc=row[db.cls_db_core.DBCore.DBC_CODE_PANDOC],
-            code_spacy=row[db.cls_db_core.DBCore.DBC_CODE_SPACY],
-            code_tesseract=row[db.cls_db_core.DBCore.DBC_CODE_TESSERACT],
-            directory_name_inbox=row[db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX],
-            iso_language_name=row[db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME],
+            _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
+            active=row[dcr.db.cls_db_core.DBCore.DBC_ACTIVE],
+            code_iso_639_3=row[dcr.db.cls_db_core.DBCore.DBC_CODE_ISO_639_3],
+            code_pandoc=row[dcr.db.cls_db_core.DBCore.DBC_CODE_PANDOC],
+            code_spacy=row[dcr.db.cls_db_core.DBCore.DBC_CODE_SPACY],
+            code_tesseract=row[dcr.db.cls_db_core.DBCore.DBC_CODE_TESSERACT],
+            directory_name_inbox=row[dcr.db.cls_db_core.DBCore.DBC_DIRECTORY_NAME_INBOX],
+            iso_language_name=row[dcr.db.cls_db_core.DBCore.DBC_ISO_LANGUAGE_NAME],
         )
 
     # -----------------------------------------------------------------------------
@@ -254,8 +254,8 @@ class Language:
             tuple[int, bool, str, str, str, str, str, str]:
                     Column values in a tuple.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return (
             self.language_id,
@@ -274,19 +274,19 @@ class Language:
     @classmethod
     def load_data_from_dbt_language(cls) -> None:
         """Load the data from the database table 'language'."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_LANGUAGE,
-            cfg.glob.db_core.db_orm_metadata,
-            autoload_with=cfg.glob.db_core.db_orm_engine,
+            dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,
+            dcr.cfg.glob.db_core.db_orm_metadata,
+            autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
         )
 
         Language.LANGUAGES_PANDOC = {}
         Language.LANGUAGES_SPACY = {}
         Language.LANGUAGES_TESSERACT = {}
 
-        with cfg.glob.db_core.db_orm_engine.connect() as conn:
+        with dcr.cfg.glob.db_core.db_orm_engine.connect() as conn:
             rows = conn.execute(
                 sqlalchemy.select(dbt.c.id, dbt.c.code_pandoc, dbt.c.code_spacy, dbt.c.code_tesseract).where(
                     dbt.c.active,
@@ -300,32 +300,32 @@ class Language:
 
             conn.close()
 
-        utils.progress_msg(f"Available languages for Pandoc        '{Language.LANGUAGES_PANDOC}'")
-        utils.progress_msg(f"Available languages for spaCy         '{Language.LANGUAGES_SPACY}'")
-        utils.progress_msg(f"Available languages for Tesseract OCR '{Language.LANGUAGES_TESSERACT}'")
+        dcr.utils.progress_msg(f"Available languages for Pandoc        '{Language.LANGUAGES_PANDOC}'")
+        dcr.utils.progress_msg(f"Available languages for spaCy         '{Language.LANGUAGES_SPACY}'")
+        dcr.utils.progress_msg(f"Available languages for Tesseract OCR '{Language.LANGUAGES_TESSERACT}'")
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Persist the object in the database.
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         if self.language_id == 0:
-            self.language_id = cfg.glob.db_core.insert_dbt_row(  # type: ignore
-                db.cls_db_core.DBCore.DBT_LANGUAGE,  # type: ignore
+            self.language_id = dcr.cfg.glob.db_core.insert_dbt_row(  # type: ignore
+                dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,  # type: ignore
                 self._get_columns(),  # type: ignore
             )
         else:
-            cfg.glob.db_core.update_dbt_id(  # type: ignore
-                table_name=db.cls_db_core.DBCore.DBT_LANGUAGE,
+            dcr.cfg.glob.db_core.update_dbt_id(  # type: ignore
+                table_name=dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,
                 id_where=self.language_id,
                 columns=self._get_columns(),
             )
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the active languages.
@@ -343,9 +343,9 @@ class Language:
                     The languages found.
         """
         dbt = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_LANGUAGE,
-            cfg.glob.db_core.db_orm_metadata,
-            autoload_with=cfg.glob.db_core.db_orm_engine,
+            dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,
+            dcr.cfg.glob.db_core.db_orm_metadata,
+            autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
         )
 
         return conn.execute(

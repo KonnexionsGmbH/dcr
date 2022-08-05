@@ -1,14 +1,14 @@
-"""Module db.cls_version: Managing the database table version."""
+"""Module dcr.db.cls_version: Managing the database table version."""
 from __future__ import annotations
 
-import cfg.glob
-import db.cls_db_core
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
-import utils
 from sqlalchemy import Integer
 
+import dcr.cfg.glob
+import dcr.db.cls_db_core
+import dcr.utils
 import dcr_core.core_utils
 
 
@@ -35,9 +35,9 @@ class Version:
             version (str, optional):
                     Version number. Defaults to "".
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-        utils.check_exists_object(
+        dcr.utils.check_exists_object(
             is_db_core=True,
         )
 
@@ -49,23 +49,23 @@ class Version:
 
         self._exist = True
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.cls_db_core.Columns:
+    def _get_columns(self) -> dcr.db.cls_db_core.Columns:
         """Get the database columns.
 
         Returns:
-            db.cls_db_core.Columns:
+            dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return {
-            db.cls_db_core.DBCore.DBC_VERSION: self.version_version,
+            dcr.db.cls_db_core.DBCore.DBC_VERSION: self.version_version,
         }
 
     # -----------------------------------------------------------------------------
@@ -74,32 +74,32 @@ class Version:
     @classmethod
     def create_dbt(cls) -> None:
         """Create the database table."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_VERSION,
-            cfg.glob.db_core.db_orm_metadata,
+            dcr.db.cls_db_core.DBCore.DBT_VERSION,
+            dcr.cfg.glob.db_core.db_orm_metadata,
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_ID,
+                dcr.db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
                 autoincrement=True,
                 nullable=False,
                 primary_key=True,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_CREATED_AT,
+                dcr.db.cls_db_core.DBCore.DBC_CREATED_AT,
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_MODIFIED_AT,
+                dcr.db.cls_db_core.DBCore.DBC_MODIFIED_AT,
                 sqlalchemy.DateTime,
             ),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_VERSION, sqlalchemy.String, nullable=False, unique=True),
         )
 
-        utils.progress_msg(f"The database table '{db.cls_db_core.DBCore.DBT_VERSION}' has now been created")
+        dcr.utils.progress_msg(f"The database table '{dcr.db.cls_db_core.DBCore.DBT_VERSION}' has now been created")
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -117,11 +117,11 @@ class Version:
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
         """Finalise the current row."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         self.persist_2_db()
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Initialise from id.
@@ -138,15 +138,15 @@ class Version:
             Version:
                     The object instance found.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_VERSION,
-            cfg.glob.db_core.db_orm_metadata,
-            autoload_with=cfg.glob.db_core.db_orm_engine,
+            dcr.db.cls_db_core.DBCore.DBT_VERSION,
+            dcr.cfg.glob.db_core.db_orm_metadata,
+            autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
         )
 
-        with cfg.glob.db_core.db_orm_engine.connect() as conn:
+        with dcr.cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(
                 sqlalchemy.select(dbt).where(
                     dbt.c.id == id_version,
@@ -159,7 +159,7 @@ class Version:
                 f"The version with id={id_version} does not exist in the database table 'version'",
             )
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return Version.from_row(row)  # type: ignore
 
@@ -178,12 +178,12 @@ class Version:
             Version:
                     The object instance matching the specified database row.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return cls(
-            _row_id=row[db.cls_db_core.DBCore.DBC_ID],
-            version=row[db.cls_db_core.DBCore.DBC_VERSION],
+            _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
+            version=row[dcr.db.cls_db_core.DBCore.DBC_VERSION],
         )
 
     # -----------------------------------------------------------------------------
@@ -196,8 +196,8 @@ class Version:
             tuple[int | Integer, str]:
                     Column values in a tuple.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return (
             self.version_id,
@@ -209,21 +209,21 @@ class Version:
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         if self.version_id == 0:
-            self.version_id = cfg.glob.db_core.insert_dbt_row(  # type: ignore
-                db.cls_db_core.DBCore.DBT_VERSION,  # type: ignore
+            self.version_id = dcr.cfg.glob.db_core.insert_dbt_row(  # type: ignore
+                dcr.db.cls_db_core.DBCore.DBT_VERSION,  # type: ignore
                 self._get_columns(),  # type: ignore
             )
         else:
-            cfg.glob.db_core.update_dbt_id(  # type: ignore
-                table_name=db.cls_db_core.DBCore.DBT_VERSION,
+            dcr.cfg.glob.db_core.update_dbt_id(  # type: ignore
+                table_name=dcr.db.cls_db_core.DBCore.DBT_VERSION,
                 id_where=self.version_id,
                 columns=self._get_columns(),
             )
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the version number from the database table version.
@@ -238,14 +238,14 @@ class Version:
             str: The version number found.
         """
         dbt = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_VERSION,
-            cfg.glob.db_core.db_orm_metadata,
-            autoload_with=cfg.glob.db_core.db_orm_engine,
+            dcr.db.cls_db_core.DBCore.DBT_VERSION,
+            dcr.cfg.glob.db_core.db_orm_metadata,
+            autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
         )
 
         current_version = ""
 
-        with cfg.glob.db_core.db_orm_engine.connect() as conn:
+        with dcr.cfg.glob.db_core.db_orm_engine.connect() as conn:
             for row in conn.execute(sqlalchemy.select(dbt.c.version)):
                 if current_version == "":
                     current_version = row.version

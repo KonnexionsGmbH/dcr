@@ -1,11 +1,11 @@
 # pylint: disable=unused-argument
 """Testing Module pp.pandoc_dcr."""
-import cfg.cls_setup
-import cfg.glob
-import db.cls_run
-import launcher
 import pytest
 
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
+import dcr.db.cls_run
+import dcr.launcher
 import dcr_core.core_glob
 
 # -----------------------------------------------------------------------------
@@ -19,7 +19,7 @@ import dcr_core.core_glob
 # -----------------------------------------------------------------------------
 def test_run_action_non_pdf_2_pdf_coverage(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_NON_PDF_2_PDF - coverage."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -30,12 +30,12 @@ def test_run_action_non_pdf_2_pdf_coverage(fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PANDOC])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -43,10 +43,10 @@ def test_run_action_non_pdf_2_pdf_coverage(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_NON_PDF_2_PDF - normal - duplicate."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_non_pdf_2_pdf_normal_duplicate <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_non_pdf_2_pdf_normal_duplicate <=========")
 
     stem_name_1 = "docx_ok"
     file_ext_1 = "docx"
@@ -60,9 +60,9 @@ def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
 
@@ -73,4 +73,4 @@ def test_run_action_non_pdf_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

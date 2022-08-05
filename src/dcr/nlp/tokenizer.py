@@ -3,15 +3,14 @@ database."""
 
 import time
 
-import cfg.glob
-import db.cls_action
-import db.cls_db_core
-import db.cls_document
-import db.cls_language
-import db.cls_run
-import db.cls_token
-import utils
-
+import dcr.cfg.glob
+import dcr.db.cls_action
+import dcr.db.cls_db_core
+import dcr.db.cls_document
+import dcr.db.cls_language
+import dcr.db.cls_run
+import dcr.db.cls_token
+import dcr.utils
 import dcr_core.cls_nlp_core
 import dcr_core.cls_text_parser
 import dcr_core.cls_tokenizer_spacy
@@ -47,8 +46,8 @@ def store_tokens_in_database() -> None:
                 else:
                     column_span = 0
 
-                db.cls_token.Token(
-                    id_document=cfg.glob.document.document_id,
+                dcr.db.cls_token.Token(
+                    id_document=dcr.cfg.glob.document.document_id,
                     column_no=column_no,
                     column_span=column_span,
                     coord_llx=sent[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COORD_LLX],
@@ -72,35 +71,35 @@ def tokenize() -> None:
 
     TBD
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     dcr_core.core_glob.tokenizer_spacy = dcr_core.cls_tokenizer_spacy.TokenizerSpacy()
 
-    with cfg.glob.db_core.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE)
+    with dcr.cfg.glob.db_core.db_orm_engine.begin() as conn:
+        rows = dcr.db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE)
 
         for row in rows:
             # ------------------------------------------------------------------
             # Processing a single document
             # ------------------------------------------------------------------
-            cfg.glob.start_time_document = time.perf_counter_ns()
+            dcr.cfg.glob.start_time_document = time.perf_counter_ns()
 
-            cfg.glob.run.run_total_processed_to_be += 1
+            dcr.cfg.glob.run.run_total_processed_to_be += 1
 
-            cfg.glob.action_curr = db.cls_action.Action.from_row(row)
+            dcr.cfg.glob.action_curr = dcr.db.cls_action.Action.from_row(row)
 
-            if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
-                cfg.glob.run.total_status_error += 1
+            if dcr.cfg.glob.action_curr.action_status == dcr.db.cls_document.Document.DOCUMENT_STATUS_ERROR:
+                dcr.cfg.glob.run.total_status_error += 1
             else:
-                cfg.glob.run.total_status_ready += 1
+                dcr.cfg.glob.run.total_status_ready += 1
 
             tokenize_file()
 
         conn.close()
 
-    utils.show_statistics_total()
+    dcr.utils.show_statistics_total()
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -112,16 +111,16 @@ def tokenize_file() -> None:
 
     TBD
     """
-    cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
+    dcr.cfg.glob.document = dcr.db.cls_document.Document.from_id(id_document=dcr.cfg.glob.action_curr.action_id_document)
 
-    pipeline_name = db.cls_language.Language.LANGUAGES_SPACY[cfg.glob.document.document_id_language]
+    pipeline_name = dcr.db.cls_language.Language.LANGUAGES_SPACY[dcr.cfg.glob.document.document_id_language]
 
-    full_name_curr = cfg.glob.action_curr.get_full_name()
+    full_name_curr = dcr.cfg.glob.action_curr.get_full_name()
 
     if dcr_core.core_glob.setup.is_tokenize_2_jsonfile:
-        file_name_next = cfg.glob.action_curr.get_stem_name() + "_token." + dcr_core.core_glob.FILE_TYPE_JSON
+        file_name_next = dcr.cfg.glob.action_curr.get_stem_name() + "_token." + dcr_core.core_glob.FILE_TYPE_JSON
         full_name_next = dcr_core.core_utils.get_full_name(
-            cfg.glob.action_curr.action_directory_name,
+            dcr.cfg.glob.action_curr.action_directory_name,
             file_name_next,
         )
     else:
@@ -130,21 +129,21 @@ def tokenize_file() -> None:
     (error_code, error_msg) = dcr_core.processing.tokenizer_process(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
-        document_id=cfg.glob.document.document_id,
-        file_name_orig=cfg.glob.document.document_file_name,
-        no_lines_footer=cfg.glob.document.document_no_lines_footer,
-        no_lines_header=cfg.glob.document.document_no_lines_header,
-        no_lines_toc=cfg.glob.document.document_no_lines_toc,
+        document_id=dcr.cfg.glob.document.document_id,
+        file_name_orig=dcr.cfg.glob.document.document_file_name,
+        no_lines_footer=dcr.cfg.glob.document.document_no_lines_footer,
+        no_lines_header=dcr.cfg.glob.document.document_no_lines_header,
+        no_lines_toc=dcr.cfg.glob.document.document_no_lines_toc,
         pipeline_name=pipeline_name,
     )
     if (error_code, error_msg) != dcr_core.core_glob.RETURN_OK:
-        cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        dcr.cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return
 
     store_tokens_in_database()
 
-    utils.delete_auxiliary_file(full_name_curr)
+    dcr.utils.delete_auxiliary_file(full_name_curr)
 
-    cfg.glob.action_curr.finalise()
+    dcr.cfg.glob.action_curr.finalise()
 
-    cfg.glob.run.run_total_processed_ok += 1
+    dcr.cfg.glob.run.run_total_processed_ok += 1

@@ -2,15 +2,15 @@
 """Testing Module nlp.cls_line_type_toc."""
 import os.path
 
-import cfg.cls_setup
-import cfg.glob
-import db.cls_action
-import db.cls_db_core
-import db.cls_document
-import db.cls_run
-import launcher
 import pytest
 
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
+import dcr.db.cls_action
+import dcr.db.cls_db_core
+import dcr.db.cls_document
+import dcr.db.cls_run
+import dcr.launcher
 import dcr_core.cls_line_type_headers_footers
 import dcr_core.cls_line_type_toc
 import dcr_core.cls_text_parser
@@ -31,7 +31,7 @@ import dcr_core.core_utils
 @pytest.mark.parametrize("lt_toc_last_page", ["0", "5"])
 def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType TOC - base version."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -44,9 +44,9 @@ def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_em
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -58,11 +58,11 @@ def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_em
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     # -------------------------------------------------------------------------
     if lt_toc_last_page == "0":
@@ -86,7 +86,7 @@ def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_em
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -94,7 +94,7 @@ def test_line_type_toc_base(lt_toc_last_page: str, fxtr_rmdir_opt, fxtr_setup_em
 # -----------------------------------------------------------------------------
 def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType TOC - maximum version."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -107,9 +107,9 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -123,11 +123,11 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line(
         "pdf_toc_line_bullet_list.line.json",
@@ -146,7 +146,7 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         no_lists_number_in_document=1,
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.check_json_line(
         "pdf_toc_line_bullet_list.line_token.json",
@@ -166,7 +166,7 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_line_type_toc_maximum_2 <=========")
+    dcr.cfg.glob.logger.info("=========> test_line_type_toc_maximum_2 <=========")
 
     pytest.helpers.check_dbt_document(
         (
@@ -221,7 +221,7 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_line_type_toc_maximum_3 <=========")
+    dcr.cfg.glob.logger.info("=========> test_line_type_toc_maximum_3 <=========")
 
     expected_files = [
         "pdf_toc_line_bullet_list.line.json",
@@ -250,7 +250,7 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -258,7 +258,7 @@ def test_line_type_toc_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType TOC - minimum version - 1."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -282,11 +282,11 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line(
         "pdf_toc_line_bullet_list.line.json",
@@ -306,7 +306,7 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         no_tables_in_document=2,
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.check_json_line(
         "pdf_toc_line_bullet_list.line_token.json",
@@ -327,7 +327,7 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_line_type_toc_maximum_2 <=========")
+    dcr.cfg.glob.logger.info("=========> test_line_type_toc_maximum_2 <=========")
 
     pytest.helpers.check_dbt_document(
         (
@@ -382,7 +382,7 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_line_type_toc_maximum_3 <=========")
+    dcr.cfg.glob.logger.info("=========> test_line_type_toc_maximum_3 <=========")
 
     expected_files = [
         "pdf_toc_line_bullet_list.line_token.json",
@@ -403,7 +403,7 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -411,7 +411,7 @@ def test_line_type_toc_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test LineType TOC - minimum version - 2."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -435,11 +435,11 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         ],
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
     pytest.helpers.check_json_line(
         "pdf_toc_line_bullet_list.line.json",
@@ -459,7 +459,7 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
         no_tables_in_document=2,
     )
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     pytest.helpers.check_json_line(
         "pdf_toc_line_bullet_list.line_token.json",
@@ -480,7 +480,7 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_line_type_toc_maximum_2 <=========")
+    dcr.cfg.glob.logger.info("=========> test_line_type_toc_maximum_2 <=========")
 
     pytest.helpers.check_dbt_document(
         (
@@ -535,7 +535,7 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_line_type_toc_maximum_3 <=========")
+    dcr.cfg.glob.logger.info("=========> test_line_type_toc_maximum_3 <=========")
 
     expected_files = [
         "pdf_toc_line_bullet_list.line_token.json",
@@ -556,7 +556,7 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -564,21 +564,21 @@ def test_line_type_toc_minimum_2(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_line_type_toc_missing_dependencies_coverage_exists(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing dependencies - line_type_toc - coverage - exists."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    cfg.glob.run = db.cls_run.Run(
+    dcr.cfg.glob.run = dcr.db.cls_run.Run(
         _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        action_code=dcr.db.cls_run.Run.ACTION_CODE_INBOX,
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action(
+    dcr.cfg.glob.action_curr = dcr.db.cls_action.Action(
         _row_id=1,
-        action_code=db.cls_run.Run.ACTION_CODE_INBOX,
+        action_code=dcr.db.cls_run.Run.ACTION_CODE_INBOX,
         id_run_last=1,
     )
 
@@ -590,10 +590,10 @@ def test_line_type_toc_missing_dependencies_coverage_exists(fxtr_setup_empty_db_
 
     # -------------------------------------------------------------------------
     instance = dcr_core.cls_line_type_toc.LineTypeToc(
-        file_name_curr=cfg.glob.action_curr.action_file_name,
+        file_name_curr=dcr.cfg.glob.action_curr.action_file_name,
     )
 
     instance.exists()
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

@@ -1,17 +1,17 @@
 """Testing Module all."""
 
-import cfg.cls_setup
-import cfg.glob
-import db.cls_action
-import db.cls_db_core
-import db.cls_document
-import db.cls_language
-import db.cls_run
-import db.cls_token
-import db.cls_version
-import launcher
 import pytest
 
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
+import dcr.db.cls_action
+import dcr.db.cls_db_core
+import dcr.db.cls_document
+import dcr.db.cls_language
+import dcr.db.cls_run
+import dcr.db.cls_token
+import dcr.db.cls_version
+import dcr.launcher
 import dcr_core.cls_setup
 import dcr_core.core_glob
 import dcr_core.core_utils
@@ -28,7 +28,7 @@ import dcr_core.core_utils
 # -----------------------------------------------------------------------------
 def check_db_content() -> None:
     """Check the database content."""
-    cfg.glob.db_core = db.cls_db_core.DBCore()
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
     check_db_content_action()
 
@@ -919,13 +919,13 @@ def check_db_content_version() -> None:
 # -----------------------------------------------------------------------------
 def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -956,12 +956,12 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
-    db.cls_run.Run.ID_RUN_UMBRELLA = 0
+    dcr.db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_deleted <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_deleted <=========")
 
     check_db_content()
 
@@ -992,7 +992,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
 # -----------------------------------------------------------------------------
 def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - empty."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -1006,10 +1006,10 @@ def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and
     )
 
     # -------------------------------------------------------------------------
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1017,14 +1017,14 @@ def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and
 # -----------------------------------------------------------------------------
 def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = false."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -1053,10 +1053,10 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
     )
 
     # -------------------------------------------------------------------------
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_kept <=========")
+    dcr.cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_kept <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -1089,7 +1089,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1097,13 +1097,13 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
 # -----------------------------------------------------------------------------
 def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - status: error."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
+            (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
     pytest.helpers.config_params_modify(
@@ -1133,57 +1133,57 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     )
 
     # -------------------------------------------------------------------------
-    db.cls_run.Run.ID_RUN_UMBRELLA = 0
+    dcr.db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_INBOX])
-
-    # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
     # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action.from_id(6)
-    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
-    cfg.glob.action_curr.persist_2_db()
-
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action.from_id(4)
-    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
-    cfg.glob.action_curr.persist_2_db()
+    dcr.cfg.glob.action_curr = dcr.db.cls_action.Action.from_id(6)
+    dcr.cfg.glob.action_curr.action_status = dcr.db.cls_document.Document.DOCUMENT_STATUS_ERROR
+    dcr.cfg.glob.action_curr.persist_2_db()
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TESSERACT])
-
-    # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action.from_id(2)
-    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
-    cfg.glob.action_curr.persist_2_db()
-
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PANDOC])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
     # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action.from_id(8)
-    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
-    cfg.glob.action_curr.persist_2_db()
+    dcr.cfg.glob.action_curr = dcr.db.cls_action.Action.from_id(4)
+    dcr.cfg.glob.action_curr.action_status = dcr.db.cls_document.Document.DOCUMENT_STATUS_ERROR
+    dcr.cfg.glob.action_curr.persist_2_db()
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
-
-    # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action.from_id(13)
-    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
-    cfg.glob.action_curr.persist_2_db()
-
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     # -------------------------------------------------------------------------
-    cfg.glob.action_curr = db.cls_action.Action.from_id(17)
-    cfg.glob.action_curr.action_status = db.cls_document.Document.DOCUMENT_STATUS_ERROR
-    cfg.glob.action_curr.persist_2_db()
+    dcr.cfg.glob.action_curr = dcr.db.cls_action.Action.from_id(2)
+    dcr.cfg.glob.action_curr.action_status = dcr.db.cls_document.Document.DOCUMENT_STATUS_ERROR
+    dcr.cfg.glob.action_curr.persist_2_db()
 
-    launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PANDOC])
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_status_error <=========")
+    dcr.cfg.glob.action_curr = dcr.db.cls_action.Action.from_id(8)
+    dcr.cfg.glob.action_curr.action_status = dcr.db.cls_document.Document.DOCUMENT_STATUS_ERROR
+    dcr.cfg.glob.action_curr.persist_2_db()
+
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
+
+    # -------------------------------------------------------------------------
+    dcr.cfg.glob.action_curr = dcr.db.cls_action.Action.from_id(13)
+    dcr.cfg.glob.action_curr.action_status = dcr.db.cls_document.Document.DOCUMENT_STATUS_ERROR
+    dcr.cfg.glob.action_curr.persist_2_db()
+
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
+
+    # -------------------------------------------------------------------------
+    dcr.cfg.glob.action_curr = dcr.db.cls_action.Action.from_id(17)
+    dcr.cfg.glob.action_curr.action_status = dcr.db.cls_document.Document.DOCUMENT_STATUS_ERROR
+    dcr.cfg.glob.action_curr.persist_2_db()
+
+    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
+
+    # -------------------------------------------------------------------------
+    dcr.cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_status_error <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -1198,4 +1198,4 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     )
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

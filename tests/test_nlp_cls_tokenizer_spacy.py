@@ -1,14 +1,14 @@
 # pylint: disable=unused-argument
 """Testing Module nlp.cls_tokenizer_spacy."""
 
-import cfg.cls_setup
-import cfg.glob
-import db.cls_action
-import db.cls_db_core
-import db.cls_document
-import db.cls_run
 import pytest
 
+import dcr.cfg.cls_setup
+import dcr.cfg.glob
+import dcr.db.cls_action
+import dcr.db.cls_db_core
+import dcr.db.cls_document
+import dcr.db.cls_run
 import dcr_core.cls_text_parser
 import dcr_core.cls_tokenizer_spacy
 
@@ -23,17 +23,17 @@ import dcr_core.cls_tokenizer_spacy
 # -----------------------------------------------------------------------------
 def test_cls_tokenizer_spacy(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test TokenizeSpacy."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
     instance = dcr_core.cls_tokenizer_spacy.TokenizerSpacy()
     instance.exists()
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -41,13 +41,13 @@ def test_cls_tokenizer_spacy(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_tokenizer_spacy_text_parser(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing dependencies - tokenizer_spacy - TextParser."""
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_document = db.cls_document.Document(
+    dcr.cfg.glob.db_document = dcr.db.cls_document.Document(
         action_code_last="", directory_name="", file_name="", id_language=0, id_run_last=0, _row_id=4711
     )
 
@@ -94,4 +94,4 @@ def test_missing_dependencies_tokenizer_spacy_text_parser(fxtr_setup_empty_db_an
     assert expt.value.code == 1, "Instance of class 'TextParser' is missing: process_document()"
 
     # -------------------------------------------------------------------------
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

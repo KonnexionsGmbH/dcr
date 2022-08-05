@@ -6,8 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-import utils
-
+import dcr.utils
 import dcr_core.cls_setup
 import dcr_core.core_utils
 
@@ -82,7 +81,7 @@ class Setup(dcr_core.cls_setup.Setup):
 
         self._load_config()
 
-        utils.progress_msg_core("The configuration parameters (dcr) are checked and loaded")
+        dcr.utils.progress_msg_core("The configuration parameters (dcr) are checked and loaded")
 
         self._exist = True
 
