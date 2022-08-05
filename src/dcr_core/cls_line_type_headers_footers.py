@@ -1,7 +1,3 @@
-"""Module nlp.cls_line_type_headers_footers: Determine footer and header
-lines."""
-from __future__ import annotations
-
 import jellyfish
 
 import dcr_core.cls_nlp_core
@@ -68,8 +64,8 @@ class LineTypeHeaderFooters:
         self._irregular_header_cand_fp: LineTypeHeaderFooters.Candidates = []
         self._irregular_header_cands: LineTypeHeaderFooters.Candidates = []
 
-        dcr_core.core_glob.setup.is_irregular_footer = True
-        dcr_core.core_glob.setup.is_irregular_header = True
+        self._is_irregular_footer = True
+        self._is_irregular_header = True
 
         self._line_data: LineTypeHeaderFooters.LineData = []
         self._line_data_max = 0
@@ -265,10 +261,10 @@ class LineTypeHeaderFooters:
             f"LineTypeHeaderFooters: Start page                           ={self._page_ind + 1}",
         )
 
-        if dcr_core.core_glob.setup.is_irregular_footer:
+        if self._is_irregular_footer:
             self._irregular_footer_cand = LineTypeHeaderFooters.Candidate()
 
-        if dcr_core.core_glob.setup.is_irregular_header:
+        if self._is_irregular_header:
             self._irregular_header_cand = LineTypeHeaderFooters.Candidate()
 
         if dcr_core.core_glob.setup.lt_header_max_lines > 0:
@@ -277,23 +273,23 @@ class LineTypeHeaderFooters:
         if dcr_core.core_glob.setup.lt_footer_max_lines > 0:
             self._store_line_data_footer()
 
-        if dcr_core.core_glob.setup.is_irregular_footer:
+        if self._is_irregular_footer:
             if self._page_ind == 0:
                 if not self._irregular_footer_cand_fp:
-                    dcr_core.core_glob.setup.is_irregular_footer = False
+                    self._is_irregular_footer = False
             elif self._irregular_footer_cand:
                 self._irregular_footer_cands.append(self._irregular_footer_cand)
             else:
-                dcr_core.core_glob.setup.is_irregular_footer = False
+                self._is_irregular_footer = False
 
-        if dcr_core.core_glob.setup.is_irregular_header:
+        if self._is_irregular_header:
             if self._page_ind == 0:
                 if not self._irregular_header_cand_fp:
-                    dcr_core.core_glob.setup.is_irregular_header = False
+                    self._is_irregular_header = False
             elif self._irregular_header_cand:
                 self._irregular_header_cands.append(self._irregular_header_cand)
             else:
-                dcr_core.core_glob.setup.is_irregular_header = False
+                self._is_irregular_header = False
 
         if self._page_ind > 0:
             self._calc_levenshtein()
@@ -310,14 +306,14 @@ class LineTypeHeaderFooters:
     # -----------------------------------------------------------------------------
     def _store_irregulars(self) -> None:
         """Store the irregular footers and headers."""
-        if dcr_core.core_glob.setup.is_irregular_footer:
+        if self._is_irregular_footer:
             self._no_irregular_footer = 1
             dcr_core.core_utils.progress_msg(
                 dcr_core.core_glob.setup.is_verbose_lt_headers_footers,
                 f"LineTypeHeaderFooters: Value of irregular footers           ={self._irregular_footer_cands}",
             )
 
-        if dcr_core.core_glob.setup.is_irregular_header:
+        if self._is_irregular_header:
             self._no_irregular_header = 1
             dcr_core.core_utils.progress_msg(
                 dcr_core.core_glob.setup.is_verbose_lt_headers_footers,
@@ -329,7 +325,7 @@ class LineTypeHeaderFooters:
 
             is_changed = False
 
-            if dcr_core.core_glob.setup.is_irregular_footer and self._irregular_footer_cands:
+            if self._is_irregular_footer and self._irregular_footer_cands:
                 if (
                     lines[self._irregular_footer_cands[page_ind][0]][dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
                     == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY
@@ -341,7 +337,7 @@ class LineTypeHeaderFooters:
                 else:
                     self._no_irregular_footer = 0
 
-            if dcr_core.core_glob.setup.is_irregular_header and self._irregular_header_cands:
+            if self._is_irregular_header and self._irregular_header_cands:
                 if (
                     lines[self._irregular_header_cands[page_ind][0]][dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_TYPE]
                     == dcr_core.cls_nlp_core.NLPCore.LINE_TYPE_BODY
@@ -382,7 +378,7 @@ class LineTypeHeaderFooters:
 
             text = str(page_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
 
-            if dcr_core.core_glob.setup.is_irregular_footer:
+            if self._is_irregular_footer:
                 self._check_irregular_footer(line_lines_ind, text)
 
             self._line_data[ind] = (
@@ -433,7 +429,7 @@ class LineTypeHeaderFooters:
 
             text = str(page_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_TEXT])
 
-            if dcr_core.core_glob.setup.is_irregular_header:
+            if self._is_irregular_header:
                 self._check_irregular_header(ind, text)
 
             self._line_data[ind] = (
@@ -619,9 +615,9 @@ class LineTypeHeaderFooters:
 
         if (
             dcr_core.core_glob.setup.lt_footer_max_distance > 0
-            and dcr_core.core_glob.setup.is_irregular_footer
+            and self._is_irregular_footer
             or dcr_core.core_glob.setup.lt_header_max_distance > 0
-            and dcr_core.core_glob.setup.is_irregular_header
+            and self._is_irregular_header
         ):
             self._store_irregulars()
             self.no_lines_footer += self._no_irregular_footer

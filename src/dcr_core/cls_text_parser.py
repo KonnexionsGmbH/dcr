@@ -1,4 +1,3 @@
-"""Module nlp.cls_text_parser: Extract text and metadata from PDFlib TET."""
 from __future__ import annotations
 
 import collections.abc
@@ -45,6 +44,7 @@ class TextParser:
 
         self._parse_result_creation_date = ""
 
+        self._parse_result_line_document: dcr_core.cls_nlp_core.NLPCore.ParserLineDocument = {}
         self._parse_result_line_index_page = 0
         self._parse_result_line_index_para = 0
         self._parse_result_line_llx = 0.00
@@ -109,7 +109,7 @@ class TextParser:
     #     ]
     # }
     # -----------------------------------------------------------------------------
-    def _create_line_document(self):
+    def _create_line_document(self) -> None:
         with open(self._full_name, "w", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
@@ -146,7 +146,7 @@ class TextParser:
     #     "text": "xxx"
     # }
     # -----------------------------------------------------------------------------
-    def _create_line_lines(self):
+    def _create_line_lines(self) -> None:
         self._debug_xml_element_text_line()
 
         new_entry = {
@@ -178,7 +178,7 @@ class TextParser:
     #     ]
     # }
     # -----------------------------------------------------------------------------
-    def _create_line_pages(self):
+    def _create_line_pages(self) -> None:
         self.parse_result_line_pages.append(
             {
                 dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
@@ -200,7 +200,7 @@ class TextParser:
     #     ]
     # }
     # -----------------------------------------------------------------------------
-    def _create_page_document(self):
+    def _create_page_document(self) -> None:
         with open(self._full_name, "w", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
@@ -225,7 +225,7 @@ class TextParser:
     #     ]
     # }
     # -----------------------------------------------------------------------------
-    def _create_page_pages(self):
+    def _create_page_pages(self) -> None:
         self._parse_result_page_pages.append(
             {
                 dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
@@ -242,7 +242,7 @@ class TextParser:
     #     "text": "xxx"
     # }
     # -----------------------------------------------------------------------------
-    def _create_page_paras(self):
+    def _create_page_paras(self) -> None:
         self._debug_xml_element_text_page()
 
         self._parse_result_page_paras.append(
@@ -266,7 +266,7 @@ class TextParser:
     #     ]
     # }
     # -----------------------------------------------------------------------------
-    def _create_word_document(self):
+    def _create_word_document(self) -> None:
         with open(self._full_name, "w", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as file_handle:
             json.dump(
                 {
@@ -293,7 +293,7 @@ class TextParser:
     #     ]
     # }
     # -----------------------------------------------------------------------------
-    def _create_word_lines(self):
+    def _create_word_lines(self) -> None:
         self._parse_result_word_lines.append(
             {
                 dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINE_NO: self._parse_result_no_lines_in_para,
@@ -314,7 +314,7 @@ class TextParser:
     #     ]
     # }
     # -----------------------------------------------------------------------------
-    def _create_word_pages(self):
+    def _create_word_pages(self) -> None:
         self._parse_result_word_pages.append(
             {
                 dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PAGE_NO: self.parse_result_no_pages_in_doc,
@@ -336,7 +336,7 @@ class TextParser:
     #     ]
     # }
     # -----------------------------------------------------------------------------
-    def _create_word_paras(self):
+    def _create_word_paras(self) -> None:
         self._parse_result_word_paras.append(
             {
                 dcr_core.cls_nlp_core.NLPCore.JSON_NAME_PARA_NO: self._parse_result_no_paras_in_page,
@@ -354,7 +354,7 @@ class TextParser:
     #     "text": "xxx"
     # }
     # -----------------------------------------------------------------------------
-    def _create_word_words(self):
+    def _create_word_words(self) -> None:
         self._debug_xml_element_text_word()
 
         self._parse_result_word_words.append(
@@ -999,7 +999,7 @@ class TextParser:
     # Initialise from the JSON files.
     # -----------------------------------------------------------------------------
     @classmethod
-    def from_files(cls, file_encoding: str, full_name_line="", full_name_page="", full_name_word="") -> TextParser:
+    def from_files(cls, file_encoding: str, full_name_line: str = "", full_name_page: str = "", full_name_word: str = "") -> TextParser:
         """Initialise from JSON files.
 
         Args:

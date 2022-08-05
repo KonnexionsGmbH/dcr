@@ -1,4 +1,3 @@
-"""Module nlp.cls_line_type_list_number: Determine numbered lists."""
 from __future__ import annotations
 
 import collections
@@ -357,7 +356,7 @@ class LineTypeListNumber:
 
         dcr_core.core_utils.progress_msg(
             dcr_core.core_glob.setup.is_verbose_lt_list_number,
-            f"The list_number rules were successfully loaded from the file {dcr_core.core_glob.setup.lt_list_number_rule_file}",
+            "The list_number rules were successfully loaded from the " + f"file {dcr_core.core_glob.setup.lt_list_number_rule_file}",
         )
 
         return rules

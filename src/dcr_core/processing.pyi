@@ -1,6 +1,16 @@
 """Library Stub."""
 import dcr_core.core_glob
 
+ERROR_21_901: str
+ERROR_31_902: str
+ERROR_41_901: str
+ERROR_51_901: str
+ERROR_61_901: str
+ERROR_71_901: str
+
+PANDOC_PDF_ENGINE_LULATEX: str
+PANDOC_PDF_ENGINE_XELATEX: str
+
 def pandoc_process(
     full_name_in: str,
     full_name_out: str,

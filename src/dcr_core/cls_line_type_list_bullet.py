@@ -1,6 +1,3 @@
-"""Module nlp.cls_line_type_list_bullet: Determine bulleted lists."""
-from __future__ import annotations
-
 import json
 import os
 import pathlib
@@ -305,7 +302,7 @@ class LineTypeListBullet:
 
         dcr_core.core_utils.progress_msg(
             dcr_core.core_glob.setup.is_verbose_lt_list_bullet,
-            f"The list_bullet rules were successfully loaded from the file {dcr_core.core_glob.setup.lt_list_bullet_rule_file}",
+            "The list_bullet rules were successfully loaded from the " + f"file {dcr_core.core_glob.setup.lt_list_bullet_rule_file}",
         )
 
         return list_bullet_rules

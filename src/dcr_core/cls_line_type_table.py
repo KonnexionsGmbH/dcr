@@ -1,6 +1,3 @@
-"""Module nlp.cls_line_type_table: Determine tables."""
-from __future__ import annotations
-
 import json
 
 import dcr_core.cls_nlp_core
@@ -61,7 +58,7 @@ class LineTypeTable:
         self._first_row_llx = 0.0
         self._first_row_urx = 0.0
 
-        dcr_core.core_glob.setup.is_table_open = False
+        self._is_table_open = False
 
         self._last_column_urx = 0.0
 
@@ -129,7 +126,7 @@ class LineTypeTable:
     # -----------------------------------------------------------------------------
     def _finish_table(self) -> None:
         """Finish a table."""
-        if not dcr_core.core_glob.setup.is_table_open:
+        if not self._is_table_open:
             return
 
         self._finish_row()
@@ -186,7 +183,7 @@ class LineTypeTable:
         self._column_no = int(line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_COLUMN_NO])
         self._row_no = int(line_line[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_ROW_NO])
 
-        if not dcr_core.core_glob.setup.is_table_open:
+        if not self._is_table_open:
             self._reset_table()
         elif self._row_no < self._row_no_prev:
             self._finish_table()
@@ -237,7 +234,7 @@ class LineTypeTable:
 
         self._columns.append(new_entry)
 
-        dcr_core.core_glob.setup.is_table_open = True
+        self._is_table_open = True
         self._column_no_prev = self._column_no
         self._row_no_prev = self._row_no
 
@@ -296,7 +293,7 @@ class LineTypeTable:
         self._first_row_llx = 0.0
         self._first_row_urx = 0.0
 
-        dcr_core.core_glob.setup.is_table_open = False
+        self._is_table_open = False
 
         self._no_columns_table = 0
 

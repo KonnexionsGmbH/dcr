@@ -1,6 +1,3 @@
-"""Module nlp.dcr_core.cls_nlp_core: Managing the NLP processing."""
-from __future__ import annotations
-
 import collections
 import json
 import re

@@ -1,5 +1,3 @@
-"""Module cfg.glob: DCR Global Data."""
-
 import dcr_core.cls_line_type_headers_footers
 import dcr_core.cls_line_type_heading
 import dcr_core.cls_line_type_list_bullet

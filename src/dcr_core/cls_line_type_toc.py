@@ -1,6 +1,3 @@
-"""Module nlp.cls_line_type_toc: Determine table of content lines."""
-from __future__ import annotations
-
 import dcr_core.cls_nlp_core
 import dcr_core.core_glob
 import dcr_core.core_utils
@@ -40,7 +37,7 @@ class LineTypeToc:
             f"LineTypeToc: Start create instance                ={self._file_name_curr}",
         )
 
-        dcr_core.core_glob.setup.is_toc_existing = False
+        self._is_toc_existing = False
 
         self._page_no = 0
 
@@ -87,7 +84,7 @@ class LineTypeToc:
                     self._init_toc_candidate()
                     dcr_core.core_utils.progress_msg(
                         dcr_core.core_glob.setup.is_verbose_lt_toc,
-                        f"LineTypeToc: End   check TOC candidate (!=)       ={dcr_core.core_glob.setup.is_toc_existing}: {page_no_toc}",
+                        "LineTypeToc: End   check TOC candidate (!=)       " + f"={self._is_toc_existing}: {page_no_toc}",
                     )
                     return
 
@@ -97,17 +94,17 @@ class LineTypeToc:
                 self._init_toc_candidate()
                 dcr_core.core_utils.progress_msg(
                     dcr_core.core_glob.setup.is_verbose_lt_toc,
-                    f"LineTypeToc: End   check TOC candidate (<>)       ={dcr_core.core_glob.setup.is_toc_existing}: {page_no_toc}",
+                    "LineTypeToc: End   check TOC candidate (<>)       " + f"={self._is_toc_existing}: {page_no_toc}",
                 )
                 return
 
             page_no_toc_last = page_no_toc
 
-        dcr_core.core_glob.setup.is_toc_existing = True
+        self._is_toc_existing = True
 
         dcr_core.core_utils.progress_msg(
             dcr_core.core_glob.setup.is_verbose_lt_toc,
-            f"LineTypeToc: End   check TOC candidate            ={dcr_core.core_glob.setup.is_toc_existing}",
+            "LineTypeToc: End   check TOC candidate            " + f"={self._is_toc_existing}",
         )
 
     # -----------------------------------------------------------------------------
@@ -121,7 +118,7 @@ class LineTypeToc:
     # -----------------------------------------------------------------------------
     def _process_page_lines(self) -> None:
         """Process the page-related data - line version."""
-        if dcr_core.core_glob.setup.is_toc_existing or self._page_no >= dcr_core.core_glob.setup.lt_toc_last_page:
+        if self._is_toc_existing or self._page_no >= dcr_core.core_glob.setup.lt_toc_last_page:
             return
 
         self._page_no += 1
@@ -140,7 +137,7 @@ class LineTypeToc:
                         self._process_toc_candidate_line_line(line_line, int(line_tokens[-1]))
                     except ValueError:
                         self._check_toc_candidate()
-                        if dcr_core.core_glob.setup.is_toc_existing:
+                        if self._is_toc_existing:
                             break
 
         dcr_core.core_utils.progress_msg(
@@ -153,7 +150,7 @@ class LineTypeToc:
     # -----------------------------------------------------------------------------
     def _process_page_table(self) -> None:
         """Process the page-related data - table version."""
-        if dcr_core.core_glob.setup.is_toc_existing or self._page_no >= dcr_core.core_glob.setup.lt_toc_last_page:
+        if self._is_toc_existing or self._page_no >= dcr_core.core_glob.setup.lt_toc_last_page:
             return
 
         self._page_no += 1
@@ -170,7 +167,7 @@ class LineTypeToc:
                     self._process_toc_candidate_table_line(line_line)
                 else:
                     self._check_toc_candidate()
-                    if dcr_core.core_glob.setup.is_toc_existing:
+                    if self._is_toc_existing:
                         break
 
         dcr_core.core_utils.progress_msg(
@@ -339,13 +336,13 @@ class LineTypeToc:
             self._parser_line_lines_json = page_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINES]
             self._process_page_table()
 
-        if not dcr_core.core_glob.setup.is_toc_existing:
+        if not self._is_toc_existing:
             self._check_toc_candidate()
 
         # -------------------------------------------------------------------------
         # Examine the lines version.
         # -------------------------------------------------------------------------
-        if not dcr_core.core_glob.setup.is_toc_existing:
+        if not self._is_toc_existing:
             self._strategy = dcr_core.cls_nlp_core.NLPCore.SEARCH_STRATEGY_LINES
             self._page_no = 0
             self._init_toc_candidate()
@@ -353,13 +350,13 @@ class LineTypeToc:
                 self._parser_line_lines_json = page_json[dcr_core.cls_nlp_core.NLPCore.JSON_NAME_LINES]
                 self._process_page_lines()
 
-            if not dcr_core.core_glob.setup.is_toc_existing:
+            if not self._is_toc_existing:
                 self._check_toc_candidate()
 
         # -------------------------------------------------------------------------
         # Store the results.
         # -------------------------------------------------------------------------
-        if dcr_core.core_glob.setup.is_toc_existing:
+        if self._is_toc_existing:
             self._store_results()
 
         dcr_core.core_utils.progress_msg(

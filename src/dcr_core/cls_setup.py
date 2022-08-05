@@ -1,9 +1,3 @@
-"""Module cls_setup.
-
-Managing the application configuration parameters.
-"""
-from __future__ import annotations
-
 import configparser
 import os
 from typing import ClassVar
@@ -22,7 +16,7 @@ class Setup:
     # -----------------------------------------------------------------------------
     # Class variables.
     # -----------------------------------------------------------------------------
-    _CONFIG_PARAM_NO = 110
+    _CONFIG_PARAM_NO: ClassVar[int] = 110
 
     _DCR_CFG_CREATE_EXTRA_FILE_HEADING: ClassVar[str] = "create_extra_file_heading"
     _DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET: ClassVar[str] = "create_extra_file_list_bullet"

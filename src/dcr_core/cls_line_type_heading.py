@@ -1,6 +1,3 @@
-"""Module nlp.cls_line_type_heading: Determine headings."""
-from __future__ import annotations
-
 import collections
 import decimal
 import json
@@ -408,7 +405,7 @@ class LineTypeHeading:
 
         dcr_core.core_utils.progress_msg(
             dcr_core.core_glob.setup.is_verbose_lt_heading,
-            f"The heading anti-patterns were successfully loaded from the file {dcr_core.core_glob.setup.lt_heading_rule_file}",
+            "The heading anti-patterns were successfully loaded from the " + f"file {dcr_core.core_glob.setup.lt_heading_rule_file}",
         )
 
         return anti_patterns
