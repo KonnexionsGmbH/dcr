@@ -14,7 +14,7 @@ import dcr_core.cls_setup
 import dcr_core.cls_text_parser
 import dcr_core.core_glob
 import dcr_core.core_utils
-import dcr_core.TET
+import PDFlib.TET
 
 # -----------------------------------------------------------------------------
 # Global variables.
@@ -282,7 +282,7 @@ def pdflib_process(
                 ("ok", "") if the processing has been completed successfully,
                            otherwise a corresponding error code and error message.
     """
-    tet = dcr_core.TET.TET()
+    tet = PDFlib.TET.TET()
 
     doc_opt_list = f"tetml={{filename={{{full_name_out}}}}} {document_opt_list}"
 
