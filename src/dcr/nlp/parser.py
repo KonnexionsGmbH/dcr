@@ -79,9 +79,7 @@ def parse_tetml() -> None:
                 else:
                     cfg.glob.run.total_status_ready += 1
 
-                cfg.glob.document = db.cls_document.Document.from_id(
-                    id_document=cfg.glob.action_curr.action_id_document
-                )
+                cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
 
                 parse_tetml_file()
 
@@ -142,8 +140,7 @@ def parse_tetml_file() -> None:
 
     if dcr_core.core_glob.setup.is_parsing_line:
         if (
-            dcr_core.core_glob.line_type_headers_footers.no_lines_footer
-            != 0  # pylint: disable=too-many-boolean-expressions
+            dcr_core.core_glob.line_type_headers_footers.no_lines_footer != 0  # pylint: disable=too-many-boolean-expressions
             or dcr_core.core_glob.line_type_headers_footers.no_lines_header != 0
             or dcr_core.core_glob.line_type_list_bullet.no_lists != 0
             or dcr_core.core_glob.line_type_list_number.no_lists != 0

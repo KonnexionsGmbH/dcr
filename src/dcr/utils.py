@@ -112,9 +112,7 @@ def delete_auxiliary_file(full_name: pathlib.Path | str) -> None:
     full_name = dcr_core.core_utils.get_os_independent_name(full_name)
 
     # Don't remove the base document !!!
-    if full_name == dcr_core.core_utils.get_full_name(
-        cfg.glob.action_curr.action_directory_name, cfg.glob.document.get_file_name_next()
-    ):
+    if full_name == dcr_core.core_utils.get_full_name(cfg.glob.action_curr.action_directory_name, cfg.glob.document.get_file_name_next()):
         return
 
     if os.path.isfile(full_name):
@@ -254,11 +252,7 @@ def progress_msg_disconnected() -> None:
                 else cfg.glob.db_core.db_current_database
             )
 
-            user = (
-                cfg.glob.INFORMATION_NOT_YET_AVAILABLE
-                if cfg.glob.db_core.db_current_user == ""
-                else cfg.glob.db_core.db_current_user
-            )
+            user = cfg.glob.INFORMATION_NOT_YET_AVAILABLE if cfg.glob.db_core.db_current_user == "" else cfg.glob.db_core.db_current_user
 
             print("")
             progress_msg(f"User '{user}' is now disconnected from database '{database}'")

@@ -199,25 +199,19 @@ class Action:
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID_DOCUMENT,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(
-                    db.cls_db_core.DBCore.DBT_DOCUMENT + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"
-                ),
+                sqlalchemy.ForeignKey(db.cls_db_core.DBCore.DBT_DOCUMENT + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"),
                 nullable=True,
             ),
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID_PARENT,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(
-                    db.cls_db_core.DBCore.DBT_ACTION + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"
-                ),
+                sqlalchemy.ForeignKey(db.cls_db_core.DBCore.DBT_ACTION + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"),
                 nullable=True,
             ),
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID_RUN_LAST,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(
-                    db.cls_db_core.DBCore.DBT_RUN + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"
-                ),
+                sqlalchemy.ForeignKey(db.cls_db_core.DBCore.DBT_RUN + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"),
                 nullable=False,
             ),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_CHILDREN, sqlalchemy.Integer, nullable=True),
@@ -415,9 +409,7 @@ class Action:
     # -----------------------------------------------------------------------------
     # Get the database columns in a tuple.
     # -----------------------------------------------------------------------------
-    def get_columns_in_tuple(
-        self, is_duration_ns: bool = True, is_file_size_bytes: bool = True
-    ) -> tuple[int | str, ...]:
+    def get_columns_in_tuple(self, is_duration_ns: bool = True, is_file_size_bytes: bool = True) -> tuple[int | str, ...]:
         """Get the database columns in a tuple.
 
         Args:
@@ -525,9 +517,7 @@ class Action:
                 self.action_no_pdf_pages = utils.get_pdf_pages_no(full_name)
 
         if self.action_id == 0:
-            self.action_status = (
-                self.action_status if self.action_status != "" else db.cls_document.Document.DOCUMENT_STATUS_START
-            )
+            self.action_status = self.action_status if self.action_status != "" else db.cls_document.Document.DOCUMENT_STATUS_START
 
             self.action_id = cfg.glob.db_core.insert_dbt_row(
                 table_name=db.cls_db_core.DBCore.DBT_ACTION,
@@ -641,9 +631,7 @@ class Action:
     # Select parents with more than one unprocessed child based on action code.
     # -----------------------------------------------------------------------------
     @classmethod
-    def select_id_document_by_action_code_pypdf2(
-        cls, conn: Connection, action_code: str
-    ) -> sqlalchemy.engine.CursorResult:
+    def select_id_document_by_action_code_pypdf2(cls, conn: Connection, action_code: str) -> sqlalchemy.engine.CursorResult:
         """Select parents with more than one unprocessed child based on action
         code.
 

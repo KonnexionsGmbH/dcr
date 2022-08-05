@@ -61,8 +61,7 @@ def check_db_up_to_date() -> None:
 
     if dcr_core.cls_setup.Setup.DCR_VERSION != current_version:
         dcr_core.core_utils.terminate_fatal(
-            f"Current database version is '{current_version}' - but expected version is '"
-            f"{dcr_core.cls_setup.Setup.DCR_VERSION}''"
+            f"Current database version is '{current_version}' - but expected version is '" f"{dcr_core.cls_setup.Setup.DCR_VERSION}''"
         )
 
     utils.progress_msg(f"The current version of database is '{current_version}'")

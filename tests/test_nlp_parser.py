@@ -89,9 +89,7 @@ def test_levenshtein_roman():
 # Test RUN_ACTION_STORE_FROM_PARSER - coverage.
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("verbose_parser", ["all", "none", "text"])
-def test_run_action_store_parse_result_in_json_coverage(
-    verbose_parser: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox
-):
+def test_run_action_store_parse_result_in_json_coverage(verbose_parser: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_STORE_FROM_PARSER - coverage."""
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
@@ -288,11 +286,7 @@ def test_run_action_store_parse_result_in_json_missing_input_file(fxtr_setup_emp
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PDFLIB])
 
-    os.remove(
-        dcr_core.core_utils.get_full_name(
-            dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.xml"
-        )
-    )
+    os.remove(dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.xml"))
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 

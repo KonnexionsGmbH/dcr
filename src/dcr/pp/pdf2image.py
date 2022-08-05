@@ -26,9 +26,7 @@ def convert_pdf_2_image() -> None:
     cfg.glob.logger.debug(cfg.glob.LOGGER_START)
 
     with cfg.glob.db_core.db_orm_engine.begin() as conn:
-        rows = db.cls_action.Action.select_action_by_action_code(
-            conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDF2IMAGE
-        )
+        rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=db.cls_run.Run.ACTION_CODE_PDF2IMAGE)
 
         for row in rows:
             cfg.glob.start_time_document = time.perf_counter_ns()

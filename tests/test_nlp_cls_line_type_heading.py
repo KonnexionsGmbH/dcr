@@ -66,9 +66,7 @@ def test_cls_line_type_heading_maximum(fxtr_rmdir_opt, fxtr_setup_empty_db_and_i
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
-    pytest.helpers.check_json_line(
-        "docx_heading.line.json", no_lines_footer=1, no_lists_number_in_document=7, no_tables_in_document=1
-    )
+    pytest.helpers.check_json_line("docx_heading.line.json", no_lines_footer=1, no_lists_number_in_document=7, no_tables_in_document=1)
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
@@ -165,9 +163,7 @@ def test_cls_line_type_heading_minimum_1(fxtr_rmdir_opt, fxtr_setup_empty_db_and
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_PARSER])
 
-    pytest.helpers.check_json_line(
-        "docx_heading.line.json", no_lines_footer=1, no_lists_number_in_document=7, no_tables_in_document=1
-    )
+    pytest.helpers.check_json_line("docx_heading.line.json", no_lines_footer=1, no_lists_number_in_document=7, no_tables_in_document=1)
 
     launcher.main([launcher.DCR_ARGV_0, db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
@@ -250,9 +246,7 @@ def test_missing_dependencies_line_type_heading_coverage_exists(fxtr_setup_empty
     # -------------------------------------------------------------------------
     dcr_core.core_glob.text_parser = dcr_core.cls_text_parser.TextParser()
 
-    dcr_core.core_glob.line_type_headers_footers = dcr_core.cls_line_type_headers_footers.LineTypeHeaderFooters(
-        file_name_curr=""
-    )
+    dcr_core.core_glob.line_type_headers_footers = dcr_core.cls_line_type_headers_footers.LineTypeHeaderFooters(file_name_curr="")
     dcr_core.core_glob.line_type_toc = dcr_core.cls_line_type_toc.LineTypeToc(file_name_curr="")
     dcr_core.core_glob.line_type_table = dcr_core.cls_line_type_table.LineTypeTable(file_name_curr="")
     dcr_core.core_glob.line_type_list_bullet = dcr_core.cls_line_type_list_bullet.LineTypeListBullet(file_name_curr="")

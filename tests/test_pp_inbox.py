@@ -45,12 +45,8 @@ def test_run_action_process_inbox_accepted_duplicate(fxtr_setup_empty_db_and_inb
     )
 
     os.rename(
-        dcr_core.core_utils.get_full_name(
-            dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext
-        ),
-        dcr_core.core_utils.get_full_name(
-            dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext
-        ),
+        dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext),
+        dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext),
     )
 
     # -------------------------------------------------------------------------
@@ -102,9 +98,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
 
     # copy test file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(
-            pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test
-        ),
+        dcr_core.core_utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
         dcr_core.core_utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
@@ -114,9 +108,7 @@ def test_run_action_process_inbox_french(fxtr_setup_empty_inbox):
 
     # -------------------------------------------------------------------------
     # Copy language subdirectory
-    pytest.helpers.copy_directories_4_pytest_2_dir(
-        source_directories=["french"], target_dir=str(dcr_core.core_glob.setup.directory_inbox)
-    )
+    pytest.helpers.copy_directories_4_pytest_2_dir(source_directories=["french"], target_dir=str(dcr_core.core_glob.setup.directory_inbox))
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
@@ -291,9 +283,7 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     stem_name_1 = "pdf_wrong_format"
     file_ext = "pdf"
 
-    pytest.helpers.copy_files_4_pytest_2_dir(
-        source_files=[(stem_name_1, file_ext)], target_path=dcr_core.core_glob.setup.directory_inbox
-    )
+    pytest.helpers.copy_files_4_pytest_2_dir(source_files=[(stem_name_1, file_ext)], target_path=dcr_core.core_glob.setup.directory_inbox)
 
     stem_name_2 = "pdf_wrong_format_1"
 
@@ -302,12 +292,8 @@ def test_run_action_process_inbox_rejected_duplicate(fxtr_setup_empty_db_and_inb
     )
 
     os.rename(
-        dcr_core.core_utils.get_full_name(
-            dcr_core.core_glob.setup.directory_inbox_rejected, stem_name_1 + "." + file_ext
-        ),
-        dcr_core.core_utils.get_full_name(
-            dcr_core.core_glob.setup.directory_inbox_rejected, stem_name_2 + "." + file_ext
-        ),
+        dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_rejected, stem_name_1 + "." + file_ext),
+        dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_rejected, stem_name_2 + "." + file_ext),
     )
 
     # -------------------------------------------------------------------------

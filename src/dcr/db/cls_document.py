@@ -222,17 +222,13 @@ class Document:
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID_LANGUAGE,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(
-                    db.cls_db_core.DBCore.DBT_LANGUAGE + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"
-                ),
+                sqlalchemy.ForeignKey(db.cls_db_core.DBCore.DBT_LANGUAGE + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"),
                 nullable=False,
             ),
             sqlalchemy.Column(
                 db.cls_db_core.DBCore.DBC_ID_RUN_LAST,
                 sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(
-                    db.cls_db_core.DBCore.DBT_RUN + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"
-                ),
+                sqlalchemy.ForeignKey(db.cls_db_core.DBCore.DBT_RUN + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"),
                 nullable=False,
             ),
             sqlalchemy.Column(db.cls_db_core.DBCore.DBC_NO_LINES_FOOTER, sqlalchemy.Integer, nullable=False),
@@ -443,11 +439,7 @@ class Document:
         return (
             self.get_stem_name_next()
             + "."
-            + (
-                self.get_file_type()
-                if self.get_file_type() != dcr_core.core_glob.FILE_TYPE_TIF
-                else dcr_core.core_glob.FILE_TYPE_TIFF
-            )
+            + (self.get_file_type() if self.get_file_type() != dcr_core.core_glob.FILE_TYPE_TIF else dcr_core.core_glob.FILE_TYPE_TIFF)
         )
 
     # -----------------------------------------------------------------------------
@@ -535,9 +527,7 @@ class Document:
             )
 
         if self.document_id == 0:
-            self.document_status = (
-                self.document_status if self.document_status != "" else Document.DOCUMENT_STATUS_START
-            )
+            self.document_status = self.document_status if self.document_status != "" else Document.DOCUMENT_STATUS_START
 
             self.document_id = cfg.glob.db_core.insert_dbt_row(  # type: ignore
                 table_name=db.cls_db_core.DBCore.DBT_DOCUMENT,
