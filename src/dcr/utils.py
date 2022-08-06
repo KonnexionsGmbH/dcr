@@ -249,13 +249,13 @@ def progress_msg_disconnected() -> None:
                 return
 
             database = (
-                dcr.cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+                dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE
                 if dcr.cfg.glob.db_core.db_current_database == ""
                 else dcr.cfg.glob.db_core.db_current_database
             )
 
             user = (
-                dcr.cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+                dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE
                 if dcr.cfg.glob.db_core.db_current_user == ""
                 else dcr.cfg.glob.db_core.db_current_user
             )

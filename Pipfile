@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+dcr-core = "*"
 PyMuPDF = "*"
 PyPDF2 = "*"
 PyYAML = "<=6.0.0"
@@ -56,4 +57,4 @@ types-psycopg2 = "*"
 typing-extensions = "*"
 
 [requires]
-python_version = "3.10.5"
+python_version = "3.10.6"
