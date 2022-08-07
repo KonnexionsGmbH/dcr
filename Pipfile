@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-dcr-core = "*"
+dcr-core = "0.9.6"
 PyMuPDF = "*"
 PyPDF2 = "*"
 PyYAML = "<=6.0.0"
