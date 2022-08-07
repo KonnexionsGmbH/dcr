@@ -11,6 +11,8 @@ import pathlib
 import shutil
 import time
 
+import dcr_core.core_glob
+import dcr_core.core_utils
 import fitz
 import sqlalchemy
 import sqlalchemy.orm
@@ -21,8 +23,6 @@ import dcr.db.cls_document
 import dcr.db.cls_language
 import dcr.db.cls_run
 import dcr.utils
-import dcr_core.core_glob
-import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Class variables.

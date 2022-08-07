@@ -7,6 +7,10 @@ import pathlib
 from typing import ClassVar
 from typing import TypeAlias
 
+import dcr_core.cls_nlp_core
+import dcr_core.cls_setup
+import dcr_core.core_glob
+import dcr_core.core_utils
 import psycopg2
 import psycopg2.errors
 import psycopg2.extensions
@@ -19,18 +23,6 @@ from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine
 
 import dcr.cfg.cls_setup
-import dcr.cfg.glob
-import dcr.db.cls_action
-import dcr.db.cls_document
-import dcr.db.cls_language
-import dcr.db.cls_run
-import dcr.db.cls_token
-import dcr.db.cls_version
-import dcr.utils
-import dcr_core.cls_nlp_core
-import dcr_core.cls_setup
-import dcr_core.core_glob
-import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Type declaration.

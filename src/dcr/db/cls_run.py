@@ -3,18 +3,15 @@ from __future__ import annotations
 
 from typing import ClassVar
 
+import dcr_core.core_glob
+import dcr_core.core_utils
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
 from sqlalchemy import Integer
 from sqlalchemy import String
 
-import dcr.cfg.glob
 import dcr.db.cls_db_core
-import dcr.db.cls_document
-import dcr.utils
-import dcr_core.core_glob
-import dcr_core.core_utils
 
 
 # pylint: disable=duplicate-code
@@ -336,8 +333,6 @@ class Run:
                 action_text = Run._ACTION_TEXT_PDF2IMAGE
             case Run.ACTION_CODE_PDFLIB:
                 action_text = Run._ACTION_TEXT_PDFLIB
-            case Run.ACTION_CODE_PYPDF2:
-                action_text = Run._ACTION_TEXT_PYPDF2
             case Run.ACTION_CODE_TESSERACT:
                 action_text = Run._ACTION_TEXT_TESSERACT
             case Run.ACTION_CODE_TOKENIZE:

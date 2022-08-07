@@ -1,6 +1,7 @@
 """Module dcr.db.cls_version: Managing the database table version."""
 from __future__ import annotations
 
+import dcr_core.core_utils
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
@@ -9,7 +10,6 @@ from sqlalchemy import Integer
 import dcr.cfg.glob
 import dcr.db.cls_db_core
 import dcr.utils
-import dcr_core.core_utils
 
 
 class Version:

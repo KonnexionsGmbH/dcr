@@ -2,14 +2,14 @@
 """Testing Module dcr.dcr."""
 import os
 
+import dcr_core.cls_setup
+import dcr_core.core_glob
 import pytest
 
 import dcr.cfg.cls_setup
 import dcr.cfg.glob
 import dcr.db.cls_run
 import dcr.launcher
-import dcr_core.cls_setup
-import dcr_core.core_glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

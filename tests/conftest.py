@@ -12,6 +12,12 @@ import os
 import pathlib
 import shutil
 
+import dcr_core.cls_nlp_core
+import dcr_core.cls_setup
+import dcr_core.cls_text_parser
+import dcr_core.cls_tokenizer_spacy
+import dcr_core.core_glob
+import dcr_core.core_utils
 import pytest
 import sqlalchemy
 
@@ -25,12 +31,6 @@ import dcr.db.cls_run
 import dcr.db.cls_token
 import dcr.db.cls_version
 import dcr.launcher
-import dcr_core.cls_nlp_core
-import dcr_core.cls_setup
-import dcr_core.cls_text_parser
-import dcr_core.cls_tokenizer_spacy
-import dcr_core.core_glob
-import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

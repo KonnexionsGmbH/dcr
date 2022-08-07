@@ -5,16 +5,13 @@ import os
 import time
 from typing import ClassVar
 
+import dcr_core.core_glob
+import dcr_core.core_utils
 import sqlalchemy
 from sqlalchemy.engine import Connection
 
 import dcr.cfg.glob
 import dcr.db.cls_db_core
-import dcr.db.cls_document
-import dcr.db.cls_run
-import dcr.utils
-import dcr_core.core_glob
-import dcr_core.core_utils
 
 
 # pylint: disable=duplicate-code
@@ -621,66 +618,6 @@ class Action:
                 )
             )
             .order_by(dbt.c.id.asc())
-        )
-
-        dcr.cfg.glob.logger.debug("SQL Statement=%s", stmnt)
-
-        return conn.execute(stmnt)
-
-    # -----------------------------------------------------------------------------
-    # Select parents with more than one unprocessed child based on action code.
-    # -----------------------------------------------------------------------------
-    @classmethod
-    def select_id_document_by_action_code_pypdf2(cls, conn: Connection, action_code: str) -> sqlalchemy.engine.CursorResult:
-        """Select parents with more than one unprocessed child based on action
-        code.
-
-        Args:
-            conn (Connection):
-                    The database connection.
-            action_code (str):
-                    The requested action code.
-
-        Returns:
-            sqlalchemy.engine.CursorResult:
-                    The rows found.
-        """
-        dbt = sqlalchemy.Table(
-            dcr.db.cls_db_core.DBCore.DBT_ACTION,
-            dcr.cfg.glob.db_core.db_orm_metadata,
-            autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
-        )
-
-        sub_query = (
-            sqlalchemy.select(dbt.c.id_document)
-            .where(dbt.c.action_code == action_code)
-            .where(
-                dbt.c.status.in_(
-                    [
-                        dcr.db.cls_document.Document.DOCUMENT_STATUS_ERROR,
-                        dcr.db.cls_document.Document.DOCUMENT_STATUS_START,
-                    ]
-                )
-            )
-            .group_by(dbt.c.id_document)
-            .having(sqlalchemy.func.count(dbt.c.id_document) > 1)
-            .scalar_subquery()
-        )
-
-        stmnt = (
-            sqlalchemy.select(sqlalchemy.func.min(dbt.c.id))
-            .where(dbt.c.id_document.in_(sub_query))
-            .where(dbt.c.action_code == action_code)
-            .where(
-                dbt.c.status.in_(
-                    [
-                        dcr.db.cls_document.Document.DOCUMENT_STATUS_ERROR,
-                        dcr.db.cls_document.Document.DOCUMENT_STATUS_START,
-                    ]
-                )
-            )
-            .group_by(dbt.c.id_document)
-            .order_by(dbt.c.id_document)
         )
 
         dcr.cfg.glob.logger.debug("SQL Statement=%s", stmnt)

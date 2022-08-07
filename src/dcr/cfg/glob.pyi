@@ -9,6 +9,8 @@ import dcr.db.cls_db_core
 import dcr.db.cls_document
 import dcr.db.cls_language
 import dcr.db.cls_run
+import dcr.db.cls_token
+import dcr.db.cls_version
 
 # -----------------------------------------------------------------------------
 # Global Constants.
@@ -39,3 +41,7 @@ logger: logging.Logger
 run: dcr.db.cls_run.Run
 
 start_time_document: int
+
+token: dcr.db.cls_token.Token
+
+version: dcr.db.cls_version.Version

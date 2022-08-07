@@ -19,6 +19,7 @@
 /data/inbox_test_rejected/
 /data/prev_version/
 /docs/*.pdf
+/resources/Gammadyne/timer.txt
 /setup.cfg_backup
 /site/
 /src/*/*/__pycache__/

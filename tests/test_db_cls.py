@@ -2,6 +2,9 @@
 """Testing Module dcr.db.cls_..."""
 import time
 
+import dcr_core.cls_setup
+import dcr_core.core_glob
+import dcr_core.core_utils
 import pytest
 
 import dcr.cfg.cls_setup
@@ -14,9 +17,6 @@ import dcr.db.cls_run
 import dcr.db.cls_token
 import dcr.db.cls_version
 import dcr.launcher
-import dcr_core.cls_setup
-import dcr_core.core_glob
-import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -994,7 +994,7 @@ def test_missing_dependencies_document_1(fxtr_setup_empty_db_and_inbox):
 
     # -------------------------------------------------------------------------
     with pytest.raises(SystemExit) as expt:
-        dcr.cfg.glob.db_document.get_stem_name_next()
+        dcr.cfg.glob.document.get_stem_name_next()
 
     assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
     assert expt.value.code == 1, "Instance of class 'Setup' is missing"

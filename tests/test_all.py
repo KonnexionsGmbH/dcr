@@ -1,5 +1,8 @@
 """Testing Module all."""
 
+import dcr_core.cls_setup
+import dcr_core.core_glob
+import dcr_core.core_utils
 import pytest
 
 import dcr.cfg.cls_setup
@@ -12,9 +15,6 @@ import dcr.db.cls_run
 import dcr.db.cls_token
 import dcr.db.cls_version
 import dcr.launcher
-import dcr_core.cls_setup
-import dcr_core.core_glob
-import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

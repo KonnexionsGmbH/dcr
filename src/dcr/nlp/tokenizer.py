@@ -3,6 +3,13 @@ database."""
 
 import time
 
+import dcr_core.cls_nlp_core
+import dcr_core.cls_text_parser
+import dcr_core.cls_tokenizer_spacy
+import dcr_core.core_glob
+import dcr_core.core_utils
+import dcr_core.processing
+
 import dcr.cfg.glob
 import dcr.db.cls_action
 import dcr.db.cls_db_core
@@ -11,12 +18,6 @@ import dcr.db.cls_language
 import dcr.db.cls_run
 import dcr.db.cls_token
 import dcr.utils
-import dcr_core.cls_nlp_core
-import dcr_core.cls_text_parser
-import dcr_core.cls_tokenizer_spacy
-import dcr_core.core_glob
-import dcr_core.core_utils
-import dcr_core.processing
 
 
 # -----------------------------------------------------------------------------

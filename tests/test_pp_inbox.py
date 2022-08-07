@@ -4,6 +4,8 @@ import os.path
 import pathlib
 import shutil
 
+import dcr_core.core_glob
+import dcr_core.core_utils
 import pytest
 
 import dcr.cfg.cls_setup
@@ -11,8 +13,6 @@ import dcr.cfg.glob
 import dcr.db.cls_db_core
 import dcr.db.cls_run
 import dcr.launcher
-import dcr_core.core_glob
-import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

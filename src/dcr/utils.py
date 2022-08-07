@@ -4,14 +4,14 @@ import hashlib
 import os
 import pathlib
 
+import dcr_core.core_glob
+import dcr_core.core_utils
 import PyPDF2
 import PyPDF2.errors
 
+import dcr
 import dcr.cfg.glob
-import dcr.db.cls_document
-import dcr.db.cls_run
-import dcr_core.core_glob
-import dcr_core.core_utils
+import dcr.db
 
 
 # -----------------------------------------------------------------------------
@@ -19,7 +19,6 @@ import dcr_core.core_utils
 # -----------------------------------------------------------------------------
 def check_exists_object(  # noqa: C901
     is_action_curr: bool = False,
-    is_action_next: bool = False,
     is_db_core: bool = False,
     is_document: bool = False,
     is_run: bool = False,
@@ -29,8 +28,6 @@ def check_exists_object(  # noqa: C901
     Args:
         is_action_curr (bool, optional):
                 Check an object of class Action. Defaults to False.
-        is_action_next (bool, optional):
-                Check an object of class Action . Defaults to False.
         is_db_core (bool, optional):
                 Check an object of class DBCore. Defaults to False.
         is_document (bool, optional):
@@ -44,14 +41,6 @@ def check_exists_object(  # noqa: C901
         except AttributeError:
             dcr_core.core_utils.terminate_fatal(
                 "The required instance of the class 'Action (action_curr)' does not yet exist.",
-            )
-
-    if is_action_next:
-        try:
-            dcr.cfg.glob.action_next.exists()  # type: ignore
-        except AttributeError:
-            dcr_core.core_utils.terminate_fatal(
-                "The required instance of the class 'Action (action_next)' does not yet exist.",
             )
 
     if is_db_core:

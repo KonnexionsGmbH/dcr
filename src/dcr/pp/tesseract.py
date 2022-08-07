@@ -2,15 +2,16 @@
 import os
 import time
 
+import dcr_core.core_glob
+import dcr_core.core_utils
+import dcr_core.processing
+
 import dcr.cfg.glob
 import dcr.db.cls_action
 import dcr.db.cls_document
 import dcr.db.cls_language
 import dcr.db.cls_run
 import dcr.utils
-import dcr_core.core_glob
-import dcr_core.core_utils
-import dcr_core.processing
 
 # -----------------------------------------------------------------------------
 # Global variables.

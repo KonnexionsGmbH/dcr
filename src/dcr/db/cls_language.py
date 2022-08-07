@@ -4,6 +4,8 @@ from __future__ import annotations
 import os.path
 from typing import ClassVar
 
+import dcr_core.core_glob
+import dcr_core.core_utils
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
@@ -11,8 +13,6 @@ import sqlalchemy.orm
 import dcr.cfg.glob
 import dcr.db.cls_db_core
 import dcr.utils
-import dcr_core.core_glob
-import dcr_core.core_utils
 
 
 # pylint: disable=duplicate-code

@@ -6,9 +6,9 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-import dcr.utils
-import dcr_core.cls_setup
 import dcr_core.core_utils
+
+import dcr
 
 
 # pylint: disable=too-many-instance-attributes

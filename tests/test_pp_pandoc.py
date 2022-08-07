@@ -1,12 +1,12 @@
 # pylint: disable=unused-argument
 """Testing Module pp.pandoc_dcr."""
+import dcr_core.core_glob
 import pytest
 
 import dcr.cfg.cls_setup
 import dcr.cfg.glob
 import dcr.db.cls_run
 import dcr.launcher
-import dcr_core.core_glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

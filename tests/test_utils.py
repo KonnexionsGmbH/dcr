@@ -2,13 +2,13 @@
 """Testing Module dcr.utils."""
 import pathlib
 
+import dcr_core.core_glob  # pylint: disable=cyclic-import
+import dcr_core.core_utils  # pylint: disable=cyclic-import
 import pytest
 
 import dcr.cfg.glob
 import dcr.db.cls_db_core
 import dcr.utils
-import dcr_core.core_glob  # pylint: disable=cyclic-import
-import dcr_core.core_utils  # pylint: disable=cyclic-import
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

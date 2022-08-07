@@ -1,12 +1,12 @@
 """Testing Module dcr.cfg.cls_..."""
 import os
 
+import dcr_core.cls_setup
+import dcr_core.core_glob
 import pytest
 
 import dcr.cfg.cls_setup
 import dcr.cfg.glob
-import dcr_core.cls_setup
-import dcr_core.core_glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.

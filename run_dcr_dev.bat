@@ -10,7 +10,7 @@ setlocal EnableDelayedExpansion
 
 set DCR_CHOICE_ACTION_DEFAULT=db_u
 set DCR_ENVIRONMENT_TYPE=dev
-set PYTHONPATH=%PYTHONPATH%;src
+set PYTHONPATH=src
 
 if ["%1"] EQU [""] (
     echo =========================================================

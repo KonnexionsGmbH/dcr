@@ -8,13 +8,10 @@ import logging.config
 import sys
 import time
 
-import nlp.parser
-import nlp.pdflib
-import nlp.tokenizer
-import pp.inbox
-import pp.pandoc
-import pp.pdf2image
-import pp.tesseract
+import dcr_core.cls_nlp_core
+import dcr_core.cls_setup
+import dcr_core.core_glob
+import dcr_core.core_utils
 import sqlalchemy
 import yaml
 
@@ -24,11 +21,14 @@ import dcr.db.cls_db_core
 import dcr.db.cls_language
 import dcr.db.cls_run
 import dcr.db.cls_version
+import dcr.nlp.parser
+import dcr.nlp.pdflib
+import dcr.nlp.tokenizer
+import dcr.pp.inbox
+import dcr.pp.pandoc
+import dcr.pp.pdf2image
+import dcr.pp.tesseract
 import dcr.utils
-import dcr_core.cls_nlp_core
-import dcr_core.cls_setup
-import dcr_core.core_glob
-import dcr_core.core_utils
 
 # -----------------------------------------------------------------------------
 # Class variables.
@@ -241,7 +241,7 @@ def process_convert_image_2_pdf() -> None:
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_TESSERACT)
 
-    pp.tesseract.convert_image_2_pdf()
+    dcr.pp.tesseract.convert_image_2_pdf()
 
     dcr.cfg.glob.run.finalise()
 
@@ -258,7 +258,7 @@ def process_convert_non_pdf_2_pdf() -> None:
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_PANDOC)
 
-    pp.pandoc.convert_non_pdf_2_pdf()
+    dcr.pp.pandoc.convert_non_pdf_2_pdf()
 
     dcr.cfg.glob.run.finalise()
 
@@ -275,7 +275,7 @@ def process_convert_pdf_2_image() -> None:
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_PDF2IMAGE)
 
-    pp.pdf2image.convert_pdf_2_image()
+    dcr.pp.pdf2image.convert_pdf_2_image()
 
     dcr.cfg.glob.run.finalise()
 
@@ -403,7 +403,7 @@ def process_extract_text_from_pdf() -> None:
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_PDFLIB)
 
-    nlp.pdflib.extract_text_from_pdf()
+    dcr.nlp.pdflib.extract_text_from_pdf()
 
     dcr.cfg.glob.run.finalise()
 
@@ -420,7 +420,7 @@ def process_inbox_directory() -> None:
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_INBOX)
 
-    pp.inbox.process_inbox()
+    dcr.pp.inbox.process_inbox()
 
     dcr.cfg.glob.run.finalise()
 
@@ -437,7 +437,7 @@ def process_store_parse_result_in_json() -> None:
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_PARSER)
 
-    nlp.parser.parse_tetml()
+    dcr.nlp.parser.parse_tetml()
 
     dcr.cfg.glob.run.finalise()
 
@@ -454,7 +454,7 @@ def process_tokenize() -> None:
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE)
 
-    nlp.tokenizer.tokenize()
+    dcr.nlp.tokenizer.tokenize()
 
     dcr.cfg.glob.run.finalise()
 

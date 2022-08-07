@@ -10,7 +10,7 @@ set -e
 
 export DCR_CHOICE_ACTION_DEFAULT=db_u
 export DCR_ENVIRONMENT_TYPE=dev
-export PYTHONPATH=${PYTHONPATH}:src
+export PYTHONPATH=src
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
