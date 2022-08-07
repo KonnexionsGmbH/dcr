@@ -10,12 +10,10 @@ set -e
 
 export DCR_CHOICE_ACTION_DEFAULT=db_u
 export DCR_ENVIRONMENT_TYPE=prod
-export PYTHONPATH=${PYTHONPATH}:src/dcr
+export PYTHONPATH=src
 
 if [ -z "$1" ]; then
     echo "=============================================================================="
-    echo "aui   - Run the administration user interface."
-    echo "------------------------------------------------------------------------------"
     echo "all   - Run the complete processing of all new documents."
     echo "------------------------------------------------------------------------------"
     echo "p_i   - 1. Process the inbox directory."
@@ -29,6 +27,8 @@ if [ -z "$1" ]; then
     echo "------------------------------------------------------------------------------"
     echo "db_c  - Create the database."
     echo "db_u  - Upgrade the database."
+    echo "------------------------------------------------------------------------------"
+    echo "e_lt  - Export the line type rules."
     echo "------------------------------------------------------------------------------"
     echo "m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules."
     echo "------------------------------------------------------------------------------"
@@ -65,11 +65,6 @@ date +"DATE TIME : %d.%m.%Y %H:%M:%S"
 echo "=============================================================================="
 
 case "${DCR_CHOICE_ACTION}" in
-  aui)
-    if ! ( pipenv run python src/dcr/admin.py ); then
-        exit 255
-    fi
-    ;;
   m_p)
     # Production install packages
     if ! ( make pipenv-prod ); then
@@ -80,8 +75,11 @@ case "${DCR_CHOICE_ACTION}" in
         exit 255
     fi
     ;;
-  all|db_c|db_u|n_2_p|ocr|p_i|p_2_i|s_p_j|tet|tkn)
+  all|db_c|db_u|e_lt|n_2_p|ocr|p_i|p_2_i|s_p_j|tet|tkn)
     case "${DCR_CHOICE_ACTION}" in
+      e_lt)
+        export DCR_CHOICE_ACTION=e_lt
+        ;;
       p_2_i)
         export DCR_CHOICE_ACTION=p_i ${DCR_CHOICE_ACTION?}
         ;;
@@ -103,12 +101,12 @@ case "${DCR_CHOICE_ACTION}" in
       *)
         ;;
     esac
-    if ! ( pipenv run python src/dcr/dcr.py "${DCR_CHOICE_ACTION}" ); then
+    if ! ( pipenv run python src/dcr/launcher.py "${DCR_CHOICE_ACTION}" ); then
         exit 255
     fi
     ;;
   *)
-    echo "Usage: ./run_dcr_prod.sh all | db_c | db_u | m_p | n_i_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
+    echo "Usage: ./run_dcr_prod.sh all | db_c | db_u | e_lt | m_p | n_i_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
     ;;
 esac
 

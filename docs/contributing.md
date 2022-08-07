@@ -10,14 +10,14 @@ In case of software changes we strongly recommend you to respect the license ter
 ## 2. Process
 
 1. fork it
-1. create your feature branch (`git checkout -b my-new-feature`)
-1. commit your changes (`git commit -am 'Add some feature'`)
-1. push to the branch (`git push origin my-new-feature`)
-1. create a new pull request
-1. Action points to be considered when adding a new database driver and / or a new programming language:
+2. create your feature branch (`git checkout -b my-new-feature`)
+3. commit your changes (`git commit -am 'Add some feature'`)
+4. push to the branch (`git push origin my-new-feature`)
+5. create a new pull request
+6. Action points to be considered when adding a new database driver and / or a new programming language:
     - README.md
     - Release-Notes.md
 
 ## 3. Notes on the Software Development Process
 
-[See **`Developing DCR`** here](https://konnexionsgmbh.github.io/dcr){:target="_blank"}
+[See **`Developing DCR`** here](https://konnexionsgmbh.github.io/dcr/developing_research_notes/){:target="_blank"}

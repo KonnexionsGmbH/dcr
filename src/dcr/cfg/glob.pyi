@@ -4,57 +4,44 @@ from __future__ import annotations
 import logging
 import os
 
-import cfg.cls_setup
-import db.cls_action
-import db.cls_db_core
-import db.cls_document
-import db.cls_language
-import db.cls_run
-import nlp.cls_line_type_headers_footers
-import nlp.cls_line_type_toc
-import nlp.cls_text_parser
-import nlp.cls_tokenizer_spacy
+import dcr.db.cls_action
+import dcr.db.cls_db_core
+import dcr.db.cls_document
+import dcr.db.cls_language
+import dcr.db.cls_run
+import dcr.db.cls_token
+import dcr.db.cls_version
 
 # -----------------------------------------------------------------------------
 # Global Constants.
 # -----------------------------------------------------------------------------
 FILE_ENCODING_DEFAULT: str
 
-INFORMATION_NOT_YET_AVAILABLE: str
-
 LOGGER_END: str
-LOGGER_FATAL_HEAD: str
-LOGGER_FATAL_TAIL: str
-LOGGER_PROGRESS_UPDATE: str
 LOGGER_START: str
 
 # -----------------------------------------------------------------------------
 # Global Variables.
 # -----------------------------------------------------------------------------
-action_curr: type[db.cls_action.Action]
-action_next: type[db.cls_action.Action]
+action_curr: dcr.db.cls_action.Action
+action_next: dcr.db.cls_action.Action
 
-db_core: type[db.cls_db_core.DBCore]
+db_core: dcr.db.cls_db_core.DBCore
 
 directory_inbox: os.PathLike[str] | str
 directory_inbox_accepted: os.PathLike[str] | str
 directory_inbox_rejected: os.PathLike[str] | str
 
-document: type[db.cls_document.Document]
+document: dcr.db.cls_document.Document
 
-language: type[db.cls_language.Language]
-
-line_type_headers_footers: type[nlp.cls_line_type_headers_footers.LineTypeHeaderFooters]
-line_type_toc: type[nlp.cls_line_type_toc.LineTypeToc]
+language: dcr.db.cls_language.Language
 
 logger: logging.Logger
 
-run: type[db.cls_run.Run]
-
-setup: type[cfg.cls_setup.Setup]
+run: dcr.db.cls_run.Run
 
 start_time_document: int
 
-text_parser: type[nlp.cls_text_parser.TextParser]
+token: dcr.db.cls_token.Token
 
-tokenizer_spacy: type[nlp.cls_tokenizer_spacy.TokenizerSpacy]
+version: dcr.db.cls_version.Version

@@ -35,14 +35,14 @@ The processing logic is as follows:
 - **`odt`** [Open Document Format for Office Applications](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=office){:target="_blank"}
 - **`pdf`** [Portable Document Format](https://www.iso.org/standard/75839.html){:target="_blank"}
 - **`png`** [Portable Network Graphics](https://en.wikipedia.org/wiki/Portable_Network_Graphics){:target="_blank"}
-- **`pnm`** [portable anymap format](https://en.wikipedia.org/wiki/Netpbm#File_formats){:target="_blank"}
+- **`pnm`** [portable any-map format](https://en.wikipedia.org/wiki/Netpbm#File_formats){:target="_blank"}
 - **`rst`** [reStructuredText (RST](https://docutils.sourceforge.io/rst.html){:target="_blank"}
 - **`rtf`** [Rich Text Format](https://en.wikipedia.org/wiki/Rich_Text_Format){:target="_blank"}
 - **`tif`** [Tag Image File Format](https://en.wikipedia.org/wiki/TIFF){:target="_blank"}
 - **`tiff`** [Tag Image File Format](https://en.wikipedia.org/wiki/TIFF){:target="_blank"}
 - **`webp`** [Image file format with lossless and lossy compression](https://developers.google.com/speed/webp){:target="_blank"}
 
-## 2. Detailed processing actions
+## 2. Detailed Processing Actions
 
 The documents to be processed are divided into individual steps, so-called actions. 
 Each action has the task of changing the state of a document by transforming an input file format into a different output file format.
@@ -131,7 +131,7 @@ After processing with [Tesseract OCR](https://github.com/tesseract-ocr/tesseract
 This processing action only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.2.
 In this processing action, the documents of this document types are converted to **`pdf`** format using [Pandoc](https://pandoc.org){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}.
 
-### 2.2 Natural Language Processing (NLP)
+### 2.2 NLP
 
 #### 2.2.1 NLP Architecture
 
@@ -153,99 +153,52 @@ The `page` variant and the `word` variant are both optional.
 **Example extract from granularity `line`**:
 
     <Pages>
-    <Page number="1" width="612.00" height="792.00">
+    <Page number="1" width="594.96" height="840.96">
     <Options>granularity=line</Options>
     <Content granularity="line" dehyphenation="false" dropcap="false" font="false" geometry="false" shadow="false" sub="false" sup="false">
     <Para>
-     <Box llx="303.36" lly="746.40" urx="308.40" ury="756.48">
-      <Line llx="303.36" lly="746.40" urx="308.40" ury="756.48">
-       <Text>1</Text>
+     <Box llx="26.45" lly="818.96" urx="485.41" ury="826.96">
+      <Line llx="26.45" lly="818.96" urx="485.41" ury="826.96">
+       <Text>19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm</Text>
       </Line>
      </Box>
     </Para>
-    <Para>
-     <Box llx="126.00" lly="706.56" urx="153.84" ury="720.48">
-      <Line llx="126.00" lly="706.56" urx="153.84" ury="720.48">
-       <Text>1812</Text>
-      </Line>
-     </Box>
-    </Para>
-    <Para>
-     <Box llx="126.00" lly="607.92" urx="420.27" ury="685.44">
-      <Line llx="126.00" lly="671.52" urx="289.21" ury="685.44">
-       <Text>GRIMM’S FAIRY TALES</Text>
-      </Line>
-      <Line llx="126.00" lly="639.36" urx="219.16" ury="653.28">
-       <Text>CINDERELLA</Text>
-      </Line>
-      <Line llx="126.00" lly="607.92" urx="420.27" ury="621.84">
-       <Text>Jacob Ludwig Grimm and Wilhelm Carl Grimm</Text>
-      </Line>
-     </Box>
-    </Para>
-    <Para>
-     <Box llx="126.00" lly="460.32" urx="486.03" ury="589.44">
-      <Line llx="126.00" lly="577.44" urx="485.98" ury="589.44">
-       <Text>Grimm, Jacob (1785-1863) and Wilhelm (1786-1859) - German</Text>
-      </Line>
-      <Line llx="126.00" lly="562.80" urx="486.00" ury="574.80">
-       <Text>philologists whose collection “Kinder- und Hausmarchen,” known</Text>
-      </Line>
 
 **Example extract from granularity `page`**:
 
-    1
-    1812
-    GRIMM’S FAIRY TALES CINDERELLA Jacob Ludwig Grimm and Wilhelm Carl Grimm
-    Grimm, Jacob (1785-1863) and Wilhelm (1786-1859) - German philologists whose collection “Kinder- und Hausmarchen,” known in English as “Grimm’s Fairy Tales,” is a timeless literary masterpiece. The brothers transcribed these tales directly from folk and fairy stories told to them by common villagers. Cinderella (1812) - The famous tale of a girl who is mistreated by her evil stepmother and step-sisters but goes on to marry the prince. This, the original “Cindrella,” differs greatly from many of its modern variations.
-    CINDERELLA
-    THERE WAS once a rich man whose wife lay sick, and when she felt her end drawing near she called to her only daughter to come near her bed, and said, “Dear child, be good and pious, and God will always take care of you, and I will look down upon you from heaven, and will be with you.” And then she closed her eyes and died. The maiden went every day to her mother’s grave and wept, and was always pious and good. When the winter came the snow covered the grave with a white covering, and when the sun came in the early spring and melted it away, the man took to himself another wife.
-    The new wife brought two daughters home with her, and they were beautiful and fair in appearance, but at heart were black and ugly. And then began very evil times for the poor step-daughter.
-    “Is the stupid creature to sit in the same room with us?” said they; “those who eat food must earn it. She is nothing but a kitchenmaid!” They took away her pretty dresses, and put on her an old gray kirtle, and gave her wooden shoes to wear.
-    “Just look now at the proud princess, how she is decked out!” cried they laughing, and then they sent her into the kitchen. There she was obliged to do heavy work from morning to night, get up early in the morning, draw water, make the fires, cook, and wash. Besides that, the sisters did their utmost to torment her- mocking
+    <Pages>
+    <Page number="1" width="594.96" height="840.96">
+    <Options>granularity=page</Options>
+    <Content granularity="page" dehyphenation="false" dropcap="false" font="false" geometry="false" shadow="false" sub="false" sup="false">
+    <Para>
+     <Box llx="26.45" lly="818.96" urx="485.41" ury="826.96">
+      <Text>19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm</Text>
+     </Box>
+    </Para>
 
 **Example extract from granularity `word`**:
 
-    <Page number="1" width="612.00" height="792.00">
+    <Pages>
+    <Page number="1" width="594.96" height="840.96">
     <Options>granularity=word tetml={elements={line}}</Options>
     <Content granularity="word" dehyphenation="false" dropcap="false" font="false" geometry="false" shadow="false" sub="false" sup="false">
     <Para>
-     <Box llx="303.36" lly="746.40" urx="308.40" ury="756.48">
-      <Line llx="303.36" lly="746.40" urx="308.40" ury="756.48">
+     <Box llx="26.45" lly="818.96" urx="485.41" ury="826.96">
+      <Line llx="26.45" lly="818.96" urx="485.41" ury="826.96">
        <Word>
-        <Text>1</Text>
-        <Box llx="303.36" lly="746.40" urx="308.40" ury="756.48"/>
-       </Word>
-      </Line>
-     </Box>
-    </Para>
-    <Para>
-     <Box llx="126.00" lly="706.56" urx="153.84" ury="720.48">
-      <Line llx="126.00" lly="706.56" urx="153.84" ury="720.48">
-       <Word>
-        <Text>1812</Text>
-        <Box llx="126.00" lly="706.56" urx="153.84" ury="720.48"/>
-       </Word>
-      </Line>
-     </Box>
-    </Para>
-    <Para>
-     <Box llx="126.00" lly="607.92" urx="420.27" ury="685.44">
-      <Line llx="126.00" lly="671.52" urx="289.21" ury="685.44">
-       <Word>
-        <Text>GRIMM</Text>
-        <Box llx="126.00" lly="671.52" urx="180.85" ury="685.44"/>
+        <Text>19</Text>
+        <Box llx="26.45" lly="818.96" urx="34.45" ury="826.96"/>
        </Word>
        <Word>
-        <Text>’</Text>
-        <Box llx="180.83" lly="671.52" urx="184.70" ury="685.44"/>
+        <Text>/</Text>
+        <Box llx="34.45" lly="818.96" urx="36.67" ury="826.96"/>
        </Word>
        <Word>
-        <Text>S</Text>
-        <Box llx="184.69" lly="671.52" urx="193.20" ury="685.44"/>
+        <Text>04</Text>
+        <Box llx="36.67" lly="818.96" urx="44.67" ury="826.96"/>
        </Word>
 
-#### 2.2.3 Store the parser result in a JSON file (action: **`s_p_j`**)
+#### 2.2.3 Store the parser result in a **`JSON`** file (action: **`s_p_j`**)
 
 From the **xml** files of the granularity document `line` (`<file_name>_<doc_id>.line.xml`) or document `word` (`<file_name>_<doc_id>.word.xml`) created in the previous action, the text contained is now extracted with the existing metadata using **xml** parsing and stored in a **`JSON`** format in the database tables `content_tetml_line` and `content_tetml_word`.
 
@@ -255,177 +208,138 @@ The document `line` granularity attempts to type the lines. Details on this proc
 
     {
         "documentId": 1,
-        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
-        "noPagesInDocument": 6,
-        "noParagraphsInDocument": 39,
-        "noLinesInDocument": 248,
-        "noLinesFooter": 0,
+        "documentFileName": "Example.pdf",
+        "noLinesFooter": 1,
         "noLinesHeader": 1,
-        "noLinesToc": 0,
+        "noLinesInDocument": 2220,
+        "noLinesToc": 85,
+        "noPagesInDocument": 57,
+        "noParagraphsInDocument": 829,
+        "noTablesInDocument": 5,
         "pages": [
             {
                 "pageNo": 1,
-                "noParagraphsInPage": 9,
-                "noLinesInPage": 37,
+                "noLinesInPage": 15,
+                "noParagraphsInPage": 7,
                 "lines": [
                     {
-                        "lineNo": 1,
+                        "coordLLX": 26.45,
+                        "coordURX": 485.41,
                         "lineIndexPage": 0,
                         "lineIndexParagraph": 0,
+                        "lineNo": 1,
                         "lineType": "h",
-                        "lowerLeftX": 303.36,
                         "paragraphNo": 1,
-                        "text": "1"
+                        "text": "19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm"
                     },
+
+**Example extract from the optional file `line_list_bullet`**:
+
+    {
+
+**Example extract from the optional file `line_list_number`**:
+
+    {
+
+**Example extract from the optional file `line_table`**:
+
+    {
+        "documentId": 1,
+        "documentFileName": "Example.pdf",
+        "noTablesInDocument": 5,
+        "tables": [
+            {
+                "firstRowLLX": 52.0,
+                "firstRowURX": 426.45,
+                "noColumns": 30,
+                "noRows": 10,
+                "pageNoFrom": 9,
+                "pageNoTill": 9,
+                "tableNo": 1,
+                "rows": [
                     {
-                        "lineNo": 1,
-                        "lineIndexPage": 1,
-                        "lineIndexParagraph": 0,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 2,
-                        "text": "1812"
-                    },
+                        "firstColumnLLX": 52.0,
+                        "lastColumnURX": 426.45,
+                        "noColumns": 3,
+                        "rowNo": 1,
+                        "columns": [
+                            {
+                                "columnNo": 1,
+                                "coordLLX": 52.0,
+                                "coordURX": 63.77,
+                                "lineIndexPage": 18,
+                                "lineIndexParagraph": 0,
+                                "lineNo": 1,
+                                "paragraphNo": 4,
+                                "text": "No."
+                            },
+
+**Example extract from the optional file `line_toc`**:
+
+    {
+        "documentId": 1,
+        "documentFileName": "Example.pdf",
+        "toc": [
+            {
+                "headingLevel": 1,
+                "headingText": "1. Lease Term: After the existing Tenant has vacated Landlord will allow Tenant to access the Demised",
+                "pageNo": 4,
+                "headingCtxLine1": "not delay or interfere with the completion of the Allowance Improvements by the Landlord in any material respect; and (b) prior to",
+                "headingCtxLine2": "entering the Demised Premises the Tenant shall provide insurance coverage as required by this Lease. Landlord shall offer the",
+                "headingCtxLine3": "existing tenant an early termination of its lease on December 31, 2011, instead of the normal expiration date of January 31, 2012.",
+                "regexp": "\\d+\\.$"
+            },
+
+**Example extract from granularity `page`**:
+
+    {
+        "documentId": 1,
+        "documentFileName": "Example.pdf",
+        "noPagesInDocument": 57,
+        "noParagraphsInDocument": 829,
+        "pages": [
+            {
+                "pageNo": 1,
+                "noParagraphsInPage": 7,
+                "paragraphs": [
                     {
-                        "lineNo": 1,
-                        "lineIndexPage": 2,
-                        "lineIndexParagraph": 0,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 3,
-                        "text": "GRIMM\u2019S FAIRY TALES"
-                    },
-                    {
-                        "lineNo": 2,
-                        "lineIndexPage": 3,
-                        "lineIndexParagraph": 1,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 3,
-                        "text": "CINDERELLA"
-                    },
-                    {
-                        "lineNo": 3,
-                        "lineIndexPage": 4,
-                        "lineIndexParagraph": 2,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 3,
-                        "text": "Jacob Ludwig Grimm and Wilhelm Carl Grimm"
-                    },
-                    {
-                        "lineNo": 1,
-                        "lineIndexPage": 5,
-                        "lineIndexParagraph": 0,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 4,
-                        "text": "Grimm, Jacob (1785-1863) and Wilhelm (1786-1859) - German"
-                    },
-                    {
-                        "lineNo": 2,
-                        "lineIndexPage": 6,
-                        "lineIndexParagraph": 1,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 4,
-                        "text": "philologists whose collection \u201cKinder- und Hausmarchen,\u201d known"
-                    },
-                    {
-                        "lineNo": 3,
-                        "lineIndexPage": 7,
-                        "lineIndexParagraph": 2,
-                        "lineType": "b",
-                        "lowerLeftX": 126.0,
-                        "paragraphNo": 4,
-                        "text": "in English as \u201cGrimm\u2019s Fairy Tales,\u201d is a timeless literary"
+                        "paragraphNo": 1,
+                        "text": "19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm"
                     },
 
 **Example extract from granularity `word`**:
 
     {
         "documentId": 1,
-        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
-        "noPagesInDocument": 6,
-        "noParagraphsInDocument": 39,
-        "noLinesInDocument": 248,
-        "noWordsInDocument": 3267,
+        "documentFileName": "Example.pdf",
+        "noLinesInDocument": 2217,
+        "noPagesInDocument": 57,
+        "noParagraphsInDocument": 828,
+        "noWordsInDocument": 38674,
         "pages": [
             {
                 "pageNo": 1,
-                "noParagraphsInPage": 9,
-                "noLinesInPage": 37,
-                "noWordsInPage": 417,
+                "noLinesInPage": 15,
+                "noParagraphsInPage": 7,
+                "noWordsInPage": 112,
                 "paragraphs": [
                     {
                         "paragraphNo": 1,
                         "noLinesInParagraph": 1,
-                        "noWordsInParagraph": 1,
+                        "noWordsInParagraph": 28,
                         "lines": [
                             {
                                 "lineNo": 1,
-                                "noWordsInLine": 1,
+                                "noWordsInLine": 28,
                                 "words": [
                                     {
                                         "wordNo": 1,
-                                        "text": "1"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "paragraphNo": 2,
-                        "noLinesInParagraph": 1,
-                        "noWordsInParagraph": 1,
-                        "lines": [
-                            {
-                                "lineNo": 1,
-                                "noWordsInLine": 1,
-                                "words": [
-                                    {
-                                        "wordNo": 1,
-                                        "text": "1812"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "paragraphNo": 3,
-                        "noLinesInParagraph": 3,
-                        "noWordsInParagraph": 13,
-                        "lines": [
-                            {
-                                "lineNo": 1,
-                                "noWordsInLine": 5,
-                                "words": [
-                                    {
-                                        "wordNo": 1,
-                                        "text": "GRIMM"
+                                        "text": "19"
                                     },
-                                    {
-                                        "wordNo": 2,
-                                        "text": "\u2019"
-                                    },
-                                    {
-                                        "wordNo": 3,
-                                        "text": "S"
-                                    },
-                                    {
-                                        "wordNo": 4,
-                                        "text": "FAIRY"
-                                    },
-                                    {
-                                        "wordNo": 5,
-                                        "text": "TALES"
-                                    }
-                                ]
-                            },
 
 #### 2.2.4 Create qualified document tokens (action: **`tkn`**)
 
-For tokenisation, [spaCy](https://spacy.io/usage/models){:target="_blank"} is used. 
+For tokenization, [spaCy](https://spacy.io/usage/models){:target="_blank"} is used. 
 
 The document text is made available to spaCy page by page.
 Either the granularity document `line` or document `page` can be used for this.
@@ -463,118 +377,103 @@ In the event of an error, the original document is marked as erroneous and an ex
 
     {
         "documentId": 1,
-        "documentFileName": "Grimms_Fairy_Tales_Cinderella_Standalone.pdf",
-        "noPagesInDocument": 6,
-        "noParagraphsInDocument": 33,
-        "noSentencesInDocument": 121,
-        "noLinesInDocument": 242,
-        "noTokensInDocument": 1085,
+        "documentFileName": "Example.pdf",
+        "noLinesFooter": 1,
+        "noLinesHeader": 1,
+        "noLinesInDocument": 2031,
+        "noLinesToc": 85,
+        "noPagesInDocument": 57,
+        "noParagraphsInDocument": 630,
+        "noSentencesInDocument": 949,
+        "noTablesInDocument": 5,
+        "noTokensInDocument": 16495,
         "pages": [
             {
                 "pageNo": 1,
-                "noParagraphsInPage": 8,
-                "noSentencesInPage": 19,
-                "noLinesInPage": 36,
-                "noTokensInPage": 174,
+                "noLinesInPage": 13,
+                "noParagraphsInPage": 5,
+                "noSentencesInPage": 5,
+                "noTokensInPage": 39,
                 "paragraphs": [
                     {
                         "paragraphNo": 2,
+                        "noLinesInParagraph": 2,
                         "noSentencesInParagraph": 1,
-                        "noLinesInParagraph": 1,
-                        "noTokensInParagraph": 1,
+                        "noTokensInParagraph": 7,
                         "sentences": [
                             {
                                 "sentenceNo": 1,
-                                "lowerLeftX": 126.0,
-                                "noTokensInSentence": 1,
-                                "text": "1812",
+                                "coordLLX": 34.0,
+                                "coordURX": 244.18,
+                                "lineType": "b",
+                                "noTokensInSentence": 7,
+                                "text": "EX-10.19 3 t1700141_ex10-19.htm EXHIBIT 10.19 Exhibit 10.19",
                                 "tokens": [
                                     {
-                                        "tknEntIob_": "B",
-                                        "tknEntType_": "DATE",
                                         "tknI": 0,
-                                        "tknIsDigit": true,
                                         "tknIsOov": true,
-                                        "tknIsSentEnd": true,
-                                        "tknIsSentStart": true,
-                                        "tknLemma_": "1812",
-                                        "tknLikeNum": true,
-                                        "tknNorm_": "1812",
+                                        "tknLemma_": "ex-10.19",
+                                        "tknNorm_": "ex-10.19",
                                         "tknPos_": "NUM",
                                         "tknTag_": "CD",
-                                        "tknText": "1812"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "paragraphNo": 3,
-                        "noSentencesInParagraph": 1,
-                        "noLinesInParagraph": 3,
-                        "noTokensInParagraph": 10,
-                        "sentences": [
-                            {
-                                "sentenceNo": 1,
-                                "lowerLeftX": 126.0,
-                                "noTokensInSentence": 10,
-                                "text": "GRIMM\u2019S FAIRY TALES CINDERELLA Jacob Ludwig Grimm and Wilhelm Carl Grimm",
-                                "tokens": [
-                                    {
-                                        "tknEntIob_": "B",
-                                        "tknEntType_": "PERSON",
-                                        "tknI": 0,
-                                        "tknIsOov": true,
-                                        "tknIsSentStart": true,
-                                        "tknLemma_": "GRIMM",
-                                        "tknNorm_": "grimm",
-                                        "tknPos_": "PROPN",
-                                        "tknTag_": "NNP",
-                                        "tknText": "GRIMM"
-                                    },
-                                    {
-                                        "tknEntIob_": "O",
-                                        "tknI": 2,
-                                        "tknIsOov": true,
-                                        "tknLemma_": "fairy",
-                                        "tknNorm_": "fairy",
-                                        "tknPos_": "ADJ",
-                                        "tknTag_": "JJ",
-                                        "tknText": "FAIRY",
+                                        "tknText": "EX-10.19",
                                         "tknWhitespace_": " "
                                     },
 
-## 3. Naming system of the auxiliary files
+## 3. Auxiliary File Names
 
 The processing actions are based on different flat files, each of which is generated from the original document on an action-related basis.
 Apart from the **`JSON`** files optionally created during the 'tokenizer' action, these can be automatically deleted after error-free processing.
 
-### 3.1 Action-related naming system
+### 3.1 Naming System
 
-| Code    | Action                                        | File names                                            | 
-|---------|-----------------------------------------------|-------------------------------------------------------|
-| `p_i`   | process the inbox directory                   | `in :` `<ost>.<oft>`                                  |                                      
-|         |                                               | `out:` `<ost>_<di>.<oft> `                            |                                       
-| `p_2_i` | convert pdf documents to image files          | `in :` `<ost>_<di>.pdf`                               |                                       
-|         |                                               | `out:` `<ost>_<di>.<jpeg / png>`                      |                                       
-| `ocr`   | convert image files to pdf documents          | `in :` `<ost>_<di>.<oft>`                             | `                                     
-|         |                                               | `or :` `<ost>_<di>.<jpeg / png>`                      |                                       
-|         |                                               | `out:` `<ost>_<di>_<pn>.pdf`                          |                                       
-|         |                                               | `and:` `<ost>_<di>_0.pdf`                             |                                       
-| `n_2_p` | convert non-pdf documents to pdf documents    | `in :` `<ost>_<di>.<oft>`                             |                                       
-|         |                                               | `out:` `<ost>_<di>.pdf`                               |                                      
-| `tet`   | extract text and metdata from pdf documents   | `in :` `<ost>_<di>[_<pn> / _0].pdf`                   |                                       
-|         |                                               | `out:` `<ost>_<di>[_<pn> / _0]_line.xml`              |                                       
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_page.xml`              |                                       
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_word.xml`              |                                       
-| `s_p_j` | store the parser result in a **`JSON`** file  | `in :` `<ost>_<di>[_<pn> / _0]_line.xml`              |                                       
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_page.xml`              |                                     
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_word.xml`              |                                     
-|         |                                               | `out:` `<ost>_<di>[_<pn> / _0]_line.json`             |                                      
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_page.json`             |                                     
-|         |                                               | `and:` `<ost>_<di>[_<pn> / _0]_word.json`             |                                     
-| `tkn`   | create qualified document tokens              | `in :` `<ost>_<di>[_<pn> / _0]_line.json`             |                                      
-|         |                                               | `out:` `<ost>_<di>[_<pn> / _0]_line_token.json`       |                                      
+**Action** `p_i` - process the inbox directory
+
+    in : <ost>.<oft>              
+    out: <ost>_<di>.<oft>
+
+**Action** `p_2_i` - convert pdf documents to image files
+
+    in : <ost>_<di>.pdf                
+    out: <ost>_<di>.<jpeg|png>
+                                       
+**Action** `ocr` - convert image files to pdf documents
+
+    in : <ost>_<di>.<oft>              
+    or : <ost>_<di>.<jpeg|png>        
+    out: <ost>_<di>_<pn>.pdf 
+         <ost>_<di>_0.pdf        
+
+**Action** `n_2_p` - convert non-pdf documents to pdf documents
+
+    in : <ost>_<di>.<oft>              
+    out: <ost>_<di>.pdf                                      
+
+**Action** `tet` - extract text and metadata from pdf documents
+
+    in : <ost>_<di>[_<pn>|_0].pdf       
+    out: <ost>_<di>[_<pn>|_0]_line.xml        
+         <ost>_<di>[_<pn>|_0]_page.xml 
+         <ost>_<di>[_<pn>|_0]_word.xml
+
+**Action** `s_p_j` - store the parser result in a **`JSON`** file
+
+    in : <ost>_<di>[_<pn>|_0]_line.xml  
+         <ost>_<di>[_<pn>|_0]_page.xml        
+         <ost>_<di>[_<pn>|_0]_word.xml 
+    out: <ost>_<di>[_<pn>|_0]_line.json 
+         <ost>_<di>[_<pn>|_0]_line.list_bullet.json 
+         <ost>_<di>[_<pn>|_0]_line.list_number.json 
+         <ost>_<di>[_<pn>|_0]_line.table.json 
+         <ost>_<di>[_<pn>|_0]_line.toc.json 
+         <ost>_<di>[_<pn>|_0]_page.json 
+         <ost>_<di>[_<pn>|_0]_word.json
+
+**Action** `tkn` - create qualified document tokens
+
+    in : <ost>_<di>[_<pn>|_0]_line.json 
+    out: <ost>_<di>[_<pn>|_0]_line_token.json 
+
 
 | Abbr.  | Meaning             |
 |--------|---------------------|
@@ -597,6 +496,10 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_2_docx_route_inbox_pandoc_pdflib_2.word.xml
 
     case_2_docx_route_inbox_pandoc_pdflib_2.line.json
+    case_2_docx_route_inbox_pandoc_pdflib_2.line_list_bullet.json
+    case_2_docx_route_inbox_pandoc_pdflib_2.line_list_number.json
+    case_2_docx_route_inbox_pandoc_pdflib_2.line_table.json
+    case_2_docx_route_inbox_pandoc_pdflib_2.line_toc.json
     case_2_docx_route_inbox_pandoc_pdflib_2.page.json
     case_2_docx_route_inbox_pandoc_pdflib_2.word.json
 
@@ -608,13 +511,17 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_6_jpg_route_inbox_tesseract_pdflib_6.pdf
 
-    case_6_jpg_route_inbox_tesseract_pdflib_6.line.json
-    case_6_jpg_route_inbox_tesseract_pdflib_6.page.json
-    case_6_jpg_route_inbox_tesseract_pdflib_6.word.json
-
     case_6_jpg_route_inbox_tesseract_pdflib_6.line.xml
     case_6_jpg_route_inbox_tesseract_pdflib_6.page.xml
     case_6_jpg_route_inbox_tesseract_pdflib_6.word.xml
+
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line_list_bullet.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line_list_number.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line_table.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.line_toc.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.page.json
+    case_6_jpg_route_inbox_tesseract_pdflib_6.word.json
 
     case_6_jpg_route_inbox_tesseract_pdflib_6.line.token.json
 
@@ -627,6 +534,10 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_3_pdf_text_route_inbox_pdflib_3.word.xml
 
     case_3_pdf_text_route_inbox_pdflib_3.line.json
+    case_3_pdf_text_route_inbox_pdflib_3.line_list_bullet.json
+    case_3_pdf_text_route_inbox_pdflib_3.line_list_number.json
+    case_3_pdf_text_route_inbox_pdflib_3.line_table.json
+    case_3_pdf_text_route_inbox_pdflib_3.line_toc.json
     case_3_pdf_text_route_inbox_pdflib_3.page.json
     case_3_pdf_text_route_inbox_pdflib_3.word.json
 
@@ -640,13 +551,17 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
 
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.pdf
 
-    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.json
-    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.page.json
-    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.json
-
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.xml
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.page.xml
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.xml
+
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_list_bullet.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_list_number.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_table.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_toc.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.page.json
+    case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.json
 
     case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.token.json
 
@@ -661,116 +576,16 @@ Apart from the **`JSON`** files optionally created during the 'tokenizer' action
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_2.pdf
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.pdf
 
-    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.json
-    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.page.json
-    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.json
-
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.xml
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.page.xml
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.xml
 
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_list_bullet.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_list_number.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_table.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_toc.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.page.json
+    case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.json
+
     case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.token.json
-
-## 4 Line Typing Algorithms
-
-The granularity of the document `line` tries to classify the individual lines or sentences.
-The possible line types are :
-
-| line type | Meaning                                           |
-|-----------|---------------------------------------------------|
-| b         | non-classifiable line, i.e. normal text body line |
-| f         | footer line                                       |
-| h         | header line                                       |
-| lb        | line of a bulleted list                           |
-| ln        | line of a numbered list                           |
-| tab       | non-classifiable line of a table                  |
-| toc       | line of a table of content                        |
-
-### 4.1 Footers
-
-The parameters that control the classification in footer lines are:
-
-- `line_footer_max_distance = 3`
-- `line_footer_max_lines = 3`
-
-#### 4.1.1 `line_footer_max_lines`
-
-This parameter controls the number of lines from the bottom of the page to be analyzed as possible candidates for footers.
-With the value zero the classification of footers is prevented.
-
-#### 4.1.2 `line_footer_max_distance`
-
-The degree of similarity of rows is determined by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
-The value zero stands for identical lines. 
-The larger the Levenshtein distance, the more different the rows are. 
-If the header lines do not contain a page numbers, then the parameter should be set to `0`.
-
-#### 4.1.3 Algorithm
-
-1. On all pages, the last line `n`, the line `n-1`, etc. are compared up to the maximum specified line. 
-2. The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.
-3. The line is considered a footer if, except for pages `1` and `2` and pages `n-1` and `n`, the Levenshtein distance is not greater than the specified maximum value.
-
-### 4.2 Header
-
-The parameters that control the classification in header lines are:
-
-- `line_header_max_distance = 3`
-- `line_header_max_lines = 3`
-
-#### 4.2.1 `line_header_max_lines`
-
-This parameter controls the number of lines from the top of the page to be analyzed as possible candidates for headers.
-A value of zero prevents the classification of headers.
-
-#### 4.2.2 `line_header_max_distance`
-
-The degree of similarity of rows is determined by means of the [Levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance){:target="_blank"}. 
-The value zero stands for identical lines. 
-The larger the Levenshtein distance, the more different the rows are. 
-If the footer lines contain a page number, then depending on the number of pages in the document, the following values are useful:
-
-| document pages | Levenshtein distance |
-|----------------|----------------------|
- | < 10           | 1                    |
- | < 100          | 2                    |
- | < 1000         | 3                    |
-
-#### 4.2.3 Algorithm
-
-1. On all pages, the first line, the second line, etc. are compared up to the maximum specified line. 
-2. The Levenshtein distance is determined for each pair of lines in the specified range for each current page and the previous page.
-3. The line is considered a header if, except for pages `1` and `2` and pages `n-1` and `n`, the Levenshtein distance is not greater than the specified maximum value.
-
-### 4.3 TOC (Table of Content)
-
-The parameters that control the classification in table of content are:
-
-- `toc_last_page = 3`
-- `toc_min_entries = 3`
-
-#### 4.3.1 `toc_last_page`
-
-This parameter sets the number of pages that will be searched for a table of contents from the beginning of the document.
-A value of zero prevents the search for a table of contents.
-
-#### 4.3.2 `toc_min_entries`
-
-This parameter defines the minimum number of entries that a table of contents must contain.
-
-#### 4.3.3 Algorithm Table-based
-
-A table with the following properties is searched for:
-
-   - except for the first row, the last column of the table must contain an integer greater than zero,
-   - the number found there must be ascending,
-   - the number must not be greater than the last page number of the document, and
-   - if such a table was found, then the algorithm ends here.
-
-#### 4.3.4 Algorithm Line-based
-
-A block of lines with the following properties is searched here:
-
-   - the last token from each line must contain an integer greater than zero,
-   - the number found there must be ascending, and
-   - the number must not be greater than the last page number of the document.

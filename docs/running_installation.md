@@ -13,7 +13,7 @@
 
 4. Optionally, adjustments can be made in the following configuration files - details may be found [here](https://konnexionsgmbh.github.io/dcr/running_configuration/){:target="_blank"}:
 
-    - **`data/initial_database_data.json`**: to configure the document languages to be used
+    - **`data/db_initial_data_file.json`**: to configure the document languages to be used
     - **`logging_cfg.yaml`**: for the logging functionality
     - **`setup.cfg`**: for the **DCR** application in section **DCR**
  

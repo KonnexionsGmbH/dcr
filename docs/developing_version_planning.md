@@ -7,14 +7,15 @@
 
 ### 1.1 Open
 
-| Version | Feature(s)                    | 
-|---------|-------------------------------|
-| 0.9.4   | Extending NLP capabilities    |
+| Version | Feature(s) | 
+|---------|------------|
+| 0.9.7   | TBD        |
 
 ### 1.2 Already implemented
 
 | Version | Feature(s)                             |
 |---------|----------------------------------------|
+| 0.9.6   | Extracting an API                      |
 | 0.9.3   | Extending NLP capabilities             |
 | 0.9.2   | Refactoring database and code          |
 | 0.9.1   | Core text preprocessing and wrangling  |
@@ -40,6 +41,16 @@
 - API documentation: Layout improvement
 - admin: reset a list of documents: clean up the database before the next process retry - delete existing data
 - tool: check the content of the file directory against the database
+- line type header & footer:
+  - optional: ignore the first / last page
+  - optional: logging of the applied method
+  - optional: page number alternating in the first and last token
+  - optional: page number always in the first / last token
+  - optional: use of Levenshtein algorithm
+  - optional: use of language-related regular expressions to determine the header / footer with the page number
+- line type table:
+  - check the coordinates
+  - table with page break
 
 #### 2.1.3 Low Priority
 
@@ -61,7 +72,7 @@
 - error handling - highly defensive
 - inbox.py - process_inbox() - processing ocr & non-ocr in the same method
 - introduce default language
-- introduce document language - eventually inbox subfolder per language
+- introduce document language - eventually inbox sub folder per language
 - load initialisation data
 - optionally save the original document in the database
 - parser result with JSON 

@@ -2,7 +2,7 @@
 skips = ["B404", "B603", "B607", "B608"]
 
 [tool.black]
-line-length = 125
+line-length = 140
 
 [tool.isort]
 float_to_top = true
@@ -40,7 +40,7 @@ warn_unused_configs = true
 warn_unused_ignores = true
 
 [[tool.pydoc-markdown.loaders]]
-search_path = [ "src/dcr" ]
+search_path = ["src/dcr"]
 type = "python"
 
 [tool.pydoc-markdown.renderer]
@@ -49,12 +49,12 @@ output_directory = "."
 type = "mkdocs"
 
 [[tool.pydoc-markdown.renderer.pages]]
-contents = [ "dcr.*" ]
+contents = ["dcr.*"]
 name = "index"
 title = "API Documentation"
 
 [tool.pydocstyle]
-match='((?!test_).*\.py)((?!TET).*\.py)'
+match = '((?!test_).*\.py)((?!TET).*\.py)'
 
 [tool.pytest.ini_options]
 console_output_style = "count"

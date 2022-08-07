@@ -21,7 +21,7 @@ Each document language must have its own entry in this table.
 The documents in a particular language are expected in the subdirectory to the **`inbox`** or as defined in the **`directory_name_inbox`** column.
 
 The entry for the standard language **`English`** is created automatically when the database is set up. 
-In the JSON file **`initial_database_data`**, the languages German, French and Italian are also predefined but in the inactive state. 
+In the JSON file **`db_initial_data_file`**, the languages German, French and Italian are also predefined but in the inactive state. 
 The chosen document languages must now either be activated in this file or, if not yet available, added here. 
 
 Example entry for the document language French:

@@ -1,12 +1,14 @@
-"""Module db.cls_token: Managing the database table token."""
+"""Module dcr.db.cls_token: Managing the database table token."""
 from __future__ import annotations
 
-import cfg.glob
-import db.cls_db_core
+import dcr_core.core_utils
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
-import utils
+
+import dcr.cfg.glob
+import dcr.db.cls_db_core
+import dcr.utils
 
 
 class Token:
@@ -26,7 +28,9 @@ class Token:
         id_document: int,
         column_no: int,
         column_span: int,
-        lower_left_x: float,
+        coord_llx: float,
+        coord_urx: float,
+        line_type: str,
         no_tokens_in_sent: int,
         page_no: int,
         para_no: int,
@@ -45,8 +49,12 @@ class Token:
                     Column number.
             column_span (int):
                     Column span.
-            lower_left_x (float):
+            coord_llx (float):
                     Lower left x coordinate.
+            coord_urx (float):
+                    upper right x coordinate.
+            line_type (str):
+                    Line type.
             no_tokens_in_sent (int):
                     Number tokens in sentence.
             page_no (int):
@@ -64,20 +72,19 @@ class Token:
             _row_id (int, optional):
                     Row id. Defaults to 0.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-        try:
-            cfg.glob.db_core.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'DBCore' does not yet exist.",
-            )
+        dcr.utils.check_exists_object(
+            is_db_core=True,
+        )
 
         self.token_id = _row_id
         self.token_column_no = column_no
         self.token_column_span = column_span
+        self.token_coord_llx = coord_llx
+        self.token_coord_urx = coord_urx
         self.token_id_document = id_document
-        self.token_lower_left_x = lower_left_x
+        self.token_line_type = line_type
         self.token_no_tokens_in_sent = no_tokens_in_sent
         self.token_page_no = page_no
         self.token_para_no = para_no
@@ -91,33 +98,35 @@ class Token:
 
         self._exist = True
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.cls_db_core.Columns:
+    def _get_columns(self) -> dcr.db.cls_db_core.Columns:
         """Get the database columns.
 
         Returns:
-            db.cls_db_core.Columns:
+            dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return {
-            db.cls_db_core.DBCore.DBC_ID_DOCUMENT: self.token_id_document,
-            db.cls_db_core.DBCore.DBC_COLUMN_NO: self.token_column_no,
-            db.cls_db_core.DBCore.DBC_COLUMN_SPAN: self.token_column_span,
-            db.cls_db_core.DBCore.DBC_LOWER_LEFT_X: self.token_lower_left_x,
-            db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT: self.token_no_tokens_in_sent,
-            db.cls_db_core.DBCore.DBC_PAGE_NO: self.token_page_no,
-            db.cls_db_core.DBCore.DBC_PARA_NO: self.token_para_no,
-            db.cls_db_core.DBCore.DBC_ROW_NO: self.token_row_no,
-            db.cls_db_core.DBCore.DBC_SENT_NO: self.token_sent_no,
-            db.cls_db_core.DBCore.DBC_TEXT: self.token_text,
-            db.cls_db_core.DBCore.DBC_TOKENS: self.token_tokens,
+            dcr.db.cls_db_core.DBCore.DBC_ID_DOCUMENT: self.token_id_document,
+            dcr.db.cls_db_core.DBCore.DBC_COLUMN_NO: self.token_column_no,
+            dcr.db.cls_db_core.DBCore.DBC_COLUMN_SPAN: self.token_column_span,
+            dcr.db.cls_db_core.DBCore.DBC_COORD_LLX: self.token_coord_llx,
+            dcr.db.cls_db_core.DBCore.DBC_COORD_URX: self.token_coord_urx,
+            dcr.db.cls_db_core.DBCore.DBC_LINE_TYPE: self.token_line_type,
+            dcr.db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT: self.token_no_tokens_in_sent,
+            dcr.db.cls_db_core.DBCore.DBC_PAGE_NO: self.token_page_no,
+            dcr.db.cls_db_core.DBCore.DBC_PARA_NO: self.token_para_no,
+            dcr.db.cls_db_core.DBCore.DBC_ROW_NO: self.token_row_no,
+            dcr.db.cls_db_core.DBCore.DBC_SENT_NO: self.token_sent_no,
+            dcr.db.cls_db_core.DBCore.DBC_TEXT: self.token_text,
+            dcr.db.cls_db_core.DBCore.DBC_TOKENS: self.token_tokens,
         }
 
     # -----------------------------------------------------------------------------
@@ -126,89 +135,97 @@ class Token:
     @classmethod
     def create_dbt(cls) -> None:
         """Create the database table."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_TOKEN,
-            cfg.glob.db_core.db_orm_metadata,
+            dcr.db.cls_db_core.DBCore.DBT_TOKEN,
+            dcr.cfg.glob.db_core.db_orm_metadata,
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_ID,
+                dcr.db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
                 autoincrement=True,
                 nullable=False,
                 primary_key=True,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_CREATED_AT,
+                dcr.db.cls_db_core.DBCore.DBC_CREATED_AT,
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_MODIFIED_AT,
+                dcr.db.cls_db_core.DBCore.DBC_MODIFIED_AT,
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_COLUMN_NO,
+                dcr.db.cls_db_core.DBCore.DBC_COLUMN_NO,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_COLUMN_SPAN,
+                dcr.db.cls_db_core.DBCore.DBC_COLUMN_SPAN,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_ID_DOCUMENT,
-                sqlalchemy.Integer,
-                sqlalchemy.ForeignKey(
-                    db.cls_db_core.DBCore.DBT_DOCUMENT + "." + db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"
-                ),
-                nullable=False,
-            ),
-            sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_LOWER_LEFT_X,
+                dcr.db.cls_db_core.DBCore.DBC_COORD_LLX,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT,
+                dcr.db.cls_db_core.DBCore.DBC_COORD_URX,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_PAGE_NO,
+                dcr.db.cls_db_core.DBCore.DBC_ID_DOCUMENT,
                 sqlalchemy.Integer,
+                sqlalchemy.ForeignKey(dcr.db.cls_db_core.DBCore.DBT_DOCUMENT + "." + dcr.db.cls_db_core.DBCore.DBC_ID, ondelete="CASCADE"),
                 nullable=False,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_PARA_NO,
-                sqlalchemy.Integer,
-                nullable=False,
-            ),
-            sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_ROW_NO,
-                sqlalchemy.Integer,
-                nullable=False,
-            ),
-            sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_SENT_NO,
-                sqlalchemy.Integer,
-                nullable=False,
-            ),
-            sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_TEXT,
+                dcr.db.cls_db_core.DBCore.DBC_LINE_TYPE,
                 sqlalchemy.String,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_TOKENS,
+                dcr.db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                dcr.db.cls_db_core.DBCore.DBC_PAGE_NO,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                dcr.db.cls_db_core.DBCore.DBC_PARA_NO,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                dcr.db.cls_db_core.DBCore.DBC_ROW_NO,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                dcr.db.cls_db_core.DBCore.DBC_SENT_NO,
+                sqlalchemy.Integer,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                dcr.db.cls_db_core.DBCore.DBC_TEXT,
+                sqlalchemy.String,
+                nullable=False,
+            ),
+            sqlalchemy.Column(
+                dcr.db.cls_db_core.DBCore.DBC_TOKENS,
                 sqlalchemy.JSON,
                 nullable=False,
             ),
         )
 
-        utils.progress_msg(f"The database table '{db.cls_db_core.DBCore.DBT_TOKEN}' has now been created")
+        dcr.utils.progress_msg(f"The database table '{dcr.db.cls_db_core.DBCore.DBT_TOKEN}' has now been created")
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -226,11 +243,11 @@ class Token:
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
         """Finalise the current row."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         self.persist_2_db()
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Initialise from id.
@@ -246,15 +263,15 @@ class Token:
         Returns:
             Token:  The object instance found.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_TOKEN,
-            cfg.glob.db_core.db_orm_metadata,
-            autoload_with=cfg.glob.db_core.db_orm_engine,
+            dcr.db.cls_db_core.DBCore.DBT_TOKEN,
+            dcr.cfg.glob.db_core.db_orm_metadata,
+            autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
         )
 
-        with cfg.glob.db_core.db_orm_engine.connect() as conn:
+        with dcr.cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(
                 sqlalchemy.select(dbt).where(
                     dbt.c.id == id_token,
@@ -263,11 +280,11 @@ class Token:
             conn.close()
 
         if row is None:
-            utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 f"The token with id={id_token} does not exist in the database table 'token'",
             )
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return Token.from_row(row)  # type: ignore
 
@@ -285,22 +302,24 @@ class Token:
         Returns:
             Token:  The object instance matching the specified database row.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return cls(
-            _row_id=row[db.cls_db_core.DBCore.DBC_ID],
-            id_document=row[db.cls_db_core.DBCore.DBC_ID_DOCUMENT],
-            column_no=row[db.cls_db_core.DBCore.DBC_COLUMN_NO],
-            column_span=row[db.cls_db_core.DBCore.DBC_COLUMN_SPAN],
-            lower_left_x=row[db.cls_db_core.DBCore.DBC_LOWER_LEFT_X],
-            no_tokens_in_sent=row[db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT],
-            page_no=row[db.cls_db_core.DBCore.DBC_PAGE_NO],
-            para_no=row[db.cls_db_core.DBCore.DBC_PARA_NO],
-            row_no=row[db.cls_db_core.DBCore.DBC_ROW_NO],
-            sent_no=row[db.cls_db_core.DBCore.DBC_SENT_NO],
-            text=row[db.cls_db_core.DBCore.DBC_TEXT],
-            tokens=row[db.cls_db_core.DBCore.DBC_TOKENS],
+            _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
+            id_document=row[dcr.db.cls_db_core.DBCore.DBC_ID_DOCUMENT],
+            column_no=row[dcr.db.cls_db_core.DBCore.DBC_COLUMN_NO],
+            column_span=row[dcr.db.cls_db_core.DBCore.DBC_COLUMN_SPAN],
+            coord_llx=row[dcr.db.cls_db_core.DBCore.DBC_COORD_LLX],
+            coord_urx=row[dcr.db.cls_db_core.DBCore.DBC_COORD_URX],
+            line_type=row[dcr.db.cls_db_core.DBCore.DBC_LINE_TYPE],
+            no_tokens_in_sent=row[dcr.db.cls_db_core.DBCore.DBC_NO_TOKENS_IN_SENT],
+            page_no=row[dcr.db.cls_db_core.DBCore.DBC_PAGE_NO],
+            para_no=row[dcr.db.cls_db_core.DBCore.DBC_PARA_NO],
+            row_no=row[dcr.db.cls_db_core.DBCore.DBC_ROW_NO],
+            sent_no=row[dcr.db.cls_db_core.DBCore.DBC_SENT_NO],
+            text=row[dcr.db.cls_db_core.DBCore.DBC_TEXT],
+            tokens=row[dcr.db.cls_db_core.DBCore.DBC_TOKENS],
         )
 
     # -----------------------------------------------------------------------------
@@ -308,22 +327,24 @@ class Token:
     # -----------------------------------------------------------------------------
     def get_columns_in_tuple(
         self,
-    ) -> tuple[int, int, int, int, float, int, int, int, int, int, str, str]:
+    ) -> tuple[int, int, int, int, float, float, str, int, int, int, int, int, str, str]:
         """Get the database columns in a tuple.
 
         Returns:
             tuple[int, int, str, int]:
                     Column values in a tuple.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return (
             self.token_id,
             self.token_id_document,
             self.token_column_no,
             self.token_column_span,
-            self.token_lower_left_x,
+            self.token_coord_llx,
+            self.token_coord_urx,
+            self.token_line_type,
             self.token_no_tokens_in_sent,
             self.token_page_no,
             self.token_para_no,
@@ -338,18 +359,18 @@ class Token:
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         if self.token_id == 0:
-            self.token_id = cfg.glob.db_core.insert_dbt_row(  # type: ignore
-                db.cls_db_core.DBCore.DBT_TOKEN,  # type: ignore
+            self.token_id = dcr.cfg.glob.db_core.insert_dbt_row(  # type: ignore
+                dcr.db.cls_db_core.DBCore.DBT_TOKEN,  # type: ignore
                 self._get_columns(),  # type: ignore
             )
         else:
-            cfg.glob.db_core.update_dbt_id(  # type: ignore
-                table_name=db.cls_db_core.DBCore.DBT_TOKEN,
+            dcr.cfg.glob.db_core.update_dbt_id(  # type: ignore
+                table_name=dcr.db.cls_db_core.DBCore.DBT_TOKEN,
                 id_where=self.token_id,
                 columns=self._get_columns(),
             )
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

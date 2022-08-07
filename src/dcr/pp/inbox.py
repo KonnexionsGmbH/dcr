@@ -11,26 +11,25 @@ import pathlib
 import shutil
 import time
 
-import cfg.glob
-import db.cls_action
-import db.cls_document
-import db.cls_language
-import db.cls_run
+import dcr_core.core_glob
+import dcr_core.core_utils
 import fitz
 import sqlalchemy
 import sqlalchemy.orm
-import utils
+
+import dcr.cfg.glob
+import dcr.db.cls_action
+import dcr.db.cls_document
+import dcr.db.cls_language
+import dcr.db.cls_run
+import dcr.utils
 
 # -----------------------------------------------------------------------------
 # Class variables.
 # -----------------------------------------------------------------------------
 ERROR_01_901 = "01.901 Issue (p_i): Document rejected because of unknown file extension='{extension}'."
-ERROR_01_903 = (
-    "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{file_name}' " + "- error: '{error_msg}'."
-)
-ERROR_01_905 = (
-    "01.905 Issue (p_i): The same file has probably already been processed " + "once under the file name '{file_name}'."
-)
+ERROR_01_903 = "01.903 Issue (p_i): Runtime error with fitz.open() processing of file '{file_name}' " + "- error: '{error_msg}'."
+ERROR_01_905 = "01.905 Issue (p_i): The same file has probably already been processed " + "once under the file name '{file_name}'."
 ERROR_01_906 = "01.906 Issue (p_i): The target file '{full_name}' already exists."
 
 
@@ -44,13 +43,13 @@ def check_and_create_directories() -> None:
     inbox_accepted and inbox_rejected are created if they do not already
     exist.
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-    create_directory("the accepted documents", str(cfg.glob.setup.directory_inbox_accepted))
+    create_directory("the accepted documents", str(dcr_core.core_glob.setup.directory_inbox_accepted))
 
-    create_directory("the rejected documents", str(cfg.glob.setup.directory_inbox_rejected))
+    create_directory("the rejected documents", str(dcr_core.core_glob.setup.directory_inbox_rejected))
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -63,15 +62,15 @@ def create_directory(directory_type: str, directory_name: str) -> None:
         directory_type (str): Directory type.
         directory_name (str): Directory name - may include a path.
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     if not os.path.isdir(directory_name):
         os.mkdir(directory_name)
-        utils.progress_msg(
+        dcr.utils.progress_msg(
             f"The file directory for '{directory_type}' " f"was newly created under the name '{directory_name}'",
         )
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -83,7 +82,7 @@ def initialise_action(
     directory_type: str = "",
     file_name: str = "",
     id_parent: int = 0,
-) -> db.cls_action.Action:
+) -> dcr.db.cls_action.Action:
     """Initialise the next action in the database.
 
     Args:
@@ -94,25 +93,25 @@ def initialise_action(
         id_parent (int, optional): File name. Defaults to "".
 
     Returns:
-        type[db.cls_action.Action]: A new Action instance.
+        type[dcr.db.cls_action.Action]: A new Action instance.
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-    full_name = utils.get_full_name(directory_name, file_name)
+    full_name = dcr_core.core_utils.get_full_name(directory_name, file_name)
 
-    action = db.cls_action.Action(
+    action = dcr.db.cls_action.Action(
         action_code=action_code,
-        id_run_last=cfg.glob.run.run_id,
+        id_run_last=dcr.cfg.glob.run.run_id,
         directory_name=directory_name,
         directory_type=directory_type,
         file_name=file_name,
         file_size_bytes=os.path.getsize(full_name),
-        id_document=cfg.glob.document.document_id,
+        id_document=dcr.cfg.glob.document.document_id,
         id_parent=id_parent,
-        no_pdf_pages=utils.get_pdf_pages_no(full_name),
+        no_pdf_pages=dcr.utils.get_pdf_pages_no(full_name),
     )
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     return action
 
@@ -126,20 +125,20 @@ def initialise_base(file_path: pathlib.Path) -> None:
     Args:
         file_path (pathlib.Path): File.
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-    cfg.glob.document = db.cls_document.Document(
-        action_code_last=cfg.glob.run.run_action_code,
+    dcr.cfg.glob.document = dcr.db.cls_document.Document(
+        action_code_last=dcr.cfg.glob.run.run_action_code,
         directory_name=str(file_path.parent),
         file_name=file_path.name,
-        id_language=cfg.glob.language.language_id,
-        id_run_last=cfg.glob.run.run_id,
+        id_language=dcr.cfg.glob.language.language_id,
+        id_run_last=dcr.cfg.glob.run.run_id,
     )
 
-    if not cfg.glob.setup.is_ignore_duplicates:
-        cfg.glob.document.document_sha256 = utils.compute_sha256(file_path)
+    if not dcr_core.core_glob.setup.is_ignore_duplicates:
+        dcr.cfg.glob.document.document_sha256 = dcr.utils.compute_sha256(file_path)
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -151,28 +150,28 @@ def prepare_pdf(file_path: pathlib.Path) -> None:
     Args:
         file_path (pathlib.Path): Inbox file.
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     try:
         extracted_text = "".join([page.get_text() for page in fitz.open(file_path)])
 
         if bool(extracted_text):
-            action_code = db.cls_run.Run.ACTION_CODE_PDFLIB
-            cfg.glob.language.total_processed_pdflib += 1
-            cfg.glob.run.total_processed_pdflib += 1
+            action_code = dcr.db.cls_run.Run.ACTION_CODE_PDFLIB
+            dcr.cfg.glob.language.total_processed_pdflib += 1
+            dcr.cfg.glob.run.total_processed_pdflib += 1
         else:
-            action_code = db.cls_run.Run.ACTION_CODE_PDF2IMAGE
-            cfg.glob.language.total_processed_pdf2image += 1
-            cfg.glob.run.total_processed_pdf2image += 1
+            action_code = dcr.db.cls_run.Run.ACTION_CODE_PDF2IMAGE
+            dcr.cfg.glob.language.total_processed_pdf2image += 1
+            dcr.cfg.glob.run.total_processed_pdf2image += 1
 
         process_inbox_accepted(action_code)
     except RuntimeError as err:
         process_inbox_rejected(
-            db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
-            ERROR_01_903.replace("{file_name}", cfg.glob.document.document_file_name).replace("{error_msg}", str(err)),
+            dcr.db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_NO_PDF_FORMAT,
+            ERROR_01_903.replace("{file_name}", dcr.cfg.glob.document.document_file_name).replace("{error_msg}", str(err)),
         )
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -189,29 +188,29 @@ def process_inbox() -> None:
        unchanged to the inbox_ocr directory.
     4. All other documents are copied to the inbox_rejected directory.
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-    if cfg.glob.setup.is_ignore_duplicates:
-        utils.progress_msg("Configuration: File duplicates are allowed!")
+    if dcr_core.core_glob.setup.is_ignore_duplicates:
+        dcr.utils.progress_msg("Configuration: File duplicates are allowed!")
     else:
-        utils.progress_msg("Configuration: File duplicates are not allowed!")
+        dcr.utils.progress_msg("Configuration: File duplicates are not allowed!")
 
     # Check the inbox file directories and create the missing ones.
     check_and_create_directories()
 
-    utils.reset_statistics_total()
+    dcr.utils.reset_statistics_total()
 
-    with cfg.glob.db_core.db_orm_engine.connect() as conn:
-        for row in db.cls_language.Language.select_active_languages(conn):
-            cfg.glob.language = db.cls_language.Language.from_row(row)
-            if os.path.isdir(cfg.glob.language.language_directory_name_inbox):
+    with dcr.cfg.glob.db_core.db_orm_engine.connect() as conn:
+        for row in dcr.db.cls_language.Language.select_active_languages(conn):
+            dcr.cfg.glob.language = dcr.db.cls_language.Language.from_row(row)
+            if os.path.isdir(dcr.cfg.glob.language.language_directory_name_inbox):
                 process_inbox_language()
 
         conn.close()
 
-    utils.show_statistics_total()
+    dcr.utils.show_statistics_total()
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -224,40 +223,42 @@ def process_inbox_accepted(action_code: str) -> None:
     Args:
         action_code (str): Action code.
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-    full_name_curr = cfg.glob.document.get_full_name()
-    full_name_next = utils.get_full_name(cfg.glob.setup.directory_inbox_accepted, cfg.glob.document.get_file_name_next())
+    full_name_curr = dcr.cfg.glob.document.get_full_name()
+    full_name_next = dcr_core.core_utils.get_full_name(
+        dcr_core.core_glob.setup.directory_inbox_accepted, dcr.cfg.glob.document.get_file_name_next()
+    )
 
-    cfg.glob.action_curr = initialise_action(
-        action_code=cfg.glob.run.run_action_code,
-        directory_name=cfg.glob.language.language_directory_name_inbox,
-        directory_type=db.cls_document.Document.DOCUMENT_DIRECTORY_TYPE_INBOX,
-        file_name=cfg.glob.document.document_file_name,
+    dcr.cfg.glob.action_curr = initialise_action(
+        action_code=dcr.cfg.glob.run.run_action_code,
+        directory_name=dcr.cfg.glob.language.language_directory_name_inbox,
+        directory_type=dcr.db.cls_document.Document.DOCUMENT_DIRECTORY_TYPE_INBOX,
+        file_name=dcr.cfg.glob.document.document_file_name,
     )
 
     if os.path.exists(full_name_next):
-        cfg.glob.action_curr.finalise_error(
-            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+        dcr.cfg.glob.action_curr.finalise_error(
+            error_code=dcr.db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=ERROR_01_906.replace("{full_name}", full_name_next),
         )
     else:
         shutil.move(full_name_curr, full_name_next)
 
-        cfg.glob.action_next = initialise_action(
+        dcr.cfg.glob.action_next = initialise_action(
             action_code=action_code,
-            directory_name=cfg.glob.setup.directory_inbox_accepted,
-            directory_type=db.cls_document.Document.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED,
-            file_name=cfg.glob.document.get_file_name_next(),
-            id_parent=cfg.glob.action_curr.action_id,
+            directory_name=dcr_core.core_glob.setup.directory_inbox_accepted,
+            directory_type=dcr.db.cls_document.Document.DOCUMENT_DIRECTORY_TYPE_INBOX_ACCEPTED,
+            file_name=dcr.cfg.glob.document.get_file_name_next(),
+            id_parent=dcr.cfg.glob.action_curr.action_id,
         )
 
-        cfg.glob.action_curr.finalise()
+        dcr.cfg.glob.action_curr.finalise()
 
-        cfg.glob.language.total_processed += 1
-        cfg.glob.run.run_total_processed_ok += 1
+        dcr.cfg.glob.language.total_processed += 1
+        dcr.cfg.glob.run.run_total_processed_ok += 1
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -271,35 +272,35 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
         file_path (pathlib.Path):
                 Inbox file.
     """
-    cfg.glob.session = sqlalchemy.orm.Session(cfg.glob.db_core.db_orm_engine)
+    dcr.cfg.glob.session = sqlalchemy.orm.Session(dcr.cfg.glob.db_core.db_orm_engine)
 
     initialise_base(file_path)
 
-    if not cfg.glob.setup.is_ignore_duplicates:
-        file_name = db.cls_document.Document.select_duplicate_file_name_by_sha256(
-            cfg.glob.document.document_id, cfg.glob.document.document_sha256
+    if not dcr_core.core_glob.setup.is_ignore_duplicates:
+        file_name = dcr.db.cls_document.Document.select_duplicate_file_name_by_sha256(
+            dcr.cfg.glob.document.document_id, dcr.cfg.glob.document.document_sha256
         )
     else:
         file_name = None
 
     if not (file_name is None or file_name == ""):
         process_inbox_rejected(
-            db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+            dcr.db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             ERROR_01_905.replace("{file_name}", file_name),
         )
-    elif cfg.glob.document.get_file_type() == db.cls_document.Document.DOCUMENT_FILE_TYPE_PDF:
+    elif dcr.cfg.glob.document.get_file_type() == dcr_core.core_glob.FILE_TYPE_PDF:
         prepare_pdf(file_path)
-    elif cfg.glob.document.get_file_type() in db.cls_document.Document.DOCUMENT_FILE_TYPE_PANDOC:
-        process_inbox_accepted(db.cls_run.Run.ACTION_CODE_PANDOC)
-        cfg.glob.language.total_processed_pandoc += 1
-        cfg.glob.run.total_processed_pandoc += 1
-    elif cfg.glob.document.get_file_type() in db.cls_document.Document.DOCUMENT_FILE_TYPE_TESSERACT:
-        process_inbox_accepted(db.cls_run.Run.ACTION_CODE_TESSERACT)
-        cfg.glob.language.total_processed_tesseract += 1
-        cfg.glob.run.total_processed_tesseract += 1
+    elif dcr.cfg.glob.document.get_file_type() in dcr_core.core_glob.FILE_TYPE_PANDOC:
+        process_inbox_accepted(dcr.db.cls_run.Run.ACTION_CODE_PANDOC)
+        dcr.cfg.glob.language.total_processed_pandoc += 1
+        dcr.cfg.glob.run.total_processed_pandoc += 1
+    elif dcr.cfg.glob.document.get_file_type() in dcr_core.core_glob.FILE_TYPE_TESSERACT:
+        process_inbox_accepted(dcr.db.cls_run.Run.ACTION_CODE_TESSERACT)
+        dcr.cfg.glob.language.total_processed_tesseract += 1
+        dcr.cfg.glob.run.total_processed_tesseract += 1
     else:
         process_inbox_rejected(
-            db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
+            dcr.db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
             ERROR_01_901.replace("{extension}", file_path.suffix[1:]),
         )
 
@@ -318,30 +319,30 @@ def process_inbox_language() -> None:
        unchanged to the inbox_ocr directory.
     4. All other documents are copied to the inbox_rejected directory.
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-    utils.progress_msg(f"Start of processing for language '{cfg.glob.language.language_iso_language_name}'")
+    dcr.utils.progress_msg(f"Start of processing for language '{dcr.cfg.glob.language.language_iso_language_name}'")
 
-    for file in sorted(utils.get_path_name(cfg.glob.language.language_directory_name_inbox).iterdir()):
+    for file in sorted(dcr.utils.get_path_name(dcr.cfg.glob.language.language_directory_name_inbox).iterdir()):
         if file.is_file():
-            cfg.glob.start_time_document = time.perf_counter_ns()
+            dcr.cfg.glob.start_time_document = time.perf_counter_ns()
 
             if file.name == "README.md":
-                utils.progress_msg("Attention: All files with the file name 'README.md' are ignored")
+                dcr.utils.progress_msg("Attention: All files with the file name 'README.md' are ignored")
                 continue
 
-            cfg.glob.language.total_processed_to_be += 1
-            cfg.glob.run.run_total_processed_to_be += 1
+            dcr.cfg.glob.language.total_processed_to_be += 1
+            dcr.cfg.glob.run.run_total_processed_to_be += 1
 
             process_inbox_file(file_path=file)
 
-    utils.show_statistics_language()
+    dcr.utils.show_statistics_language()
 
-    utils.progress_msg(
-        f"End   of processing for language '{cfg.glob.language.language_iso_language_name}'",
+    dcr.utils.progress_msg(
+        f"End   of processing for language '{dcr.cfg.glob.language.language_iso_language_name}'",
     )
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -355,36 +356,36 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
         error_code (str): Error code.
         error_msg (str):  Error message.
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-    full_name_curr = cfg.glob.document.get_full_name()
-    full_name_next = utils.get_full_name(
-        cfg.glob.setup.directory_inbox_rejected,
-        cfg.glob.document.get_file_name_next(),
+    full_name_curr = dcr.cfg.glob.document.get_full_name()
+    full_name_next = dcr_core.core_utils.get_full_name(
+        dcr_core.core_glob.setup.directory_inbox_rejected,
+        dcr.cfg.glob.document.get_file_name_next(),
     )
 
-    cfg.glob.action_curr = initialise_action(
-        action_code=cfg.glob.run.run_action_code,
-        directory_name=cfg.glob.language.language_directory_name_inbox,
-        directory_type=db.cls_document.Document.DOCUMENT_DIRECTORY_TYPE_INBOX,
-        file_name=cfg.glob.document.document_file_name,
+    dcr.cfg.glob.action_curr = initialise_action(
+        action_code=dcr.cfg.glob.run.run_action_code,
+        directory_name=dcr.cfg.glob.language.language_directory_name_inbox,
+        directory_type=dcr.db.cls_document.Document.DOCUMENT_DIRECTORY_TYPE_INBOX,
+        file_name=dcr.cfg.glob.document.document_file_name,
     )
 
     # Move the document file from directory inbox to directory inbox_rejected - if not yet existing
     if os.path.exists(full_name_next):
-        cfg.glob.action_curr.finalise_error(
-            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
+        dcr.cfg.glob.action_curr.finalise_error(
+            error_code=dcr.db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=ERROR_01_906.replace("{full_name}", full_name_next),
         )
     else:
         shutil.move(full_name_curr, full_name_next)
 
-        cfg.glob.action_curr.finalise_error(
+        dcr.cfg.glob.action_curr.finalise_error(
             error_code=error_code,
             error_msg=error_msg,
         )
 
-    cfg.glob.language.total_erroneous += 1
-    cfg.glob.run.run_total_erroneous += 1
+    dcr.cfg.glob.language.total_erroneous += 1
+    dcr.cfg.glob.run.run_total_erroneous += 1
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

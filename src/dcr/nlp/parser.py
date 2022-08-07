@@ -2,22 +2,21 @@
 import os
 import time
 
-import cfg.glob
-import db.cls_action
-import db.cls_document
-import db.cls_run
-import defusedxml.ElementTree
-import nlp.cls_nlp_core
-import nlp.cls_text_parser
-import utils
+import dcr_core.cls_nlp_core
+import dcr_core.cls_text_parser
+import dcr_core.core_glob
+import dcr_core.core_utils
+import dcr_core.processing
+
+import dcr.cfg.glob
+import dcr.db.cls_action
+import dcr.db.cls_document
+import dcr.db.cls_run
+import dcr.utils
 
 # -----------------------------------------------------------------------------
 # Global variables.
 # -----------------------------------------------------------------------------
-ERROR_61_901 = (
-    "61.901 Issue (s_p_j): Parsing the file '{full_name_curr}' failed - " + "error type: '{error_type}' - error: '{error}'."
-)
-
 TETML_TYPE_LINE = "line"
 TETML_TYPE_PAGE = "page"
 TETML_TYPE_WORD = "word"
@@ -31,65 +30,65 @@ def parse_tetml() -> None:
 
     TBD
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
     for (tetml_type, action_code, is_parsing_line, is_parsing_page, is_parsing_word,) in (
         (
             TETML_TYPE_LINE,
-            db.cls_run.Run.ACTION_CODE_PARSER_LINE,
+            dcr.db.cls_run.Run.ACTION_CODE_PARSER_LINE,
             True,
             False,
             False,
         ),
         (
             TETML_TYPE_PAGE,
-            db.cls_run.Run.ACTION_CODE_PARSER_PAGE,
+            dcr.db.cls_run.Run.ACTION_CODE_PARSER_PAGE,
             False,
             True,
             False,
         ),
         (
             TETML_TYPE_WORD,
-            db.cls_run.Run.ACTION_CODE_PARSER_WORD,
+            dcr.db.cls_run.Run.ACTION_CODE_PARSER_WORD,
             False,
             False,
             True,
         ),
     ):
-        utils.progress_msg(f"Start of processing for tetml type '{tetml_type}'")
+        dcr.utils.progress_msg(f"Start of processing for tetml type '{tetml_type}'")
 
-        cfg.glob.setup.is_parsing_line = is_parsing_line
-        cfg.glob.setup.is_parsing_page = is_parsing_page
-        cfg.glob.setup.is_parsing_word = is_parsing_word
+        dcr_core.core_glob.setup.is_parsing_line = is_parsing_line
+        dcr_core.core_glob.setup.is_parsing_page = is_parsing_page
+        dcr_core.core_glob.setup.is_parsing_word = is_parsing_word
 
-        with cfg.glob.db_core.db_orm_engine.begin() as conn:
-            rows = db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=action_code)
+        with dcr.cfg.glob.db_core.db_orm_engine.begin() as conn:
+            rows = dcr.db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=action_code)
 
             for row in rows:
                 # ------------------------------------------------------------------
                 # Processing a single document
                 # ------------------------------------------------------------------
-                cfg.glob.start_time_document = time.perf_counter_ns()
+                dcr.cfg.glob.start_time_document = time.perf_counter_ns()
 
-                cfg.glob.run.run_total_processed_to_be += 1
+                dcr.cfg.glob.run.run_total_processed_to_be += 1
 
-                cfg.glob.action_curr = db.cls_action.Action.from_row(row)
+                dcr.cfg.glob.action_curr = dcr.db.cls_action.Action.from_row(row)
 
-                if cfg.glob.action_curr.action_status == db.cls_document.Document.DOCUMENT_STATUS_ERROR:
-                    cfg.glob.run.total_status_error += 1
+                if dcr.cfg.glob.action_curr.action_status == dcr.db.cls_document.Document.DOCUMENT_STATUS_ERROR:
+                    dcr.cfg.glob.run.total_status_error += 1
                 else:
-                    cfg.glob.run.total_status_ready += 1
+                    dcr.cfg.glob.run.total_status_ready += 1
 
-                cfg.glob.document = db.cls_document.Document.from_id(id_document=cfg.glob.action_curr.action_id_document)
+                dcr.cfg.glob.document = dcr.db.cls_document.Document.from_id(id_document=dcr.cfg.glob.action_curr.action_id_document)
 
                 parse_tetml_file()
 
             conn.close()
-        utils.progress_msg(f"End   of processing for tetml type '{tetml_type}'")
+        dcr.utils.progress_msg(f"End   of processing for tetml type '{tetml_type}'")
 
-    utils.show_statistics_total()
+    dcr.utils.show_statistics_total()
 
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -101,63 +100,63 @@ def parse_tetml_file() -> None:
 
     TBD
     """
-    cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+    full_name_curr = dcr.cfg.glob.action_curr.get_full_name()
 
-    full_name_curr = cfg.glob.action_curr.get_full_name()
-
-    file_name_next = cfg.glob.action_curr.get_stem_name() + "." + db.cls_document.Document.DOCUMENT_FILE_TYPE_JSON
-    full_name_next = utils.get_full_name(
-        cfg.glob.action_curr.action_directory_name,
+    file_name_next = dcr.cfg.glob.action_curr.get_stem_name() + "." + dcr_core.core_glob.FILE_TYPE_JSON
+    full_name_next = dcr_core.core_utils.get_full_name(
+        dcr.cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )
 
-    try:
-        # Create the Element tree object
-        tree = defusedxml.ElementTree.parse(full_name_curr)
+    if dcr_core.core_glob.setup.is_parsing_line:
+        status = dcr.db.cls_document.Document.DOCUMENT_STATUS_START
+    else:
+        status = dcr.db.cls_document.Document.DOCUMENT_STATUS_END
 
-        # Get the root Element
-        root = tree.getroot()
+    dcr.cfg.glob.action_next = dcr.db.cls_action.Action(
+        action_code=dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE,
+        id_run_last=dcr.cfg.glob.run.run_id,
+        directory_name=dcr.cfg.glob.action_curr.action_directory_name,
+        directory_type=dcr.cfg.glob.action_curr.action_directory_type,
+        file_name=file_name_next,
+        id_document=dcr.cfg.glob.action_curr.action_id_document,
+        id_parent=dcr.cfg.glob.action_curr.action_id,
+        no_pdf_pages=dcr.cfg.glob.action_curr.action_no_pdf_pages,
+        status=status,
+    )
 
-        if cfg.glob.setup.is_parsing_line:
-            status = db.cls_document.Document.DOCUMENT_STATUS_START
-        else:
-            status = db.cls_document.Document.DOCUMENT_STATUS_END
+    (error_code, error_msg) = dcr_core.processing.parser_process(
+        full_name_in=dcr.cfg.glob.action_curr.get_full_name(),
+        full_name_out=dcr.cfg.glob.action_next.get_full_name(),
+        document_id=dcr.cfg.glob.action_curr.action_id_document,
+        file_name_orig=dcr.cfg.glob.document.document_file_name,
+        no_pdf_pages=dcr.cfg.glob.action_curr.action_no_pdf_pages,
+    )
+    if (error_code, error_msg) != dcr_core.core_glob.RETURN_OK:
+        dcr.cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        return
 
-        cfg.glob.action_next = db.cls_action.Action(
-            action_code=db.cls_run.Run.ACTION_CODE_TOKENIZE,
-            id_run_last=cfg.glob.run.run_id,
-            directory_name=cfg.glob.action_curr.action_directory_name,
-            directory_type=cfg.glob.action_curr.action_directory_type,
-            file_name=file_name_next,
-            id_document=cfg.glob.action_curr.action_id_document,
-            id_parent=cfg.glob.action_curr.action_id,
-            no_pdf_pages=cfg.glob.action_curr.action_no_pdf_pages,
-            status=status,
-        )
+    dcr.cfg.glob.run.run_total_processed_ok += 1
 
-        cfg.glob.text_parser = nlp.cls_text_parser.TextParser()
+    if dcr_core.core_glob.setup.is_parsing_line:
+        if (
+            dcr_core.core_glob.line_type_headers_footers.no_lines_footer != 0  # pylint: disable=too-many-boolean-expressions
+            or dcr_core.core_glob.line_type_headers_footers.no_lines_header != 0
+            or dcr_core.core_glob.line_type_list_bullet.no_lists != 0
+            or dcr_core.core_glob.line_type_list_number.no_lists != 0
+            or dcr_core.core_glob.line_type_table.no_tables != 0
+            or dcr_core.core_glob.line_type_toc.no_lines_toc != 0
+        ):
+            dcr.cfg.glob.document.document_no_lines_footer = dcr_core.core_glob.line_type_headers_footers.no_lines_footer
+            dcr.cfg.glob.document.document_no_lines_header = dcr_core.core_glob.line_type_headers_footers.no_lines_header
+            dcr.cfg.glob.document.document_no_lines_toc = dcr_core.core_glob.line_type_toc.no_lines_toc
+            dcr.cfg.glob.document.document_no_lists_bullet = dcr_core.core_glob.line_type_list_bullet.no_lists
+            dcr.cfg.glob.document.document_no_lists_number = dcr_core.core_glob.line_type_list_number.no_lists
+            dcr.cfg.glob.document.document_no_tables = dcr_core.core_glob.line_type_table.no_tables
+            dcr.cfg.glob.document.persist_2_db()  # type: ignore
 
-        for child in root:
-            child_tag = child.tag[nlp.cls_nlp_core.NLPCore.PARSE_ELEM_FROM :]
-            match child_tag:
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_DOCUMENT:
-                    cfg.glob.text_parser.parse_tag_document(child_tag, child)
-                case nlp.cls_nlp_core.NLPCore.PARSE_ELEM_CREATION:
-                    pass
+    dcr.cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(full_name_next),)
 
-        cfg.glob.action_next.action_file_size_bytes = (os.path.getsize(full_name_next),)
+    dcr.cfg.glob.action_curr.finalise()
 
-        cfg.glob.action_curr.finalise()
-
-        utils.delete_auxiliary_file(full_name_curr)
-
-        cfg.glob.run.run_total_processed_ok += 1
-    except FileNotFoundError as err:
-        cfg.glob.action_curr.finalise_error(
-            error_code=db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_PARSER,
-            error_msg=ERROR_61_901.replace("{full_name_curr}", full_name_curr)
-            .replace("{error_type}", str(type(err)))
-            .replace("{error}", str(err)),
-        )
-
-    cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+    dcr.utils.delete_auxiliary_file(full_name_curr)

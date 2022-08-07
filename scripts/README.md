@@ -3,9 +3,9 @@
 This directory contains the following shell scripts for Unix and Windows systems:
 
 - `run_prep_bash_scripts.sh`: to configure EOL and execution rights of shell scripts in Unix systems.
-- `run_setup_postgresql`: to download an [official PostgreSQL Docker](https://hub.docker.com/_/postgres) image and create a Docker container suitable for **DCR** from it..
+- `run_setup_postgresql`: to download an [official PostgreSQL Docker](https://hub.docker.com/_/postgres) image and create a Docker container suitable for **DCR** from it.
 
-The subdirectory `0.9.3` contains the following scripts:
+The subdirectory `0.9.6` contains the following scripts:
 
 `run_install_4_vm_wsl2_1.sh` and
 `run_install_4_vm_wsl2_2.sh`

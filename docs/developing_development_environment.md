@@ -17,8 +17,8 @@ When selecting the Docker image, care must be taken to select the appropriate ve
 
 Alternatively, for a **`Ubuntu 20.04 LTS`** environment that is as unspoiled as possible, the following two scripts are available in the **`scripts`** file directory:
 
-- **`scripts/0.9.3/run_install_4-vm_wsl2_1.sh`**
-- **`scripts/0.9.3/run_install_4-vm_wsl2_2.sh`**
+- **`scripts/0.9.6/run_install_4-vm_wsl2_1.sh`**
+- **`scripts/0.9.6/run_install_4-vm_wsl2_2.sh`**
 
 After a **`cd scripts`** command in a terminal window, the script **`run_install_4-vm_wsl2_1.sh`** must first be executed. 
 Administration rights (**`sudo`**) are required for this. 

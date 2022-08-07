@@ -1,0 +1,259 @@
+{
+    "lineTypeAntiPatterns": [
+        {
+            "name": "9 AAA aaa",
+            "regexp": "^\\d+[ ][A-Z]+ [A-Z][a-z]+"
+        },
+        {
+            "name": "A A ",
+            "regexp": "^[A-Z] [A-Z] "
+        },
+        {
+            "name": "A AAA Aaa",
+            "regexp": "^[A-Z][ ]+[A-Z]+ [A-Z]*[a-z]+"
+        },
+        {
+            "name": "a) * a)",
+            "regexp": "^[a-z]{1}\\) [a-z A-Z0-9\\.!\\?]* [a-z]{1}\\)"
+        }
+    ],
+    "lineTypeRules": [
+        {
+            "name": "(999)",
+            "isFirstToken": true,
+            "regexp": "\\(\\d+\\)$",
+            "functionIsAsc": "string_integers",
+            "startValues": [
+                "(1)"
+            ]
+        },
+        {
+            "name": "(A)",
+            "isFirstToken": true,
+            "regexp": "\\([A-Z]\\)$",
+            "functionIsAsc": "uppercase_letters",
+            "startValues": [
+                "(A)"
+            ]
+        },
+        {
+            "name": "(ROM)",
+            "isFirstToken": true,
+            "regexp": "\\(M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\\)$",
+            "functionIsAsc": "romans",
+            "startValues": [
+                "(I)"
+            ]
+        },
+        {
+            "name": "(a)",
+            "isFirstToken": true,
+            "regexp": "\\([a-z]\\)$",
+            "functionIsAsc": "lowercase_letters",
+            "startValues": [
+                "(a)"
+            ]
+        },
+        {
+            "name": "(rom)",
+            "isFirstToken": true,
+            "regexp": "\\(m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\\)$",
+            "functionIsAsc": "romans",
+            "startValues": [
+                "(i)"
+            ]
+        },
+        {
+            "name": "[999]",
+            "isFirstToken": true,
+            "regexp": "\\[\\d+\\]$",
+            "functionIsAsc": "string_integers",
+            "startValues": [
+                "[1]"
+            ]
+        },
+        {
+            "name": "[A]",
+            "isFirstToken": true,
+            "regexp": "\\[[A-Z]\\]$",
+            "functionIsAsc": "uppercase_letters",
+            "startValues": [
+                "[A]"
+            ]
+        },
+        {
+            "name": "[ROM]",
+            "isFirstToken": true,
+            "regexp": "\\[M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\\]$",
+            "functionIsAsc": "romans",
+            "startValues": [
+                "[I]"
+            ]
+        },
+        {
+            "name": "[a]",
+            "isFirstToken": true,
+            "regexp": "\\[[a-z]\\]$",
+            "functionIsAsc": "lowercase_letters",
+            "startValues": [
+                "[a]"
+            ]
+        },
+        {
+            "name": "[rom]",
+            "isFirstToken": true,
+            "regexp": "\\[m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\\]$",
+            "functionIsAsc": "romans",
+            "startValues": [
+                "[i]"
+            ]
+        },
+        {
+            "name": "999)",
+            "isFirstToken": true,
+            "regexp": "\\d+\\)$",
+            "functionIsAsc": "string_integers",
+            "startValues": [
+                "1)"
+            ]
+        },
+        {
+            "name": "999.",
+            "isFirstToken": false,
+            "regexp": "\\d+\\.",
+            "functionIsAsc": "string_integers",
+            "startValues": [
+                "1."
+            ]
+        },
+        {
+            "name": "999.999",
+            "isFirstToken": true,
+            "regexp": "\\d+\\.\\d{1,3}$",
+            "functionIsAsc": "string_floats",
+            "startValues": [
+                "0.0",
+                "0.1",
+                "0.01",
+                "0.001"
+            ]
+        },
+        {
+            "name": "A)",
+            "isFirstToken": true,
+            "regexp": "[A-Z]\\)$",
+            "functionIsAsc": "uppercase_letters",
+            "startValues": [
+                "A)"
+            ]
+        },
+        {
+            "name": "A.",
+            "isFirstToken": false,
+            "regexp": "[A-Z]\\.",
+            "functionIsAsc": "uppercase_letters",
+            "startValues": [
+                "A."
+            ]
+        },
+        {
+            "name": "ROM)",
+            "isFirstToken": true,
+            "regexp": "M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\\)$",
+            "functionIsAsc": "romans",
+            "startValues": [
+                "I)"
+            ]
+        },
+        {
+            "name": "ROM.",
+            "isFirstToken": false,
+            "regexp": "M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\\.",
+            "functionIsAsc": "romans",
+            "startValues": [
+                "I."
+            ]
+        },
+        {
+            "name": "a)",
+            "isFirstToken": true,
+            "regexp": "[a-z]\\)$",
+            "functionIsAsc": "lowercase_letters",
+            "startValues": [
+                "a)"
+            ]
+        },
+        {
+            "name": "a.",
+            "isFirstToken": false,
+            "regexp": "[a-z]\\.",
+            "functionIsAsc": "lowercase_letters",
+            "startValues": [
+                "a."
+            ]
+        },
+        {
+            "name": "rom)",
+            "isFirstToken": true,
+            "regexp": "m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\\)$",
+            "functionIsAsc": "romans",
+            "startValues": [
+                "i)"
+            ]
+        },
+        {
+            "name": "rom.",
+            "isFirstToken": false,
+            "regexp": "m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\\.",
+            "functionIsAsc": "romans",
+            "startValues": [
+                "i."
+            ]
+        },
+        {
+            "name": "999",
+            "isFirstToken": false,
+            "regexp": "\\d+[ ]+[A-Z][a-zA-Z]+",
+            "functionIsAsc": "string_integers_token",
+            "startValues": [
+                "1 "
+            ]
+        },
+        {
+            "name": "A",
+            "isFirstToken": false,
+            "regexp": "[A-Z][ ]+[A-Z][a-zA-Z]+",
+            "functionIsAsc": "uppercase_letters_token",
+            "startValues": [
+                "A "
+            ]
+        },
+        {
+            "name": "ROM",
+            "isFirstToken": false,
+            "regexp": "M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})[ ]+[A-Z][a-zA-Z]+",
+            "functionIsAsc": "romans_token",
+            "startValues": [
+                "I "
+            ]
+        },
+        {
+            "name": "a",
+            "isFirstToken": false,
+            "regexp": "[a-z][ ]+[A-Z][a-zA-Z]+",
+            "functionIsAsc": "lowercase_letters_token",
+            "startValues": [
+                "a "
+            ]
+        },
+        {
+            "name": "rom",
+            "isFirstToken": false,
+            "regexp": "m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})[ ]+[A-Z][a-zA-Z]+",
+            "functionIsAsc": "romans_token",
+            "startValues": [
+                "i "
+            ]
+        }
+    ]
+}

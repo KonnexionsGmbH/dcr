@@ -1,0 +1,96 @@
+{
+  "apiVersion": "0.9.4",
+  "data": {
+    "tables": [
+      {
+        "tableName": "unknown",
+        "rows": [
+          {
+            "row": [
+              {
+                "columnName": "active",
+                "columnValue": false
+              },
+              {
+                "columnName": "code_iso_639_3",
+                "columnValue": "deu"
+              },
+              {
+                "columnName": "code_spacy",
+                "columnValue": "de"
+              },
+              {
+                "columnName": "code_tesseract",
+                "columnValue": "deu"
+              },
+              {
+                "columnName": "directory_name_inbox",
+                "columnValue": null
+              },
+              {
+                "columnName": "iso_language_name",
+                "columnValue": "Deutsch"
+              }
+            ]
+          },
+          {
+            "row": [
+              {
+                "columnName": "active",
+                "columnValue": false
+              },
+              {
+                "columnName": "code_iso_639_3",
+                "columnValue": "fra"
+              },
+              {
+                "columnName": "code_spacy",
+                "columnValue": "fr"
+              },
+              {
+                "columnName": "code_tesseract",
+                "columnValue": "fra"
+              },
+              {
+                "columnName": "directory_name_inbox",
+                "columnValue": null
+              },
+              {
+                "columnName": "iso_language_name",
+                "columnValue": "French"
+              }
+            ]
+          },
+          {
+            "row": [
+              {
+                "columnName": "active",
+                "columnValue": false
+              },
+              {
+                "columnName": "code_iso_639_3",
+                "columnValue": "ita"
+              },
+              {
+                "columnName": "code_spacy",
+                "columnValue": "it"
+              },
+              {
+                "columnName": "code_tesseract",
+                "columnValue": "ita"
+              },
+              {
+                "columnName": "directory_name_inbox",
+                "columnValue": null
+              },
+              {
+                "columnName": "iso_language_name",
+                "columnValue": "Italian"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,17 +1,17 @@
-"""Module db.cls_run: Managing the database table run."""
+"""Module dcr.db.cls_run: Managing the database table run."""
 from __future__ import annotations
 
 from typing import ClassVar
 
-import cfg.glob
-import db.cls_db_core
-import db.cls_document
+import dcr_core.core_glob
+import dcr_core.core_utils
 import sqlalchemy
 import sqlalchemy.engine
 import sqlalchemy.orm
-import utils
 from sqlalchemy import Integer
 from sqlalchemy import String
+
+import dcr.db.cls_db_core
 
 
 # pylint: disable=duplicate-code
@@ -27,6 +27,7 @@ class Run:
     # Class variables.
     # -----------------------------------------------------------------------------
     # _ACTION_TEXT_CREATE_DB: ClassVar[str] = "Create Database"
+    _ACTION_TEXT_EXPORT_LT_RULES: ClassVar[str] = "export_lt_rules"
     _ACTION_TEXT_INBOX: ClassVar[str] = "inbox         (preprocessor)"
     _ACTION_TEXT_PANDOC: ClassVar[str] = "pandoc        (preprocessor)"
     _ACTION_TEXT_PARSER: ClassVar[str] = "parser        (nlp)"
@@ -37,12 +38,13 @@ class Run:
     _ACTION_TEXT_PDFLIB: ClassVar[str] = "pdflib        (nlp)"
     _ACTION_TEXT_PYPDF2: ClassVar[str] = "pypdf2        (preprocessor)"
     _ACTION_TEXT_TESSERACT: ClassVar[str] = "tesseract     (preprocessor)"
-    _ACTION_TEXT_TOKENIZE: ClassVar[str] = "tokenize      (nlp)"
+    _ACTION_TEXT_TOKENIZE: ClassVar[str] = "tokenizer     (nlp)"
     _ACTION_TEXT_TOKENIZE_LINE: ClassVar[str] = "tokenize_line (nlp)"
     _ACTION_TEXT_UPGRADE_DB: ClassVar[str] = "Upgrade Database"
 
     ACTION_CODE_ALL_COMPLETE: ClassVar[str] = "all"
     ACTION_CODE_CREATE_DB: ClassVar[str] = "db_c"
+    ACTION_CODE_EXPORT_LT_RULES: ClassVar[str] = "e_lt"
     ACTION_CODE_INBOX: ClassVar[str] = "p_i"
     ACTION_CODE_PANDOC: ClassVar[str] = "n_2_p"
     ACTION_CODE_PARSER: ClassVar[str] = "s_p_j"
@@ -93,14 +95,11 @@ class Run:
             total_processed_to_be (int, optional):
                     Total number of documents to be processed. Defaults to 0.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-        try:
-            cfg.glob.db_core.exists()  # type: ignore
-        except AttributeError:
-            utils.terminate_fatal(
-                "The required instance of the class 'DBCore' does not yet exist.",
-            )
+        dcr.utils.check_exists_object(
+            is_db_core=True,
+        )
 
         if Run.ID_RUN_UMBRELLA == 0:
             Run.ID_RUN_UMBRELLA = Run.get_id_latest() + 1
@@ -132,31 +131,31 @@ class Run:
 
         self._exist = True
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the database columns.
     # -----------------------------------------------------------------------------
-    def _get_columns(self) -> db.cls_db_core.Columns:
+    def _get_columns(self) -> dcr.db.cls_db_core.Columns:
         """Get the database columns.
 
         Returns:
-            db.cls_db_core.Columns:
+            dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         self.run_action_text = Run.get_action_text(self.run_action_code)
 
         return {
-            db.cls_db_core.DBCore.DBC_ACTION_CODE: self.run_action_code,
-            db.cls_db_core.DBCore.DBC_ACTION_TEXT: self.run_action_text,
-            db.cls_db_core.DBCore.DBC_ID_RUN: self.run_id_run,
-            db.cls_db_core.DBCore.DBC_STATUS: self.run_status,
-            db.cls_db_core.DBCore.DBC_TOTAL_ERRONEOUS: self.run_total_erroneous,
-            db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_OK: self.run_total_processed_ok,
-            db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_TO_BE: self.run_total_processed_to_be,
+            dcr.db.cls_db_core.DBCore.DBC_ACTION_CODE: self.run_action_code,
+            dcr.db.cls_db_core.DBCore.DBC_ACTION_TEXT: self.run_action_text,
+            dcr.db.cls_db_core.DBCore.DBC_ID_RUN: self.run_id_run,
+            dcr.db.cls_db_core.DBCore.DBC_STATUS: self.run_status,
+            dcr.db.cls_db_core.DBCore.DBC_TOTAL_ERRONEOUS: self.run_total_erroneous,
+            dcr.db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_OK: self.run_total_processed_ok,
+            dcr.db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_TO_BE: self.run_total_processed_to_be,
         }
 
     # -----------------------------------------------------------------------------
@@ -165,50 +164,50 @@ class Run:
     @classmethod
     def create_dbt(cls) -> None:
         """Create the database table."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_RUN,
-            cfg.glob.db_core.db_orm_metadata,
+            dcr.db.cls_db_core.DBCore.DBT_RUN,
+            dcr.cfg.glob.db_core.db_orm_metadata,
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_ID,
+                dcr.db.cls_db_core.DBCore.DBC_ID,
                 sqlalchemy.Integer,
                 autoincrement=True,
                 nullable=False,
                 primary_key=True,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_CREATED_AT,
+                dcr.db.cls_db_core.DBCore.DBC_CREATED_AT,
                 sqlalchemy.DateTime,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_MODIFIED_AT,
+                dcr.db.cls_db_core.DBCore.DBC_MODIFIED_AT,
                 sqlalchemy.DateTime,
             ),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ACTION_CODE, sqlalchemy.String, nullable=False),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ACTION_TEXT, sqlalchemy.String, nullable=False),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_ID_RUN, sqlalchemy.Integer, nullable=False),
-            sqlalchemy.Column(db.cls_db_core.DBCore.DBC_STATUS, sqlalchemy.String, nullable=False),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_ACTION_CODE, sqlalchemy.String, nullable=False),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_ACTION_TEXT, sqlalchemy.String, nullable=False),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_ID_RUN, sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column(dcr.db.cls_db_core.DBCore.DBC_STATUS, sqlalchemy.String, nullable=False),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_TOTAL_ERRONEOUS,
+                dcr.db.cls_db_core.DBCore.DBC_TOTAL_ERRONEOUS,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_OK,
+                dcr.db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_OK,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
             sqlalchemy.Column(
-                db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_TO_BE,
+                dcr.db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_TO_BE,
                 sqlalchemy.Integer,
                 nullable=False,
             ),
         )
 
-        utils.progress_msg(f"The database table '{db.cls_db_core.DBCore.DBT_RUN}' has now been created")
+        dcr.utils.progress_msg(f"The database table '{dcr.db.cls_db_core.DBCore.DBT_RUN}' has now been created")
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -226,13 +225,13 @@ class Run:
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
         """Finalise the current row."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
-        self.run_status = db.cls_document.Document.DOCUMENT_STATUS_END
+        self.run_status = dcr.db.cls_document.Document.DOCUMENT_STATUS_END
 
         self.persist_2_db()
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Initialise from id.
@@ -248,15 +247,15 @@ class Run:
         Returns:
             Run:    The object instance found.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_RUN,
-            cfg.glob.db_core.db_orm_metadata,
-            autoload_with=cfg.glob.db_core.db_orm_engine,
+            dcr.db.cls_db_core.DBCore.DBT_RUN,
+            dcr.cfg.glob.db_core.db_orm_metadata,
+            autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
         )
 
-        with cfg.glob.db_core.db_orm_engine.connect() as conn:
+        with dcr.cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(
                 sqlalchemy.select(dbt).where(
                     dbt.c.id == id_run,
@@ -265,11 +264,11 @@ class Run:
             conn.close()
 
         if row is None:
-            utils.terminate_fatal(
+            dcr_core.core_utils.terminate_fatal(
                 f"The run with id={id_run} does not exist in the database table 'run'",
             )
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return Run.from_row(row)  # type: ignore
 
@@ -287,18 +286,18 @@ class Run:
         Returns:
             Run:    The object instance matching the specified database row.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return cls(
-            _row_id=row[db.cls_db_core.DBCore.DBC_ID],
-            action_code=row[db.cls_db_core.DBCore.DBC_ACTION_CODE],
-            action_text=row[db.cls_db_core.DBCore.DBC_ACTION_TEXT],
-            id_run=row[db.cls_db_core.DBCore.DBC_ID_RUN],
-            status=row[db.cls_db_core.DBCore.DBC_STATUS],
-            total_erroneous=row[db.cls_db_core.DBCore.DBC_TOTAL_ERRONEOUS],
-            total_processed_ok=row[db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_OK],
-            total_processed_to_be=row[db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_TO_BE],
+            _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
+            action_code=row[dcr.db.cls_db_core.DBCore.DBC_ACTION_CODE],
+            action_text=row[dcr.db.cls_db_core.DBCore.DBC_ACTION_TEXT],
+            id_run=row[dcr.db.cls_db_core.DBCore.DBC_ID_RUN],
+            status=row[dcr.db.cls_db_core.DBCore.DBC_STATUS],
+            total_erroneous=row[dcr.db.cls_db_core.DBCore.DBC_TOTAL_ERRONEOUS],
+            total_processed_ok=row[dcr.db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_OK],
+            total_processed_to_be=row[dcr.db.cls_db_core.DBCore.DBC_TOTAL_PROCESSED_TO_BE],
         )
 
     # -----------------------------------------------------------------------------
@@ -315,7 +314,7 @@ class Run:
         Returns:
             str:    Action text.
         """
-        action_text = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+        action_text = dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE
 
         match action_code:
             case Run.ACTION_CODE_INBOX:
@@ -334,8 +333,6 @@ class Run:
                 action_text = Run._ACTION_TEXT_PDF2IMAGE
             case Run.ACTION_CODE_PDFLIB:
                 action_text = Run._ACTION_TEXT_PDFLIB
-            case Run.ACTION_CODE_PYPDF2:
-                action_text = Run._ACTION_TEXT_PYPDF2
             case Run.ACTION_CODE_TESSERACT:
                 action_text = Run._ACTION_TEXT_TESSERACT
             case Run.ACTION_CODE_TOKENIZE:
@@ -343,7 +340,7 @@ class Run:
             case Run.ACTION_CODE_TOKENIZE_LINE:
                 action_text = Run._ACTION_TEXT_TOKENIZE_LINE
             case _:
-                utils.terminate_fatal(
+                dcr_core.core_utils.terminate_fatal(
                     f"Action code {action_code} is not supported in function get_action_text()",
                 )
 
@@ -369,8 +366,8 @@ class Run:
             int | Integer,
         ]:          Column values in a tuple.
         """
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
 
         return (
             self.run_id,
@@ -394,10 +391,12 @@ class Run:
             int:    Latest id.
         """
         dbt = sqlalchemy.Table(
-            db.cls_db_core.DBCore.DBT_RUN, cfg.glob.db_core.db_orm_metadata, autoload_with=cfg.glob.db_core.db_orm_engine
+            dcr.db.cls_db_core.DBCore.DBT_RUN,
+            dcr.cfg.glob.db_core.db_orm_metadata,
+            autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
         )
 
-        with cfg.glob.db_core.db_orm_engine.connect() as conn:
+        with dcr.cfg.glob.db_core.db_orm_engine.connect() as conn:
             row = conn.execute(sqlalchemy.select(sqlalchemy.func.max(dbt.c.id_run))).fetchone()
             conn.close()
 
@@ -411,25 +410,25 @@ class Run:
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
-        cfg.glob.logger.debug(cfg.glob.LOGGER_START)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
 
         if self.run_id == 0:
-            self.run_id = cfg.glob.db_core.insert_dbt_row(  # type: ignore
-                db.cls_db_core.DBCore.DBT_RUN,  # type: ignore
+            self.run_id = dcr.cfg.glob.db_core.insert_dbt_row(  # type: ignore
+                dcr.db.cls_db_core.DBCore.DBT_RUN,  # type: ignore
                 self._get_columns(),  # type: ignore
             )
             return
 
         if self.run_total_erroneous == 0 and self.run_total_processed_ok == 0 and self.run_total_processed_to_be == 0:
-            cfg.glob.db_core.delete_dbt_id(  # type: ignore
-                table_name=db.cls_db_core.DBCore.DBT_RUN,
+            dcr.cfg.glob.db_core.delete_dbt_id(  # type: ignore
+                table_name=dcr.db.cls_db_core.DBCore.DBT_RUN,
                 id_where=self.run_id,
             )
         else:
-            cfg.glob.db_core.update_dbt_id(  # type: ignore
-                table_name=db.cls_db_core.DBCore.DBT_RUN,
+            dcr.cfg.glob.db_core.update_dbt_id(  # type: ignore
+                table_name=dcr.db.cls_db_core.DBCore.DBT_RUN,
                 id_where=self.run_id,
                 columns=self._get_columns(),
             )
 
-        cfg.glob.logger.debug(cfg.glob.LOGGER_END)
+        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)

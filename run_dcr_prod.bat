@@ -8,14 +8,12 @@ rem ----------------------------------------------------------------------------
 
 setlocal EnableDelayedExpansion
 
-set DCR_CHOICE_ACTION_DEFAULT=aui
+set DCR_CHOICE_ACTION_DEFAULT=db_u
 set DCR_ENVIRONMENT_TYPE=prod
-set PYTHONPATH=%PYTHONPATH%;src\dcr
+set PYTHONPATH=src
 
 if ["%1"] EQU [""] (
     echo =========================================================
-    echo aui   - Run the administration user interface.
-    echo ---------------------------------------------------------
     echo all   - Run the complete core processing of all new documents.
     echo ---------------------------------------------------------
     echo p_i   - 1. Process the inbox directory.
@@ -23,12 +21,14 @@ if ["%1"] EQU [""] (
     echo ocr   - 3. Convert image files to pdf documents:          Tesseract OCR / Tex Live.
     echo n_2_p - 2. Convert non-pdf documents to pdf documents:    Pandoc
     echo ---------------------------------------------------------
-    echo tet   - 4. Extract text and metdata from pdf documents:   PDFlib TET.
+    echo tet   - 4. Extract text and metadata from pdf documents:  PDFlib TET.
     echo s_p_j - 5. Store the parser result in a JSON file.
     echo tkn   - 6. Create qualified document tokens.              SpaCy.
     echo ---------------------------------------------------------
     echo db_c  - Create the database.
     echo db_u  - Upgrade the database.
+    echo ---------------------------------------------------------
+    echo e_lt  - Export the line type rules.
     echo ---------------------------------------------------------
     echo m_p   - Run the installation of the necessary 3rd party packages for production and compile all packages and modules.
     echo ---------------------------------------------------------
@@ -82,19 +82,14 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["all"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
-if ["%DCR_CHOICE_ACTION%"] EQU ["aui"] (
-    pipenv run python src\dcr\admin.py
-    if ERRORLEVEL 1 (
-        echo Processing of the script: %0 - step: 'python src\dcr\admin.py' was aborted
-        exit -1073741510
-    )
-    goto normal_exit
-)
-
 if ["%DCR_CHOICE_ACTION%"] EQU ["db_c"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 if ["%DCR_CHOICE_ACTION%"] EQU ["db_u"] (
+    set _CHOICE=%DCR_CHOICE_ACTION%
+)
+
+if ["%DCR_CHOICE_ACTION%"] EQU ["e_lt"] (
     set _CHOICE=%DCR_CHOICE_ACTION%
 )
 
@@ -127,6 +122,9 @@ if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
 )
 
 if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
+    if ["%DCR_CHOICE_ACTION%"] EQU ["e_lt"] (
+        set DCR_CHOICE_ACTION=e_lt
+    )
     if ["%DCR_CHOICE_ACTION%"] EQU ["p_2_i"] (
         set DCR_CHOICE_ACTION=p_i %DCR_CHOICE_ACTION%
     )
@@ -145,15 +143,15 @@ if ["!_CHOICE!"] EQU ["%DCR_CHOICE_ACTION%"] (
     if ["%DCR_CHOICE_ACTION%"] EQU ["tkn"] (
         set DCR_CHOICE_ACTION=p_i p_2_i ocr n_2_p tet s_p_j tkn %DCR_CHOICE_ACTION%
     )
-    pipenv run python src\dcr\dcr.py !DCR_CHOICE_ACTION!
+    pipenv run python src\dcr\launcher.py !DCR_CHOICE_ACTION!
     if ERRORLEVEL 1 (
-        echo Processing of the script: %0 - step: 'python src\dcr\dcr.py %DCR_CHOICE_ACTION%' was aborted
+        echo Processing of the script: %0 - step: 'python src\dcr\launcher.py %DCR_CHOICE_ACTION%' was aborted
         exit -1073741510
     )
     goto normal_exit
 )
 
-echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | m_p | n_2_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
+echo Usage: "run_dcr_prod[.bat] all | db_c | db_u | e_lt | m_p | n_2_p | ocr | p_i | p_2_i | s_p_j | tet | tkn"
 exit -1073741510
 
 :normal_exit

@@ -39,7 +39,7 @@ Available at [https://www.researchgate.net/publication/265487498_Machine_Learnin
 (Accessed 04 January 2022).
 
 The backbone of the information age is digital information which may be searched, accessed, and transferred instantaneously. 
-Therefore the digitization of paper documents is extremely interesting. 
+Therefore, the digitization of paper documents is extremely interesting. 
 This chapter describes approaches for document structure recognition detecting the hierarchy of physical components in images of documents, such as pages, paragraphs, and figures, and transforms this into a hierarchy of logical components, such as titles, authors, and sections. 
 This structural information improves readability and is useful for indexing and retrieving information contained in documents. 
 First we present a rule-based system segmenting the document image and estimating the logical role of these zones. 

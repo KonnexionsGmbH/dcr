@@ -2,10 +2,13 @@
 """Testing Module dcr.utils."""
 import pathlib
 
-import cfg.glob
-import db.cls_db_core
+import dcr_core.core_glob  # pylint: disable=cyclic-import
+import dcr_core.core_utils  # pylint: disable=cyclic-import
 import pytest
-import utils
+
+import dcr.cfg.glob
+import dcr.db.cls_db_core
+import dcr.utils
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -18,7 +21,7 @@ import utils
 # -----------------------------------------------------------------------------
 def test_get_file_type():
     """Test: get_file_type()."""
-    assert utils.get_file_type(None) == ""
+    assert dcr.utils.get_file_type(None) == ""
 
 
 # -----------------------------------------------------------------------------
@@ -26,11 +29,11 @@ def test_get_file_type():
 # -----------------------------------------------------------------------------
 def test_get_full_name():
     """Test: get_full_name()."""
-    assert utils.get_full_name(None, None) == ""
+    assert dcr_core.core_utils.get_full_name(None, None) == ""
 
     directory_name = pathlib.Path("D:/SoftDevelopment")
 
-    utils.get_full_name(directory_name, "docx_ok.docx")
+    dcr_core.core_utils.get_full_name(directory_name, "docx_ok.docx")
 
 
 # -----------------------------------------------------------------------------
@@ -40,7 +43,7 @@ def test_get_os_independent_name():
     """Test: get_os_independent_name()."""
     file_name = pathlib.Path("D:/SoftDevelopment")
 
-    utils.get_os_independent_name(file_name)
+    dcr_core.core_utils.get_os_independent_name(file_name)
 
 
 # -----------------------------------------------------------------------------
@@ -48,7 +51,7 @@ def test_get_os_independent_name():
 # -----------------------------------------------------------------------------
 def test_get_path_name():
     """Test: get_path_name()."""
-    assert utils.get_path_name(None) == ""
+    assert dcr.utils.get_path_name(None) == ""
 
 
 # -----------------------------------------------------------------------------
@@ -56,7 +59,7 @@ def test_get_path_name():
 # -----------------------------------------------------------------------------
 def test_get_stem_name():
     """Test: get_stem_name()."""
-    assert utils.get_stem_name(None) == ""
+    assert dcr_core.core_utils.get_stem_name(None) == ""
 
 
 # -----------------------------------------------------------------------------
@@ -64,29 +67,29 @@ def test_get_stem_name():
 # -----------------------------------------------------------------------------
 def test_progress_msg_disconnected_1(fxtr_setup_logger_environment):
     """Test: get_file_type()- case 1."""
-    cfg.glob.setup.is_verbose = True
+    dcr_core.core_glob.setup.is_verbose = True
 
     # -------------------------------------------------------------------------
-    utils.progress_msg_disconnected()
+    dcr.utils.progress_msg_disconnected()
 
     # -------------------------------------------------------------------------
-    del cfg.glob.setup
+    del dcr_core.core_glob.setup
 
-    utils.progress_msg_connected(
-        database=cfg.glob.INFORMATION_NOT_YET_AVAILABLE, user=cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+    dcr.utils.progress_msg_connected(
+        database=dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE, user=dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE
     )
 
     # -------------------------------------------------------------------------
-    utils.progress_msg_disconnected()
+    dcr.utils.progress_msg_disconnected()
 
     # -------------------------------------------------------------------------
-    utils.progress_msg_empty_before("Test")
+    dcr.utils.progress_msg_empty_before("Test")
 
     with pytest.raises(SystemExit) as expt:
-        utils.terminate_fatal("Test")
+        dcr_core.core_utils.terminate_fatal("Test")
 
-    assert expt.type == SystemExit, "End of programme without object 'cfg.glob.setup'"
-    assert expt.value.code == 1, "End of programme without object 'cfg.glob.setup'"
+    assert expt.type == SystemExit, "End of programme without object 'dcr.cfg.glob.setup'"
+    assert expt.value.code == 1, "End of programme without object 'dcr.cfg.glob.setup'"
 
 
 # -----------------------------------------------------------------------------
@@ -94,36 +97,36 @@ def test_progress_msg_disconnected_1(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_progress_msg_disconnected_2(fxtr_setup_empty_db_and_inbox):
     """Test: get_file_type()."""
-    cfg.glob.setup.is_verbose = True
+    dcr_core.core_glob.setup.is_verbose = True
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
-    cfg.glob.db_core.db_current_database = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
-    cfg.glob.db_core.db_current_user = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+    dcr.cfg.glob.db_core.db_current_database = dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE
+    dcr.cfg.glob.db_core.db_current_user = dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE
 
-    utils.progress_msg_disconnected()
-
-    # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
-
-    cfg.glob.db_core.db_current_database = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
-    cfg.glob.db_core.db_current_user = ""
-
-    utils.progress_msg_disconnected()
+    dcr.utils.progress_msg_disconnected()
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
-    cfg.glob.db_core.db_current_database = ""
-    cfg.glob.db_core.db_current_user = cfg.glob.INFORMATION_NOT_YET_AVAILABLE
+    dcr.cfg.glob.db_core.db_current_database = dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE
+    dcr.cfg.glob.db_core.db_current_user = ""
 
-    utils.progress_msg_disconnected()
+    dcr.utils.progress_msg_disconnected()
 
     # -------------------------------------------------------------------------
-    cfg.glob.db_core = db.cls_db_core.DBCore()
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
-    cfg.glob.db_core.db_current_database = ""
-    cfg.glob.db_core.db_current_user = ""
+    dcr.cfg.glob.db_core.db_current_database = ""
+    dcr.cfg.glob.db_core.db_current_user = dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE
 
-    utils.progress_msg_disconnected()
+    dcr.utils.progress_msg_disconnected()
+
+    # -------------------------------------------------------------------------
+    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
+
+    dcr.cfg.glob.db_core.db_current_database = ""
+    dcr.cfg.glob.db_core.db_current_user = ""
+
+    dcr.utils.progress_msg_disconnected()

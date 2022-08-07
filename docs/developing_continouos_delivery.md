@@ -1,4 +1,4 @@
-# DCR - Developing - Continouos Delivery
+# DCR - Developing - Continuous Delivery
 
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
@@ -26,14 +26,14 @@ The individual steps to be carried out
     8. install [Pandoc](https://pandoc.org){:target="_blank"}, [Poppler](https://poppler.freedesktop.org){:target="_blank"}, [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}
     9. publish the code coverage results to **`coveralls.io`**
 
-1. in the action **`ubuntu_all_development`** are:
+2. in the action **`ubuntu_all_development`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
     2. install the **`development`** specific packages with **`pipenv`**
     3. compile the **`Python`** code
     4. install [Pandoc](https://pandoc.org){:target="_blank"}, [Poppler](https://poppler.freedesktop.org){:target="_blank"}, [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} and [TeX Live](https://www.tug.org/texlive){:target="_blank"}
     5. run pytest for writing better program
 
-1. in the action **`ubuntu_all_productionubuntu_all_production`** are:
+3. in the action **`ubuntu_all_productionubuntu_all_production`** are:
     1. set up **`Python`**, **`pip`** and **`pipenv`**
     2. install the **`production`** specific packages with **`pipenv`**
     3. compile the **`Python`** code
