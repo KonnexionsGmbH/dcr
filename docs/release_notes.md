@@ -5,20 +5,17 @@
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.6)
 
-## 1. Version 0.9.6
+## 1. Version 0.9.7
 
-Release Date: 07.08.2022
+Release Date: dd.mm.2022
 
 ### 1.1 New Features
 
-- API documentation added
-- Determination of bulleted lists.
-- Determination of numbered lists.
-- Determination of headings.
+- TODO
 
 ### 1.2 Modified Features
 
-- Code refactoring.
+- TODO
 
 ### 1.3 Applied Software
 
