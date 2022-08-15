@@ -19,7 +19,7 @@ jobs:
       max-parallel: 4
       matrix:
 # wwe   os: [""ubuntu-20.04", "ubuntu-22.04", "windows-2019", "windows-2022"]
-        os: ["ubuntu-20.04"]
+        os: ["ubuntu-18.04", "ubuntu-20.04", "ubuntu-22.04"]
         python-version: ["3.10.6"]
     steps:
       - uses: actions/checkout@v3

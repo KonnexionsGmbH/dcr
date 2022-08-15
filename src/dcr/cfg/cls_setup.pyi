@@ -39,9 +39,6 @@ class Setup(dcr_core.cls_setup.Setup):
         self.db_database: str = ""
         self.db_database_admin: str = ""
         self.db_dialect: str = ""
-        self.directory_inbox: str = ""
-        self.directory_inbox_accepted: str = ""
-        self.directory_inbox_rejected: str = ""
         self.db_host: str = ""
         self.db_initial_data_file: str = ""
         self.db_password: str = ""  # nosec
