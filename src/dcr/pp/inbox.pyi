@@ -7,11 +7,11 @@ import dcr.db.cls_action
 def check_and_create_directories() -> None: ...
 def create_directory(directory_type: str, directory_name: str) -> None: ...
 def initialise_action(
-    action_code: str = "",
-    directory_name: str = "",
-    directory_type: str = "",
-    file_name: str = "",
-    id_parent: int = 0,
+    action_code: str = ...,
+    directory_name: str = ...,
+    directory_type: str = ...,
+    file_name: str = ...,
+    id_parent: int = ...,
 ) -> dcr.db.cls_action.Action: ...
 def initialise_base(file_path: pathlib.Path) -> None: ...
 def prepare_pdf(file: pathlib.Path) -> None: ...

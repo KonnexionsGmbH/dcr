@@ -1,46 +1,38 @@
-name: Ubuntu - 20.04 LTS - Standards
+name: All - Production
 
 on:
   push:
     branches: [ '**' ]
-  pull_request:
-    branches: [ master ]
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  VERSION_PANDOC: 2.17.1.1
+  VERSION_PANDOC: 2.19
 
 jobs:
-  ubuntu_20_04_standards:
+  all_production:
     # --------------------------------------------------------------------------
-    # Perform all development-specific tools, including formatting, static code
-    # analysis, style enforcement and documentation creation. Changes in the code
-    # or in the documentation are also replicated in the repository.
+    # Install the productive environment and run all tests based on pytest.
     # --------------------------------------------------------------------------
-    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Development Standards
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production
     runs-on: ${{ matrix.os }}
+    #   env:
     strategy:
-      max-parallel: 1
+      max-parallel: 4
       matrix:
-#       os: ["ubuntu-22.04"]
-        os: ["ubuntu-20.04"]
-        python-version: ["3.10.5"]
+# wwe   os: ["ubuntu-20.04", "ubuntu-22.04", "windows-2019", "windows-2022"]
+        os: ["ubuntu-18.04", "ubuntu-20.04", "ubuntu-22.04"]
+        python-version: ["3.10.6"]
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 1  # no history, just HEAD
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+      - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dev dependencies
-        run: make pipenv-dev
-      - name: Run the formatting tools
-        run: make format
-      - name: Run the Lint software tools
-        run: make lint
-      - name: Create the documentation and upload it
-        run: make docs
+      - name: Install prod dependencies
+        run: make pipenv-prod
+      - name: Compile the Python code
+        run: make compileall
       - name: Create a PostgreSQL container
         run: |
             chmod +x ./scripts/run_setup_postgresql.sh
@@ -74,5 +66,5 @@ jobs:
             wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
             sudo apt-get update  -y
             sudo apt-get install -y tesseract-ocr
-      - name: Publish the code coverage to coveralls.io
-        run: make coveralls
+      - name: Run pytest for writing better program
+        run: make pytest-ci

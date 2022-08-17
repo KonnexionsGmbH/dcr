@@ -1,17 +1,15 @@
-name: Ubuntu - All - Development
+name: All - Development
 
 on:
   push:
     branches: [ '**' ]
-  pull_request:
-    branches: [ master ]
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  VERSION_PANDOC: 2.17.1.1
+  VERSION_PANDOC: 2.19
 
 jobs:
-  ubuntu_all_development:
+  all_development:
     # --------------------------------------------------------------------------
     # Install the development environment and run all tests based on pytest.
     # --------------------------------------------------------------------------
@@ -21,8 +19,8 @@ jobs:
       max-parallel: 4
       matrix:
 # wwe   os: [""ubuntu-20.04", "ubuntu-22.04", "windows-2019", "windows-2022"]
-        os: ["ubuntu-20.04"]
-        python-version: ["3.10.5"]
+        os: ["ubuntu-18.04", "ubuntu-20.04", "ubuntu-22.04"]
+        python-version: ["3.10.6"]
     steps:
       - uses: actions/checkout@v3
         with:

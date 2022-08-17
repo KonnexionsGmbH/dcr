@@ -12,10 +12,11 @@
 ## ----------------------------------------------------------------------------
 ## help:               Show this help.
 ## ----------------------------------------------------------------------------
+## dcr-core:           Update the dcr-core API.
+dcr-core: update-dcr-core version-dcr-core
 ## dev:                Format, lint and test the code.
 dev: format lint pydocstyle tests
 ## docs:               Check the API docs, create and upload the user docs.
-# docs: pydocstyle pydoc-markdown mkdocs
 docs: pydocstyle mkdocs
 ## format:             Format the code with isort, Black and docformatter.
 format: isort black docformatter
@@ -181,16 +182,6 @@ pipenv-prod:        ## Install the package dependencies for production.
 	${PYTHON} --version
 	${PYTHON} -m pip --version
 	@echo Info **********  End:   Installation of Production Packages *********
-
-# Pydoc-Markdown - create Python API documentation in Markdown format.
-# https://github.com/NiklasRosenstein/pydoc-markdown
-# Configuration file: pyproject.toml
-pydoc-markdown:     ## Create Python API documentation in Markdown format with Pydoc-Markdown.
-	@echo Info **********  Start: Pydoc-Markdown ******************************
-	pipenv run pydoc-markdown --version
-	@echo ---------------------------------------------------------------------
-	pipenv run pydoc-markdown -I ${PYTHONPATH} --render-toc > docs/developing_api_documentation.md
-	@echo Info **********  End:   Pydoc-Markdown ******************************
 
 # pydocstyle - docstring style checker.
 # https://github.com/PyCQA/pydocstyle

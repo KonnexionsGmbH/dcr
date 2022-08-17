@@ -339,6 +339,7 @@ def show_statistics_total() -> None:
 
         if dcr.cfg.glob.run.total_generated > 0:
             if dcr.cfg.glob.run.run_action_code == dcr.db.cls_run.Run.ACTION_CODE_PYPDF2:
+                # not testable
                 progress_msg(f"Number generated pdf documents:            {dcr.cfg.glob.run.total_generated:6d}")
             else:
                 progress_msg(f"Number pdf documents generated:            {dcr.cfg.glob.run.total_generated:6d}")

@@ -7,7 +7,7 @@ The tools **`Bandit`**, **`Flake8`**, **`Mypy`** and **`Pylint`** are used for s
 
 - [Bandit](https://bandit.readthedocs.io/en/latest){:target="_blank"} - **`Bandit`** is a tool designed to find common security issues in **`Python`** code.
 - [Flake8](https://flake8.pycqa.org/en/latest/index.html#quickstart){:target="_blank"} - A **`Python`** tool that glues together **`pycodestyle`**, **`Pyflakes`**, **`McCabe`**, and third-party plugins to check the style and quality of some **`Python`** code.
-- [Mypy](https://mypy.readthedocs.io/en/stable/introduction.html){:target="_blank"} - Optional static typing for **`Python`**.
+- [mypy](https://mypy.readthedocs.io/en/stable/){:target="_blank"} - Optional static typing for **`Python`**.
 - [Pylint](https://pylint.pycqa.org/en/latest){:target="_blank"} - It's not just a linter that annoys you!
 
 All these tools are included in the call **`make lint`** as well as in the call **`make dev`**.
