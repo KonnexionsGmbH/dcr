@@ -505,9 +505,9 @@ class DBCore:
             dcr.utils.progress_msg(f"If existing, the database '{database}' has now been dropped")
         except AttributeError:
             pass
-            # not testable
         except psycopg2.errors.InterfaceError:  # pylint: disable=no-member
             pass
+        # not testable
         except psycopg2.errors.ObjectInUse as err:  # pylint: disable=no-member
             dcr_core.core_utils.terminate_fatal(
                 f"The database can currently not be dropped - error={str(err)}",

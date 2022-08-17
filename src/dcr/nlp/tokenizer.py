@@ -25,6 +25,7 @@ import dcr.utils
 # -----------------------------------------------------------------------------
 def store_tokens_in_database() -> None:
     """Save the tokens sentence by sentence in the database."""
+    # not testable
     if not dcr_core.core_glob.setup.is_tokenize_2_database:
         return
 

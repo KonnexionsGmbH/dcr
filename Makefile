@@ -12,10 +12,11 @@
 ## ----------------------------------------------------------------------------
 ## help:               Show this help.
 ## ----------------------------------------------------------------------------
+## dcr-core:           Update the dcr-core API.
+dcr-core: update-dcr-core version-dcr-core
 ## dev:                Format, lint and test the code.
 dev: format lint pydocstyle tests
 ## docs:               Check the API docs, create and upload the user docs.
-# docs: pydocstyle pydoc-markdown mkdocs
 docs: pydocstyle mkdocs
 ## format:             Format the code with isort, Black and docformatter.
 format: isort black docformatter

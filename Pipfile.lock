@@ -334,12 +334,12 @@
         },
         "dcr-core": {
             "hashes": [
-                "sha256:36fd383ccabe5323ae61d08cc80069d00bcd42028a6f0e3f9537695b9b72ceee",
-                "sha256:3aaf4d8265d0a85dfd712327f12f3dc45ec1b9078d5a925398b83e174f777b9a"
+                "sha256:c2724179eababa85e5ba336a52324c5bc9b5d3cbf1e5450ca136c9b19675d5e6",
+                "sha256:c4290960f15ef58fcf55568d931061c9b4f6015a7edc27768f377f93f02a3016"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.10'",
-            "version": "==0.9.6.1.9"
+            "version": "==0.9.6.1.9.2"
         },
         "defusedxml": {
             "hashes": [
