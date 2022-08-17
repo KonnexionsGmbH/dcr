@@ -39,10 +39,7 @@ nav:
       - Coding Standards: developing_coding_standards.md
       - Code Formatting: developing_code_formatting.md
       - Static Code Analysis: developing_static_code_analysis.md
-      - Documentation:
-        - Software Documentation: developing_software_documentation.md
-        - Line Type Algorithms: developing_line_type.md
-        - API Documentation: developing_api_documentation.md
+      - Software Documentation: developing_software_documentation.md
       - Software Testing: developing_software_testing.md
       - Continouos Delivery: developing_continouos_delivery.md
       - Development Environment: developing_development_environment.md
