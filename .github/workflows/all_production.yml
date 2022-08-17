@@ -33,10 +33,6 @@ jobs:
         run: make pipenv-prod
       - name: Compile the Python code
         run: make compileall
-      - name: Create a PostgreSQL container
-        run: |
-            chmod +x ./scripts/run_setup_postgresql.sh
-            ./scripts/run_setup_postgresql.sh test
       - name: Install Step 1 - Necessary system software (incl. Poppler & TeX Live)
         run: |
             sudo apt-get update  -y
