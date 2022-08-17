@@ -1,4 +1,4 @@
-name: Ubuntu - 20.04 LTS - Standards
+name: Standards
 
 on:
   push:
@@ -9,7 +9,7 @@ env:
   VERSION_PANDOC: 2.19
 
 jobs:
-  ubuntu_20_04_standards:
+  standards:
     # --------------------------------------------------------------------------
     # Perform all development-specific tools, including formatting, static code
     # analysis, style enforcement and documentation creation. Changes in the code
@@ -20,7 +20,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        os: ["ubuntu-18.04", "ubuntu-20.04", "ubuntu-22.04"]
+        os: ["ubuntu-22.04"]
         python-version: ["3.10.6"]
     steps:
       - uses: actions/checkout@v3
