@@ -2,14 +2,14 @@ name: All - Production
 
 on:
   push:
-    branches: [ '**' ]
+    branches: [ 'main' ]
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   VERSION_PANDOC: 2.19
 
 jobs:
-  all_production:
+  test_production:
     # --------------------------------------------------------------------------
     # Install the productive environment and run all tests based on pytest.
     # --------------------------------------------------------------------------
@@ -19,8 +19,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-# wwe   os: ["ubuntu-18.04", "ubuntu-20.04", "ubuntu-22.04", "windows-2019", "windows-2022"]
-        os: ["ubuntu-18.04", "ubuntu-20.04", "ubuntu-22.04"]
+        os: ["ubuntu-20.04", "ubuntu-22.04"]
         python-version: ["3.10.6"]
     steps:
       - uses: actions/checkout@v3
@@ -33,6 +32,9 @@ jobs:
         run: make pipenv-prod
       - name: Compile the Python code
         run: make compileall
+      - name: Create a PostgreSQL container
+        run: |
+            chmod +x ./scripts/run_setup_postgresql.sh
       - name: Install Step 1 - Necessary system software (incl. Poppler & TeX Live)
         run: |
             sudo apt-get update  -y

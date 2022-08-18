@@ -21,7 +21,7 @@ Release Date: dd.mm.2022
 
 | Software                                                                      | Version                | Remark                              | Status  |
 |:------------------------------------------------------------------------------|:-----------------------|:------------------------------------|---------|
-| DBeaver                                                                       | 22.1.0                 | for virtual machine only [optional] |         |
+| DBeaver                                                                       | 22.1.4                 | for virtual machine only [optional] | upgrade |
 | Docker Desktop                                                                | 20.10.17               | base version [Docker Image & VM]    |         | 
 | Git                                                                           | 2.25.1                 | base version                        |         |
 | [Pandoc](https://pandoc.org){:target="_blank"}                                | 2.19                   |                                     | upgrade |
@@ -37,7 +37,7 @@ Release Date: dd.mm.2022
 
 | Software                                                        | Version         | Remark                    | Status |
 |:----------------------------------------------------------------|:----------------|:--------------------------|--------|
-| asdf                                                            | v0.10.2-7e7a1fa | base version (optional)   |        |
+| asdf                                                            | v0.10.2-5334d1d | base version (optional)   |        |
 | cURL                                                            | 7.68.0          | base version              |        |
 | dos2unix                                                        | 7.4.0           | base version              |        |
 | GCC & G++                                                       | 9.4.0           | base version              |        |
@@ -62,56 +62,9 @@ Release Date: dd.mm.2022
 
 ### 1.4 Open issues
 
-1. Microsoft Windows Server 2019: (see [here](#issues_windows_2019){:target="_blank"}) 
-
-2. Tesseract OCR: (see [here](#issues_tesseract_ocr){:target="_blank"})
+1. Tesseract OCR: (see [here](#issues_tesseract_ocr){:target="_blank"})
 
 ## 2. Detailed Open Issues
-
-### <a name="issues_windows_2019"></a> 2.1 Microsoft Windows Server 2019
-
-- Issue: File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\codecs.py", line 319, in decode
-    def decode(self, input, final=False)
-
-```
-    Using C:/hostedtoolcache/windows/Python/3.10.2/x64/python.exe (3.10.2) to create virtualenv...
-    
-    created virtual environment CPython3.10.2.final.0-64 in 6336ms
-      creator CPython3Windows(dest=C:\Users\runneradmin\.virtualenvs\dcr-IVfv-Mtw, clear=False, no_vcs_ignore=False, global=False)
-      seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=C:\Users\runneradmin\AppData\Local\pypa\virtualenv)
-        added seed packages: pip==22.0.3, setuptools==60.9.3, wheel==0.37.1
-      activators BashActivator,BatchActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
-    
-    
-    Successfully created virtual environment!
-    Virtualenv location: C:\Users\runneradmin\.virtualenvs\dcr-IVfv-Mtw
-    Installing dependencies from Pipfile.lock (df9ac6)...
-    To activate this project's virtualenv, run pipenv shell.
-    Alternatively, run a command inside the virtualenv with pipenv run.
-    python -m pipenv update --dev
-    Running $ pipenv lock then $ pipenv sync.
-    
-    Locking [dev-packages] dependencies...
-    
-    
-    Building requirements...
-    
-    Resolving dependencies...
-    
-    Traceback (most recent call last):
-      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1129, in create_spinner
-        yield sp
-      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1320, in venv_resolve_deps
-        c = resolve(cmd, sp, project=project)
-      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\site-packages\pipenv\utils.py", line 1139, in resolve
-        for line in iter(c.stderr.readline, ""):
-      File "C:\hostedtoolcache\windows\Python\3.10.2\x64\lib\codecs.py", line 319, in decode
-        def decode(self, input, final=False):
-    KeyboardInterrupt
-    
-    
-    Aborted!
-```
 
 ### <a name="issues_tesseract_ocr"></a> 2.2 [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"}
 
