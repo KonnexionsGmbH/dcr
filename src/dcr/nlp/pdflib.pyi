@@ -1,5 +1,8 @@
-"""Library Stub."""
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
 
+"""Stub file."""
 LINE_TET_DOCUMENT_OPT_LIST: str
 LINE_TET_PAGE_OPT_LIST: str
 LINE_XML_VARIATION: str
