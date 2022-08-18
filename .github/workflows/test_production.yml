@@ -2,7 +2,7 @@ name: All - Production
 
 on:
   push:
-    branches: [ 'main' ]
+    branches: [ '**' ]
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
