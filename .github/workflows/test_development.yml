@@ -1,36 +1,35 @@
-name: All - Production
+name: All - Development
 
 on:
   push:
-    branches: [ '**' ]
+    branches: [ 'main' ]
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   VERSION_PANDOC: 2.19
 
 jobs:
-  all_production:
+  test_development:
     # --------------------------------------------------------------------------
-    # Install the productive environment and run all tests based on pytest.
+    # Install the development environment and run all tests based on pytest.
     # --------------------------------------------------------------------------
-    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Production
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Test Framework
     runs-on: ${{ matrix.os }}
-    #   env:
     strategy:
       max-parallel: 4
       matrix:
-# wwe   os: ["ubuntu-18.04", "ubuntu-20.04", "ubuntu-22.04", "windows-2019", "windows-2022"]
         os: ["ubuntu-20.04", "ubuntu-22.04"]
         python-version: ["3.10.6"]
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 1  # no history, just HEAD
-      - uses: actions/setup-python@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install prod dependencies
-        run: make pipenv-prod
+      - name: Install dev dependencies
+        run: make pipenv-dev
       - name: Compile the Python code
         run: make compileall
       - name: Create a PostgreSQL container
@@ -66,4 +65,4 @@ jobs:
             sudo apt-get update  -y
             sudo apt-get install -y tesseract-ocr
       - name: Run pytest for writing better program
-        run: make pytest-ci
+        run: make pytest

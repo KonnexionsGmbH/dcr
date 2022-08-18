@@ -7,6 +7,6 @@
 Ubuntu is used here via the **`VM Workstation Player 16`**.
 **`Ubuntu`** can also be used in conjunction with the **`Windows Subsystem for Linux (WSL2)`**.
 
-The GitHub actions for continuous integration run on **`Ubuntu 18.04`** and **`Ubuntu 22.04`**~~, **`Micrsoft Windows Server 2019`** and **`Micrsoft Windows Server 2022`**~~.
+The GitHub actions for continuous integration run on **`Ubuntu 20.04`** and **`Ubuntu 22.04`**.
 
 Version **`3.10`** is used for the **`Python`** programming language.
