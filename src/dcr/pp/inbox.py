@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 """Module pp.inbox: Check, distribute and process incoming documents.
 
 New documents are made available in the file directory inbox. These are
