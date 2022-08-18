@@ -975,35 +975,6 @@ def test_missing_dependencies_document_0(fxtr_setup_logger):
 
 
 # -----------------------------------------------------------------------------
-# Test Function - missing dependencies - document - case 1.
-# -----------------------------------------------------------------------------
-def test_missing_dependencies_document_1(fxtr_setup_empty_db_and_inbox):
-    """# Test Function - missing dependencies - document - case 1."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
-
-    # -------------------------------------------------------------------------
-    dcr.cfg.glob.db_document = dcr.db.cls_document.Document(
-        action_code_last="", directory_name="", file_name="dummy", id_language=0, id_run_last=0, _row_id=4711
-    )
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.delete_existing_object(is_setup=True)
-
-    # -------------------------------------------------------------------------
-    with pytest.raises(SystemExit) as expt:
-        dcr.cfg.glob.document.get_stem_name_next()
-
-    assert expt.type == SystemExit, "Instance of class 'Setup' is missing"
-    assert expt.value.code == 1, "Instance of class 'Setup' is missing"
-
-    # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
 # Test Function - missing dependencies - language - case 0.
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_language_0(fxtr_setup_logger):
