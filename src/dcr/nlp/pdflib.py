@@ -6,9 +6,10 @@
 import os
 import time
 
+import dcr_core.cls_nlp_core
+import dcr_core.cls_process
 import dcr_core.core_glob
 import dcr_core.core_utils
-import dcr_core.processing
 
 import dcr.cfg.glob
 import dcr.db.cls_action
@@ -21,18 +22,6 @@ import dcr.utils
 # -----------------------------------------------------------------------------
 ERROR_51_904 = "51.904 Issue (pdflib): The target file '{full_name}' already exists."
 
-LINE_TET_DOCUMENT_OPT_LIST = "engines={noannotation noimage text notextcolor novector}"
-LINE_TET_PAGE_OPT_LIST = "granularity=line"
-LINE_XML_VARIATION = "line."
-
-PAGE_TET_DOCUMENT_OPT_LIST = "engines={noannotation noimage text notextcolor novector} " + "lineseparator=U+0020"
-PAGE_TET_PAGE_OPT_LIST = "granularity=page"
-PAGE_XML_VARIATION = "page."
-
-WORD_TET_DOCUMENT_OPT_LIST = "engines={noannotation noimage text notextcolor novector}"
-WORD_TET_PAGE_OPT_LIST = "granularity=word tetml={elements={line}}"
-WORD_XML_VARIATION = "word."
-
 
 # -----------------------------------------------------------------------------
 # Extract text from pdf documents (step: tet).
@@ -42,7 +31,7 @@ def extract_text_from_pdf() -> None:
 
     TBD
     """
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     with dcr.cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = dcr.db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=dcr.db.cls_run.Run.ACTION_CODE_PDFLIB)
@@ -62,25 +51,25 @@ def extract_text_from_pdf() -> None:
             dcr.cfg.glob.document = dcr.db.cls_document.Document.from_id(id_document=dcr.cfg.glob.action_curr.action_id_document)
 
             is_no_error = extract_text_from_pdf_file(
-                document_opt_list=LINE_TET_DOCUMENT_OPT_LIST,
-                page_opt_list=LINE_TET_PAGE_OPT_LIST,
-                xml_variation=LINE_XML_VARIATION,
+                document_opt_list=dcr_core.cls_nlp_core.NLPCore.LINE_TET_DOCUMENT_OPT_LIST,
+                page_opt_list=dcr_core.cls_nlp_core.NLPCore.LINE_TET_PAGE_OPT_LIST,
+                xml_variation=dcr_core.cls_nlp_core.NLPCore.LINE_XML_VARIATION,
             )
 
             if dcr_core.core_glob.setup.is_tetml_page:
                 if is_no_error:
                     is_no_error = extract_text_from_pdf_file(
-                        document_opt_list=PAGE_TET_DOCUMENT_OPT_LIST,
-                        page_opt_list=PAGE_TET_PAGE_OPT_LIST,
-                        xml_variation=PAGE_XML_VARIATION,
+                        document_opt_list=dcr_core.cls_nlp_core.NLPCore.PAGE_TET_DOCUMENT_OPT_LIST,
+                        page_opt_list=dcr_core.cls_nlp_core.NLPCore.PAGE_TET_PAGE_OPT_LIST,
+                        xml_variation=dcr_core.cls_nlp_core.NLPCore.PAGE_XML_VARIATION,
                     )
 
             if dcr_core.core_glob.setup.is_tetml_word:
                 if is_no_error:
                     is_no_error = extract_text_from_pdf_file(
-                        document_opt_list=WORD_TET_DOCUMENT_OPT_LIST,
-                        page_opt_list=WORD_TET_PAGE_OPT_LIST,
-                        xml_variation=WORD_XML_VARIATION,
+                        document_opt_list=dcr_core.cls_nlp_core.NLPCore.WORD_TET_DOCUMENT_OPT_LIST,
+                        page_opt_list=dcr_core.cls_nlp_core.NLPCore.WORD_TET_PAGE_OPT_LIST,
+                        xml_variation=dcr_core.cls_nlp_core.NLPCore.WORD_XML_VARIATION,
                     )
 
             if is_no_error:
@@ -94,7 +83,7 @@ def extract_text_from_pdf() -> None:
 
     dcr.utils.show_statistics_total()
 
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -106,7 +95,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
     full_name_curr = dcr.cfg.glob.action_curr.get_full_name()
 
     file_name_next = dcr.cfg.glob.action_curr.get_stem_name() + "." + xml_variation + dcr_core.core_glob.FILE_TYPE_XML
-    full_name_next = dcr_core.core_utils.get_full_name(
+    full_name_next = dcr_core.core_utils.get_full_name_from_components(
         dcr.cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )
@@ -119,7 +108,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
 
         return False
 
-    (error_code, error_msg) = dcr_core.processing.pdflib_process(
+    (error_code, error_msg) = dcr_core.cls_process.Process.pdflib_process(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         document_opt_list=document_opt_list,
@@ -129,9 +118,9 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
         dcr.cfg.glob.action_curr.finalise_error(error_code, error_msg)
         return False
 
-    if xml_variation == LINE_XML_VARIATION:
+    if xml_variation == dcr_core.cls_nlp_core.NLPCore.LINE_XML_VARIATION:
         action_code = dcr.db.cls_run.Run.ACTION_CODE_PARSER_LINE
-    elif xml_variation == PAGE_XML_VARIATION:
+    elif xml_variation == dcr_core.cls_nlp_core.NLPCore.PAGE_XML_VARIATION:
         action_code = dcr.db.cls_run.Run.ACTION_CODE_PARSER_PAGE
     else:
         action_code = dcr.db.cls_run.Run.ACTION_CODE_PARSER_WORD

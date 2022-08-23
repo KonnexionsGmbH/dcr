@@ -8,11 +8,11 @@ database."""
 import time
 
 import dcr_core.cls_nlp_core
+import dcr_core.cls_process
 import dcr_core.cls_text_parser
 import dcr_core.cls_tokenizer_spacy
 import dcr_core.core_glob
 import dcr_core.core_utils
-import dcr_core.processing
 
 import dcr.cfg.glob
 import dcr.db.cls_action
@@ -77,7 +77,7 @@ def tokenize() -> None:
 
     TBD
     """
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     dcr_core.core_glob.tokenizer_spacy = dcr_core.cls_tokenizer_spacy.TokenizerSpacy()
 
@@ -105,7 +105,7 @@ def tokenize() -> None:
 
     dcr.utils.show_statistics_total()
 
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -125,14 +125,14 @@ def tokenize_file() -> None:
 
     if dcr_core.core_glob.setup.is_tokenize_2_jsonfile:
         file_name_next = dcr.cfg.glob.action_curr.get_stem_name() + "_token." + dcr_core.core_glob.FILE_TYPE_JSON
-        full_name_next = dcr_core.core_utils.get_full_name(
+        full_name_next = dcr_core.core_utils.get_full_name_from_components(
             dcr.cfg.glob.action_curr.action_directory_name,
             file_name_next,
         )
     else:
         full_name_next = ""
 
-    (error_code, error_msg) = dcr_core.processing.tokenizer_process(
+    (error_code, error_msg) = dcr_core.cls_process.Process.tokenizer_process(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         document_id=dcr.cfg.glob.document.document_id,

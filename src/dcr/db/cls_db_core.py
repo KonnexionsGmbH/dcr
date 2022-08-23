@@ -138,7 +138,7 @@ class DBCore:
             is_admin (bool, optional):
                     Administrator access. Defaults to False.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dcr_core.core_utils.check_exists_object(
             is_setup=True,
@@ -157,7 +157,7 @@ class DBCore:
 
         self._exist = True
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Create a database connection for the database administrator.
@@ -168,7 +168,7 @@ class DBCore:
         Returns:
             psycopg2.connection: Database connection.
         """
-        dcr.cfg.glob.logger.debug("Attempting to connect to a administration  database")
+        dcr_core.core_glob.logger.debug("Attempting to connect to a administration  database")
 
         self._db_current_database = dcr_core.core_glob.setup.db_database_admin
         self._db_current_password = dcr_core.core_glob.setup.db_password_admin
@@ -191,7 +191,7 @@ class DBCore:
 
         self._db_driver_conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
-        dcr.cfg.glob.logger.debug("The database engine is ready for the administrator")
+        dcr_core.core_glob.logger.debug("The database engine is ready for the administrator")
 
         return self._db_driver_conn
 
@@ -204,7 +204,7 @@ class DBCore:
         Returns:
             tuple[Engine,MetaData]: Database engine and metadata
         """
-        dcr.cfg.glob.logger.debug("Attempting to connect to a user database")
+        dcr_core.core_glob.logger.debug("Attempting to connect to a user database")
 
         self._db_current_database = dcr_core.core_glob.setup.db_database
         self._db_current_password = dcr_core.core_glob.setup.db_password
@@ -234,12 +234,12 @@ class DBCore:
                 f"No database connection possible - error={str(err)}",
             )
 
-        dcr.cfg.glob.logger.debug("The database engine is ready for the user")
+        dcr_core.core_glob.logger.debug("The database engine is ready for the user")
 
         self.db_orm_metadata = sqlalchemy.MetaData()
         self.db_orm_metadata.bind = self.db_orm_engine
 
-        dcr.cfg.glob.logger.debug("Database metadata are ready")
+        dcr_core.core_glob.logger.debug("Database metadata are ready")
 
         return self.db_orm_engine, self.db_orm_metadata
 
@@ -248,7 +248,7 @@ class DBCore:
     # -----------------------------------------------------------------------------
     def _create_database_postgresql(self) -> None:
         """Create the database tables."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         self._drop_database_postgresql()
 
@@ -271,7 +271,7 @@ class DBCore:
 
         dcr.utils.progress_msg(f"The database has been successfully created, " f"version number='{dcr_core.cls_setup.Setup.DCR_VERSION}'")
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Create the trigger function.
@@ -283,7 +283,7 @@ class DBCore:
         Args:
             column_name (str): Column name.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         sqlalchemy.event.listen(
             self.db_orm_metadata,
@@ -308,7 +308,7 @@ class DBCore:
 
         dcr.utils.progress_msg(f"The trigger function 'function_{column_name}' has now been created")
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Create the trigger for the database column created_at.
@@ -319,7 +319,7 @@ class DBCore:
         Args:
             table_name (str): Table name.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         sqlalchemy.event.listen(
             self.db_orm_metadata,
@@ -339,7 +339,7 @@ class DBCore:
 
         dcr.utils.progress_msg(f"The trigger 'trigger_created_at_{table_name}' has now been created")
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Create the trigger for the database column modified_at.
@@ -350,7 +350,7 @@ class DBCore:
         Args:
             table_name (str): Table name.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         sqlalchemy.event.listen(
             self.db_orm_metadata,
@@ -370,7 +370,7 @@ class DBCore:
 
         dcr.utils.progress_msg(f"The trigger 'trigger_modified_at_{table_name}' has now been created")
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Create the triggers for the database tables.
@@ -381,7 +381,7 @@ class DBCore:
         Args:
             table_names (list[str]): Table names.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dcr.utils.progress_msg("Create the database triggers ...")
 
@@ -392,14 +392,14 @@ class DBCore:
             self._create_db_trigger_created_at(table_name)
             self._create_db_trigger_modified_at(table_name)
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Create the database tables and triggers.
     # -----------------------------------------------------------------------------
     def _create_schema(self) -> None:
         """Create the database tables and triggers."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         self._connect_db_user()
 
@@ -478,28 +478,28 @@ class DBCore:
         # Disconnect from the database.
         self.disconnect_db()
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Drop the database.
     # -----------------------------------------------------------------------------
     def _drop_database(self) -> None:
         """Drop the database."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         if dcr_core.core_glob.setup.db_dialect == DBCore.DB_DIALECT_POSTGRESQL:
             self._drop_database_postgresql()
         else:
             dcr_core.core_utils.terminate_fatal(f"A database dialect '{dcr_core.core_glob.setup.db_dialect}' " f"is not supported in DCR")
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Drop the PostgreSQL database.
     # -----------------------------------------------------------------------------
     def _drop_database_postgresql(self) -> None:
         """Drop the PostgreSQL database."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         database = dcr_core.core_glob.setup.db_database
         user = dcr_core.core_glob.setup.db_user
@@ -525,30 +525,30 @@ class DBCore:
         except AttributeError:
             pass
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Show the details of the projected database connection.
     # -----------------------------------------------------------------------------
     def _show_connection_details(self) -> None:
         """Show the details of the projected database connection."""
-        dcr.cfg.glob.logger.debug("Database connection parameter: host:    '%s'", dcr_core.core_glob.setup.db_host)
-        dcr.cfg.glob.logger.debug("Database connection parameter: port:    '%s'", dcr_core.core_glob.setup.db_connection_port)
-        dcr.cfg.glob.logger.debug("Database connection parameter: database '%s'", self._db_current_database)
-        dcr.cfg.glob.logger.debug("Database connection parameter: user     '%s'", self._db_current_user)
+        dcr_core.core_glob.logger.debug("Database connection parameter: host:    '%s'", dcr_core.core_glob.setup.db_host)
+        dcr_core.core_glob.logger.debug("Database connection parameter: port:    '%s'", dcr_core.core_glob.setup.db_connection_port)
+        dcr_core.core_glob.logger.debug("Database connection parameter: database '%s'", self._db_current_database)
+        dcr_core.core_glob.logger.debug("Database connection parameter: user     '%s'", self._db_current_user)
 
         if dcr_core.core_glob.setup.environment_variant in [
             dcr_core.cls_setup.Setup.ENVIRONMENT_TYPE_DEV,
             dcr_core.cls_setup.Setup.ENVIRONMENT_TYPE_TEST,
         ]:
-            dcr.cfg.glob.logger.debug("Database connection parameter: password '%s'", self._db_current_password)
+            dcr_core.core_glob.logger.debug("Database connection parameter: password '%s'", self._db_current_password)
 
     # -----------------------------------------------------------------------------
     # Upgrade the current database schema - from one version to the next.
     # -----------------------------------------------------------------------------
     def _upgrade_database_version(self) -> None:
         """Upgrade the current database schema - from one version to the next."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         if (current_version := dcr.db.cls_version.Version.select_version_version_unique()) < "1.0.0":
             dcr_core.core_utils.terminate_fatal("An automatic upgrade of the database version is only " + "supported from version 1.0.0.")
@@ -570,14 +570,14 @@ class DBCore:
     # -----------------------------------------------------------------------------
     def create_database(self) -> None:
         """Create the database."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         if dcr_core.core_glob.setup.db_dialect == DBCore.DB_DIALECT_POSTGRESQL:
             self._create_database_postgresql()
         else:
             dcr_core.core_utils.terminate_fatal(f"A database dialect '{dcr_core.core_glob.setup.db_dialect}' " f"is not supported in DCR")
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Disconnect the database.
@@ -741,7 +741,7 @@ class DBCore:
         Check if the current database schema needs to be upgraded and
         perform the necessary steps.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dcr.utils.progress_msg("Upgrade the database tables ...")
 
@@ -757,4 +757,4 @@ class DBCore:
 
         self.disconnect_db()
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

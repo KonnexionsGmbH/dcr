@@ -25,10 +25,10 @@ import dcr.launcher
 # -----------------------------------------------------------------------------
 def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_IMAGE_2_PDF - normal - duplicate."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_duplicate <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_image_2_pdf_normal_duplicate <=========")
 
     stem_name_1 = "tiff_pdf_text_ok"
     file_ext_1 = "tiff"
@@ -55,7 +55,7 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -63,7 +63,7 @@ def test_run_action_image_2_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_IMAGE_2_PDF - normal - timeout."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
@@ -80,7 +80,7 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 1/2 <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 1/2 <=========")
 
     stem_name = "pdf_scanned_ok"
     file_ext = "pdf"
@@ -98,7 +98,7 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 2/2 <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_image_2_pdf_normal_timeout 2/2 <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -111,4 +111,4 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

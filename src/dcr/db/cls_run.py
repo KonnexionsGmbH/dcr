@@ -101,7 +101,7 @@ class Run:
             total_processed_to_be (int, optional):
                     Total number of documents to be processed. Defaults to 0.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dcr.utils.check_exists_object(
             is_db_core=True,
@@ -137,7 +137,7 @@ class Run:
 
         self._exist = True
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the database columns.
@@ -149,8 +149,8 @@ class Run:
             dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         self.run_action_text = Run.get_action_text(self.run_action_code)
 
@@ -170,7 +170,7 @@ class Run:
     @classmethod
     def create_dbt(cls) -> None:
         """Create the database table."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_RUN,
@@ -213,7 +213,7 @@ class Run:
 
         dcr.utils.progress_msg(f"The database table '{dcr.db.cls_db_core.DBCore.DBT_RUN}' has now been created")
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -231,13 +231,13 @@ class Run:
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
         """Finalise the current row."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         self.run_status = dcr.db.cls_document.Document.DOCUMENT_STATUS_END
 
         self.persist_2_db()
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Initialise from id.
@@ -253,7 +253,7 @@ class Run:
         Returns:
             Run:    The object instance found.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_RUN,
@@ -274,7 +274,7 @@ class Run:
                 f"The run with id={id_run} does not exist in the database table 'run'",
             )
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return Run.from_row(row)  # type: ignore
 
@@ -292,8 +292,8 @@ class Run:
         Returns:
             Run:    The object instance matching the specified database row.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return cls(
             _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
@@ -372,8 +372,8 @@ class Run:
             int | Integer,
         ]:          Column values in a tuple.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return (
             self.run_id,
@@ -416,7 +416,7 @@ class Run:
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         if self.run_id == 0:
             self.run_id = dcr.cfg.glob.db_core.insert_dbt_row(  # type: ignore
@@ -437,4 +437,4 @@ class Run:
                 columns=self._get_columns(),
             )
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

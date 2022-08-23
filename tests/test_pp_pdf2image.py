@@ -27,7 +27,7 @@ import dcr.launcher
 # -----------------------------------------------------------------------------
 def test_run_action_pdf_2_image_missing_input_file(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PDF_2_IMAGE - missing input file."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
@@ -39,7 +39,7 @@ def test_run_action_pdf_2_image_missing_input_file(fxtr_setup_empty_db_and_inbox
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_pdf_2_image_missing_input_file <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_pdf_2_image_missing_input_file <=========")
 
     stem_name_1 = "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib"
     file_ext_1 = "pdf"
@@ -54,12 +54,16 @@ def test_run_action_pdf_2_image_missing_input_file(fxtr_setup_empty_db_and_inbox
     # -------------------------------------------------------------------------
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_INBOX])
 
-    os.remove(dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "_1." + file_ext_1))
+    os.remove(
+        dcr_core.core_utils.get_full_name_from_components(
+            dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "_1." + file_ext_1
+        )
+    )
 
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -67,10 +71,10 @@ def test_run_action_pdf_2_image_missing_input_file(fxtr_setup_empty_db_and_inbox
 # -----------------------------------------------------------------------------
 def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PDF_2_IMAGE - normal - png - duplicate."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_pdf_2_image_normal_png 1/2 <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_pdf_2_image_normal_png 1/2 <=========")
 
     pytest.helpers.config_params_modify(
         dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
@@ -103,7 +107,7 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDF2IMAGE])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_pdf_2_image_normal_png 2/2 <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_pdf_2_image_normal_png 2/2 <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -116,4 +120,4 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

@@ -5,7 +5,6 @@
 """Stub file."""
 from __future__ import annotations
 
-import logging
 import os
 
 import dcr.db.cls_action
@@ -28,7 +27,6 @@ directory_inbox_accepted: os.PathLike[str] | str
 directory_inbox_rejected: os.PathLike[str] | str
 document: dcr.db.cls_document.Document
 language: dcr.db.cls_language.Language
-logger: logging.Logger
 run: dcr.db.cls_run.Run
 start_time_document: int
 token: dcr.db.cls_token.Token

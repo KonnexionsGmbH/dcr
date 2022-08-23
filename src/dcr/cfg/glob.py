@@ -5,7 +5,6 @@
 """Module dcr.cfg.glob: DCR Global Data."""
 from __future__ import annotations
 
-import logging
 import os
 
 import dcr.db
@@ -32,8 +31,6 @@ directory_inbox_rejected: os.PathLike[str] | str
 document: dcr.db.cls_document.Document
 
 language: dcr.db.cls_language.Language
-
-logger: logging.Logger
 
 run: dcr.db.cls_run.Run
 

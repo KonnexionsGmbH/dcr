@@ -733,7 +733,7 @@ def check_new_version():
 # -----------------------------------------------------------------------------
 def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     """Test Function - existing objects."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -775,7 +775,7 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     check_existing_token()
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -783,7 +783,7 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_action_0(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing dependencies - action - case0."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_db_core=True)
@@ -802,7 +802,7 @@ def test_missing_dependencies_action_0(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -813,7 +813,7 @@ def test_missing_dependencies_action_1(fxtr_setup_empty_db_and_inbox):
     pytest.helpers.delete_existing_object(is_run=True)
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     directory_name = dcr_core.core_glob.setup.directory_inbox
@@ -847,7 +847,7 @@ def test_missing_dependencies_action_1(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Class Action requires class Run"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -855,7 +855,7 @@ def test_missing_dependencies_action_1(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing dependencies - action - case 2."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_action_curr=True, is_document=True, is_run=True)
@@ -925,7 +925,7 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Class Action requires class Action (finalise_error)"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -934,7 +934,7 @@ def test_missing_dependencies_action_2(fxtr_setup_empty_db_and_inbox):
 def test_missing_dependencies_db_core_0(fxtr_setup_empty_db_and_inbox):
     """# Test Function - missing dependencies - db_core - case 0.
     ."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
@@ -950,7 +950,7 @@ def test_missing_dependencies_db_core_0(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Instance of class 'Setup' is missing"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -959,7 +959,7 @@ def test_missing_dependencies_db_core_0(fxtr_setup_empty_db_and_inbox):
 def test_missing_dependencies_document_0(fxtr_setup_logger):
     """# Test Function - missing dependencies - document - case 0.
     ."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_db_core=True)
@@ -984,7 +984,7 @@ def test_missing_dependencies_document_0(fxtr_setup_logger):
 def test_missing_dependencies_language_0(fxtr_setup_logger):
     """# Test Function - missing dependencies - language - case 0.
     ."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_db_core=True)
@@ -1004,7 +1004,7 @@ def test_missing_dependencies_language_0(fxtr_setup_logger):
     assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1013,7 +1013,7 @@ def test_missing_dependencies_language_0(fxtr_setup_logger):
 def test_missing_dependencies_language_1(fxtr_setup_empty_db_and_inbox):
     """# Test Function - missing dependencies - language - case 1.
     ."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
@@ -1036,7 +1036,7 @@ def test_missing_dependencies_language_1(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Instance of class 'Setup' is missing"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1045,7 +1045,7 @@ def test_missing_dependencies_language_1(fxtr_setup_empty_db_and_inbox):
 def test_missing_dependencies_run_0(fxtr_setup_logger):
     """# Test Function - missing dependencies - run - case 0.
     ."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_db_core=True)
@@ -1060,7 +1060,7 @@ def test_missing_dependencies_run_0(fxtr_setup_logger):
     assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1069,7 +1069,7 @@ def test_missing_dependencies_run_0(fxtr_setup_logger):
 def test_missing_dependencies_token_0(fxtr_setup_logger):
     """# Test Function - missing dependencies - token - case 0.
     ."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_db_core=True)
@@ -1096,7 +1096,7 @@ def test_missing_dependencies_token_0(fxtr_setup_logger):
     assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1105,7 +1105,7 @@ def test_missing_dependencies_token_0(fxtr_setup_logger):
 def test_missing_dependencies_version_0(fxtr_setup_logger):
     """# Test Function - missing dependencies - version - case 0.
     ."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.delete_existing_object(is_db_core=True)
@@ -1118,7 +1118,7 @@ def test_missing_dependencies_version_0(fxtr_setup_logger):
     assert expt.value.code == 1, "Instance of class 'DBCore' is missing"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1126,7 +1126,7 @@ def test_missing_dependencies_version_0(fxtr_setup_logger):
 # -----------------------------------------------------------------------------
 def test_missing_objects(fxtr_setup_empty_db_and_inbox):
     """Test Function - missing objects."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
@@ -1143,7 +1143,7 @@ def test_missing_objects(fxtr_setup_empty_db_and_inbox):
     check_missing_token()
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1154,7 +1154,7 @@ def test_new_objects(fxtr_setup_empty_db_and_inbox):
 
     Based on document 'pdf_test_ok.pdf'.
     """
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
@@ -1178,7 +1178,7 @@ def test_new_objects(fxtr_setup_empty_db_and_inbox):
     check_new_token()
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1186,7 +1186,7 @@ def test_new_objects(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_select_version_version_unique_driver(fxtr_setup_empty_db_and_inbox):
     """Test: select_version_version_unique()."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
@@ -1220,7 +1220,7 @@ def test_select_version_version_unique_driver(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Version missing (driver)"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1228,7 +1228,7 @@ def test_select_version_version_unique_driver(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_select_version_version_unique_orm(fxtr_setup_empty_db_and_inbox):
     """Test: select_version_version_unique()."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
@@ -1257,4 +1257,4 @@ def test_select_version_version_unique_orm(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Version missing (orm)"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

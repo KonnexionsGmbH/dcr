@@ -7,8 +7,6 @@
 This is the entry point to the application DCR.
 """
 import locale
-import logging
-import logging.config
 import sys
 import time
 
@@ -17,7 +15,6 @@ import dcr_core.cls_setup
 import dcr_core.core_glob
 import dcr_core.core_utils
 import sqlalchemy
-import yaml
 
 import dcr.cfg.cls_setup
 import dcr.cfg.glob
@@ -49,7 +46,7 @@ LOGGER_CFG_FILE = "logging_cfg.yaml"
 # -----------------------------------------------------------------------------
 def check_db_up_to_date() -> None:
     """Check that the database version is up-to-date."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     if dcr.cfg.glob.db_core.db_orm_engine is None:
         dcr_core.core_utils.terminate_fatal(
@@ -70,7 +67,7 @@ def check_db_up_to_date() -> None:
 
     dcr.utils.progress_msg(f"The current version of database is '{current_version}'")
 
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -115,7 +112,7 @@ def get_args(argv: list[str]) -> dict[str, bool]:
     Returns:
         dict[str, bool]: The processing steps based on CLI arguments.
     """
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     num = len(argv)
 
@@ -166,24 +163,9 @@ def get_args(argv: list[str]) -> dict[str, bool]:
 
     dcr.utils.progress_msg("The command line arguments are validated and loaded")
 
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     return args
-
-
-# -----------------------------------------------------------------------------
-# Initialising the logging functionality.
-# -----------------------------------------------------------------------------
-def initialise_logger() -> None:
-    """Initialise the root logging functionality."""
-    with open(LOGGER_CFG_FILE, "r", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as file_handle:
-        log_config = yaml.safe_load(file_handle.read())
-
-    logging.config.dictConfig(log_config)
-    dcr.cfg.glob.logger = logging.getLogger("launcher.py")
-    dcr.cfg.glob.logger.setLevel(logging.DEBUG)
-
-    dcr.utils.progress_msg_core("The logger is configured and ready")
 
 
 # -----------------------------------------------------------------------------
@@ -198,10 +180,10 @@ def main(argv: list[str]) -> None:
         argv (list[str]): Command line arguments.
     """
     # Initialise the logging functionality.
-    initialise_logger()
+    dcr_core.core_glob.initialise_logger("dcr")
 
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
-    dcr.cfg.glob.logger.info("Start launcher.py")
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.info("Start launcher.py")
 
     print("Start launcher.py")
 
@@ -231,8 +213,8 @@ def main(argv: list[str]) -> None:
 
     print("End   launcher.py")
 
-    dcr.cfg.glob.logger.info("End   launcher.py")
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.info("End   launcher.py")
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -295,7 +277,7 @@ def process_documents(args: dict[str, bool]) -> None:
     Args:
         args (dict[str, bool]): The processing steps based on CLI arguments.
     """
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # Connect to the database.
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
@@ -357,7 +339,7 @@ def process_documents(args: dict[str, bool]) -> None:
     # Disconnect from the database.
     dcr.cfg.glob.db_core.disconnect_db()
 
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
