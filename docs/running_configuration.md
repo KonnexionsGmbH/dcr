@@ -106,7 +106,7 @@ This file controls the logging behaviour of the application.
       file_handler:
         class: logging.FileHandler
         level: INFO
-        filename: run_dcr_debug.log
+        filename: logging_dcr.log
         formatter: extended
     
     loggers:
