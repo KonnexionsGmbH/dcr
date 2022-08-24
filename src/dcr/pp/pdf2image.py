@@ -83,6 +83,7 @@ def convert_pdf_2_image_file() -> None:
     )
     if error_code != dcr_core.core_glob.RETURN_OK[0]:
         dcr.cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return
 
     file_size_bytes = 0

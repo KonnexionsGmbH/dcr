@@ -162,9 +162,6 @@ class Document:
             dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         self.document_action_text_last = dcr.db.cls_run.Run.get_action_text(self.document_action_code_last)
 
         return {
@@ -287,6 +284,8 @@ class Document:
                     Error message.
         """
         dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param error_code=%s", error_code)
+        dcr_core.core_glob.logger.debug("param error_msg =%s", error_msg)
 
         self.document_error_code_last = error_code
         self.document_error_msg_last = error_msg
@@ -313,6 +312,7 @@ class Document:
                     The object instance found.
         """
         dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param id_document=%i", id_document)
 
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_DOCUMENT,
@@ -352,9 +352,6 @@ class Document:
             Document:
                     The object instance matching the specified database row.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         return cls(
             _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
             action_code_last=row[dcr.db.cls_db_core.DBCore.DBC_ACTION_CODE_LAST],
@@ -395,6 +392,8 @@ class Document:
                         Column values in a tuple.
         """
         dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param is_file_size_bytes=%s", is_file_size_bytes)
+        dcr_core.core_glob.logger.debug("param is_sha256         =%s", is_sha256)
 
         columns = [
             self.document_id,
@@ -498,6 +497,8 @@ class Document:
         Returns:
             str:    Stem name of the following action.
         """
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
         if self.document_file_name == "":
             return self.document_file_name
 
@@ -506,11 +507,14 @@ class Document:
         )
 
         if dcr_core.core_glob.setup.doc_id_in_file_name == "none":
+            dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
             return dcr_core.core_utils.get_stem_name(str(self.document_file_name))
 
         if dcr_core.core_glob.setup.doc_id_in_file_name == "after":
+            dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
             return dcr_core.core_utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
 
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return str(self.document_id) + "_" + dcr_core.core_utils.get_stem_name(str(self.document_file_name))
 
     # -----------------------------------------------------------------------------
@@ -563,6 +567,10 @@ class Document:
             str | None:
                     The file name found.
         """
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param id_document=%i", id_document)
+        dcr_core.core_glob.logger.debug("param sha256     =%s", sha256)
+
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_DOCUMENT,
             dcr.cfg.glob.db_core.db_orm_metadata,
@@ -584,6 +592,11 @@ class Document:
             conn.close()
 
             if row is None:
+                dcr_core.core_glob.logger.debug("return           =")
+                dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
                 return ""
+
+            dcr_core.core_glob.logger.debug("return           =%s", row[0])
+            dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
             return row[0]  # type: ignore

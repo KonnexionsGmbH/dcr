@@ -66,9 +66,6 @@ class Version:
             dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         return {
             dcr.db.cls_db_core.DBCore.DBC_VERSION: self.version_version,
         }
@@ -144,6 +141,7 @@ class Version:
                     The object instance found.
         """
         dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param id_version=%i", id_version)
 
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_VERSION,
@@ -183,9 +181,6 @@ class Version:
             Version:
                     The object instance matching the specified database row.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         return cls(
             _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
             version=row[dcr.db.cls_db_core.DBCore.DBC_VERSION],
@@ -201,9 +196,6 @@ class Version:
             tuple[int | Integer, str]:
                     Column values in a tuple.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         return (
             self.version_id,
             self.version_version,
@@ -242,6 +234,8 @@ class Version:
         Returns:
             str: The version number found.
         """
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_VERSION,
             dcr.cfg.glob.db_core.db_orm_metadata,
@@ -262,5 +256,7 @@ class Version:
 
         if current_version == "":
             dcr_core.core_utils.terminate_fatal("Column version in database table version not found")
+
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return current_version

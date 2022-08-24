@@ -104,6 +104,8 @@ def parse_tetml_file() -> None:
 
     TBD
     """
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     full_name_curr = dcr.cfg.glob.action_curr.get_full_name()
 
     file_name_next = dcr.cfg.glob.action_curr.get_stem_name() + "." + dcr_core.core_glob.FILE_TYPE_JSON
@@ -138,6 +140,7 @@ def parse_tetml_file() -> None:
     )
     if (error_code, error_msg) != dcr_core.core_glob.RETURN_OK:
         dcr.cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return
 
     dcr.cfg.glob.run.run_total_processed_ok += 1
@@ -164,3 +167,5 @@ def parse_tetml_file() -> None:
     dcr.cfg.glob.action_curr.finalise()
 
     dcr.utils.delete_auxiliary_file(full_name_curr)
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

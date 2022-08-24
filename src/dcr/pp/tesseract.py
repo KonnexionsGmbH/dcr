@@ -81,6 +81,7 @@ def convert_image_2_pdf_file() -> None:
             error_code=dcr.db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=ERROR_41_903.replace("{full_name}", full_name_next),
         )
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return
 
     (error_code, error_msg, children) = dcr_core.cls_process.Process.tesseract_process(
@@ -90,6 +91,7 @@ def convert_image_2_pdf_file() -> None:
     )
     if error_code != dcr_core.core_glob.RETURN_OK[0]:
         dcr.cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return
 
     for full_name in children:

@@ -117,6 +117,8 @@ def tokenize_file() -> None:
 
     TBD
     """
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     dcr.cfg.glob.document = dcr.db.cls_document.Document.from_id(id_document=dcr.cfg.glob.action_curr.action_id_document)
 
     pipeline_name = dcr.db.cls_language.Language.LANGUAGES_SPACY[dcr.cfg.glob.document.document_id_language]
@@ -144,6 +146,7 @@ def tokenize_file() -> None:
     )
     if (error_code, error_msg) != dcr_core.core_glob.RETURN_OK:
         dcr.cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return
 
     store_tokens_in_database()
@@ -153,3 +156,5 @@ def tokenize_file() -> None:
     dcr.cfg.glob.action_curr.finalise()
 
     dcr.cfg.glob.run.run_total_processed_ok += 1
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

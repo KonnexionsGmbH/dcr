@@ -114,9 +114,6 @@ class Language:
             dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         return {
             dcr.db.cls_db_core.DBCore.DBC_ACTIVE: self.language_active,
             dcr.db.cls_db_core.DBCore.DBC_CODE_ISO_639_3: self.language_code_iso_639_3,
@@ -193,6 +190,7 @@ class Language:
                     The object instance found.
         """
         dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param id_language=%i", id_language)
 
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,
@@ -232,9 +230,6 @@ class Language:
             Language:
                     The object instance matching the specified database row.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         return cls(
             _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
             active=row[dcr.db.cls_db_core.DBCore.DBC_ACTIVE],
@@ -258,9 +253,6 @@ class Language:
             tuple[int, bool, str, str, str, str, str, str]:
                     Column values in a tuple.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         return (
             self.language_id,
             self.language_active,
@@ -346,11 +338,15 @@ class Language:
             engine.CursorResult:
                     The languages found.
         """
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,
             dcr.cfg.glob.db_core.db_orm_metadata,
             autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
         )
+
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return conn.execute(
             sqlalchemy.select(dbt)

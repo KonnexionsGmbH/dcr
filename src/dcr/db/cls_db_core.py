@@ -168,6 +168,8 @@ class DBCore:
         Returns:
             psycopg2.connection: Database connection.
         """
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
         dcr_core.core_glob.logger.debug("Attempting to connect to a administration  database")
 
         self._db_current_database = dcr_core.core_glob.setup.db_database_admin
@@ -193,6 +195,8 @@ class DBCore:
 
         dcr_core.core_glob.logger.debug("The database engine is ready for the administrator")
 
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+
         return self._db_driver_conn
 
     # -----------------------------------------------------------------------------
@@ -204,6 +208,8 @@ class DBCore:
         Returns:
             tuple[Engine,MetaData]: Database engine and metadata
         """
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
         dcr_core.core_glob.logger.debug("Attempting to connect to a user database")
 
         self._db_current_database = dcr_core.core_glob.setup.db_database
@@ -240,6 +246,8 @@ class DBCore:
         self.db_orm_metadata.bind = self.db_orm_engine
 
         dcr_core.core_glob.logger.debug("Database metadata are ready")
+
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return self.db_orm_engine, self.db_orm_metadata
 
@@ -284,6 +292,7 @@ class DBCore:
             column_name (str): Column name.
         """
         dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param column_name=%s", column_name)
 
         sqlalchemy.event.listen(
             self.db_orm_metadata,
@@ -320,6 +329,7 @@ class DBCore:
             table_name (str): Table name.
         """
         dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param table_name=%s", table_name)
 
         sqlalchemy.event.listen(
             self.db_orm_metadata,
@@ -351,6 +361,7 @@ class DBCore:
             table_name (str): Table name.
         """
         dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param table_name=%s", table_name)
 
         sqlalchemy.event.listen(
             self.db_orm_metadata,
@@ -382,6 +393,7 @@ class DBCore:
             table_names (list[str]): Table names.
         """
         dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param table_names=%s", table_names)
 
         dcr.utils.progress_msg("Create the database triggers ...")
 
@@ -532,6 +544,8 @@ class DBCore:
     # -----------------------------------------------------------------------------
     def _show_connection_details(self) -> None:
         """Show the details of the projected database connection."""
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
         dcr_core.core_glob.logger.debug("Database connection parameter: host:    '%s'", dcr_core.core_glob.setup.db_host)
         dcr_core.core_glob.logger.debug("Database connection parameter: port:    '%s'", dcr_core.core_glob.setup.db_connection_port)
         dcr_core.core_glob.logger.debug("Database connection parameter: database '%s'", self._db_current_database)
@@ -542,6 +556,8 @@ class DBCore:
             dcr_core.cls_setup.Setup.ENVIRONMENT_TYPE_TEST,
         ]:
             dcr_core.core_glob.logger.debug("Database connection parameter: password '%s'", self._db_current_password)
+
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Upgrade the current database schema - from one version to the next.
@@ -584,6 +600,8 @@ class DBCore:
     # -----------------------------------------------------------------------------
     def disconnect_db(self) -> None:
         """Disconnect the database."""
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
         self.db_orm_metadata.clear()
         # try:
         #     self.db_orm_metadata.clear()
@@ -604,6 +622,8 @@ class DBCore:
         self._db_current_user = ""
 
         dcr.utils.progress_msg_disconnected()
+
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -630,12 +650,18 @@ class DBCore:
             table_name (str): sqlalchemy.Table name.
             id_where (int): Content of column id.
         """
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param table_name=%s", table_name)
+        dcr_core.core_glob.logger.debug("param id_where  =%i", id_where)
+
         dbt = sqlalchemy.Table(table_name, self.db_orm_metadata, autoload_with=self.db_orm_engine)
 
         with self.db_orm_engine.connect().execution_options(autocommit=True) as conn:
             conn.execute(sqlalchemy.delete(dbt).where(dbt.c.id == id_where))
 
             conn.close()
+
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Insert a new row into a database table.
@@ -654,6 +680,10 @@ class DBCore:
         Returns:
             int: The last id found.
         """
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param table_name=%s", table_name)
+        dcr_core.core_glob.logger.debug("param columns   =%s", columns)
+
         dbt = sqlalchemy.Table(table_name, self.db_orm_metadata, autoload_with=self.db_orm_engine)
 
         with self.db_orm_engine.connect().execution_options(autocommit=True) as conn:
@@ -661,6 +691,8 @@ class DBCore:
             row = result.fetchone()
 
             conn.close()
+
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return row[0]  # type: ignore
 
@@ -673,6 +705,9 @@ class DBCore:
         Args:
             db_initial_data_file (Path): JSON file.
         """
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param db_initial_data_file=%s", db_initial_data_file)
+
         with open(db_initial_data_file, "r", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as file_handle:
             json_data = json.load(file_handle)
 
@@ -709,6 +744,8 @@ class DBCore:
                         db_columns,
                     )
 
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+
     # -----------------------------------------------------------------------------
     # Update a database row based on its id column.
     # -----------------------------------------------------------------------------
@@ -725,12 +762,18 @@ class DBCore:
             id_where (int): Content of column id.
             columns (Columns): Pairs of column name and value.
         """
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug("param table_name=%s", table_name)
+        dcr_core.core_glob.logger.debug("param id_where  =%i", id_where)
+
         dbt = sqlalchemy.Table(table_name, self.db_orm_metadata, autoload_with=self.db_orm_engine)
 
         with self.db_orm_engine.connect().execution_options(autocommit=True) as conn:
             conn.execute(sqlalchemy.update(dbt).where(dbt.c.id == id_where).values(columns))
 
             conn.close()
+
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Upgrade the current database schema.

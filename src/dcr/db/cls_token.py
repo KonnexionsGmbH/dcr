@@ -115,9 +115,6 @@ class Token:
             dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         return {
             dcr.db.cls_db_core.DBCore.DBC_ID_DOCUMENT: self.token_id_document,
             dcr.db.cls_db_core.DBCore.DBC_COLUMN_NO: self.token_column_no,
@@ -307,9 +304,6 @@ class Token:
         Returns:
             Token:  The object instance matching the specified database row.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         return cls(
             _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
             id_document=row[dcr.db.cls_db_core.DBCore.DBC_ID_DOCUMENT],
@@ -339,9 +333,6 @@ class Token:
             tuple[int, int, str, int]:
                     Column values in a tuple.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         return (
             self.token_id,
             self.token_id_document,
