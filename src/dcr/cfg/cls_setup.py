@@ -54,14 +54,16 @@ class Setup(dcr_core.cls_setup.Setup):
     # -----------------------------------------------------------------------------
     def __init__(self) -> None:
         """Initialise the instance."""
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
         super().__init__()
 
         # -----------------------------------------------------------------------------
         # DCR configuration.
         # -----------------------------------------------------------------------------
-        self.db_connection_port = 5432
+        self.db_connection_port = "5432"
         self.db_connection_prefix = "postgresql+psycopg2://"
-        self.db_container_port = 5432
+        self.db_container_port = "5432"
         self.db_database = "dcr_db_prod"
         self.db_database_admin = "dcr_db_prod_admin"
         self.db_dialect = "postgresql"
@@ -83,6 +85,7 @@ class Setup(dcr_core.cls_setup.Setup):
 
         self._load_config()
 
+        # noinspection PyUnresolvedReferences
         dcr.utils.progress_msg_core("The configuration parameters (dcr) are checked and loaded")
 
         self._exist = True

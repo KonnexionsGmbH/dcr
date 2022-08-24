@@ -61,6 +61,8 @@ def convert_pdf_2_image() -> None:
 # noinspection PyArgumentList
 def convert_pdf_2_image_file() -> None:
     """Convert a scanned image pdf document to an image file."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     full_name_curr = dcr_core.core_utils.get_full_name_from_components(
         dcr.cfg.glob.action_curr.action_directory_name,
         dcr.cfg.glob.action_curr.action_file_name,
@@ -110,3 +112,5 @@ def convert_pdf_2_image_file() -> None:
     dcr.cfg.glob.action_curr.finalise()
 
     dcr.cfg.glob.run.run_total_processed_ok += 1
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

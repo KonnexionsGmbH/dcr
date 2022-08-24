@@ -2,7 +2,7 @@
 # source code is governed by the Konnexions Public License (KX-PL)
 # Version 2020.05, that can be found in the LICENSE file.
 
-"""Stub file."""
+"""Module stub file."""
 LINE_TET_DOCUMENT_OPT_LIST: str
 LINE_TET_PAGE_OPT_LIST: str
 LINE_XML_VARIATION: str

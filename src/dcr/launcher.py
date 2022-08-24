@@ -113,6 +113,7 @@ def get_args(argv: list[str]) -> dict[str, bool]:
         dict[str, bool]: The processing steps based on CLI arguments.
     """
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug("param argv=%s", argv)
 
     num = len(argv)
 
@@ -183,6 +184,8 @@ def main(argv: list[str]) -> None:
     dcr_core.core_glob.initialise_logger("dcr")
 
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug("param argv=%s", argv)
+
     dcr_core.core_glob.logger.info("Start launcher.py")
 
     print("Start launcher.py")
@@ -223,6 +226,8 @@ def main(argv: list[str]) -> None:
 # noinspection PyArgumentList
 def process_convert_image_2_pdf() -> None:
     """Convert image files to pdf documents."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     dcr.utils.progress_msg_empty_before("Start: Convert image files to pdf documents ... Tesseract OCR")
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_TESSERACT)
@@ -233,6 +238,8 @@ def process_convert_image_2_pdf() -> None:
 
     dcr.utils.progress_msg("End  : Convert image files to pdf documents ...")
 
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Convert non-pdf documents to pdf documents.
@@ -240,6 +247,8 @@ def process_convert_image_2_pdf() -> None:
 # noinspection PyArgumentList
 def process_convert_non_pdf_2_pdf() -> None:
     """Convert non-pdf documents to pdf documents."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     dcr.utils.progress_msg_empty_before("Start: Convert non-pdf documents to pdf documents ... Pandoc [TeX Live]")
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_PANDOC)
@@ -250,6 +259,8 @@ def process_convert_non_pdf_2_pdf() -> None:
 
     dcr.utils.progress_msg("End  : Convert non-pdf documents to pdf documents ...")
 
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Convert pdf documents to image files.
@@ -257,6 +268,8 @@ def process_convert_non_pdf_2_pdf() -> None:
 # noinspection PyArgumentList
 def process_convert_pdf_2_image() -> None:
     """Convert pdf documents to image files."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     dcr.utils.progress_msg_empty_before("Start: Convert pdf documents to image files ... pdf2image [Poppler]")
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_PDF2IMAGE)
@@ -266,6 +279,8 @@ def process_convert_pdf_2_image() -> None:
     dcr.cfg.glob.run.finalise()
 
     dcr.utils.progress_msg("End  : Convert pdf documents to image files ...")
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -278,6 +293,7 @@ def process_documents(args: dict[str, bool]) -> None:
         args (dict[str, bool]): The processing steps based on CLI arguments.
     """
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug("param args=%s", args)
 
     # Connect to the database.
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
@@ -348,13 +364,15 @@ def process_documents(args: dict[str, bool]) -> None:
 # noinspection PyArgumentList
 def process_export_lt_rules() -> None:
     """Export the line type rules."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     dcr.utils.progress_msg_empty_before("Start: Export the line type rules ...")
 
     dcr_core.cls_nlp_core.NLPCore.export_rule_file_heading(
         is_verbose=dcr_core.core_glob.setup.is_verbose,
         file_name=dcr_core.core_glob.setup.lt_export_rule_file_heading,
         file_encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT,
-        json_indent=dcr_core.core_glob.setup.json_indent,
+        json_indent=str(dcr_core.core_glob.setup.json_indent),
         is_json_sort_keys=dcr_core.core_glob.setup.is_json_sort_keys,
     )
 
@@ -362,7 +380,7 @@ def process_export_lt_rules() -> None:
         is_verbose=dcr_core.core_glob.setup.is_verbose,
         file_name=dcr_core.core_glob.setup.lt_export_rule_file_list_bullet,
         file_encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT,
-        json_indent=dcr_core.core_glob.setup.json_indent,
+        json_indent=str(dcr_core.core_glob.setup.json_indent),
         is_json_sort_keys=dcr_core.core_glob.setup.is_json_sort_keys,
         environment_variant=dcr_core.core_glob.setup.environment_variant,
     )
@@ -371,12 +389,14 @@ def process_export_lt_rules() -> None:
         is_verbose=dcr_core.core_glob.setup.is_verbose,
         file_name=dcr_core.core_glob.setup.lt_export_rule_file_list_number,
         file_encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT,
-        json_indent=dcr_core.core_glob.setup.json_indent,
+        json_indent=str(dcr_core.core_glob.setup.json_indent),
         is_json_sort_keys=dcr_core.core_glob.setup.is_json_sort_keys,
         environment_variant=dcr_core.core_glob.setup.environment_variant,
     )
 
     dcr.utils.progress_msg("End  : Export the line type rules ...")
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -385,6 +405,8 @@ def process_export_lt_rules() -> None:
 # noinspection PyArgumentList
 def process_extract_text_from_pdf() -> None:
     """Extract text and metadata from pdf documents."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     dcr.utils.progress_msg_empty_before("Start: Extract text and metadata from pdf documents ... PDFlib TET")
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_PDFLIB)
@@ -395,6 +417,8 @@ def process_extract_text_from_pdf() -> None:
 
     dcr.utils.progress_msg("End  : Extract text and metadata from pdf documents ...")
 
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Process the inbox directory.
@@ -402,6 +426,8 @@ def process_extract_text_from_pdf() -> None:
 # noinspection PyArgumentList
 def process_inbox_directory() -> None:
     """Process the inbox directory."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     dcr.utils.progress_msg_empty_before("Start: Process the inbox directory ... PyMuPDF [fitz]")
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_INBOX)
@@ -412,6 +438,8 @@ def process_inbox_directory() -> None:
 
     dcr.utils.progress_msg("End  : Process the inbox directory ...")
 
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Store the document structure from the parser result.
@@ -419,6 +447,8 @@ def process_inbox_directory() -> None:
 # noinspection PyArgumentList
 def process_store_parse_result_in_json() -> None:
     """Store the document structure from the parser result."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     dcr.utils.progress_msg_empty_before("Start: Store document structure ... defusedxml [xml.etree.ElementTree]")
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_PARSER)
@@ -429,6 +459,8 @@ def process_store_parse_result_in_json() -> None:
 
     dcr.utils.progress_msg("End  : Store document structure ...")
 
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+
 
 # -----------------------------------------------------------------------------
 # Create document tokens.
@@ -436,6 +468,8 @@ def process_store_parse_result_in_json() -> None:
 # noinspection PyArgumentList
 def process_tokenize() -> None:
     """Create document tokens."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     dcr.utils.progress_msg_empty_before("Start: Create document tokens ... spaCy")
 
     dcr.cfg.glob.run = dcr.db.cls_run.Run(action_code=dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE)
@@ -445,6 +479,8 @@ def process_tokenize() -> None:
     dcr.cfg.glob.run.finalise()
 
     dcr.utils.progress_msg("End  : Create document tokens ...")
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------

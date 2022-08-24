@@ -67,6 +67,8 @@ def create_directory(directory_type: str, directory_name: str) -> None:
         directory_name (str): Directory name - may include a path.
     """
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug("param directory_type=%s", directory_type)
+    dcr_core.core_glob.logger.debug("param directory_name=%s", directory_name)
 
     if not os.path.isdir(directory_name):
         os.mkdir(directory_name)
@@ -100,6 +102,11 @@ def initialise_action(
         type[dcr.db.cls_action.Action]: A new Action instance.
     """
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug("param action_code   =%s", action_code)
+    dcr_core.core_glob.logger.debug("param directory_name=%s", directory_name)
+    dcr_core.core_glob.logger.debug("param directory_type=%s", directory_type)
+    dcr_core.core_glob.logger.debug("param file_name     =%s", file_name)
+    dcr_core.core_glob.logger.debug("param id_parent     =%i", id_parent)
 
     full_name = dcr_core.core_utils.get_full_name_from_components(directory_name, file_name)
 
@@ -130,6 +137,7 @@ def initialise_base(file_path: pathlib.Path) -> None:
         file_path (pathlib.Path): File.
     """
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug("param file_path=%s", file_path)
 
     dcr.cfg.glob.document = dcr.db.cls_document.Document(
         action_code_last=dcr.cfg.glob.run.run_action_code,
@@ -155,8 +163,10 @@ def prepare_pdf(file_path: pathlib.Path) -> None:
         file_path (pathlib.Path): Inbox file.
     """
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug("param file_path=%s", file_path)
 
     try:
+        # noinspection PyUnresolvedReferences
         extracted_text = "".join([page.get_text() for page in fitz.open(file_path)])
 
         if bool(extracted_text):
@@ -228,6 +238,7 @@ def process_inbox_accepted(action_code: str) -> None:
         action_code (str): Action code.
     """
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug("param action_code=%s", action_code)
 
     full_name_curr = dcr.cfg.glob.document.get_full_name()
     full_name_next = dcr_core.core_utils.get_full_name_from_components(
@@ -276,6 +287,9 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
         file_path (pathlib.Path):
                 Inbox file.
     """
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug("param file_path=%s", file_path)
+
     dcr.cfg.glob.session = sqlalchemy.orm.Session(dcr.cfg.glob.db_core.db_orm_engine)
 
     initialise_base(file_path)
@@ -307,6 +321,8 @@ def process_inbox_file(file_path: pathlib.Path) -> None:
             dcr.db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_EXT,
             ERROR_01_901.replace("{extension}", file_path.suffix[1:]),
         )
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -361,6 +377,8 @@ def process_inbox_rejected(error_code: str, error_msg: str) -> None:
         error_msg (str):  Error message.
     """
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug("param error_code=%s", error_code)
+    dcr_core.core_glob.logger.debug("param error_msg =%s", error_msg)
 
     full_name_curr = dcr.cfg.glob.document.get_full_name()
     full_name_next = dcr_core.core_utils.get_full_name_from_components(

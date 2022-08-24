@@ -149,9 +149,9 @@ class DBCore:
         self._db_current_user = ""
 
         if is_admin:
-            self._db_driver_conn = self._connect_db_admin()
+            self._connect_db_admin()
         else:
-            (self.db_orm_engine, self.db_orm_metadata) = self._connect_db_user()
+            self._connect_db_user()
 
         dcr.utils.progress_msg_connected(database=self._db_current_database, user=self._db_current_user)
 
@@ -747,7 +747,7 @@ class DBCore:
 
         current_version = dcr.db.cls_version.Version.select_version_version_unique()
 
-        self._db_driver_conn = self._connect_db_admin()
+        self._connect_db_admin()
 
         if current_version == dcr_core.cls_setup.Setup.DCR_VERSION:
             dcr.utils.progress_msg(f"The database is already up to date, version number='{current_version}'")

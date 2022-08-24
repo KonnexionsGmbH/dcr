@@ -2,7 +2,7 @@
 # source code is governed by the Konnexions Public License (KX-PL)
 # Version 2020.05, that can be found in the LICENSE file.
 
-"""Stub file."""
+"""Module stub file."""
 DCR_ARGV_0: str
 
 def check_db_up_to_date() -> None: ...

@@ -2,24 +2,10 @@
 # source code is governed by the Konnexions Public License (KX-PL)
 # Version 2020.05, that can be found in the LICENSE file.
 
-"""Stub file."""
+"""Module stub file."""
 import sqlalchemy.orm
 
 class Token:
-    token_id: int
-    token_column_no: int
-    token_column_span: int
-    token_coord_llx: float
-    token_coord_urx: float
-    token_id_document: int
-    token_line_type: str
-    token_no_tokens_in_sent: int
-    token_page_no: int
-    token_para_no: int
-    token_row_no: int
-    token_sent_no: int
-    token_text: str
-    token_tokens: str
     def __init__(
         self,
         id_document: int,
@@ -38,7 +24,20 @@ class Token:
         _row_id: int = ...,
     ) -> None:
         self._exist = None
-        ...
+        self.token_column_no = None
+        self.token_column_span = None
+        self.token_coord_llx = None
+        self.token_coord_urx = None
+        self.token_id = None
+        self.token_id_document = None
+        self.token_line_type = None
+        self.token_no_tokens_in_sent = None
+        self.token_page_no = None
+        self.token_para_no = None
+        self.token_row_no = None
+        self.token_sent_no = None
+        self.token_text = None
+        self.token_tokens = None
     def _get_columns(self) -> None: ...
     @classmethod
     def create_dbt(cls) -> None: ...

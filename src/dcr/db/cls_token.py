@@ -5,6 +5,7 @@
 """Module dcr.db.cls_token: Managing the database table token."""
 from __future__ import annotations
 
+import dcr_core.core_glob
 import dcr_core.core_utils
 import sqlalchemy
 import sqlalchemy.engine
