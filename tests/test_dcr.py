@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 # pylint: disable=unused-argument
 """Testing Module dcr.dcr."""
 import os
@@ -22,7 +26,7 @@ import dcr.launcher
 # -----------------------------------------------------------------------------
 def test_dcr_get_args(fxtr_setup_logger_environment):
     """Test: get_args()."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     args = dcr.launcher.get_args([dcr.launcher.DCR_ARGV_0, "AlL"])
@@ -86,7 +90,7 @@ def test_dcr_get_args(fxtr_setup_logger_environment):
     assert expt.value.code == 1, "invalid arg"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -94,7 +98,7 @@ def test_dcr_get_args(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_dcr_process_export_lt_rules(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     try:
@@ -106,4 +110,4 @@ def test_dcr_process_export_lt_rules(fxtr_setup_empty_db_and_inbox):
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_EXPORT_LT_RULES])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

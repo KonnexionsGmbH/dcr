@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 # pylint: disable=redefined-outer-name
 """Test Configuration and Fixtures.
 
@@ -256,7 +260,7 @@ def check_json_line(
     no_lists_number_in_document: int = 0,
     no_tables_in_document: int = 0,
 ) -> None:
-    full_name = dcr_core.core_utils.get_full_name(directory_name=dcr_core.core_glob.setup.directory_inbox_accepted, file_name=file_name)
+    full_name = dcr_core.core_utils.get_full_name_from_components(dcr_core.core_glob.setup.directory_inbox_accepted, file_name)
 
     try:
         with open(full_name, "r", encoding=dcr_core.core_glob.FILE_ENCODING_DEFAULT) as file_handle:
@@ -357,11 +361,11 @@ def copy_directories_4_pytest_2_dir(
 
     for source in source_directories:
         source_dir = get_test_inbox_directory_name() + "/" + source
-        source_path = dcr_core.core_utils.get_full_name(get_test_inbox_directory_name(), pathlib.Path(source))
+        source_path = dcr_core.core_utils.get_full_name_from_components(get_test_inbox_directory_name(), pathlib.Path(source))
         assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(source_path)), (
             "source language directory '" + str(source_path) + "' missing"
         )
-        target_path = dcr_core.core_utils.get_full_name(target_dir, pathlib.Path(source))
+        target_path = dcr_core.core_utils.get_full_name_from_components(target_dir, pathlib.Path(source))
         shutil.copytree(source_dir, target_path)
 
 
@@ -386,12 +390,12 @@ def copy_files_4_pytest(file_list: list[tuple[tuple[str, str | None], tuple[path
 
     for ((source_stem, source_ext), (target_dir, target_file_comp, target_ext)) in file_list:
         source_file_name = source_stem if source_ext is None else source_stem + "." + source_ext
-        source_file = dcr_core.core_utils.get_full_name(get_test_inbox_directory_name(), source_file_name)
+        source_file = dcr_core.core_utils.get_full_name_from_components(get_test_inbox_directory_name(), source_file_name)
         assert os.path.isfile(source_file), "source file '" + str(source_file) + "' missing"
 
         assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(target_dir)), "target directory '" + target_dir + "' missing"
         target_file_name = "_".join(target_file_comp) if target_ext is None else "_".join(target_file_comp) + "." + target_ext
-        target_file = dcr_core.core_utils.get_full_name(target_dir, target_file_name)
+        target_file = dcr_core.core_utils.get_full_name_from_components(target_dir, target_file_name)
         assert os.path.isfile(target_file) is False, "target file '" + str(target_file) + "' already existing"
 
         shutil.copy(source_file, target_file)
@@ -633,7 +637,7 @@ def delete_existing_object(  # noqa: C901
 
             del dcr.cfg.glob.action_curr
 
-            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.action_curr' of the class Action was deleted.")
+            dcr_core.core_glob.logger.debug("The existing object 'dcr.cfg.glob.action_curr' of the class Action was deleted.")
         except AttributeError:
             pass
 
@@ -643,7 +647,7 @@ def delete_existing_object(  # noqa: C901
 
             del dcr.cfg.glob.action_next
 
-            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.action_next' of the class Action was deleted.")
+            dcr_core.core_glob.logger.debug("The existing object 'dcr.cfg.glob.action_next' of the class Action was deleted.")
         except AttributeError:
             pass
 
@@ -653,7 +657,7 @@ def delete_existing_object(  # noqa: C901
 
             del dcr.cfg.glob.db_core
 
-            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.db_core' of the class DBCore was deleted.")
+            dcr_core.core_glob.logger.debug("The existing object 'dcr.cfg.glob.db_core' of the class DBCore was deleted.")
         except AttributeError:
             pass
 
@@ -663,7 +667,7 @@ def delete_existing_object(  # noqa: C901
 
             del dcr.cfg.glob.document
 
-            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.document' of the class Document was deleted.")
+            dcr_core.core_glob.logger.debug("The existing object 'dcr.cfg.glob.document' of the class Document was deleted.")
         except AttributeError:
             pass
 
@@ -673,7 +677,7 @@ def delete_existing_object(  # noqa: C901
 
             del dcr.cfg.glob.run
 
-            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.run' of the class Run was deleted.")
+            dcr_core.core_glob.logger.debug("The existing object 'dcr.cfg.glob.run' of the class Run was deleted.")
         except AttributeError:
             pass
 
@@ -683,7 +687,7 @@ def delete_existing_object(  # noqa: C901
 
             del dcr_core.core_glob.setup
 
-            dcr.cfg.glob.logger.debug("The existing object 'dcr_core.base.setup' of the class Setup was deleted.")
+            dcr_core.core_glob.logger.debug("The existing object 'dcr_core.base.setup' of the class Setup was deleted.")
         except AttributeError:
             pass
 
@@ -693,7 +697,7 @@ def delete_existing_object(  # noqa: C901
 
             del dcr_core.core_glob.text_parser
 
-            dcr.cfg.glob.logger.debug("The existing object 'dcr.cfg.glob.text_parser' of the class TextParser was deleted.")
+            dcr_core.core_glob.logger.debug("The existing object 'dcr.cfg.glob.text_parser' of the class TextParser was deleted.")
         except AttributeError:
             pass
 
@@ -875,7 +879,7 @@ def fxtr_setup_empty_db_and_inbox(
 
     # restore original file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(
+        dcr_core.core_utils.get_full_name_from_components(
             get_test_inbox_directory_name(),
             os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
         ),
@@ -922,7 +926,7 @@ def fxtr_setup_empty_inbox(
 
     # restore original file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(
+        dcr_core.core_utils.get_full_name_from_components(
             get_test_inbox_directory_name(),
             os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
         ),
@@ -953,7 +957,8 @@ def fxtr_setup_empty_inbox(
 @pytest.fixture()
 def fxtr_setup_logger():
     """Fixture: Setup logger & environment."""
-    dcr.launcher.initialise_logger()
+    # Initialise the logging functionality.
+    dcr_core.core_glob.initialise_logger("dcr")
 
     yield
 
@@ -968,7 +973,7 @@ def fxtr_setup_logger_environment():
 
     # restore original file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(
+        dcr_core.core_utils.get_full_name_from_components(
             get_test_inbox_directory_name(),
             os.path.basename(pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)),
         ),
@@ -979,7 +984,8 @@ def fxtr_setup_logger_environment():
 
     setup_cfg_backup()
 
-    dcr.launcher.initialise_logger()
+    # Initialise the logging functionality.
+    dcr_core.core_glob.initialise_logger("dcr")
 
     yield
 
@@ -1166,8 +1172,12 @@ def help_run_action_all_complete_duplicate_file(
     )
 
     os.rename(
-        dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1),
-        dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2),
+        dcr_core.core_utils.get_full_name_from_components(
+            dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "." + file_ext_1
+        ),
+        dcr_core.core_utils.get_full_name_from_components(
+            dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_2 + "." + file_ext_2
+        ),
     )
 
     # -------------------------------------------------------------------------
@@ -1345,7 +1355,8 @@ def setup_cfg_restore():
 @pytest.fixture(scope="session", autouse=True)
 def setup_dcr():
     """Run before all tests."""
-    dcr.launcher.initialise_logger()
+    # Initialise the logging functionality.
+    dcr_core.core_glob.initialise_logger("dcr")
 
 
 # -----------------------------------------------------------------------------
@@ -1367,16 +1378,16 @@ def verify_content_of_directory(
         expected_files: list[str]:
                    list of the expected file names.
     """
-    dcr.cfg.glob.logger.info("directory name   =%s", directory_name)
+    dcr_core.core_glob.logger.info("directory name   =%s", directory_name)
 
     directory_content = os.listdir(directory_name)
-    dcr.cfg.glob.logger.info("existing directory content=%s", str(directory_content))
-    dcr.cfg.glob.logger.info("expected directory content=%s", str(expected_directories))
-    dcr.cfg.glob.logger.info("expected file      content=%s", str(expected_files))
+    dcr_core.core_glob.logger.info("existing directory content=%s", str(directory_content))
+    dcr_core.core_glob.logger.info("expected directory content=%s", str(expected_directories))
+    dcr_core.core_glob.logger.info("expected file      content=%s", str(expected_files))
 
     # check directory content against expectations
     for elem in directory_content:
-        elem_path = dcr_core.core_utils.get_full_name(directory_name, elem)
+        elem_path = dcr_core.core_utils.get_full_name_from_components(directory_name, elem)
         if os.path.isdir(elem_path):
             assert elem in expected_directories, f"directory {elem} was not expected"
         else:
@@ -1385,13 +1396,13 @@ def verify_content_of_directory(
     # check expected directories against directory content
     for elem in expected_directories:
         assert elem in directory_content, f"expected directory {elem} is missing"
-        elem_path = dcr_core.core_utils.get_full_name(directory_name, elem)
+        elem_path = dcr_core.core_utils.get_full_name_from_components(directory_name, elem)
         assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(elem_path)), f"expected directory {elem} is a file"
 
     # check expected files against directory content
     for elem in expected_files:
         assert elem in directory_content, f"expected file {elem} is missing"
-        elem_path = dcr_core.core_utils.get_full_name(directory_name, elem)
+        elem_path = dcr_core.core_utils.get_full_name_from_components(directory_name, elem)
         assert os.path.isfile(elem_path), f"expected file {elem} is a directory"
 
 

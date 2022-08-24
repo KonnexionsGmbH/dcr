@@ -1,10 +1,14 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 """Module pp.tesseract: Convert image files to pdf documents."""
 import os
 import time
 
+import dcr_core.cls_process
 import dcr_core.core_glob
 import dcr_core.core_utils
-import dcr_core.processing
 
 import dcr.cfg.glob
 import dcr.db.cls_action
@@ -28,7 +32,7 @@ def convert_image_2_pdf() -> None:
 
     TBD
     """
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     with dcr.cfg.glob.db_core.db_orm_engine.begin() as conn:
         rows = dcr.db.cls_action.Action.select_action_by_action_code(conn=conn, action_code=dcr.db.cls_run.Run.ACTION_CODE_TESSERACT)
@@ -53,7 +57,7 @@ def convert_image_2_pdf() -> None:
 
     dcr.utils.show_statistics_total()
 
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -65,7 +69,7 @@ def convert_image_2_pdf_file() -> None:
     full_name_curr = dcr.cfg.glob.action_curr.get_full_name()
 
     file_name_next = dcr.cfg.glob.action_curr.get_stem_name().replace("[0-9]*", "0") + "." + dcr_core.core_glob.FILE_TYPE_PDF
-    full_name_next = dcr_core.core_utils.get_full_name(
+    full_name_next = dcr_core.core_utils.get_full_name_from_components(
         dcr.cfg.glob.action_curr.action_directory_name,
         file_name_next,
     )
@@ -77,7 +81,7 @@ def convert_image_2_pdf_file() -> None:
         )
         return
 
-    (error_code, error_msg, children) = dcr_core.processing.tesseract_process(
+    (error_code, error_msg, children) = dcr_core.cls_process.Process.tesseract_process(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         language_tesseract=dcr.db.cls_language.Language.LANGUAGES_TESSERACT[dcr.cfg.glob.document.document_id_language],

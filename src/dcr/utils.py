@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 """Module utils: Helper functions."""
 import datetime
 import hashlib
@@ -101,7 +105,7 @@ def delete_auxiliary_file(full_name: pathlib.Path | str) -> None:
     full_name = dcr_core.core_utils.get_os_independent_name(full_name)
 
     # Don't remove the base document !!!
-    if full_name == dcr_core.core_utils.get_full_name(
+    if full_name == dcr_core.core_utils.get_full_name_from_components(
         dcr.cfg.glob.action_curr.action_directory_name, dcr.cfg.glob.document.get_file_name_next()
     ):
         return
@@ -220,7 +224,7 @@ def progress_msg_core(msg: str) -> None:
 
     print(final_msg)
 
-    dcr.cfg.glob.logger.debug(final_msg)
+    dcr_core.core_glob.logger.debug(final_msg)
 
 
 # -----------------------------------------------------------------------------

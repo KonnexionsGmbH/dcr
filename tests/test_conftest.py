@@ -1,8 +1,12 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 """Testing Module conftest."""
 import os
 import pathlib
 
-import dcr.cfg.glob
+import dcr_core.core_glob
 
 # -----------------------------------------------------------------------------
 # Constants & Globals.
@@ -17,7 +21,7 @@ import dcr.cfg.glob
 # -----------------------------------------------------------------------------
 def test_mkdir_rmdir_rmdir_opt(fxtr_mkdir, fxtr_rmdir, fxtr_rmdir_opt):
     """Test: Pure functionality."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     directory_path: os.PathLike = pathlib.Path("tmp")
@@ -32,7 +36,7 @@ def test_mkdir_rmdir_rmdir_opt(fxtr_mkdir, fxtr_rmdir, fxtr_rmdir_opt):
     fxtr_rmdir_opt(directory_path)
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -41,16 +45,16 @@ def test_mkdir_rmdir_rmdir_opt(fxtr_mkdir, fxtr_rmdir, fxtr_rmdir_opt):
 # pylint: disable=unused-argument
 def test_setup_logger(fxtr_setup_logger):
     """Test: Pure functionality."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("")
-    dcr.cfg.glob.logger.info("===============================================")
-    dcr.cfg.glob.logger.info("=============> test_setup_logger <=============")
-    dcr.cfg.glob.logger.info("===============================================")
+    dcr_core.core_glob.logger.info("")
+    dcr_core.core_glob.logger.info("===============================================")
+    dcr_core.core_glob.logger.info("=============> test_setup_logger <=============")
+    dcr_core.core_glob.logger.info("===============================================")
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -59,13 +63,13 @@ def test_setup_logger(fxtr_setup_logger):
 # pylint: disable=unused-argument
 def test_setup_logger_environment(fxtr_setup_logger_environment):
     """Test: Pure functionality."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("")
-    dcr.cfg.glob.logger.info("===============================================")
-    dcr.cfg.glob.logger.info("=======> test_setup_logger_environment <=======")
-    dcr.cfg.glob.logger.info("===============================================")
+    dcr_core.core_glob.logger.info("")
+    dcr_core.core_glob.logger.info("===============================================")
+    dcr_core.core_glob.logger.info("=======> test_setup_logger_environment <=======")
+    dcr_core.core_glob.logger.info("===============================================")
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 """Module dcr_core.cls_setup.
 
 Managing the application configuration parameters.
@@ -38,7 +42,6 @@ class Setup(dcr_core.cls_setup.Setup):
     _DCR_CFG_DB_USER: ClassVar[str] = "db_user"
     _DCR_CFG_DB_USER_ADMIN: ClassVar[str] = "db_user_admin"
     _DCR_CFG_DELETE_AUXILIARY_FILES: ClassVar[str] = "delete_auxiliary_files"
-    _DCR_CFG_DIRECTORY_INBOX: ClassVar[str] = "directory_inbox"
     _DCR_CFG_DIRECTORY_INBOX_ACCEPTED: ClassVar[str] = "directory_inbox_accepted"
     _DCR_CFG_DIRECTORY_INBOX_REJECTED: ClassVar[str] = "directory_inbox_rejected"
     _DCR_CFG_DOC_ID_IN_FILE_NAME: ClassVar[str] = "doc_id_in_file_name"
@@ -72,7 +75,6 @@ class Setup(dcr_core.cls_setup.Setup):
 
         self.is_delete_auxiliary_files = True
 
-        self.directory_inbox = dcr_core.core_utils.get_os_independent_name("data/inbox")
         self.directory_inbox_accepted = dcr_core.core_utils.get_os_independent_name("data/inbox_accepted")
         self.directory_inbox_rejected = dcr_core.core_utils.get_os_independent_name("data/inbox_rejected")
         self.doc_id_in_file_name = "none"
@@ -97,24 +99,11 @@ class Setup(dcr_core.cls_setup.Setup):
             Setup._DCR_CFG_DELETE_AUXILIARY_FILES, self.is_delete_auxiliary_files
         )
 
-        self._check_config_directory_inbox()
         self._check_config_directory_inbox_accepted()
         self._check_config_directory_inbox_rejected()
         self._check_config_doc_id_in_file_name()
 
         self.is_ignore_duplicates = self._determine_config_param_boolean(Setup._DCR_CFG_IGNORE_DUPLICATES, self.is_ignore_duplicates)
-
-    # -----------------------------------------------------------------------------
-    # Check the configuration parameter - directory_inbox.
-    # -----------------------------------------------------------------------------
-    def _check_config_directory_inbox(self) -> None:
-        """Check the configuration parameter - directory_inbox."""
-        if Setup._DCR_CFG_DIRECTORY_INBOX in self._config:
-            self._config[Setup._DCR_CFG_DIRECTORY_INBOX] = str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX])
-
-            self.directory_inbox = dcr_core.core_utils.get_os_independent_name(str(self._config[Setup._DCR_CFG_DIRECTORY_INBOX]))
-        else:
-            dcr_core.core_utils.terminate_fatal(f"Missing configuration parameter '{Setup._DCR_CFG_DIRECTORY_INBOX}'")
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_accepted.
@@ -172,7 +161,6 @@ class Setup(dcr_core.cls_setup.Setup):
                     Setup._DCR_CFG_DB_CONNECTION_PORT
                     | Setup._DCR_CFG_DB_CONTAINER_PORT
                     | Setup._DCR_CFG_DELETE_AUXILIARY_FILES
-                    | Setup._DCR_CFG_DIRECTORY_INBOX
                     | Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
                     | Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
                     | Setup._DCR_CFG_DOC_ID_IN_FILE_NAME

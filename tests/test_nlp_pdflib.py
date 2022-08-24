@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 # pylint: disable=unused-argument
 """Testing Module nlp.pdflib."""
 import os
@@ -23,7 +27,7 @@ import dcr.launcher
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - normal - duplicate."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
@@ -34,7 +38,7 @@ def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_a
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_duplicate <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_duplicate <=========")
 
     stem_name_1 = "pdf_text_ok_protected"
     file_ext_1 = "pdf"
@@ -52,7 +56,7 @@ def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_a
     pytest.helpers.help_run_action_all_complete_duplicate_file(file_ext_1, file_ext_2, stem_name_1, stem_name_2)
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -60,7 +64,7 @@ def test_run_action_extract_text_from_pdf_normal_duplicate(fxtr_setup_empty_db_a
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - normal - keep."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -90,7 +94,7 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -108,7 +112,7 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -116,7 +120,7 @@ def test_run_action_extract_text_from_pdf_normal_keep(fxtr_rmdir_opt, fxtr_setup
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - normal - keep - only page."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -146,7 +150,7 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep_only_page <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_extract_text_from_pdf_normal_keep_only_page <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -160,7 +164,7 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -168,7 +172,7 @@ def test_run_action_extract_text_from_pdf_normal_keep_only_page(fxtr_rmdir_opt, 
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - rej_file_open - line."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -200,7 +204,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
-        dcr_core.core_utils.get_full_name(
+        dcr_core.core_utils.get_full_name_from_components(
             dcr_core.core_glob.setup.directory_inbox_accepted,
             "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_0.pdf",
         )
@@ -209,7 +213,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_line <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_line <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -221,7 +225,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
         ),
     )
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -229,7 +233,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_line(fxtr_rmdir_opt, fxt
 # -----------------------------------------------------------------------------
 def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TEXT_FROM_PDF - rej_file_open - page."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -255,7 +259,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TESSERACT])
 
     os.remove(
-        dcr_core.core_utils.get_full_name(
+        dcr_core.core_utils.get_full_name_from_components(
             dcr_core.core_glob.setup.directory_inbox_accepted,
             "case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_1_0.pdf",
         )
@@ -264,7 +268,7 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PDFLIB])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_page <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_extract_text_from_pdf_rej_file_open_page <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -277,4 +281,4 @@ def test_run_action_extract_text_from_pdf_rej_file_open_page(fxtr_rmdir_opt, fxt
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

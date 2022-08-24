@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 # pylint: disable=unused-argument
 """Testing Module dcr.db.cls_db_core."""
 import os
@@ -27,7 +31,7 @@ import dcr.launcher
 # -----------------------------------------------------------------------------
 def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     """Test Database Version - Wrong version number in configuration."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
@@ -72,7 +76,7 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -80,7 +84,7 @@ def test_check_db_up_to_date(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_connect_db(fxtr_setup_logger_environment):
     """Test: connect_db()."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     config_section = dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST
@@ -101,7 +105,7 @@ def test_connect_db(fxtr_setup_logger_environment):
     assert expt.value.code == 1, "DCR_CFG_DB_CONNECTION_PORT: no database"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -109,7 +113,7 @@ def test_connect_db(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_connect_db_admin(fxtr_setup_logger_environment):
     """Test: connect_db_admin()."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     config_section = dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST
@@ -130,7 +134,7 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
     assert expt.value.code == 1, "DCR_CFG_DB_CONNECTION_PORT: no database"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -138,7 +142,7 @@ def test_connect_db_admin(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_create_database(fxtr_setup_logger_environment):
     """Test: create_database()."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_CREATE_DB])
@@ -177,7 +181,7 @@ def test_create_database(fxtr_setup_logger_environment):
     assert expt.value.code == 1, "DCR_CFG_DB_INITIAL_DATA_FILE: unknown file"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -185,7 +189,7 @@ def test_create_database(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_drop_database_01(fxtr_setup_empty_db_and_inbox):
     """Test: drop_database()."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_CREATE_DB])
@@ -195,12 +199,12 @@ def test_drop_database_01(fxtr_setup_empty_db_and_inbox):
     dcr.cfg.glob.db_core._drop_database()
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 def test_drop_database_02(fxtr_setup_empty_db_and_inbox):
     """Test: drop_database()."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_param_delete(dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr.cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT)
@@ -212,12 +216,12 @@ def test_drop_database_02(fxtr_setup_empty_db_and_inbox):
     dcr.cfg.glob.db_core._drop_database()
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 def test_drop_database_03(fxtr_setup_empty_db_and_inbox):
     """Test: drop_database()."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
@@ -249,7 +253,7 @@ def test_drop_database_03(fxtr_setup_empty_db_and_inbox):
     dcr_core.core_glob.setup = dcr.cfg.cls_setup.Setup()
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -257,7 +261,7 @@ def test_drop_database_03(fxtr_setup_empty_db_and_inbox):
 # -----------------------------------------------------------------------------
 def test_load_db_data_from_json_content(fxtr_setup_logger_environment):
     """Test Load Database Data - disallowed database table."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     db_initial_data_file_path = pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)
@@ -268,8 +272,10 @@ def test_load_db_data_from_json_content(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
-        dcr_core.core_utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
+        dcr_core.core_utils.get_full_name_from_components(
+            pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test
+        ),
+        dcr_core.core_utils.get_full_name_from_components(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
     with pytest.raises(SystemExit) as expt:
@@ -280,7 +286,7 @@ def test_load_db_data_from_json_content(fxtr_setup_logger_environment):
     assert expt.value.code == 1
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -288,7 +294,7 @@ def test_load_db_data_from_json_content(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_load_db_data_from_json_missing(fxtr_setup_logger_environment):
     """Test Load Database Data - initial database data is missing."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     db_initial_data_file_path = pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)
     db_initial_data_file_path_directory = os.path.dirname(db_initial_data_file_path)
@@ -305,7 +311,9 @@ def test_load_db_data_from_json_missing(fxtr_setup_logger_environment):
 
     # restore original file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name),
+        dcr_core.core_utils.get_full_name_from_components(
+            pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name
+        ),
         db_initial_data_file_path_directory,
     )
 
@@ -313,7 +321,7 @@ def test_load_db_data_from_json_missing(fxtr_setup_logger_environment):
     assert expt.value.code == 1, "Initial database data file is missing."
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -321,7 +329,7 @@ def test_load_db_data_from_json_missing(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_load_db_data_from_json_unknown(fxtr_setup_logger_environment):
     """Test Load Database Data - unknown database table."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     db_initial_data_file_path = pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)
@@ -332,8 +340,10 @@ def test_load_db_data_from_json_unknown(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
-        dcr_core.core_utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
+        dcr_core.core_utils.get_full_name_from_components(
+            pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test
+        ),
+        dcr_core.core_utils.get_full_name_from_components(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
     with pytest.raises(SystemExit) as expt:
@@ -344,7 +354,7 @@ def test_load_db_data_from_json_unknown(fxtr_setup_logger_environment):
     assert expt.value.code == 1
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -352,7 +362,7 @@ def test_load_db_data_from_json_unknown(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_load_db_data_from_json_version(fxtr_setup_logger_environment):
     """Test Load Database Data - unexpected api version."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     db_initial_data_file_path = pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)
@@ -363,8 +373,10 @@ def test_load_db_data_from_json_version(fxtr_setup_logger_environment):
 
     # copy test file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test),
-        dcr_core.core_utils.get_full_name(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
+        dcr_core.core_utils.get_full_name_from_components(
+            pytest.helpers.get_test_inbox_directory_name(), db_initial_data_file_path_file_name_test
+        ),
+        dcr_core.core_utils.get_full_name_from_components(db_initial_data_file_path_directory, db_initial_data_file_path_file_name),
     )
 
     with pytest.raises(SystemExit) as expt:
@@ -375,7 +387,7 @@ def test_load_db_data_from_json_version(fxtr_setup_logger_environment):
     assert expt.value.code == 1
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -383,7 +395,7 @@ def test_load_db_data_from_json_version(fxtr_setup_logger_environment):
 # -----------------------------------------------------------------------------
 def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     """Test: upgrade_database()."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_UPGRADE_DB])
@@ -402,7 +414,7 @@ def test_upgrade_database(fxtr_setup_empty_db_and_inbox):
     assert expt.value.code == 1, "Version < '1.0.0' not supported"
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -416,7 +428,7 @@ def update_version_version(
     Args:
         version (str): New version number.
     """
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     dbt = sqlalchemy.Table(
         dcr.db.cls_db_core.DBCore.DBT_VERSION,
@@ -434,4 +446,4 @@ def update_version_version(
         )
         conn.close()
 
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

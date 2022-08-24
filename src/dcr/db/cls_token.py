@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 """Module dcr.db.cls_token: Managing the database table token."""
 from __future__ import annotations
 
@@ -72,7 +76,7 @@ class Token:
             _row_id (int, optional):
                     Row id. Defaults to 0.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dcr.utils.check_exists_object(
             is_db_core=True,
@@ -98,7 +102,7 @@ class Token:
 
         self._exist = True
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the database columns.
@@ -110,8 +114,8 @@ class Token:
             dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return {
             dcr.db.cls_db_core.DBCore.DBC_ID_DOCUMENT: self.token_id_document,
@@ -135,7 +139,7 @@ class Token:
     @classmethod
     def create_dbt(cls) -> None:
         """Create the database table."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_TOKEN,
@@ -225,7 +229,7 @@ class Token:
 
         dcr.utils.progress_msg(f"The database table '{dcr.db.cls_db_core.DBCore.DBT_TOKEN}' has now been created")
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -243,11 +247,11 @@ class Token:
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
         """Finalise the current row."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         self.persist_2_db()
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Initialise from id.
@@ -263,7 +267,7 @@ class Token:
         Returns:
             Token:  The object instance found.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_TOKEN,
@@ -284,7 +288,7 @@ class Token:
                 f"The token with id={id_token} does not exist in the database table 'token'",
             )
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return Token.from_row(row)  # type: ignore
 
@@ -302,8 +306,8 @@ class Token:
         Returns:
             Token:  The object instance matching the specified database row.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return cls(
             _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
@@ -334,8 +338,8 @@ class Token:
             tuple[int, int, str, int]:
                     Column values in a tuple.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return (
             self.token_id,
@@ -359,7 +363,7 @@ class Token:
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         if self.token_id == 0:
             self.token_id = dcr.cfg.glob.db_core.insert_dbt_row(  # type: ignore
@@ -373,4 +377,4 @@ class Token:
                 columns=self._get_columns(),
             )
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

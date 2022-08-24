@@ -3,5 +3,6 @@
 # Version 2020.05, that can be found in the LICENSE file.
 
 """Stub file."""
+
 def convert_non_pdf_2_pdf() -> None: ...
 def convert_non_pdf_2_pdf_file() -> None: ...

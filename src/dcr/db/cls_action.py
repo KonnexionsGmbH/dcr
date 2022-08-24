@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 """Module dcr.db.cls_action: Managing the database table action."""
 from __future__ import annotations
 
@@ -89,7 +93,7 @@ class Action:
             status (str, optional):
                     Status. Defaults to "".
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dcr.utils.check_exists_object(
             is_db_core=True,
@@ -122,7 +126,7 @@ class Action:
 
         self._exist = True
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the database columns.
@@ -134,9 +138,9 @@ class Action:
             dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return {
             dcr.db.cls_db_core.DBCore.DBC_ACTION_CODE: self.action_action_code,
@@ -163,7 +167,7 @@ class Action:
     @classmethod
     def create_dbt(cls) -> None:
         """Create the database table."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_ACTION,
@@ -218,7 +222,7 @@ class Action:
 
         dcr.utils.progress_msg(f"The database table '{dcr.db.cls_db_core.DBCore.DBT_ACTION}' has now been created")
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -236,7 +240,7 @@ class Action:
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
         """Finalise the current action."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         self.action_duration_ns = time.perf_counter_ns() - dcr.cfg.glob.start_time_document
 
@@ -267,7 +271,7 @@ class Action:
                 f"[{self.action_file_name}]"
             )
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Finalise the current action with error.
@@ -281,7 +285,7 @@ class Action:
             error_msg (str):
                     Error message.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         self.action_duration_ns = time.perf_counter_ns() - dcr.cfg.glob.start_time_document
         self.action_error_code_last = error_code
@@ -325,7 +329,7 @@ class Action:
                 f"Error: {error_msg}."
             )
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Initialise from id.
@@ -341,7 +345,7 @@ class Action:
         Returns:
             Action: The object instance found.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_ACTION,
@@ -362,7 +366,7 @@ class Action:
                 f"The action with id={id_action} does not exist in the database table 'action'",
             )
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return Action.from_row(row)  # type: ignore
 
@@ -380,8 +384,8 @@ class Action:
         Returns:
             Run:    The object instance matching the specified database row.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return cls(
             _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
@@ -419,7 +423,7 @@ class Action:
             tuple[int | str, ...]:
                         Column values in a tuple.
         """
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         columns = [
             self.action_id,
@@ -451,7 +455,7 @@ class Action:
             self.action_status,
         ]
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return tuple(columns)  # type: ignore
 
@@ -479,9 +483,9 @@ class Action:
         Returns:
             str:    Full file name.
         """
-        return dcr_core.core_utils.get_full_name(
-            directory_name=self.action_directory_name,
-            file_name=self.action_file_name,
+        return dcr_core.core_utils.get_full_name_from_components(
+            self.action_directory_name,
+            self.action_file_name,
         )
 
     # -----------------------------------------------------------------------------
@@ -503,9 +507,9 @@ class Action:
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
-        full_name = dcr_core.core_utils.get_full_name(self.action_directory_name, self.action_file_name)
+        full_name = dcr_core.core_utils.get_full_name_from_components(self.action_directory_name, self.action_file_name)
         if os.path.exists(full_name):
             if self.action_file_size_bytes == 0:
                 self.action_file_size_bytes = os.path.getsize(full_name)
@@ -531,7 +535,7 @@ class Action:
                 columns=self._get_columns(),
             )
 
-        dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -----------------------------------------------------------------------------
     # Select unprocessed actions based on action_code.
@@ -572,7 +576,7 @@ class Action:
             .order_by(dbt.c.id.asc())
         )
 
-        dcr.cfg.glob.logger.debug("SQL Statement=%s", stmnt)
+        dcr_core.core_glob.logger.debug("SQL Statement=%s", stmnt)
 
         return conn.execute(stmnt)
 
@@ -620,6 +624,6 @@ class Action:
             .order_by(dbt.c.id.asc())
         )
 
-        dcr.cfg.glob.logger.debug("SQL Statement=%s", stmnt)
+        dcr_core.core_glob.logger.debug("SQL Statement=%s", stmnt)
 
         return conn.execute(stmnt)

@@ -1,7 +1,10 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 """Module dcr.cfg.glob: DCR Global Data."""
 from __future__ import annotations
 
-import logging
 import os
 
 import dcr.db
@@ -28,8 +31,6 @@ directory_inbox_rejected: os.PathLike[str] | str
 document: dcr.db.cls_document.Document
 
 language: dcr.db.cls_language.Language
-
-logger: logging.Logger
 
 run: dcr.db.cls_run.Run
 

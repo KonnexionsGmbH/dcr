@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 # pylint: disable=unused-argument
 """Testing Module nlp.tokenizer."""
 import os
@@ -27,7 +31,7 @@ import dcr.launcher
 @pytest.mark.parametrize("spacy_ignore", ["false", "true"])
 def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - attributes - true."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -77,7 +81,7 @@ def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, 
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_tokenize_normal <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_tokenize_normal <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -91,7 +95,7 @@ def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, 
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -100,7 +104,7 @@ def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, 
 @pytest.mark.parametrize("spacy_ignore", ["false", "true"])
 def test_run_action_tokenize_attributes_false_true_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - attributes - false & true - coverage."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -122,7 +126,7 @@ def test_run_action_tokenize_attributes_false_true_coverage(spacy_ignore: str, f
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -131,7 +135,7 @@ def test_run_action_tokenize_attributes_false_true_coverage(spacy_ignore: str, f
 @pytest.mark.parametrize("spacy_ignore", ["false", "true"])
 def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - coverage."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -189,7 +193,7 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_tokenize_normal <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_tokenize_normal <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -208,7 +212,7 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -216,15 +220,19 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
 # -----------------------------------------------------------------------------
 def test_run_action_tokenize_french(fxtr_setup_empty_inbox):
     """Test RUN_ACTION_PROCESS_INBOX - French."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     db_initial_data_file_path = pathlib.Path(dcr_core.core_glob.setup.db_initial_data_file)
 
     # copy test file
     shutil.copy(
-        dcr_core.core_utils.get_full_name(pytest.helpers.get_test_inbox_directory_name(), "db_initial_data_file_french.json"),
-        dcr_core.core_utils.get_full_name(os.path.dirname(db_initial_data_file_path), os.path.basename(db_initial_data_file_path)),
+        dcr_core.core_utils.get_full_name_from_components(
+            pytest.helpers.get_test_inbox_directory_name(), "db_initial_data_file_french.json"
+        ),
+        dcr_core.core_utils.get_full_name_from_components(
+            os.path.dirname(db_initial_data_file_path), os.path.basename(db_initial_data_file_path)
+        ),
     )
 
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore(is_admin=True)
@@ -245,7 +253,7 @@ def test_run_action_tokenize_french(fxtr_setup_empty_inbox):
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -254,10 +262,10 @@ def test_run_action_tokenize_french(fxtr_setup_empty_inbox):
 @pytest.mark.parametrize("spacy_ignore", ["false", "true"])
 def test_run_action_tokenize_missing_input_file(spacy_ignore: str, fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_TOKENIZE - missing input file."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_tokenize_missing_input_file <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_tokenize_missing_input_file <=========")
 
     stem_name_1 = "case_3_pdf_text_route_inbox_pdflib"
     file_ext_1 = "pdf"
@@ -297,9 +305,11 @@ def test_run_action_tokenize_missing_input_file(spacy_ignore: str, fxtr_setup_em
 
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_PARSER])
 
-    os.remove(dcr_core.core_utils.get_full_name(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.json"))
+    os.remove(
+        dcr_core.core_utils.get_full_name_from_components(dcr_core.core_glob.setup.directory_inbox_accepted, stem_name_1 + "_1.line.json")
+    )
 
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

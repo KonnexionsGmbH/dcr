@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 # pylint: disable=unused-argument
 """Testing Module dcr.utils."""
 import pathlib
@@ -25,15 +29,15 @@ def test_get_file_type():
 
 
 # -----------------------------------------------------------------------------
-# Test Function - get_full_name().
+# Test Function - get_full_name_from_components().
 # -----------------------------------------------------------------------------
-def test_get_full_name():
+def test_get_full_name_from_components():
     """Test: get_full_name()."""
-    assert dcr_core.core_utils.get_full_name(None, None) == ""
+    assert dcr_core.core_utils.get_full_name_from_components("", "") == ""
 
     directory_name = pathlib.Path("D:/SoftDevelopment")
 
-    dcr_core.core_utils.get_full_name(directory_name, "docx_ok.docx")
+    dcr_core.core_utils.get_full_name_from_components(directory_name, "docx_ok.docx")
 
 
 # -----------------------------------------------------------------------------

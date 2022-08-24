@@ -3,5 +3,6 @@
 # Version 2020.05, that can be found in the LICENSE file.
 
 """Stub file."""
+
 def tokenize() -> None: ...
 def tokenize_file() -> None: ...

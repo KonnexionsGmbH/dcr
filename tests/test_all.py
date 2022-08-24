@@ -1,3 +1,7 @@
+# Copyright (c) 2022 Konnexions GmbH. All rights reserved. Use of this
+# source code is governed by the Konnexions Public License (KX-PL)
+# Version 2020.05, that can be found in the LICENSE file.
+
 """Testing Module all."""
 
 import dcr_core.cls_setup
@@ -919,7 +923,7 @@ def check_db_content_version() -> None:
 # -----------------------------------------------------------------------------
 def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
@@ -961,7 +965,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_deleted <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_deleted <=========")
 
     check_db_content()
 
@@ -992,7 +996,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
 # -----------------------------------------------------------------------------
 def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - empty."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -1009,7 +1013,7 @@ def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1017,7 +1021,7 @@ def test_run_action_process_all_complete_auxiliary_empty(fxtr_setup_empty_db_and
 # -----------------------------------------------------------------------------
 def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = false."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
@@ -1056,7 +1060,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_ALL_COMPLETE])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_kept <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_kept <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -1089,7 +1093,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1097,7 +1101,7 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
 # -----------------------------------------------------------------------------
 def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - status: error."""
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
@@ -1183,7 +1187,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_TOKENIZE])
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_status_error <=========")
+    dcr_core.core_glob.logger.info("=========> test_run_action_process_all_complete_auxiliary_status_error <=========")
 
     pytest.helpers.verify_content_of_inboxes(
         inbox_accepted=(
@@ -1198,4 +1202,4 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     )
 
     # -------------------------------------------------------------------------
-    dcr.cfg.glob.logger.debug(dcr.cfg.glob.LOGGER_END)
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
