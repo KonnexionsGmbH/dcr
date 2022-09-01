@@ -2,7 +2,7 @@
 # source code is governed by the Konnexions Public License (KX-PL)
 # Version 2020.05, that can be found in the LICENSE file.
 
-"""Stub file."""
+"""Module stub file."""
 from typing import ClassVar
 
 import sqlalchemy
@@ -22,26 +22,7 @@ class Document:
     DOCUMENT_STATUS_END: ClassVar[str]
     DOCUMENT_STATUS_ERROR: ClassVar[str]
     DOCUMENT_STATUS_START: ClassVar[str]
-    document_action_code_last: str
-    document_action_text_last: str
-    document_directory_name: str
-    document_error_code_last: str
-    document_error_msg_last: str
-    document_error_no: int
-    document_file_name: str
-    document_file_size_bytes: int
-    document_id: int
-    document_id_language: int
-    document_id_run_last: int
-    document_no_lines_footer: int
-    document_no_lines_header: int
-    document_no_lines_toc: int
-    document_no_lists_bullet: int
-    document_no_lists_number: int
-    document_no_tables: int
-    document_no_pdf_pages: int
-    document_sha256: str
-    document_status: str
+
     def __init__(
         self,
         action_code_last: str,
@@ -66,7 +47,26 @@ class Document:
         status: str = ...,
     ) -> None:
         self._exist = None
-        ...
+        self.document_action_code_last = None
+        self.document_action_text_last = None
+        self.document_directory_name = None
+        self.document_error_code_last = None
+        self.document_error_msg_last = None
+        self.document_error_no = None
+        self.document_file_name = None
+        self.document_file_size_bytes = None
+        self.document_id = None
+        self.document_id_language = None
+        self.document_id_run_last = None
+        self.document_no_lines_footer = None
+        self.document_no_lines_header = None
+        self.document_no_lines_toc = None
+        self.document_no_lists_bullet = None
+        self.document_no_lists_number = None
+        self.document_no_pdf_pages = None
+        self.document_no_tables = None
+        self.document_sha256 = None
+        self.document_status = None
     def _get_columns(self) -> None: ...
     @classmethod
     def create_dbt(cls) -> None: ...

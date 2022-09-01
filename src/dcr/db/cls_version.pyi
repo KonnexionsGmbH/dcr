@@ -2,16 +2,15 @@
 # source code is governed by the Konnexions Public License (KX-PL)
 # Version 2020.05, that can be found in the LICENSE file.
 
-"""Stub file."""
+"""Module stub file."""
 import sqlalchemy
 from sqlalchemy import Integer
 
 class Version:
-    version_id: int
-    version_version: str
     def __init__(self, _row_id: int = ..., version: str = ...) -> None:
         self._exist = None
-        ...
+        self.version_id = None
+        self.version_version = None
     def _get_columns(self) -> None: ...
     @classmethod
     def create_dbt(cls) -> None: ...

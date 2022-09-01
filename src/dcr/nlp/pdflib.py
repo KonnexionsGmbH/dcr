@@ -92,6 +92,11 @@ def extract_text_from_pdf() -> None:
 # noinspection PyArgumentList
 def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_variation: str) -> bool:
     """Extract text from a pdf document (step: tet) - method line."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    dcr_core.core_glob.logger.debug("param document_opt_list=%s", document_opt_list)
+    dcr_core.core_glob.logger.debug("param page_opt_list    =%s", page_opt_list)
+    dcr_core.core_glob.logger.debug("param xml_variation    =%s", xml_variation)
+
     full_name_curr = dcr.cfg.glob.action_curr.get_full_name()
 
     file_name_next = dcr.cfg.glob.action_curr.get_stem_name() + "." + xml_variation + dcr_core.core_glob.FILE_TYPE_XML
@@ -105,10 +110,10 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
             error_code=dcr.db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=ERROR_51_904.replace("{full_name}", full_name_next),
         )
-
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return False
 
-    (error_code, error_msg) = dcr_core.cls_process.Process.pdflib_process(
+    (error_code, error_msg) = dcr_core.cls_process.Process.pdflib(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         document_opt_list=document_opt_list,
@@ -116,6 +121,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
     )
     if (error_code, error_msg) != dcr_core.core_glob.RETURN_OK:
         dcr.cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return False
 
     if xml_variation == dcr_core.cls_nlp_core.NLPCore.LINE_XML_VARIATION:
@@ -137,5 +143,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
         no_pdf_pages=dcr.cfg.glob.action_curr.action_no_pdf_pages,
         status=dcr.db.cls_document.Document.DOCUMENT_STATUS_START,
     )
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     return True

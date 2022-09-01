@@ -237,7 +237,7 @@ def check_existing_token():
     """Check existing token object."""
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore()
 
-    expected_values = [
+    expected_values = (
         1,
         1,
         0,
@@ -253,29 +253,76 @@ def check_existing_token():
         "Start Document ...",
         [
             {
+                "tknCluster": 0,
+                "tknDep_": "ROOT",
+                "tknDoc": "Start Document ...",
+                "tknEntIob_": "O",
+                "tknHead": 0,
                 "tknI": 0,
+                "tknIdx": 0,
+                "tknIsAlpha": True,
+                "tknIsAscii": True,
                 "tknIsOov": True,
+                "tknIsSentStart": True,
                 "tknIsTitle": True,
+                "tknLang_": "en",
+                "tknLeftEdge": 0,
                 "tknLemma_": "start",
+                "tknLex": "Start",
+                "tknLexId": 18446744073709551615,
+                "tknLower_": "start",
+                "tknMorph": "VerbForm=Inf",
                 "tknNorm_": "start",
+                "tknOrth_": "Start",
                 "tknPos_": "VERB",
+                "tknPrefix_": "S",
+                "tknProb": -20.0,
+                "tknRightEdge": 2,
+                "tknSent": "Start Document ...",
+                "tknSentiment": 0.0,
+                "tknShape_": "Xxxxx",
+                "tknSuffix_": "art",
                 "tknTag_": "VB",
                 "tknText": "Start",
+                "tknTextWithWs": "Start ",
                 "tknWhitespace_": " ",
             },
             {
+                "tknCluster": 0,
+                "tknDep_": "dobj",
+                "tknDoc": "Start Document ...",
+                "tknEntIob_": "O",
+                "tknHead": 0,
                 "tknI": 1,
+                "tknIdx": 6,
+                "tknIsAlpha": True,
+                "tknIsAscii": True,
                 "tknIsOov": True,
                 "tknIsTitle": True,
+                "tknLang_": "en",
+                "tknLeftEdge": 1,
                 "tknLemma_": "document",
+                "tknLex": "Document",
+                "tknLexId": 18446744073709551615,
+                "tknLower_": "document",
+                "tknMorph": "Number=Sing",
                 "tknNorm_": "document",
+                "tknOrth_": "Document",
                 "tknPos_": "NOUN",
+                "tknPrefix_": "D",
+                "tknProb": -20.0,
+                "tknRightEdge": 1,
+                "tknSent": "Start Document ...",
+                "tknSentiment": 0.0,
+                "tknShape_": "Xxxxx",
+                "tknSuffix_": "ent",
                 "tknTag_": "NN",
                 "tknText": "Document",
+                "tknTextWithWs": "Document ",
                 "tknWhitespace_": " ",
             },
         ],
-    ]
+    )
 
     dcr.cfg.glob.token = dcr.db.cls_token.Token.from_id(expected_values[0])
 
@@ -733,7 +780,11 @@ def check_new_version():
 # -----------------------------------------------------------------------------
 def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     """Test Function - existing objects."""
-    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    try:
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    except AttributeError:
+        dcr_core.core_glob.initialise_logger()
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
     pytest.helpers.copy_files_4_pytest_2_dir(
@@ -747,7 +798,7 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
     dcr.db.cls_run.Run.ID_RUN_UMBRELLA = 0
 
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_SPACY,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
             (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, "true"),

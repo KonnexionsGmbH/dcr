@@ -172,6 +172,7 @@ def get_pdf_pages_no(
         return -1
 
     try:
+        # noinspection PyUnresolvedReferences
         return len(PyPDF2.PdfReader(file_name).pages)
     except PyPDF2.errors.PdfReadError:
         return -1

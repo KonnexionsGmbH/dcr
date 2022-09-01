@@ -18,13 +18,6 @@ import dcr.db.cls_document
 import dcr.db.cls_run
 import dcr.utils
 
-# -----------------------------------------------------------------------------
-# Global variables.
-# -----------------------------------------------------------------------------
-TETML_TYPE_LINE = "line"
-TETML_TYPE_PAGE = "page"
-TETML_TYPE_WORD = "word"
-
 
 # -----------------------------------------------------------------------------
 # Parse the TETML files (step: s_p_j).
@@ -38,21 +31,21 @@ def parse_tetml() -> None:
 
     for (tetml_type, action_code, is_parsing_line, is_parsing_page, is_parsing_word,) in (
         (
-            TETML_TYPE_LINE,
+            dcr_core.cls_nlp_core.NLPCore.TETML_TYPE_LINE,
             dcr.db.cls_run.Run.ACTION_CODE_PARSER_LINE,
             True,
             False,
             False,
         ),
         (
-            TETML_TYPE_PAGE,
+            dcr_core.cls_nlp_core.NLPCore.TETML_TYPE_PAGE,
             dcr.db.cls_run.Run.ACTION_CODE_PARSER_PAGE,
             False,
             True,
             False,
         ),
         (
-            TETML_TYPE_WORD,
+            dcr_core.cls_nlp_core.NLPCore.TETML_TYPE_WORD,
             dcr.db.cls_run.Run.ACTION_CODE_PARSER_WORD,
             False,
             False,
@@ -104,6 +97,8 @@ def parse_tetml_file() -> None:
 
     TBD
     """
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     full_name_curr = dcr.cfg.glob.action_curr.get_full_name()
 
     file_name_next = dcr.cfg.glob.action_curr.get_stem_name() + "." + dcr_core.core_glob.FILE_TYPE_JSON
@@ -129,30 +124,31 @@ def parse_tetml_file() -> None:
         status=status,
     )
 
-    (error_code, error_msg) = dcr_core.cls_process.Process.parser_process(
+    (error_code, error_msg) = dcr_core.cls_process.Process.parser(
         full_name_in=dcr.cfg.glob.action_curr.get_full_name(),
         full_name_out=dcr.cfg.glob.action_next.get_full_name(),
         document_id=dcr.cfg.glob.action_curr.action_id_document,
-        file_name_orig=dcr.cfg.glob.document.document_file_name,
+        full_name_orig=dcr.cfg.glob.document.document_file_name,
         no_pdf_pages=dcr.cfg.glob.action_curr.action_no_pdf_pages,
     )
     if (error_code, error_msg) != dcr_core.core_glob.RETURN_OK:
         dcr.cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return
 
     dcr.cfg.glob.run.run_total_processed_ok += 1
 
     if dcr_core.core_glob.setup.is_parsing_line:
         if (
-            dcr_core.core_glob.line_type_headers_footers.no_lines_footer != 0  # pylint: disable=too-many-boolean-expressions
-            or dcr_core.core_glob.line_type_headers_footers.no_lines_header != 0
+            dcr_core.core_glob.line_type_header_footer.no_lines_footer != 0  # pylint: disable=too-many-boolean-expressions
+            or dcr_core.core_glob.line_type_header_footer.no_lines_header != 0
             or dcr_core.core_glob.line_type_list_bullet.no_lists != 0
             or dcr_core.core_glob.line_type_list_number.no_lists != 0
             or dcr_core.core_glob.line_type_table.no_tables != 0
             or dcr_core.core_glob.line_type_toc.no_lines_toc != 0
         ):
-            dcr.cfg.glob.document.document_no_lines_footer = dcr_core.core_glob.line_type_headers_footers.no_lines_footer
-            dcr.cfg.glob.document.document_no_lines_header = dcr_core.core_glob.line_type_headers_footers.no_lines_header
+            dcr.cfg.glob.document.document_no_lines_footer = dcr_core.core_glob.line_type_header_footer.no_lines_footer
+            dcr.cfg.glob.document.document_no_lines_header = dcr_core.core_glob.line_type_header_footer.no_lines_header
             dcr.cfg.glob.document.document_no_lines_toc = dcr_core.core_glob.line_type_toc.no_lines_toc
             dcr.cfg.glob.document.document_no_lists_bullet = dcr_core.core_glob.line_type_list_bullet.no_lists
             dcr.cfg.glob.document.document_no_lists_number = dcr_core.core_glob.line_type_list_number.no_lists
@@ -164,3 +160,5 @@ def parse_tetml_file() -> None:
     dcr.cfg.glob.action_curr.finalise()
 
     dcr.utils.delete_auxiliary_file(full_name_curr)
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

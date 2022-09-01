@@ -64,6 +64,8 @@ def convert_non_pdf_2_pdf() -> None:
 # -----------------------------------------------------------------------------
 def convert_non_pdf_2_pdf_file() -> None:
     """Convert a non-pdf document to a pdf document."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     full_name_curr = dcr.cfg.glob.action_curr.get_full_name()
 
     file_name_next = dcr.cfg.glob.action_curr.get_stem_name() + "." + dcr_core.core_glob.FILE_TYPE_PDF
@@ -77,16 +79,17 @@ def convert_non_pdf_2_pdf_file() -> None:
             error_code=dcr.db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=ERROR_31_903.replace("{full_name}", full_name_next),
         )
-
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return
 
-    (error_code, error_msg) = dcr_core.cls_process.Process.pandoc_process(
+    (error_code, error_msg) = dcr_core.cls_process.Process.pandoc(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         language_pandoc=dcr.db.cls_language.Language.LANGUAGES_PANDOC[dcr.cfg.glob.document.document_id_language],
     )
     if (error_code, error_msg) != dcr_core.core_glob.RETURN_OK:
         dcr.cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return
 
     dcr.cfg.glob.action_next = dcr.db.cls_action.Action(
@@ -106,3 +109,5 @@ def convert_non_pdf_2_pdf_file() -> None:
     dcr.cfg.glob.action_curr.finalise()
 
     dcr.cfg.glob.run.run_total_processed_ok += 1
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

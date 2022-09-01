@@ -168,7 +168,7 @@ def test_create_database(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
             (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_INITIAL_DATA_FILE, "unknown_file"),
         ],
@@ -192,23 +192,6 @@ def test_drop_database_01(fxtr_setup_empty_db_and_inbox):
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_CREATE_DB])
-
-    dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore(is_admin=True)
-
-    dcr.cfg.glob.db_core._drop_database()
-
-    # -------------------------------------------------------------------------
-    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
-
-def test_drop_database_02(fxtr_setup_empty_db_and_inbox):
-    """Test: drop_database()."""
-    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr.cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT)
-
     dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_CREATE_DB])
 
     dcr.cfg.glob.db_core = dcr.db.cls_db_core.DBCore(is_admin=True)

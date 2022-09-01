@@ -2,7 +2,7 @@
 # source code is governed by the Konnexions Public License (KX-PL)
 # Version 2020.05, that can be found in the LICENSE file.
 
-"""Stub file."""
+"""Module stub file."""
 from typing import ClassVar
 
 import sqlalchemy
@@ -12,23 +12,7 @@ from sqlalchemy.engine import Connection
 
 class Action:
     PDF2IMAGE_FILE_TYPE: ClassVar[str]
-    action_id: int
-    action_action_code: str
-    action_action_text: str
-    action_directory_name: str
-    action_directory_type: str
-    action_duration_ns: int
-    action_error_code_last: str
-    action_error_msg_last: str
-    action_error_no: int
-    action_file_name: str
-    action_file_size_bytes: int
-    action_id_document: int
-    action_id_parent: int
-    action_id_run_last: int
-    action_no_children: int
-    action_no_pdf_pages: int
-    action_status: str
+
     def __init__(
         self,
         action_code: str,
@@ -50,7 +34,23 @@ class Action:
         status: str = ...,
     ) -> None:
         self._exist = None
-        ...
+        self.action_action_code = None
+        self.action_action_text = None
+        self.action_directory_name = None
+        self.action_directory_type = None
+        self.action_duration_ns = None
+        self.action_error_code_last = None
+        self.action_error_msg_last = None
+        self.action_error_no = None
+        self.action_file_name = None
+        self.action_file_size_bytes = None
+        self.action_id = None
+        self.action_id_document = None
+        self.action_id_parent = None
+        self.action_id_run_last = None
+        self.action_no_children = None
+        self.action_no_pdf_pages = None
+        self.action_status = None
     def _get_columns(self) -> None: ...
     @classmethod
     def create_dbt(cls) -> None: ...

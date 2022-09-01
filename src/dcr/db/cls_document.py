@@ -118,7 +118,7 @@ class Document:
             status (str, optional):
                     Status. Defaults to "".
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dcr.utils.check_exists_object(
             is_db_core=True,
@@ -150,7 +150,7 @@ class Document:
 
         self._exist = True
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the database columns.
@@ -162,9 +162,6 @@ class Document:
             dcr.db.cls_db_core.Columns:
                     Database columns.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         self.document_action_text_last = dcr.db.cls_run.Run.get_action_text(self.document_action_code_last)
 
         return {
@@ -195,7 +192,7 @@ class Document:
     @classmethod
     def create_dbt(cls) -> None:
         """Create the database table."""
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_DOCUMENT,
@@ -248,7 +245,7 @@ class Document:
 
         dcr.utils.progress_msg(f"The database table '{dcr.db.cls_db_core.DBCore.DBT_DOCUMENT}' has now been created")
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -266,13 +263,13 @@ class Document:
     # -----------------------------------------------------------------------------
     def finalise(self) -> None:
         """Finalise the current row."""
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         self.document_status = Document.DOCUMENT_STATUS_END
 
         self.persist_2_db()
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Finalise the current row with error.
@@ -286,7 +283,9 @@ class Document:
             error_msg (str):
                     Error message.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug("param error_code=%s", error_code)
+        # dcr_core.core_glob.logger.debug("param error_msg =%s", error_msg)
 
         self.document_error_code_last = error_code
         self.document_error_msg_last = error_msg
@@ -295,7 +294,7 @@ class Document:
 
         self.persist_2_db()
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Initialise from id.
@@ -312,7 +311,8 @@ class Document:
             Document:
                     The object instance found.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug("param id_document=%i", id_document)
 
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_DOCUMENT,
@@ -333,7 +333,7 @@ class Document:
                 f"The document with id={id_document} does not exist in the database table 'document'",
             )
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return Document.from_row(row)  # type: ignore
 
@@ -352,9 +352,6 @@ class Document:
             Document:
                     The object instance matching the specified database row.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
         return cls(
             _row_id=row[dcr.db.cls_db_core.DBCore.DBC_ID],
             action_code_last=row[dcr.db.cls_db_core.DBCore.DBC_ACTION_CODE_LAST],
@@ -394,7 +391,9 @@ class Document:
             tuple[int | str, ...]:
                         Column values in a tuple.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug("param is_file_size_bytes=%s", is_file_size_bytes)
+        # dcr_core.core_glob.logger.debug("param is_sha256         =%s", is_sha256)
 
         columns = [
             self.document_id,
@@ -427,7 +426,7 @@ class Document:
 
         columns.append(self.document_status)
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return tuple(columns)  # type: ignore
 
@@ -498,6 +497,8 @@ class Document:
         Returns:
             str:    Stem name of the following action.
         """
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
         if self.document_file_name == "":
             return self.document_file_name
 
@@ -506,11 +507,14 @@ class Document:
         )
 
         if dcr_core.core_glob.setup.doc_id_in_file_name == "none":
+            # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
             return dcr_core.core_utils.get_stem_name(str(self.document_file_name))
 
         if dcr_core.core_glob.setup.doc_id_in_file_name == "after":
+            # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
             return dcr_core.core_utils.get_stem_name(str(self.document_file_name)) + "_" + str(self.document_id)
 
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return str(self.document_id) + "_" + dcr_core.core_utils.get_stem_name(str(self.document_file_name))
 
     # -----------------------------------------------------------------------------
@@ -518,7 +522,7 @@ class Document:
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         if self.document_file_size_bytes == 0:
             self.document_file_size_bytes = os.path.getsize(
@@ -544,7 +548,7 @@ class Document:
                 columns=self._get_columns(),
             )
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the duplicate file name based on the hash key.
@@ -563,6 +567,10 @@ class Document:
             str | None:
                     The file name found.
         """
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug("param id_document=%i", id_document)
+        # dcr_core.core_glob.logger.debug("param sha256     =%s", sha256)
+
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_DOCUMENT,
             dcr.cfg.glob.db_core.db_orm_metadata,
@@ -577,13 +585,18 @@ class Document:
                 )
             )
 
-            dcr_core.core_glob.logger.debug("SQL Statement=%s", stmnt)
+            # dcr_core.core_glob.logger.debug("SQL Statement=%s", stmnt)
 
             row = conn.execute(stmnt).fetchone()
 
             conn.close()
 
             if row is None:
+                # dcr_core.core_glob.logger.debug("return           =")
+                # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
                 return ""
+
+            # dcr_core.core_glob.logger.debug("return           =%s", row[0])
+            # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
             return row[0]  # type: ignore

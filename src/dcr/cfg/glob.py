@@ -19,6 +19,7 @@ LOGGER_START = "Start"
 # -----------------------------------------------------------------------------
 # Global Variables.
 # -----------------------------------------------------------------------------
+# noinspection PyUnresolvedReferences
 action_curr: dcr.db.cls_action.Action
 action_next: dcr.db.cls_action.Action
 

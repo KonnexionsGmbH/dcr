@@ -2,7 +2,7 @@
 # source code is governed by the Konnexions Public License (KX-PL)
 # Version 2020.05, that can be found in the LICENSE file.
 
-"""Stub file."""
+"""Module stub file."""
 import os
 import pathlib
 from typing import ClassVar
@@ -87,15 +87,15 @@ class DBCore:
     JSON_NAME_ROWS: str
     JSON_NAME_TABLES: str
     JSON_NAME_TABLE_NAME: str
+
     def __init__(self, is_admin: bool = ...) -> None:
-        self._exist = None
-        self.db_orm_metadata = None
-        self.db_orm_engine = None
-        self._db_driver_conn = None
+        self._db_current_database = None
         self._db_current_password = None
         self._db_current_user = None
-        self._db_current_database = None
-        ...
+        self._db_driver_conn = None
+        self._exist = None
+        self.db_orm_engine = None
+        self.db_orm_metadata = None
     def _connect_db_admin(self) -> None: ...
     def _connect_db_user(self) -> None: ...
     def _create_database_postgresql(self) -> None: ...

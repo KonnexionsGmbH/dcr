@@ -66,6 +66,8 @@ def convert_image_2_pdf() -> None:
 # noinspection PyArgumentList
 def convert_image_2_pdf_file() -> None:
     """Convert scanned image pdf documents to image files."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     full_name_curr = dcr.cfg.glob.action_curr.get_full_name()
 
     file_name_next = dcr.cfg.glob.action_curr.get_stem_name().replace("[0-9]*", "0") + "." + dcr_core.core_glob.FILE_TYPE_PDF
@@ -79,15 +81,17 @@ def convert_image_2_pdf_file() -> None:
             error_code=dcr.db.cls_document.Document.DOCUMENT_ERROR_CODE_REJ_FILE_DUPL,
             error_msg=ERROR_41_903.replace("{full_name}", full_name_next),
         )
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return
 
-    (error_code, error_msg, children) = dcr_core.cls_process.Process.tesseract_process(
+    (error_code, error_msg, children) = dcr_core.cls_process.Process.tesseract(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         language_tesseract=dcr.db.cls_language.Language.LANGUAGES_TESSERACT[dcr.cfg.glob.document.document_id_language],
     )
     if error_code != dcr_core.core_glob.RETURN_OK[0]:
         dcr.cfg.glob.action_curr.finalise_error(error_code, error_msg)
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return
 
     for full_name in children:
@@ -108,3 +112,5 @@ def convert_image_2_pdf_file() -> None:
     )
 
     dcr.cfg.glob.run.run_total_processed_ok += len(children)
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

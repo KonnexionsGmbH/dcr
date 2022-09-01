@@ -2,7 +2,7 @@
 # source code is governed by the Konnexions Public License (KX-PL)
 # Version 2020.05, that can be found in the LICENSE file.
 
-"""Stub file."""
+"""Module stub file."""
 from typing import ClassVar
 
 import sqlalchemy.orm
@@ -38,21 +38,7 @@ class Run:
     ACTION_CODE_TOKENIZE_LINE: ClassVar[str]
     ACTION_CODE_UPGRADE_DB: ClassVar[str]
     ID_RUN_UMBRELLA: ClassVar[int]
-    run_action_code: str
-    run_action_text: str
-    run_id: int
-    run_id_run: int
-    run_status: str
-    run_total_erroneous: int
-    run_total_processed_ok: int
-    run_total_processed_to_be: int
-    total_generated: int
-    total_processed_pandoc: int
-    total_processed_pdf2image: int
-    total_processed_pdflib: int
-    total_processed_tesseract: int
-    total_status_error: int
-    total_status_ready: int
+
     def __init__(
         self,
         action_code: str,
@@ -65,7 +51,21 @@ class Run:
         total_processed_to_be: int = ...,
     ) -> None:
         self._exist = None
-        ...
+        self.run_action_code = None
+        self.run_action_text = None
+        self.run_id = None
+        self.run_id_run = None
+        self.run_status = None
+        self.run_total_erroneous = None
+        self.run_total_processed_ok = None
+        self.run_total_processed_to_be = None
+        self.total_generated = None
+        self.total_processed_pandoc = None
+        self.total_processed_pdf2image = None
+        self.total_processed_pdflib = None
+        self.total_processed_tesseract = None
+        self.total_status_error = None
+        self.total_status_ready = None
     def _get_columns(self) -> None: ...
     @classmethod
     def create_dbt(cls) -> None: ...
