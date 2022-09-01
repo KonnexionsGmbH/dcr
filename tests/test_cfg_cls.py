@@ -40,7 +40,7 @@ def check_param_tokenize_2_():
     """Check parameter TOKENIZE_2_."""
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "fALSE"),
             (dcr_core.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "fALSE"),
@@ -63,7 +63,7 @@ def test_get_config_1(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
@@ -239,7 +239,9 @@ def test_get_config_missing_05(fxtr_setup_logger_environment):
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE)
+    pytest.helpers.config_param_delete(
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE
+    )
 
     dcr_core.core_glob.setup.pdf2image_type = dcr_core.core_glob.setup.PDF2IMAGE_TYPE_JPEG
 
@@ -258,8 +260,8 @@ def test_get_config_missing_06(fxtr_setup_logger_environment):
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE)
-    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE)
+    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE)
+    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE)
 
     dcr_core.core_glob.setup.is_verbose = True
 
@@ -276,8 +278,10 @@ def test_get_config_missing_07(fxtr_setup_logger_environment):
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
     # -------------------------------------------------------------------------
-    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER)
-    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER)
+    pytest.helpers.config_param_delete(dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER)
+    pytest.helpers.config_param_delete(
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST, dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER
+    )
 
     dcr_core.core_glob.setup = dcr.cfg.cls_setup.Setup()
 
@@ -296,7 +300,7 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "aLL"),
         ],
@@ -308,7 +312,7 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, dcr_core.core_glob.INFORMATION_NOT_YET_AVAILABLE),
         ],
@@ -320,7 +324,7 @@ def test_get_config_verbose_parser(fxtr_setup_logger_environment):
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "tEXT"),
         ],

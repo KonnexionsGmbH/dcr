@@ -177,7 +177,7 @@ The customisable entries are:
     tokenize_2_database = true
     tokenize_2_jsonfile = true
     verbose = true
-    verbose_lt_headers_footers = false
+    verbose_lt_header_footer = false
     verbose_lt_heading = false
     verbose_lt_list_bullet = false
     verbose_lt_list_number = false
@@ -241,7 +241,7 @@ The customisable entries are:
 | tokenize_2_database              | **`true`**                                  | Store the tokens in the database table **`token`**.                                                                     |
 | tokenize_2_jsonfile              | **`true`**                                  | Store the tokens in a **`JSON`** flat file.                                                                             |
 | verbose                          | **`true`**                                  | Display progress messages for processing.                                                                               |
-| verbose_lt_headers_footers       | **`false`**                                 | Display progress messages for headers & footers line type determination.                                                |
+| verbose_lt_header_footer         | **`false`**                                 | Display progress messages for headers & footers line type determination.                                                |
 | verbose_lt_heading               | **`false`**                                 | Display progress messages for heading line type determination.                                                          |
 | verbose_lt_list_bullet           | **`false`**                                 | Display progress messages for line type determination of a bulleted list.                                               |
 | verbose_lt_list_number           | **`false`**                                 | Display progress messages for line type determination of a numbered list.                                               |

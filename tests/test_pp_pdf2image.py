@@ -84,7 +84,7 @@ def test_run_action_pdf_2_image_normal_png(fxtr_rmdir_opt, fxtr_setup_empty_db_a
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_PDF2IMAGE_TYPE, dcr_core.cls_setup.Setup.PDF2IMAGE_TYPE_PNG),
         ],

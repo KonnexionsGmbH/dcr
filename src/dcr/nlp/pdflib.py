@@ -113,7 +113,7 @@ def extract_text_from_pdf_file(document_opt_list: str, page_opt_list: str, xml_v
         dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return False
 
-    (error_code, error_msg) = dcr_core.cls_process.Process.pdflib_process(
+    (error_code, error_msg) = dcr_core.cls_process.Process.pdflib(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         document_opt_list=document_opt_list,

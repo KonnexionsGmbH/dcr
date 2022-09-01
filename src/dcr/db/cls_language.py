@@ -69,7 +69,7 @@ class Language:
             directory_name_inbox (str, optional):
                     Name of the language-specific input file directory. Defaults to "".
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dcr.utils.check_exists_object(
             is_db_core=True,
@@ -102,7 +102,7 @@ class Language:
 
         self._exist = True
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the database columns.
@@ -130,7 +130,7 @@ class Language:
     @classmethod
     def create_dbt(cls) -> None:
         """Create the database table."""
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,
@@ -161,7 +161,7 @@ class Language:
 
         dcr.utils.progress_msg(f"The database table '{dcr.db.cls_db_core.DBCore.DBT_LANGUAGE}' has now been created")
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the object existence.
@@ -189,8 +189,8 @@ class Language:
             Language:
                     The object instance found.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-        dcr_core.core_glob.logger.debug("param id_language=%i", id_language)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug("param id_language=%i", id_language)
 
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,
@@ -211,7 +211,7 @@ class Language:
                 f"The language with id={id_language} does not exist in the database table 'language'",
             )
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return Language.from_row(row)  # type: ignore
 
@@ -270,7 +270,7 @@ class Language:
     @classmethod
     def load_data_from_dbt_language(cls) -> None:
         """Load the data from the database table 'language'."""
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,
@@ -300,14 +300,14 @@ class Language:
         dcr.utils.progress_msg(f"Available languages for spaCy         '{Language.LANGUAGES_SPACY}'")
         dcr.utils.progress_msg(f"Available languages for Tesseract OCR '{Language.LANGUAGES_TESSERACT}'")
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Persist the object in the database.
     # -----------------------------------------------------------------------------
     def persist_2_db(self) -> None:
         """Persist the object in the database."""
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         if self.language_id == 0:
             self.language_id = dcr.cfg.glob.db_core.insert_dbt_row(  # type: ignore
@@ -321,7 +321,7 @@ class Language:
                 columns=self._get_columns(),
             )
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Get the active languages.
@@ -338,7 +338,7 @@ class Language:
             engine.CursorResult:
                     The languages found.
         """
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         dbt = sqlalchemy.Table(
             dcr.db.cls_db_core.DBCore.DBT_LANGUAGE,
@@ -346,7 +346,7 @@ class Language:
             autoload_with=dcr.cfg.glob.db_core.db_orm_engine,
         )
 
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+        # dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
         return conn.execute(
             sqlalchemy.select(dbt)

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
+import dcr_core.cls_setup
 import dcr_core.core_utils
 
 import dcr
@@ -46,7 +47,12 @@ class Setup(dcr_core.cls_setup.Setup):
     _DCR_CFG_DIRECTORY_INBOX_REJECTED: ClassVar[str] = "directory_inbox_rejected"
     _DCR_CFG_DOC_ID_IN_FILE_NAME: ClassVar[str] = "doc_id_in_file_name"
     _DCR_CFG_IGNORE_DUPLICATES: ClassVar[str] = "ignore_duplicates"
+    _DCR_CFG_LT_EXPORT_RULE_FILE_HEADING: ClassVar[str] = "lt_export_rule_file_heading"
+    _DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET: ClassVar[str] = "lt_export_rule_file_list_bullet"
+    _DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER: ClassVar[str] = "lt_export_rule_file_list_number"
     _DCR_CFG_SECTION: ClassVar[str] = "dcr"
+    _DCR_CFG_SECTION_CORE: ClassVar[str] = "dcr_core"
+    _DCR_CFG_SECTION_CORE_SPACY: ClassVar[str] = "dcr_core.spacy"
     _DCR_CFG_SECTION_ENV_TEST: ClassVar[str] = "dcr.env.test"
 
     # -----------------------------------------------------------------------------
@@ -54,7 +60,11 @@ class Setup(dcr_core.cls_setup.Setup):
     # -----------------------------------------------------------------------------
     def __init__(self) -> None:
         """Initialise the instance."""
-        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        try:
+            dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+        except AttributeError:
+            dcr_core.core_glob.initialise_logger()
+            dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
         super().__init__()
 
@@ -83,18 +93,30 @@ class Setup(dcr_core.cls_setup.Setup):
 
         self.is_ignore_duplicates = False
 
+        self.lt_export_rule_file_heading = "data/lt_export_rule_heading.json"
+        self.lt_export_rule_file_list_bullet = "data/lt_export_rule_list_bullet.json"
+        self.lt_export_rule_file_list_number = "data/lt_export_rule_list_number.json"
+
+        super()._load_config()
         self._load_config()
+
+        super()._check_config()
+        self._check_config()
 
         # noinspection PyUnresolvedReferences
         dcr.utils.progress_msg_core("The configuration parameters (dcr) are checked and loaded")
 
         self._exist = True
 
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
+
     # -----------------------------------------------------------------------------
     # Check the configuration parameters.
     # -----------------------------------------------------------------------------
     def _check_config(self) -> None:
         """Check the configuration parameters."""
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
         self.db_connection_port = self._determine_config_param_integer(Setup._DCR_CFG_DB_CONNECTION_PORT, self.db_connection_port)
         self.db_container_port = self._determine_config_param_integer(Setup._DCR_CFG_DB_CONTAINER_PORT, self.db_container_port)
 
@@ -107,6 +129,8 @@ class Setup(dcr_core.cls_setup.Setup):
         self._check_config_doc_id_in_file_name()
 
         self.is_ignore_duplicates = self._determine_config_param_boolean(Setup._DCR_CFG_IGNORE_DUPLICATES, self.is_ignore_duplicates)
+
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
     # -----------------------------------------------------------------------------
     # Check the configuration parameter - directory_inbox_accepted.
@@ -150,10 +174,15 @@ class Setup(dcr_core.cls_setup.Setup):
     # -----------------------------------------------------------------------------
     def _load_config(self) -> None:
         """Load and check the configuration parameters."""
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
         for section in self._config_parser.sections():
             if section in (
                 Setup._DCR_CFG_SECTION,
                 Setup._DCR_CFG_SECTION + ".env." + self.environment_variant,
+                Setup._DCR_CFG_SECTION_CORE,
+                Setup._DCR_CFG_SECTION_CORE + ".env." + self.environment_variant,
+                Setup._DCR_CFG_SECTION_CORE_SPACY,
             ):
                 for (key, value) in self._config_parser.items(section):
                     self._config[key] = value
@@ -192,7 +221,13 @@ class Setup(dcr_core.cls_setup.Setup):
                     self.db_user = str(item)
                 case Setup._DCR_CFG_DB_USER_ADMIN:
                     self.db_user_admin = str(item)
+                case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_HEADING:
+                    self.lt_export_rule_file_heading = dcr_core.core_utils.get_os_independent_name(item)
+                case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET:
+                    self.lt_export_rule_file_list_bullet = dcr_core.core_utils.get_os_independent_name(item)
+                case Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER:
+                    self.lt_export_rule_file_list_number = dcr_core.core_utils.get_os_independent_name(item)
                 case _:
                     pass
 
-        self._check_config()
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

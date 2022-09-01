@@ -361,11 +361,11 @@ def copy_directories_4_pytest_2_dir(
 
     for source in source_directories:
         source_dir = get_test_inbox_directory_name() + "/" + source
-        source_path = dcr_core.core_utils.get_full_name_from_components(get_test_inbox_directory_name(), pathlib.Path(source))
+        source_path = dcr_core.core_utils.get_full_name_from_components(get_test_inbox_directory_name(), str(pathlib.Path(source)))
         assert os.path.isdir(dcr_core.core_utils.get_os_independent_name(source_path)), (
             "source language directory '" + str(source_path) + "' missing"
         )
-        target_path = dcr_core.core_utils.get_full_name_from_components(target_dir, pathlib.Path(source))
+        target_path = dcr_core.core_utils.get_full_name_from_components(target_dir, str(pathlib.Path(source)))
         shutil.copytree(source_dir, target_path)
 
 
@@ -765,9 +765,6 @@ def fxtr_before_any_test():
         (dcr.cfg.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "true"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_JSON_INDENT, "4"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_JSON_SORT_KEYS, "false"),
-        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_HEADING, "tmp/lt_export_rule_heading.json"),
-        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_BULLET, "tmp/lt_export_rule_list_bullet.json"),
-        (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_EXPORT_RULE_FILE_LIST_NUMBER, "tmp/lt_export_rule_list_number.json"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_DISTANCE, "3"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_FOOTER_MAX_LINES, "3"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_LT_HEADER_MAX_DISTANCE, "3"),
@@ -795,7 +792,7 @@ def fxtr_before_any_test():
         (dcr.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_DATABASE, "true"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "true"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE, "true"),
-        (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADERS_FOOTERS, "false"),
+        (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADER_FOOTER, "false"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_HEADING, "false"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_BULLET, "false"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_LIST_NUMBER, "false"),
@@ -803,7 +800,7 @@ def fxtr_before_any_test():
         (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_LT_TOC, "false"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_VERBOSE_PARSER, "none"),
     ):
-        CONFIG_PARSER[dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST][config_param] = config_value
+        CONFIG_PARSER[dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST][config_param] = config_value
 
 
 # -----------------------------------------------------------------------------
@@ -873,6 +870,13 @@ def fxtr_setup_empty_db_and_inbox(
     fxtr_rmdir_opt,
 ):
     """Fixture: Setup empty database and empty inboxes."""
+    try:
+        print("")
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+    except AttributeError:
+        dcr_core.core_glob.initialise_logger()
+        dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     setup_cfg_backup()
 
     dcr_core.core_glob.setup = dcr.cfg.cls_setup.Setup()
@@ -909,6 +913,8 @@ def fxtr_setup_empty_db_and_inbox(
         pass
 
     setup_cfg_restore()
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------
@@ -1258,7 +1264,7 @@ def help_run_action_process_inbox_normal(
 def set_complete_cfg_spacy(false_or_true: str):
     """Set all spaCy configuration parameters to the same logical value."""
     return pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_SPACY,
         [
             (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, false_or_true),
             (dcr.cfg.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, false_or_true),
@@ -1330,10 +1336,14 @@ def set_complete_cfg_spacy(false_or_true: str):
 @pytest.helpers.register
 def setup_cfg_backup() -> None:
     """Backup the 'setup.cfg' file."""
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
     if os.path.isfile(FILE_NAME_SETUP_CFG_BACKUP):
         shutil.copy2(FILE_NAME_SETUP_CFG_BACKUP, FILE_NAME_SETUP_CFG)
     else:
         shutil.copy2(FILE_NAME_SETUP_CFG, FILE_NAME_SETUP_CFG_BACKUP)
+
+    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
 
 
 # -----------------------------------------------------------------------------

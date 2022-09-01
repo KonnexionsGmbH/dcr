@@ -49,13 +49,13 @@ def test_run_action_tokenize_attributes_true(spacy_ignore: str, fxtr_rmdir_opt, 
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_SPACY,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, spacy_ignore),
             (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, spacy_ignore),
@@ -148,14 +148,14 @@ def test_run_action_tokenize_coverage(spacy_ignore: str, fxtr_rmdir_opt, fxtr_se
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_TABLE, "false"),
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_SPACY,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, spacy_ignore),
             (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, spacy_ignore),
@@ -287,7 +287,7 @@ def test_run_action_tokenize_missing_input_file(spacy_ignore: str, fxtr_setup_em
     )
 
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_SPACY,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_SPACY,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, spacy_ignore),
             (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_LEFT_PUNCT, spacy_ignore),

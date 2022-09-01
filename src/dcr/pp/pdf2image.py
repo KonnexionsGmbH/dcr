@@ -78,7 +78,7 @@ def convert_pdf_2_image_file() -> None:
         )
     )
 
-    (error_code, error_msg, children) = dcr_core.cls_process.Process.pdf2image_process(
+    (error_code, error_msg, children) = dcr_core.cls_process.Process.pdf2image(
         full_name_in=full_name_curr,
     )
     if error_code != dcr_core.core_glob.RETURN_OK[0]:

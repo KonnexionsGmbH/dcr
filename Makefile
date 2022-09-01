@@ -1,5 +1,17 @@
 .DEFAULT_GOAL := help
 
+ifeq ($(OS),Windows_NT)
+	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
+	export MYPYPATH=
+	export PYTHON=python
+	export PYTHONPATH=src\\dcr
+else
+	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
+	export MYPYPATH=
+	export PYTHON=python3
+	export PYTHONPATH=src/dcr
+endif
+
 ##                                                                            .
 ## ============================================================================
 ## DCR - Document Content Recognition - make Documentation.
@@ -15,9 +27,11 @@
 ## dcr-core:           Update the dcr-core API.
 dcr-core: update-dcr-core version-dcr-core
 ## dev:                Format, lint and test the code.
-dev: format lint pydocstyle tests
-## docs:               Check the API docs, create and upload the user docs.
+dev: format lint tests
+## docs:               Check the API documentation, create and upload the user documentation.
 docs: pydocstyle mkdocs
+## final:              Format, lint and test the code and create the documentation.
+final: format lint docs tests
 ## format:             Format the code with isort, Black and docformatter.
 format: isort black docformatter
 ## lint:               Lint the code with Bandit, Flake8, Pylint and Mypy.
@@ -33,23 +47,14 @@ help:
 
 export DCR_ENVIRONMENT_TYPE=test
 
-ifeq ($(OS),Windows_NT)
-	DCR_DOCKER_CONTAINER=scripts\\run_setup_postgresql.bat test
-	PYTHON=python
-	export MYPYPATH=src\\dcr
-	export PYTHONPATH=src\\dcr
-else
-	DCR_DOCKER_CONTAINER=./scripts/run_setup_postgresql.sh test
-	PYTHON=python3
-	export MYPYPATH=src/dcr
-	export PYTHONPATH=src/dcr
-endif
-
 # Bandit is a tool designed to find common security issues in Python code.
 # https://github.com/PyCQA/bandit
 # Configuration file: none
 bandit:             ## Find common security issues with Bandit.
 	@echo Info **********  Start: Bandit **************************************
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
 	pipenv run bandit --version
 	@echo ---------------------------------------------------------------------
 	pipenv run bandit -c pyproject.toml -r ${PYTHONPATH}
@@ -60,6 +65,9 @@ bandit:             ## Find common security issues with Bandit.
 # Configuration file: pyproject.toml
 black:              ## Format the code with Black.
 	@echo Info **********  Start: black ***************************************
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
 	pipenv run black --version
 	@echo ---------------------------------------------------------------------
 	pipenv run black ${PYTHONPATH} tests
@@ -70,6 +78,9 @@ black:              ## Format the code with Black.
 # Configuration file: none
 compileall:         ## Byte-compile the Python libraries.
 	@echo Info **********  Start: Compile All Python Scripts ******************
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
 	${PYTHON} --version
 	@echo ---------------------------------------------------------------------
 	${PYTHON} -m compileall
@@ -90,6 +101,9 @@ coveralls:          ## Run all the tests and upload the coverage data to coveral
 # Configuration file: none
 docformatter:       ## Format the docstrings with docformatter.
 	@echo Info **********  Start: docformatter ********************************
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
 	pipenv run docformatter --version
 	@echo ---------------------------------------------------------------------
 	pipenv run docformatter --in-place -r ${PYTHONPATH} tests
@@ -104,6 +118,9 @@ docformatter:       ## Format the docstrings with docformatter.
 # Configuration file: cfg.cfg
 flake8:             ## Enforce the Python Style Guides with Flake8.
 	@echo Info **********  Start: Flake8 **************************************
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
 	pipenv run flake8 --version
 	@echo ---------------------------------------------------------------------
 	pipenv run flake8 --exclude TET.py ${PYTHONPATH} tests
@@ -114,6 +131,9 @@ flake8:             ## Enforce the Python Style Guides with Flake8.
 # Configuration file: pyproject.toml
 isort:              ## Edit and sort the imports with isort.
 	@echo Info **********  Start: isort ***************************************
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
 	pipenv run isort --version
 	@echo ---------------------------------------------------------------------
 	pipenv run isort ${PYTHONPATH} tests
@@ -124,6 +144,9 @@ isort:              ## Edit and sort the imports with isort.
 # Configuration file: none
 mkdocs:             ## Create and upload the user documentation with MkDocs.
 	@echo Info **********  Start: MkDocs **************************************
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
 	pipenv run mkdocs --version
 	@echo ---------------------------------------------------------------------
 	pipenv run mkdocs gh-deploy --force
@@ -134,7 +157,9 @@ mkdocs:             ## Create and upload the user documentation with MkDocs.
 # Configuration file: pyproject.toml
 mypy:               ## Find typing issues with Mypy.
 	@echo Info **********  Start: Mypy ****************************************
-	@echo MYPYPATH=${MYPYPATH}
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
 	pipenv run mypy --version
 	@echo ---------------------------------------------------------------------
 	pipenv run mypy --exclude TET.py ${PYTHONPATH}
@@ -148,6 +173,10 @@ mypy:               ## Find typing issues with Mypy.
 # Configuration file: Pipfile
 pipenv-dev:         ## Install the package dependencies for development.
 	@echo Info **********  Start: Installation of Development Packages ********
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
+	@echo ---------------------------------------------------------------------
 	${PYTHON} -m pip install --upgrade pip
 	${PYTHON} -m pip install --upgrade pipenv
 	${PYTHON} -m pipenv install --dev
@@ -166,6 +195,10 @@ pipenv-dev:         ## Install the package dependencies for development.
 	@echo Info **********  End:   Installation of Development Packages ********
 pipenv-prod:        ## Install the package dependencies for production.
 	@echo Info **********  Start: Installation of Production Packages *********
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
+	@echo ---------------------------------------------------------------------
 	${PYTHON} -m pip install --upgrade pip
 	${PYTHON} -m pip install --upgrade pipenv
 	${PYTHON} -m pipenv install
@@ -188,6 +221,9 @@ pipenv-prod:        ## Install the package dependencies for production.
 # Configuration file: pyproject.toml
 pydocstyle:         ## Check the API documentation with pydocstyle.
 	@echo Info **********  Start: pydocstyle **********************************
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
 	pipenv run pydocstyle --version
 	@echo ---------------------------------------------------------------------
 	pipenv run pydocstyle --count ${PYTHONPATH} tests
@@ -198,6 +234,9 @@ pydocstyle:         ## Check the API documentation with pydocstyle.
 # Configuration file: .pylintrc
 pylint:             ## Lint the code with Pylint.
 	@echo Info **********  Start: Pylint **************************************
+	@echo MYPYPATH  =${MYPYPATH}
+	@echo PYTHON    =${PYTHON}
+	@echo PYTHONPATH=${PYTHONPATH}
 	pipenv run pylint --version
 	@echo ---------------------------------------------------------------------
 	pipenv run pylint ${PYTHONPATH} tests

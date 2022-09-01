@@ -134,11 +134,11 @@ def tokenize_file() -> None:
     else:
         full_name_next = ""
 
-    (error_code, error_msg) = dcr_core.cls_process.Process.tokenizer_process(
+    (error_code, error_msg) = dcr_core.cls_process.Process.tokenizer(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         document_id=dcr.cfg.glob.document.document_id,
-        file_name_orig=dcr.cfg.glob.document.document_file_name,
+        full_name_orig=dcr.cfg.glob.document.document_file_name,
         no_lines_footer=dcr.cfg.glob.document.document_no_lines_footer,
         no_lines_header=dcr.cfg.glob.document.document_no_lines_header,
         no_lines_toc=dcr.cfg.glob.document.document_no_lines_toc,

@@ -73,7 +73,7 @@ def test_run_action_image_2_pdf_normal_timeout(fxtr_rmdir_opt, fxtr_setup_empty_
         ],
     )
     pytest.helpers.config_params_modify(
-        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
             (dcr_core.cls_setup.Setup._DCR_CFG_TESSERACT_TIMEOUT, "1"),
         ],

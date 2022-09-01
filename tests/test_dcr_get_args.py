@@ -4,8 +4,6 @@
 
 # pylint: disable=unused-argument
 """Testing Module dcr.dcr."""
-import os
-
 import dcr_core.cls_setup
 import dcr_core.core_glob
 import pytest
@@ -88,26 +86,6 @@ def test_dcr_get_args(fxtr_setup_logger_environment):
 
     assert expt.type == SystemExit, "invalid arg"
     assert expt.value.code == 1, "invalid arg"
-
-    # -------------------------------------------------------------------------
-    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
-
-
-# -----------------------------------------------------------------------------
-# Test Function - process_export_lt_rules().
-# -----------------------------------------------------------------------------
-def test_dcr_process_export_lt_rules(fxtr_setup_empty_db_and_inbox):
-    """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true."""
-    dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
-
-    # -------------------------------------------------------------------------
-    try:
-        os.mkdir("tmp")
-    except OSError:
-        pass
-
-    # -------------------------------------------------------------------------
-    dcr.launcher.main([dcr.launcher.DCR_ARGV_0, dcr.db.cls_run.Run.ACTION_CODE_EXPORT_LT_RULES])
 
     # -------------------------------------------------------------------------
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)

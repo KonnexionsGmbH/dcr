@@ -82,7 +82,7 @@ def convert_non_pdf_2_pdf_file() -> None:
         dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_END)
         return
 
-    (error_code, error_msg) = dcr_core.cls_process.Process.pandoc_process(
+    (error_code, error_msg) = dcr_core.cls_process.Process.pandoc(
         full_name_in=full_name_curr,
         full_name_out=full_name_next,
         language_pandoc=dcr.db.cls_language.Language.LANGUAGES_PANDOC[dcr.cfg.glob.document.document_id_language],
