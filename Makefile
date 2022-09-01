@@ -251,7 +251,7 @@ pytest:             ## Run all tests with pytest.
 	pipenv run pytest --version
 	@echo ---------------------------------------------------------------------
 	pipenv run pytest --dead-fixtures tests
-	pipenv run pytest --cov=${PYTHONPATH} --cov-report term-missing:skip-covered --random-order -v tests
+	pipenv run pytest --cache-clear --cov=${PYTHONPATH} --cov-report term-missing:skip-covered --random-order -v tests
 	@echo Info **********  End:   pytest **************************************
 pytest-ci:          ## Run all tests with pytest after test tool installation.
 	@echo Info **********  Start: pytest **************************************
@@ -266,28 +266,28 @@ pytest-ci:          ## Run all tests with pytest after test tool installation.
 	pipenv run pytest --version
 	@echo ---------------------------------------------------------------------
 	pipenv run pytest --dead-fixtures tests
-	pipenv run pytest --cov=${PYTHONPATH} --cov-report term-missing:skip-covered --random-order -v tests
+	pipenv run pytest --cache-clear --cov=${PYTHONPATH} --cov-report term-missing:skip-covered --random-order -v tests
 	@echo Info **********  End:   pytest **************************************
 pytest-first-issue: ## Run all tests with pytest until the first issue occurs.
 	@echo Info **********  Start: pytest **************************************
 	@echo DCR_ENVIRONMENT_TYPE=${DCR_ENVIRONMENT_TYPE}
 	pipenv run pytest --version
 	@echo ---------------------------------------------------------------------
-	pipenv run pytest --cov=${PYTHONPATH} --cov-report term-missing:skip-covered --random-order -v -x tests
+	pipenv run pytest --cache-clear --cov=${PYTHONPATH} --cov-report term-missing:skip-covered --random-order -v -x tests
 	@echo Info **********  End:   pytest **************************************
 pytest-issue:       ## Run only the tests with pytest which are marked with 'issue'.
 	@echo Info **********  Start: pytest **************************************
 	@echo DCR_ENVIRONMENT_TYPE=${DCR_ENVIRONMENT_TYPE}
 	pipenv run pytest --version
 	@echo ---------------------------------------------------------------------
-	pipenv run pytest --cov=${PYTHONPATH} --cov-report term-missing:skip-covered -m issue -s --setup-show -v -x tests
+	pipenv run pytest --cache-clear --cov=${PYTHONPATH} --cov-report term-missing:skip-covered -m issue -s --setup-show -v -x tests
 	@echo Info **********  End:   pytest **************************************
 pytest-module:      ## Run tests of specific module(s) with pytest - test_all & test_cfg_cls_setup & test_db_cls.
 	@echo Info **********  Start: pytest **************************************
 	@echo DCR_ENVIRONMENT_TYPE=${DCR_ENVIRONMENT_TYPE}
 	pipenv run pytest --version
 	@echo ---------------------------------------------------------------------
-	pipenv run pytest --cov=${PYTHONPATH} --cov-report term-missing:skip-covered -v tests/test_db_cls_action.py
+	pipenv run pytest --cache-clear --cov=${PYTHONPATH} --cov-report term-missing:skip-covered -v tests/test_db_cls_action.py
 	@echo Info **********  End:   pytest **************************************
 
 update-dcr-core:    ## Update dcr-core.
