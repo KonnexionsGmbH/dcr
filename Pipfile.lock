@@ -334,12 +334,12 @@
         },
         "dcr-core": {
             "hashes": [
-                "sha256:4bcb743201498968ef1df07037e33dfef74645800abed3bb6a05b5708e9402b4",
-                "sha256:a4f07f56d97b1faff5885f118f45eb8285b4f19b61c21c15e0760aeedd0cd79a"
+                "sha256:cb25946e9381fd90dba31be3299d780f00cadc065d71a6f3f72454394898a1a6",
+                "sha256:d3cf292bfa8c2586772a4a367ce0dde684015e1e58ba6f805d9502c4dd5b8be0"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.10'",
-            "version": "==0.9.6.1.9.9.9.5"
+            "version": "==0.9.6.1.9.9.9.6"
         },
         "defusedxml": {
             "hashes": [
@@ -2086,7 +2086,7 @@
                 "sha256:25d4e2e446c453be6360c67ddfb88838cfc42026322770ba13d1fbd403a93a5c",
                 "sha256:3235a9010fae54323e727c3ac06fb720752fe6635b3426e379daec60fbd44a83"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4.0'",
+            "markers": "python_version >= '3.6' and python_version < '4'",
             "version": "==0.11.4"
         },
         "types-psycopg2": {

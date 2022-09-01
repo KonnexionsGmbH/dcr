@@ -21,9 +21,12 @@ import dcr.launcher
 # @pytest.mark.issue
 
 
-def test_drop_database_02(fxtr_setup_empty_db_and_inbox):
+def test(fxtr_setup_empty_db_and_inbox):
     """Test: drop_database()."""
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
+
+    # -------------------------------------------------------------------------
+    dcr_core.core_glob.setup = dcr.cfg.cls_setup.Setup()
 
     # -------------------------------------------------------------------------
     pytest.helpers.config_param_delete(dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST, dcr.cfg.cls_setup.Setup._DCR_CFG_DB_DIALECT)

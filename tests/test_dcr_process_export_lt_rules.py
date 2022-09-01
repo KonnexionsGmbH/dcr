@@ -21,11 +21,10 @@ import dcr.launcher
 # @pytest.mark.issue
 
 
-@pytest.mark.issue
 # -----------------------------------------------------------------------------
 # Test Function - process_export_lt_rules().
 # -----------------------------------------------------------------------------
-def test_dcr_process_export_lt_rules(fxtr_setup_empty_db_and_inbox):
+def test(fxtr_setup_empty_db_and_inbox):
     """Test RUN_ACTION_PROCESS_ALL_COMPLETE - delete_auxiliary_files = true."""
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)
 
