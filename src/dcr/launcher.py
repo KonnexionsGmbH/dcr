@@ -195,6 +195,10 @@ def main(argv: list[str]) -> None:
     # Load the configuration parameters.
     dcr_core.core_glob.setup = dcr.cfg.cls_setup.Setup()
 
+    dcr.utils.progress_msg(f"configuration: environment_variant      ='{dcr_core.core_glob.setup.environment_variant}'")
+    dcr.utils.progress_msg(f"configuration: directory_inbox          ='{dcr_core.core_glob.setup.directory_inbox}'")
+    dcr.utils.progress_msg(f"configuration: is_delete_auxiliary_files='{dcr_core.core_glob.setup.is_delete_auxiliary_files}'")
+
     # Load the command line arguments.
     args = get_args(argv)
 
