@@ -58,7 +58,7 @@ asdf global python ${VERSION_PYTHON3}
 echo "------------------------------------------------------------------------------"
 echo "Step: Install pip"
 echo "------------------------------------------------------------------------------"
-wget --no-check-certificate -nv https://bootstrap.pypa.io/get-pip.py
+wget --quiet --no-check-certificate -nv https://bootstrap.pypa.io/get-pip.py
 python3 -m pip install --upgrade pip
 sudo rm -f get-pip.py
 echo " "
@@ -82,7 +82,6 @@ echo " "
 echo "Current version of tmux: $(tmux -V)"
 echo " "
 echo "=============================================================================="
-
 
 if [ "${HOST_ENVIRONMENT}" = "vm" ]; then
     echo "------------------------------------------------------------------------------"

@@ -22,7 +22,6 @@ class Setup(dcr_core.cls_setup.Setup):
     _DCR_CFG_DB_SCHEMA: str
     _DCR_CFG_DB_USER: str
     _DCR_CFG_DB_USER_ADMIN: str
-    _DCR_CFG_DELETE_AUXILIARY_FILES: str
     _DCR_CFG_DIRECTORY_INBOX_ACCEPTED: str
     _DCR_CFG_DIRECTORY_INBOX_REJECTED: str
     _DCR_CFG_DOC_ID_IN_FILE_NAME: str
