@@ -94,14 +94,14 @@ jobs:
             echo "Current version of OpenSSL: $(openssl version -a)"
       - name: Install Step 3 - Pandoc
         run: |
-            wget --quiet https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
+            wget --quiet --no-check-certificate https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
             sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
             echo "::echo::on"
             echo "Current version of Pandoc: $(pandoc -v)"
             echo "Current version of TeX Live: $(pdflatex --version)"
       - name: Install Step 4 - Poppler
         run: |
-            wget --quiet https://poppler.freedesktop.org/poppler-${VERSION_POPPLER}.tar.xz --quiet
+            wget --quiet --no-check-certificate https://poppler.freedesktop.org/poppler-${VERSION_POPPLER}.tar.xz
             sudo tar -xf poppler-${VERSION_POPPLER}.tar.xz
             cd poppler-${VERSION_POPPLER}/
             sudo mkdir build
@@ -118,6 +118,7 @@ jobs:
             sudo apt-get update -qy
             sudo apt-get install -qy tesseract-ocr
             sudo apt-get install -qy tesseract-ocr-eng
+            echo "::echo::on"
             echo "Current version of Tesseract OCR: $(tesseract --version)"
       - name: Publish the code coverage to coveralls.io
         run: |
