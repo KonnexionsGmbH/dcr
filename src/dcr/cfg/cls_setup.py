@@ -42,7 +42,6 @@ class Setup(dcr_core.cls_setup.Setup):
     _DCR_CFG_DB_SCHEMA: ClassVar[str] = "db_schema"
     _DCR_CFG_DB_USER: ClassVar[str] = "db_user"
     _DCR_CFG_DB_USER_ADMIN: ClassVar[str] = "db_user_admin"
-    _DCR_CFG_DELETE_AUXILIARY_FILES: ClassVar[str] = "delete_auxiliary_files"
     _DCR_CFG_DIRECTORY_INBOX_ACCEPTED: ClassVar[str] = "directory_inbox_accepted"
     _DCR_CFG_DIRECTORY_INBOX_REJECTED: ClassVar[str] = "directory_inbox_rejected"
     _DCR_CFG_DOC_ID_IN_FILE_NAME: ClassVar[str] = "doc_id_in_file_name"
@@ -120,10 +119,6 @@ class Setup(dcr_core.cls_setup.Setup):
         self.db_connection_port = self._determine_config_param_integer(Setup._DCR_CFG_DB_CONNECTION_PORT, self.db_connection_port)
         self.db_container_port = self._determine_config_param_integer(Setup._DCR_CFG_DB_CONTAINER_PORT, self.db_container_port)
 
-        self.is_delete_auxiliary_files = self._determine_config_param_boolean(
-            Setup._DCR_CFG_DELETE_AUXILIARY_FILES, self.is_delete_auxiliary_files
-        )
-
         self._check_config_directory_inbox_accepted()
         self._check_config_directory_inbox_rejected()
         self._check_config_doc_id_in_file_name()
@@ -192,7 +187,6 @@ class Setup(dcr_core.cls_setup.Setup):
                 case (
                     Setup._DCR_CFG_DB_CONNECTION_PORT
                     | Setup._DCR_CFG_DB_CONTAINER_PORT
-                    | Setup._DCR_CFG_DELETE_AUXILIARY_FILES
                     | Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED
                     | Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED
                     | Setup._DCR_CFG_DOC_ID_IN_FILE_NAME

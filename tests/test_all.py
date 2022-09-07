@@ -935,6 +935,7 @@ def test_run_action_process_all_complete_auxiliary_deleted(fxtr_setup_empty_db_a
     pytest.helpers.config_params_modify(
         dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
+            (dcr_core.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),
             (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_BULLET, "false"),
             (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_LIST_NUMBER, "false"),
@@ -1027,7 +1028,6 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
     pytest.helpers.config_params_modify(
         dcr.cfg.cls_setup.Setup._DCR_CFG_SECTION_ENV_TEST,
         [
-            (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
             (dcr.cfg.cls_setup.Setup._DCR_CFG_DOC_ID_IN_FILE_NAME, "after"),
         ],
     )
@@ -1041,6 +1041,12 @@ def test_run_action_process_all_complete_auxiliary_kept(fxtr_setup_empty_db_and_
             (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (dcr_core.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
             (dcr_core.cls_setup.Setup._DCR_CFG_TOKENIZE_2_JSONFILE, "false"),
+        ],
+    )
+    pytest.helpers.config_params_modify(
+        dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
+        [
+            (dcr_core.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         ],
     )
 
@@ -1113,6 +1119,7 @@ def test_run_action_process_all_complete_auxiliary_status_error(fxtr_setup_empty
     pytest.helpers.config_params_modify(
         dcr_core.cls_setup.Setup._DCR_CFG_SECTION_CORE_ENV_TEST,
         [
+            (dcr_core.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "true"),
             (dcr_core.cls_setup.Setup._DCR_CFG_TETML_PAGE, "false"),
             (dcr_core.cls_setup.Setup._DCR_CFG_TETML_WORD, "false"),
             (dcr_core.cls_setup.Setup._DCR_CFG_CREATE_EXTRA_FILE_HEADING, "false"),

@@ -21,6 +21,7 @@ import dcr.launcher
 # @pytest.mark.issue
 
 
+@pytest.mark.issue
 def test(fxtr_setup_empty_db_and_inbox):
     """Test: drop_database()."""
     dcr_core.core_glob.logger.debug(dcr_core.core_glob.LOGGER_START)

@@ -6,7 +6,9 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  VERSION_PANDOC: 2.19
+  VERSION_OPENSSL: 1_1_1o
+  VERSION_PANDOC: 2.19.2
+  VERSION_POPPLER: 22.02.0
 
 jobs:
   standards:
@@ -21,7 +23,7 @@ jobs:
       max-parallel: 1
       matrix:
         os: ["ubuntu-22.04"]
-        python-version: ["3.10.6"]
+        python-version: ["3.10"]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -44,32 +46,90 @@ jobs:
             ./scripts/run_setup_postgresql.sh test
       - name: Install Step 1 - Necessary system software (incl. Poppler & TeX Live)
         run: |
-            sudo apt-get update  -y
             sudo apt-get install -y software-properties-common  
-            sudo apt-get update  -y
             sudo apt-get install -y ca-certificates
-            sudo apt-get install -y gnupg
-            sudo apt-get install -y libgif-dev
-            sudo apt-get install -y libjpeg-dev
-            sudo apt-get install -y libjpeg-turbo8
-            sudo apt-get install -y libopenjp2-7
-            sudo apt-get install -y libpng-dev
-            sudo apt-get install -y libtiff-dev
-            sudo apt-get install -y libwebp-dev
-            sudo apt-get install -y libz-dev
-            sudo apt-get install -y poppler-utils
-            sudo apt-get install -y texlive-full
-            sudo apt-get install -y wget
-      - name: Install Step 2 - Pandoc
+            sudo apt-get update -y
+            sudo apt-get install -y build-essential \
+                                    cmake \
+                                    e2fslibs-dev \
+                                    gcc \
+                                    gnupg \
+                                    libaudit-dev \
+                                    libblkid-dev \
+                                    libboost-all-dev \
+                                    libcairo2-dev  \
+                                    libgif-dev \
+                                    libjpeg-dev \
+                                    libjpeg-turbo8 \
+                                    libnss3  \
+                                    libnss3-dev \
+                                    libopenjp2-7 \
+                                    libopenjp2-7-dev \
+                                    libpng-dev \
+                                    libtiff-dev \
+                                    libwebp-dev \
+                                    libz-dev \
+                                    lsb-release \
+                                    make \
+                                    poppler-utils \
+                                    software-properties-common \
+                                    texlive-base \
+                                    texlive-xetex \
+                                    wget
+      - name: Install Step 2 - OpenSSL
         run: |
-            wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
+            wget --quiet --no-check-certificate -nv https://github.com/openssl/openssl/archive/OpenSSL_${VERSION_OPENSSL}.tar.gz
+            sudo tar -xf OpenSSL_${VERSION_OPENSSL}.tar.gz
+            sudo rm -rf openssl
+            sudo mv openssl-OpenSSL_${VERSION_OPENSSL} openssl
+            pwd
+            ls -ll
+            cd openssl
+            sudo ./config
+            sudo make --quiet
+            sudo make --quiet install
+            cd ${HOME}
+            sudo ldconfig
+            echo "::echo::on"
+            echo "Current version of OpenSSL: $(openssl version -a)"
+      - name: Install Step 3 - Pandoc
+        run: |
+            wget --quiet https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
             sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
-      - name: Install Step 3 - Tesseract OCR
+            echo "::echo::on"
+            echo "Current version of Pandoc: $(pandoc -v)"
+            echo "Current version of TeX Live: $(pdflatex --version)"
+      - name: Install Step 4 - Poppler
         run: |
-            sudo apt-get install -y apt-transport-https
-            echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
-            wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
-            sudo apt-get update  -y
-            sudo apt-get install -y tesseract-ocr
+            wget --quiet https://poppler.freedesktop.org/poppler-${VERSION_POPPLER}.tar.xz --quiet
+            sudo tar -xf poppler-${VERSION_POPPLER}.tar.xz
+            cd poppler-${VERSION_POPPLER}/
+            sudo mkdir build
+            cd build
+            sudo cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DTESTDATADIR=$PWD/testfiles -DENABLE_UNSTABLE_API_ABI_HEADERS=ON ..
+            sudo make
+            sudo make install
+            cd ../..
+            echo "::echo::on"
+            echo "Current version of Poppler: $(pdftocairo -v)"
+      - name: Install Step 5 - Tesseract OCR
+        run: |
+            sudo add-apt-repository -y ppa:alex-p/tesseract-ocr-devel
+            sudo apt-get update -qy
+            sudo apt-get install -qy tesseract-ocr
+            sudo apt-get install -qy tesseract-ocr-eng
+            echo "Current version of Tesseract OCR: $(tesseract --version)"
       - name: Publish the code coverage to coveralls.io
-        run: make coveralls
+        run: |
+            echo "::echo::on"
+            echo "================================================================================"
+            echo "Current version of OpenSSL: $(openssl version -a)"
+            echo "Current version of Pandoc: $(pandoc -v)"
+            echo "Current version of Poppler: $(pdftocairo -v)"
+            echo "Current version of Python3: $(python --version)"
+            echo "Current version of pip3: $(pip --version || true)"
+            echo "Current version of Tesseract OCR: $(tesseract --version)"
+            echo "Current version of TeX Live: $(pdflatex --version)"
+            echo "Current version of Ubuntu: $(lsb_release -a)"
+            echo "================================================================================"
+            make coveralls

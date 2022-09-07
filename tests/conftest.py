@@ -746,7 +746,6 @@ def fxtr_before_any_test():
         (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_SCHEMA, "dcr_schema"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_USER, "dcr_user"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_DB_USER_ADMIN, "dcr_user_admin"),
-        (dcr.cfg.cls_setup.Setup._DCR_CFG_DELETE_AUXILIARY_FILES, "false"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX, "data/inbox_test"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_ACCEPTED, "data/inbox_test_accepted"),
         (dcr.cfg.cls_setup.Setup._DCR_CFG_DIRECTORY_INBOX_REJECTED, "data/inbox_test_rejected"),

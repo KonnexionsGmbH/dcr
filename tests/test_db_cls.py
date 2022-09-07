@@ -807,6 +807,8 @@ def test_existing_objects(fxtr_setup_empty_db_and_inbox):
             (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_RIGHT_PUNCT, "true"),
             (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_SPACE, "true"),
             (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_IGNORE_BRACKET, "true"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_RANK, "false"),
+            (dcr_core.cls_setup.Setup._DCR_CFG_SPACY_TKN_ATTR_VOCAB, "false"),
         ],
     )
 

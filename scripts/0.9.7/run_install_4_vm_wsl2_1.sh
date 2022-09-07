@@ -12,14 +12,14 @@ sudo rm -rf /tmp/*
 
 export HOST_ENVIRONMENT_DEFAULT=vm
 
-export CURRENT_PATH=$(pwd)
+export VERSION_DCR_DEV=0.9.7
 
-export VERSION_DCR_DEV=0.9.6
-
-export VERSION_DBEAVER=22.1.0
+export VERSION_DBEAVER=22.2.0
 export VERSION_HTOP=3.2.1
-export VERSION_PANDOC=2.18
-export VERSION_PYTHON3=3.10.5
+export VERSION_OPENSSL=1_1_1o
+export VERSION_PANDOC=2.19.2
+export VERSION_POPPLER=22.02.0
+export VERSION_PYTHON3=3.10.7
 export VERSION_TMUX=3.3a
 
 if [ -z "$1" ]; then
@@ -96,13 +96,21 @@ sudo apt-get update -qy
 sudo apt-get upgrade -qy
 
 sudo apt-get install -qy autoconf \
+                         build-essential \
                          byacc \
                          ca-certificates \
+                         cmake \
                          curl \
                          dos2unix \
+                         e2fslibs-dev \
+                         gcc \
                          git \
                          gnupg \
+                         libaudit-dev \
+                         libblkid-dev \
+                         libboost-all-dev \
                          libbz2-dev \
+                         libcairo2-dev  \
                          libffi-dev \
                          libgif-dev \
                          libjpeg-dev \
@@ -111,9 +119,11 @@ sudo apt-get install -qy autoconf \
                          libncurses-dev \
                          libncurses5-dev \
                          libncursesw5-dev \
+                         libnss3  \
+                         libnss3-dev \
                          libopenjp2-7 \
+                         libopenjp2-7-dev \
                          libpng-dev \
-                         libpoppler-dev \
                          libreadline-dev \
                          libsqlite3-dev \
                          libssl-dev \
@@ -125,15 +135,16 @@ sudo apt-get install -qy autoconf \
                          llvm \
                          locales \
                          lsb-release \
+                         make \
                          pkg-config \
                          poppler-utils \
                          procps \
                          software-properties-common \
-                         texlive-full \
+                         texlive-base \
+                         texlive-xetex \
                          tk-dev \
                          tzdata \
                          unzip \
-                         vim \
                          wget \
                          xz-utils \
                          zlib1g-dev
@@ -180,6 +191,9 @@ if [ "${HOST_ENVIRONMENT}" = "vm" ]; then
     eval echo 'export VERSION_DBEAVER=${VERSION_DBEAVER}' >> ${HOME}/.bashrc
 fi
 eval echo 'export VERSION_HTOP=${VERSION_HTOP}' >> ${HOME}/.bashrc
+eval echo 'export VERSION_OPENSSL=${VERSION_OPENSSL}' >> ${HOME}/.bashrc
+eval echo 'export VERSION_PANDOC=${VERSION_PANDOC}' >> ${HOME}/.bashrc
+eval echo 'export VERSION_POPPLER=${VERSION_POPPLER}' >> ${HOME}/.bashrc
 eval echo 'export VERSION_PYTHON3=${VERSION_PYTHON3}' >> ${HOME}/.bashrc
 eval echo 'export VERSION_TMUX=${VERSION_TMUX}' >> ${HOME}/.bashrc
 
@@ -254,7 +268,7 @@ fi
 echo "------------------------------------------------------------------------------"
 echo "Step: Install htop - Version ${VERSION_HTOP}"
 echo "------------------------------------------------------------------------------"
-wget --no-check-certificate -nv https://github.com/htop-dev/htop/archive/${VERSION_HTOP}.tar.gz
+wget --quiet --no-check-certificate -nv https://github.com/htop-dev/htop/archive/${VERSION_HTOP}.tar.gz
 sudo tar -zxf ${VERSION_HTOP}.tar.gz
 sudo rm -rf htop
 sudo mv htop-${VERSION_HTOP} htop
@@ -274,9 +288,33 @@ echo " "
 echo "=============================================================================="
 
 echo "=============================================================================="
+echo "Step: Install OpenSSL - Version ${VERSION_OPENSSL}"
+echo "------------------------------------------------------------------------------"
+wget --quiet --no-check-certificate -nv https://github.com/openssl/openssl/archive/OpenSSL_${VERSION_OPENSSL}.tar.gz
+sudo tar -xf OpenSSL_${VERSION_OPENSSL}.tar.gz
+sudo rm -rf openssl
+sudo mv openssl-OpenSSL_${VERSION_OPENSSL} openssl
+pwd
+ls -ll
+cd openssl
+sudo ./config
+sudo make --quiet
+sudo make --quiet install
+cd ..
+sudo ldconfig
+sudo rm -rf openssl
+sudo rm -f OpenSSL_*.tar.gz
+echo " "
+echo "=============================================================================> Version  OpenSSL: "
+echo " "
+echo "Current version of OpenSSL: $(openssl version -a)"
+echo " "
+echo "=============================================================================="
+
+echo "=============================================================================="
 echo "Step: Install Pandoc - Version ${VERSION_PANDOC}"
 echo "------------------------------------------------------------------------------"
-wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
+wget --quiet https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
 sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
 sudo rm -f pandoc-${VERSION_PANDOC}-1-amd64.deb
 echo " "
@@ -286,12 +324,30 @@ echo "Current version of Pandoc: $(pandoc -v)"
 echo " "
 echo "=============================================================================="
 
+echo "=============================================================================="
+echo "Step: Install Poppler - Version ${VERSION_POPPLER}"
+echo "------------------------------------------------------------------------------"
+wget --quiet https://poppler.freedesktop.org/poppler-${VERSION_POPPLER}.tar.xz
+sudo tar -xf poppler-${VERSION_POPPLER}.tar.xz
+cd poppler-${VERSION_POPPLER}/
+sudo mkdir build
+cd build
+sudo cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DTESTDATADIR=$PWD/testfiles -DENABLE_UNSTABLE_API_ABI_HEADERS=ON ..
+sudo make
+sudo make install
+cd ../..
+sudo rm -f poppler-${VERSION_POPPLER}.tar.xz
+echo " "
+echo "=============================================================================> Version  Poppler: "
+echo " "
+echo "Current version of Poppler: $(pdftocairo -v)"
+echo " "
+echo "=============================================================================="
+
 echo "------------------------------------------------------------------------------"
 echo "Step: Install Tesseract OCR"
 echo "------------------------------------------------------------------------------"
-sudo apt-get install -qy apt-transport-https
-echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
-wget -O - https://notesalexp.org/debian/alexp_key.asc | sudo apt-key add -
+sudo add-apt-repository -y ppa:alex-p/tesseract-ocr-devel
 sudo apt-get update -qy
 sudo apt-get install -qy tesseract-ocr
 sudo apt-get install -qy tesseract-ocr-deu
