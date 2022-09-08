@@ -3,21 +3,19 @@
 ![Coveralls GitHub](https://img.shields.io/coveralls/github/KonnexionsGmbH/dcr.svg)
 ![GitHub (Pre-)Release](https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.6)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/dcr/0.9.7)
 
 ## 1. Version 0.9.7
 
-Release Date: dd.mm.2022
+Release Date: 08.03.2022
 
-### 1.1 New Features
+### 1.1 Modified Features
 
-- TODO
+- Delimitation of the documentation to the **`DCR`** application
+- Delimitation of the tests to the **`DCR`** application
+- Updating the third party software used
 
-### 1.2 Modified Features
-
-- TODO
-
-### 1.3 Applied Software
+### 1.2 Applied Software
 
 | Software                                                                      | Version         | Remark                              | Status  |
 |:------------------------------------------------------------------------------|:----------------|:------------------------------------|---------|
@@ -31,13 +29,13 @@ Release Date: dd.mm.2022
 | [Tesseract OCR](https://github.com/tesseract-ocr/tesseract){:target="_blank"} | 5.2.0-22-g0daf1 | base version                        | upgrade |
 | [TeX Live](https://www.tug.org/texlive){:target="_blank"}                     | 2022            | base version                        | upgrade |
 
-#### 1.3.1 Unix-specific Software
+#### 1.2.1 Unix-specific Software
 
 | Software                                                        | Version     | Remark                  | Status  |
 |:----------------------------------------------------------------|:------------|:------------------------|---------|
 | asdf                                                            | v0.10.2     | base version (optional) |         |
 | cURL                                                            | 7.81.0      | base version            | upgrade |
-| dos2unix                                                        | 7.4.0       | base version            |         |
+| dos2unix                                                        | 7.4.2       | base version            | upgrade |
 | GCC & G++                                                       | 11.2.0      | base version            | upgrade |
 | GNU Autoconf                                                    | 2.71        | base version            | upgrade |
 | GNU Automake                                                    | 1.16.5      | base version            | upgrade |
@@ -50,7 +48,7 @@ Release Date: dd.mm.2022
 | Vim                                                             | 8.2.3995    | base version (optional) | upgrade |
 | Wget                                                            | 1.21.2      |                         | upgrade |
 
-#### 1.3.2 Windows-specific Software
+#### 1.2.2 Windows-specific Software
 
 | Software                                                                                | Version | Remark        | Status |
 |:----------------------------------------------------------------------------------------|:--------|:--------------|--------|
@@ -58,7 +56,7 @@ Release Date: dd.mm.2022
 | [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm){:target="_blank"} | 3.81    | base version  |        |
 | [sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm){:target="_blank"}   | 4.2.1   | base version  |        |
 
-### 1.4 Open issues
+### 1.3 Open issues
 
 1. Tesseract OCR: (see [here](#issues_tesseract_ocr){:target="_blank"})
 
