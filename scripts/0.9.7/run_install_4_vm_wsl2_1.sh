@@ -12,7 +12,7 @@ sudo rm -rf /tmp/*
 
 export HOST_ENVIRONMENT_DEFAULT=vm
 
-export VERSION_DCR_DEV=0.9.7
+export VERSION_DCR_DEV=0.9.8
 
 export VERSION_DBEAVER=22.2.0
 export VERSION_HTOP=3.2.1
