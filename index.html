@@ -1,0 +1,1433 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Document Content Recognition">
+      
+      
+        <meta name="author" content="Konnexions GmbH Team">
+      
+      
+        <link rel="canonical" href="https://www.konnexions.ch/">
+      
+      <link rel="icon" href="img/Icon.png">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.4.3">
+    
+    
+      
+        <title>DCR - Document Content Recognition</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.6b80c2a2.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.cbb835fc.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="assets/pymdownx-extras/extra-b1466b3f51.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="red">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dcr-document-content-recognition" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="DCR - Document Content Recognition" class="md-header__button md-logo" aria-label="DCR - Document Content Recognition" data-md-component="logo">
+      
+  <img src="img/Logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DCR - Document Content Recognition
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/KonnexionsGmbH/dcr/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="DCR - Document Content Recognition" class="md-nav__button md-logo" aria-label="DCR - Document Content Recognition" data-md-component="logo">
+      
+  <img src="img/Logo.png" alt="logo">
+
+    </a>
+    DCR - Document Content Recognition
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/KonnexionsGmbH/dcr/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        Home
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduction" class="md-nav__link">
+    1. Introduction
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-rahman-finin-paper" class="md-nav__link">
+    1.1 Rahman &amp; Finin Paper
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-supported-file-types" class="md-nav__link">
+    1.2 Supported File Types
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-detailed-processing-actions" class="md-nav__link">
+    2. Detailed Processing Actions
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Detailed Processing Actions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-preprocessor" class="md-nav__link">
+    2.1 Preprocessor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-nlp" class="md-nav__link">
+    2.2 NLP
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-auxiliary-file-names" class="md-nav__link">
+    3. Auxiliary File Names
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Auxiliary File Names">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-naming-system" class="md-nav__link">
+    3.1 Naming System
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-examples" class="md-nav__link">
+    3.2 Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Running DCR
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Running DCR" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Running DCR
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="running_requirements/" class="md-nav__link">
+        Requirementes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="running_installation/" class="md-nav__link">
+        Installaion
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="running_configuration/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="running_operations/" class="md-nav__link">
+        Operations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="running_document_language/" class="md-nav__link">
+        Document Language
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Release Documents
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Release Documents" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Release Documents
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="release_notes/" class="md-nav__link">
+        Release Notes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="release_history/" class="md-nav__link">
+        Release History
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Developing DCR
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Developing DCR" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Developing DCR
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="developing_system_environment/" class="md-nav__link">
+        System Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="developing_data_model/" class="md-nav__link">
+        Data Model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="developing_coding_standards/" class="md-nav__link">
+        Coding Standards
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="developing_code_formatting/" class="md-nav__link">
+        Code Formatting
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="developing_static_code_analysis/" class="md-nav__link">
+        Static Code Analysis
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="developing_software_documentation/" class="md-nav__link">
+        Software Documentation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="developing_software_testing/" class="md-nav__link">
+        Software Testing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="developing_continouos_delivery/" class="md-nav__link">
+        Continouos Delivery
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="developing_development_environment/" class="md-nav__link">
+        Development Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="developing_version_planning/" class="md-nav__link">
+        Version Planning
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="contributing/" class="md-nav__link">
+        Contributing Guide
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduction" class="md-nav__link">
+    1. Introduction
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-rahman-finin-paper" class="md-nav__link">
+    1.1 Rahman &amp; Finin Paper
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-supported-file-types" class="md-nav__link">
+    1.2 Supported File Types
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-detailed-processing-actions" class="md-nav__link">
+    2. Detailed Processing Actions
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Detailed Processing Actions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-preprocessor" class="md-nav__link">
+    2.1 Preprocessor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-nlp" class="md-nav__link">
+    2.2 NLP
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-auxiliary-file-names" class="md-nav__link">
+    3. Auxiliary File Names
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Auxiliary File Names">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-naming-system" class="md-nav__link">
+    3.1 Naming System
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-examples" class="md-nav__link">
+    3.2 Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="dcr-document-content-recognition">DCR - Document Content Recognition</h1>
+<p><img alt="GitHub (Pre-)Release" src="https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases" />
+<img alt="GitHub (Pre-)Release Date" src="https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr" /></p>
+<h2 id="1-introduction">1. Introduction</h2>
+<p>Based on the paper "Unfolding the Structure of a Document using Deep Learning" (<strong><a href="https://arxiv.org/abs/1910.03678" target="_blank">Rahman and Finin, 2019</a></strong>), this software project attempts to use various software techniques to automatically recognise the structure in any <strong><code>pdf</code></strong> documents and thus make them more searchable.</p>
+<p>The processing logic is as follows:</p>
+<ul>
+<li>New documents are made available in the file directory <strong><code>inbox</code></strong>. If required, other language-related file directories can also be used (see section <a href="https://konnexionsgmbh.github.io/dcr/running_document_language" target="_blank">Document Language</a>).</li>
+<li>Documents in a file format accepted by <strong>DCR</strong> are registered and moved to the file directory <strong><code>ìnbox_accepted</code></strong>. All other documents are registered and moved to the file directory <strong><code>ìnbox_rejected</code></strong>.</li>
+<li>Documents not in <strong><code>pdf</code></strong> format are converted to <strong><code>pdf</code></strong> format using <a href="https://pandoc.org" target="_blank">Pandoc</a> and <a href="https://www.tug.org/texlive" target="_blank">TeX Live</a>. </li>
+<li>Documents based on scanning which, therefore, do not contain text elements, are scanned and converted to <strong><code>pdf</code></strong> format using the <a href="https://github.com/tesseract-ocr/tesseract" target="_blank">Tesseract OCR</a> software. This process applies to all image format files e.g. <strong><code>jpeg</code></strong>, <strong><code>tiff</code></strong> etc., as well as scanned images in <strong><code>pdf</code></strong> format.  </li>
+<li>From all <strong><code>pdf</code></strong> documents, the text and associated metadata is extracted into a document-specific <strong><code>xml</code></strong> file using <a href="https://www.pdflib.com/products/tet/" target="_blank">PDFlib TET</a>.</li>
+<li>The document-specific <strong><code>xml</code></strong> files are then parsed and the <strong>DCR</strong>-relevant contents are written to the <strong><code>JSON</code></strong> files. </li>
+<li>From the <strong><code>JSON</code></strong> file(s) <a href="https://spacy.io" target="_blank">spaCy</a> extracts qualified tokens and stores them either in a <strong><code>JSON</code></strong> file or in the database table <strong><code>token</code></strong>.</li>
+</ul>
+<h3 id="11-rahman-finin-paper">1.1 Rahman &amp; Finin Paper</h3>
+<p><img alt="" src="img/index_rahman_finin.png" /></p>
+<h3 id="12-supported-file-types">1.2 Supported File Types</h3>
+<p><strong>DCR</strong> can handle the following file types based on the file extension:</p>
+<ul>
+<li><strong><code>bmp</code></strong> <a href="https://en.wikipedia.org/wiki/BMP_file_format" target="_blank">bitmap image file</a></li>
+<li><strong><code>csv</code></strong> <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_blank">comma-separated values</a></li>
+<li><strong><code>docx</code></strong> <a href="https://www.ecma-international.org/publications-and-standards/standards/ecma-376/" target="_blank">Office Open XML</a></li>
+<li><strong><code>epub</code></strong> <a href="https://www.w3.org/publishing/epub32/" target="_blank">e-book file format</a></li>
+<li><strong><code>gif</code></strong> <a href="https://www.w3.org/Graphics/GIF/spec-gif89a.txt" target="_blank">Graphics Interchange Format</a></li>
+<li><strong><code>html</code></strong> <a href="https://html.spec.whatwg.org" target="_blank">HyperText Markup Language</a></li>
+<li><strong><code>jp2</code></strong> <a href="https://en.wikipedia.org/wiki/JPEG_2000" target="_blank">JPEG 2000</a></li>
+<li><strong><code>jpeg</code></strong> <a href="https://jpeg.org/jpeg/" target="_blank">Joint Photographic Experts Group</a></li>
+<li><strong><code>odt</code></strong> <a href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=office" target="_blank">Open Document Format for Office Applications</a></li>
+<li><strong><code>pdf</code></strong> <a href="https://www.iso.org/standard/75839.html" target="_blank">Portable Document Format</a></li>
+<li><strong><code>png</code></strong> <a href="https://en.wikipedia.org/wiki/Portable_Network_Graphics" target="_blank">Portable Network Graphics</a></li>
+<li><strong><code>pnm</code></strong> <a href="https://en.wikipedia.org/wiki/Netpbm#File_formats" target="_blank">portable any-map format</a></li>
+<li><strong><code>rst</code></strong> <a href="https://docutils.sourceforge.io/rst.html" target="_blank">reStructuredText (RST</a></li>
+<li><strong><code>rtf</code></strong> <a href="https://en.wikipedia.org/wiki/Rich_Text_Format" target="_blank">Rich Text Format</a></li>
+<li><strong><code>tif</code></strong> <a href="https://en.wikipedia.org/wiki/TIFF" target="_blank">Tag Image File Format</a></li>
+<li><strong><code>tiff</code></strong> <a href="https://en.wikipedia.org/wiki/TIFF" target="_blank">Tag Image File Format</a></li>
+<li><strong><code>webp</code></strong> <a href="https://developers.google.com/speed/webp" target="_blank">Image file format with lossless and lossy compression</a></li>
+</ul>
+<h2 id="2-detailed-processing-actions">2. Detailed Processing Actions</h2>
+<p>The documents to be processed are divided into individual steps, so-called actions. 
+Each action has the task of changing the state of a document by transforming an input file format into a different output file format.
+The database tables <strong><code>run</code></strong>, <strong><code>document</code></strong>, and <strong><code>action</code></strong> document the current state of a document, as well as the actions performed so far.
+If an error occurs during the processing of the document, this is recorded in the database tables <strong><code>document</code></strong> and <strong><code>action</code></strong>.
+During the next run with the same action, the faulty documents are also processed again.</p>
+<h3 id="21-preprocessor">2.1 Preprocessor</h3>
+<h4 id="211-preprocessor-architecture">2.1.1 Preprocessor Architecture</h4>
+<p><img alt="" src="img/architecture_preprocessor.png" /></p>
+<h4 id="212-process-the-inbox-directory-action-p_i">2.1.2 Process the inbox directory (action: <strong><code>p_i</code></strong>)</h4>
+<p>In the first action, the file directory <strong><code>inbox</code></strong> is checked for new document files. 
+An entry is created in the <strong><code>document</code></strong> database table for each new document, showing the current processing status of the document. </p>
+<p>The association of document and language is managed via subdirectories of the file folder <strong><code>inbox</code></strong>. 
+In the database table <strong><code>language</code></strong>, the column <strong><code>directory_name_inbox</code></strong> specifies per language in which subdirectory the documents in this language are to be supplied. 
+Detailed information on this can be found in the chapter <strong>Running DCR</strong> in the section <strong>Document Language</strong>.</p>
+<p>The new document files are processed based on their file extension as follows:</p>
+<h5 id="2121-file-extension-pdf">2.1.2.1 File extension <strong><code>pdf</code></strong></h5>
+<p>The module <strong><code>fitz</code></strong> from package <a href="https://pymupdf.readthedocs.io/en/latest/module.html" target="_blank">PyMuPDF</a> is used to check whether the <strong><code>pdf</code></strong> document is a scanned image or not. 
+A <strong><code>pdf</code></strong> document consisting of a scanned image is marked for conversion from <strong><code>pdf</code></strong> format to an image format and moved to the file directory <strong><code>ìnbox_accepted</code></strong>.
+Other <strong><code>pdf</code></strong> documents are marked for further processing with the <strong><code>pdf</code></strong> parser and then also moved to the file directory <strong><code>ìnbox_accepted</code></strong>.
+If, however, when checking the <strong><code>pdf</code></strong> document with <strong><code>fitz</code></strong>, it turns out that the document with the file extension <strong><code>pdf</code></strong> is not really a <strong><code>pdf</code></strong> document, then the document is moved to the file directory <strong><code>inbox_rejected</code></strong>.</p>
+<h5 id="2122-file-extensions-of-documents-for-processing-with-pandoc-and-tex-live">2.1.2.2 File extensions of documents for processing with <a href="https://pandoc.org" target="_blank">Pandoc</a> and <a href="https://www.tug.org/texlive" target="_blank">TeX Live</a></h5>
+<p>Document files with the following file extensions are moved to the file directory <strong><code>ìnbox_accepted</code></strong> and 
+marked for converting to <strong><code>pdf</code></strong> format using <a href="https://pandoc.org" target="_blank">Pandoc</a> and <a href="https://www.tug.org/texlive" target="_blank">TeX Live</a>:</p>
+<ul>
+<li><strong><code>csv</code></strong></li>
+<li><strong><code>docx</code></strong></li>
+<li><strong><code>epub</code></strong></li>
+<li><strong><code>html</code></strong></li>
+<li><strong><code>odt</code></strong></li>
+<li><strong><code>rst</code></strong></li>
+<li><strong><code>rtf</code></strong></li>
+</ul>
+<p>An exception are files with the file name <strong><code>README.md</code></strong>, which are ignored and not processed.</p>
+<h5 id="2123-file-extensions-of-documents-for-processing-with-tesseract-ocr">2.1.2.3 File extensions of documents for processing with <a href="https://github.com/tesseract-ocr/tesseract" target="_blank">Tesseract OCR</a></h5>
+<p>Document files with the following file extensions are moved to the file directory <strong><code>ìnbox_accepted</code></strong> and marked for converting to <strong><code>pdf</code></strong> format using <a href="https://github.com/tesseract-ocr/tesseract" target="_blank">Tesseract OCR</a>:</p>
+<ul>
+<li><strong><code>bmp</code></strong></li>
+<li><strong><code>gif</code></strong></li>
+<li><strong><code>jp2</code></strong></li>
+<li><strong><code>jpeg</code></strong></li>
+<li><strong><code>png</code></strong></li>
+<li><strong><code>pnm</code></strong></li>
+<li><strong><code>tif</code></strong></li>
+<li><strong><code>tiff</code></strong></li>
+<li><strong><code>webp</code></strong></li>
+</ul>
+<h5 id="2124-other-file-extensions-of-documents">2.1.2.4 Other file extensions of documents</h5>
+<p>Document files that do not fall into one of the previous categories are marked as faulty and moved to the file directory <strong><code>ìnbox_rejected</code></strong>.</p>
+<h4 id="213-convert-pdf-documents-to-image-files-action-p_2_i">2.1.3 Convert <strong><code>pdf</code></strong> documents to image files (action: <strong><code>p_2_i</code></strong>)</h4>
+<p>This processing action only has to be carried out if there are new <strong><code>pdf</code></strong> documents in the document input that only consist of scanned images.
+<strong><code>pdf</code></strong> documents consisting of scanned images must first be processed with OCR software in order to extract text they contain. 
+Since <a href="https://github.com/tesseract-ocr/tesseract" target="_blank">Tesseract OCR</a> does not support the <strong><code>pdf</code></strong> file format, such a <strong><code>pdf</code></strong> document must first be converted into one or more image files. 
+This is done with the software <a href="https://pypi.org/project/pdf2image" target="_blank">pdf2image</a>, which in turn is based on the <a href="https://poppler.freedesktop.org" target="_blank">Poppler</a> software.</p>
+<p>The processing of the original document (parent document) is then completed and the further processing is carried out with the newly created image file(s) (child document(s)).</p>
+<p>Since an image file created here always contains only one page of a <strong><code>pdf</code></strong> document, a multi-page <strong><code>pdf</code></strong> document is distributed over several image files. 
+After processing with <a href="https://github.com/tesseract-ocr/tesseract" target="_blank">Tesseract OCR</a>, these separated files are then combined into one <strong><code>pdf</code></strong> document.</p>
+<h4 id="214-convert-appropriate-image-files-to-pdf-files-action-ocr">2.1.4 Convert appropriate image files to <strong><code>pdf</code></strong> files (action: <strong><code>ocr</code></strong>)</h4>
+<p>This processing action only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.3.
+In this processing action, the documents of this document types are converted to the <strong><code>pdf</code></strong> format using <a href="https://github.com/tesseract-ocr/tesseract" target="_blank">Tesseract OCR</a>.</p>
+<p>After processing with <a href="https://github.com/tesseract-ocr/tesseract" target="_blank">Tesseract OCR</a>, the files split in the previous processing action are combined into a single <strong><code>pdf</code></strong> document.</p>
+<h4 id="215-convert-appropriate-non-pdf-documents-to-pdf-files-action-n_2_p">2.1.5 Convert appropriate non-<strong><code>pdf</code></strong> documents to <strong><code>pdf</code></strong> files (action: <strong><code>n_2_p</code></strong>)</h4>
+<p>This processing action only has to be performed if there are new documents in the document entry that correspond to one of the document types listed in section 2.1.2.2.
+In this processing action, the documents of this document types are converted to <strong><code>pdf</code></strong> format using <a href="https://pandoc.org" target="_blank">Pandoc</a> and <a href="https://www.tug.org/texlive" target="_blank">TeX Live</a>.</p>
+<h3 id="22-nlp">2.2 NLP</h3>
+<h4 id="221-nlp-architecture">2.2.1 NLP Architecture</h4>
+<p><img alt="" src="img/architecture_nlp.png" /></p>
+<h4 id="222-extract-text-from-pdf-documents-action-tet">2.2.2 Extract text from <strong><code>pdf</code></strong> documents (action: <strong><code>tet</code></strong>)</h4>
+<p>In this processing action, the text of the <strong><code>pdf</code></strong> documents from sections 2.1.2.1, 2.1.4 and 2.1.5 are extracted and written to <strong><code>xml</code></strong> files in <strong><code>tetml</code></strong> format for each document.
+The <a href="https://www.pdflib.com/products/tet/" target="_blank">PDFlib TET</a> library is used for this purpose.</p>
+<p>Depending on the configuration parameters <strong><code>tetml_page</code></strong> and <strong><code>tetml_word</code></strong>, up to three different <strong><code>xml</code></strong> files with different granularity can be created per document:</p>
+<ul>
+<li><strong><code>tetml_line</code></strong>: granularity document <code>line</code> (generated by default),</li>
+<li><strong><code>tetml_page</code></strong>: granularity document <code>page</code>,</li>
+<li><strong><code>tetml_word</code></strong>: granularity document <code>word</code>.</li>
+</ul>
+<p>The <code>page</code> variant and the <code>word</code> variant are both optional.</p>
+<p><strong>Example extract from granularity <code>line</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>&lt;Pages&gt;
+&lt;Page number=&quot;1&quot; width=&quot;594.96&quot; height=&quot;840.96&quot;&gt;
+&lt;Options&gt;granularity=line&lt;/Options&gt;
+&lt;Content granularity=&quot;line&quot; dehyphenation=&quot;false&quot; dropcap=&quot;false&quot; font=&quot;false&quot; geometry=&quot;false&quot; shadow=&quot;false&quot; sub=&quot;false&quot; sup=&quot;false&quot;&gt;
+&lt;Para&gt;
+ &lt;Box llx=&quot;26.45&quot; lly=&quot;818.96&quot; urx=&quot;485.41&quot; ury=&quot;826.96&quot;&gt;
+  &lt;Line llx=&quot;26.45&quot; lly=&quot;818.96&quot; urx=&quot;485.41&quot; ury=&quot;826.96&quot;&gt;
+   &lt;Text&gt;19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm&lt;/Text&gt;
+  &lt;/Line&gt;
+ &lt;/Box&gt;
+&lt;/Para&gt;
+</code></pre></div>
+<p><strong>Example extract from granularity <code>page</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>&lt;Pages&gt;
+&lt;Page number=&quot;1&quot; width=&quot;594.96&quot; height=&quot;840.96&quot;&gt;
+&lt;Options&gt;granularity=page&lt;/Options&gt;
+&lt;Content granularity=&quot;page&quot; dehyphenation=&quot;false&quot; dropcap=&quot;false&quot; font=&quot;false&quot; geometry=&quot;false&quot; shadow=&quot;false&quot; sub=&quot;false&quot; sup=&quot;false&quot;&gt;
+&lt;Para&gt;
+ &lt;Box llx=&quot;26.45&quot; lly=&quot;818.96&quot; urx=&quot;485.41&quot; ury=&quot;826.96&quot;&gt;
+  &lt;Text&gt;19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm&lt;/Text&gt;
+ &lt;/Box&gt;
+&lt;/Para&gt;
+</code></pre></div>
+<p><strong>Example extract from granularity <code>word</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>&lt;Pages&gt;
+&lt;Page number=&quot;1&quot; width=&quot;594.96&quot; height=&quot;840.96&quot;&gt;
+&lt;Options&gt;granularity=word tetml={elements={line}}&lt;/Options&gt;
+&lt;Content granularity=&quot;word&quot; dehyphenation=&quot;false&quot; dropcap=&quot;false&quot; font=&quot;false&quot; geometry=&quot;false&quot; shadow=&quot;false&quot; sub=&quot;false&quot; sup=&quot;false&quot;&gt;
+&lt;Para&gt;
+ &lt;Box llx=&quot;26.45&quot; lly=&quot;818.96&quot; urx=&quot;485.41&quot; ury=&quot;826.96&quot;&gt;
+  &lt;Line llx=&quot;26.45&quot; lly=&quot;818.96&quot; urx=&quot;485.41&quot; ury=&quot;826.96&quot;&gt;
+   &lt;Word&gt;
+    &lt;Text&gt;19&lt;/Text&gt;
+    &lt;Box llx=&quot;26.45&quot; lly=&quot;818.96&quot; urx=&quot;34.45&quot; ury=&quot;826.96&quot;/&gt;
+   &lt;/Word&gt;
+   &lt;Word&gt;
+    &lt;Text&gt;/&lt;/Text&gt;
+    &lt;Box llx=&quot;34.45&quot; lly=&quot;818.96&quot; urx=&quot;36.67&quot; ury=&quot;826.96&quot;/&gt;
+   &lt;/Word&gt;
+   &lt;Word&gt;
+    &lt;Text&gt;04&lt;/Text&gt;
+    &lt;Box llx=&quot;36.67&quot; lly=&quot;818.96&quot; urx=&quot;44.67&quot; ury=&quot;826.96&quot;/&gt;
+   &lt;/Word&gt;
+</code></pre></div>
+<h4 id="223-store-the-parser-result-in-a-json-file-action-s_p_j">2.2.3 Store the parser result in a <strong><code>JSON</code></strong> file (action: <strong><code>s_p_j</code></strong>)</h4>
+<p>From the <strong>xml</strong> files of the granularity document <code>line</code> (<code>&lt;file_name&gt;_&lt;doc_id&gt;.line.xml</code>) or document <code>word</code> (<code>&lt;file_name&gt;_&lt;doc_id&gt;.word.xml</code>) created in the previous action, the text contained is now extracted with the existing metadata using <strong>xml</strong> parsing and stored in a <strong><code>JSON</code></strong> format in the database tables <code>content_tetml_line</code> and <code>content_tetml_word</code>.</p>
+<p>The document <code>line</code> granularity attempts to type the lines. Details on this process can be found in section 4.</p>
+<p><strong>Example extract from granularity <code>line</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>{
+    &quot;documentId&quot;: 1,
+    &quot;documentFileName&quot;: &quot;Example.pdf&quot;,
+    &quot;noLinesFooter&quot;: 1,
+    &quot;noLinesHeader&quot;: 1,
+    &quot;noLinesInDocument&quot;: 2220,
+    &quot;noLinesToc&quot;: 85,
+    &quot;noPagesInDocument&quot;: 57,
+    &quot;noParagraphsInDocument&quot;: 829,
+    &quot;noTablesInDocument&quot;: 5,
+    &quot;pages&quot;: [
+        {
+            &quot;pageNo&quot;: 1,
+            &quot;noLinesInPage&quot;: 15,
+            &quot;noParagraphsInPage&quot;: 7,
+            &quot;lines&quot;: [
+                {
+                    &quot;coordLLX&quot;: 26.45,
+                    &quot;coordURX&quot;: 485.41,
+                    &quot;lineIndexPage&quot;: 0,
+                    &quot;lineIndexParagraph&quot;: 0,
+                    &quot;lineNo&quot;: 1,
+                    &quot;lineType&quot;: &quot;h&quot;,
+                    &quot;paragraphNo&quot;: 1,
+                    &quot;text&quot;: &quot;19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm&quot;
+                },
+</code></pre></div>
+<p><strong>Example extract from the optional file <code>line_list_bullet</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>{
+</code></pre></div>
+<p><strong>Example extract from the optional file <code>line_list_number</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>{
+</code></pre></div>
+<p><strong>Example extract from the optional file <code>line_table</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>{
+    &quot;documentId&quot;: 1,
+    &quot;documentFileName&quot;: &quot;Example.pdf&quot;,
+    &quot;noTablesInDocument&quot;: 5,
+    &quot;tables&quot;: [
+        {
+            &quot;firstRowLLX&quot;: 52.0,
+            &quot;firstRowURX&quot;: 426.45,
+            &quot;noColumns&quot;: 30,
+            &quot;noRows&quot;: 10,
+            &quot;pageNoFrom&quot;: 9,
+            &quot;pageNoTill&quot;: 9,
+            &quot;tableNo&quot;: 1,
+            &quot;rows&quot;: [
+                {
+                    &quot;firstColumnLLX&quot;: 52.0,
+                    &quot;lastColumnURX&quot;: 426.45,
+                    &quot;noColumns&quot;: 3,
+                    &quot;rowNo&quot;: 1,
+                    &quot;columns&quot;: [
+                        {
+                            &quot;columnNo&quot;: 1,
+                            &quot;coordLLX&quot;: 52.0,
+                            &quot;coordURX&quot;: 63.77,
+                            &quot;lineIndexPage&quot;: 18,
+                            &quot;lineIndexParagraph&quot;: 0,
+                            &quot;lineNo&quot;: 1,
+                            &quot;paragraphNo&quot;: 4,
+                            &quot;text&quot;: &quot;No.&quot;
+                        },
+</code></pre></div>
+<p><strong>Example extract from the optional file <code>line_toc</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>{
+    &quot;documentId&quot;: 1,
+    &quot;documentFileName&quot;: &quot;Example.pdf&quot;,
+    &quot;toc&quot;: [
+        {
+            &quot;headingLevel&quot;: 1,
+            &quot;headingText&quot;: &quot;1. Lease Term: After the existing Tenant has vacated Landlord will allow Tenant to access the Demised&quot;,
+            &quot;pageNo&quot;: 4,
+            &quot;headingCtxLine1&quot;: &quot;not delay or interfere with the completion of the Allowance Improvements by the Landlord in any material respect; and (b) prior to&quot;,
+            &quot;headingCtxLine2&quot;: &quot;entering the Demised Premises the Tenant shall provide insurance coverage as required by this Lease. Landlord shall offer the&quot;,
+            &quot;headingCtxLine3&quot;: &quot;existing tenant an early termination of its lease on December 31, 2011, instead of the normal expiration date of January 31, 2012.&quot;,
+            &quot;regexp&quot;: &quot;\\d+\\.$&quot;
+        },
+</code></pre></div>
+<p><strong>Example extract from granularity <code>page</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>{
+    &quot;documentId&quot;: 1,
+    &quot;documentFileName&quot;: &quot;Example.pdf&quot;,
+    &quot;noPagesInDocument&quot;: 57,
+    &quot;noParagraphsInDocument&quot;: 829,
+    &quot;pages&quot;: [
+        {
+            &quot;pageNo&quot;: 1,
+            &quot;noParagraphsInPage&quot;: 7,
+            &quot;paragraphs&quot;: [
+                {
+                    &quot;paragraphNo&quot;: 1,
+                    &quot;text&quot;: &quot;19/04/2020 https://www.sec.gov/Archives/edgar/data/821002/000157104917003132/t1700141_ex10-19.htm&quot;
+                },
+</code></pre></div>
+<p><strong>Example extract from granularity <code>word</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>{
+    &quot;documentId&quot;: 1,
+    &quot;documentFileName&quot;: &quot;Example.pdf&quot;,
+    &quot;noLinesInDocument&quot;: 2217,
+    &quot;noPagesInDocument&quot;: 57,
+    &quot;noParagraphsInDocument&quot;: 828,
+    &quot;noWordsInDocument&quot;: 38674,
+    &quot;pages&quot;: [
+        {
+            &quot;pageNo&quot;: 1,
+            &quot;noLinesInPage&quot;: 15,
+            &quot;noParagraphsInPage&quot;: 7,
+            &quot;noWordsInPage&quot;: 112,
+            &quot;paragraphs&quot;: [
+                {
+                    &quot;paragraphNo&quot;: 1,
+                    &quot;noLinesInParagraph&quot;: 1,
+                    &quot;noWordsInParagraph&quot;: 28,
+                    &quot;lines&quot;: [
+                        {
+                            &quot;lineNo&quot;: 1,
+                            &quot;noWordsInLine&quot;: 28,
+                            &quot;words&quot;: [
+                                {
+                                    &quot;wordNo&quot;: 1,
+                                    &quot;text&quot;: &quot;19&quot;
+                                },
+</code></pre></div>
+<h4 id="224-create-qualified-document-tokens-action-tkn">2.2.4 Create qualified document tokens (action: <strong><code>tkn</code></strong>)</h4>
+<p>For tokenization, <a href="https://spacy.io/usage/models" target="_blank">spaCy</a> is used. </p>
+<p>The document text is made available to spaCy page by page.
+Either the granularity document <code>line</code> or document <code>page</code> can be used for this.
+With the granularity document <code>line</code>, the recognised headers and footers are left out of the token creation.</p>
+<p>spaCy provides a number of attributes for the token. 
+Details can be found <a href="https://spacy.io/api/token#attributes" target="_blank">here</a> in the spaCy documentation.
+The configuration parameters of the type <code>spacy_tkn_attr_...</code> control which of these attributes are stored to the database table <code>content_token</code>.</p>
+<p>In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the <strong><code>document</code></strong> table. </p>
+<p><strong>Example extract from granularity <code>line</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>{
+    &quot;documentId&quot;: 1,
+    &quot;documentFileName&quot;: &quot;Example.pdf&quot;,
+    &quot;noLinesFooter&quot;: 1,
+    &quot;noLinesHeader&quot;: 1,
+    &quot;noLinesInDocument&quot;: 2031,
+    &quot;noLinesToc&quot;: 85,
+    &quot;noPagesInDocument&quot;: 57,
+    &quot;noParagraphsInDocument&quot;: 630,
+    &quot;noSentencesInDocument&quot;: 949,
+    &quot;noTablesInDocument&quot;: 5,
+    &quot;noTokensInDocument&quot;: 16495,
+    &quot;pages&quot;: [
+        {
+            &quot;pageNo&quot;: 1,
+            &quot;noLinesInPage&quot;: 13,
+            &quot;noParagraphsInPage&quot;: 5,
+            &quot;noSentencesInPage&quot;: 5,
+            &quot;noTokensInPage&quot;: 39,
+            &quot;paragraphs&quot;: [
+                {
+                    &quot;paragraphNo&quot;: 2,
+                    &quot;noLinesInParagraph&quot;: 2,
+                    &quot;noSentencesInParagraph&quot;: 1,
+                    &quot;noTokensInParagraph&quot;: 7,
+                    &quot;sentences&quot;: [
+                        {
+                            &quot;sentenceNo&quot;: 1,
+                            &quot;coordLLX&quot;: 34.0,
+                            &quot;coordURX&quot;: 244.18,
+                            &quot;lineType&quot;: &quot;b&quot;,
+                            &quot;noTokensInSentence&quot;: 7,
+                            &quot;text&quot;: &quot;EX-10.19 3 t1700141_ex10-19.htm EXHIBIT 10.19 Exhibit 10.19&quot;,
+                            &quot;tokens&quot;: [
+                                {
+                                    &quot;tknI&quot;: 0,
+                                    &quot;tknIsOov&quot;: true,
+                                    &quot;tknLemma_&quot;: &quot;ex-10.19&quot;,
+                                    &quot;tknNorm_&quot;: &quot;ex-10.19&quot;,
+                                    &quot;tknPos_&quot;: &quot;NUM&quot;,
+                                    &quot;tknTag_&quot;: &quot;CD&quot;,
+                                    &quot;tknText&quot;: &quot;EX-10.19&quot;,
+                                    &quot;tknWhitespace_&quot;: &quot; &quot;
+                                },
+</code></pre></div>
+<h2 id="3-auxiliary-file-names">3. Auxiliary File Names</h2>
+<p>The processing actions are based on different flat files, each of which is generated from the original document on an action-related basis.
+Apart from the <strong><code>JSON</code></strong> files optionally created during the 'tokenizer' action, these can be automatically deleted after error-free processing.</p>
+<h3 id="31-naming-system">3.1 Naming System</h3>
+<p><strong>Action</strong> <code>p_i</code> - process the inbox directory</p>
+<div class="highlight"><pre><span></span><code>in : &lt;ost&gt;.&lt;oft&gt;              
+out: &lt;ost&gt;_&lt;di&gt;.&lt;oft&gt;
+</code></pre></div>
+<p><strong>Action</strong> <code>p_2_i</code> - convert pdf documents to image files</p>
+<div class="highlight"><pre><span></span><code>in : &lt;ost&gt;_&lt;di&gt;.pdf                
+out: &lt;ost&gt;_&lt;di&gt;.&lt;jpeg|png&gt;
+</code></pre></div>
+<p><strong>Action</strong> <code>ocr</code> - convert image files to pdf documents</p>
+<div class="highlight"><pre><span></span><code>in : &lt;ost&gt;_&lt;di&gt;.&lt;oft&gt;              
+or : &lt;ost&gt;_&lt;di&gt;.&lt;jpeg|png&gt;        
+out: &lt;ost&gt;_&lt;di&gt;_&lt;pn&gt;.pdf 
+     &lt;ost&gt;_&lt;di&gt;_0.pdf
+</code></pre></div>
+<p><strong>Action</strong> <code>n_2_p</code> - convert non-pdf documents to pdf documents</p>
+<div class="highlight"><pre><span></span><code>in : &lt;ost&gt;_&lt;di&gt;.&lt;oft&gt;              
+out: &lt;ost&gt;_&lt;di&gt;.pdf
+</code></pre></div>
+<p><strong>Action</strong> <code>tet</code> - extract text and metadata from pdf documents</p>
+<div class="highlight"><pre><span></span><code>in : &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0].pdf       
+out: &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_line.xml        
+     &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_page.xml 
+     &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_word.xml
+</code></pre></div>
+<p><strong>Action</strong> <code>s_p_j</code> - store the parser result in a <strong><code>JSON</code></strong> file</p>
+<div class="highlight"><pre><span></span><code>in : &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_line.xml  
+     &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_page.xml        
+     &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_word.xml 
+out: &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_line.json 
+     &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_line.list_bullet.json 
+     &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_line.list_number.json 
+     &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_line.table.json 
+     &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_line.toc.json 
+     &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_page.json 
+     &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_word.json
+</code></pre></div>
+<p><strong>Action</strong> <code>tkn</code> - create qualified document tokens</p>
+<div class="highlight"><pre><span></span><code>in : &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_line.json 
+out: &lt;ost&gt;_&lt;di&gt;[_&lt;pn&gt;|_0]_line_token.json
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Abbr.</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>oft</code></td>
+<td>original file type</td>
+</tr>
+<tr>
+<td><code>osn</code></td>
+<td>original stem name</td>
+</tr>
+<tr>
+<td><code>di</code></td>
+<td>document identifier</td>
+</tr>
+<tr>
+<td><code>pn</code></td>
+<td>page number</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-examples">3.2 Examples</h3>
+<h4 id="321-possible-intermediate-files-from-a-docx-document">3.2.1 Possible intermediate files from a <strong><code>docx</code></strong> document:</h4>
+<div class="highlight"><pre><span></span><code>case_2_docx_route_inbox_pandoc_pdflib_2.docx
+
+case_2_docx_route_inbox_pandoc_pdflib_2.pdf
+
+case_2_docx_route_inbox_pandoc_pdflib_2.line.xml
+case_2_docx_route_inbox_pandoc_pdflib_2.page.xml
+case_2_docx_route_inbox_pandoc_pdflib_2.word.xml
+
+case_2_docx_route_inbox_pandoc_pdflib_2.line.json
+case_2_docx_route_inbox_pandoc_pdflib_2.line_list_bullet.json
+case_2_docx_route_inbox_pandoc_pdflib_2.line_list_number.json
+case_2_docx_route_inbox_pandoc_pdflib_2.line_table.json
+case_2_docx_route_inbox_pandoc_pdflib_2.line_toc.json
+case_2_docx_route_inbox_pandoc_pdflib_2.page.json
+case_2_docx_route_inbox_pandoc_pdflib_2.word.json
+
+case_2_docx_route_inbox_pandoc_pdflib_2.line.token.json
+</code></pre></div>
+<h4 id="322-possible-intermediate-files-from-a-jpg-document">3.2.2 Possible intermediate files from a <strong><code>jpg</code></strong> document:</h4>
+<div class="highlight"><pre><span></span><code>case_6_jpg_route_inbox_tesseract_pdflib_6.jpg
+
+case_6_jpg_route_inbox_tesseract_pdflib_6.pdf
+
+case_6_jpg_route_inbox_tesseract_pdflib_6.line.xml
+case_6_jpg_route_inbox_tesseract_pdflib_6.page.xml
+case_6_jpg_route_inbox_tesseract_pdflib_6.word.xml
+
+case_6_jpg_route_inbox_tesseract_pdflib_6.line.json
+case_6_jpg_route_inbox_tesseract_pdflib_6.line_list_bullet.json
+case_6_jpg_route_inbox_tesseract_pdflib_6.line_list_number.json
+case_6_jpg_route_inbox_tesseract_pdflib_6.line_table.json
+case_6_jpg_route_inbox_tesseract_pdflib_6.line_toc.json
+case_6_jpg_route_inbox_tesseract_pdflib_6.page.json
+case_6_jpg_route_inbox_tesseract_pdflib_6.word.json
+
+case_6_jpg_route_inbox_tesseract_pdflib_6.line.token.json
+</code></pre></div>
+<h4 id="323-possible-intermediate-files-from-a-proper-pdf-document">3.2.3 Possible intermediate files from a proper <strong><code>pdf</code></strong> document:</h4>
+<div class="highlight"><pre><span></span><code>case_3_pdf_text_route_inbox_pdflib_3.pdf
+
+case_3_pdf_text_route_inbox_pdflib_3.line.xml
+case_3_pdf_text_route_inbox_pdflib_3.page.xml
+case_3_pdf_text_route_inbox_pdflib_3.word.xml
+
+case_3_pdf_text_route_inbox_pdflib_3.line.json
+case_3_pdf_text_route_inbox_pdflib_3.line_list_bullet.json
+case_3_pdf_text_route_inbox_pdflib_3.line_list_number.json
+case_3_pdf_text_route_inbox_pdflib_3.line_table.json
+case_3_pdf_text_route_inbox_pdflib_3.line_toc.json
+case_3_pdf_text_route_inbox_pdflib_3.page.json
+case_3_pdf_text_route_inbox_pdflib_3.word.json
+
+case_3_pdf_text_route_inbox_pdflib_3.line.token.json
+</code></pre></div>
+<h4 id="324-possible-intermediate-files-from-a-single-page-scanned-image-pdf-document">3.2.4 Possible intermediate files from a single page scanned image <strong><code>pdf</code></strong> document:</h4>
+<div class="highlight"><pre><span></span><code>case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4.pdf
+
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.jpeg
+
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.pdf
+
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.xml
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.page.xml
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.xml
+
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.json
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_list_bullet.json
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_list_number.json
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_table.json
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line_toc.json
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.page.json
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.word.json
+
+case_4_pdf_image_small_route_inbox_pdf2image_tesseract_pdflib_4_1.line.token.json
+</code></pre></div>
+<h4 id="325-possible-intermediate-files-from-a-multi-page-scanned-image-pdf-document">3.2.5 Possible intermediate files from a multi page scanned image <strong><code>pdf</code></strong> document:</h4>
+<div class="highlight"><pre><span></span><code>case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5.pdf
+
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_1.jpeg
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_2.jpeg
+
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_1.pdf
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_2.pdf
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.pdf
+
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.xml
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.page.xml
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.xml
+
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.json
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_list_bullet.json
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_list_number.json
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_table.json
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line_toc.json
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.page.json
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.word.json
+
+case_5_pdf_image_large_route_inbox_pdf2image_tesseract_pypdf2_pdflib_5_0.line.token.json
+</code></pre></div>
+
+
+
+
+              
+            </article>
+            
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+      
+        
+        <a href="running_requirements/" class="md-footer__link md-footer__link--next" aria-label="Next: Requirementes" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Requirementes
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy;2021-2022, Konnexions GmbH.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": ".", "features": ["search.highlight", "search.suggest"], "search": "assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.2ab50757.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@8.13.3/dist/mermaid.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="assets/pymdownx-extras/extra-loader-9e2c67b9.js"></script>
+      
+    
+  </body>
+</html>

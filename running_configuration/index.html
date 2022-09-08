@@ -1,0 +1,1047 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Document Content Recognition">
+      
+      
+        <meta name="author" content="Konnexions GmbH Team">
+      
+      
+        <link rel="canonical" href="https://www.konnexions.ch/running_configuration/">
+      
+      <link rel="icon" href="../img/Icon.png">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.4.3">
+    
+    
+      
+        <title>Configuration - DCR - Document Content Recognition</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6b80c2a2.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../assets/pymdownx-extras/extra-b1466b3f51.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="red">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dcr-running-configuration" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DCR - Document Content Recognition" class="md-header__button md-logo" aria-label="DCR - Document Content Recognition" data-md-component="logo">
+      
+  <img src="../img/Logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DCR - Document Content Recognition
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Configuration
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/KonnexionsGmbH/dcr/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DCR - Document Content Recognition" class="md-nav__button md-logo" aria-label="DCR - Document Content Recognition" data-md-component="logo">
+      
+  <img src="../img/Logo.png" alt="logo">
+
+    </a>
+    DCR - Document Content Recognition
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/KonnexionsGmbH/dcr/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Running DCR
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Running DCR" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Running DCR
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../running_requirements/" class="md-nav__link">
+        Requirementes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../running_installation/" class="md-nav__link">
+        Installaion
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Configuration
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-datainitial_database_datjson" class="md-nav__link">
+    1. data/initial_database_dat.json
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-logging_cfgyaml" class="md-nav__link">
+    2. logging_cfg.yaml
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-setupcfg" class="md-nav__link">
+    3. setup.cfg
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../running_operations/" class="md-nav__link">
+        Operations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../running_document_language/" class="md-nav__link">
+        Document Language
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Release Documents
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Release Documents" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Release Documents
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_notes/" class="md-nav__link">
+        Release Notes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_history/" class="md-nav__link">
+        Release History
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Developing DCR
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Developing DCR" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Developing DCR
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_system_environment/" class="md-nav__link">
+        System Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_data_model/" class="md-nav__link">
+        Data Model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_coding_standards/" class="md-nav__link">
+        Coding Standards
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_code_formatting/" class="md-nav__link">
+        Code Formatting
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_static_code_analysis/" class="md-nav__link">
+        Static Code Analysis
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_software_documentation/" class="md-nav__link">
+        Software Documentation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_software_testing/" class="md-nav__link">
+        Software Testing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_continouos_delivery/" class="md-nav__link">
+        Continouos Delivery
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_development_environment/" class="md-nav__link">
+        Development Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_version_planning/" class="md-nav__link">
+        Version Planning
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        Contributing Guide
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-datainitial_database_datjson" class="md-nav__link">
+    1. data/initial_database_dat.json
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-logging_cfgyaml" class="md-nav__link">
+    2. logging_cfg.yaml
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-setupcfg" class="md-nav__link">
+    3. setup.cfg
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="dcr-running-configuration">DCR - Running - Configuration</h1>
+<p><img alt="GitHub (Pre-)Release" src="https://img.shields.io/github/v/release/KonnexionsGmbH/dcr?include_prereleases" />
+<img alt="GitHub (Pre-)Release Date" src="https://img.shields.io/github/release-date-pre/KonnexionsGmbh/dcr" /></p>
+<h2 id="1-datainitial_database_datjson">1. <strong><code>data/initial_database_dat.json</code></strong></h2>
+<p>This file contains the initial values relating to the database table <strong><code>language</code></strong>.
+The existing entries can be modified or deleted, but new entries can also be added.</p>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight"><pre><span></span><code>{
+  &quot;apiVersion&quot;: &quot;9.9.9&quot;,
+  &quot;data&quot;: {
+    &quot;tables&quot;: [
+      {
+        &quot;tableName&quot;: &quot;language&quot;,
+        &quot;rows&quot;: [
+          {
+            &quot;row&quot;: [
+              {
+                &quot;columnName&quot;: &quot;active&quot;,
+                &quot;columnValue&quot;: true | false
+              },
+              {
+                &quot;columnName&quot;: &quot;code_iso_639_3&quot;,
+                &quot;columnValue&quot;: &quot;deu&quot;
+              },
+              {
+                &quot;columnName&quot;: &quot;code_spacy&quot;,
+                &quot;columnValue&quot;: &quot;...&quot;
+              },
+              {
+                &quot;columnName&quot;: &quot;code_tesseract&quot;,
+                &quot;columnValue&quot;: &quot;...&quot;
+              },
+              {
+                &quot;columnName&quot;: &quot;directory_name_inbox&quot;,
+                &quot;columnValue&quot;: null | &quot;...&quot;
+              },
+              {
+                &quot;columnName&quot;: &quot;iso_language_name&quot;,
+                &quot;columnValue&quot;: &quot;...&quot;
+              }
+            ]
+          },
+          ...
+        ]
+      }
+    ]
+  }
+}
+</code></pre></div>
+<p><strong>Example entry for a language</strong>:</p>
+<div class="highlight"><pre><span></span><code>{
+  &quot;row&quot;: [
+    {
+      &quot;columnName&quot;: &quot;active&quot;,
+      &quot;columnValue&quot;: false
+    },
+    {
+      &quot;columnName&quot;: &quot;code_iso_639_3&quot;,
+      &quot;columnValue&quot;: &quot;fra&quot;
+    },
+    {
+      &quot;columnName&quot;: &quot;code_spacy&quot;,
+      &quot;columnValue&quot;: &quot;fr_dep_news_trf&quot;
+    },
+    {
+      &quot;columnName&quot;: &quot;code_tesseract&quot;,
+      &quot;columnValue&quot;: &quot;fra&quot;
+    },
+    {
+      &quot;columnName&quot;: &quot;directory_name_inbox&quot;,
+      &quot;columnValue&quot;: null
+    },
+    {
+      &quot;columnName&quot;: &quot;iso_language_name&quot;,
+      &quot;columnValue&quot;: &quot;French&quot;
+    }
+  ]
+},
+</code></pre></div>
+<h2 id="2-logging_cfgyaml">2. <strong><code>logging_cfg.yaml</code></strong></h2>
+<p>This file controls the logging behaviour of the application. </p>
+<p><strong>Default content</strong>:</p>
+<div class="highlight"><pre><span></span><code>version: 1
+
+formatters:
+  simple:
+    format: &quot;%(asctime)s %(pathname)-80s ] %(levelname)-5s %(funcName)s:%(lineno)d %(message)s&quot;
+  extended:
+    format: &quot;%(asctime)s %(pathname)-80s ] %(levelname)-5s %(funcName)s:%(lineno)d \n%(message)s&quot;
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: simple
+
+  file_handler:
+    class: logging.FileHandler
+    level: INFO
+    filename: logging_dcr.log
+    formatter: extended
+
+loggers:
+  dcr:
+    handlers: [ console ]
+root:
+  handlers: [ file_handler ]
+</code></pre></div>
+<h2 id="3-setupcfg">3. <strong><code>setup.cfg</code></strong></h2>
+<p>This file controls the behaviour of the <strong>DCR</strong> application. </p>
+<p>The customisable entries are:</p>
+<div class="highlight"><pre><span></span><code>[dcr]
+db_connection_port = 5432
+db_connection_prefix = postgresql+psycopg2://
+db_container_port = 5432
+db_database = dcr_db_prod
+db_database_admin = dcr_db_prod_admin
+db_dialect = postgresql
+db_host = localhost
+db_initial_data_file = data/db_initial_data_file.json
+db_password = postgresql
+db_password_admin = postgresql
+db_schema = dcr_schema
+db_user = dcr_user
+db_user_admin = dcr_user_admin
+directory_inbox_accepted = data/inbox_prod_accepted
+directory_inbox_rejected = data/inbox_prod_rejected
+doc_id_in_file_name = none
+ignore_duplicates = false
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>db_connection_port</td>
+<td>environment specific</td>
+<td>Port number the DBMS server is listening on.</td>
+</tr>
+<tr>
+<td>db_connection_prefix</td>
+<td><strong><code>postgresql+psycopg2://</code></strong></td>
+<td>Front part of the database URL.</td>
+</tr>
+<tr>
+<td>db_database</td>
+<td>environment specific</td>
+<td><strong>DCR</strong> database name.</td>
+</tr>
+<tr>
+<td>db_database_admin</td>
+<td>environment specific</td>
+<td>Administrative database name.</td>
+</tr>
+<tr>
+<td>db_dialect</td>
+<td><strong><code>postgresql</code></strong></td>
+<td>DBMS used, currently: only PostgreSQL allowed.</td>
+</tr>
+<tr>
+<td>db_host</td>
+<td><strong><code>localhost</code></strong></td>
+<td>Host name of the DBMS server.</td>
+</tr>
+<tr>
+<td>db_initial_data_file</td>
+<td><strong><code>data/db_initial_data_file.json</code></strong></td>
+<td>File with initial database contents.</td>
+</tr>
+<tr>
+<td>db_password</td>
+<td><strong><code>postgresql</code></strong></td>
+<td><strong>DCR</strong> database user password.</td>
+</tr>
+<tr>
+<td>db_password_admin</td>
+<td><strong><code>postgresql</code></strong></td>
+<td>Administrative database password.</td>
+</tr>
+<tr>
+<td>db_schema</td>
+<td><strong><code>dcr_schema</code></strong></td>
+<td>Database schema name.</td>
+</tr>
+<tr>
+<td>db_user</td>
+<td><strong><code>postgresql</code></strong></td>
+<td><strong>DCR</strong> database user name.</td>
+</tr>
+<tr>
+<td>db_user_admin</td>
+<td><strong><code>postgresql</code></strong></td>
+<td>Administrative database user name.</td>
+</tr>
+<tr>
+<td>directory_inbox_accepted</td>
+<td><strong><code>data/inbox_prod_accepted</code></strong></td>
+<td>Directory for the accepted documents.</td>
+</tr>
+<tr>
+<td>directory_inbox_rejected</td>
+<td><strong><code>data/inbox_prod_rejected</code></strong></td>
+<td>Complete file name for the <strong><code>JSON</code></strong> file with the <br>database initialisation data.</td>
+</tr>
+<tr>
+<td>doc_id_in_file_name</td>
+<td><strong><code>none</code></strong></td>
+<td>Position of the document id in the file name : <br><strong><code>after</code></strong>, <strong><code>before</code></strong> or <strong><code>none</code></strong>.</td>
+</tr>
+<tr>
+<td>ignore_duplicates</td>
+<td><strong><code>false</code></strong></td>
+<td>Accept presumably duplicated documents <br/>based on a SHA256 hash key.</td>
+</tr>
+</tbody>
+</table>
+<p>The configuration parameters can be set differently for the individual environments (<code>dev</code>, <code>prod</code> and <code>test</code>).</p>
+<p><strong>Examples</strong>:</p>
+<div class="highlight"><pre><span></span><code>[dcr.env.dev]
+db_connection_port = 5433
+db_database = dcr_db_dev
+db_database_admin = dcr_db_dev_admin
+db_initial_data_file = data/db_initial_data_file_dev.json
+directory_inbox_accepted = data/inbox_dev_accepted
+directory_inbox_rejected = data/inbox_dev_rejected
+...
+</code></pre></div>
+
+
+
+
+              
+            </article>
+            
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../running_installation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Installaion" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Installaion
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../running_operations/" class="md-footer__link md-footer__link--next" aria-label="Next: Operations" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Operations
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy;2021-2022, Konnexions GmbH.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.highlight", "search.suggest"], "search": "../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.2ab50757.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@8.13.3/dist/mermaid.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../assets/pymdownx-extras/extra-loader-9e2c67b9.js"></script>
+      
+    
+  </body>
+</html>
