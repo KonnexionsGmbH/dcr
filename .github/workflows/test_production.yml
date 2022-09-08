@@ -20,7 +20,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        os: ["ubuntu-20.04", "ubuntu-22.04"]
+        os: ["ubuntu-22.04"]
         python-version: ["3.10"]
     steps:
       - uses: actions/checkout@v3
@@ -71,7 +71,7 @@ jobs:
                                     wget
       - name: Install Step 2 - OpenSSL
         run: |
-            wget --no-check-certificate -nv https://github.com/openssl/openssl/archive/OpenSSL_${VERSION_OPENSSL}.tar.gz
+            wget --quiet --no-check-certificate -nv https://github.com/openssl/openssl/archive/OpenSSL_${VERSION_OPENSSL}.tar.gz
             sudo tar -xf OpenSSL_${VERSION_OPENSSL}.tar.gz
             sudo rm -rf openssl
             sudo mv openssl-OpenSSL_${VERSION_OPENSSL} openssl
@@ -87,15 +87,15 @@ jobs:
             echo "Current version of OpenSSL: $(openssl version -a)"
       - name: Install Step 3 - Pandoc
         run: |
-            wget https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
+            wget --quiet --no-check-certificate https://github.com/jgm/pandoc/releases/download/${VERSION_PANDOC}/pandoc-${VERSION_PANDOC}-1-amd64.deb
             sudo dpkg -i pandoc-${VERSION_PANDOC}-1-amd64.deb
             echo "::echo::on"
             echo "Current version of Pandoc: $(pandoc -v)"
             echo "Current version of TeX Live: $(pdflatex --version)"
       - name: Install Step 4 - Poppler
         run: |
-            wget https://poppler.freedesktop.org/poppler-${VERSION_POPPLER}.tar.xz
-            sudo tar -xvf poppler-${VERSION_POPPLER}.tar.xz
+            wget --quiet --no-check-certificate https://poppler.freedesktop.org/poppler-${VERSION_POPPLER}.tar.xz
+            sudo tar -xf poppler-${VERSION_POPPLER}.tar.xz
             cd poppler-${VERSION_POPPLER}/
             sudo mkdir build
             cd build

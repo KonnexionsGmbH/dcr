@@ -32,7 +32,6 @@ nav:
     - Release Notes: release_notes.md
     - Release History: release_history.md
   - Developing DCR:
-      - Research Notes: developing_research_notes.md
       - System Environment: developing_system_environment.md
       - Data Model: developing_data_model.md
       - Coding Standards: developing_coding_standards.md

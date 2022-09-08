@@ -348,28 +348,6 @@ With the granularity document `line`, the recognised headers and footers are lef
 spaCy provides a number of attributes for the token. 
 Details can be found [here](https://spacy.io/api/token#attributes){:target="_blank"} in the spaCy documentation.
 The configuration parameters of the type `spacy_tkn_attr_...` control which of these attributes are stored to the database table `content_token`.
-By default, the following attributes are stored:
-
-- `spacy_tkn_attr_ent_iob_ `
-- `spacy_tkn_attr_ent_type_ `
-- `spacy_tkn_attr_i `
-- `spacy_tkn_attr_is_currency `
-- `spacy_tkn_attr_is_digit `
-- `spacy_tkn_attr_is_oov `
-- `spacy_tkn_attr_is_punct `
-- `spacy_tkn_attr_is_sent_end `
-- `spacy_tkn_attr_is_sent_start `
-- `spacy_tkn_attr_is_stop `
-- `spacy_tkn_attr_is_title `
-- `spacy_tkn_attr_lemma_ `
-- `spacy_tkn_attr_like_email `
-- `spacy_tkn_attr_like_num `
-- `spacy_tkn_attr_like_url `
-- `spacy_tkn_attr_norm_ `
-- `spacy_tkn_attr_pos_ `
-- `spacy_tkn_attr_tag_ `
-- `spacy_tkn_attr_text `
-- `spacy_tkn_attr_whitespace_ `
 
 In the event of an error, the original document is marked as erroneous and an explanatory entry is also written in the **`document`** table. 
 
