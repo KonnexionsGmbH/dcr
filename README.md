@@ -7,12 +7,10 @@
 
 Based on the paper "Unfolding the Structure of a Document using Deep Learning" (**[Rahman and Finin, 2019](https://arxiv.org/abs/1910.03678)**), this software project attempts to use various software techniques to automatically recognise the structure in any **`pdf`** documents and thus make them more searchable.
 
-The computer linguistic methods used here assume that the documents to be processed are in **`pdf`** format.
-However, in order to be flexible in the selection of documents with regard to the file format, **DCR** contains a sophisticated preprocessor that can convert many of the non **`pdf`** formats into the **`pdf`** format.
-
-From the documents in **`pdf`** format, the next steps are to extract the text with relevant metadata word by word, line by line or page by page. In the case of line-by-line extraction, the identified headers and footers are marked accordingly so that they can be neglected later in the token creation process.
-
-In what is currently the last step, qualified tokens can be created, which on the one hand contain information about the localisation of the token in the document and on the other hand token classification features such as lemma, shape, normalisation, etc.
+**DCR** enables batch processing of documents with the **DCR-CORE** library. 
+Details of the **DCR-CORE** library can be found [here}(https://konnexionsgmbh.github.io/dcr-core/).
+The documents to be processed are expected in a defined file directory.
+The processing result is made available either in a JSON file or in a PostgreSQL database.
 
 Please see the **[Documentation](https://konnexionsgmbh.github.io/dcr)** for more detailed information.
 
